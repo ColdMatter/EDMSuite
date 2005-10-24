@@ -1,0 +1,13 @@
+Needed to make operational
+
+
+Needed for version 1
+
+Save all scans function.
+Implement roll mode.
+Point by point numbers.
+
+
+Wanted for the future
+
+Online analysis, fitting

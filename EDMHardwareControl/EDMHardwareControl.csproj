@@ -1,0 +1,158 @@
+<VisualStudioProject>
+    <CSHARP
+        ProjectType = "Local"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
+        ProjectGuid = "{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}"
+    >
+        <Build>
+            <Settings
+                ApplicationIcon = "App.ico"
+                AssemblyKeyContainerName = ""
+                AssemblyName = "EDMHardwareControl"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                DelaySign = "false"
+                OutputType = "Library"
+                PreBuildEvent = ""
+                PostBuildEvent = ""
+                RootNamespace = "EDMHardwareControl"
+                RunPostBuildEvent = "OnBuildSuccess"
+                StartupObject = ""
+            >
+                <Config
+                    Name = "Debug"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\Debug\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "Release"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "false"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "true"
+                    OutputPath = "bin\Release\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                />
+                <Reference
+                    Name = "System.Drawing"
+                    AssemblyName = "System.Drawing"
+                />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                />
+                <Reference
+                    Name = "NationalInstruments.Common"
+                    AssemblyName = "NationalInstruments.Common"
+                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.Common.dll"
+                    AssemblyFolderKey = "hklm\nationalinstruments"
+                />
+                <Reference
+                    Name = "NationalInstruments.DAQmx"
+                    AssemblyName = "NationalInstruments.DAQmx"
+                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll"
+                    AssemblyFolderKey = "hklm\nationalinstruments"
+                />
+                <Reference
+                    Name = "NationalInstruments.UI"
+                    AssemblyName = "NationalInstruments.UI"
+                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.dll"
+                    AssemblyFolderKey = "hklm\nationalinstruments"
+                />
+                <Reference
+                    Name = "NationalInstruments.UI.WindowsForms"
+                    AssemblyName = "NationalInstruments.UI.WindowsForms"
+                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll"
+                    AssemblyFolderKey = "hklm\nationalinstruments"
+                />
+                <Reference
+                    Name = "NationalInstruments.VisaNS"
+                    AssemblyName = "NationalInstruments.VisaNS"
+                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll"
+                    AssemblyFolderKey = "hklm\nationalinstruments"
+                />
+                <Reference
+                    Name = "DAQ"
+                    Project = "{BB737B99-2E9F-40C9-9809-895A7C51AD40}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "App.ico"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "AssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Controller.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ControlWindow.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ControlWindow.resx"
+                    DependentUpon = "ControlWindow.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "licenses.licx"
+                    BuildAction = "EmbeddedResource"
+                />
+            </Include>
+        </Files>
+    </CSHARP>
+</VisualStudioProject>
+

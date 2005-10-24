@@ -1,0 +1,65 @@
+MCP standards
+^^^^^^^^^^^^^
+
+Getting MCP to work involves being a bit careful with configuration files and profile names.
+This document should standardize things.
+
+
+What's the problem ?
+
+ScanMaster needs to be able to run standalone, and the configuration files need to be stored
+somewhere accessible and the profiles suitable for human use. BlockHead faces similar problems,
+although I'd anticipate it being used standalone a little less.
+
+MCP needs to be able to automate the actions of ScanMaster and BlockHead, and it must be able to
+use the same profiles configurations that the user uses. This means that they need to be stored in
+a standard place, and use a standard naming scheme.
+
+
+File layout
+
+What I'd like is for the code to be self contained, so that it can be versioned easily. The build
+should generate binaries in a folder that's easily deployed. There should a configuration directory
+that stores the configuration for the entire edm suite. There should be a data directory that stores
+all generated data. The directory structures should be configurable per machine.
+
+	Config Directory
+		- BlockHead					:	this directory stores BlockHead's xml serialized EDMConfigs
+		- ScanMaster				:	this directory stores ScanMasters SOAP serialized Profiles
+		- MCP						:	not sure yet !
+		
+	Data Directory					:	this is what it'll look like on the edm machine (and Jony's laptop)
+		- general					:	ScanMaster's output when run standalone, spectra, power scans,
+										interference data etc
+		- sedm						:	EDM runs
+		
+Each of the data sub-directories has the following substructure
+
+	general							:	or sedm
+		- year						:	e.g 2004
+			- FullMonthNameYear		:	e.g	November2004
+
+Furthermore, edm data will be stored in a directory per cluster. This directory will be named after the
+cluster (e.g. 25Nov0400). It will contain all of the blocks and ScanMaster's output during the run (like
+power scans etc) plus any logs, configs that MCP saves.
+
+
+Profile names
+
+The profile names should be standardized in a way that permits large changes such as changing a YAG laser
+to be easily implemented. Here's what I suggest. A profile set should be specific to an experimental setup
+(i.e. yag laser, valve, target, gas) and rep rate. This might seem a little limiting, but it means that
+within the profile set, the profiles can have generic, task-based names (like "Scan YAG power", "Scan B
+field"). Switching rep rate, or laser is then a simple case of switching which profile set is loaded in
+ScanMaster. Task names that MCP uses need to be standardized - here's the now authoritative list
+(capitalization is important, initial caps only):
+
+EDM profiles
+
+Align	-	just runs the beam, scans nothing.
+Scan laser
+Scan B
+Scan flashToQ
+Scan valveToQ
+
+Of course, profile sets can contain other profiles with any names that one likes.
