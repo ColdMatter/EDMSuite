@@ -76,10 +76,10 @@ namespace DAQ.HAL
 			string counterBoard = (string)Boards["counter"];
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
 			AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
-			AddCounterChannel("currentLeakageMonitorNorth-C", counterBoard +"/ctr1");
-			AddCounterChannel("currentLeakageMonitorNorth-G", counterBoard +"/ctr7");
-			AddCounterChannel("currentLeakageMonitorSouth-C", counterBoard +"/ctr0");
-			AddCounterChannel("currentLeakageMonitorSouth-G", counterBoard +"/ctr7");
+			AddCounterChannel("northCLeakage", counterBoard +"/ctr0");
+			AddCounterChannel("southCLeakage", counterBoard +"/ctr1");
+			AddCounterChannel("northGLeakage", counterBoard +"/ctr2");
+			AddCounterChannel("southGLeakage", counterBoard +"/ctr3");
 
 		}
 

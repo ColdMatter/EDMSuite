@@ -149,16 +149,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "LeakageCurrentMonitor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LeakageMonitor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "licenses.licx"
                     BuildAction = "EmbeddedResource"
                 />

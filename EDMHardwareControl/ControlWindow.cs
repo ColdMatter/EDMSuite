@@ -7,18 +7,19 @@ using System.Data;
 namespace EDMHardwareControl
 {
 	/// <summary>
-	/// Summary description for Form1.
+	/// Front panel for the edm hardware controller. Everything is just stuffed in there. No particularly
+	/// clever structure. This class just hands everything straight off to the controller. It has a few
+	/// thread safe wrappers so that remote calls can safely manipulate the front panel.
 	/// </summary>
 	public class ControlWindow : System.Windows.Forms.Form
 	{
+		#region Setup
+
 		private System.Windows.Forms.GroupBox groupBox2;
 		public System.Windows.Forms.CheckBox eOnCheck;
 		public System.Windows.Forms.CheckBox ePolarityCheck;
 		public System.Windows.Forms.CheckBox eBleedCheck;
 		public System.Windows.Forms.Button switchEButton;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		private System.ComponentModel.Container components = null;
 
 		private System.Windows.Forms.GroupBox groupBox4;
@@ -56,7 +57,6 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.GroupBox groupBox5;
 		public System.Windows.Forms.CheckBox bFlipCheck;
 		public System.Windows.Forms.CheckBox calFlipCheck;
-		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
@@ -71,14 +71,10 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.TextBox cPlusVMonitorTextBox;
 		public System.Windows.Forms.TextBox gMinusVMonitorTextBox;
 		private System.Windows.Forms.GroupBox groupBox7;
-		public System.Windows.Forms.TextBox cPlusIMonitorTextBox;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.Label label19;
-		public System.Windows.Forms.TextBox gPlusIMonitorTextBox;
-		public System.Windows.Forms.TextBox gMinusIMonitorTextBox;
-		public System.Windows.Forms.TextBox cMinusIMonitorTextBox;
 		private System.Windows.Forms.Button updateVMonitorButton;
 		private System.Windows.Forms.Button updateIMonitorButton;
 		private System.Windows.Forms.GroupBox groupBox8;
@@ -97,6 +93,42 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.TextBox bCurrentFlipStepTextBox;
 		public System.Windows.Forms.TextBox bCurrentBiasTextBox;
 		private System.Windows.Forms.Button updateBCurrentMonitorButton;
+		private System.Windows.Forms.GroupBox groupBox9;
+		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.Label label28;
+		private System.Windows.Forms.Button rfPowerMonitorUpdateButton;
+		public System.Windows.Forms.TextBox southCIMonitorTextBox;
+		public System.Windows.Forms.TextBox southGIMonitorTextBox;
+		public System.Windows.Forms.TextBox northGIMonitorTextBox;
+		public System.Windows.Forms.TextBox northCIMonitorTextBox;
+		public System.Windows.Forms.TextBox rf1PowerMonitorTextBox;
+		public System.Windows.Forms.TextBox rf2PowerMonitorTextBox;
+		private System.Windows.Forms.CheckBox rfMonitorChannelCheck;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage4;
+		private System.Windows.Forms.TabPage tabPage5;
+		private System.Windows.Forms.GroupBox groupBox10;
+		private System.Windows.Forms.GroupBox groupBox11;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.Label label31;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Label label32;
+		public System.Windows.Forms.TextBox pumpMonitorTextBox;
+		public System.Windows.Forms.TextBox pump2MonitorTextBox;
+		public System.Windows.Forms.TextBox probeMonitorTextBox;
+		public System.Windows.Forms.CheckBox pump2EnableCheck;
+		public System.Windows.Forms.CheckBox pumpShutterCheck;
+		private System.Windows.Forms.Label label33;
+		public System.Windows.Forms.TextBox yagFlashlampVTextBox;
+		private System.Windows.Forms.Button updateFlashlampVButton;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button button4;
+		private System.Windows.Forms.Button button5;
+		private System.Windows.Forms.Label label34;
+		public System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Button button6;
 
 
 		public Controller controller;
@@ -117,6 +149,8 @@ namespace EDMHardwareControl
 			}
 			base.Dispose( disposing );
 		}
+
+		#endregion
 
 		#region Windows Form Designer generated code
 		/// <summary>
@@ -179,19 +213,31 @@ namespace EDMHardwareControl
 			this.label15 = new System.Windows.Forms.Label();
 			this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.cMinusIMonitorTextBox = new System.Windows.Forms.TextBox();
-			this.gMinusIMonitorTextBox = new System.Windows.Forms.TextBox();
-			this.gPlusIMonitorTextBox = new System.Windows.Forms.TextBox();
-			this.cPlusIMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.southCIMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.southGIMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.northGIMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.northCIMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.updateIMonitorButton = new System.Windows.Forms.Button();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label17 = new System.Windows.Forms.Label();
 			this.label18 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.rfMonitorChannelCheck = new System.Windows.Forms.CheckBox();
+			this.rf1PowerMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.rfPowerMonitorUpdateButton = new System.Windows.Forms.Button();
+			this.label24 = new System.Windows.Forms.Label();
+			this.label28 = new System.Windows.Forms.Label();
+			this.rf2PowerMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.consoleBox = new System.Windows.Forms.TextBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.bCurrentCalStepTextBox = new System.Windows.Forms.TextBox();
+			this.bCurrentFlipStepTextBox = new System.Windows.Forms.TextBox();
+			this.bCurrentBiasTextBox = new System.Windows.Forms.TextBox();
+			this.label25 = new System.Windows.Forms.Label();
+			this.label26 = new System.Windows.Forms.Label();
+			this.label27 = new System.Windows.Forms.Label();
 			this.bCurrent01TextBox = new System.Windows.Forms.TextBox();
 			this.bCurrent11TextBox = new System.Windows.Forms.TextBox();
 			this.bCurrent10TextBox = new System.Windows.Forms.TextBox();
@@ -201,12 +247,31 @@ namespace EDMHardwareControl
 			this.label21 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
 			this.label23 = new System.Windows.Forms.Label();
-			this.bCurrentCalStepTextBox = new System.Windows.Forms.TextBox();
-			this.bCurrentFlipStepTextBox = new System.Windows.Forms.TextBox();
-			this.bCurrentBiasTextBox = new System.Windows.Forms.TextBox();
-			this.label25 = new System.Windows.Forms.Label();
-			this.label26 = new System.Windows.Forms.Label();
-			this.label27 = new System.Windows.Forms.Label();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.groupBox11 = new System.Windows.Forms.GroupBox();
+			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.consoleBox = new System.Windows.Forms.TextBox();
+			this.pumpMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.pump2MonitorTextBox = new System.Windows.Forms.TextBox();
+			this.probeMonitorTextBox = new System.Windows.Forms.TextBox();
+			this.label29 = new System.Windows.Forms.Label();
+			this.label30 = new System.Windows.Forms.Label();
+			this.label31 = new System.Windows.Forms.Label();
+			this.button1 = new System.Windows.Forms.Button();
+			this.pump2EnableCheck = new System.Windows.Forms.CheckBox();
+			this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
+			this.label32 = new System.Windows.Forms.Label();
+			this.label33 = new System.Windows.Forms.Label();
+			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
+			this.updateFlashlampVButton = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button3 = new System.Windows.Forms.Button();
+			this.button4 = new System.Windows.Forms.Button();
+			this.button5 = new System.Windows.Forms.Button();
+			this.label34 = new System.Windows.Forms.Label();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.button6 = new System.Windows.Forms.Button();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -217,8 +282,13 @@ namespace EDMHardwareControl
 			this.groupBox6.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
+			this.groupBox9.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox8.SuspendLayout();
+			this.tabPage4.SuspendLayout();
+			this.groupBox11.SuspendLayout();
+			this.groupBox10.SuspendLayout();
+			this.tabPage5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox2
@@ -595,6 +665,8 @@ namespace EDMHardwareControl
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Controls.Add(this.tabPage3);
+			this.tabControl1.Controls.Add(this.tabPage4);
+			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Location = new System.Drawing.Point(8, 16);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
@@ -717,10 +789,10 @@ namespace EDMHardwareControl
 			// 
 			// groupBox7
 			// 
-			this.groupBox7.Controls.Add(this.cMinusIMonitorTextBox);
-			this.groupBox7.Controls.Add(this.gMinusIMonitorTextBox);
-			this.groupBox7.Controls.Add(this.gPlusIMonitorTextBox);
-			this.groupBox7.Controls.Add(this.cPlusIMonitorTextBox);
+			this.groupBox7.Controls.Add(this.southCIMonitorTextBox);
+			this.groupBox7.Controls.Add(this.southGIMonitorTextBox);
+			this.groupBox7.Controls.Add(this.northGIMonitorTextBox);
+			this.groupBox7.Controls.Add(this.northCIMonitorTextBox);
 			this.groupBox7.Controls.Add(this.updateIMonitorButton);
 			this.groupBox7.Controls.Add(this.label16);
 			this.groupBox7.Controls.Add(this.label17);
@@ -733,49 +805,49 @@ namespace EDMHardwareControl
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Current monitors";
 			// 
-			// cMinusIMonitorTextBox
+			// southCIMonitorTextBox
 			// 
-			this.cMinusIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-			this.cMinusIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.cMinusIMonitorTextBox.Location = new System.Drawing.Point(104, 56);
-			this.cMinusIMonitorTextBox.Name = "cMinusIMonitorTextBox";
-			this.cMinusIMonitorTextBox.ReadOnly = true;
-			this.cMinusIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-			this.cMinusIMonitorTextBox.TabIndex = 45;
-			this.cMinusIMonitorTextBox.Text = "0";
+			this.southCIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.southCIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.southCIMonitorTextBox.Location = new System.Drawing.Point(104, 56);
+			this.southCIMonitorTextBox.Name = "southCIMonitorTextBox";
+			this.southCIMonitorTextBox.ReadOnly = true;
+			this.southCIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.southCIMonitorTextBox.TabIndex = 45;
+			this.southCIMonitorTextBox.Text = "0";
 			// 
-			// gMinusIMonitorTextBox
+			// southGIMonitorTextBox
 			// 
-			this.gMinusIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-			this.gMinusIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.gMinusIMonitorTextBox.Location = new System.Drawing.Point(104, 128);
-			this.gMinusIMonitorTextBox.Name = "gMinusIMonitorTextBox";
-			this.gMinusIMonitorTextBox.ReadOnly = true;
-			this.gMinusIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-			this.gMinusIMonitorTextBox.TabIndex = 44;
-			this.gMinusIMonitorTextBox.Text = "0";
+			this.southGIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.southGIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.southGIMonitorTextBox.Location = new System.Drawing.Point(104, 128);
+			this.southGIMonitorTextBox.Name = "southGIMonitorTextBox";
+			this.southGIMonitorTextBox.ReadOnly = true;
+			this.southGIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.southGIMonitorTextBox.TabIndex = 44;
+			this.southGIMonitorTextBox.Text = "0";
 			// 
-			// gPlusIMonitorTextBox
+			// northGIMonitorTextBox
 			// 
-			this.gPlusIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-			this.gPlusIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.gPlusIMonitorTextBox.Location = new System.Drawing.Point(104, 94);
-			this.gPlusIMonitorTextBox.Name = "gPlusIMonitorTextBox";
-			this.gPlusIMonitorTextBox.ReadOnly = true;
-			this.gPlusIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-			this.gPlusIMonitorTextBox.TabIndex = 43;
-			this.gPlusIMonitorTextBox.Text = "0";
+			this.northGIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.northGIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.northGIMonitorTextBox.Location = new System.Drawing.Point(104, 94);
+			this.northGIMonitorTextBox.Name = "northGIMonitorTextBox";
+			this.northGIMonitorTextBox.ReadOnly = true;
+			this.northGIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.northGIMonitorTextBox.TabIndex = 43;
+			this.northGIMonitorTextBox.Text = "0";
 			// 
-			// cPlusIMonitorTextBox
+			// northCIMonitorTextBox
 			// 
-			this.cPlusIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-			this.cPlusIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.cPlusIMonitorTextBox.Location = new System.Drawing.Point(104, 24);
-			this.cPlusIMonitorTextBox.Name = "cPlusIMonitorTextBox";
-			this.cPlusIMonitorTextBox.ReadOnly = true;
-			this.cPlusIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-			this.cPlusIMonitorTextBox.TabIndex = 42;
-			this.cPlusIMonitorTextBox.Text = "0";
+			this.northCIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.northCIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.northCIMonitorTextBox.Location = new System.Drawing.Point(104, 24);
+			this.northCIMonitorTextBox.Name = "northCIMonitorTextBox";
+			this.northCIMonitorTextBox.ReadOnly = true;
+			this.northCIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.northCIMonitorTextBox.TabIndex = 42;
+			this.northCIMonitorTextBox.Text = "0";
 			// 
 			// updateIMonitorButton
 			// 
@@ -791,7 +863,7 @@ namespace EDMHardwareControl
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(80, 23);
 			this.label16.TabIndex = 39;
-			this.label16.Text = "G minus (nA)";
+			this.label16.Text = "South G (nA)";
 			// 
 			// label17
 			// 
@@ -799,7 +871,7 @@ namespace EDMHardwareControl
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(80, 23);
 			this.label17.TabIndex = 38;
-			this.label17.Text = "G plus (nA)";
+			this.label17.Text = "North G (nA)";
 			// 
 			// label18
 			// 
@@ -807,7 +879,7 @@ namespace EDMHardwareControl
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(80, 23);
 			this.label18.TabIndex = 37;
-			this.label18.Text = "C minus (nA)";
+			this.label18.Text = "South C (nA)";
 			// 
 			// label19
 			// 
@@ -815,10 +887,11 @@ namespace EDMHardwareControl
 			this.label19.Name = "label19";
 			this.label19.Size = new System.Drawing.Size(80, 23);
 			this.label19.TabIndex = 36;
-			this.label19.Text = "C plus (nA)";
+			this.label19.Text = "North C (nA)";
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.groupBox9);
 			this.tabPage2.Controls.Add(this.groupBox3);
 			this.tabPage2.Controls.Add(this.groupBox4);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -826,6 +899,75 @@ namespace EDMHardwareControl
 			this.tabPage2.Size = new System.Drawing.Size(616, 358);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Synths";
+			// 
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.rfMonitorChannelCheck);
+			this.groupBox9.Controls.Add(this.rf1PowerMonitorTextBox);
+			this.groupBox9.Controls.Add(this.rfPowerMonitorUpdateButton);
+			this.groupBox9.Controls.Add(this.label24);
+			this.groupBox9.Controls.Add(this.label28);
+			this.groupBox9.Controls.Add(this.rf2PowerMonitorTextBox);
+			this.groupBox9.Location = new System.Drawing.Point(312, 184);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(296, 160);
+			this.groupBox9.TabIndex = 23;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "rf power monitors";
+			// 
+			// rfMonitorChannelCheck
+			// 
+			this.rfMonitorChannelCheck.Location = new System.Drawing.Point(64, 96);
+			this.rfMonitorChannelCheck.Name = "rfMonitorChannelCheck";
+			this.rfMonitorChannelCheck.Size = new System.Drawing.Size(168, 24);
+			this.rfMonitorChannelCheck.TabIndex = 48;
+			this.rfMonitorChannelCheck.Text = "Monitor channel (1 = False)";
+			// 
+			// rf1PowerMonitorTextBox
+			// 
+			this.rf1PowerMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.rf1PowerMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.rf1PowerMonitorTextBox.Location = new System.Drawing.Point(136, 32);
+			this.rf1PowerMonitorTextBox.Name = "rf1PowerMonitorTextBox";
+			this.rf1PowerMonitorTextBox.ReadOnly = true;
+			this.rf1PowerMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.rf1PowerMonitorTextBox.TabIndex = 47;
+			this.rf1PowerMonitorTextBox.Text = "0";
+			// 
+			// rfPowerMonitorUpdateButton
+			// 
+			this.rfPowerMonitorUpdateButton.Location = new System.Drawing.Point(88, 128);
+			this.rfPowerMonitorUpdateButton.Name = "rfPowerMonitorUpdateButton";
+			this.rfPowerMonitorUpdateButton.TabIndex = 46;
+			this.rfPowerMonitorUpdateButton.Text = "Update";
+			this.rfPowerMonitorUpdateButton.Click += new System.EventHandler(this.rfPowerMonitorUpdateButton_Click);
+			// 
+			// label24
+			// 
+			this.label24.Location = new System.Drawing.Point(24, 64);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(80, 23);
+			this.label24.TabIndex = 45;
+			this.label24.Text = "rf2 (dBm)";
+			// 
+			// label28
+			// 
+			this.label28.Location = new System.Drawing.Point(24, 32);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(80, 23);
+			this.label28.TabIndex = 44;
+			this.label28.Text = "rf1 (dBm)";
+			// 
+			// rf2PowerMonitorTextBox
+			// 
+			this.rf2PowerMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.rf2PowerMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.rf2PowerMonitorTextBox.Location = new System.Drawing.Point(136, 64);
+			this.rf2PowerMonitorTextBox.Name = "rf2PowerMonitorTextBox";
+			this.rf2PowerMonitorTextBox.ReadOnly = true;
+			this.rf2PowerMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.rf2PowerMonitorTextBox.TabIndex = 43;
+			this.rf2PowerMonitorTextBox.Text = "0";
 			// 
 			// tabPage3
 			// 
@@ -836,18 +978,6 @@ namespace EDMHardwareControl
 			this.tabPage3.Size = new System.Drawing.Size(616, 358);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "B-field";
-			// 
-			// consoleBox
-			// 
-			this.consoleBox.BackColor = System.Drawing.Color.Black;
-			this.consoleBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.consoleBox.Location = new System.Drawing.Point(8, 408);
-			this.consoleBox.Multiline = true;
-			this.consoleBox.Name = "consoleBox";
-			this.consoleBox.ReadOnly = true;
-			this.consoleBox.Size = new System.Drawing.Size(624, 136);
-			this.consoleBox.TabIndex = 26;
-			this.consoleBox.Text = "";
 			// 
 			// groupBox8
 			// 
@@ -872,6 +1002,63 @@ namespace EDMHardwareControl
 			this.groupBox8.TabIndex = 45;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "Current monitor";
+			// 
+			// bCurrentCalStepTextBox
+			// 
+			this.bCurrentCalStepTextBox.BackColor = System.Drawing.Color.Black;
+			this.bCurrentCalStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(288, 56);
+			this.bCurrentCalStepTextBox.Name = "bCurrentCalStepTextBox";
+			this.bCurrentCalStepTextBox.ReadOnly = true;
+			this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(64, 20);
+			this.bCurrentCalStepTextBox.TabIndex = 53;
+			this.bCurrentCalStepTextBox.Text = "0";
+			// 
+			// bCurrentFlipStepTextBox
+			// 
+			this.bCurrentFlipStepTextBox.BackColor = System.Drawing.Color.Black;
+			this.bCurrentFlipStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(288, 88);
+			this.bCurrentFlipStepTextBox.Name = "bCurrentFlipStepTextBox";
+			this.bCurrentFlipStepTextBox.ReadOnly = true;
+			this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(64, 20);
+			this.bCurrentFlipStepTextBox.TabIndex = 51;
+			this.bCurrentFlipStepTextBox.Text = "0";
+			// 
+			// bCurrentBiasTextBox
+			// 
+			this.bCurrentBiasTextBox.BackColor = System.Drawing.Color.Black;
+			this.bCurrentBiasTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.bCurrentBiasTextBox.Location = new System.Drawing.Point(288, 24);
+			this.bCurrentBiasTextBox.Name = "bCurrentBiasTextBox";
+			this.bCurrentBiasTextBox.ReadOnly = true;
+			this.bCurrentBiasTextBox.Size = new System.Drawing.Size(64, 20);
+			this.bCurrentBiasTextBox.TabIndex = 50;
+			this.bCurrentBiasTextBox.Text = "0";
+			// 
+			// label25
+			// 
+			this.label25.Location = new System.Drawing.Point(200, 88);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(80, 23);
+			this.label25.TabIndex = 48;
+			this.label25.Text = "DB (uA)";
+			// 
+			// label26
+			// 
+			this.label26.Location = new System.Drawing.Point(200, 56);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(80, 23);
+			this.label26.TabIndex = 47;
+			this.label26.Text = "dB (uA)";
+			// 
+			// label27
+			// 
+			this.label27.Location = new System.Drawing.Point(200, 24);
+			this.label27.Name = "label27";
+			this.label27.Size = new System.Drawing.Size(80, 23);
+			this.label27.TabIndex = 46;
+			this.label27.Text = "Bias (uA)";
 			// 
 			// bCurrent01TextBox
 			// 
@@ -957,62 +1144,245 @@ namespace EDMHardwareControl
 			this.label23.TabIndex = 36;
 			this.label23.Text = "DB0 dB0 (uA)";
 			// 
-			// bCurrentCalStepTextBox
+			// tabPage4
 			// 
-			this.bCurrentCalStepTextBox.BackColor = System.Drawing.Color.Black;
-			this.bCurrentCalStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(288, 56);
-			this.bCurrentCalStepTextBox.Name = "bCurrentCalStepTextBox";
-			this.bCurrentCalStepTextBox.ReadOnly = true;
-			this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(64, 20);
-			this.bCurrentCalStepTextBox.TabIndex = 53;
-			this.bCurrentCalStepTextBox.Text = "0";
+			this.tabPage4.Controls.Add(this.groupBox11);
+			this.tabPage4.Controls.Add(this.groupBox10);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Size = new System.Drawing.Size(616, 358);
+			this.tabPage4.TabIndex = 3;
+			this.tabPage4.Text = "Laser";
 			// 
-			// bCurrentFlipStepTextBox
+			// groupBox11
 			// 
-			this.bCurrentFlipStepTextBox.BackColor = System.Drawing.Color.Black;
-			this.bCurrentFlipStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(288, 88);
-			this.bCurrentFlipStepTextBox.Name = "bCurrentFlipStepTextBox";
-			this.bCurrentFlipStepTextBox.ReadOnly = true;
-			this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(64, 20);
-			this.bCurrentFlipStepTextBox.TabIndex = 51;
-			this.bCurrentFlipStepTextBox.Text = "0";
+			this.groupBox11.Controls.Add(this.button1);
+			this.groupBox11.Controls.Add(this.pumpMonitorTextBox);
+			this.groupBox11.Controls.Add(this.pump2MonitorTextBox);
+			this.groupBox11.Controls.Add(this.probeMonitorTextBox);
+			this.groupBox11.Controls.Add(this.label29);
+			this.groupBox11.Controls.Add(this.label30);
+			this.groupBox11.Controls.Add(this.label31);
+			this.groupBox11.Location = new System.Drawing.Point(8, 136);
+			this.groupBox11.Name = "groupBox11";
+			this.groupBox11.Size = new System.Drawing.Size(224, 176);
+			this.groupBox11.TabIndex = 1;
+			this.groupBox11.TabStop = false;
+			this.groupBox11.Text = "Photodiodes";
 			// 
-			// bCurrentBiasTextBox
+			// groupBox10
 			// 
-			this.bCurrentBiasTextBox.BackColor = System.Drawing.Color.Black;
-			this.bCurrentBiasTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.bCurrentBiasTextBox.Location = new System.Drawing.Point(288, 24);
-			this.bCurrentBiasTextBox.Name = "bCurrentBiasTextBox";
-			this.bCurrentBiasTextBox.ReadOnly = true;
-			this.bCurrentBiasTextBox.Size = new System.Drawing.Size(64, 20);
-			this.bCurrentBiasTextBox.TabIndex = 50;
-			this.bCurrentBiasTextBox.Text = "0";
+			this.groupBox10.Controls.Add(this.label32);
+			this.groupBox10.Controls.Add(this.pump2EnableCheck);
+			this.groupBox10.Controls.Add(this.pumpShutterCheck);
+			this.groupBox10.Location = new System.Drawing.Point(8, 16);
+			this.groupBox10.Name = "groupBox10";
+			this.groupBox10.Size = new System.Drawing.Size(224, 100);
+			this.groupBox10.TabIndex = 0;
+			this.groupBox10.TabStop = false;
+			this.groupBox10.Text = "Shutters";
 			// 
-			// label25
+			// tabPage5
 			// 
-			this.label25.Location = new System.Drawing.Point(200, 88);
-			this.label25.Name = "label25";
-			this.label25.Size = new System.Drawing.Size(80, 23);
-			this.label25.TabIndex = 48;
-			this.label25.Text = "DB (uA)";
+			this.tabPage5.Controls.Add(this.button6);
+			this.tabPage5.Controls.Add(this.textBox1);
+			this.tabPage5.Controls.Add(this.label34);
+			this.tabPage5.Controls.Add(this.button5);
+			this.tabPage5.Controls.Add(this.button4);
+			this.tabPage5.Controls.Add(this.button3);
+			this.tabPage5.Controls.Add(this.button2);
+			this.tabPage5.Controls.Add(this.updateFlashlampVButton);
+			this.tabPage5.Controls.Add(this.label33);
+			this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Size = new System.Drawing.Size(616, 358);
+			this.tabPage5.TabIndex = 4;
+			this.tabPage5.Text = "YAG";
 			// 
-			// label26
+			// consoleBox
 			// 
-			this.label26.Location = new System.Drawing.Point(200, 56);
-			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(80, 23);
-			this.label26.TabIndex = 47;
-			this.label26.Text = "dB (uA)";
+			this.consoleBox.BackColor = System.Drawing.Color.Black;
+			this.consoleBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.consoleBox.Location = new System.Drawing.Point(8, 408);
+			this.consoleBox.Multiline = true;
+			this.consoleBox.Name = "consoleBox";
+			this.consoleBox.ReadOnly = true;
+			this.consoleBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.consoleBox.Size = new System.Drawing.Size(624, 136);
+			this.consoleBox.TabIndex = 26;
+			this.consoleBox.Text = "";
 			// 
-			// label27
+			// pumpMonitorTextBox
 			// 
-			this.label27.Location = new System.Drawing.Point(200, 24);
-			this.label27.Name = "label27";
-			this.label27.Size = new System.Drawing.Size(80, 23);
-			this.label27.TabIndex = 46;
-			this.label27.Text = "Bias (uA)";
+			this.pumpMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.pumpMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.pumpMonitorTextBox.Location = new System.Drawing.Point(120, 64);
+			this.pumpMonitorTextBox.Name = "pumpMonitorTextBox";
+			this.pumpMonitorTextBox.ReadOnly = true;
+			this.pumpMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.pumpMonitorTextBox.TabIndex = 51;
+			this.pumpMonitorTextBox.Text = "0";
+			// 
+			// pump2MonitorTextBox
+			// 
+			this.pump2MonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.pump2MonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.pump2MonitorTextBox.Location = new System.Drawing.Point(120, 96);
+			this.pump2MonitorTextBox.Name = "pump2MonitorTextBox";
+			this.pump2MonitorTextBox.ReadOnly = true;
+			this.pump2MonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.pump2MonitorTextBox.TabIndex = 50;
+			this.pump2MonitorTextBox.Text = "0";
+			// 
+			// probeMonitorTextBox
+			// 
+			this.probeMonitorTextBox.BackColor = System.Drawing.Color.Black;
+			this.probeMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.probeMonitorTextBox.Location = new System.Drawing.Point(120, 32);
+			this.probeMonitorTextBox.Name = "probeMonitorTextBox";
+			this.probeMonitorTextBox.ReadOnly = true;
+			this.probeMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+			this.probeMonitorTextBox.TabIndex = 49;
+			this.probeMonitorTextBox.Text = "0";
+			// 
+			// label29
+			// 
+			this.label29.Location = new System.Drawing.Point(32, 96);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(80, 23);
+			this.label29.TabIndex = 48;
+			this.label29.Text = "Pump 2 (V)";
+			// 
+			// label30
+			// 
+			this.label30.Location = new System.Drawing.Point(32, 64);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(80, 23);
+			this.label30.TabIndex = 47;
+			this.label30.Text = "Pump (V)";
+			// 
+			// label31
+			// 
+			this.label31.Location = new System.Drawing.Point(32, 32);
+			this.label31.Name = "label31";
+			this.label31.Size = new System.Drawing.Size(80, 23);
+			this.label31.TabIndex = 46;
+			this.label31.Text = "Probe (V)";
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(72, 136);
+			this.button1.Name = "button1";
+			this.button1.TabIndex = 52;
+			this.button1.Text = "Update";
+			// 
+			// pump2EnableCheck
+			// 
+			this.pump2EnableCheck.Location = new System.Drawing.Point(24, 56);
+			this.pump2EnableCheck.Name = "pump2EnableCheck";
+			this.pump2EnableCheck.Size = new System.Drawing.Size(72, 24);
+			this.pump2EnableCheck.TabIndex = 23;
+			this.pump2EnableCheck.Text = "Pump 2";
+			// 
+			// pumpShutterCheck
+			// 
+			this.pumpShutterCheck.Location = new System.Drawing.Point(24, 24);
+			this.pumpShutterCheck.Name = "pumpShutterCheck";
+			this.pumpShutterCheck.Size = new System.Drawing.Size(72, 24);
+			this.pumpShutterCheck.TabIndex = 22;
+			this.pumpShutterCheck.Text = "Pump";
+			// 
+			// label32
+			// 
+			this.label32.Location = new System.Drawing.Point(104, 40);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(100, 32);
+			this.label32.TabIndex = 24;
+			this.label32.Text = "False is blocked. True is open.";
+			// 
+			// label33
+			// 
+			this.label33.Location = new System.Drawing.Point(24, 32);
+			this.label33.Name = "label33";
+			this.label33.Size = new System.Drawing.Size(144, 23);
+			this.label33.TabIndex = 13;
+			this.label33.Text = "Flashlamp voltage (V)";
+			// 
+			// yagFlashlampVTextBox
+			// 
+			this.yagFlashlampVTextBox.Location = new System.Drawing.Point(168, 32);
+			this.yagFlashlampVTextBox.Name = "yagFlashlampVTextBox";
+			this.yagFlashlampVTextBox.Size = new System.Drawing.Size(64, 20);
+			this.yagFlashlampVTextBox.TabIndex = 12;
+			this.yagFlashlampVTextBox.Text = "1220";
+			// 
+			// updateFlashlampVButton
+			// 
+			this.updateFlashlampVButton.Location = new System.Drawing.Point(264, 32);
+			this.updateFlashlampVButton.Name = "updateFlashlampVButton";
+			this.updateFlashlampVButton.TabIndex = 14;
+			this.updateFlashlampVButton.Text = "Update V";
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(24, 104);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(112, 23);
+			this.button2.TabIndex = 15;
+			this.button2.Text = "Start Flashlamps";
+			// 
+			// button3
+			// 
+			this.button3.Enabled = false;
+			this.button3.Location = new System.Drawing.Point(152, 104);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(112, 23);
+			this.button3.TabIndex = 16;
+			this.button3.Text = "Stop Flashlamps";
+			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(280, 104);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(112, 23);
+			this.button4.TabIndex = 17;
+			this.button4.Text = "Q-switch Enable";
+			// 
+			// button5
+			// 
+			this.button5.Enabled = false;
+			this.button5.Location = new System.Drawing.Point(408, 104);
+			this.button5.Name = "button5";
+			this.button5.Size = new System.Drawing.Size(112, 23);
+			this.button5.TabIndex = 18;
+			this.button5.Text = "Q-switch Disable";
+			// 
+			// label34
+			// 
+			this.label34.Location = new System.Drawing.Point(24, 64);
+			this.label34.Name = "label34";
+			this.label34.Size = new System.Drawing.Size(104, 23);
+			this.label34.TabIndex = 43;
+			this.label34.Text = "Interlock response";
+			// 
+			// textBox1
+			// 
+			this.textBox1.BackColor = System.Drawing.Color.Black;
+			this.textBox1.ForeColor = System.Drawing.Color.Chartreuse;
+			this.textBox1.Location = new System.Drawing.Point(168, 64);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.ReadOnly = true;
+			this.textBox1.Size = new System.Drawing.Size(64, 20);
+			this.textBox1.TabIndex = 44;
+			this.textBox1.Text = "0";
+			// 
+			// button6
+			// 
+			this.button6.Location = new System.Drawing.Point(264, 64);
+			this.button6.Name = "button6";
+			this.button6.TabIndex = 45;
+			this.button6.Text = "Check";
 			// 
 			// ControlWindow
 			// 
@@ -1033,8 +1403,13 @@ namespace EDMHardwareControl
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
+			this.groupBox9.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			this.groupBox8.ResumeLayout(false);
+			this.tabPage4.ResumeLayout(false);
+			this.groupBox11.ResumeLayout(false);
+			this.groupBox10.ResumeLayout(false);
+			this.tabPage5.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1123,6 +1498,13 @@ namespace EDMHardwareControl
 		{
 			controller.UpdateBCurrentMonitor();
 		}
+
+		
+		private void rfPowerMonitorUpdateButton_Click(object sender, System.EventArgs e)
+		{
+			controller.UpdateRFPowerMonitor();
+		}
+
 		#endregion
 
 		#region ThreadSafe wrappers
@@ -1147,14 +1529,6 @@ namespace EDMHardwareControl
 			box.Text = text;
 		}
 		#endregion
-
-
-
-
-
-
-
-
 
 
 	}

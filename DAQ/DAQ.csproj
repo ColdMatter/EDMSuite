@@ -308,6 +308,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "LeakageMonitor.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "MathematicaService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
