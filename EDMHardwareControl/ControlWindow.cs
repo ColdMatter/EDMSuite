@@ -122,13 +122,13 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.Label label33;
 		public System.Windows.Forms.TextBox yagFlashlampVTextBox;
 		private System.Windows.Forms.Button updateFlashlampVButton;
-		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.Button button5;
 		private System.Windows.Forms.Label label34;
-		public System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button button6;
+		private System.Windows.Forms.Button checkYagInterlockButton;
+		public System.Windows.Forms.Button yagQDisableButton;
+		public System.Windows.Forms.Button yagQEnableButton;
+		public System.Windows.Forms.Button stopYagFlashlampsButton;
+		public System.Windows.Forms.Button startYAGFlashlampsButton;
+		public System.Windows.Forms.TextBox interlockStatusTextBox;
 
 
 		public Controller controller;
@@ -249,29 +249,29 @@ namespace EDMHardwareControl
 			this.label23 = new System.Windows.Forms.Label();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
-			this.groupBox10 = new System.Windows.Forms.GroupBox();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
-			this.consoleBox = new System.Windows.Forms.TextBox();
+			this.button1 = new System.Windows.Forms.Button();
 			this.pumpMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.pump2MonitorTextBox = new System.Windows.Forms.TextBox();
 			this.probeMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.label29 = new System.Windows.Forms.Label();
 			this.label30 = new System.Windows.Forms.Label();
 			this.label31 = new System.Windows.Forms.Label();
-			this.button1 = new System.Windows.Forms.Button();
+			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.label32 = new System.Windows.Forms.Label();
 			this.pump2EnableCheck = new System.Windows.Forms.CheckBox();
 			this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
-			this.label32 = new System.Windows.Forms.Label();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.checkYagInterlockButton = new System.Windows.Forms.Button();
+			this.interlockStatusTextBox = new System.Windows.Forms.TextBox();
+			this.label34 = new System.Windows.Forms.Label();
+			this.yagQDisableButton = new System.Windows.Forms.Button();
+			this.yagQEnableButton = new System.Windows.Forms.Button();
+			this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
+			this.startYAGFlashlampsButton = new System.Windows.Forms.Button();
+			this.updateFlashlampVButton = new System.Windows.Forms.Button();
 			this.label33 = new System.Windows.Forms.Label();
 			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-			this.updateFlashlampVButton = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
-			this.button4 = new System.Windows.Forms.Button();
-			this.button5 = new System.Windows.Forms.Button();
-			this.label34 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button6 = new System.Windows.Forms.Button();
+			this.consoleBox = new System.Windows.Forms.TextBox();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -1170,48 +1170,12 @@ namespace EDMHardwareControl
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "Photodiodes";
 			// 
-			// groupBox10
+			// button1
 			// 
-			this.groupBox10.Controls.Add(this.label32);
-			this.groupBox10.Controls.Add(this.pump2EnableCheck);
-			this.groupBox10.Controls.Add(this.pumpShutterCheck);
-			this.groupBox10.Location = new System.Drawing.Point(8, 16);
-			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(224, 100);
-			this.groupBox10.TabIndex = 0;
-			this.groupBox10.TabStop = false;
-			this.groupBox10.Text = "Shutters";
-			// 
-			// tabPage5
-			// 
-			this.tabPage5.Controls.Add(this.button6);
-			this.tabPage5.Controls.Add(this.textBox1);
-			this.tabPage5.Controls.Add(this.label34);
-			this.tabPage5.Controls.Add(this.button5);
-			this.tabPage5.Controls.Add(this.button4);
-			this.tabPage5.Controls.Add(this.button3);
-			this.tabPage5.Controls.Add(this.button2);
-			this.tabPage5.Controls.Add(this.updateFlashlampVButton);
-			this.tabPage5.Controls.Add(this.label33);
-			this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(616, 358);
-			this.tabPage5.TabIndex = 4;
-			this.tabPage5.Text = "YAG";
-			// 
-			// consoleBox
-			// 
-			this.consoleBox.BackColor = System.Drawing.Color.Black;
-			this.consoleBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.consoleBox.Location = new System.Drawing.Point(8, 408);
-			this.consoleBox.Multiline = true;
-			this.consoleBox.Name = "consoleBox";
-			this.consoleBox.ReadOnly = true;
-			this.consoleBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.consoleBox.Size = new System.Drawing.Size(624, 136);
-			this.consoleBox.TabIndex = 26;
-			this.consoleBox.Text = "";
+			this.button1.Location = new System.Drawing.Point(72, 136);
+			this.button1.Name = "button1";
+			this.button1.TabIndex = 52;
+			this.button1.Text = "Update";
 			// 
 			// pumpMonitorTextBox
 			// 
@@ -1270,12 +1234,25 @@ namespace EDMHardwareControl
 			this.label31.TabIndex = 46;
 			this.label31.Text = "Probe (V)";
 			// 
-			// button1
+			// groupBox10
 			// 
-			this.button1.Location = new System.Drawing.Point(72, 136);
-			this.button1.Name = "button1";
-			this.button1.TabIndex = 52;
-			this.button1.Text = "Update";
+			this.groupBox10.Controls.Add(this.label32);
+			this.groupBox10.Controls.Add(this.pump2EnableCheck);
+			this.groupBox10.Controls.Add(this.pumpShutterCheck);
+			this.groupBox10.Location = new System.Drawing.Point(8, 16);
+			this.groupBox10.Name = "groupBox10";
+			this.groupBox10.Size = new System.Drawing.Size(224, 100);
+			this.groupBox10.TabIndex = 0;
+			this.groupBox10.TabStop = false;
+			this.groupBox10.Text = "Shutters";
+			// 
+			// label32
+			// 
+			this.label32.Location = new System.Drawing.Point(104, 40);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(100, 32);
+			this.label32.TabIndex = 24;
+			this.label32.Text = "False is blocked. True is open.";
 			// 
 			// pump2EnableCheck
 			// 
@@ -1293,13 +1270,96 @@ namespace EDMHardwareControl
 			this.pumpShutterCheck.TabIndex = 22;
 			this.pumpShutterCheck.Text = "Pump";
 			// 
-			// label32
+			// tabPage5
 			// 
-			this.label32.Location = new System.Drawing.Point(104, 40);
-			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(100, 32);
-			this.label32.TabIndex = 24;
-			this.label32.Text = "False is blocked. True is open.";
+			this.tabPage5.Controls.Add(this.checkYagInterlockButton);
+			this.tabPage5.Controls.Add(this.interlockStatusTextBox);
+			this.tabPage5.Controls.Add(this.label34);
+			this.tabPage5.Controls.Add(this.yagQDisableButton);
+			this.tabPage5.Controls.Add(this.yagQEnableButton);
+			this.tabPage5.Controls.Add(this.stopYagFlashlampsButton);
+			this.tabPage5.Controls.Add(this.startYAGFlashlampsButton);
+			this.tabPage5.Controls.Add(this.updateFlashlampVButton);
+			this.tabPage5.Controls.Add(this.label33);
+			this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Size = new System.Drawing.Size(616, 358);
+			this.tabPage5.TabIndex = 4;
+			this.tabPage5.Text = "YAG";
+			// 
+			// checkYagInterlockButton
+			// 
+			this.checkYagInterlockButton.Location = new System.Drawing.Point(264, 64);
+			this.checkYagInterlockButton.Name = "checkYagInterlockButton";
+			this.checkYagInterlockButton.TabIndex = 45;
+			this.checkYagInterlockButton.Text = "Check";
+			this.checkYagInterlockButton.Click += new System.EventHandler(this.checkYagInterlockButton_Click);
+			// 
+			// interlockStatusTextBox
+			// 
+			this.interlockStatusTextBox.BackColor = System.Drawing.Color.Black;
+			this.interlockStatusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.interlockStatusTextBox.Location = new System.Drawing.Point(168, 64);
+			this.interlockStatusTextBox.Name = "interlockStatusTextBox";
+			this.interlockStatusTextBox.ReadOnly = true;
+			this.interlockStatusTextBox.Size = new System.Drawing.Size(64, 20);
+			this.interlockStatusTextBox.TabIndex = 44;
+			this.interlockStatusTextBox.Text = "0";
+			// 
+			// label34
+			// 
+			this.label34.Location = new System.Drawing.Point(24, 64);
+			this.label34.Name = "label34";
+			this.label34.Size = new System.Drawing.Size(104, 23);
+			this.label34.TabIndex = 43;
+			this.label34.Text = "Interlock failed";
+			// 
+			// yagQDisableButton
+			// 
+			this.yagQDisableButton.Enabled = false;
+			this.yagQDisableButton.Location = new System.Drawing.Point(408, 104);
+			this.yagQDisableButton.Name = "yagQDisableButton";
+			this.yagQDisableButton.Size = new System.Drawing.Size(112, 23);
+			this.yagQDisableButton.TabIndex = 18;
+			this.yagQDisableButton.Text = "Q-switch Disable";
+			this.yagQDisableButton.Click += new System.EventHandler(this.yagQDisableButton_Click);
+			// 
+			// yagQEnableButton
+			// 
+			this.yagQEnableButton.Location = new System.Drawing.Point(280, 104);
+			this.yagQEnableButton.Name = "yagQEnableButton";
+			this.yagQEnableButton.Size = new System.Drawing.Size(112, 23);
+			this.yagQEnableButton.TabIndex = 17;
+			this.yagQEnableButton.Text = "Q-switch Enable";
+			this.yagQEnableButton.Click += new System.EventHandler(this.yagQEnableButton_Click);
+			// 
+			// stopYagFlashlampsButton
+			// 
+			this.stopYagFlashlampsButton.Enabled = false;
+			this.stopYagFlashlampsButton.Location = new System.Drawing.Point(152, 104);
+			this.stopYagFlashlampsButton.Name = "stopYagFlashlampsButton";
+			this.stopYagFlashlampsButton.Size = new System.Drawing.Size(112, 23);
+			this.stopYagFlashlampsButton.TabIndex = 16;
+			this.stopYagFlashlampsButton.Text = "Stop Flashlamps";
+			this.stopYagFlashlampsButton.Click += new System.EventHandler(this.stopYagFlashlampsButton_Click);
+			// 
+			// startYAGFlashlampsButton
+			// 
+			this.startYAGFlashlampsButton.Location = new System.Drawing.Point(24, 104);
+			this.startYAGFlashlampsButton.Name = "startYAGFlashlampsButton";
+			this.startYAGFlashlampsButton.Size = new System.Drawing.Size(112, 23);
+			this.startYAGFlashlampsButton.TabIndex = 15;
+			this.startYAGFlashlampsButton.Text = "Start Flashlamps";
+			this.startYAGFlashlampsButton.Click += new System.EventHandler(this.startYAGFlashlampsButton_Click);
+			// 
+			// updateFlashlampVButton
+			// 
+			this.updateFlashlampVButton.Location = new System.Drawing.Point(264, 32);
+			this.updateFlashlampVButton.Name = "updateFlashlampVButton";
+			this.updateFlashlampVButton.TabIndex = 14;
+			this.updateFlashlampVButton.Text = "Update V";
+			this.updateFlashlampVButton.Click += new System.EventHandler(this.updateFlashlampVButton_Click);
 			// 
 			// label33
 			// 
@@ -1317,72 +1377,18 @@ namespace EDMHardwareControl
 			this.yagFlashlampVTextBox.TabIndex = 12;
 			this.yagFlashlampVTextBox.Text = "1220";
 			// 
-			// updateFlashlampVButton
+			// consoleBox
 			// 
-			this.updateFlashlampVButton.Location = new System.Drawing.Point(264, 32);
-			this.updateFlashlampVButton.Name = "updateFlashlampVButton";
-			this.updateFlashlampVButton.TabIndex = 14;
-			this.updateFlashlampVButton.Text = "Update V";
-			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(24, 104);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(112, 23);
-			this.button2.TabIndex = 15;
-			this.button2.Text = "Start Flashlamps";
-			// 
-			// button3
-			// 
-			this.button3.Enabled = false;
-			this.button3.Location = new System.Drawing.Point(152, 104);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(112, 23);
-			this.button3.TabIndex = 16;
-			this.button3.Text = "Stop Flashlamps";
-			// 
-			// button4
-			// 
-			this.button4.Location = new System.Drawing.Point(280, 104);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(112, 23);
-			this.button4.TabIndex = 17;
-			this.button4.Text = "Q-switch Enable";
-			// 
-			// button5
-			// 
-			this.button5.Enabled = false;
-			this.button5.Location = new System.Drawing.Point(408, 104);
-			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(112, 23);
-			this.button5.TabIndex = 18;
-			this.button5.Text = "Q-switch Disable";
-			// 
-			// label34
-			// 
-			this.label34.Location = new System.Drawing.Point(24, 64);
-			this.label34.Name = "label34";
-			this.label34.Size = new System.Drawing.Size(104, 23);
-			this.label34.TabIndex = 43;
-			this.label34.Text = "Interlock response";
-			// 
-			// textBox1
-			// 
-			this.textBox1.BackColor = System.Drawing.Color.Black;
-			this.textBox1.ForeColor = System.Drawing.Color.Chartreuse;
-			this.textBox1.Location = new System.Drawing.Point(168, 64);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(64, 20);
-			this.textBox1.TabIndex = 44;
-			this.textBox1.Text = "0";
-			// 
-			// button6
-			// 
-			this.button6.Location = new System.Drawing.Point(264, 64);
-			this.button6.Name = "button6";
-			this.button6.TabIndex = 45;
-			this.button6.Text = "Check";
+			this.consoleBox.BackColor = System.Drawing.Color.Black;
+			this.consoleBox.ForeColor = System.Drawing.Color.Chartreuse;
+			this.consoleBox.Location = new System.Drawing.Point(8, 408);
+			this.consoleBox.Multiline = true;
+			this.consoleBox.Name = "consoleBox";
+			this.consoleBox.ReadOnly = true;
+			this.consoleBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.consoleBox.Size = new System.Drawing.Size(624, 136);
+			this.consoleBox.TabIndex = 26;
+			this.consoleBox.Text = "";
 			// 
 			// ControlWindow
 			// 
@@ -1505,6 +1511,37 @@ namespace EDMHardwareControl
 			controller.UpdateRFPowerMonitor();
 		}
 
+		private void updateFlashlampVButton_Click(object sender, System.EventArgs e)
+		{
+			controller.UpdateYAGFlashlampVoltage();
+		}
+
+		private void checkYagInterlockButton_Click(object sender, System.EventArgs e)
+		{
+			controller.CheckYAGInterlock();
+		}
+
+		private void yagQDisableButton_Click(object sender, System.EventArgs e)
+		{
+			controller.DisableYAGQ();
+		}
+
+		private void yagQEnableButton_Click(object sender, System.EventArgs e)
+		{
+			controller.EnableYAGQ();
+		}
+
+		private void stopYagFlashlampsButton_Click(object sender, System.EventArgs e)
+		{
+			controller.StopYAGFlashlamps();
+		}
+
+		private void startYAGFlashlampsButton_Click(object sender, System.EventArgs e)
+		{
+			controller.StartYAGFlashlamps();
+		}
+
+
 		#endregion
 
 		#region ThreadSafe wrappers
@@ -1531,5 +1568,7 @@ namespace EDMHardwareControl
 		#endregion
 
 
+
+	
 	}
 }

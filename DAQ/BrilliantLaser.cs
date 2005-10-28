@@ -15,7 +15,7 @@ namespace DAQ.HAL
 	{
 		SerialSession serial;
 		String address;
-		private bool isConnected = false;
+		private bool connected = false;
 
 		public BrilliantLaser(String address)
 		{
@@ -24,23 +24,26 @@ namespace DAQ.HAL
 
 		private void Connect()
 		{
-			if (!Environs.Debug) serial = new SerialSession(address);
-			serial.BaudRate = 9600;
-			serial.DataBits = 8;
-			serial.StopBits = StopBitType.One;
-			serial.ReadTermination = SerialTerminationMethod.LastBit;
-			isConnected = true;
+			if (!Environs.Debug) 
+			{
+				serial = new SerialSession(address);
+				serial.BaudRate = 9600;
+				serial.DataBits = 8;
+				serial.StopBits = StopBitType.One;
+				serial.ReadTermination = SerialTerminationMethod.LastBit;
+			}
+			connected = true;
 		}
 
 		private void Disconnect()
 		{
 			if (!Environs.Debug) serial.Dispose();
-			isConnected = false;
+			connected = false;
 		}
 
 		public void StartFlashlamps(bool internalClock)
 		{
-			if (!isConnected) Connect();
+			if (!connected) Connect();
 			if (!Environs.Debug) serial.Query("QE\r\n",17);
 			if (internalClock)
 			{
@@ -58,21 +61,21 @@ namespace DAQ.HAL
 
 		public void StopFlashlamps()
 		{
-			if (!isConnected) Connect();
+			if (!connected) Connect();
 			if (!Environs.Debug) serial.Query("S\r\n",17);
 			Disconnect();
 		}
 
 		public void EnableQSwitch()
 		{
-			if (!isConnected) Connect();
+			if (!connected) Connect();
 			if (!Environs.Debug) serial.Query("CC\r\n",17);
 			Disconnect();
 		}
 
 		public void DisableQSwitch()
 		{
-			if (!isConnected) Connect();
+			if (!connected) Connect();
 			if (!Environs.Debug) serial.Query("CS\r\n",17);
 			Disconnect();
 		}
@@ -81,14 +84,21 @@ namespace DAQ.HAL
 		{
 			get
 			{
-				if (!isConnected) Connect();
+				if (!connected) Connect();
 				String reply = "";
 				if (!Environs.Debug) reply = serial.Query("IF2\r\n",17);
 				Disconnect();
 				return (reply.IndexOf("1") != -1);
 				
 			}
-		}		
+		}
+	
+		public void SetFlashlampVoltage(int voltage)
+		{
+			if (!connected) Connect();
+			if (!Environs.Debug) serial.Query("V" + voltage + "\r\n",17);
+			Disconnect();
+		}
 
 		public void PatternChangeStartingHandler(object source, EventArgs e)
 		{}

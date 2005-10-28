@@ -68,6 +68,7 @@ namespace EDMHardwareControl
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"], 1, 5000 );
 		LeakageMonitor southGLeakageMonitor = 
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"], 1, 5000 );
+		BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
 
 		ControlWindow window;
 
@@ -519,6 +520,46 @@ namespace EDMHardwareControl
 
 		public void UpdateRFPowerMonitor()
 		{
+		}
+
+		// TODO: I'm not sure whether these button enabling properties are threadsafe.
+		// Probably had better wrap them.
+		public void StartYAGFlashlamps()
+		{
+			yag.StartFlashlamps(false);
+			window.startYAGFlashlampsButton.Enabled = false;
+			window.stopYagFlashlampsButton.Enabled = true;
+		}
+
+		public void StopYAGFlashlamps()
+		{
+			yag.StopFlashlamps();
+			window.startYAGFlashlampsButton.Enabled = true;
+			window.stopYagFlashlampsButton.Enabled = false;
+		}
+
+		public void EnableYAGQ()
+		{
+			yag.EnableQSwitch();
+			window.yagQEnableButton.Enabled = false;
+			window.yagQDisableButton.Enabled = true;
+		}
+
+		public void DisableYAGQ()
+		{
+			yag.DisableQSwitch();
+			window.yagQEnableButton.Enabled = true;
+			window.yagQDisableButton.Enabled = false;
+		}
+
+		public void CheckYAGInterlock()
+		{
+			window.SetTextBox(window.interlockStatusTextBox, yag.InterlockFailed.ToString());
+		}
+
+		public void UpdateYAGFlashlampVoltage()
+		{
+			yag.SetFlashlampVoltage((int)Double.Parse(window.yagFlashlampVTextBox.Text));
 		}
 
 		#endregion
