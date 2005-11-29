@@ -46,6 +46,7 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
+			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));

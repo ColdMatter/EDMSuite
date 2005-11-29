@@ -185,6 +185,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "BufferedEventCountingShotGathererPlugin.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CommandProcessor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -24,6 +24,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1);
 			AddDigitalOutputChannel("q", pgBoard, 0,0 );
 			AddDigitalOutputChannel("detector", pgBoard, 1, 0);
+			AddDigitalOutputChannel("aom", pgBoard, 2, 0);
 
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];
@@ -31,6 +32,10 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse);
 			AddAnalogInputChannel("bogus", daqBoard + "/ai2", AITerminalConfiguration.Rse);
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
+
+			//map the counter channels
+			AddCounterChannel("pmt", daqBoard + "/ctr0");
+			AddCounterChannel("sample clock", daqBoard + "/ctr1");
 		}
 			
 	}
