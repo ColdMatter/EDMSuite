@@ -14,6 +14,8 @@ namespace DAQ.Environment
 			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.1/mathkernel.exe");
 			Paths.Add("fakeData","d:\\data\\examples\\");
 
+			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+
 			SortDataByDate = false;
 		}
 	}

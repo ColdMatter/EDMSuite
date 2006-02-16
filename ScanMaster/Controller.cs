@@ -204,10 +204,13 @@ namespace ScanMaster
 			saveFileDialog1.Title = "Save averaged scan data";
 			saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
 												(String)Environs.FileSystem.Paths["scanMasterDataPath"]);
-			saveFileDialog1.ShowDialog();
-			if(saveFileDialog1.FileName != "")
+			saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+			if (saveFileDialog1.ShowDialog() == DialogResult.OK)
 			{
-				SaveAverageData((System.IO.FileStream)saveFileDialog1.OpenFile());
+				if (saveFileDialog1.FileName != "")
+				{
+					SaveAverageData((System.IO.FileStream)saveFileDialog1.OpenFile());
+				}
 			}
 		}
 

@@ -117,12 +117,6 @@
                     HintPath = "C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll"
                     AssemblyFolderKey = "hklm\nationalinstruments"
                 />
-                <Reference
-                    Name = "NationalInstruments.NI4882"
-                    AssemblyName = "NationalInstruments.NI4882"
-                    HintPath = "C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.NI4882.dll"
-                    AssemblyFolderKey = "hklm\nationalinstruments"
-                />
             </References>
         </Build>
         <Files>

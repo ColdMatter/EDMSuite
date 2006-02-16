@@ -36,9 +36,13 @@ def EDMGo():
 	dataPath = fileSystem.GetDataDirectory(fileSystem.Paths["edmDataPath"])
 	print("Data directory is : " + dataPath)
 	print("")
+	suggestedClusterName = fileSystem.GenerateNextDataFileName()
 
 	# User inputs data
-	cluster = prompt("Cluster name: ")
+	cluster = prompt("Cluster name [" + suggestedClusterName +"]: ")
+	if cluster == "":
+		cluster = suggestedClusterName
+		print("Using cluster " + suggestedClusterName)
 	eState = Boolean.Parse(prompt("E-state: "))
 	bState = Boolean.Parse(prompt("B-state: "))
 	gVoltage = Double.Parse(prompt("G-voltage (kV): "))

@@ -15,6 +15,8 @@ namespace DAQ.Environment
 			Paths.Add("edmDataPath", "c:\\data\\sedm\\v3\\");
 			Paths.Add("fakeData","c:\\data\\examples\\");
 
+			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+
 			SortDataByDate = true;
 		}
 	}
