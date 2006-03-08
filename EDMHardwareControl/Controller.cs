@@ -350,7 +350,7 @@ namespace EDMHardwareControl
 		}
 
 		/* This is something of a cheesy hack. It lets the edm script check to see if the YAG
-		 * laser has failed. IT DOESN'T WORK YET.
+		 * laser has failed.
 		 */
 		public bool YAGInterlockFailed
 		{

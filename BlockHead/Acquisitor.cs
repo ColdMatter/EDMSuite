@@ -244,7 +244,8 @@ namespace BlockHead.Acquire
 			inputs.RawSampleRate = 100000;
 			inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
 			inputs.GateLength = 1000;
-
+			
+			// this code should be used for normal running
 			ScannedAnalogInput pmt = new ScannedAnalogInput();
 			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
 			pmt.ReductionMode = DataReductionMode.Chop;
@@ -253,6 +254,16 @@ namespace BlockHead.Acquire
 			pmt.HighLimit = 10;
 			pmt.Calibration = 0.14;
 			inputs.Channels.Add(pmt);
+
+//			// this code can be enabled for faster null runs
+//			ScannedAnalogInput pmt = new ScannedAnalogInput();
+//			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
+//			pmt.ReductionMode = DataReductionMode.Average;
+//			pmt.AverageEvery = 40;
+//			pmt.LowLimit = 0;
+//			pmt.HighLimit = 10;
+//			pmt.Calibration = 0.14;
+//			inputs.Channels.Add(pmt);
 
 			ScannedAnalogInput mag = new ScannedAnalogInput();
 			mag.ReductionMode = DataReductionMode.Average;
