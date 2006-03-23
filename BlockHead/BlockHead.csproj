@@ -133,6 +133,11 @@
                     Project = "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Wolfram.NETLink"
+                    AssemblyName = "Wolfram.NETLink"
+                    HintPath = "..\DAQ\Wolfram.NETLink.dll"
+                />
             </References>
         </Build>
         <Files>

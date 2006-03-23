@@ -140,6 +140,7 @@
                     AssemblyName = "Wolfram.NETLink"
                     HintPath = "..\..\..\..\Program Files\Wolfram Research\Mathematica\5.1\AddOns\NETLink\Wolfram.NETLink.dll"
                     AssemblyFolderKey = "hklm\dn\wolfram research"
+                    Private = "False"
                 />
             </References>
         </Build>

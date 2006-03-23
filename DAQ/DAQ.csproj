@@ -252,6 +252,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "GanymedeFileSystem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "GaussianFitResult.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -307,6 +312,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "LiHHardware.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "MathematicaService.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -338,6 +348,11 @@
                 />
                 <File
                     RelPath = "PatternGenerator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "QuantaRayLaser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

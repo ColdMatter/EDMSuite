@@ -92,6 +92,13 @@ namespace DAQ.Environment
 					ExperimentType = "edm";
 					break;
 
+				case "GANYMEDE0":
+					Hardware = new LiHHardware();
+					FileSystem = new GanymedeFileSystem();
+					Debug = true;
+					ExperimentType = "lih";
+					break;
+
 				case "CARMELITE":
 					Hardware = new BufferGasHardware();
 					FileSystem = new CarmeliteFileSystem();
