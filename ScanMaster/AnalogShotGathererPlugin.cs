@@ -23,9 +23,9 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private Task inputTask;
 		[NonSerialized]
-		private AnalogSingleChannelReader reader;
+		private AnalogMultiChannelReader reader;
 		[NonSerialized]
-		private double[] latestData;
+		private double[,] latestData;
 		
 		protected override void InitialiseSettings()
 		{
@@ -34,17 +34,20 @@ namespace ScanMaster.Acquire.Plugins
 		public override void AcquisitionStarting()
 		{
 			// configure the analog input
-			inputTask = new Task("analog gatherer " + (string)settings["channel"]);
+			inputTask = new Task("analog gatherer " /*+ (string)settings["channel"]*/);
 
 			// new analog channel, range -10 to 10 volts
-			if (!Environs.Debug)
-			{
+//			if (!Environs.Debug)
+//			{
+				string channelList = (string)settings["channel"];
+				string[] channels = channelList.Split(new char[] {','});
 
-				((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["channel"]]).AddToTask(
-					inputTask, 
-					(double)settings["inputRangeLow"],
-					(double)settings["inputRangeHigh"]
-					);
+				foreach (string channel in channels)
+					((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+						inputTask, 
+						(double)settings["inputRangeLow"],
+						(double)settings["inputRangeHigh"]
+						);
 
 				// internal clock, finite acquisition
 				inputTask.Timing.ConfigureSampleClock(
@@ -60,8 +63,8 @@ namespace ScanMaster.Acquire.Plugins
 					DigitalEdgeStartTriggerEdge.Rising);
 
 				inputTask.Control(TaskAction.Verify);
-			}
-			reader = new AnalogSingleChannelReader(inputTask.Stream); 
+//			}
+			reader = new AnalogMultiChannelReader(inputTask.Stream); 
 		}
 
 		public override void ScanStarting()
@@ -97,14 +100,20 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				lock(this)
 				{
-					Shot s = new Shot();
-					TOF t = new TOF();
-					t.ClockPeriod = (int)settings["clockPeriod"];
-					t.GateStartTime = (int)settings["gateStartTime"];
 					if (!Environs.Debug)
 					{
-						t.Data = latestData;
-						s.TOFs.Add(t);
+						Shot s = new Shot();
+						for (int i = 0 ; i < latestData.Length ; i++)
+						{
+							TOF t = new TOF();
+							t.ClockPeriod = (int)settings["clockPeriod"];
+							t.GateStartTime = (int)settings["gateStartTime"];
+							double[] tmp = new double[(int)settings["gateLength"]];
+							for (int j = 0 ; j < (int)settings["gateLength"] ; j++)
+								tmp[j] = latestData[i,j];
+							t.Data = tmp;
+							s.TOFs.Add(t);
+						}
 						return s;
 					}
 					else 
