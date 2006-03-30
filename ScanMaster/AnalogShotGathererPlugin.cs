@@ -103,7 +103,7 @@ namespace ScanMaster.Acquire.Plugins
 					if (!Environs.Debug)
 					{
 						Shot s = new Shot();
-						for (int i = 0 ; i < latestData.Length ; i++)
+						for (int i = 0 ; i < inputTask.AIChannels.Count ; i++)
 						{
 							TOF t = new TOF();
 							t.ClockPeriod = (int)settings["clockPeriod"];

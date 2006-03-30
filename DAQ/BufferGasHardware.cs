@@ -21,7 +21,7 @@ namespace DAQ.HAL
 			// map the digital channels
 			string pgBoard = (string)Boards["pg"];
 			AddDigitalOutputChannel("valve", pgBoard, 0, 6);
-			AddDigitalOutputChannel("flash", pgBoard, 0, 1);
+			AddDigitalOutputChannel("flash", pgBoard, 0, 2);
 			AddDigitalOutputChannel("q", pgBoard, 0,0 );
 			AddDigitalOutputChannel("detector", pgBoard, 1, 0);
 			AddDigitalOutputChannel("aom", pgBoard, 2, 0);
