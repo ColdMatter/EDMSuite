@@ -42,6 +42,7 @@ namespace BlockHead.Acquire
 		Task inputTask;
 		AnalogMultiChannelReader inputReader;
 		ScanMaster.Controller scanMaster;
+		PhaseLock.MainForm phaseLock;
 
 		// calling this method starts acquisition
 		public void Start(BlockConfig config) 
@@ -72,6 +73,7 @@ namespace BlockHead.Acquire
 			Monitor.Enter(MonitorLockObject);
 
 			scanMaster = new ScanMaster.Controller();
+			phaseLock = new PhaseLock.MainForm();
 	
 			// map modulations to physical channels
 			MapChannels();
@@ -96,15 +98,16 @@ namespace BlockHead.Acquire
 
 					// take a point
 					Shot s;
+					EDMPoint p;
 					if (Environs.Debug)
 					{
 						// just stuff a made up shot in
 						//Thread.Sleep(10);
 						s = DataFaker.GetFakeShot(1900,50,10,10);
 						((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
-						EDMPoint p = new EDMPoint();
+						p = new EDMPoint();
 						p.Shot = s;
-						b.Points.Add(p);
+						Thread.Sleep(20);
 					}
 					else
 					{
@@ -137,15 +140,16 @@ namespace BlockHead.Acquire
 							s.TOFs.Add(t);
 						}
 
-						EDMPoint p = new EDMPoint();
+						p = new EDMPoint();
 						p.Shot = s;
-						b.Points.Add(p);
-
-
-						// now would be the time to add analogs to the point, for instance reading out
-						// the current meters
 
 					}
+					// do the "SinglePointData" (i.e. things that are measured once per point)
+					// keep an eye on what the phase lock is doing
+					p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+					p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+
+					b.Points.Add(p);
 
 					// update the front end
 					Controller.GetController().GotPoint(point, s);

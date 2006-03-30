@@ -257,9 +257,9 @@ namespace PhaseLock
 		}
 		#endregion
 
-		static void Main() 
+		public void StartApplication() 
 		{
-			Application.Run(new MainForm());
+			Application.Run(this);
 		}
 
 		private void StopApplication()
@@ -569,35 +569,41 @@ namespace PhaseLock
 			phasePlotData.AddRange(phasePlotArray);
 		}
 
+		private object lockParameterLockObject = new Object();
+		double phaseErrorInDegrees = 0;
 		private void UpdateLock()
 		{
-			//calculate the new oscillator frequency
-			// calculate the slope
-			double[] lockXVals = new double[lockPhaseData.Count];
-			for (int i = 0 ; i < lockPhaseData.Count ; i++) lockXVals[i] = i;
-			double slope, intercept, err;
-			ArrayList lockPhaseDataDouble = new ArrayList();
-			foreach (int p in lockPhaseData) lockPhaseDataDouble.Add((double)p);
-			double[] lockYVals = (double[])lockPhaseDataDouble.ToArray(Type.GetType("System.Double"));
-			CurveFit.LinearFit(lockXVals, lockYVals, out slope, out intercept, out err);
+			lock(lockParameterLockObject)
+			{
+				//calculate the new oscillator frequency
+				// calculate the slope
+				double[] lockXVals = new double[lockPhaseData.Count];
+				for (int i = 0 ; i < lockPhaseData.Count ; i++) lockXVals[i] = i;
+				double slope, intercept, err;
+				ArrayList lockPhaseDataDouble = new ArrayList();
+				foreach (int p in lockPhaseData) lockPhaseDataDouble.Add((double)p);
+				double[] lockYVals = (double[])lockPhaseDataDouble.ToArray(Type.GetType("System.Double"));
+				CurveFit.LinearFit(lockXVals, lockYVals, out slope, out intercept, out err);
 			
-			// proportional gain
-			oscillatorFrequency -= accumulatedPhaseDifference * PROPORTIONAL_GAIN;
-			// derivative gain
-			oscillatorFrequency -= slope * DERIVATIVE_GAIN;
+				// proportional gain
+				oscillatorFrequency -= accumulatedPhaseDifference * PROPORTIONAL_GAIN;
+				// derivative gain
+				oscillatorFrequency -= slope * DERIVATIVE_GAIN;
 
-			// limit the output swing
-			if (oscillatorFrequency > OSCILLATOR_TARGET_RATE + OSCILLATOR_DEVIATION_LIMIT)
-				oscillatorFrequency = OSCILLATOR_TARGET_RATE + OSCILLATOR_DEVIATION_LIMIT;
-			if (oscillatorFrequency < OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT)
-				oscillatorFrequency = OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT;
+				// limit the output swing
+				if (oscillatorFrequency > OSCILLATOR_TARGET_RATE + OSCILLATOR_DEVIATION_LIMIT)
+					oscillatorFrequency = OSCILLATOR_TARGET_RATE + OSCILLATOR_DEVIATION_LIMIT;
+				if (oscillatorFrequency < OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT)
+					oscillatorFrequency = OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT;
 
-			// write to the synth
-			redSynth.Frequency = oscillatorFrequency / 1000000;
+				// write to the synth
+				redSynth.Frequency = oscillatorFrequency / 1000000;
 
-			// update the plot
-			oscillatorPlotData.Add(oscillatorFrequency / 1000);
-			lockPhaseData.Clear();
+				// update the plot
+				phaseErrorInDegrees = (double)phasePlotData[phasePlotData.Count - 1];
+				oscillatorPlotData.Add(oscillatorFrequency / 1000);
+				lockPhaseData.Clear();
+			}
 		}
 
 		private void StopAcquisition()
@@ -608,6 +614,32 @@ namespace PhaseLock
 			}
 			else lock(this) debugAbortFlag = true;
 			redSynth.Disconnect();
+		}
+
+		#endregion
+
+		#region Remote Methods
+
+		public double OutputFrequency
+		{
+			get
+			{
+				lock(lockParameterLockObject)
+				{
+					return oscillatorFrequency;
+				}
+			}
+		}
+
+		public double PhaseError
+		{
+			get
+			{
+				lock(lockParameterLockObject)
+				{
+					return phaseErrorInDegrees;
+				}
+			}
 		}
 
 		#endregion

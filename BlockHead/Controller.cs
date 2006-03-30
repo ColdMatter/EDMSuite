@@ -89,6 +89,13 @@ namespace BlockHead
 				"tcp://localhost:1170/controller.rem"
 				);
 
+			// ask the remoting system for access to PhaseLock
+			RemotingConfiguration.RegisterWellKnownClientType(
+				Type.GetType("PhaseLock.MainForm, PhaseLock"),
+				"tcp://localhost:1175/controller.rem"
+				);
+
+
 			mainWindow = new MainWindow(this);
 			acquisitor = new Acquisitor();
 			mainWindow.textArea.Text = "BlockHead!" + Environment.NewLine;

@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMRemotingHelper", "EDMRem
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseLockRunner", "PhaseLockRunner\PhaseLockRunner.csproj", "{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -93,6 +97,10 @@ Global
 		{27126CF5-7E76-48CC-A96E-A157706F19B1}.Debug.Build.0 = Debug|.NET
 		{27126CF5-7E76-48CC-A96E-A157706F19B1}.Release.ActiveCfg = Release|.NET
 		{27126CF5-7E76-48CC-A96E-A157706F19B1}.Release.Build.0 = Release|.NET
+		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Debug.ActiveCfg = Debug|.NET
+		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Debug.Build.0 = Debug|.NET
+		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Release.ActiveCfg = Release|.NET
+		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

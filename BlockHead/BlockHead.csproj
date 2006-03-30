@@ -138,6 +138,11 @@
                     AssemblyName = "Wolfram.NETLink"
                     HintPath = "..\DAQ\Wolfram.NETLink.dll"
                 />
+                <Reference
+                    Name = "PhaseLock"
+                    Project = "{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>
