@@ -9,8 +9,8 @@ namespace DAQ.Environment
 	{
 		public GanymedeFileSystem()
 		{
-			Paths.Add("settingsPath","d:\\data\\settings\\");
-			Paths.Add("scanMasterDataPath", "d:\\data\\LiH\\");
+			Paths.Add("settingsPath","d:\\Data\\Settings\\");
+			Paths.Add("scanMasterDataPath", "d:\\Data\\LiH\\");
 			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.2/mathkernel.exe");
 			Paths.Add("fakeData","d:\\data\\examples\\");
 

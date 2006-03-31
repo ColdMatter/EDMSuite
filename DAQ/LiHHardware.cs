@@ -32,7 +32,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
 			AddDigitalOutputChannel("detector", pgBoard, 3, 0); //Pin 29
 			AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
-	//		AddDigitalOutputChannel("aom", pgBoard, 0, 4);
+			AddDigitalOutputChannel("aom", pgBoard, 0, 4);
 	//		AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0);
 	//		AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1);
 	//		AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2);

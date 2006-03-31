@@ -95,7 +95,7 @@ namespace DAQ.Environment
 				case "GANYMEDE0":
 					Hardware = new LiHHardware();
 					FileSystem = new GanymedeFileSystem();
-					Debug = true;
+					Debug = false;
 					ExperimentType = "lih";
 					break;
 
