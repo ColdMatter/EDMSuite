@@ -27,7 +27,7 @@ namespace BlockHead
 	public class Controller : MarshalByRefObject
 	{
 
-		private const int UPDATE_EVERY = 1;
+		private const int UPDATE_EVERY = 5;
 
 		#region Class members
 

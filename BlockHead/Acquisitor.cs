@@ -247,7 +247,11 @@ namespace BlockHead.Acquire
 			inputs = new ScannedAnalogInputCollection();
 			inputs.RawSampleRate = 100000;
 			inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-			inputs.GateLength = 1000;
+			inputs.GateLength = 200;
+			// NOTE: this long version is for null runs, don't set it so long that the shots overlap!
+			// Comment the following line out if you're not null running.
+			//inputs.GateLength = 3000;
+
 			
 			// this code should be used for normal running
 			ScannedAnalogInput pmt = new ScannedAnalogInput();

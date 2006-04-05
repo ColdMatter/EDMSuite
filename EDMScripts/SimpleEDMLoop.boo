@@ -30,7 +30,8 @@ def checkYAGAndFix():
 		remote.BlockHead.StopPattern();
 		remote.BlockHead.StartPattern();	
 
-def EDMGo():
+
+def EDMGoReal(nullRun):
 	# Setup
 	fileSystem = Environs.FileSystem
 	dataPath = fileSystem.GetDataDirectory(fileSystem.Paths["edmDataPath"])
@@ -85,7 +86,11 @@ def EDMGo():
 	# loop and take data
 	remote.BlockHead.StartPattern()
 	blockIndex = 0
-	while blockIndex < 60:
+	if nullRun:
+		maxBlockIndex = 10000
+	else:
+		maxBlockIndex = 60
+	while blockIndex < maxBlockIndex:
 		print("Acquiring block ${blockIndex} ...")
 		# save the block config and load into blockhead
 		print("Saving temp config.")
@@ -113,7 +118,15 @@ def EDMGo():
 			updateChannelGraph(f)
 		# increment and loop
 		File.Delete(tempConfigFile)
+		# if not nullRun:
 		checkYAGAndFix()
 		++blockIndex
-
 	remote.BlockHead.StopPattern()
+
+
+def EDMGoNull():
+	EDMGoReal(true)
+
+def EDMGo():
+	EDMGoReal(false)
+
