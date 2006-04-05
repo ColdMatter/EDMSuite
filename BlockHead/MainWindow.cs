@@ -217,7 +217,7 @@ namespace BlockHead.GUI
 			this.progressTank.FillStyle = NationalInstruments.UI.FillStyle.ZigZag;
 			this.progressTank.Location = new System.Drawing.Point(408, 0);
 			this.progressTank.Name = "progressTank";
-			this.progressTank.Range = new NationalInstruments.UI.Range(0, 1024);
+			this.progressTank.Range = new NationalInstruments.UI.Range(0, 4096);
 			this.progressTank.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.progressTank.Size = new System.Drawing.Size(80, 440);
 			this.progressTank.TabIndex = 2;

@@ -111,20 +111,20 @@ namespace BlockHead
 
 			DigitalModulation dm = new DigitalModulation();
 			dm.Name = "E";
-			dm.Waveform = new Waveform("E Modulation", 10);
-			dm.Waveform.Code = new bool[] {true,true,false,false,false,false,false,false,false,false};
+			dm.Waveform = new Waveform("E Modulation", 12);
+			dm.Waveform.Code = new bool[] {true,true,false,false,false,false,false,false,false,false,false,false};
 			config.DigitalModulations.Add(dm);
 
 			DigitalModulation pi = new DigitalModulation();
 			pi.Name = "PI";
-			pi.Waveform = new Waveform("Pi Modulation", 10);
-			pi.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,true};
+			pi.Waveform = new Waveform("Pi Modulation", 12);
+			pi.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
 			config.DigitalModulations.Add(pi);
 
 			AnalogModulation b = new AnalogModulation();
 			b.Name = "B";
-			b.Waveform = new Waveform("B Modulation", 10);
-			b.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,true};
+			b.Waveform = new Waveform("B Modulation", 12);
+			b.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
 			b.DelayAfterSwitch = 5;
 			b.Centre = 0;
 			b.Step = 0.46;
@@ -132,15 +132,15 @@ namespace BlockHead
 
 			AnalogModulation db = new AnalogModulation();
 			db.Name = "DB";
-			db.Waveform = new Waveform("DB Modulation", 10);
-			db.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,true,false};
+			db.Waveform = new Waveform("DB Modulation", 12);
+			db.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,true,false};
 			db.DelayAfterSwitch = 5;
 			db.Centre = 0;
 			db.Step = 0.1;
 			config.AnalogModulations.Add(db);
 
-			config.Settings["codeLength"] = 10;
-			config.Settings["numberOfPoints"] = 1024;
+			config.Settings["codeLength"] = 12;
+			config.Settings["numberOfPoints"] = 4096;
 			config.Settings["pgClockFrequency"] = 1000000;
 			config.Settings["eDischargeTime"] = 1000;
 			config.Settings["eBleedTime"] = 1000;

@@ -107,7 +107,7 @@ namespace BlockHead.Acquire
 						((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
 						p = new EDMPoint();
 						p.Shot = s;
-						Thread.Sleep(20);
+						//Thread.Sleep(20);
 					}
 					else
 					{
