@@ -69,6 +69,7 @@ namespace EDMHardwareControl
 		LeakageMonitor southGLeakageMonitor = 
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"], 1, 5000 );
 		BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
+		Task bBoxAnalogOutputTask;
 
 		ControlWindow window;
 
@@ -100,6 +101,15 @@ namespace EDMHardwareControl
 			southCLeakageMonitor.Initialize();
 //			northGLeakageMonitor.Initialize();
 //			southGLeakageMonitor.Initialize();
+
+			// analog output
+			bBoxAnalogOutputTask = new Task("EDMHCBBoxAnalogOut");
+			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["b"]).AddToTask(
+				bBoxAnalogOutputTask,
+				-10,
+				10
+				);
+			bBoxAnalogOutputTask.Control(TaskAction.Verify);
 
 			// make the control window
 			window = new ControlWindow();
@@ -657,6 +667,26 @@ namespace EDMHardwareControl
 			GreenSynthOnAmplitude = Double.Parse(window.ramanAmplitudeBox.Text);
 			GreenSynthEnabled = false;
 			GreenSynthEnabled = true;
+		}
+
+		public void SetScanningBVoltage()
+		{
+			double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
+			AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(bBoxAnalogOutputTask.Stream);
+			writer.WriteSingleSample(true, bBoxVoltage);
+			bBoxAnalogOutputTask.Control(TaskAction.Unreserve);
+		}
+
+		public void SetScanningBZero()
+		{
+			window.SetTextBox(window.scanningBVoltageBox, "0.0");
+			SetScanningBVoltage();
+		}
+
+		public void SetScanningBFS()
+		{
+			window.SetTextBox(window.scanningBVoltageBox, "5.0");
+			SetScanningBVoltage();
 		}
 
 		#endregion

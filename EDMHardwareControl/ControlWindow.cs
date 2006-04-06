@@ -129,6 +129,12 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.Button stopYagFlashlampsButton;
 		public System.Windows.Forms.Button startYAGFlashlampsButton;
 		public System.Windows.Forms.TextBox interlockStatusTextBox;
+		private System.Windows.Forms.GroupBox groupBox12;
+		private System.Windows.Forms.Label label41;
+		private System.Windows.Forms.Button scanningBFSButton;
+		private System.Windows.Forms.Button scanningBZeroButton;
+		private System.Windows.Forms.Button scanningBUpdateButton;
+		public System.Windows.Forms.TextBox scanningBVoltageBox;
 
 
 		public Controller controller;
@@ -231,6 +237,11 @@ namespace EDMHardwareControl
 			this.label28 = new System.Windows.Forms.Label();
 			this.rf2PowerMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.groupBox12 = new System.Windows.Forms.GroupBox();
+			this.scanningBFSButton = new System.Windows.Forms.Button();
+			this.scanningBZeroButton = new System.Windows.Forms.Button();
+			this.scanningBUpdateButton = new System.Windows.Forms.Button();
+			this.label41 = new System.Windows.Forms.Label();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.bCurrentCalStepTextBox = new System.Windows.Forms.TextBox();
 			this.bCurrentFlipStepTextBox = new System.Windows.Forms.TextBox();
@@ -272,6 +283,7 @@ namespace EDMHardwareControl
 			this.label33 = new System.Windows.Forms.Label();
 			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
 			this.consoleBox = new System.Windows.Forms.TextBox();
+			this.scanningBVoltageBox = new System.Windows.Forms.TextBox();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -284,6 +296,7 @@ namespace EDMHardwareControl
 			this.tabPage2.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.tabPage3.SuspendLayout();
+			this.groupBox12.SuspendLayout();
 			this.groupBox8.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.groupBox11.SuspendLayout();
@@ -971,6 +984,7 @@ namespace EDMHardwareControl
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.groupBox12);
 			this.tabPage3.Controls.Add(this.groupBox8);
 			this.tabPage3.Controls.Add(this.groupBox5);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -978,6 +992,52 @@ namespace EDMHardwareControl
 			this.tabPage3.Size = new System.Drawing.Size(616, 358);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "B-field";
+			// 
+			// groupBox12
+			// 
+			this.groupBox12.Controls.Add(this.scanningBVoltageBox);
+			this.groupBox12.Controls.Add(this.scanningBFSButton);
+			this.groupBox12.Controls.Add(this.scanningBZeroButton);
+			this.groupBox12.Controls.Add(this.scanningBUpdateButton);
+			this.groupBox12.Controls.Add(this.label41);
+			this.groupBox12.Location = new System.Drawing.Point(304, 16);
+			this.groupBox12.Name = "groupBox12";
+			this.groupBox12.Size = new System.Drawing.Size(296, 96);
+			this.groupBox12.TabIndex = 46;
+			this.groupBox12.TabStop = false;
+			this.groupBox12.Text = "Scanning B box";
+			// 
+			// scanningBFSButton
+			// 
+			this.scanningBFSButton.Location = new System.Drawing.Point(152, 56);
+			this.scanningBFSButton.Name = "scanningBFSButton";
+			this.scanningBFSButton.TabIndex = 44;
+			this.scanningBFSButton.Text = "Max";
+			this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
+			// 
+			// scanningBZeroButton
+			// 
+			this.scanningBZeroButton.Location = new System.Drawing.Point(64, 56);
+			this.scanningBZeroButton.Name = "scanningBZeroButton";
+			this.scanningBZeroButton.TabIndex = 43;
+			this.scanningBZeroButton.Text = "Zero";
+			this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
+			// 
+			// scanningBUpdateButton
+			// 
+			this.scanningBUpdateButton.Location = new System.Drawing.Point(184, 24);
+			this.scanningBUpdateButton.Name = "scanningBUpdateButton";
+			this.scanningBUpdateButton.TabIndex = 40;
+			this.scanningBUpdateButton.Text = "Update";
+			this.scanningBUpdateButton.Click += new System.EventHandler(this.scanningBUpdateButton_Click);
+			// 
+			// label41
+			// 
+			this.label41.Location = new System.Drawing.Point(16, 24);
+			this.label41.Name = "label41";
+			this.label41.Size = new System.Drawing.Size(80, 23);
+			this.label41.TabIndex = 36;
+			this.label41.Text = "Voltage (V)";
 			// 
 			// groupBox8
 			// 
@@ -996,7 +1056,7 @@ namespace EDMHardwareControl
 			this.groupBox8.Controls.Add(this.label21);
 			this.groupBox8.Controls.Add(this.label22);
 			this.groupBox8.Controls.Add(this.label23);
-			this.groupBox8.Location = new System.Drawing.Point(8, 88);
+			this.groupBox8.Location = new System.Drawing.Point(8, 120);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(376, 192);
 			this.groupBox8.TabIndex = 45;
@@ -1390,6 +1450,14 @@ namespace EDMHardwareControl
 			this.consoleBox.TabIndex = 26;
 			this.consoleBox.Text = "";
 			// 
+			// scanningBVoltageBox
+			// 
+			this.scanningBVoltageBox.Location = new System.Drawing.Point(96, 24);
+			this.scanningBVoltageBox.Name = "scanningBVoltageBox";
+			this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
+			this.scanningBVoltageBox.TabIndex = 45;
+			this.scanningBVoltageBox.Text = "0";
+			// 
 			// ControlWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1411,6 +1479,7 @@ namespace EDMHardwareControl
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
+			this.groupBox12.ResumeLayout(false);
 			this.groupBox8.ResumeLayout(false);
 			this.tabPage4.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
@@ -1541,6 +1610,21 @@ namespace EDMHardwareControl
 			controller.StartYAGFlashlamps();
 		}
 
+		private void scanningBZeroButton_Click(object sender, System.EventArgs e)
+		{
+			controller.SetScanningBZero();
+		}
+
+		private void scanningBUpdateButton_Click(object sender, System.EventArgs e)
+		{
+			controller.SetScanningBVoltage();
+		}
+
+		private void scanningBFSButton_Click(object sender, System.EventArgs e)
+		{
+			controller.SetScanningBFS();
+		}
+
 
 		#endregion
 
@@ -1566,8 +1650,6 @@ namespace EDMHardwareControl
 			box.Text = text;
 		}
 		#endregion
-
-
 
 	
 	}
