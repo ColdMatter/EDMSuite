@@ -25,7 +25,8 @@ namespace DAQ.FakeData
 
 		public static Hashtable FakeScans = new Hashtable();
 
-		public static Shot GetFakeShot(int gateStart, int gateLength, int clockPeriod, double intensity)
+		public static Shot GetFakeShot(int gateStart, int gateLength, int clockPeriod, double intensity,
+										int numberOfDetectors)
 		{
 			Random rng = new Random();
 			// generate some fake data
@@ -44,7 +45,7 @@ namespace DAQ.FakeData
 			tofOn.ClockPeriod = clockPeriod;
 			tofOn.Calibration = 1;
 			Shot sOn = new Shot();
-			sOn.TOFs.Add(tofOn);
+			for (int j = 0 ; j < numberOfDetectors ; j++) sOn.TOFs.Add(tofOn);
 			return sOn;
 		}
 

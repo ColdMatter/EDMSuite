@@ -102,6 +102,9 @@ Global
 		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Release.ActiveCfg = Release|.NET
 		{9946C5C3-2AC5-41D4-9A64-F21E9C97DEB2}.Release.Build.0 = Release|.NET
 	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		EDMScripts\SimpleEDMLoop.boo = EDMScripts\SimpleEDMLoop.boo
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
 	GlobalSection(ExtensibilityAddIns) = postSolution

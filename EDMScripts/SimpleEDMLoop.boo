@@ -2,14 +2,14 @@
 def plotChannelGraph(clusterToPlot as String, kernel) as Form:
 	form = Form()
 	x = 600
-	y = 690
+	y = 600
 	form.Size = Size(x, y)
 	form.Text = "Live analysis"
 	channelGraph = MathPictureBox(kernel);
 	channelGraph.Size = Size(x, y - 30)
 	channelGraph.UseFrontEnd = false
 	channelGraph.PictureType = "Automatic"
-	channelGraph.MathCommand = "plotDiagnostics[\"${clusterToPlot}\"]"
+	channelGraph.MathCommand = "plotLiveDiagnostics[\"${clusterToPlot}\"]"
 	form.Controls.Add(channelGraph)
 	Thread({Application.Run(form)}).Start()
 	return form
@@ -21,8 +21,10 @@ def updateChannelGraph(form as Form):
 
 def analyseBlock(path as string, kernel):
 	mmedPath = path.Replace("\\","\\\\")
-	kernel.Evaluate("addBlockToDB[\"${mmedPath}\"]")
+	kernel.Evaluate("addFileToDatabase[\"${mmedPath}\",extractFunc,viewSpecs]")
 	kernel.WaitAndDiscardAnswer();
+	#kernel.Evaluate("saveDatabase[\"running_temp\"]")
+	#kernel.WaitAndDiscardAnswer();
 
 def checkYAGAndFix():
 	interlockFailed = remote.HardwareControl.YAGInterlockFailed;
@@ -30,6 +32,22 @@ def checkYAGAndFix():
 		remote.BlockHead.StopPattern();
 		remote.BlockHead.StartPattern();	
 
+def initialiseMathematica(kernel):
+	#MathematicaService.LoadPackage("SEDM2`Database`", false)
+	kernel.Evaluate("Needs[\"SEDM2`Database`\"];Needs[\"SEDM2`SharedCode`\"];Needs[\"SEDM2`Graphics`\"]")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("initialiseSharedCode[]")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("createBlockSerializer[]")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("$allowDBReplace = False;")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("dbName = \"running_temp\";loadDatabase[dbName];")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("gates = {{0, 10^6}, {0, 10^6}};rf1KeepLength=0.02;rf2KeepLength=0.03;offset=0;extractFunc={integrateTOF[#,0,First[generatePulsedRFGates[#,rf1KeepLength,rf2KeepLength,offset]],Last[generatePulsedRFGates[#,rf1KeepLength,rf2KeepLength,offset]],True,\"pmt\"](*,integrateTOF[#,1,gates\\[LeftDoubleBracket]2\\[RightDoubleBracket]\\[LeftDoubleBracket]1\\[RightDoubleBracket],gates\\[LeftDoubleBracket]2\\[RightDoubleBracket]\\[LeftDoubleBracket]2\\[RightDoubleBracket],False,\"mag1\"]*)}&;")
+	kernel.WaitAndDiscardAnswer();
+	kernel.Evaluate("viewSpecs = {};")
+	kernel.WaitAndDiscardAnswer();
 
 def EDMGoReal(nullRun):
 	# Setup
@@ -68,7 +86,7 @@ def EDMGoReal(nullRun):
 
 	# establish a Mathematica kernel link
 	kernel = MathematicaService.GetKernel()
-	MathematicaService.LoadPackage("SEDM`Database`", false)
+	initialiseMathematica(kernel)
 	f as Form
 
 	# scan Raman lineshapes ?

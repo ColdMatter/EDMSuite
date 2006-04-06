@@ -76,6 +76,16 @@ namespace PhaseLock
 			base.Dispose( disposing );
 		}
 
+		// without this method, any remote connections to this object will time out after
+		// five minutes of inactivity.
+		// It just overrides the lifetime lease system completely.
+		public override Object InitializeLifetimeService()
+		{
+			return null;
+		}
+
+
+
 		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify

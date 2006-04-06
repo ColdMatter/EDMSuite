@@ -46,7 +46,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			get 
 			{
-				return DataFaker.GetFakeShot(0,100,1,0);
+				return DataFaker.GetFakeShot(0,100,1,0, 1);
 			}
 		}
 		

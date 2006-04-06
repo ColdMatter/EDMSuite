@@ -149,7 +149,7 @@ namespace ScanMaster.Acquire.Plugins
 					{
 						Thread.Sleep(50);
 						return DataFaker.GetFakeShot((int)settings["gateStartTime"], (int)settings["gateLength"],
-							(int)settings["clockPeriod"], 1);
+							(int)settings["clockPeriod"], 1, 1);
 					}
 				}
 			}
