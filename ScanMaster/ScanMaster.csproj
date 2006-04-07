@@ -270,6 +270,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "LorentzianFitter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ModulatedAnalogShotGathererPlugin.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

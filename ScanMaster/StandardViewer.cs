@@ -6,6 +6,7 @@ using Data.Scans;
 using ScanMaster;
 using ScanMaster.Acquire;
 using ScanMaster.Acquire.Plugin;
+using ScanMaster.Analyze;
 
 namespace ScanMaster.GUI
 {
@@ -31,6 +32,14 @@ namespace ScanMaster.GUI
 		TOF avOnTof;
 		TOF avOffTof;
 
+		// fitting config
+		enum FitMode {None, Shot, Average};
+		FitMode tofFitMode = FitMode.None;
+		FitMode spectrumFitMode = FitMode.None;
+		Hashtable fitters = new Hashtable();
+		Fitter tofFitter;
+		Fitter spectrumFitter;
+
 		public String Name
 		{
 			get { return "Standard"; }
@@ -39,6 +48,16 @@ namespace ScanMaster.GUI
 		public StandardViewer()
 		{
 			window = new StandardViewerWindow(this);
+			AddFitter( new LorentzianFitter() );
+			window.tofFitFunctionCombo.SelectedIndex = 0;
+			window.spectrumFitFunctionCombo.SelectedIndex = 0;
+		}
+
+		private void AddFitter(Fitter f)
+		{
+			fitters.Add(f.Name, f);
+			window.tofFitFunctionCombo.Items.Add(f);
+			window.spectrumFitFunctionCombo.Items.Add(f);
 		}
 
 		public void Show()
@@ -189,7 +208,24 @@ namespace ScanMaster.GUI
 			
 			UpdatePMTAveragePlots();
 			UpdateTOFAveragePlots();
+
+			// update the fits
+			if (spectrumFitMode == FitMode.Average)
+			{
+				Scan averageScan = Controller.GetController().DataStore.AverageScan;
+				spectrumFitter.Fit(
+					averageScan.ScanParameterArray,
+					averageScan.GetTOFOnIntegralArray(0, startTOFGate, endTOFGate),
+					spectrumFitter.SuggestParameters(averageScan)
+					);
+				// plot the fit
+				window.ClearSpectrumFit();
+				window.PlotSpectrumFit(averageScan.ScanParameterArray, spectrumFitter.FittedValues);
+				// update the parameter report
+				window.spectrumFitResultsLabel.Text = spectrumFitter.ParameterReport;
+			}
 			
+
 			// clear the realtime spectra
 			pointsToPlot.Points.Clear();
 			window.ClearRealtimeSpectra();
@@ -290,8 +326,40 @@ namespace ScanMaster.GUI
 			}
 		}
 
-		private void UpdateFitPlots()
+		public void TOFFitModeChanged(int index)
 		{
+			updateFitMode(index, ref tofFitMode);
+		}
+
+		public void SpectrumFitModeChanged(int index)
+		{
+			updateFitMode(index, ref spectrumFitMode);
+		}
+
+		private void updateFitMode(int index, ref FitMode f)
+		{
+			switch (index)
+			{
+				case 0:
+					f = FitMode.None;
+					break;
+				case 1:
+					f = FitMode.Shot;
+					break;
+				case 2:
+					f = FitMode.Average;
+					break;
+			}
+		}
+	
+		public void TOFFitFunctionChanged(object item)
+		{
+			tofFitter = (Fitter)item;
+		}
+
+		public void SpectrumFitFunctionChanged(object item)
+		{
+			spectrumFitter = (Fitter)item;
 		}
 
 	}

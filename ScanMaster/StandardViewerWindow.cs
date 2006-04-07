@@ -53,22 +53,20 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.YAxis tofAvgYAxis;
 		private NationalInstruments.UI.ScatterPlot pmtFitPlot;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox tofFitFunctionCombo;
+		public System.Windows.Forms.ComboBox tofFitFunctionCombo;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox tofFitModeCombo;
-		private System.Windows.Forms.ComboBox spectrumFitFunctionCombo;
+		public System.Windows.Forms.ComboBox spectrumFitFunctionCombo;
 		private System.Windows.Forms.ComboBox spectrumFitModeCombo;
-		private System.Windows.Forms.Label tofFitResultsLabel;
-		private System.Windows.Forms.Label spectrumFitResultsLabel;
+		public System.Windows.Forms.Label tofFitResultsLabel;
+		public System.Windows.Forms.Label spectrumFitResultsLabel;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
 		{
 			this.viewer = viewer;
 			InitializeComponent();
-			tofFitFunctionCombo.SelectedIndex = 0;
 			tofFitModeCombo.SelectedIndex = 0;
-			spectrumFitFunctionCombo.SelectedIndex = 0;
 			spectrumFitModeCombo.SelectedIndex = 0;
 		}
 
@@ -391,6 +389,7 @@ namespace ScanMaster.GUI
 			// tofFitModeCombo
 			// 
 			this.tofFitModeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.tofFitModeCombo.Enabled = false;
 			this.tofFitModeCombo.Items.AddRange(new object[] {
 																 "off",
 																 "shot",
@@ -399,6 +398,7 @@ namespace ScanMaster.GUI
 			this.tofFitModeCombo.Name = "tofFitModeCombo";
 			this.tofFitModeCombo.Size = new System.Drawing.Size(72, 21);
 			this.tofFitModeCombo.TabIndex = 17;
+			this.tofFitModeCombo.SelectedIndexChanged += new System.EventHandler(this.tofFitModeCombo_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -412,23 +412,22 @@ namespace ScanMaster.GUI
 			// tofFitFunctionCombo
 			// 
 			this.tofFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.tofFitFunctionCombo.Items.AddRange(new object[] {
-																	 "Gaussian"});
+			this.tofFitFunctionCombo.Enabled = false;
 			this.tofFitFunctionCombo.Location = new System.Drawing.Point(152, 592);
 			this.tofFitFunctionCombo.Name = "tofFitFunctionCombo";
 			this.tofFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
 			this.tofFitFunctionCombo.TabIndex = 19;
+			this.tofFitFunctionCombo.SelectedIndexChanged += new System.EventHandler(this.tofFitFunctionCombo_SelectedIndexChanged);
 			// 
 			// spectrumFitFunctionCombo
 			// 
 			this.spectrumFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.spectrumFitFunctionCombo.Items.AddRange(new object[] {
-																		  "Lorentzian",
-																		  "sine-squared"});
+			this.spectrumFitFunctionCombo.Enabled = false;
 			this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(640, 592);
 			this.spectrumFitFunctionCombo.Name = "spectrumFitFunctionCombo";
 			this.spectrumFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
 			this.spectrumFitFunctionCombo.TabIndex = 22;
+			this.spectrumFitFunctionCombo.SelectedIndexChanged += new System.EventHandler(this.spectrumFitFunctionCombo_SelectedIndexChanged);
 			// 
 			// label2
 			// 
@@ -442,6 +441,7 @@ namespace ScanMaster.GUI
 			// spectrumFitModeCombo
 			// 
 			this.spectrumFitModeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.spectrumFitModeCombo.Enabled = false;
 			this.spectrumFitModeCombo.Items.AddRange(new object[] {
 																	  "off",
 																	  "shot",
@@ -450,6 +450,7 @@ namespace ScanMaster.GUI
 			this.spectrumFitModeCombo.Name = "spectrumFitModeCombo";
 			this.spectrumFitModeCombo.Size = new System.Drawing.Size(72, 21);
 			this.spectrumFitModeCombo.TabIndex = 20;
+			this.spectrumFitModeCombo.SelectedIndexChanged += new System.EventHandler(this.spectrumFitModeCombo_SelectedIndexChanged);
 			// 
 			// tofFitResultsLabel
 			// 
@@ -555,6 +556,12 @@ namespace ScanMaster.GUI
 			ClearNIPlot(pmtGraph, pmtOffPlot);
 			ClearNIPlot(differenceGraph, differencePlot);
 		}
+
+		public void ClearSpectrumFit()
+		{
+			ClearNIPlot(pmtGraph, pmtFitPlot);
+		}
+
 		public Range SpectrumAxes
 		{
 			set
@@ -637,6 +644,10 @@ namespace ScanMaster.GUI
 		{
 			PlotXY(differenceGraph, differenceAvgPlot, x, y);
 		}
+		public void PlotSpectrumFit(double[] x, double[] y)
+		{
+			PlotXY(pmtGraph, pmtFitPlot, x, y);
+		}
 
 
 		// UI delegates and thread-safe helpers
@@ -700,6 +711,26 @@ namespace ScanMaster.GUI
 		{
 			viewer.ToggleVisible();
 			e.Cancel = true;
+		}
+
+		private void tofFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.TOFFitModeChanged(((ComboBox)sender).SelectedIndex);
+		}
+
+		private void tofFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.TOFFitFunctionChanged(((ComboBox)sender).SelectedItem);		
+		}
+
+		private void spectrumFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.SpectrumFitModeChanged(((ComboBox)sender).SelectedIndex);	
+		}
+
+		private void spectrumFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.SpectrumFitFunctionChanged(((ComboBox)sender).SelectedItem);	
 		}
 		
 	}
