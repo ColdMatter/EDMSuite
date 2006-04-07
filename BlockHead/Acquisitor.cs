@@ -341,22 +341,22 @@ namespace BlockHead.Acquire
 			// this works out how long to wait before the switch - it looks at
 			// all of the switched channels and figures out which ones are
 			// switching. Of those channels it finds the longest wait.
-//			int delayBeforeSwitch = 0;
-//			foreach(SwitchedChannel s in switchedChannels)
-//			{
-//				int tempDelay = s.Modulation.DelayBeforeSwitch;
-//				// special case for the first point of a block - treat all channels as if they
-//				// are switching
-//				if (point != 0)
-//				{
-//					bool[] bits = s.Modulation.Waveform.Bits;
-//					// if this waveform is not switching just ignore its delay
-//					if ( bits[point] == bits[point - 1]) tempDelay = 0;
-//				}
-//				if (tempDelay > delayBeforeSwitch) delayBeforeSwitch = tempDelay;
-//			}
-//			// impose the delay
-//			if (delayBeforeSwitch != 0) Thread.Sleep(delayBeforeSwitch);
+			int delayBeforeSwitch = 0;
+			foreach(SwitchedChannel s in switchedChannels)
+			{
+				int tempDelay = s.Modulation.DelayBeforeSwitch;
+				// special case for the first point of a block - treat all channels as if they
+				// are switching
+				if (point != 0)
+				{
+					bool[] bits = s.Modulation.Waveform.Bits;
+					// if this waveform is not switching just ignore its delay
+					if ( bits[point] == bits[point - 1]) tempDelay = 0;
+				}
+				if (tempDelay > delayBeforeSwitch) delayBeforeSwitch = tempDelay;
+			}
+			// impose the delay
+			if (delayBeforeSwitch != 0) Thread.Sleep(delayBeforeSwitch);
 
 			// now actually throw the switches
 			foreach(SwitchedChannel s in switchedChannels)
@@ -373,22 +373,22 @@ namespace BlockHead.Acquire
 			}
 
 			// calculate and impose the post switching delays
-//			int delayAfterSwitch = 0;
-//			foreach(SwitchedChannel s in switchedChannels)
-//			{
-//				int tempDelay = s.Modulation.DelayAfterSwitch;
-//				// special case for the first point of a block - treat all channels as if they
-//				// are switching
-//				if (point != 0)
-//				{
-//					bool[] bits = s.Modulation.Waveform.Bits;
-//					// if this waveform is not switching just ignore its delay
-//					if ( bits[point] == bits[point - 1]) tempDelay = 0;
-//				}
-//				if (tempDelay > delayAfterSwitch) delayAfterSwitch = tempDelay;
-//			}
-//			// impose the delay
-//			if (delayAfterSwitch != 0) Thread.Sleep(delayAfterSwitch);			
+			int delayAfterSwitch = 0;
+			foreach(SwitchedChannel s in switchedChannels)
+			{
+				int tempDelay = s.Modulation.DelayAfterSwitch;
+				// special case for the first point of a block - treat all channels as if they
+				// are switching
+				if (point != 0)
+				{
+					bool[] bits = s.Modulation.Waveform.Bits;
+					// if this waveform is not switching just ignore its delay
+					if ( bits[point] == bits[point - 1]) tempDelay = 0;
+				}
+				if (tempDelay > delayAfterSwitch) delayAfterSwitch = tempDelay;
+			}
+			// impose the delay
+			if (delayAfterSwitch != 0) Thread.Sleep(delayAfterSwitch);			
 		}
 
 		// stop pattern output and release hardware

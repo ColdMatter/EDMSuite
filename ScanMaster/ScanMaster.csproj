@@ -251,6 +251,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Fitter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FlashampPatternBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -290,5 +290,9 @@ namespace ScanMaster.GUI
 			}
 		}
 
+		private void UpdateFitPlots()
+		{
+		}
+
 	}
 }

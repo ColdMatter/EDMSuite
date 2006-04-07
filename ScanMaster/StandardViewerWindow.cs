@@ -51,12 +51,25 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.YAxis differenceYAxis;
 		private NationalInstruments.UI.YAxis tofYAxis;
 		private NationalInstruments.UI.YAxis tofAvgYAxis;
+		private NationalInstruments.UI.ScatterPlot pmtFitPlot;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox tofFitFunctionCombo;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ComboBox tofFitModeCombo;
+		private System.Windows.Forms.ComboBox spectrumFitFunctionCombo;
+		private System.Windows.Forms.ComboBox spectrumFitModeCombo;
+		private System.Windows.Forms.Label tofFitResultsLabel;
+		private System.Windows.Forms.Label spectrumFitResultsLabel;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
 		{
 			this.viewer = viewer;
 			InitializeComponent();
+			tofFitFunctionCombo.SelectedIndex = 0;
+			tofFitModeCombo.SelectedIndex = 0;
+			spectrumFitFunctionCombo.SelectedIndex = 0;
+			spectrumFitModeCombo.SelectedIndex = 0;
 		}
 
 		protected override void Dispose( bool disposing )
@@ -97,6 +110,7 @@ namespace ScanMaster.GUI
 			this.pmtOnPlot = new NationalInstruments.UI.ScatterPlot();
 			this.pmtOffPlot = new NationalInstruments.UI.ScatterPlot();
 			this.pmtOffAvgPlot = new NationalInstruments.UI.ScatterPlot();
+			this.pmtFitPlot = new NationalInstruments.UI.ScatterPlot();
 			this.pmtXAxis = new NationalInstruments.UI.XAxis();
 			this.statusBar1 = new System.Windows.Forms.StatusBar();
 			this.xAxis5 = new NationalInstruments.UI.XAxis();
@@ -114,6 +128,14 @@ namespace ScanMaster.GUI
 			this.tofYAxis = new NationalInstruments.UI.YAxis();
 			this.tofOffPlot = new NationalInstruments.UI.WaveformPlot();
 			this.tofOffAveragePlot = new NationalInstruments.UI.WaveformPlot();
+			this.tofFitModeCombo = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.tofFitFunctionCombo = new System.Windows.Forms.ComboBox();
+			this.spectrumFitFunctionCombo = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.spectrumFitModeCombo = new System.Windows.Forms.ComboBox();
+			this.tofFitResultsLabel = new System.Windows.Forms.Label();
+			this.spectrumFitResultsLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -178,13 +200,14 @@ namespace ScanMaster.GUI
 			this.pmtGraph.Cursors.AddRange(new NationalInstruments.UI.XYCursor[] {
 																					 this.pmtLowCursor,
 																					 this.pmtHighCursor});
-			this.pmtGraph.Location = new System.Drawing.Point(376, 296);
+			this.pmtGraph.Location = new System.Drawing.Point(376, 304);
 			this.pmtGraph.Name = "pmtGraph";
 			this.pmtGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
 																					  this.pmtOnPlot,
 																					  this.pmtOffPlot,
 																					  this.pmtOnAvgPlot,
-																					  this.pmtOffAvgPlot});
+																					  this.pmtOffAvgPlot,
+																					  this.pmtFitPlot});
 			this.pmtGraph.Size = new System.Drawing.Size(584, 280);
 			this.pmtGraph.TabIndex = 9;
 			this.pmtGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -240,13 +263,21 @@ namespace ScanMaster.GUI
 			this.pmtOffAvgPlot.XAxis = this.xAxis3;
 			this.pmtOffAvgPlot.YAxis = this.pmtYAxis;
 			// 
+			// pmtFitPlot
+			// 
+			this.pmtFitPlot.LineColor = System.Drawing.Color.Silver;
+			this.pmtFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
+			this.pmtFitPlot.LineWidth = 2F;
+			this.pmtFitPlot.XAxis = this.xAxis3;
+			this.pmtFitPlot.YAxis = this.pmtYAxis;
+			// 
 			// pmtXAxis
 			// 
 			this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
 			// 
 			// statusBar1
 			// 
-			this.statusBar1.Location = new System.Drawing.Point(0, 581);
+			this.statusBar1.Location = new System.Drawing.Point(0, 618);
 			this.statusBar1.Name = "statusBar1";
 			this.statusBar1.Size = new System.Drawing.Size(970, 22);
 			this.statusBar1.SizingGrip = false;
@@ -264,7 +295,7 @@ namespace ScanMaster.GUI
 			// 
 			// differenceGraph
 			// 
-			this.differenceGraph.Location = new System.Drawing.Point(8, 296);
+			this.differenceGraph.Location = new System.Drawing.Point(8, 304);
 			this.differenceGraph.Name = "differenceGraph";
 			this.differenceGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
 																							 this.differencePlot,
@@ -357,10 +388,101 @@ namespace ScanMaster.GUI
 			this.tofOffAveragePlot.XAxis = this.xAxis4;
 			this.tofOffAveragePlot.YAxis = this.tofAvgYAxis;
 			// 
+			// tofFitModeCombo
+			// 
+			this.tofFitModeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.tofFitModeCombo.Items.AddRange(new object[] {
+																 "off",
+																 "shot",
+																 "average"});
+			this.tofFitModeCombo.Location = new System.Drawing.Point(64, 592);
+			this.tofFitModeCombo.Name = "tofFitModeCombo";
+			this.tofFitModeCombo.Size = new System.Drawing.Size(72, 21);
+			this.tofFitModeCombo.TabIndex = 17;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(8, 592);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(48, 23);
+			this.label1.TabIndex = 18;
+			this.label1.Text = "Fit TOF:";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// tofFitFunctionCombo
+			// 
+			this.tofFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.tofFitFunctionCombo.Items.AddRange(new object[] {
+																	 "Gaussian"});
+			this.tofFitFunctionCombo.Location = new System.Drawing.Point(152, 592);
+			this.tofFitFunctionCombo.Name = "tofFitFunctionCombo";
+			this.tofFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
+			this.tofFitFunctionCombo.TabIndex = 19;
+			// 
+			// spectrumFitFunctionCombo
+			// 
+			this.spectrumFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.spectrumFitFunctionCombo.Items.AddRange(new object[] {
+																		  "Lorentzian",
+																		  "sine-squared"});
+			this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(640, 592);
+			this.spectrumFitFunctionCombo.Name = "spectrumFitFunctionCombo";
+			this.spectrumFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
+			this.spectrumFitFunctionCombo.TabIndex = 22;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(472, 592);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(72, 23);
+			this.label2.TabIndex = 21;
+			this.label2.Text = "Fit spectrum:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// spectrumFitModeCombo
+			// 
+			this.spectrumFitModeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.spectrumFitModeCombo.Items.AddRange(new object[] {
+																	  "off",
+																	  "shot",
+																	  "average"});
+			this.spectrumFitModeCombo.Location = new System.Drawing.Point(552, 592);
+			this.spectrumFitModeCombo.Name = "spectrumFitModeCombo";
+			this.spectrumFitModeCombo.Size = new System.Drawing.Size(72, 21);
+			this.spectrumFitModeCombo.TabIndex = 20;
+			// 
+			// tofFitResultsLabel
+			// 
+			this.tofFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
+			this.tofFitResultsLabel.Location = new System.Drawing.Point(248, 592);
+			this.tofFitResultsLabel.Name = "tofFitResultsLabel";
+			this.tofFitResultsLabel.Size = new System.Drawing.Size(224, 24);
+			this.tofFitResultsLabel.TabIndex = 23;
+			this.tofFitResultsLabel.Text = "...";
+			this.tofFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// spectrumFitResultsLabel
+			// 
+			this.spectrumFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
+			this.spectrumFitResultsLabel.Location = new System.Drawing.Point(736, 592);
+			this.spectrumFitResultsLabel.Name = "spectrumFitResultsLabel";
+			this.spectrumFitResultsLabel.Size = new System.Drawing.Size(232, 24);
+			this.spectrumFitResultsLabel.TabIndex = 24;
+			this.spectrumFitResultsLabel.Text = "...";
+			this.spectrumFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// StandardViewerWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(970, 603);
+			this.ClientSize = new System.Drawing.Size(970, 640);
+			this.Controls.Add(this.spectrumFitResultsLabel);
+			this.Controls.Add(this.tofFitResultsLabel);
+			this.Controls.Add(this.spectrumFitFunctionCombo);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.spectrumFitModeCombo);
+			this.Controls.Add(this.tofFitFunctionCombo);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.tofFitModeCombo);
 			this.Controls.Add(this.tofGraph);
 			this.Controls.Add(this.differenceGraph);
 			this.Controls.Add(this.statusBar1);

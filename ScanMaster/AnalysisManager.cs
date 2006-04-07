@@ -26,8 +26,8 @@ namespace ScanMaster.Analyze
 					break;
 				case "edm":
 				default:
-					analyses.Add("Fit TOF", new FitTOF());
-					analyses.Add("Fit interference", new InterferenceFit());
+					//analyses.Add("Fit TOF", new FitTOF());
+					//analyses.Add("Fit interference", new InterferenceFit());
 					break;
 			}
 		}
