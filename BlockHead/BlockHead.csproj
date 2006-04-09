@@ -16,11 +16,10 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>BlockHead</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>BlockHead.Runner</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -73,24 +72,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common">
-      <Name>NationalInstruments.Common</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.DAQmx">
-      <Name>NationalInstruments.DAQmx</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.UI, Version=8.0.11.237, Culture=neutral, PublicKeyToken=4544464cdeaab541">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.11.237, Culture=neutral, PublicKeyToken=4544464cdeaab541">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=8.0.20.252, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=8.1.20.15, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.UI, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -100,6 +85,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
@@ -152,6 +138,7 @@
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Runner.cs" />
     <Compile Include="ScannedAnalogInput.cs">
       <SubType>Code</SubType>
     </Compile>

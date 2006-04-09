@@ -1,1 +1,1 @@
-start ..\PhaseLockRunner\bin\Debug\PhaseLockRunner.exe
+start ..\PhaseLock\bin\Debug\PhaseLock.exe

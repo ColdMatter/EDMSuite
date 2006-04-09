@@ -73,21 +73,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common">
-      <Name>NationalInstruments.Common</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.DAQmx">
-      <Name>NationalInstruments.DAQmx</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.VisaNS">
-      <Name>NationalInstruments.VisaNS</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudio70\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=8.0.20.252, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=8.1.20.15, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.VisaNS, Version=8.0.20.159, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>

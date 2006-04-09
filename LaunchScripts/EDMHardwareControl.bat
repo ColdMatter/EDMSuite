@@ -1,1 +1,1 @@
-start ..\EDMHardwareControlRunner\bin\Debug\EDMHardwareControlRunner.exe
+start ..\EDMHardwareControl\bin\Debug\EDMHardwareControl.exe

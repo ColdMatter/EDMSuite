@@ -1,2 +1,2 @@
-start ..\BlockHeadRunner\bin\Debug\BlockHeadRunner.exe
+start ..\BlockHead\bin\Debug\BlockHead.exe
 

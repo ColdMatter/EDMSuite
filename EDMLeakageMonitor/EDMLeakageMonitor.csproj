@@ -73,34 +73,12 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Analysis.Enterprise">
-      <Name>NationalInstruments.Analysis.Enterprise</Name>
-      <HintPath>..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.Analysis.Enterprise.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.Common">
-      <Name>NationalInstruments.Common</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.DAQmx">
-      <Name>NationalInstruments.DAQmx</Name>
-      <HintPath>C:\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
-    <Reference Include="NationalInstruments.UI, Version=8.0.11.237, Culture=neutral, PublicKeyToken=4544464cdeaab541">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.11.237, Culture=neutral, PublicKeyToken=4544464cdeaab541">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.VisaNS">
-      <Name>NationalInstruments.VisaNS</Name>
-      <HintPath>..\..\..\..\Program Files\National Instruments\MeasurementStudioVS2003\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
-      <AssemblyFolderKey>hklm\nationalinstruments</AssemblyFolderKey>
-    </Reference>
+    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Common, Version=8.0.20.252, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=8.1.20.15, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.UI, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.VisaNS, Version=8.0.20.159, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
