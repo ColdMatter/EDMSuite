@@ -26,6 +26,9 @@ namespace ScanMaster.Analyze
 			} 
 			catch (Exception e)
 			{
+                // need to fill the data array with something if the fit method fails
+                fittedValues = new double[ydata.Length];
+                lastFittedParameters = new double[parameters.Length];
 				Console.WriteLine(e.ToString());
 			}
 

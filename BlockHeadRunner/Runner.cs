@@ -19,7 +19,7 @@ namespace BlockHead
 			
 			// publish the controller to the remoting system
 			TcpChannel channel = new TcpChannel(1171);
-			ChannelServices.RegisterChannel(channel);
+			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 
 			// hand over to the controller

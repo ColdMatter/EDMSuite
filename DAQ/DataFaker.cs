@@ -36,7 +36,7 @@ namespace DAQ.FakeData
 			for (int i = 0; i < gateLength; i++) 
 			{
 				detectorOnData[i] = (5 * rng.NextDouble()) + 5 * intensity *
-					Math.Exp(-Math.Pow((i - centre),2)/(0.3 * gateLength));
+					Math.Exp(-Math.Pow((i - centre),2)/(0.9 * gateLength));
 			}
 
 			TOF tofOn = new TOF();

@@ -19,7 +19,7 @@ namespace EDMHardwareControl
 
 			// publish the controller to the remoting system
 			TcpChannel channel = new TcpChannel(1172);
-			ChannelServices.RegisterChannel(channel);
+			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 
 			// hand over to the controller

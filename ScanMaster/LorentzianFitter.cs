@@ -41,10 +41,10 @@ namespace ScanMaster.Analyze
 		{
 			get
 			{
-				return "n: " + lastFittedParameters[0] +
-					" q: " + lastFittedParameters[0] +
-					" c: " + lastFittedParameters[0] +
-					" w: " + lastFittedParameters[0];
+				return "n: " + lastFittedParameters[0].ToString("G3") +
+                    " q: " + lastFittedParameters[1].ToString("G3") +
+                    " c: " + lastFittedParameters[2].ToString("G3") +
+                    " w: " + lastFittedParameters[3].ToString("G3");
 			}
 		}
 

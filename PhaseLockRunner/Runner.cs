@@ -19,7 +19,7 @@ namespace PhaseLock
 			
 			// publish the controller to the remoting system
 			TcpChannel channel = new TcpChannel(1175);
-			ChannelServices.RegisterChannel(channel);
+			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(form, "controller.rem");
 
 			// hand over to the controller

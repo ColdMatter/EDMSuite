@@ -22,8 +22,8 @@ namespace ScanMaster.GUI
 		// stuff used for displaying the scans
 		Scan pointsToPlot = new Scan();
 		double startSpectrumGate;
-		double endSpectrumGate;
-		double startTOFGate;
+        double endSpectrumGate;
+        double startTOFGate;
 		double endTOFGate;
 		private int shotCounter = 0;
 		private int onAverages = 1;
@@ -49,7 +49,9 @@ namespace ScanMaster.GUI
 		{
 			window = new StandardViewerWindow(this);
 			AddFitter( new LorentzianFitter() );
-			window.tofFitFunctionCombo.SelectedIndex = 0;
+            window.tofFitModeCombo.SelectedIndex = 0;
+            window.spectrumFitModeCombo.SelectedIndex = 0;
+            window.tofFitFunctionCombo.SelectedIndex = 0;
 			window.spectrumFitFunctionCombo.SelectedIndex = 0;
 		}
 
@@ -112,12 +114,22 @@ namespace ScanMaster.GUI
 				// replot the averages
 				UpdatePMTAveragePlots();
 				UpdateTOFAveragePlots();
-			
+
 				// plot the average analog channels in the analog plots for convenience
 				window.AppendToAnalog1(dataStore.AverageScan.ScanParameterArray,
 					dataStore.AverageScan.GetAnalogArray(0));
 				window.AppendToAnalog2(dataStore.AverageScan.ScanParameterArray,
 					dataStore.AverageScan.GetAnalogArray(1));
+
+                // replot the fits
+                if (spectrumFitMode != FitMode.None && spectrumFitter.FittedValues.Length != 0)
+                {
+                    // watch out for the case where the scan is stopped when there are some points
+                    // taken which have yet to be fitted
+                    double[] xValues = new double[spectrumFitter.FittedValues.Length];
+                    Array.Copy(dataStore.AverageScan.ScanParameterArray, xValues, xValues.Length);
+                    window.PlotSpectrumFit(xValues, spectrumFitter.FittedValues);
+                }
 			}
 		}
 
@@ -193,6 +205,24 @@ namespace ScanMaster.GUI
 						pointsToPlot.GetDifferenceIntegralArray(0,
 						startTOFGate, endTOFGate));
 				}
+                // update the spectrum fit if in shot mode.
+                if (spectrumFitMode == FitMode.Shot)
+                {
+                    Scan currentScan = Controller.GetController().DataStore.CurrentScan;
+                    if (currentScan.Points.Count > 10)
+                    {
+                        spectrumFitter.Fit(
+                            currentScan.ScanParameterArray,
+                            currentScan.GetTOFOnIntegralArray(0, startTOFGate, endTOFGate),
+                            spectrumFitter.SuggestParameters(currentScan)
+                            );
+                        // plot the fit
+                        window.ClearSpectrumFit();
+                        window.PlotSpectrumFit(currentScan.ScanParameterArray, spectrumFitter.FittedValues);
+                        // update the parameter report
+                        window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
+                    }
+                }
 				pointsToPlot.Points.Clear();
 			}
 			shotCounter++;
@@ -222,7 +252,7 @@ namespace ScanMaster.GUI
 				window.ClearSpectrumFit();
 				window.PlotSpectrumFit(averageScan.ScanParameterArray, spectrumFitter.FittedValues);
 				// update the parameter report
-				window.spectrumFitResultsLabel.Text = spectrumFitter.ParameterReport;
+				window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
 			}
 			
 
@@ -328,31 +358,35 @@ namespace ScanMaster.GUI
 
 		public void TOFFitModeChanged(int index)
 		{
-			updateFitMode(index, ref tofFitMode);
-		}
+            switch (index)
+            {
+                case 0:
+                    spectrumFitMode = FitMode.None;
+                    break;
+                case 1:
+                    spectrumFitMode = FitMode.Average;
+                    break;
+            }
+        }
 
 		public void SpectrumFitModeChanged(int index)
 		{
-			updateFitMode(index, ref spectrumFitMode);
-		}
+            switch (index)
+            {
+                case 0:
+                    spectrumFitMode = FitMode.None;
+                    break;
+                case 1:
+                    spectrumFitMode = FitMode.Shot;
+                    break;
+                case 2:
+                    spectrumFitMode = FitMode.Average;
+                    break;
+            }
+            window.ClearSpectrumFit();
+        }
 
-		private void updateFitMode(int index, ref FitMode f)
-		{
-			switch (index)
-			{
-				case 0:
-					f = FitMode.None;
-					break;
-				case 1:
-					f = FitMode.Shot;
-					break;
-				case 2:
-					f = FitMode.Average;
-					break;
-			}
-		}
-	
-		public void TOFFitFunctionChanged(object item)
+    	public void TOFFitFunctionChanged(object item)
 		{
 			tofFitter = (Fitter)item;
 		}
@@ -360,6 +394,7 @@ namespace ScanMaster.GUI
 		public void SpectrumFitFunctionChanged(object item)
 		{
 			spectrumFitter = (Fitter)item;
+            window.ClearSpectrumFit();
 		}
 
 	}

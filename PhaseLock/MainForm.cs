@@ -593,7 +593,7 @@ namespace PhaseLock
 				ArrayList lockPhaseDataDouble = new ArrayList();
 				foreach (int p in lockPhaseData) lockPhaseDataDouble.Add((double)p);
 				double[] lockYVals = (double[])lockPhaseDataDouble.ToArray(Type.GetType("System.Double"));
-				CurveFit.LinearFit(lockXVals, lockYVals, out slope, out intercept, out err);
+				CurveFit.LinearFit(lockXVals, lockYVals, FitMethod.LeastSquare, out slope, out intercept, out err);
 			
 				// proportional gain
 				oscillatorFrequency -= accumulatedPhaseDifference * PROPORTIONAL_GAIN;
