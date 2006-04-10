@@ -10,7 +10,7 @@ namespace ScanMaster
 	/// </summary>
 	public class Runner
 	{
-		// This is the entry point to ScanMaster. Make a controller and pass
+  		// This is the entry point to ScanMaster. Make a controller and pass
 		// execution to it. The controller is published to the remoting system here.
 		[STAThread]
 		static void Main() 

@@ -55,7 +55,7 @@ namespace EDMRemotingHelper
 
 		public void Test()
 		{
-			Console.WriteLine("Hello, Boo !");
+			Console.WriteLine("Hello, Python !");
 		}
 
 	}
