@@ -9,4 +9,3 @@ load("..\\EDMRemotingHelper\\bin\\Debug\\DAQ.dll")
 load("..\\EDMRemotingHelper\\bin\\Debug\\SharedCode.dll")
 load("..\\EDMRemotingHelper\\bin\\Debug\\Wolfram.NETLink.dll")
 
-#executeScript("init.boo")
