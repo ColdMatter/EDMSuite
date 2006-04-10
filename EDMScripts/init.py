@@ -40,7 +40,7 @@ scriptBasePath = Environs.FileSystem.Paths["edmScriptPath"]
 print("EDM scripting control")
 
 # load other scripts
-executeScript("SimpleEDMLoop.boo")
-executeScript("SimpleCondition.boo")
+#executeScript("SimpleEDMLoop.boo")
+#executeScript("SimpleCondition.boo")
 
 
