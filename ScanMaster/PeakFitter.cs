@@ -34,7 +34,7 @@ namespace ScanMaster.Analyze
 			nGuess = yDat[0];
 			cGuess = xDat[yMaxIndex];
 			qGuess = yMax - nGuess;
-			wGuess = 0.2 * (ySum - (yDat.Length * nGuess)) / qGuess; // the 0.2 is chosen fairly arbitrarily
+			wGuess = 0.25 * (xDat[1] - xDat[0]) * (ySum - (yDat.Length * nGuess)) / qGuess; // the 0.25 is chosen fairly arbitrarily
 
 			double[] guess = new double[] { nGuess, qGuess, cGuess, wGuess };
 			return guess;

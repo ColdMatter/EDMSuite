@@ -88,7 +88,9 @@ namespace Data.Scans
 			int high = (int)Math.Floor(points.Count * (highGate - scanParameterStart) /
 				(scanParameterEnd - scanParameterStart));
 			if (low < 0) low = 0;
-			if (high > points.Count) high = points.Count;
+			if (low >= points.Count) low = points.Count - 2;
+			if (high < low) high = low + 1;
+			if (high >= points.Count) high = points.Count -1;
 
 			ScanPoint temp = new ScanPoint();
 			for (int i = low ; i < high ; i++) temp += (ScanPoint)points[i];

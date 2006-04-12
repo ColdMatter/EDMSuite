@@ -54,31 +54,33 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.ScatterPlot pmtFitPlot;
 		private System.Windows.Forms.Label label1;
 		public System.Windows.Forms.ComboBox tofFitFunctionCombo;
-        private System.Windows.Forms.Label label2;
-        public ComboBox tofFitModeCombo;
-        public System.Windows.Forms.ComboBox spectrumFitFunctionCombo;
-        public ComboBox spectrumFitModeCombo;
+		private System.Windows.Forms.Label label2;
+		public ComboBox tofFitModeCombo;
+		public System.Windows.Forms.ComboBox spectrumFitFunctionCombo;
+		public ComboBox spectrumFitModeCombo;
 		public System.Windows.Forms.Label tofFitResultsLabel;
 		public System.Windows.Forms.Label spectrumFitResultsLabel;
 		private WaveformPlot tofFitPlot;
+		private Button updateTOFFitButton;
+		private Button updateSpectrumFitButton;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
 		{
 			this.viewer = viewer;
 			InitializeComponent();
-	}
+		}
 
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if( disposing )
+			if (disposing)
 			{
-				if (components != null) 
+				if (components != null)
 				{
 					components.Dispose();
 				}
 			}
-			base.Dispose( disposing );
+			base.Dispose(disposing);
 		}
 
 
@@ -125,6 +127,7 @@ namespace ScanMaster.GUI
 			this.tofYAxis = new NationalInstruments.UI.YAxis();
 			this.tofOffPlot = new NationalInstruments.UI.WaveformPlot();
 			this.tofOffAveragePlot = new NationalInstruments.UI.WaveformPlot();
+			this.tofFitPlot = new NationalInstruments.UI.WaveformPlot();
 			this.tofFitModeCombo = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tofFitFunctionCombo = new System.Windows.Forms.ComboBox();
@@ -133,7 +136,8 @@ namespace ScanMaster.GUI
 			this.spectrumFitModeCombo = new System.Windows.Forms.ComboBox();
 			this.tofFitResultsLabel = new System.Windows.Forms.Label();
 			this.spectrumFitResultsLabel = new System.Windows.Forms.Label();
-			this.tofFitPlot = new NationalInstruments.UI.WaveformPlot();
+			this.updateTOFFitButton = new System.Windows.Forms.Button();
+			this.updateSpectrumFitButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -394,13 +398,21 @@ namespace ScanMaster.GUI
 			this.tofOffAveragePlot.XAxis = this.xAxis4;
 			this.tofOffAveragePlot.YAxis = this.tofAvgYAxis;
 			// 
+			// tofFitPlot
+			// 
+			this.tofFitPlot.LineColor = System.Drawing.Color.Silver;
+			this.tofFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
+			this.tofFitPlot.LineWidth = 2F;
+			this.tofFitPlot.XAxis = this.xAxis4;
+			this.tofFitPlot.YAxis = this.tofAvgYAxis;
+			// 
 			// tofFitModeCombo
 			// 
 			this.tofFitModeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.tofFitModeCombo.Items.AddRange(new object[] {
             "off",
             "average"});
-			this.tofFitModeCombo.Location = new System.Drawing.Point(64, 592);
+			this.tofFitModeCombo.Location = new System.Drawing.Point(62, 592);
 			this.tofFitModeCombo.Name = "tofFitModeCombo";
 			this.tofFitModeCombo.Size = new System.Drawing.Size(72, 21);
 			this.tofFitModeCombo.TabIndex = 17;
@@ -408,7 +420,7 @@ namespace ScanMaster.GUI
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(8, 592);
+			this.label1.Location = new System.Drawing.Point(9, 591);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(48, 23);
 			this.label1.TabIndex = 18;
@@ -418,7 +430,7 @@ namespace ScanMaster.GUI
 			// tofFitFunctionCombo
 			// 
 			this.tofFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.tofFitFunctionCombo.Location = new System.Drawing.Point(152, 592);
+			this.tofFitFunctionCombo.Location = new System.Drawing.Point(140, 592);
 			this.tofFitFunctionCombo.Name = "tofFitFunctionCombo";
 			this.tofFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
 			this.tofFitFunctionCombo.TabIndex = 19;
@@ -427,7 +439,7 @@ namespace ScanMaster.GUI
 			// spectrumFitFunctionCombo
 			// 
 			this.spectrumFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(640, 592);
+			this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(630, 592);
 			this.spectrumFitFunctionCombo.Name = "spectrumFitFunctionCombo";
 			this.spectrumFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
 			this.spectrumFitFunctionCombo.TabIndex = 22;
@@ -435,7 +447,7 @@ namespace ScanMaster.GUI
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(472, 592);
+			this.label2.Location = new System.Drawing.Point(474, 592);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(72, 23);
 			this.label2.TabIndex = 21;
@@ -458,9 +470,9 @@ namespace ScanMaster.GUI
 			// tofFitResultsLabel
 			// 
 			this.tofFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
-			this.tofFitResultsLabel.Location = new System.Drawing.Point(248, 592);
+			this.tofFitResultsLabel.Location = new System.Drawing.Point(260, 589);
 			this.tofFitResultsLabel.Name = "tofFitResultsLabel";
-			this.tofFitResultsLabel.Size = new System.Drawing.Size(224, 24);
+			this.tofFitResultsLabel.Size = new System.Drawing.Size(206, 24);
 			this.tofFitResultsLabel.TabIndex = 23;
 			this.tofFitResultsLabel.Text = "...";
 			this.tofFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -468,25 +480,39 @@ namespace ScanMaster.GUI
 			// spectrumFitResultsLabel
 			// 
 			this.spectrumFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
-			this.spectrumFitResultsLabel.Location = new System.Drawing.Point(736, 592);
+			this.spectrumFitResultsLabel.Location = new System.Drawing.Point(748, 589);
 			this.spectrumFitResultsLabel.Name = "spectrumFitResultsLabel";
-			this.spectrumFitResultsLabel.Size = new System.Drawing.Size(232, 24);
+			this.spectrumFitResultsLabel.Size = new System.Drawing.Size(210, 24);
 			this.spectrumFitResultsLabel.TabIndex = 24;
 			this.spectrumFitResultsLabel.Text = "...";
 			this.spectrumFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// tofFitPlot
+			// updateTOFFitButton
 			// 
-			this.tofFitPlot.LineColor = System.Drawing.Color.Silver;
-			this.tofFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
-			this.tofFitPlot.LineWidth = 2F;
-			this.tofFitPlot.XAxis = this.xAxis4;
-			this.tofFitPlot.YAxis = this.tofAvgYAxis;
+			this.updateTOFFitButton.Location = new System.Drawing.Point(234, 590);
+			this.updateTOFFitButton.Name = "updateTOFFitButton";
+			this.updateTOFFitButton.Size = new System.Drawing.Size(18, 23);
+			this.updateTOFFitButton.TabIndex = 25;
+			this.updateTOFFitButton.Text = ">";
+			this.updateTOFFitButton.UseVisualStyleBackColor = true;
+			this.updateTOFFitButton.Click += new System.EventHandler(this.updateTOFFitButton_Click);
+			// 
+			// updateSpectrumFitButton
+			// 
+			this.updateSpectrumFitButton.Location = new System.Drawing.Point(724, 590);
+			this.updateSpectrumFitButton.Name = "updateSpectrumFitButton";
+			this.updateSpectrumFitButton.Size = new System.Drawing.Size(18, 23);
+			this.updateSpectrumFitButton.TabIndex = 26;
+			this.updateSpectrumFitButton.Text = ">";
+			this.updateSpectrumFitButton.UseVisualStyleBackColor = true;
+			this.updateSpectrumFitButton.Click += new System.EventHandler(this.updateSpectrumFitButton_Click);
 			// 
 			// StandardViewerWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(970, 640);
+			this.Controls.Add(this.updateSpectrumFitButton);
+			this.Controls.Add(this.updateTOFFitButton);
 			this.Controls.Add(this.spectrumFitResultsLabel);
 			this.Controls.Add(this.tofFitResultsLabel);
 			this.Controls.Add(this.spectrumFitFunctionCombo);
@@ -521,7 +547,7 @@ namespace ScanMaster.GUI
 		}
 		#endregion
 
-	
+
 		private void TOFCursorMoved(object sender, NationalInstruments.UI.AfterMoveXYCursorEventArgs e)
 		{
 			viewer.TOFCursorMoved();
@@ -531,26 +557,35 @@ namespace ScanMaster.GUI
 		{
 			viewer.PMTCursorMoved();
 		}
-        private void tofFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            viewer.TOFFitModeChanged(((ComboBox)sender).SelectedIndex);
-        }
+		private void tofFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.TOFFitModeChanged(((ComboBox)sender).SelectedIndex);
+		}
 
-        private void tofFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            viewer.TOFFitFunctionChanged(((ComboBox)sender).SelectedItem);
-        }
+		private void tofFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.TOFFitFunctionChanged(((ComboBox)sender).SelectedItem);
+		}
 
-        private void spectrumFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            viewer.SpectrumFitModeChanged(((ComboBox)sender).SelectedIndex);
-        }
+		private void spectrumFitModeCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.SpectrumFitModeChanged(((ComboBox)sender).SelectedIndex);
+		}
 
-        private void spectrumFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            viewer.SpectrumFitFunctionChanged(((ComboBox)sender).SelectedItem);
-        }
-		
+		private void spectrumFitFunctionCombo_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewer.SpectrumFitFunctionChanged(((ComboBox)sender).SelectedItem);
+		}
+
+		private void updateTOFFitButton_Click(object sender, EventArgs e)
+		{
+			viewer.UpdateTOFFit();
+		}
+
+		private void updateSpectrumFitButton_Click(object sender, EventArgs e)
+		{
+			viewer.UpdateSpectrumFit();
+		}
 
 
 		// these functions and properties are all thread safe
@@ -613,8 +648,10 @@ namespace ScanMaster.GUI
 			}
 			get
 			{
-				return new Range(GetCursorPosition(pmtGraph, pmtLowCursor),
-					GetCursorPosition(pmtGraph, pmtHighCursor));				
+				double min = GetCursorPosition(pmtGraph, pmtLowCursor);
+				double max = GetCursorPosition(pmtGraph, pmtHighCursor);
+				if (max <= min) max = min + 1; //highly arbitrary
+				return new Range(min, max);
 			}
 		}
 		public Range TOFGate
@@ -633,7 +670,7 @@ namespace ScanMaster.GUI
 
 		public void PlotOnTOF(TOF t) { PlotY(tofGraph, tofOnPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
 		public void PlotOffTOF(TOF t) { PlotY(tofGraph, tofOffPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
-		public void PlotAverageOnTOF(TOF t) 
+		public void PlotAverageOnTOF(TOF t)
 		{
 			PlotY(tofGraph, tofOnAveragePlot, t.GateStartTime, t.ClockPeriod, t.Data);
 		}
@@ -692,11 +729,11 @@ namespace ScanMaster.GUI
 
 		// UI delegates and thread-safe helpers
 		private delegate void ClearDataDelegate();
-		private void ClearNIGraph(Graph graph) 
+		private void ClearNIGraph(Graph graph)
 		{
 			graph.Invoke(new ClearDataDelegate(graph.ClearData));
 		}
-		private void ClearNIPlot(Graph graph, Plot plot) 
+		private void ClearNIPlot(Graph graph, Plot plot)
 		{
 			graph.Invoke(new ClearDataDelegate(plot.ClearData));
 		}
@@ -708,23 +745,23 @@ namespace ScanMaster.GUI
 		private void SetGraphXAxisRange(XYGraph graph, double start, double end)
 		{
 			graph.Invoke(new SetGraphXAxisRangeDelegate(SetGraphXAxisRangeHelper),
-				new Object[] {graph, start, end});
+				new Object[] { graph, start, end });
 		}
 		private delegate void PlotXYDelegate(double[] x, double[] y);
 		private void PlotXYAppend(Graph graph, ScatterPlot plot, double[] x, double[] y)
 		{
-			graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] {x,y});
+			graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { x, y });
 		}
 		private void PlotXY(Graph graph, ScatterPlot plot, double[] x, double[] y)
 		{
-			graph.Invoke(new PlotXYDelegate(plot.PlotXY), new Object[] {x,y});
+			graph.Invoke(new PlotXYDelegate(plot.PlotXY), new Object[] { x, y });
 		}
 		private delegate void PlotYDelegate(double[] yData, double start, double inc);
-		private void PlotY(Graph graph, WaveformPlot p, double start, double inc, double[] ydata) 
+		private void PlotY(Graph graph, WaveformPlot p, double start, double inc, double[] ydata)
 		{
-			graph.Invoke(new PlotYDelegate(p.PlotY), new Object[] {ydata, start, inc});
+			graph.Invoke(new PlotYDelegate(p.PlotY), new Object[] { ydata, start, inc });
 		}
-		
+
 		private void MoveCursorHelper(XYCursor cursor, double x)
 		{
 			cursor.XPosition = x;
@@ -732,7 +769,7 @@ namespace ScanMaster.GUI
 		private delegate void MoveCursorDelegate(XYCursor cursor, double x);
 		private void MoveCursor(Graph graph, XYCursor cursor, double x)
 		{
-			graph.Invoke(new MoveCursorDelegate(MoveCursorHelper), new Object[] {cursor, x});
+			graph.Invoke(new MoveCursorDelegate(MoveCursorHelper), new Object[] { cursor, x });
 		}
 
 		private delegate double GetCursorPositionDelegate(XYCursor cursor);
@@ -743,19 +780,19 @@ namespace ScanMaster.GUI
 		private double GetCursorPosition(Graph graph, XYCursor cursor)
 		{
 			double x = (double)graph.Invoke(new GetCursorPositionDelegate(GetCursorPositionHelper),
-				new Object[] {cursor});
+				new Object[] { cursor });
 			return x;
 		}
 
-        public void SetLabel(Label label, string text)
-        {
-            label.Invoke(new SetLabelDelegate(SetLabelHelper), new object[] { label, text });
-        }
-        private delegate void SetLabelDelegate(Label label, string text);
-        private void SetLabelHelper(Label label, string text)
-        {
-            label.Text = text;
-        }
+		public void SetLabel(Label label, string text)
+		{
+			label.Invoke(new SetLabelDelegate(SetLabelHelper), new object[] { label, text });
+		}
+		private delegate void SetLabelDelegate(Label label, string text);
+		private void SetLabelHelper(Label label, string text)
+		{
+			label.Text = text;
+		}
 
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -765,5 +802,3 @@ namespace ScanMaster.GUI
 		}
 	}
 }
-
-

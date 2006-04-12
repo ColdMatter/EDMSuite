@@ -50,7 +50,9 @@ namespace ScanMaster.GUI
 			window = new StandardViewerWindow(this);
 			AddFitter( new LorentzianFitter() );
             AddFitter(new GaussianFitter());
-            window.tofFitModeCombo.SelectedIndex = 0;
+			AddFitter(new SincFitter());
+			AddFitter(new InterferenceFitter());
+			window.tofFitModeCombo.SelectedIndex = 0;
             window.spectrumFitModeCombo.SelectedIndex = 0;
             window.tofFitFunctionCombo.SelectedIndex = 0;
 			window.spectrumFitFunctionCombo.SelectedIndex = 0;
@@ -104,6 +106,9 @@ namespace ScanMaster.GUI
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
 			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
 
+			// disable the fit function selectors
+			window.tofFitFunctionCombo.Enabled = false;
+			window.spectrumFitFunctionCombo.Enabled = false;
 		}
 
 		public void AcquireStop()
@@ -132,6 +137,9 @@ namespace ScanMaster.GUI
                     window.PlotSpectrumFit(xValues, spectrumFitter.FittedValues);
                 }
 			}
+			// disable the fit function selectors
+			window.tofFitFunctionCombo.Enabled = true;
+			window.spectrumFitFunctionCombo.Enabled = true;
 		}
 
 		public void HandleDataPoint(DataEventArgs e)
@@ -212,17 +220,22 @@ namespace ScanMaster.GUI
                     Scan currentScan = Controller.GetController().DataStore.CurrentScan;
                     if (currentScan.Points.Count > 10)
                     {
-                        FitScan(currentScan, startTOFGate, endTOFGate);
-                        // plot the fit
-                        window.ClearSpectrumFit();
-                        window.PlotSpectrumFit(currentScan.ScanParameterArray, spectrumFitter.FittedValues);
-                        // update the parameter report
-                        window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
-                    }
+						FitAndPlotSpectrum(currentScan);
+                   }
                 }
 				pointsToPlot.Points.Clear();
 			}
 			shotCounter++;
+		}
+
+		private void FitAndPlotSpectrum(Scan scan)
+		{
+			FitScan(scan, startTOFGate, endTOFGate);
+			// plot the fit
+			window.ClearSpectrumFit();
+			window.PlotSpectrumFit(scan.ScanParameterArray, spectrumFitter.FittedValues);
+			// update the parameter report
+			window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
 		}
 
 		public void ScanFinished()
@@ -240,36 +253,12 @@ namespace ScanMaster.GUI
 			if (spectrumFitMode == FitMode.Average)
 			{
 				Scan averageScan = Controller.GetController().DataStore.AverageScan;
-                FitScan(averageScan, startTOFGate, endTOFGate);
- 				// plot the fit
-				window.ClearSpectrumFit();
-				window.PlotSpectrumFit(averageScan.ScanParameterArray, spectrumFitter.FittedValues);
-				// update the parameter report
-				window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
+				FitAndPlotSpectrum(averageScan);
 			}
 
 			if (tofFitMode == FitMode.Average)
 			{
-				Scan averageScan = Controller.GetController().DataStore.AverageScan; 
-				TOF tof =
-					(TOF)((ArrayList)averageScan.GetGatedAverageOnShot(
-														startSpectrumGate,
-														endSpectrumGate).TOFs)[0];
-				double[] doubleTimes = new double[tof.Times.Length];
-				for (int i = 0; i < tof.Times.Length; i++) doubleTimes[i] = (double)tof.Times[i];
-				tofFitter.Fit(
-					doubleTimes,
-					tof.Data,
-					tofFitter.SuggestParameters(
-						doubleTimes,
-						tof.Data,
-						tof.Times[0],
-						tof.Times[tof.Times.Length - 1])
-				);
-				window.ClearTOFFit();
-				window.PlotTOFFit(tof.GateStartTime, tof.ClockPeriod, tofFitter.FittedValues);
-				// update the parameter report
-				window.SetLabel(window.tofFitResultsLabel, tofFitter.ParameterReport);
+				FitAverageTOF();
 			}
 			
 
@@ -278,12 +267,34 @@ namespace ScanMaster.GUI
 			window.ClearRealtimeSpectra();
 		}
 
+		private void FitAverageTOF()
+		{
+			Scan averageScan = Controller.GetController().DataStore.AverageScan;
+			TOF tof =
+				(TOF)((ArrayList)averageScan.GetGatedAverageOnShot(
+													startSpectrumGate,
+													endSpectrumGate).TOFs)[0];
+			double[] doubleTimes = new double[tof.Times.Length];
+			for (int i = 0; i < tof.Times.Length; i++) doubleTimes[i] = (double)tof.Times[i];
+			tofFitter.Fit(
+				doubleTimes,
+				tof.Data,
+				tofFitter.SuggestParameters(
+					doubleTimes,
+					tof.Data,
+					tof.Times[0],
+					tof.Times[tof.Times.Length - 1])
+			);
+			window.ClearTOFFit();
+			window.PlotTOFFit(tof.GateStartTime, tof.ClockPeriod, tofFitter.FittedValues);
+			// update the parameter report
+			window.SetLabel(window.tofFitResultsLabel, tofFitter.ParameterReport);
+		}
+
         private void FitScan(Scan s, double gateStart, double gateEnd)
         {
- 			PluginSettings outputSettings = Controller.GetController().ProfileManager.
-				CurrentProfile.AcquisitorConfig.outputPlugin.Settings;
-            double scanStart = (double)outputSettings["start"];
-            double scanEnd = (double)outputSettings["end"];
+            double scanStart = SpectrumGateLow;
+            double scanEnd = SpectrumGateHigh;
             double[] xDat = s.ScanParameterArray;
             double[] yDat = s.GetTOFOnIntegralArray(0, gateStart, gateEnd);
             spectrumFitter.Fit(
@@ -329,6 +340,8 @@ namespace ScanMaster.GUI
 			UpdatePMTAveragePlots();
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
 			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
+			if (spectrumFitMode == FitMode.Average) FitAndPlotSpectrum(averageScan);
+			if (tofFitMode == FitMode.Average) FitAverageTOF();
 		}
 
 		public double SpectrumGateLow
@@ -389,7 +402,8 @@ namespace ScanMaster.GUI
 
 		public void TOFFitModeChanged(int index)
 		{
-           UpdateFitMode(ref tofFitMode, index);
+			UpdateFitMode(ref tofFitMode, index);
+			window.ClearTOFFit();
         }
 
 		public void SpectrumFitModeChanged(int index)
@@ -417,6 +431,7 @@ namespace ScanMaster.GUI
         public void TOFFitFunctionChanged(object item)
 		{
 			tofFitter = (Fitter)item;
+			window.ClearTOFFit();
 		}
 
 		public void SpectrumFitFunctionChanged(object item)
@@ -425,5 +440,17 @@ namespace ScanMaster.GUI
             window.ClearSpectrumFit();
 		}
 
+
+		internal void UpdateTOFFit()
+		{
+			Scan averageScan = Controller.GetController().DataStore.AverageScan;
+			if (averageScan.Points.Count != 0) FitAverageTOF();
+		}
+
+		internal void UpdateSpectrumFit()
+		{
+			Scan averageScan = Controller.GetController().DataStore.AverageScan;
+			if (averageScan.Points.Count != 0) FitAndPlotSpectrum(averageScan);
+		}
 	}
 }

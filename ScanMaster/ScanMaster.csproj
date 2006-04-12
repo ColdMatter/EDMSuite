@@ -182,6 +182,7 @@
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="InterferenceFitter.cs" />
     <Compile Include="LorentzianFitter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -271,6 +272,7 @@
     <Compile Include="ShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SincFitter.cs" />
     <Compile Include="StandardViewer.cs">
       <SubType>Code</SubType>
     </Compile>
