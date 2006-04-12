@@ -55,6 +55,23 @@ namespace Data.Scans
 			return temp/shots.Count;
 		}
 
+        public double MeanOn(int index)
+        {
+            return Mean(onShots, index);
+        }
+
+        public double MeanOff(int index)
+        {
+            return Mean(offShots, index);
+        }
+
+        private double Mean(ArrayList shots, int index)
+        {
+            double temp = 0;
+            foreach (Shot s in shots) temp += s.Mean(index);
+            return temp / shots.Count;
+        }
+
 
 		public static ScanPoint operator +(ScanPoint p1, ScanPoint p2)
 		{

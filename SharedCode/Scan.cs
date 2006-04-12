@@ -54,7 +54,23 @@ namespace Data.Scans
 			return temp;
 		}
 
-		public Shot GetGatedAverageOnShot(double lowGate, double highGate)
+        public double[] GetMeanOnArray(int index)
+        {
+            double[] temp = new double[points.Count];
+            for (int i = 0; i < points.Count; i++) temp[i] =
+                                                       (double)((ScanPoint)points[i]).MeanOn(index);
+            return temp;
+        }
+
+        public double[] GetMeanOffArray(int index)
+        {
+            double[] temp = new double[points.Count];
+            for (int i = 0; i < points.Count; i++) temp[i] =
+                                                       (double)((ScanPoint)points[i]).MeanOff(index);
+            return temp;
+        }
+
+        public Shot GetGatedAverageOnShot(double lowGate, double highGate)
 		{
 			return GetAverageScanPoint(lowGate, highGate).AverageOnShot;
 		}

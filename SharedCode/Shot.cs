@@ -26,6 +26,11 @@ namespace Data
 			return ((TOF)tofs[index]).Integrate(startTime, endTime);
 		}
 
+        public double Mean(int index)
+        {
+            return ((TOF)tofs[0]).Mean;
+        }
+
 		public static Shot operator +(Shot s1, Shot s2)
 		{
 			if (s1.TOFs.Count == s2.TOFs.Count) 

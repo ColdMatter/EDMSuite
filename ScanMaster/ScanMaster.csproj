@@ -178,6 +178,7 @@
     <Compile Include="FlashampPatternBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GaussianFitter.cs" />
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -220,6 +221,7 @@
     <Compile Include="PatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PeakFitter.cs" />
     <Compile Include="PGOutputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>

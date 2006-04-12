@@ -37,7 +37,17 @@ namespace Data
 			return (sum * clockPeriod);
 		}
 
-		public static TOF
+        public double Mean
+        {
+            get
+            {
+                double tmp = 0;
+                for (int i = 0; i < Data.Length; i++) tmp += Data[i];
+                return tmp / Data.Length;
+            }
+        }
+
+            public static TOF
 			operator +(TOF p1, TOF p2)
 		{
 			if (p1.ClockPeriod == p2.ClockPeriod && p1.GateStartTime == p2.GateStartTime
