@@ -227,7 +227,7 @@ namespace DAQ.Pattern
 			}
 		}
 
-		// gets the low word of the pattern so that you can run the pattern generator in half-width mode
+		// gets the high word of the pattern so that you can run the pattern generator in half-width mode
 		public Int16[] HighHalfPatternAsInt16
 		{
 			get

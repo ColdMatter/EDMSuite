@@ -111,15 +111,6 @@
     <Compile Include="AnalogOutputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Analysis.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AnalysisData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AnalysisResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -174,13 +165,7 @@
     <Compile Include="FileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FitTOF.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GanymedeFileSystem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GaussianFitResult.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GPIBInstrument.cs">
@@ -199,9 +184,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ICS4861A.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InterferenceFit.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IPatternSource.cs">
@@ -238,9 +220,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="QuantaRayLaser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ScanAnalysisData.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SchnapsFileSystem.cs">

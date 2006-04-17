@@ -130,9 +130,6 @@
     <Compile Include="AnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AnalysisManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

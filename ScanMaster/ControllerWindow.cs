@@ -9,7 +9,7 @@ using NationalInstruments.UI.WindowsForms;
 
 using Data;
 using DAQ.FakeData;
-using DAQ.Analyze;
+
 
 namespace ScanMaster.GUI
 {
@@ -32,7 +32,7 @@ namespace ScanMaster.GUI
 		private System.Windows.Forms.MenuItem menuItem3;
 		private System.Windows.Forms.MenuItem menuItem5;
 		private System.Windows.Forms.MenuItem menuItem6;
-		private System.ComponentModel.Container components = null;
+		private System.ComponentModel.IContainer components;
 		private System.Windows.Forms.StatusBar statusBar1;
 		private NationalInstruments.UI.XAxis pmtXAxis;
 		private System.Windows.Forms.MenuItem menuItem7;
@@ -52,7 +52,6 @@ namespace ScanMaster.GUI
 		private System.Windows.Forms.MenuItem viewerMenu;
 		private System.Windows.Forms.MenuItem fileMenu;
 		private System.Windows.Forms.MenuItem acquireMenu;
-		private System.Windows.Forms.MenuItem analyseMenu;
 		private System.Windows.Forms.MenuItem menuItem1;
 		private System.Windows.Forms.MenuItem menuItem4;
 		private System.Windows.Forms.MenuItem menuItem9;
@@ -77,16 +76,6 @@ namespace ScanMaster.GUI
 				MenuItem item = new MenuItem(de.Key.ToString());
 				item.Click +=new EventHandler(viewerClicked);
 				viewerMenu.MenuItems.Add(item);
-			}
-
-			// build the analysis menu
-			analyseMenu.MenuItems.Clear();
-			Hashtable analyses = controller.AnalysisManager.Analyses;
-			foreach (DictionaryEntry de in analyses)
-			{
-				MenuItem item = new MenuItem(de.Key.ToString());
-				item.Click +=new EventHandler(analyseClicked);
-				analyseMenu.MenuItems.Add(item);
 			}
 
 			// build the Schon menu
@@ -121,8 +110,9 @@ namespace ScanMaster.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ControllerWindow));
-			this.mainMenu1 = new System.Windows.Forms.MainMenu();
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControllerWindow));
+			this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
 			this.fileMenu = new System.Windows.Forms.MenuItem();
 			this.menuItem13 = new System.Windows.Forms.MenuItem();
 			this.menuItem12 = new System.Windows.Forms.MenuItem();
@@ -140,8 +130,8 @@ namespace ScanMaster.GUI
 			this.patternMenu = new System.Windows.Forms.MenuItem();
 			this.menuItem10 = new System.Windows.Forms.MenuItem();
 			this.menuItem11 = new System.Windows.Forms.MenuItem();
-			this.analyseMenu = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
+			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.schonMenu = new System.Windows.Forms.MenuItem();
 			this.pmtXAxis = new NationalInstruments.UI.XAxis();
 			this.statusBar1 = new System.Windows.Forms.StatusBar();
@@ -155,33 +145,31 @@ namespace ScanMaster.GUI
 			this.newButton = new System.Windows.Forms.Button();
 			this.selectButton = new System.Windows.Forms.Button();
 			this.profileListBox = new System.Windows.Forms.ListBox();
-			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// mainMenu1
 			// 
 			this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.fileMenu,
-																					  this.acquireMenu,
-																					  this.viewerMenu,
-																					  this.patternMenu,
-																					  this.analyseMenu,
-																					  this.menuItem1,
-																					  this.schonMenu});
+            this.fileMenu,
+            this.acquireMenu,
+            this.viewerMenu,
+            this.patternMenu,
+            this.menuItem1,
+            this.schonMenu});
 			// 
 			// fileMenu
 			// 
 			this.fileMenu.Index = 0;
 			this.fileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					 this.menuItem13,
-																					 this.menuItem12,
-																					 this.menuItem9,
-																					 this.menuItem4,
-																					 this.menuItem14,
-																					 this.menuItem2,
-																					 this.menuItem7,
-																					 this.menuItem15,
-																					 this.menuItem3});
+            this.menuItem13,
+            this.menuItem12,
+            this.menuItem9,
+            this.menuItem4,
+            this.menuItem14,
+            this.menuItem2,
+            this.menuItem7,
+            this.menuItem15,
+            this.menuItem3});
 			this.fileMenu.Text = "File";
 			// 
 			// menuItem13
@@ -240,8 +228,8 @@ namespace ScanMaster.GUI
 			// 
 			this.acquireMenu.Index = 1;
 			this.acquireMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																						this.menuItem5,
-																						this.menuItem6});
+            this.menuItem5,
+            this.menuItem6});
 			this.acquireMenu.Text = "Acquire";
 			// 
 			// menuItem5
@@ -267,8 +255,8 @@ namespace ScanMaster.GUI
 			// 
 			this.patternMenu.Index = 3;
 			this.patternMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																						this.menuItem10,
-																						this.menuItem11});
+            this.menuItem10,
+            this.menuItem11});
 			this.patternMenu.Text = "Pattern";
 			// 
 			// menuItem10
@@ -283,22 +271,23 @@ namespace ScanMaster.GUI
 			this.menuItem11.Text = "Stop pattern output";
 			this.menuItem11.Click += new System.EventHandler(this.menuItem11_Click);
 			// 
-			// analyseMenu
-			// 
-			this.analyseMenu.Index = 4;
-			this.analyseMenu.Text = "Analyse";
-			// 
 			// menuItem1
 			// 
-			this.menuItem1.Index = 5;
+			this.menuItem1.Index = 4;
 			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.menuItem8});
+            this.menuItem8});
 			this.menuItem1.Text = "Debug";
 			this.menuItem1.Visible = false;
 			// 
+			// menuItem8
+			// 
+			this.menuItem8.Index = 0;
+			this.menuItem8.Text = "Test interlock";
+			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
+			// 
 			// schonMenu
 			// 
-			this.schonMenu.Index = 6;
+			this.schonMenu.Index = 5;
 			this.schonMenu.Text = "Schon\'s menu";
 			// 
 			// pmtXAxis
@@ -318,6 +307,7 @@ namespace ScanMaster.GUI
 			// 
 			this.renameButton.Location = new System.Drawing.Point(96, 376);
 			this.renameButton.Name = "renameButton";
+			this.renameButton.Size = new System.Drawing.Size(75, 23);
 			this.renameButton.TabIndex = 23;
 			this.renameButton.Text = "Rename ...";
 			this.renameButton.Click += new System.EventHandler(this.RenameHandler);
@@ -333,20 +323,19 @@ namespace ScanMaster.GUI
 			// commandTextBox
 			// 
 			this.commandTextBox.BackColor = System.Drawing.Color.Black;
-			this.commandTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.commandTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.commandTextBox.ForeColor = System.Drawing.Color.Red;
 			this.commandTextBox.Location = new System.Drawing.Point(280, 376);
 			this.commandTextBox.Name = "commandTextBox";
 			this.commandTextBox.Size = new System.Drawing.Size(488, 22);
 			this.commandTextBox.TabIndex = 20;
-			this.commandTextBox.Text = "";
 			this.commandTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUpHandler);
 			// 
 			// outputTextBox
 			// 
 			this.outputTextBox.BackColor = System.Drawing.Color.Black;
 			this.outputTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-			this.outputTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.outputTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.outputTextBox.ForeColor = System.Drawing.Color.Lime;
 			this.outputTextBox.Location = new System.Drawing.Point(280, 32);
 			this.outputTextBox.Multiline = true;
@@ -355,7 +344,6 @@ namespace ScanMaster.GUI
 			this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.outputTextBox.Size = new System.Drawing.Size(488, 336);
 			this.outputTextBox.TabIndex = 21;
-			this.outputTextBox.Text = "";
 			// 
 			// label1
 			// 
@@ -369,6 +357,7 @@ namespace ScanMaster.GUI
 			// 
 			this.deleteButton.Location = new System.Drawing.Point(8, 376);
 			this.deleteButton.Name = "deleteButton";
+			this.deleteButton.Size = new System.Drawing.Size(75, 23);
 			this.deleteButton.TabIndex = 18;
 			this.deleteButton.Text = "Delete";
 			this.deleteButton.Click += new System.EventHandler(this.DeleteHandler);
@@ -377,6 +366,7 @@ namespace ScanMaster.GUI
 			// 
 			this.cloneButton.Location = new System.Drawing.Point(184, 344);
 			this.cloneButton.Name = "cloneButton";
+			this.cloneButton.Size = new System.Drawing.Size(75, 23);
 			this.cloneButton.TabIndex = 17;
 			this.cloneButton.Text = "Clone";
 			this.cloneButton.Click += new System.EventHandler(this.CloneHandler);
@@ -385,6 +375,7 @@ namespace ScanMaster.GUI
 			// 
 			this.newButton.Location = new System.Drawing.Point(96, 344);
 			this.newButton.Name = "newButton";
+			this.newButton.Size = new System.Drawing.Size(75, 23);
 			this.newButton.TabIndex = 16;
 			this.newButton.Text = "New";
 			this.newButton.Click += new System.EventHandler(this.NewProfileHandler);
@@ -393,6 +384,7 @@ namespace ScanMaster.GUI
 			// 
 			this.selectButton.Location = new System.Drawing.Point(8, 344);
 			this.selectButton.Name = "selectButton";
+			this.selectButton.Size = new System.Drawing.Size(75, 23);
 			this.selectButton.TabIndex = 15;
 			this.selectButton.Text = "Select";
 			this.selectButton.Click += new System.EventHandler(this.SelectProfileHandler);
@@ -404,12 +396,6 @@ namespace ScanMaster.GUI
 			this.profileListBox.Size = new System.Drawing.Size(232, 264);
 			this.profileListBox.TabIndex = 14;
 			this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
-			// 
-			// menuItem8
-			// 
-			this.menuItem8.Index = 0;
-			this.menuItem8.Text = "Test interlock";
-			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
 			// 
 			// ControllerWindow
 			// 
@@ -434,6 +420,7 @@ namespace ScanMaster.GUI
 			this.Text = "ScanMaster 2k5";
 			this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 		#endregion
@@ -611,7 +598,6 @@ namespace ScanMaster.GUI
 			fileMenu.Enabled = false;
 			acquireMenu.Enabled = false;
 //			viewerMenu.Enabled = false;
-			analyseMenu.Enabled = false;
 			schonMenu.Enabled = false;
 //			patternMenu.Enabled = false;
 		}
@@ -621,7 +607,6 @@ namespace ScanMaster.GUI
 			fileMenu.Enabled = true;
 			acquireMenu.Enabled = true;
 //			viewerMenu.Enabled = true;
-			analyseMenu.Enabled = true;
 			schonMenu.Enabled = true;
 //			patternMenu.Enabled = true;
 		}
@@ -638,12 +623,6 @@ namespace ScanMaster.GUI
 		{
 			MenuItem item = (MenuItem)sender;
 			((Viewer)Controller.GetController().ViewerManager.Viewers[item.Text]).ToggleVisible();
-		}
-
-		private void analyseClicked(object sender, EventArgs e)
-		{
-			MenuItem item = (MenuItem)sender;
-			Controller.GetController().DoAnalysis((Analysis)controller.AnalysisManager.Analyses[item.Text]);
 		}
 
 		private void schonClicked(object sender, EventArgs e)

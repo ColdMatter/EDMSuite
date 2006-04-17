@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 
-using DAQ.Analyze;
 using DAQ.Environment;
 using DAQ.HAL;
 using Data;
@@ -64,11 +63,6 @@ namespace ScanMaster
 		public ViewerManager ViewerManager
 		{
 			get { return viewerManager; }
-		}
-		private AnalysisManager analysisManager = new AnalysisManager();
-		public AnalysisManager AnalysisManager
-		{
-			get { return analysisManager; }
 		}
 
 		private DataStore dataStore = new DataStore();
@@ -266,22 +260,6 @@ namespace ScanMaster
 					(System.IO.FileStream)dialog.OpenFile();
 				profileManager.SaveProfileSetAsXml(fs);
 				fs.Close();
-			}
-		}
-
-		public void DoAnalysis(Analysis analysis)
-		{
-			if (dataStore.NumberOfScans != 0)
-			{
-				ScanAnalysisData data = new ScanAnalysisData();
-				data.Scan = dataStore.AverageScan;
-				StandardViewer sv = (StandardViewer)viewerManager.GetViewer("StandardViewer");
-				data.SpectrumGateStart = sv.SpectrumGateLow;
-				data.SpectrumGateEnd = sv.SpectrumGateHigh;
-				data.TOFGateStart = sv.TOFGateLow;
-				data.TOFGateEnd = sv.TOFGateHigh;
-				analysis.DoAnalysis(data);
-				analysis.ShowWindow();
 			}
 		}
 
