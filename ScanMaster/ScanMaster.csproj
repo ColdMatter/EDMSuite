@@ -97,11 +97,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="Wolfram.NETLink">
-      <Name>Wolfram.NETLink</Name>
-      <HintPath>..\..\..\..\Program Files\Wolfram Research\Mathematica\5.1\AddOns\NETLink\Wolfram.NETLink.dll</HintPath>
-      <AssemblyFolderKey>hklm\dn\wolfram research</AssemblyFolderKey>
-      <Private>False</Private>
+    <Reference Include="Wolfram.NETLink, Version=1.2.1979.2848, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DAQ\Wolfram.NETLink.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Name>DAQ</Name>
