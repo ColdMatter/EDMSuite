@@ -304,6 +304,7 @@
     <Content Include="App.ico" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="ParameterHelperWindow.resx">
@@ -323,6 +324,9 @@
       <DependentUpon>StatisticsViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

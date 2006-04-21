@@ -165,7 +165,7 @@ namespace EDMHardwareControl
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ControlWindow));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.switchEButton = new System.Windows.Forms.Button();
 			this.eBleedCheck = new System.Windows.Forms.CheckBox();
@@ -238,6 +238,7 @@ namespace EDMHardwareControl
 			this.rf2PowerMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.groupBox12 = new System.Windows.Forms.GroupBox();
+			this.scanningBVoltageBox = new System.Windows.Forms.TextBox();
 			this.scanningBFSButton = new System.Windows.Forms.Button();
 			this.scanningBZeroButton = new System.Windows.Forms.Button();
 			this.scanningBUpdateButton = new System.Windows.Forms.Button();
@@ -283,7 +284,6 @@ namespace EDMHardwareControl
 			this.label33 = new System.Windows.Forms.Label();
 			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
 			this.consoleBox = new System.Windows.Forms.TextBox();
-			this.scanningBVoltageBox = new System.Windows.Forms.TextBox();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -373,6 +373,7 @@ namespace EDMHardwareControl
 			// 
 			this.setRamanButton.Location = new System.Drawing.Point(88, 128);
 			this.setRamanButton.Name = "setRamanButton";
+			this.setRamanButton.Size = new System.Drawing.Size(75, 23);
 			this.setRamanButton.TabIndex = 18;
 			this.setRamanButton.Text = "Set synth";
 			this.setRamanButton.Click += new System.EventHandler(this.setRamanButton_Click);
@@ -485,6 +486,7 @@ namespace EDMHardwareControl
 			// 
 			this.greenOnCheck.Location = new System.Drawing.Point(24, 152);
 			this.greenOnCheck.Name = "greenOnCheck";
+			this.greenOnCheck.Size = new System.Drawing.Size(104, 24);
 			this.greenOnCheck.TabIndex = 18;
 			this.greenOnCheck.Text = "Green on";
 			this.greenOnCheck.CheckedChanged += new System.EventHandler(this.greenOnCheck_CheckedChanged);
@@ -550,6 +552,7 @@ namespace EDMHardwareControl
 			// 
 			this.redOnCheck.Location = new System.Drawing.Point(152, 152);
 			this.redOnCheck.Name = "redOnCheck";
+			this.redOnCheck.Size = new System.Drawing.Size(104, 24);
 			this.redOnCheck.TabIndex = 19;
 			this.redOnCheck.Text = "Red on";
 			this.redOnCheck.CheckedChanged += new System.EventHandler(this.redOnCheck_CheckedChanged);
@@ -576,6 +579,7 @@ namespace EDMHardwareControl
 			// 
 			this.updateFieldButton.Location = new System.Drawing.Point(48, 168);
 			this.updateFieldButton.Name = "updateFieldButton";
+			this.updateFieldButton.Size = new System.Drawing.Size(75, 23);
 			this.updateFieldButton.TabIndex = 40;
 			this.updateFieldButton.Text = "Update";
 			this.updateFieldButton.Click += new System.EventHandler(this.updateFieldButton_Click);
@@ -753,6 +757,7 @@ namespace EDMHardwareControl
 			// 
 			this.updateVMonitorButton.Location = new System.Drawing.Point(56, 168);
 			this.updateVMonitorButton.Name = "updateVMonitorButton";
+			this.updateVMonitorButton.Size = new System.Drawing.Size(75, 23);
 			this.updateVMonitorButton.TabIndex = 40;
 			this.updateVMonitorButton.Text = "Update";
 			this.updateVMonitorButton.Click += new System.EventHandler(this.updateVMonitorButton_Click);
@@ -866,6 +871,7 @@ namespace EDMHardwareControl
 			// 
 			this.updateIMonitorButton.Location = new System.Drawing.Point(56, 168);
 			this.updateIMonitorButton.Name = "updateIMonitorButton";
+			this.updateIMonitorButton.Size = new System.Drawing.Size(75, 23);
 			this.updateIMonitorButton.TabIndex = 40;
 			this.updateIMonitorButton.Text = "Update";
 			this.updateIMonitorButton.Click += new System.EventHandler(this.updateIMonitorButton_Click);
@@ -951,6 +957,7 @@ namespace EDMHardwareControl
 			// 
 			this.rfPowerMonitorUpdateButton.Location = new System.Drawing.Point(88, 128);
 			this.rfPowerMonitorUpdateButton.Name = "rfPowerMonitorUpdateButton";
+			this.rfPowerMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
 			this.rfPowerMonitorUpdateButton.TabIndex = 46;
 			this.rfPowerMonitorUpdateButton.Text = "Update";
 			this.rfPowerMonitorUpdateButton.Click += new System.EventHandler(this.rfPowerMonitorUpdateButton_Click);
@@ -1007,10 +1014,19 @@ namespace EDMHardwareControl
 			this.groupBox12.TabStop = false;
 			this.groupBox12.Text = "Scanning B box";
 			// 
+			// scanningBVoltageBox
+			// 
+			this.scanningBVoltageBox.Location = new System.Drawing.Point(96, 24);
+			this.scanningBVoltageBox.Name = "scanningBVoltageBox";
+			this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
+			this.scanningBVoltageBox.TabIndex = 45;
+			this.scanningBVoltageBox.Text = "0";
+			// 
 			// scanningBFSButton
 			// 
 			this.scanningBFSButton.Location = new System.Drawing.Point(152, 56);
 			this.scanningBFSButton.Name = "scanningBFSButton";
+			this.scanningBFSButton.Size = new System.Drawing.Size(75, 23);
 			this.scanningBFSButton.TabIndex = 44;
 			this.scanningBFSButton.Text = "Max";
 			this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
@@ -1019,6 +1035,7 @@ namespace EDMHardwareControl
 			// 
 			this.scanningBZeroButton.Location = new System.Drawing.Point(64, 56);
 			this.scanningBZeroButton.Name = "scanningBZeroButton";
+			this.scanningBZeroButton.Size = new System.Drawing.Size(75, 23);
 			this.scanningBZeroButton.TabIndex = 43;
 			this.scanningBZeroButton.Text = "Zero";
 			this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
@@ -1027,6 +1044,7 @@ namespace EDMHardwareControl
 			// 
 			this.scanningBUpdateButton.Location = new System.Drawing.Point(184, 24);
 			this.scanningBUpdateButton.Name = "scanningBUpdateButton";
+			this.scanningBUpdateButton.Size = new System.Drawing.Size(75, 23);
 			this.scanningBUpdateButton.TabIndex = 40;
 			this.scanningBUpdateButton.Text = "Update";
 			this.scanningBUpdateButton.Click += new System.EventHandler(this.scanningBUpdateButton_Click);
@@ -1168,6 +1186,7 @@ namespace EDMHardwareControl
 			// 
 			this.updateBCurrentMonitorButton.Location = new System.Drawing.Point(152, 152);
 			this.updateBCurrentMonitorButton.Name = "updateBCurrentMonitorButton";
+			this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(75, 23);
 			this.updateBCurrentMonitorButton.TabIndex = 40;
 			this.updateBCurrentMonitorButton.Text = "Update";
 			this.updateBCurrentMonitorButton.Click += new System.EventHandler(this.updateBCurrentMonitorButton_Click);
@@ -1234,6 +1253,7 @@ namespace EDMHardwareControl
 			// 
 			this.button1.Location = new System.Drawing.Point(72, 136);
 			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 52;
 			this.button1.Text = "Update";
 			// 
@@ -1352,6 +1372,7 @@ namespace EDMHardwareControl
 			// 
 			this.checkYagInterlockButton.Location = new System.Drawing.Point(264, 64);
 			this.checkYagInterlockButton.Name = "checkYagInterlockButton";
+			this.checkYagInterlockButton.Size = new System.Drawing.Size(75, 23);
 			this.checkYagInterlockButton.TabIndex = 45;
 			this.checkYagInterlockButton.Text = "Check";
 			this.checkYagInterlockButton.Click += new System.EventHandler(this.checkYagInterlockButton_Click);
@@ -1417,6 +1438,7 @@ namespace EDMHardwareControl
 			// 
 			this.updateFlashlampVButton.Location = new System.Drawing.Point(264, 32);
 			this.updateFlashlampVButton.Name = "updateFlashlampVButton";
+			this.updateFlashlampVButton.Size = new System.Drawing.Size(75, 23);
 			this.updateFlashlampVButton.TabIndex = 14;
 			this.updateFlashlampVButton.Text = "Update V";
 			this.updateFlashlampVButton.Click += new System.EventHandler(this.updateFlashlampVButton_Click);
@@ -1448,15 +1470,6 @@ namespace EDMHardwareControl
 			this.consoleBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.consoleBox.Size = new System.Drawing.Size(624, 136);
 			this.consoleBox.TabIndex = 26;
-			this.consoleBox.Text = "";
-			// 
-			// scanningBVoltageBox
-			// 
-			this.scanningBVoltageBox.Location = new System.Drawing.Point(96, 24);
-			this.scanningBVoltageBox.Name = "scanningBVoltageBox";
-			this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
-			this.scanningBVoltageBox.TabIndex = 45;
-			this.scanningBVoltageBox.Text = "0";
 			// 
 			// ControlWindow
 			// 
@@ -1469,23 +1482,34 @@ namespace EDMHardwareControl
 			this.Text = "EDM Hardware Control";
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.groupBox7.ResumeLayout(false);
+			this.groupBox7.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
+			this.groupBox9.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.groupBox12.ResumeLayout(false);
+			this.groupBox12.PerformLayout();
 			this.groupBox8.ResumeLayout(false);
+			this.groupBox8.PerformLayout();
 			this.tabPage4.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
+			this.groupBox11.PerformLayout();
 			this.groupBox10.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
+			this.tabPage5.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 		#endregion
@@ -1650,6 +1674,11 @@ namespace EDMHardwareControl
 			box.Text = text;
 		}
 		#endregion
+
+		private void ControlWindow_Load(object sender, EventArgs e)
+		{
+			controller.WindowLoaded();
+		}
 
 	
 	}

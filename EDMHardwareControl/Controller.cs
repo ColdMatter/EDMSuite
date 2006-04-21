@@ -50,6 +50,10 @@ namespace EDMHardwareControl
 		private const int cMinusChan = 2;
 		private const int gPlusChan = 3;
 		private const int gMinusChan = 4;
+		// E field controller mode
+		private enum EFieldMode { TTL, GPIB };
+		private EFieldMode eFieldMode = EFieldMode.GPIB;
+
 		#endregion
 
 		#region Setup
@@ -116,6 +120,18 @@ namespace EDMHardwareControl
 			window.controller = this;
 			Application.Run(window);
 		}
+
+		// this method runs immediately after the GUI sets up
+		internal void WindowLoaded()
+		{
+			// update the GPIB switcher's cached voltages
+			// works around a "first-time" bug with the E-field switch
+			lastGPlus = GPlusVoltage;
+			lastGMinus = GMinusVoltage;
+			lastCPlus = CPlusVoltage;
+			lastCMinus = CMinusVoltage;
+		}
+
 
 		private void CreateDigitalTask(String name)
 		{
@@ -617,10 +633,43 @@ namespace EDMHardwareControl
 			SetDigitalLine("rf2Switch", enable);
 		}
 
+		private double lastGPlus = 0;
+		private double lastGMinus = 0;
+		private double lastCPlus = 0;
+		private double lastCMinus = 0;
 		public void SetEFieldOnOff(bool enable)
 		{
-			SetDigitalLine("eOnOff", enable);
-			SetDigitalLine("notEOnOff", !enable);
+			if (eFieldMode == EFieldMode.TTL)
+			{
+				SetDigitalLine("eOnOff", enable);
+				SetDigitalLine("notEOnOff", !enable);
+			}
+			if (eFieldMode == EFieldMode.GPIB)
+			{
+				if (!enable)
+				{
+					// switching off, so save the voltages for when we switch back on
+					lastGPlus = GPlusVoltage;
+					lastGMinus = GMinusVoltage;
+					lastCPlus = CPlusVoltage;
+					lastCMinus = CMinusVoltage;
+					// set the voltages to zero and update
+					GPlusVoltage = 0;
+					GMinusVoltage = 0;
+					CPlusVoltage = 0;
+					CMinusVoltage = 0;
+					UpdateVoltages();
+				}
+				else
+				{
+					// switching on, so restore the voltages at last switch off
+					GPlusVoltage = lastGPlus;
+					GMinusVoltage = lastGMinus;
+					CPlusVoltage = lastCPlus;
+					CMinusVoltage = lastCMinus;
+					UpdateVoltages();
+				}
+			}
 		}
 
 		public void SetEPolarity(bool state)
@@ -690,5 +739,6 @@ namespace EDMHardwareControl
 		}
 
 		#endregion
+
 	}
 }
