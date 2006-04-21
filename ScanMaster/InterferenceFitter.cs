@@ -50,7 +50,8 @@ namespace ScanMaster.Analyze
 				return "n: " + lastFittedParameters[0].ToString("G3") +
 					" q: " + lastFittedParameters[1].ToString("G3") +
 					" c: " + lastFittedParameters[2].ToString("G6") +
-					" w: " + lastFittedParameters[3].ToString("G3");
+					" w: " + lastFittedParameters[3].ToString("G3") +
+					" d: " + ((lastFittedParameters[2] - 2.5) * 2000).ToString("G3");
 			}
 		}
 	}

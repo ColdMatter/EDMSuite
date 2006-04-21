@@ -36,7 +36,7 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.Label label8;
 		public System.Windows.Forms.TextBox greenOnFreqBox;
 		public System.Windows.Forms.CheckBox redOnCheck;
-		public System.Windows.Forms.Button setRamanButton;
+		public System.Windows.Forms.Button setDualRFButton;
 		public System.Windows.Forms.TextBox ramanAmplitudeBox;
 		public System.Windows.Forms.TextBox urFrequencyBox;
 		public System.Windows.Forms.TextBox lrFrequencyBox;
@@ -172,7 +172,7 @@ namespace EDMHardwareControl
 			this.ePolarityCheck = new System.Windows.Forms.CheckBox();
 			this.eOnCheck = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.setRamanButton = new System.Windows.Forms.Button();
+			this.setDualRFButton = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.ramanAmplitudeBox = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -355,7 +355,7 @@ namespace EDMHardwareControl
 			// 
 			// groupBox4
 			// 
-			this.groupBox4.Controls.Add(this.setRamanButton);
+			this.groupBox4.Controls.Add(this.setDualRFButton);
 			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.ramanAmplitudeBox);
 			this.groupBox4.Controls.Add(this.label3);
@@ -369,14 +369,14 @@ namespace EDMHardwareControl
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Dual rf (FM)";
 			// 
-			// setRamanButton
+			// setDualRFButton
 			// 
-			this.setRamanButton.Location = new System.Drawing.Point(88, 128);
-			this.setRamanButton.Name = "setRamanButton";
-			this.setRamanButton.Size = new System.Drawing.Size(75, 23);
-			this.setRamanButton.TabIndex = 18;
-			this.setRamanButton.Text = "Set synth";
-			this.setRamanButton.Click += new System.EventHandler(this.setRamanButton_Click);
+			this.setDualRFButton.Location = new System.Drawing.Point(88, 128);
+			this.setDualRFButton.Name = "setDualRFButton";
+			this.setDualRFButton.Size = new System.Drawing.Size(75, 23);
+			this.setDualRFButton.TabIndex = 18;
+			this.setDualRFButton.Text = "Set synth";
+			this.setDualRFButton.Click += new System.EventHandler(this.setDualRFButton_Click);
 			// 
 			// label4
 			// 
@@ -1480,6 +1480,7 @@ namespace EDMHardwareControl
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ControlWindow";
 			this.Text = "EDM Hardware Control";
+			this.Load += new System.EventHandler(this.ControlWindow_Load);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
@@ -1567,10 +1568,10 @@ namespace EDMHardwareControl
 			controller.UpdateVoltages();
 		}
 
-		// convenience method to set up synths for Raman
-		private void setRamanButton_Click(object sender, System.EventArgs e)
+		// convenience method to set up synths dual rf
+		private void setDualRFButton_Click(object sender, System.EventArgs e)
 		{
-			controller.SetRaman();
+			controller.SetDualRF();
 		}
 
 		private void bFlipCheck_CheckedChanged(object sender, System.EventArgs e)
@@ -1673,6 +1674,7 @@ namespace EDMHardwareControl
 		{
 			box.Text = text;
 		}
+
 		#endregion
 
 		private void ControlWindow_Load(object sender, EventArgs e)
@@ -1680,6 +1682,5 @@ namespace EDMHardwareControl
 			controller.WindowLoaded();
 		}
 
-	
 	}
 }

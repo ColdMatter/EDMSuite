@@ -698,7 +698,7 @@ namespace EDMHardwareControl
 			SetDigitalLine("greenFM", enable);
 		}
 
-		public void SetRaman()
+		public void SetDualRF()
 		{
 			double lrFreq = Double.Parse(window.lrFrequencyBox.Text);
 			double urFreq = Double.Parse(window.urFrequencyBox.Text);
