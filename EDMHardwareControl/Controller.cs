@@ -33,23 +33,23 @@ namespace EDMHardwareControl
 		private const int eWaitTime = 500;
 		private const int eChargeTime = 1000;
 		// E field controller calibrations
-		private const double cPlusOffset = 0.0;
-		private const double cPlusSlope = 0.001;
-		private const double cMinusOffset = 0.0;
-		private const double cMinusSlope = 0.001;
-		private const double gPlusOffset = 0.0;
-		private const double gPlusSlope = 0.001;
-		private const double gMinusOffset = 0.0;
-		private const double gMinusSlope = 0.001;
+		private const double cPlusOffset = -18.917;
+        private const double cPlusSlope = 9015.49;
+		private const double cMinusOffset = -5.24;
+        private const double cMinusSlope = 9505.59;
+		private const double gPlusOffset = 4.71;
+		private const double gPlusSlope = -2908.07;
+		private const double gMinusOffset = -15.49;
+		private const double gMinusSlope = -3072.35;
 		// E field monitor scale factors - what you need to multiply the monitor voltage by
 		// to get the plate voltage
 		private const double cScale = 1000;
 		private const double gScale = 1000;
 		// E field controller channel mappings
-		private const int cPlusChan = 1;
-		private const int cMinusChan = 2;
-		private const int gPlusChan = 3;
-		private const int gMinusChan = 4;
+		private const int cPlusChan = 3;
+		private const int cMinusChan = 4;
+		private const int gPlusChan = 1;
+		private const int gMinusChan = 2;
 		// E field controller mode
 		private enum EFieldMode { TTL, GPIB };
 		private EFieldMode eFieldMode = EFieldMode.GPIB;
@@ -472,13 +472,26 @@ namespace EDMHardwareControl
 			}
 		}
 
-		public void UpdateVoltages()
-		{
-			voltageController.SetOutputVoltage(cPlusChan, (CPlusVoltage * cPlusSlope) - cPlusOffset);
-			voltageController.SetOutputVoltage(cMinusChan, (CMinusVoltage * cMinusSlope) - cMinusOffset);
-			voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage * gPlusSlope) - gPlusOffset);
-			voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage * gMinusSlope) - gMinusOffset);
-		}
+        //Commented out by Henry, 20.4.06 I have fitted my measured voltage as a function of AO voltage, so to get a 
+        //desired HV, the inverse equation is used. i.e.
+        //I have V_hv=slope_x * V_AO_x + offset_x, so I arrange as:
+        //V_AO_x=(V_hv - offset_x)/slope_x, where x is the appropriate channel
+
+        //public void UpdateVoltages()
+        //{
+        //    voltageController.SetOutputVoltage(cPlusChan, (CPlusVoltage * cPlusSlope) - cPlusOffset);
+        //    voltageController.SetOutputVoltage(cMinusChan, (CMinusVoltage * cMinusSlope) - cMinusOffset);
+        //    voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage * gPlusSlope) - gPlusOffset);
+        //    voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage * gMinusSlope) - gMinusOffset);
+        //}
+
+        public void UpdateVoltages()
+        {
+            voltageController.SetOutputVoltage(cPlusChan, (CPlusVoltage - cPlusOffset) / cPlusSlope);
+            voltageController.SetOutputVoltage(cMinusChan, (CMinusVoltage - cMinusOffset) / cMinusSlope);
+            voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage - gPlusOffset) / gPlusSlope);
+            voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
+        }
 
 		public void UpdateBCurrentMonitor()
 		{
