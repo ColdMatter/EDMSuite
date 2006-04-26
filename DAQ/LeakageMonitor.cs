@@ -31,7 +31,8 @@ namespace DAQ.HAL
 			counterTask = new Task("");	
 			if (!Environs.Debug)
 			{
-				counterTask.CIChannels.CreateFrequencyChannel(
+               
+				this.counterTask.CIChannels.CreateFrequencyChannel(
 					currentLeakageCounterChannel.PhysicalChannel,
 					"",
 					4000,
@@ -52,8 +53,15 @@ namespace DAQ.HAL
 			double raw;
 			if (!Environs.Debug)
 			{
-				raw = leakageReader.ReadSingleSampleDouble();
-				counterTask.Control(TaskAction.Unreserve);
+                try
+                {
+                    raw = leakageReader.ReadSingleSampleDouble();
+                    counterTask.Control(TaskAction.Unreserve);
+                }
+                catch
+                {
+                    raw = 0;
+                }
 			}
 			else
 			{

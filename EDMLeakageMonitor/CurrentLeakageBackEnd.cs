@@ -32,10 +32,11 @@ namespace EDMLeakageMonitor
 		{
 			this.frontEnd = frontEnd;
 			lmArray = new ArrayList();
-			this.lmArray.Add( new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["currentLeakageMonitorNorth-C"]),5049, 5040) );
-			this.lmArray.Add( new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["currentLeakageMonitorNorth-G"]),1, 5000) );
-			this.lmArray.Add( new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["currentLeakageMonitorSouth-C"]),4976, 4990) );
-			this.lmArray.Add( new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["currentLeakageMonitorSouth-G"]),1, 5000) );
+
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"]), 5049, 5040));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"]), 4976, 4990));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"]), 1, 5000));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"]), 1, 5000));
 		
 		}
 
