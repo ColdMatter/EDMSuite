@@ -120,28 +120,28 @@ namespace ScanMaster
 
 			// try to load in the last profile set
 			// first deserialize the profile set path
-			try
-			{
-				BinaryFormatter bf = new BinaryFormatter();
-				String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-				String filePath = settingsPath + "\\ScanMaster\\profilePath.bin";
-				FileStream fs = File.Open(filePath, FileMode.Open);
-				lastProfileSetPath = (string)bf.Deserialize(fs);
-				fs.Close();
-			}
-			catch (Exception)
-			{
-				Console.Error.WriteLine("Couldn't find saved profile path");
-			}
-			try
-			{
-				if (lastProfileSetPath != null) LoadProfileSet(lastProfileSetPath);
-			}
-			catch (Exception e)
-			{
-				Console.Error.WriteLine("Couldn't load last profile set");
-				Console.Error.WriteLine(e.Message);
-			}
+			//try
+			//{
+			//    BinaryFormatter bf = new BinaryFormatter();
+			//    String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+			//    String filePath = settingsPath + "\\ScanMaster\\profilePath.bin";
+			//    FileStream fs = File.Open(filePath, FileMode.Open);
+			//    lastProfileSetPath = (string)bf.Deserialize(fs);
+			//    fs.Close();
+			//}
+			//catch (Exception)
+			//{
+			//    Console.Error.WriteLine("Couldn't find saved profile path");
+			//}
+			//try
+			//{
+			//    if (lastProfileSetPath != null) LoadProfileSet(lastProfileSetPath);
+			//}
+			//catch (Exception e)
+			//{
+			//    Console.Error.WriteLine("Couldn't load last profile set");
+			//    Console.Error.WriteLine(e.Message);
+			//}
 
 			// initialise the parameter helper
 			parameterHelper = new ParameterHelper();

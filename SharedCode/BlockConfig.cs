@@ -8,7 +8,7 @@ namespace EDMConfig
 	/// <summary>
 	/// The idea is that an EDMConfig contains all of the configuration information that
 	/// BlockHead needs to take a block (well, almost. It doesn't contain mappings to 
-	/// phsyical channels at the minute). The config is serialized inside the block so that,
+	/// physical channels at the minute). The config is serialized inside the block so that,
 	/// in principle, the analysis code can analyse against any parameter.
 	/// 
 	/// The switching channels are stored as Modulations. There are currently three types of

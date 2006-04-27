@@ -18,7 +18,7 @@ using DAQ.HAL;
 using EDMConfig;
 
 
-namespace BlockHead 
+namespace BlockHead
 {
 	/// <summary>
 	/// This class is in control of BlockHead. It has a window to interact with the user
