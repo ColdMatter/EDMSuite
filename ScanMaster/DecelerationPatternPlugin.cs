@@ -13,7 +13,9 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
 	/// <summary>
-	/// 
+	/// A plugin for deceleration patterns. Make sure that the sequenceLength setting is always a multiple of 2 (see 
+    /// documentation for PumpProbePatternPlugin to find out why).
+    ///
 	/// </summary>
 	[Serializable]
 	public class DecelerationPatternPlugin : SupersonicPGPluginBase
@@ -32,6 +34,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["onposition"] = 16;
 			settings["offposition"] = 28;
 			settings["numberOfStages"] = 12;
+            settings["sequenceLength"] = 2;
 		}
 
 

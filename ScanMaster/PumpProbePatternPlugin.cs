@@ -11,7 +11,14 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
 	/// <summary>
-	/// 
+	/// A plugin for pump-probe experiments where the pump is switched on and off using an aom.
+    /// This plugin allows for switching of a digital line on successive shots of the scan. The digital line that
+    /// is switched is a setting. This switching is only activated when the SwitchPlugin's switchActive setting is
+    /// true (see the PumpProbePatternBuilder). When the switch is not activated, the ttl line will always be high.
+    /// 
+    /// Note carefully: the sequenceLength setting must be a multiple of 2 for the pattern to have the correct
+    /// behaviour (because sequenceLength is the number of flashlamp pulse intervals in the sequence, and this 
+    /// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
 	public class PumpProbePatternPlugin : SupersonicPGPluginBase
@@ -27,6 +34,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["aomOffDuration"] = 20;
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 5;
+            settings["sequenceLength"] = 2;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -52,7 +60,8 @@ namespace ScanMaster.Acquire.Plugins
 				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
 				(int)config.shotGathererPlugin.Settings["gateStartTime"],
 				(int)settings["ttlSwitchPort"],
-				(int)settings["ttlSwitchLine"]
+				(int)settings["ttlSwitchLine"],
+                (bool)config.switchPlugin.Settings["switchActive"]
 				);
 
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

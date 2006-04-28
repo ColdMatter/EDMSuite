@@ -217,7 +217,7 @@ namespace DAQ.Pattern
 		{
 			get
 			{
-				patternInt16 = new Int16[pattern.Length];
+				Int16[] patternInt16 = new Int16[pattern.Length];
 				for (int i = 0 ; i < pattern.Length ; i++)
 				{
 					Int16 lowWord = (Int16)(pattern[i] & 0x0000ffff);
@@ -232,7 +232,7 @@ namespace DAQ.Pattern
 		{
 			get
 			{
-				patternInt16 = new Int16[pattern.Length];
+				Int16[] patternInt16 = new Int16[pattern.Length];
 				for (int i = 0 ; i < pattern.Length ; i++)
 				{
 					Int16 highWord = (Int16)((pattern[i] & 0xffff0000) >> 16);
@@ -246,7 +246,7 @@ namespace DAQ.Pattern
 		{
 			get
 			{
-				bytePattern = new byte[2 * pattern.Length];
+				byte[] bytePattern = new byte[2 * pattern.Length];
 				for (int i = 0; i < pattern.Length; i++)
 				{
 					byte one = (byte) (pattern[i] & 0x000000ff);
@@ -262,7 +262,7 @@ namespace DAQ.Pattern
 		{
 			get
 			{
-				bytePattern = new byte[2 * pattern.Length];
+				byte[] bytePattern = new byte[2 * pattern.Length];
 				for (int i = 0; i < pattern.Length; i++)
 				{
 					byte three = (byte) ((pattern[i] & 0x00ff0000) >> 16);

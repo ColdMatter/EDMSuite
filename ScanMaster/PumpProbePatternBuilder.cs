@@ -7,7 +7,7 @@ using DAQ.Pattern;
 namespace ScanMaster.Acquire.Patterns
 {
 	/// <summary>
-	/// 
+	/// See the documentation for the PumpProbePatternPlugin
 	/// </summary>
 	public class PumpProbePatternBuilder : DAQ.Pattern.PatternBuilder32
 	{
@@ -25,11 +25,11 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
 			int aomStart2, int aomDuration2, int delayToDetectorTrigger,
-			int ttlSwitchPort, int ttlSwitchLine) 
+			int ttlSwitchPort, int ttlSwitchLine, bool modulation) 
 		{
 		
 			int time = 0;
-
+            bool switchState = false;
 			
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
@@ -37,24 +37,40 @@ namespace ScanMaster.Acquire.Patterns
 				
 				int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort,ttlSwitchLine);
 				// first the pulse with the switch line high
-				AddEdge(switchChannel, time, true);
-				Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger );
+				if (!switchState) AddEdge(switchChannel, time, true);
+                switchState = true;
+				Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger , "detector");
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
 				{
 					FlashlampPulse(time, valveToQ, flashToQ);
 					time += flashlampPulseInterval;
 				}
-				// now with the switch line low
-				
-				AddEdge(switchChannel, time, false);
-				Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger );
-				time += flashlampPulseInterval;
-				for (int p = 0 ; p < padShots ; p++)
-				{
-					FlashlampPulse(time, valveToQ, flashToQ);
-					time += flashlampPulseInterval;
-				}
+				// now with the switch line low, if modulation is true (otherwise another with line high)
+                if (modulation)
+                {
+                    if (switchState) AddEdge(switchChannel, time, false);
+                    switchState = false;
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detectorprime");
+                    time += flashlampPulseInterval;
+                    for (int p = 0; p < padShots; p++)
+                    {
+                        FlashlampPulse(time, valveToQ, flashToQ);
+                        time += flashlampPulseInterval;
+                    }
+                }
+                else
+                {
+                    if (!switchState) AddEdge(switchChannel, time, true);
+                    switchState = true;
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
+                    time += flashlampPulseInterval;
+                    for (int p = 0; p < padShots; p++)
+                    {
+                        FlashlampPulse(time, valveToQ, flashToQ);
+                        time += flashlampPulseInterval;
+                    }
+                }
 			} 
 		
 			return time;
@@ -67,7 +83,7 @@ namespace ScanMaster.Acquire.Patterns
 		}
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
-            int aomStart2, int aomDuration2, int delayToDetectorTrigger)  
+            int aomStart2, int aomDuration2, int delayToDetectorTrigger, string detectorTriggerSource)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -94,7 +110,7 @@ namespace ScanMaster.Acquire.Patterns
 			if (tempTime > time) time = tempTime;
 			// Detector trigger
 			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["detector"]).BitNumber);
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
 		

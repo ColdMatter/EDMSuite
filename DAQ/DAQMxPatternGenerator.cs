@@ -28,7 +28,8 @@ namespace DAQ.HAL
 		// use this method to output a pattern to the whole pattern generator
 		public void OutputPattern(UInt32[] pattern)
 		{
-			writer.WriteMultiSamplePort(true, pattern);
+			
+            writer.WriteMultiSamplePort(true, pattern);
 			// This Sleep is important (or at least it may be). It's here to guarantee that the correct pattern is
 			// being output by the time this call returns. This is needed to make the tweak
 			// and pg scans work correctly. It has the side effect that you have to wait for

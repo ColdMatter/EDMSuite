@@ -115,7 +115,7 @@ namespace ScanMaster.Acquire.Plugins
 				{
 					if (config.switchPlugin.State == true)
 					{
-						inputTask1.Start();
+                        inputTask1.Start();
 						latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
 						inputTask1.Stop();
 					}
