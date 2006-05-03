@@ -12,8 +12,9 @@ namespace ScanMaster.GUI
 	/// </summary>
 	public class StatisticsViewer : Viewer
 	{
-
-		private static int BIN = 10;
+		// TODO: BIN is how often the stats viewer updates. It shouldn't really be
+		// hard coded in like this.
+		private static int BIN = 25;
 		private int shotCounter = 0;
 
 		private StatisticsViewerWindow window;
@@ -74,12 +75,16 @@ namespace ScanMaster.GUI
 
 				double mean = Statistics.Mean(values);
 				double sd = Statistics.StandardDeviation(values);
+				// TODO: this 7 is a cheesily coded magic number. If there's ever any demand it
+				// could either be broken out in to the settings or the Environs.
+				double noise = Math.Sqrt(7) * sd / Math.Sqrt(mean);
 
 				window.AppendToSignalGraph(mean);
-				window.AppendToSignalNoiseGraph(mean/sd);
+				window.AppendToSignalNoiseGraph(noise);
 
 				window.SetMeanText(mean);
 				window.SetSDText(sd);
+				window.SetNoiseText(noise);
 
 				pointsToAverage.Points.Clear();
 			}

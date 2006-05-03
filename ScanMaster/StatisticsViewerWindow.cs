@@ -23,6 +23,7 @@ namespace ScanMaster.GUI
 		private System.Windows.Forms.Label meanLabel;
 		private NationalInstruments.UI.YAxis signalNoiseAxis;
 		private System.Windows.Forms.Label sdLabel;
+		private Label noiseLabel;
 
 		private System.ComponentModel.Container components = null;
 
@@ -54,7 +55,7 @@ namespace ScanMaster.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(StatisticsViewerWindow));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatisticsViewerWindow));
 			this.graph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
 			this.signalPlot = new NationalInstruments.UI.WaveformPlot();
 			this.xAxis1 = new NationalInstruments.UI.XAxis();
@@ -63,6 +64,7 @@ namespace ScanMaster.GUI
 			this.signalNoiseAxis = new NationalInstruments.UI.YAxis();
 			this.meanLabel = new System.Windows.Forms.Label();
 			this.sdLabel = new System.Windows.Forms.Label();
+			this.noiseLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.graph)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -71,15 +73,15 @@ namespace ScanMaster.GUI
 			this.graph.Location = new System.Drawing.Point(16, 16);
 			this.graph.Name = "graph";
 			this.graph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-																					this.signalPlot,
-																					this.signalNoisePlot});
-			this.graph.Size = new System.Drawing.Size(696, 400);
+            this.signalPlot,
+            this.signalNoisePlot});
+			this.graph.Size = new System.Drawing.Size(892, 400);
 			this.graph.TabIndex = 0;
 			this.graph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-																			 this.xAxis1});
+            this.xAxis1});
 			this.graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-																			 this.signalAxis,
-																			 this.signalNoiseAxis});
+            this.signalAxis,
+            this.signalNoiseAxis});
 			// 
 			// signalPlot
 			// 
@@ -103,32 +105,42 @@ namespace ScanMaster.GUI
 			// 
 			// signalNoiseAxis
 			// 
-			this.signalNoiseAxis.Caption = "S:N";
+			this.signalNoiseAxis.Caption = "Factor over shot noise";
 			this.signalNoiseAxis.CaptionPosition = NationalInstruments.UI.YAxisPosition.Right;
 			this.signalNoiseAxis.Position = NationalInstruments.UI.YAxisPosition.Right;
 			// 
 			// meanLabel
 			// 
-			this.meanLabel.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.meanLabel.Location = new System.Drawing.Point(16, 424);
+			this.meanLabel.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.meanLabel.Location = new System.Drawing.Point(21, 424);
 			this.meanLabel.Name = "meanLabel";
-			this.meanLabel.Size = new System.Drawing.Size(344, 104);
+			this.meanLabel.Size = new System.Drawing.Size(301, 104);
 			this.meanLabel.TabIndex = 1;
 			this.meanLabel.Text = "---";
 			// 
 			// sdLabel
 			// 
-			this.sdLabel.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.sdLabel.Location = new System.Drawing.Point(368, 424);
+			this.sdLabel.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.sdLabel.Location = new System.Drawing.Point(328, 424);
 			this.sdLabel.Name = "sdLabel";
-			this.sdLabel.Size = new System.Drawing.Size(344, 104);
+			this.sdLabel.Size = new System.Drawing.Size(321, 104);
 			this.sdLabel.TabIndex = 2;
 			this.sdLabel.Text = "---";
+			// 
+			// noiseLabel
+			// 
+			this.noiseLabel.Font = new System.Drawing.Font("Arial Black", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.noiseLabel.Location = new System.Drawing.Point(655, 424);
+			this.noiseLabel.Name = "noiseLabel";
+			this.noiseLabel.Size = new System.Drawing.Size(253, 104);
+			this.noiseLabel.TabIndex = 3;
+			this.noiseLabel.Text = "---";
 			// 
 			// StatisticsViewerWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(730, 536);
+			this.ClientSize = new System.Drawing.Size(920, 536);
+			this.Controls.Add(this.noiseLabel);
 			this.Controls.Add(this.sdLabel);
 			this.Controls.Add(this.meanLabel);
 			this.Controls.Add(this.graph);
@@ -172,6 +184,12 @@ namespace ScanMaster.GUI
 			SetLabelText(sdLabel, String.Format("{0:F2}",sd));
 		}
 
+		internal void SetNoiseText(double noise)
+		{
+			SetLabelText(noiseLabel, String.Format("{0:F2}", noise));
+		}
+		
+		
 		// UI delegates and thread-safe helpers
 		private delegate void ClearDataDelegate();
 		private void ClearNIGraph(Graph graph) 
@@ -200,7 +218,6 @@ namespace ScanMaster.GUI
 			e.Cancel = true;
 			viewer.ToggleVisible();
 		}
-
 
 	}
 }
