@@ -14,7 +14,7 @@ namespace ScanMaster.GUI
 	{
 		// TODO: BIN is how often the stats viewer updates. It shouldn't really be
 		// hard coded in like this.
-		private static int BIN = 25;
+		private static int BIN = 50;
 		private int shotCounter = 0;
 
 		private StatisticsViewerWindow window;

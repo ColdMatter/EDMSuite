@@ -359,11 +359,11 @@ namespace EDMLeakageMonitor
 		public delegate void PlotYAppendSingleDelegate(double data);
 		public void PlotDataPoints(ArrayList recentData)
 		{
-			//convert real currents to nA
-			for(int i = 0;i<4;i++)
-			{
-				recentData[i]=(double)recentData[i]*1000000000;
-			}
+            ////convert real currents to nA
+            //for(int i = 0;i<4;i++)
+            //{
+            //    recentData[i]=(double)recentData[i];
+            //}
 
 			//todo: Kill these threads before closing.
 			northCGraph.Invoke( new PlotYAppendSingleDelegate(northCGraph.PlotYAppend), new object[] {(double)recentData[0]});
