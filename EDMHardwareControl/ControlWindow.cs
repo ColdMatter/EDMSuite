@@ -136,11 +136,11 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.Button scanningBUpdateButton;
 		public System.Windows.Forms.TextBox scanningBVoltageBox;
 		private GroupBox groupBox13;
-		public CheckBox checkBox1;
+		public CheckBox eFieldAsymmetryCheckBox;
 		private Label label37;
 		private Label label38;
-		public TextBox textBox3;
-		public TextBox textBox4;
+		public TextBox zeroPlusOneMinusBoostTextBox;
+		public TextBox zeroPlusBoostTextBox;
 
 
 		public Controller controller;
@@ -214,6 +214,12 @@ namespace EDMHardwareControl
 			this.bFlipCheck = new System.Windows.Forms.CheckBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.groupBox13 = new System.Windows.Forms.GroupBox();
+			this.eFieldAsymmetryCheckBox = new System.Windows.Forms.CheckBox();
+			this.label37 = new System.Windows.Forms.Label();
+			this.label38 = new System.Windows.Forms.Label();
+			this.zeroPlusOneMinusBoostTextBox = new System.Windows.Forms.TextBox();
+			this.zeroPlusBoostTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.gMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.cPlusVMonitorTextBox = new System.Windows.Forms.TextBox();
@@ -290,12 +296,6 @@ namespace EDMHardwareControl
 			this.label33 = new System.Windows.Forms.Label();
 			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
 			this.consoleBox = new System.Windows.Forms.TextBox();
-			this.groupBox13 = new System.Windows.Forms.GroupBox();
-			this.label37 = new System.Windows.Forms.Label();
-			this.label38 = new System.Windows.Forms.Label();
-			this.textBox3 = new System.Windows.Forms.TextBox();
-			this.textBox4 = new System.Windows.Forms.TextBox();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -303,6 +303,7 @@ namespace EDMHardwareControl
 			this.groupBox5.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			this.groupBox13.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -314,7 +315,6 @@ namespace EDMHardwareControl
 			this.groupBox11.SuspendLayout();
 			this.groupBox10.SuspendLayout();
 			this.tabPage5.SuspendLayout();
-			this.groupBox13.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox2
@@ -715,6 +715,60 @@ namespace EDMHardwareControl
 			this.tabPage1.Size = new System.Drawing.Size(616, 358);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "E-field";
+			// 
+			// groupBox13
+			// 
+			this.groupBox13.Controls.Add(this.eFieldAsymmetryCheckBox);
+			this.groupBox13.Controls.Add(this.label37);
+			this.groupBox13.Controls.Add(this.label38);
+			this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
+			this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
+			this.groupBox13.Location = new System.Drawing.Point(17, 230);
+			this.groupBox13.Name = "groupBox13";
+			this.groupBox13.Size = new System.Drawing.Size(201, 112);
+			this.groupBox13.TabIndex = 41;
+			this.groupBox13.TabStop = false;
+			this.groupBox13.Text = "Supply asymmetry";
+			// 
+			// eFieldAsymmetryCheckBox
+			// 
+			this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
+			this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
+			this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
+			this.eFieldAsymmetryCheckBox.TabIndex = 38;
+			this.eFieldAsymmetryCheckBox.Text = "Enable";
+			// 
+			// label37
+			// 
+			this.label37.Location = new System.Drawing.Point(16, 83);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(107, 23);
+			this.label37.TabIndex = 37;
+			this.label37.Text = "0+1- boost (V)";
+			// 
+			// label38
+			// 
+			this.label38.Location = new System.Drawing.Point(16, 51);
+			this.label38.Name = "label38";
+			this.label38.Size = new System.Drawing.Size(80, 23);
+			this.label38.TabIndex = 36;
+			this.label38.Text = "0+ boost (V)";
+			// 
+			// zeroPlusOneMinusBoostTextBox
+			// 
+			this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(125, 79);
+			this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
+			this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+			this.zeroPlusOneMinusBoostTextBox.TabIndex = 33;
+			this.zeroPlusOneMinusBoostTextBox.Text = "-200";
+			// 
+			// zeroPlusBoostTextBox
+			// 
+			this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(126, 51);
+			this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
+			this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+			this.zeroPlusBoostTextBox.TabIndex = 32;
+			this.zeroPlusBoostTextBox.Text = "200";
 			// 
 			// groupBox6
 			// 
@@ -1485,60 +1539,6 @@ namespace EDMHardwareControl
 			this.consoleBox.Size = new System.Drawing.Size(624, 136);
 			this.consoleBox.TabIndex = 26;
 			// 
-			// groupBox13
-			// 
-			this.groupBox13.Controls.Add(this.checkBox1);
-			this.groupBox13.Controls.Add(this.label37);
-			this.groupBox13.Controls.Add(this.label38);
-			this.groupBox13.Controls.Add(this.textBox3);
-			this.groupBox13.Controls.Add(this.textBox4);
-			this.groupBox13.Location = new System.Drawing.Point(17, 230);
-			this.groupBox13.Name = "groupBox13";
-			this.groupBox13.Size = new System.Drawing.Size(201, 112);
-			this.groupBox13.TabIndex = 41;
-			this.groupBox13.TabStop = false;
-			this.groupBox13.Text = "Supply asymmetry";
-			// 
-			// label37
-			// 
-			this.label37.Location = new System.Drawing.Point(16, 83);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(107, 23);
-			this.label37.TabIndex = 37;
-			this.label37.Text = "North-one boost (V)";
-			// 
-			// label38
-			// 
-			this.label38.Location = new System.Drawing.Point(16, 51);
-			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(80, 23);
-			this.label38.TabIndex = 36;
-			this.label38.Text = "North boost (V)";
-			// 
-			// textBox3
-			// 
-			this.textBox3.Location = new System.Drawing.Point(125, 79);
-			this.textBox3.Name = "textBox3";
-			this.textBox3.Size = new System.Drawing.Size(64, 20);
-			this.textBox3.TabIndex = 33;
-			this.textBox3.Text = "-200";
-			// 
-			// textBox4
-			// 
-			this.textBox4.Location = new System.Drawing.Point(126, 51);
-			this.textBox4.Name = "textBox4";
-			this.textBox4.Size = new System.Drawing.Size(64, 20);
-			this.textBox4.TabIndex = 32;
-			this.textBox4.Text = "200";
-			// 
-			// checkBox1
-			// 
-			this.checkBox1.Location = new System.Drawing.Point(19, 19);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(72, 24);
-			this.checkBox1.TabIndex = 38;
-			this.checkBox1.Text = "Enable";
-			// 
 			// ControlWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1559,6 +1559,8 @@ namespace EDMHardwareControl
 			this.groupBox5.ResumeLayout(false);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			this.groupBox13.ResumeLayout(false);
+			this.groupBox13.PerformLayout();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
 			this.groupBox7.ResumeLayout(false);
@@ -1577,8 +1579,6 @@ namespace EDMHardwareControl
 			this.groupBox10.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
 			this.tabPage5.PerformLayout();
-			this.groupBox13.ResumeLayout(false);
-			this.groupBox13.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

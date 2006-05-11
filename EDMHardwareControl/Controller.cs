@@ -487,8 +487,24 @@ namespace EDMHardwareControl
 
         public void UpdateVoltages()
         {
-            voltageController.SetOutputVoltage(cPlusChan, (CPlusVoltage - cPlusOffset) / cPlusSlope);
-            voltageController.SetOutputVoltage(cMinusChan, (CMinusVoltage - cMinusOffset) / cMinusSlope);
+			// kludge in the asymmetric field switch here
+			double cPlus = CPlusVoltage;
+			double cMinus = CMinusVoltage;
+			if (EFieldEnabled && window.eFieldAsymmetryCheckBox.Checked)
+			{
+				if (EFieldPolarity == false)
+				{
+					cPlus += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+					cPlus += Double.Parse(window.zeroPlusBoostTextBox.Text);
+				}
+				else
+				{
+					cMinus -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+				}
+			}
+
+            voltageController.SetOutputVoltage(cPlusChan, (cPlus - cPlusOffset) / cPlusSlope);
+            voltageController.SetOutputVoltage(cMinusChan, (cMinus - cMinusOffset) / cMinusSlope);
             voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage - gPlusOffset) / gPlusSlope);
             voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
         }
