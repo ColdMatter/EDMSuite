@@ -25,21 +25,19 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
 			int aomStart2, int aomDuration2, int delayToDetectorTrigger,
-			int ttlSwitchPort, int ttlSwitchLine, bool modulation) 
+			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, bool modulation) 
 		{
 		
 			int time = 0;
-            bool switchState = false;
-			
+            			
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
 				
 				int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort,ttlSwitchLine);
 				// first the pulse with the switch line high
-				if (!switchState) AddEdge(switchChannel, time, true);
-                switchState = true;
-				Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger , "detector");
+				Pulse(time, 0, switchLineDuration, switchChannel);
+              	Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger , "detector");
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
 				{
@@ -49,8 +47,6 @@ namespace ScanMaster.Acquire.Patterns
 				// now with the switch line low, if modulation is true (otherwise another with line high)
                 if (modulation)
                 {
-                    if (switchState) AddEdge(switchChannel, time, false);
-                    switchState = false;
                     Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detectorprime");
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
@@ -61,8 +57,7 @@ namespace ScanMaster.Acquire.Patterns
                 }
                 else
                 {
-                    if (!switchState) AddEdge(switchChannel, time, true);
-                    switchState = true;
+                    Pulse(time, 0, switchLineDuration, switchChannel);
                     Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
