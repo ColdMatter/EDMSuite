@@ -41,8 +41,8 @@ namespace DAQ.HAL
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
-		//	AddAnalogInputChannel("longcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
-		//	AddAnalogInputChannel("shortcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
+			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
+			AddAnalogInputChannel("cavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
 		//	AddAnalogOutputChannel("aom", daqBoard + "/ao1"); 
 
