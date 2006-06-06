@@ -32,14 +32,15 @@ namespace LaserLock
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.parkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.parkLockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cavityGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.cavityPlot = new NationalInstruments.UI.WaveformPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.outputValueNumericEditor = new NationalInstruments.UI.WindowsForms.NumericEdit();
-            this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.LockCheck = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cavityGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.outputValueNumericEditor)).BeginInit();
@@ -60,7 +61,6 @@ namespace LaserLock
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.parkToolStripMenuItem,
             this.lockToolStripMenuItem,
-            this.parkLockToolStripMenuItem,
             this.unlockToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(54, 20);
@@ -80,11 +80,12 @@ namespace LaserLock
             this.lockToolStripMenuItem.Text = "Lock";
             this.lockToolStripMenuItem.Click += new System.EventHandler(this.lockToolStripMenuItem_Click);
             // 
-            // parkLockToolStripMenuItem
+            // unlockToolStripMenuItem
             // 
-            this.parkLockToolStripMenuItem.Name = "parkLockToolStripMenuItem";
-            this.parkLockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.parkLockToolStripMenuItem.Text = "Park and Lock";
+            this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
+            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unlockToolStripMenuItem.Text = "Unlock";
+            this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
             // 
             // cavityGraph
             // 
@@ -118,7 +119,7 @@ namespace LaserLock
             // 
             this.outputValueNumericEditor.CoercionInterval = 0.005;
             this.outputValueNumericEditor.FormatMode = NationalInstruments.UI.NumericFormatMode.CreateSimpleDoubleMode(3);
-            this.outputValueNumericEditor.Location = new System.Drawing.Point(12, 28);
+            this.outputValueNumericEditor.Location = new System.Drawing.Point(100, 28);
             this.outputValueNumericEditor.Name = "outputValueNumericEditor";
             this.outputValueNumericEditor.OutOfRangeMode = NationalInstruments.UI.NumericOutOfRangeMode.CoerceToRange;
             this.outputValueNumericEditor.Range = new NationalInstruments.UI.Range(-5, 5);
@@ -128,23 +129,39 @@ namespace LaserLock
             this.outputValueNumericEditor.DownButtonClicked += new System.EventHandler(this.UpdateVoltage);
             this.outputValueNumericEditor.UpButtonClicked += new System.EventHandler(this.UpdateVoltage);
             // 
-            // unlockToolStripMenuItem
+            // label1
             // 
-            this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
-            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.unlockToolStripMenuItem.Text = "Unlock";
-            this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(167, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Control Voltage";
+            // 
+            // LockCheck
+            // 
+            this.LockCheck.AutoSize = true;
+            this.LockCheck.Location = new System.Drawing.Point(12, 28);
+            this.LockCheck.Name = "LockCheck";
+            this.LockCheck.Size = new System.Drawing.Size(62, 17);
+            this.LockCheck.TabIndex = 6;
+            this.LockCheck.Text = "Locked";
+            this.LockCheck.UseVisualStyleBackColor = true;
+            this.LockCheck.CheckedChanged += new System.EventHandler(this.lockCheck_CheckedChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 292);
+            this.Controls.Add(this.LockCheck);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.outputValueNumericEditor);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.cavityGraph);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Laser Lock";
             this.menuStrip1.ResumeLayout(false);
@@ -162,7 +179,6 @@ namespace LaserLock
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem parkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem parkLockToolStripMenuItem;
         private NationalInstruments.UI.WindowsForms.WaveformGraph cavityGraph;
         private NationalInstruments.UI.WaveformPlot cavityPlot;
         private NationalInstruments.UI.XAxis xAxis1;
@@ -170,6 +186,8 @@ namespace LaserLock
         private System.Windows.Forms.TextBox textBox1;
         private NationalInstruments.UI.WindowsForms.NumericEdit outputValueNumericEditor;
         private System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox LockCheck;
     }
 }
 

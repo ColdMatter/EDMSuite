@@ -11,6 +11,7 @@ namespace DAQ.HAL
 	{
 		protected String name;
 		protected String physicalChannel;
+        protected bool blocked;
 
 		public String Name
 		{
@@ -21,5 +22,13 @@ namespace DAQ.HAL
 		{
 			get { return physicalChannel; }
 		}
+
+        /* An application may mark a channel as blocked.
+         * The blocking is not enforced anywhere. Applications should self-regulate */ 
+        public bool Blocked
+        {
+            get { return blocked; }
+            set { blocked = value; }
+        }
 	}
 }

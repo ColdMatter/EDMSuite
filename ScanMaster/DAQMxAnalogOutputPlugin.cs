@@ -51,17 +51,17 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void ScanStarting()
 		{
-			rampOutputToVoltage((double)settings["start"]);
+			if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
 		}
 
 		public override void ScanFinished()
 		{
-			rampOutputToVoltage((double)settings["start"]);
+			if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
 		}
 
 		public override void AcquisitionFinished()
 		{
-			rampOutputToVoltage(0);
+			if (!Blocked()) rampOutputToVoltage(0);
 			outputTask.Dispose();
 		}
 		
@@ -70,8 +70,11 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			set
 			{
-				scanParameter = value;
-				if (!Environs.Debug) writer.WriteSingleSample(true, value);
+                if (!Blocked())
+                {
+                    scanParameter = value;
+                    if (!Environs.Debug) writer.WriteSingleSample(true, value);
+                }
 			}
 			get { return scanParameter; }
 		}
@@ -86,6 +89,12 @@ namespace ScanMaster.Acquire.Plugins
 			}
 			scanParameter = voltage;
 		}
+
+        private bool Blocked()
+        {
+            return ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["channel"]]).Blocked;
+        }
+
 
 		
 	}

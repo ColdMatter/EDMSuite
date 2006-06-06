@@ -18,6 +18,7 @@ namespace DAQ.HAL
 			this.name = name;
 			this.physicalChannel = physicalChannel;
 			this.terminalConfig = terminalConfig;
+            this.blocked = false;
 		}
 
 		public AITerminalConfiguration TerminalConfig

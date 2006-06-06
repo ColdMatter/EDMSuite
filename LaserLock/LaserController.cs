@@ -9,19 +9,24 @@ using Data.Scans;
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
+using DAQ.Remoting;
+using System.Windows.Forms;
 
 namespace LaserLock
 {
-    class LaserController
+    public class LaserController : MarshalByRefObject
     {
 
         private const double UPPER_VOLTAGE_LIMIT = 10.0;
         private const double LOWER_VOLTAGE_LIMIT = -10.0;
         private const int SAMPLES_PER_READ = 10;
-        private const int SLEEPING_TIME = 2000;
+        private const int SLEEPING_TIME = 500;
+        private const int LATENCY = 10000;
         
         private ScanMaster.Controller scanMaster;
         private ScanMaster.Analyze.GaussianFitter fitter;
+        private DecelerationHardwareControl.Controller hardwareControl;
+        
         private MainForm ui;
 
         private Task outputTask;
@@ -38,19 +43,28 @@ namespace LaserLock
         private double voltage = 0.0;
         private double[] latestData;
 
-        public LaserController(MainForm form)
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
         {
-            ui = form;
-            
-            // ask the remoting system for access to ScanMaster 
-            RemotingConfiguration.RegisterWellKnownClientType(
-                Type.GetType("ScanMaster.Controller, ScanMaster"),
-                "tcp://localhost:1170/controller.rem"
-                );
+            return null;
+        }
+
+        public void Start()
+        {
+            ui = new MainForm();
+            ui.controller = this;
+
+            // get access to ScanMaster and the DecelerationHardwareController
+            RemotingHelper.ConnectScanMaster();
+            RemotingHelper.ConnectDecelerationHardwareControl();
 
             scanMaster = new ScanMaster.Controller();
+            hardwareControl = new DecelerationHardwareControl.Controller();
             fitter = new ScanMaster.Analyze.GaussianFitter();
 
+           
             if (!Environs.Debug)
             {
                 outputTask = new Task("LaserControllerOutput");
@@ -65,6 +79,8 @@ namespace LaserLock
                 cavityChannel.AddToTask(inputTask, -10, 10);
                 cavityReader = new AnalogSingleChannelReader(inputTask.Stream);
             }
+
+            Application.Run(ui);
         }
 
         public ControllerState Status
@@ -97,7 +113,7 @@ namespace LaserLock
                             ui.AddToTextBox("Parked at " + centreVoltage + " volts." + Environment.NewLine);
                         }
                         else ui.AddToTextBox("Ramping to " + centreVoltage + " volts. \n");
-                        ui.OutputVoltageNumericEditorValue = centreVoltage;
+                        ui.SetOutputVoltageNumericEditorValue(centreVoltage);
                     }
                     else ui.AddToTextBox("Failed - Unable to locate the resonance." + Environment.NewLine);
                 }
@@ -115,24 +131,38 @@ namespace LaserLock
             double averageValue = 0;
             Random r = new Random();
             status = ControllerState.busy;
+            
+            hardwareControl.LaserLocked = true;
             while (status == ControllerState.busy)
             {
                 if (!Environs.Debug)
                 {
-                    inputTask.Start();
-                    latestData = cavityReader.ReadMultiSample(SAMPLES_PER_READ);
-                    inputTask.Stop();
-                    foreach (double d in latestData) averageValue += d;
-                    averageValue = averageValue / SAMPLES_PER_READ;
+                    laserChannel.Blocked = true;
+                    if (hardwareControl.AnalogInputsAvailable)
+                    {
+                        inputTask.Start();
+                        latestData = cavityReader.ReadMultiSample(SAMPLES_PER_READ);
+                        inputTask.Stop();
+                        foreach (double d in latestData) averageValue += d;
+                        averageValue = averageValue / SAMPLES_PER_READ;
+                        hardwareControl.UpdateLockCavityData(averageValue);
+                    }
+                    else
+                    {
+                        averageValue = hardwareControl.LastCavityData;
+                    }
                 }            
                 else
                 {
                     averageValue = r.NextDouble();
+                    hardwareControl.UpdateLockCavityData(averageValue);
                 }
-                ui.AddToTextBox(averageValue + Environment.NewLine);    
+                if (hardwareControl.TimeSinceLastCavityRead < LATENCY) ui.AddToTextBox(averageValue + Environment.NewLine);    
                 Thread.Sleep(SLEEPING_TIME);
             }
             status = ControllerState.free;
+            hardwareControl.LaserLocked = false;
+            if (!Environs.Debug) laserChannel.Blocked = false;
         }
 
         private void RampToVoltage(double v)

@@ -4,6 +4,7 @@ using System.Collections;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using DAQ.Remoting;
 
 namespace DAQ.HAL
 {
@@ -42,8 +43,7 @@ namespace DAQ.HAL
 			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
 			AddAnalogInputChannel("longcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
-			AddAnalogInputChannel("shortcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("lock", daqBoard + "/ai5", AITerminalConfiguration.Rse);
+			AddAnalogInputChannel("lockcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("aom", daqBoard + "/ao1");
 
@@ -53,6 +53,10 @@ namespace DAQ.HAL
 
 		}
 
+        public override void ConnectApplications()
+        {
+            RemotingHelper.ConnectDecelerationHardwareControl();
+        }
 
 	}
 }

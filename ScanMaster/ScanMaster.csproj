@@ -106,6 +106,10 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\DecelerationHardwareControl\DecelerationHardwareControl.csproj">
+      <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
+      <Name>DecelerationHardwareControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Name>SharedCode</Name>
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
@@ -158,6 +162,7 @@
     <Compile Include="DataStore.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DecelerationHardwareAnalogInputPlugin.cs" />
     <Compile Include="DecelerationPatternBuilder.cs">
       <SubType>Code</SubType>
     </Compile>

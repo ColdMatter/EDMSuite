@@ -5,8 +5,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 
-
-namespace LaserLock
+namespace DecelerationHardwareControl
 {
     static class Runner
     {
@@ -16,10 +15,11 @@ namespace LaserLock
         [STAThread]
         static void Main()
         {
-            LaserController controller = new LaserController();
-                        
+            // instantiate the controller
+            Controller controller = new Controller();
+
             // publish the controller to the remoting system
-            TcpChannel channel = new TcpChannel(1176);
+            TcpChannel channel = new TcpChannel(1177);
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 

@@ -82,6 +82,11 @@ namespace DAQ.HAL
 			counterChannels.Add(name, new CounterChannel(name, physicalChannel));
 		}
 
+        public virtual void ConnectApplications()
+        {
+            // default is - do nothing
+        }
+
 	}
 
 }

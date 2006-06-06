@@ -150,6 +150,9 @@ namespace ScanMaster
 			// connect the acquisitor to the profile manager, which will send it events when the
 			// user is in tweak mode.
 			profileManager.Tweak +=new TweakEventHandler(acquisitor.HandleTweak);
+
+            // Get access to any other applications required
+            Environs.Hardware.ConnectApplications();
 	
 			// run the main event loop
 			Application.Run(controllerWindow);

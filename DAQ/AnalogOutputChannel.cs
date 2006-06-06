@@ -13,6 +13,7 @@ namespace DAQ.HAL
 		{
 			this.name = name;
 			this.physicalChannel = physicalChannel;
+            blocked = false;
 		}
 
 		public void AddToTask(Task task, double outputRangeLow, double outputRangeHigh)

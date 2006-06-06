@@ -16,13 +16,12 @@ namespace LaserLock
     public partial class MainForm : Form
     {
 
-        private LaserController controller;
+        public LaserController controller;
         private Thread controlThread;
         
         public MainForm()
         {
-            InitializeComponent();
-            controller = new LaserController(this);           
+            InitializeComponent();       
         }
 
         private delegate void AppendToTextBoxDelegate(string text);
@@ -31,17 +30,22 @@ namespace LaserLock
             textBox1.Invoke(new AppendToTextBoxDelegate(textBox1.AppendText), text);
         }
 
+        private void SetVoltageEditorValue(double d)
+        {
+            outputValueNumericEditor.Value = d;
+        }
+        private delegate void SetNumericEditorDelegate(double d);
+        public void SetOutputVoltageNumericEditorValue(double val)
+        {
+            outputValueNumericEditor.Invoke(new SetNumericEditorDelegate(SetVoltageEditorValue), val);
+        }
+        
         public double OutputVoltageNumericEditorValue
         {
             get
             {
                 return outputValueNumericEditor.Value;
-            }
-            set 
-            {
-                outputValueNumericEditor.Value = value;            
-            }
-            
+            }            
         }
 
         private void UpdateVoltage(object sender, AfterChangeNumericValueEventArgs e)
@@ -71,6 +75,22 @@ namespace LaserLock
 
         private void lockToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LockCheck.Checked = true;
+        }
+
+        private void unlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LockCheck.Checked = false;
+        }
+
+        private void lockCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (LockCheck.Checked) Lock();
+            else Unlock();
+        }
+
+        private void Lock()
+        {
             if (controller.Status == LaserController.ControllerState.free)
             {
                 controlThread = new Thread(new ThreadStart(controller.Lock));
@@ -78,13 +98,13 @@ namespace LaserLock
                 controlThread.Priority = ThreadPriority.Normal;
                 controlThread.Start();
             }
-            else 
-            { 
+            else
+            {
                 // do nothing 
             }
         }
 
-        private void unlockToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Unlock()
         {
             if (controller.Status == LaserController.ControllerState.busy)
             {

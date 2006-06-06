@@ -222,6 +222,7 @@
     <Compile Include="QuantaRayLaser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RemotingHelper.cs" />
     <Compile Include="SchnapsFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
