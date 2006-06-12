@@ -70,7 +70,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["sampleRate"], 
 				SampleClockActiveEdge.Rising, 
 				SampleQuantityMode.FiniteSamples, 
-				(int)settings["gateLength"] + 1);
+				(int)(Math.Round((double)((int)settings["gateLength"]/(1000000/(int)settings["sampleRate"])))) + 1);
 
 			countingTask.Control(TaskAction.Verify);
 

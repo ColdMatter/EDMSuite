@@ -46,6 +46,10 @@ namespace DAQ.HAL
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("aom", daqBoard + "/ao1");
 
+            // map the counter channels
+            AddCounterChannel("pmt", daqBoard + "/ctr0");
+            AddCounterChannel("sample clock", daqBoard + "/ctr1");
+
 		}
 
 
