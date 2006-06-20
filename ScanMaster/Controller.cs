@@ -323,7 +323,8 @@ namespace ScanMaster
 		{
 			Monitor.Enter(acquisitor.AcquisitorMonitorLock);
 			AcquireStart(numberOfScans);
-			Monitor.Wait(acquisitor.AcquisitorMonitorLock);
+            // check that acquisition is underway. Provided it is, release the lock
+			if (appState == AppState.running) Monitor.Wait(acquisitor.AcquisitorMonitorLock);
 			Monitor.Exit(acquisitor.AcquisitorMonitorLock);
 			AcquireStop();
 		}
@@ -391,6 +392,11 @@ namespace ScanMaster
 		{
 			return profileManager.CurrentProfile.AcquisitorConfig.shotGathererPlugin.Settings[key];
 		}
+
+        public object GetOutputSetting(String key)
+        {
+            return profileManager.CurrentProfile.AcquisitorConfig.outputPlugin.Settings[key];
+        }
 
 		// Saves the latest average scan in the datastore to the given filestream
 		public void SaveAverageData( System.IO.FileStream fs )
