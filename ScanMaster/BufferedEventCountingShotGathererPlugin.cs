@@ -29,7 +29,9 @@ namespace ScanMaster.Acquire.Plugins
 	///  -----------------
 	///  Route the signal to be counted to the source pin of a counter (I'll call it counter A)
 	///  Route the output of the second counter (counter B, the sample clock) to the gate pin of counter A
-	///  To trigger the data acquisition, route the trigger signal to the gate pin of counter B
+	///  To trigger the data acquisition, route a trigger signal to the analog input standard trigger (PFI0 - for compatibility with analog shot gathering)
+    ///  To take modulated (on/off) data, you should have two separate triggers from the PG - one for the off shots and the other for the
+    ///  on shots. Route the second trigger to PFI1.
 	///  Beware of cross-talk between the source and gate pins - this will upset everything!
 	/// </summary>
 	[Serializable]
@@ -38,7 +40,9 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private Task countingTask;
 		[NonSerialized]
-		private Task freqOutTask;
+		private Task freqOutTask1;
+        [NonSerialized]
+        private Task freqOutTask2;
 		[NonSerialized]
 		private CounterReader countReader;
 		[NonSerialized]
@@ -74,11 +78,13 @@ namespace ScanMaster.Acquire.Plugins
 
 			countingTask.Control(TaskAction.Verify);
 
-			// set up a task to generate the sample clock on the second counter
-			freqOutTask = new Task("buffered event counter clock generation");
+			// set up two taska to generate the sample clock on the second counter
+			freqOutTask1 = new Task("buffered event counter clock generation 1");
+            freqOutTask2 = new Task("buffered event counter clock generation 2");
 
 			//the frequency of the clock is set by the "sampleRate" setting and the duty cycle is set to 0.5
-			freqOutTask.COChannels.CreatePulseChannelFrequency(
+            //the two output tasks have the same settings
+			freqOutTask1.COChannels.CreatePulseChannelFrequency(
 				((CounterChannel)Environs.Hardware.CounterChannels["sample clock"]).PhysicalChannel,
 				"photon counter clocking signal",
                 COPulseFrequencyUnits.Hertz, 
@@ -86,18 +92,33 @@ namespace ScanMaster.Acquire.Plugins
 				0, 
 				(int)settings["sampleRate"], 
 				0.5);
-			freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples, 1000);
+			freqOutTask1.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples, 1000);
+
+            freqOutTask2.COChannels.CreatePulseChannelFrequency(
+                ((CounterChannel)Environs.Hardware.CounterChannels["sample clock"]).PhysicalChannel,
+                "photon counter clocking signal",
+                COPulseFrequencyUnits.Hertz,
+                COPulseIdleState.Low,
+                0,
+                (int)settings["sampleRate"],
+                0.5);
+            freqOutTask2.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples, 1000);
 			
 			
 			// if we're using a hardware trigger to synchronize data acquisition, we need to set up the 
-			// trigger parameters on the sample clock
+			// trigger parameters on the sample clock.
+            // The first output task is triggered on PFI0 and the second is triggered on PFI1
 			if((bool)settings["triggerActive"])
 			{
-				freqOutTask.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
-				freqOutTask.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
-				// the trigger is expected to appear on PFI4
-				freqOutTask.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI4";
-			}
+				freqOutTask1.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
+				freqOutTask1.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
+                freqOutTask2.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
+                freqOutTask2.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
+				// the trigger is expected to appear on PFI0
+				freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI0";
+                // the trigger is expected to appear on PFI1
+                freqOutTask2.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI1";
+            }
 		
 			// set up a reader for the edge counter
 			countReader = new CounterReader(countingTask.Stream);
@@ -114,8 +135,16 @@ namespace ScanMaster.Acquire.Plugins
 		public override void AcquisitionFinished()
 		{
 			countingTask.Dispose();
-			freqOutTask.Stop();
-			freqOutTask.Dispose();
+            if (config.switchPlugin.State)
+            {
+                freqOutTask1.Stop();
+            }
+            else
+            {
+                freqOutTask2.Stop();
+            }
+			freqOutTask1.Dispose();
+            freqOutTask2.Dispose();
 		}
 
 		public override void ArmAndWait()
@@ -128,7 +157,15 @@ namespace ScanMaster.Acquire.Plugins
 				
 				// Get the sample clock ready. If the trigger is inactive, the clock will start its output immediately.
 				// If the trigger is active, there is no output until the counter is triggered
-				freqOutTask.Start();
+                // Which output task runs depends on the switch-state.
+                if (config.switchPlugin.State)
+                {
+                    freqOutTask1.Start();
+                }
+                else
+                {
+                    freqOutTask2.Start();
+                }
 				
 				// read the data into a temporary array once all the samples have been acquired
 				double[] tempdata = countReader.ReadMultiSampleDouble(-1);
@@ -137,7 +174,14 @@ namespace ScanMaster.Acquire.Plugins
 				countingTask.Stop();
 
 				// stop the sample clock
-				freqOutTask.Stop();
+                if (config.switchPlugin.State)
+                {
+                    freqOutTask1.Stop();
+                }
+                else
+                {
+                    freqOutTask2.Stop();
+                }
 
 				// Each element of the buffer holds the incremental count. Discard the first value and calculate
 				// the counts per bin by subtracting the count in each bin by the count in the previous bin.

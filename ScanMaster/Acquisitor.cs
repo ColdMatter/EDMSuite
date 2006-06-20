@@ -86,8 +86,12 @@ namespace ScanMaster.Acquire
 					config.switchPlugin.ScanStarting();
 					config.yagPlugin.ScanStarting();
 					config.analogPlugin.ScanStarting();
-
+                    //I'd like to have a scan that stays at a value for several runs before it goes to the next value.
+                    //Instead of changing lines, I'm commenting out lines and putting the modified line beneath
+                    //any line I've added is marked with //jk
+                    //int fakepointNumber = 1, pointNumberDelta=50; //jk
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
+                    //for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"]; fakepointNumber++)//jk
 					{
 						// calculate the new scan parameter
 						PluginSettings outputSettings = config.outputPlugin.Settings;
@@ -146,6 +150,10 @@ namespace ScanMaster.Acquire
 							AcquisitionFinishing(config);
 							return;
 						}
+                        //if ((fakepointNumber % pointNumberDelta)==0)//jk
+                        //{                                             //jk
+                        //    pointNumber=pointNumber+pointNumberDelta; //jk
+                        //}                                             //jk
 					}
 					// prepare for the start of the next scan
 					OnScanFinished();
