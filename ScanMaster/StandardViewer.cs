@@ -107,8 +107,8 @@ namespace ScanMaster.GUI
 			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
 
 			// disable the fit function selectors
-			window.tofFitFunctionCombo.Enabled = false;
-			window.spectrumFitFunctionCombo.Enabled = false;
+            window.SetTofFitFunctionComboState(false);
+            window.SetSpectrumFitFunctionComboState(false);
 		}
 
 		public void AcquireStop()
@@ -137,9 +137,9 @@ namespace ScanMaster.GUI
                     window.PlotSpectrumFit(xValues, spectrumFitter.FittedValues);
                 }
 			}
-			// disable the fit function selectors
-			window.tofFitFunctionCombo.Enabled = true;
-			window.spectrumFitFunctionCombo.Enabled = true;
+            // enable the fit function selectors
+            window.SetTofFitFunctionComboState(true);
+            window.SetSpectrumFitFunctionComboState(true);
 		}
 
 		public void HandleDataPoint(DataEventArgs e)

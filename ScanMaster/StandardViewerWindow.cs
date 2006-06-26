@@ -794,6 +794,24 @@ namespace ScanMaster.GUI
 			label.Text = text;
 		}
 
+        private void TofFitComboHelper(bool state)
+        {
+            tofFitFunctionCombo.Enabled = state;
+        }
+        private delegate void ComboStateDelegate(bool state);
+        public void SetTofFitFunctionComboState(bool state)
+        {
+            tofFitFunctionCombo.Invoke(new ComboStateDelegate(TofFitComboHelper), state);
+        }
+
+        private void SpectrumFitComboHelper(bool state)
+        {
+            spectrumFitFunctionCombo.Enabled = state;
+        }
+        public void SetSpectrumFitFunctionComboState(bool state)
+        {
+            spectrumFitFunctionCombo.Invoke(new ComboStateDelegate(SpectrumFitComboHelper), state);
+        }
 
 		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
