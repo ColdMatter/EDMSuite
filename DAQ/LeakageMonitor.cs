@@ -67,7 +67,7 @@ namespace DAQ.HAL
 			{
 				raw = rn.NextDouble() * 5000;
 			}
-			return (raw - offset)/(slope);
+			return (raw * slope + offset);
 		}
 	}
 }

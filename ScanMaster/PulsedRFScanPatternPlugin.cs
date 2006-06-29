@@ -22,7 +22,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseCustomSettings()
 		{
-			settings["ttlSwitchPort"] = 0;
+        	settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 5;
 			settings["rf1CentreTime"] = 1400;
 			settings["rf1Length"] = 450;
@@ -58,10 +58,11 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["rf2Length"],
 				(int)settings["piFlipTime"],
 				(int)settings["fmCentreTime"],
-				(int)settings["fmLength"]
+				(int)settings["fmLength"],
+                (bool)config.switchPlugin.Settings["switchActive"]
 				);
-			scanPatternBuilder.BuildPattern(((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
-				* (int)settings["flashlampPulseInterval"]);
+            scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
+                * (int)settings["flashlampPulseInterval"]);
 			return scanPatternBuilder;
 		}
 

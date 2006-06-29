@@ -18,6 +18,8 @@ namespace ScanMaster.Acquire.Patterns
 												// padding in the flashlamp pattern builder to avoid
 												// discontinuities.
 
+        private bool switchState = false;
+
 		int rf1Channel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rf1Switch"]).BitNumber;
 		int rf2Channel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rf2Switch"]).BitNumber;
 		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["greenFM"]).BitNumber;
@@ -27,11 +29,11 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
 			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipTime,
-			int fmCentreTime, int fmLength ) 
+            int fmCentreTime, int fmLength, bool modulateOn) 
 		{
 		
 			int time = 0;
-
+            
 			// Disable both rf
 			AddEdge(rf1Channel, 0, false);
 			AddEdge(rf2Channel, 0, false);
@@ -40,15 +42,30 @@ namespace ScanMaster.Acquire.Patterns
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength );
+						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, true );
 				time += flashlampPulseInterval;
-				for (int p = 0 ; p < padShots ; p++)
+                for (int p = 0; p < padShots; p++)
+                {
+                    FlashlampPulse(time, valveToQ, flashToQ);
+                    time += flashlampPulseInterval;
+                }
+                if (modulateOn)
+                {
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, false );
+                }
+                else
+                {
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, true );
+                }
+                time += flashlampPulseInterval;
+                for (int p = 0; p < padShots; p++)
 				{
 					FlashlampPulse(time, valveToQ, flashToQ);
 					time += flashlampPulseInterval;
 				}
 			}
-		
 			return time;
 		}
 
@@ -60,10 +77,21 @@ namespace ScanMaster.Acquire.Patterns
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
 			int delayToDetectorTrigger, int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length,
-			int piFlipTime, int fmCentreTime, int fmLength )  
+			int piFlipTime, int fmCentreTime, int fmLength, bool modulated )  
 		{
 			int time = 0;
 			int tempTime = 0;
+
+            // flip the "switch-scan" TTL line (if we need to)
+            if (switchState != modulated)
+            {
+                AddEdge(
+               ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ttlSwitch"]).BitNumber,
+                startTime + START_PADDING,
+                modulated
+                );
+                switchState = modulated;
+            }
 
 			// piFlip off
 			AddEdge(piChannel, startTime + START_PADDING, false);
@@ -100,9 +128,18 @@ namespace ScanMaster.Acquire.Patterns
 			AddEdge(piChannel, startTime + piFlipTime + START_PADDING, true);
 
 			// Detector trigger
-			tempTime = Pulse(startTime + START_PADDING, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["detector"]).BitNumber);
-			if (tempTime > time) time = tempTime;
+            if (modulated)
+            {
+                tempTime = Pulse(startTime + START_PADDING, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
+                    ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["detector"]).BitNumber);
+                if (tempTime > time) time = tempTime;
+            }
+            else
+            {
+                tempTime = Pulse(startTime + START_PADDING, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
+                    ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["detectorprime"]).BitNumber);
+                if (tempTime > time) time = tempTime;
+            }
 		
 			return time;
 		}
