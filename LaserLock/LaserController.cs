@@ -75,7 +75,7 @@ namespace LaserLock
                 laserWriter = new AnalogSingleChannelWriter(outputTask.Stream);
 
                 inputTask = new Task("LaserControllerInput");
-                cavityChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["lock"];
+                cavityChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["lockcavity"];
                 cavityChannel.AddToTask(inputTask, -10, 10);
                 cavityReader = new AnalogSingleChannelReader(inputTask.Stream);
             }
@@ -133,11 +133,11 @@ namespace LaserLock
             status = ControllerState.busy;
             
             hardwareControl.LaserLocked = true;
+            if (!Environs.Debug) laserChannel.Blocked = true;
             while (status == ControllerState.busy)
             {
                 if (!Environs.Debug)
                 {
-                    laserChannel.Blocked = true;
                     if (hardwareControl.AnalogInputsAvailable)
                     {
                         inputTask.Start();

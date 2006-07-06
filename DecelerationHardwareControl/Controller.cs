@@ -23,6 +23,7 @@ namespace DecelerationHardwareControl
 
         public void Start()
         {
+            analogsAvailable = true;
             window = new ControlWindow();
             window.controller = this;
             Application.Run(window);

@@ -27,7 +27,7 @@ namespace ScanMaster.Acquire.Plugins
 
         protected override void InitialiseSettings()
         {
-            settings["channelList"] = "iodine,cavity";
+            settings["channelList"] = "longcavity,lockcavity";
             settings["inputRangeLow"] = -5.0;
             settings["inputRangeHigh"] = 5.0;
         } 
@@ -46,7 +46,7 @@ namespace ScanMaster.Acquire.Plugins
             lockCavityChannel = 0;
             while (!cavityFound && lockCavityChannel < channels.Length)
             {
-                if (channels[lockCavityChannel] == "cavitylock") cavityFound = true;
+                if (channels[lockCavityChannel] == "lockcavity") cavityFound = true;
                 else lockCavityChannel++;
             }
             if (!Environs.Debug)
