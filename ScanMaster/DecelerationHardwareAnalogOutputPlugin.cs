@@ -75,9 +75,10 @@ namespace ScanMaster.Acquire.Plugins
         {
             set
             {
+                scanParameter = value;
                 if (!Blocked())
                 {
-                    scanParameter = value;
+                    
                     if (!Environs.Debug) writer.WriteSingleSample(true, value);
                     hardwareControl.LaserFrequencyControlVoltage = value;
                 }

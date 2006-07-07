@@ -20,11 +20,11 @@ namespace LaserLock
         private const double UPPER_VOLTAGE_LIMIT = 10.0; //volts
         private const double LOWER_VOLTAGE_LIMIT = -10.0; //volts
         private const int SAMPLES_PER_READ = 10;
-        private const int SLEEPING_TIME = 500; //milliseconds
+        private const int SLEEPING_TIME = 1000; //milliseconds
         private const int LATENCY = 10000; //milliseconds
         private const int CAVITY_FWHM = 150; //MHz
-        private const double CAVITY_PEAK_HEIGHT = 3.0; //volts
-        private const int LASER_SCAN_CALIBRATION = 100; //MHz/volt
+        private const double CAVITY_PEAK_HEIGHT = 4.0; //volts
+        private const int LASER_SCAN_CALIBRATION = 200; //MHz/volt
         
         private double proportionalGain;
         private double integralGain;
