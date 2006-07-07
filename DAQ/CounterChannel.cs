@@ -15,7 +15,6 @@ namespace DAQ.HAL
 		{
 			this.name = name;
 			this.physicalChannel = physicalChannel;
-            blocked = false;
 		}
 	}
 }

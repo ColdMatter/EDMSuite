@@ -17,11 +17,20 @@ namespace LaserLock
     public class LaserController : MarshalByRefObject
     {
 
-        private const double UPPER_VOLTAGE_LIMIT = 10.0;
-        private const double LOWER_VOLTAGE_LIMIT = -10.0;
+        private const double UPPER_VOLTAGE_LIMIT = 10.0; //volts
+        private const double LOWER_VOLTAGE_LIMIT = -10.0; //volts
         private const int SAMPLES_PER_READ = 10;
-        private const int SLEEPING_TIME = 500;
-        private const int LATENCY = 10000;
+        private const int SLEEPING_TIME = 500; //milliseconds
+        private const int LATENCY = 10000; //milliseconds
+        private const int CAVITY_FWHM = 150; //MHz
+        private const double CAVITY_PEAK_HEIGHT = 3.0; //volts
+        private const int LASER_SCAN_CALIBRATION = 100; //MHz/volt
+        
+        private double proportionalGain;
+        private double integralGain;
+        private double derivativeGain;
+        private double setPoint;
+        private double deviation;
         
         private ScanMaster.Controller scanMaster;
         private ScanMaster.Analyze.GaussianFitter fitter;
@@ -40,7 +49,6 @@ namespace LaserLock
         public enum ControllerState { free, busy, stopping };
         private ControllerState status = ControllerState.free;
 
-        private double voltage = 0.0;
         private double[] latestData;
 
         // without this method, any remote connections to this object will time out after
@@ -53,6 +61,10 @@ namespace LaserLock
 
         public void Start()
         {
+            proportionalGain = 0;
+            integralGain = 0;
+            derivativeGain = 0;
+                        
             ui = new MainForm();
             ui.controller = this;
 
@@ -97,7 +109,6 @@ namespace LaserLock
             try
             {
                 scanMaster.AcquireAndWait(1);
-                voltage = 0.0;
                 Scan scan = scanMaster.DataStore.AverageScan;
                 if (scan.Points.Count != 0)
                 {
@@ -113,7 +124,6 @@ namespace LaserLock
                             ui.AddToTextBox("Parked at " + centreVoltage + " volts." + Environment.NewLine);
                         }
                         else ui.AddToTextBox("Ramping to " + centreVoltage + " volts. \n");
-                        ui.SetOutputVoltageNumericEditorValue(centreVoltage);
                     }
                     else ui.AddToTextBox("Failed - Unable to locate the resonance." + Environment.NewLine);
                 }
@@ -130,14 +140,16 @@ namespace LaserLock
         {
             double averageValue = 0;
             Random r = new Random();
+            bool firstTime = true;
             status = ControllerState.busy;
             
             hardwareControl.LaserLocked = true;
-            if (!Environs.Debug) laserChannel.Blocked = true;
+            hardwareControl.SetAnalogOutputBlockedStatus("laser", true);
             while (status == ControllerState.busy)
             {
                 if (!Environs.Debug)
                 {
+                    // read the cavity
                     if (hardwareControl.AnalogInputsAvailable)
                     {
                         inputTask.Start();
@@ -151,6 +163,23 @@ namespace LaserLock
                     {
                         averageValue = hardwareControl.LastCavityData;
                     }
+                    // calculate the new laser control voltage and apply it
+                    if (hardwareControl.TimeSinceLastCavityRead < LATENCY)
+                    {
+                        // if this is the first read since throwing the lock, the result defines the set-point
+                        if (firstTime)
+                        {
+                            setPoint = averageValue;
+                            firstTime = false;
+                        }
+                        // all subsequent reads feed-back to the laser
+                        else
+                        {
+                            deviation = averageValue - setPoint;
+                            LaserVoltage = LaserVoltage - proportionalGain * deviation; //other terms to go here
+                        }
+                    }
+
                 }            
                 else
                 {
@@ -162,19 +191,21 @@ namespace LaserLock
             }
             status = ControllerState.free;
             hardwareControl.LaserLocked = false;
-            if (!Environs.Debug) laserChannel.Blocked = false;
+            hardwareControl.SetAnalogOutputBlockedStatus("laser", false);
         }
 
         private void RampToVoltage(double v)
         {
             int steps = 20;
             int delayAtEachStep = 50;
-            double stepsize = (v-voltage) / steps;
+            double laserVoltage = hardwareControl.LaserFrequencyControlVoltage;
+            double stepsize = (v - laserVoltage) / steps;
            
             for (int i = 1; i <= steps; i++)
             {
-                voltage += stepsize;
-                laserWriter.WriteSingleSample(true, voltage);
+                laserVoltage += stepsize;
+                laserWriter.WriteSingleSample(true, laserVoltage);
+                hardwareControl.LaserFrequencyControlVoltage = laserVoltage;
                 Thread.Sleep(delayAtEachStep);
             }
             outputTask.Control(TaskAction.Unreserve);
@@ -201,11 +232,11 @@ namespace LaserLock
 
         }
 
-        public double Voltage
+        public double LaserVoltage
         {
             get
             {
-                return voltage;
+                return hardwareControl.LaserFrequencyControlVoltage;
             }
             set 
             {
@@ -213,13 +244,14 @@ namespace LaserLock
                 {
                     if (!Environs.Debug)
                     {
-
-                        voltage = value;
-                        laserWriter.WriteSingleSample(true, voltage);
+                        laserWriter.WriteSingleSample(true, value);
                         outputTask.Control(TaskAction.Unreserve);
+                        hardwareControl.LaserFrequencyControlVoltage = value;
+                        ui.SetOutputVoltageNumericEditorValue(value);
                     }
                     else
                     {
+                        ui.SetOutputVoltageNumericEditorValue(value);
                         ui.AddToTextBox("Voltage changed to " + ui.OutputVoltageNumericEditorValue + Environment.NewLine);
                     }
 
@@ -231,5 +263,10 @@ namespace LaserLock
             }
         }
 
+        public void SetProportionalGain(double frontPanelValue)
+        {
+            // the pre-factor of 0.2 is chosen so that a front-panel setting of 5 (mid-range) is close to the threshold for oscillation
+            proportionalGain = 0.2 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION) * frontPanelValue;
+        }
     }
 }

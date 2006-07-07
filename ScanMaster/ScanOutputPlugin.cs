@@ -11,7 +11,8 @@ namespace ScanMaster.Acquire.Plugin
 	[Serializable]
 	[XmlInclude(typeof(DAQMxAnalogOutputPlugin)), XmlInclude(typeof(NullOutputPlugin)), 
 	 XmlInclude(typeof(SynthAmplitudeOutputPlugin)),
-	 XmlInclude(typeof(SynthFrequencyOutputPlugin)), XmlInclude(typeof(PGOutputPlugin))]
+	 XmlInclude(typeof(SynthFrequencyOutputPlugin)), XmlInclude(typeof(PGOutputPlugin)), 
+     XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin
 	{
 		protected override void InitialiseBaseSettings()

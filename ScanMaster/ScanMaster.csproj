@@ -163,6 +163,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DecelerationHardwareAnalogInputPlugin.cs" />
+    <Compile Include="DecelerationHardwareAnalogOutputPlugin.cs" />
     <Compile Include="DecelerationPatternBuilder.cs">
       <SubType>Code</SubType>
     </Compile>

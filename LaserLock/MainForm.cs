@@ -24,6 +24,21 @@ namespace LaserLock
             InitializeComponent();       
         }
 
+        public double PSliderValue
+        {
+            get { return pSlider.Value; }
+        }
+
+        public double ISliderValue
+        {
+            get { return iSlider.Value; }
+        }
+
+        public double DSliderValue
+        {
+            get { return dSlider.Value; }
+        }
+
         private delegate void AppendToTextBoxDelegate(string text);
         public void AddToTextBox(String text)
         {
@@ -50,12 +65,12 @@ namespace LaserLock
 
         private void UpdateVoltage(object sender, AfterChangeNumericValueEventArgs e)
         {
-            controller.Voltage = outputValueNumericEditor.Value;
+            controller.LaserVoltage = outputValueNumericEditor.Value;
         }
 
         private void UpdateVoltage(object sender, EventArgs e)
         {
-            controller.Voltage = outputValueNumericEditor.Value;
+            controller.LaserVoltage = outputValueNumericEditor.Value;
         }
 
         private void parkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -110,6 +125,16 @@ namespace LaserLock
             {
                 controller.Status = LaserController.ControllerState.stopping;
             }
+        }
+
+        private void pSlider_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
+        {
+            controller.SetProportionalGain(pSlider.Value);
+        }
+
+        private void outputValueNumericEditor_Click(object sender, EventArgs e)
+        {
+            outputValueNumericEditor.Value = controller.LaserVoltage;
         }
 
     }

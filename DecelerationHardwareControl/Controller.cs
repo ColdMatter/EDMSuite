@@ -1,7 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 using System.Windows.Forms;
+using DAQ.Environment;
 
 namespace DecelerationHardwareControl
 {
@@ -12,6 +13,12 @@ namespace DecelerationHardwareControl
         private bool analogsAvailable;
         private double lastCavityData;
         private DateTime cavityTimestamp;
+        private double laserFrequencyControlVoltage;
+
+        // The keys of the hashtable are the names of the analog output channels
+        // The values are all booleans - true means the channel is blocked
+        private Hashtable analogOutputsBlocked;
+
         
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -24,10 +31,35 @@ namespace DecelerationHardwareControl
         public void Start()
         {
             analogsAvailable = true;
+            // all the analog outputs are unblocked at the outset
+            analogOutputsBlocked = new Hashtable();
+            foreach (DictionaryEntry de in Environs.Hardware.AnalogOutputChannels) 
+                analogOutputsBlocked.Add(de.Key, false);            
             window = new ControlWindow();
             window.controller = this;
             Application.Run(window);
         }
+
+        // Applications may set this control voltage themselves, but when they do
+        // they should this property too
+        public double LaserFrequencyControlVoltage
+        {
+            get { return laserFrequencyControlVoltage; }
+            set { laserFrequencyControlVoltage = value; }
+        }
+
+        // returns true if the channel is blocked
+        public bool GetAnalogOutputBlockedStatus(string channel)
+        {
+            return (bool)analogOutputsBlocked[channel];
+        }
+
+        // set to true to block the output channel
+        public void SetAnalogOutputBlockedStatus(string channel, bool state)
+        {
+            analogOutputsBlocked[channel] = state;
+        }
+            
 
         public bool LaserLocked
         {
