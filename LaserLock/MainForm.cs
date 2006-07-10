@@ -62,6 +62,11 @@ namespace LaserLock
             get { return speedSwitch.Value; }
         }
 
+        public int ScansPerPark
+        {
+            get { return (int)scanNumberBox.Value; }
+        }
+
         #endregion
 
         #region Thread-safe wrappers

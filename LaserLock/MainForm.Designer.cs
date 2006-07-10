@@ -38,6 +38,9 @@ namespace LaserLock
             this.label1 = new System.Windows.Forms.Label();
             this.LockCheck = new System.Windows.Forms.CheckBox();
             this.gainGroupBox = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.speedSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.dLabel = new System.Windows.Forms.Label();
@@ -53,19 +56,19 @@ namespace LaserLock
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.label2 = new System.Windows.Forms.Label();
             this.setpointNumericEdit = new NationalInstruments.UI.WindowsForms.NumericEdit();
-            this.speedSwitch = new NationalInstruments.UI.WindowsForms.Switch();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.scanNumberBox = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.controlVoltageNumericEditor)).BeginInit();
             this.gainGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedSwitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.slopeSwitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dSlider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iSlider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pSlider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.setpointNumericEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.speedSwitch)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scanNumberBox)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -91,21 +94,21 @@ namespace LaserLock
             // parkToolStripMenuItem
             // 
             this.parkToolStripMenuItem.Name = "parkToolStripMenuItem";
-            this.parkToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.parkToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.parkToolStripMenuItem.Text = "Park";
             this.parkToolStripMenuItem.Click += new System.EventHandler(this.parkToolStripMenuItem_Click);
             // 
             // lockToolStripMenuItem
             // 
             this.lockToolStripMenuItem.Name = "lockToolStripMenuItem";
-            this.lockToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.lockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.lockToolStripMenuItem.Text = "Lock";
             this.lockToolStripMenuItem.Click += new System.EventHandler(this.lockToolStripMenuItem_Click);
             // 
             // unlockToolStripMenuItem
             // 
             this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
-            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.unlockToolStripMenuItem.Text = "Unlock";
             this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
             // 
@@ -171,6 +174,34 @@ namespace LaserLock
             this.gainGroupBox.TabIndex = 7;
             this.gainGroupBox.TabStop = false;
             this.gainGroupBox.Text = "Gain settings";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 94);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Slow";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 38);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(27, 13);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Fast";
+            // 
+            // speedSwitch
+            // 
+            this.speedSwitch.Location = new System.Drawing.Point(8, 49);
+            this.speedSwitch.Name = "speedSwitch";
+            this.speedSwitch.OffColor = System.Drawing.SystemColors.InactiveCaption;
+            this.speedSwitch.OnColor = System.Drawing.SystemColors.ActiveCaption;
+            this.speedSwitch.Size = new System.Drawing.Size(26, 48);
+            this.speedSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalSlide;
+            this.speedSwitch.TabIndex = 12;
             // 
             // label3
             // 
@@ -302,39 +333,34 @@ namespace LaserLock
             this.setpointNumericEdit.TabIndex = 11;
             this.setpointNumericEdit.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.setpointNumericEdit_AfterChangeValue);
             // 
-            // speedSwitch
+            // scanNumberBox
             // 
-            this.speedSwitch.Location = new System.Drawing.Point(8, 49);
-            this.speedSwitch.Name = "speedSwitch";
-            this.speedSwitch.OffColor = System.Drawing.SystemColors.InactiveCaption;
-            this.speedSwitch.OnColor = System.Drawing.SystemColors.ActiveCaption;
-            this.speedSwitch.Size = new System.Drawing.Size(26, 48);
-            this.speedSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalSlide;
-            this.speedSwitch.TabIndex = 12;
+            this.scanNumberBox.Location = new System.Drawing.Point(391, 26);
+            this.scanNumberBox.Name = "scanNumberBox";
+            this.scanNumberBox.Size = new System.Drawing.Size(38, 20);
+            this.scanNumberBox.TabIndex = 12;
+            this.scanNumberBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
-            // label5
+            // label7
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 38);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(27, 13);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Fast";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 94);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(30, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Slow";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(430, 30);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(37, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Scans";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 292);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.scanNumberBox);
             this.Controls.Add(this.setpointNumericEdit);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.deviationGraph);
@@ -353,13 +379,14 @@ namespace LaserLock
             ((System.ComponentModel.ISupportInitialize)(this.controlVoltageNumericEditor)).EndInit();
             this.gainGroupBox.ResumeLayout(false);
             this.gainGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedSwitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.slopeSwitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dSlider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iSlider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pSlider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.setpointNumericEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.speedSwitch)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scanNumberBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -395,6 +422,8 @@ namespace LaserLock
         private NationalInstruments.UI.WindowsForms.Switch speedSwitch;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown scanNumberBox;
+        private System.Windows.Forms.Label label7;
     }
 }
 

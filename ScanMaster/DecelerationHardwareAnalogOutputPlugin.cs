@@ -49,7 +49,7 @@ namespace ScanMaster.Acquire.Plugins
                     (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["channel"]];
                 oc.AddToTask(outputTask, -10, 10);
                 writer = new AnalogSingleChannelWriter(outputTask.Stream);
-                writer.WriteSingleSample(true, 0);
+                if (!Blocked()) writer.WriteSingleSample(true, 0);
             }
             scanParameter = 0;
         }

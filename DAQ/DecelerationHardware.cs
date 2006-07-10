@@ -45,7 +45,7 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
 			AddAnalogInputChannel("lockcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
-			AddAnalogOutputChannel("aom", daqBoard + "/ao1");
+			AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");
 
             // map the counter channels
             AddCounterChannel("pmt", daqBoard + "/ctr0");

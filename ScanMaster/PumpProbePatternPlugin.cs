@@ -36,6 +36,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["ttlSwitchLine"] = 5;
             settings["sequenceLength"] = 2;
             settings["switchLineDuration"] = 1000;
+            settings["switchLineDelay"] = 0;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -63,6 +64,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],
+                (int)settings["switchLineDelay"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
 

@@ -25,7 +25,7 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
 			int aomStart2, int aomDuration2, int delayToDetectorTrigger,
-			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, bool modulation) 
+			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, bool modulation) 
 		{
 		
 			int time = 0;
@@ -36,7 +36,7 @@ namespace ScanMaster.Acquire.Patterns
 				
 				int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort,ttlSwitchLine);
 				// first the pulse with the switch line high
-				Pulse(time, 0, switchLineDuration, switchChannel);
+				Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
               	Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger , "detector");
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
@@ -57,7 +57,7 @@ namespace ScanMaster.Acquire.Patterns
                 }
                 else
                 {
-                    Pulse(time, 0, switchLineDuration, switchChannel);
+                    Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
                     Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)

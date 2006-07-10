@@ -173,7 +173,7 @@ namespace LaserLock
             status = ControllerState.busy;
             try
             {
-                scanMaster.AcquireAndWait(1);
+                scanMaster.AcquireAndWait(ui.ScansPerPark);
                 Scan scan = scanMaster.DataStore.AverageScan;
                 if (scan.Points.Count != 0)
                 {
@@ -187,6 +187,7 @@ namespace LaserLock
                         {
                             RampToVoltage(centreVoltage);
                             ui.AddToTextBox("Parked at " + centreVoltage + " volts." + Environment.NewLine);
+                            ui.SetControlVoltageNumericEditorValue(centreVoltage);
                         }
                         else ui.AddToTextBox("Ramping to " + centreVoltage + " volts. \n");
                     }
@@ -211,13 +212,13 @@ namespace LaserLock
             double singleValue;
             double averageValue = 0;
             int reads = 0;
-            Random r = new Random();
             bool firstTime = true;
             
             status = ControllerState.busy;
             ui.ControlVoltageEditorEnabledState(false);
             hardwareControl.LaserLocked = true;
             hardwareControl.SetAnalogOutputBlockedStatus("laser", true);
+            
             while (status == ControllerState.busy)
             {
                 if (!Environs.Debug)
@@ -244,7 +245,7 @@ namespace LaserLock
                         // if this is the first read since throwing the lock, the result defines the set-point
                         if (firstTime)
                         {
-                            setPoint = averageValue;
+                            setPoint = singleValue;
                             ui.SetSetPointNumericEditorValue(setPoint);
                             firstTime = false;
                         }
@@ -255,13 +256,13 @@ namespace LaserLock
                             reads++;
                         }
                         // is it time to feed-back to the laser
-                        if (reads >= READS_PER_FEEDBACK || ui.SpeedSwitchState)
+                        if (reads != 0 && (reads >= READS_PER_FEEDBACK || ui.SpeedSwitchState))
                         {
                             averageValue = averageValue / reads;
                             deviation = averageValue - setPoint;
                             LaserVoltage = LaserVoltage + SignOfFeedback * proportionalGain * deviation; //other terms to go here 
                             // update the deviation plot
-                            ui.DeviationPlotXYAppend(averageValue);
+                            ui.DeviationPlotXYAppend(deviation);
                             // reset the variables
                             averageValue = 0;
                             reads = 0;
