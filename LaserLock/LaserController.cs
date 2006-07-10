@@ -14,24 +14,31 @@ using System.Windows.Forms;
 
 namespace LaserLock
 {
+    /// <summary>
+    /// A class for controlling the laser frequency. Contains a method for locking the laser to a stabilized
+    /// reference cavity.
+    /// </summary>
     public class LaserController : MarshalByRefObject
     {
 
         private const double UPPER_VOLTAGE_LIMIT = 10.0; //volts
         private const double LOWER_VOLTAGE_LIMIT = -10.0; //volts
         private const int SAMPLES_PER_READ = 10;
-        private const int SLEEPING_TIME = 1000; //milliseconds
+        private const int READS_PER_FEEDBACK = 4;
+        private const int SLEEPING_TIME = 500; //milliseconds
         private const int LATENCY = 10000; //milliseconds
         private const int CAVITY_FWHM = 150; //MHz
         private const double CAVITY_PEAK_HEIGHT = 4.0; //volts
         private const int LASER_SCAN_CALIBRATION = 200; //MHz/volt
+
+        private const int HARDWARE_CONTROL_TALK_PERIOD = 2000; //milliseconds
         
         private double proportionalGain;
 //        private double integralGain;
 //        private double derivativeGain;
         private double setPoint;
         private double deviation;
-        
+                
         private ScanMaster.Controller scanMaster;
         private ScanMaster.Analyze.GaussianFitter fitter;
         private DecelerationHardwareControl.Controller hardwareControl;
@@ -49,6 +56,9 @@ namespace LaserLock
         public enum ControllerState { free, busy, stopping };
         private ControllerState status = ControllerState.free;
 
+        private System.Threading.Timer hardwareControlTimer;
+        private TimerCallback timerDelegate;
+
         private double[] latestData;
 
         // without this method, any remote connections to this object will time out after
@@ -58,6 +68,8 @@ namespace LaserLock
         {
             return null;
         }
+
+        #region Setup
 
         public void Start()
         {
@@ -92,15 +104,68 @@ namespace LaserLock
                 cavityReader = new AnalogSingleChannelReader(inputTask.Stream);
             }
 
+            timerDelegate = new TimerCallback(TalkToHardwareControl);
+            hardwareControlTimer = new System.Threading.Timer(timerDelegate, null, 5000, HARDWARE_CONTROL_TALK_PERIOD);
+
             Application.Run(ui);
         }
+
+        #endregion
+
+        #region Public properties
 
         public ControllerState Status
         {
             get { return status; }
             set { status = value; }
         }
-        
+
+        public double SetPoint
+        {
+            get { return setPoint; }
+            set { setPoint = value; }
+        }
+
+        // the getter asks the hardware controller for the laser frequency control voltage
+        // the setter sets the value and tells the hardware controller and the front-panel control about it
+        public double LaserVoltage
+        {
+            get
+            {
+                return hardwareControl.LaserFrequencyControlVoltage;
+            }
+            set
+            {
+                if (value >= LOWER_VOLTAGE_LIMIT && value <= UPPER_VOLTAGE_LIMIT)
+                {
+                    if (!Environs.Debug)
+                    {
+                        laserWriter.WriteSingleSample(true, value);
+                        outputTask.Control(TaskAction.Unreserve);
+                    }
+                    else
+                    {
+                        // Debug mode, do nothing
+                    }
+                    hardwareControl.LaserFrequencyControlVoltage = value;
+                    ui.SetControlVoltageNumericEditorValue(value);
+                }
+                else
+                {
+                    // Out of range, do nothing
+                }
+            }
+        }
+
+        #endregion
+
+        #region Public methods
+
+        /// <summary>
+        /// Parks the laser on a resonance. Uses ScanMaster to scan the laser and fit to the spectrum  in order
+        /// to locate the resonance. Then adjusts the laser frequency to park the laser on the resonance.
+        /// Note that this method parks but doesn't lock the laser
+        /// </summary>
         public void Park()
         {
             double[] fitresult;
@@ -135,14 +200,22 @@ namespace LaserLock
             }
             status = ControllerState.free;
         }
-
+        
+        /// <summary>
+        /// Locks the laser to a reference cavity. This method runs continuously until the laser is unlocked.
+        /// When this method is called, the reference cavity is read in order to establish the lock point.
+        /// The reference cavity is then read continuously and adjustments fed-back to the laser.
+        /// </summary>
         public void Lock()
         {
+            double singleValue;
             double averageValue = 0;
+            int reads = 0;
             Random r = new Random();
             bool firstTime = true;
-            status = ControllerState.busy;
             
+            status = ControllerState.busy;
+            ui.ControlVoltageEditorEnabledState(false);
             hardwareControl.LaserLocked = true;
             hardwareControl.SetAnalogOutputBlockedStatus("laser", true);
             while (status == ControllerState.busy)
@@ -152,47 +225,72 @@ namespace LaserLock
                     // read the cavity
                     if (hardwareControl.AnalogInputsAvailable)
                     {
+                        singleValue = 0;
                         inputTask.Start();
                         latestData = cavityReader.ReadMultiSample(SAMPLES_PER_READ);
                         inputTask.Stop();
-                        foreach (double d in latestData) averageValue += d;
-                        averageValue = averageValue / SAMPLES_PER_READ;
-                        hardwareControl.UpdateLockCavityData(averageValue);
+                        foreach (double d in latestData) singleValue += d;
+                        singleValue = singleValue / SAMPLES_PER_READ;
+                        hardwareControl.UpdateLockCavityData(singleValue);
                     }
                     else
                     {
-                        averageValue = hardwareControl.LastCavityData;
+                        singleValue = hardwareControl.LastCavityData;
                     }
-                    // calculate the new laser control voltage and apply it
+                    
+                    // provided the last cavity read is recent, do something with it
                     if (hardwareControl.TimeSinceLastCavityRead < LATENCY)
                     {
                         // if this is the first read since throwing the lock, the result defines the set-point
                         if (firstTime)
                         {
                             setPoint = averageValue;
+                            ui.SetSetPointNumericEditorValue(setPoint);
                             firstTime = false;
                         }
-                        // all subsequent reads feed-back to the laser
+                        // otherwise, use the last read to update the running average
                         else
                         {
+                            averageValue += singleValue;
+                            reads++;
+                        }
+                        // is it time to feed-back to the laser
+                        if (reads >= READS_PER_FEEDBACK || ui.SpeedSwitchState)
+                        {
+                            averageValue = averageValue / reads;
                             deviation = averageValue - setPoint;
-                            LaserVoltage = LaserVoltage - proportionalGain * deviation; //other terms to go here
+                            LaserVoltage = LaserVoltage + SignOfFeedback * proportionalGain * deviation; //other terms to go here 
+                            // update the deviation plot
+                            ui.DeviationPlotXYAppend(averageValue);
+                            // reset the variables
+                            averageValue = 0;
+                            reads = 0;
                         }
                     }
-
-                }            
+                }           
                 else
                 {
-                    averageValue = r.NextDouble();
-                    hardwareControl.UpdateLockCavityData(averageValue);
+                    // Debug mode
+                    ui.DeviationPlotXYAppend(hardwareControl.LaserFrequencyControlVoltage - setPoint);
                 }
-                if (hardwareControl.TimeSinceLastCavityRead < LATENCY) ui.AddToTextBox(averageValue + Environment.NewLine);    
                 Thread.Sleep(SLEEPING_TIME);
             }
+            // we're out of the while loop - revert to the unlocked state
             status = ControllerState.free;
             hardwareControl.LaserLocked = false;
+            ui.ControlVoltageEditorEnabledState(true);
             hardwareControl.SetAnalogOutputBlockedStatus("laser", false);
         }
+
+        public void SetProportionalGain(double frontPanelValue)
+        {
+            // the pre-factor of 0.2 is chosen so that a front-panel setting of 5 (mid-range) is close to the threshold for oscillation
+            proportionalGain = 0.2 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION) * frontPanelValue;
+        }
+
+        #endregion
+
+        #region Private methods
 
         private void RampToVoltage(double v)
         {
@@ -230,43 +328,25 @@ namespace LaserLock
 
             return fitresult;
 
-        }
+        }     
 
-        public double LaserVoltage
+        // returns -1 for locking to positve slope, +1 for locking to negative slope
+        private int SignOfFeedback
         {
             get
             {
-                return hardwareControl.LaserFrequencyControlVoltage;
-            }
-            set 
-            {
-                if (value >= LOWER_VOLTAGE_LIMIT && value <= UPPER_VOLTAGE_LIMIT)
-                {
-                    if (!Environs.Debug)
-                    {
-                        laserWriter.WriteSingleSample(true, value);
-                        outputTask.Control(TaskAction.Unreserve);
-                        hardwareControl.LaserFrequencyControlVoltage = value;
-                        ui.SetOutputVoltageNumericEditorValue(value);
-                    }
-                    else
-                    {
-                        ui.SetOutputVoltageNumericEditorValue(value);
-                        ui.AddToTextBox("Voltage changed to " + ui.OutputVoltageNumericEditorValue + Environment.NewLine);
-                    }
-
-                }
-                else
-                {
-                    // do nothing
-                }
+                if (ui.SlopeSwitchState) return -1;
+                else return +1;
             }
         }
 
-        public void SetProportionalGain(double frontPanelValue)
+        private void TalkToHardwareControl(Object stateInfo)
         {
-            // the pre-factor of 0.2 is chosen so that a front-panel setting of 5 (mid-range) is close to the threshold for oscillation
-            proportionalGain = 0.2 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION) * frontPanelValue;
+            //ui.SetControlVoltageNumericEditorValue = hardwareControl.LaserFrequencyControlVoltage;
+            ui.SetLockCheckBox(hardwareControl.LaserLocked);
         }
+
+        #endregion
+
     }
 }

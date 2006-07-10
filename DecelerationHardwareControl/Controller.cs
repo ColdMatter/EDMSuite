@@ -41,7 +41,7 @@ namespace DecelerationHardwareControl
         }
 
         // Applications may set this control voltage themselves, but when they do
-        // they should this property too
+        // they should set this property too
         public double LaserFrequencyControlVoltage
         {
             get { return laserFrequencyControlVoltage; }

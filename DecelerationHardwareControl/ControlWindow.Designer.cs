@@ -62,7 +62,6 @@ namespace DecelerationHardwareControl
             // LaserLockCheckBox
             // 
             this.LaserLockCheckBox.AutoSize = true;
-            this.LaserLockCheckBox.Enabled = false;
             this.LaserLockCheckBox.Location = new System.Drawing.Point(17, 21);
             this.LaserLockCheckBox.Name = "LaserLockCheckBox";
             this.LaserLockCheckBox.Size = new System.Drawing.Size(62, 17);

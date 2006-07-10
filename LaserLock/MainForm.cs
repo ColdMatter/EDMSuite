@@ -13,6 +13,9 @@ using System.Threading;
 
 namespace LaserLock
 {
+    /// <summary>
+    /// Front panel of the laser controller
+    /// </summary>
     public partial class MainForm : Form
     {
 
@@ -21,8 +24,10 @@ namespace LaserLock
         
         public MainForm()
         {
-            InitializeComponent();       
+            InitializeComponent();
         }
+
+        #region Public properties
 
         public double PSliderValue
         {
@@ -39,39 +44,83 @@ namespace LaserLock
             get { return dSlider.Value; }
         }
 
+        public double ControlVoltageNumericEditorValue
+        {
+            get
+            {
+                return controlVoltageNumericEditor.Value;
+            }
+        }
+
+        public bool SlopeSwitchState
+        {
+            get { return slopeSwitch.Value; }
+        }
+
+        public bool SpeedSwitchState
+        {
+            get { return speedSwitch.Value; }
+        }
+
+        #endregion
+
+        #region Thread-safe wrappers
+
         private delegate void AppendToTextBoxDelegate(string text);
         public void AddToTextBox(String text)
         {
             textBox1.Invoke(new AppendToTextBoxDelegate(textBox1.AppendText), text);
         }
 
-        private void SetVoltageEditorValue(double d)
+        private void SetEditorValue(NumericEdit control, double d)
         {
-            outputValueNumericEditor.Value = d;
+            control.Value = d;
         }
-        private delegate void SetNumericEditorDelegate(double d);
-        public void SetOutputVoltageNumericEditorValue(double val)
+        private delegate void SetNumericEditorDelegate(NumericEdit control, double d);
+        public void SetControlVoltageNumericEditorValue(double val)
         {
-            outputValueNumericEditor.Invoke(new SetNumericEditorDelegate(SetVoltageEditorValue), val);
-        }
-        
-        public double OutputVoltageNumericEditorValue
-        {
-            get
-            {
-                return outputValueNumericEditor.Value;
-            }            
+            controlVoltageNumericEditor.Invoke(new SetNumericEditorDelegate(SetEditorValue), new Object[] { controlVoltageNumericEditor, val });
         }
 
-        private void UpdateVoltage(object sender, AfterChangeNumericValueEventArgs e)
+        public void SetSetPointNumericEditorValue(double val)
         {
-            controller.LaserVoltage = outputValueNumericEditor.Value;
+            setpointNumericEdit.Invoke(new SetNumericEditorDelegate(SetEditorValue), new Object[] { setpointNumericEdit, val });
         }
 
-        private void UpdateVoltage(object sender, EventArgs e)
+        private delegate void PlotXYDelegate(double y);
+        public void DeviationPlotXYAppend(double y)
         {
-            controller.LaserVoltage = outputValueNumericEditor.Value;
+            deviationGraph.Invoke(new PlotXYDelegate(deviationGraph.Plots[0].PlotYAppend), y);
         }
+
+        private void SetNumericEditEnabledState(NumericEdit control, bool state)
+        {
+            control.Enabled = state;
+        }
+
+        private delegate void EnableDelegate(NumericEdit numericEdit, bool enable);
+        public void ControlVoltageEditorEnabledState(bool state)
+        {
+            controlVoltageNumericEditor.Invoke(new EnableDelegate(SetNumericEditEnabledState), new Object[] { controlVoltageNumericEditor, state });
+        }
+        public void SetPointEditorEnabledState(bool state)
+        {
+            setpointNumericEdit.Invoke(new EnableDelegate(SetNumericEditEnabledState), new Object[] { setpointNumericEdit, state });
+        }
+
+        private delegate void SetCheckDelegate(CheckBox box, bool state);
+        private void SetCheckHelper(CheckBox box, bool state)
+        {
+            box.Checked = state;
+        }
+        public void SetLockCheckBox(bool state)
+        {
+            LockCheck.Invoke(new SetCheckDelegate(SetCheckHelper), new object[] { LockCheck, state });
+        }
+
+        #endregion
+
+        #region Event handlers
 
         private void parkToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -103,6 +152,24 @@ namespace LaserLock
             if (LockCheck.Checked) Lock();
             else Unlock();
         }
+        private void pSlider_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
+        {
+            controller.SetProportionalGain(pSlider.Value);
+        }
+
+        private void setpointNumericEdit_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
+        {
+            controller.SetPoint = setpointNumericEdit.Value;
+        }
+
+        private void controlVoltageNumericEditor_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
+        {
+            controller.LaserVoltage = controlVoltageNumericEditor.Value;
+        }
+
+        #endregion
+
+        #region Private methods
 
         private void Lock()
         {
@@ -126,16 +193,7 @@ namespace LaserLock
                 controller.Status = LaserController.ControllerState.stopping;
             }
         }
-
-        private void pSlider_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
-        {
-            controller.SetProportionalGain(pSlider.Value);
-        }
-
-        private void outputValueNumericEditor_Click(object sender, EventArgs e)
-        {
-            outputValueNumericEditor.Value = controller.LaserVoltage;
-        }
+        #endregion
 
     }
 }
