@@ -439,7 +439,7 @@ namespace PhaseLock
 				);
 
 			counterReader = new CounterReader(counterTask.Stream);
-			counterReader.SynchronizingObject = this;
+			counterReader.SynchronizeCallbacks = true;
 
 			if (!Environs.Debug)
 				counterReader.BeginReadMultiSampleInt32(

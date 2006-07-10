@@ -27,8 +27,8 @@ namespace LaserLock
         private const int LASER_SCAN_CALIBRATION = 200; //MHz/volt
         
         private double proportionalGain;
-        private double integralGain;
-        private double derivativeGain;
+//        private double integralGain;
+//        private double derivativeGain;
         private double setPoint;
         private double deviation;
         
@@ -62,8 +62,8 @@ namespace LaserLock
         public void Start()
         {
             proportionalGain = 0;
-            integralGain = 0;
-            derivativeGain = 0;
+//            integralGain = 0;
+//            derivativeGain = 0;
                         
             ui = new MainForm();
             ui.controller = this;

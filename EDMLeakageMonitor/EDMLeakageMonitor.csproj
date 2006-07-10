@@ -73,12 +73,17 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.Common, Version=8.0.20.252, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=8.1.20.15, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.UI, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.20.300, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.VisaNS, Version=8.0.20.159, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.0.20.334, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Common, Version=8.0.20.270, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=8.1.20.25, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.UI, Version=8.0.20.334, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.0.20.334, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.VisaNS, Version=8.0.20.177, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -124,9 +129,6 @@
     <EmbeddedResource Include="TextReadoutDialog.resx">
       <DependentUpon>TextReadoutDialog.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
