@@ -40,10 +40,7 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.TextBox ramanAmplitudeBox;
 		public System.Windows.Forms.TextBox urFrequencyBox;
 		public System.Windows.Forms.TextBox lrFrequencyBox;
-		public System.Windows.Forms.CheckBox greenFMEnableCheck;
 		public System.Windows.Forms.TextBox greenDCFMBox;
-		public System.Windows.Forms.CheckBox redRFSwitchEnableCheck;
-		public System.Windows.Forms.CheckBox greenRFSwitchEnableCheck;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button updateFieldButton;
 		private System.Windows.Forms.Label label10;
@@ -60,7 +57,6 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
-		public System.Windows.Forms.TextBox consoleBox;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
@@ -112,12 +108,12 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.Label label29;
 		private System.Windows.Forms.Label label30;
 		private System.Windows.Forms.Label label31;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button updateLaserPhotodiodesButton;
 		private System.Windows.Forms.Label label32;
 		public System.Windows.Forms.TextBox pumpMonitorTextBox;
 		public System.Windows.Forms.TextBox pump2MonitorTextBox;
 		public System.Windows.Forms.TextBox probeMonitorTextBox;
-		public System.Windows.Forms.CheckBox pump2EnableCheck;
+		public System.Windows.Forms.CheckBox pump2ShutterCheck;
 		public System.Windows.Forms.CheckBox pumpShutterCheck;
 		private System.Windows.Forms.Label label33;
 		public System.Windows.Forms.TextBox yagFlashlampVTextBox;
@@ -141,6 +137,18 @@ namespace EDMHardwareControl
 		private Label label38;
 		public TextBox zeroPlusOneMinusBoostTextBox;
 		public TextBox zeroPlusBoostTextBox;
+		private GroupBox groupBox14;
+		public Button setAttenuatorsButton;
+		private Label label36;
+		public TextBox rf2AttenuatorVoltageTextBox;
+		private Label label39;
+		public TextBox rf1AttenuatorVoltageTextBox;
+		private GroupBox groupBox16;
+		public CheckBox phaseFlip2CheckBox;
+		public CheckBox phaseFlip1CheckBox;
+		public CheckBox greenFMEnableCheck;
+		public CheckBox redRFSwitchEnableCheck;
+		public CheckBox greenRFSwitchEnableCheck;
 
 
 		public Controller controller;
@@ -186,10 +194,8 @@ namespace EDMHardwareControl
 			this.label2 = new System.Windows.Forms.Label();
 			this.lrFrequencyBox = new System.Windows.Forms.TextBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.greenFMEnableCheck = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.greenDCFMBox = new System.Windows.Forms.TextBox();
-			this.redRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
 			this.greenOnCheck = new System.Windows.Forms.CheckBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.redOnFreqBox = new System.Windows.Forms.TextBox();
@@ -197,7 +203,6 @@ namespace EDMHardwareControl
 			this.greenOnAmpBox = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.greenOnFreqBox = new System.Windows.Forms.TextBox();
-			this.greenRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
 			this.redOnCheck = new System.Windows.Forms.CheckBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.updateFieldButton = new System.Windows.Forms.Button();
@@ -241,6 +246,18 @@ namespace EDMHardwareControl
 			this.label18 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.groupBox16 = new System.Windows.Forms.GroupBox();
+			this.phaseFlip2CheckBox = new System.Windows.Forms.CheckBox();
+			this.phaseFlip1CheckBox = new System.Windows.Forms.CheckBox();
+			this.greenFMEnableCheck = new System.Windows.Forms.CheckBox();
+			this.redRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
+			this.greenRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
+			this.groupBox14 = new System.Windows.Forms.GroupBox();
+			this.setAttenuatorsButton = new System.Windows.Forms.Button();
+			this.label36 = new System.Windows.Forms.Label();
+			this.rf2AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
+			this.label39 = new System.Windows.Forms.Label();
+			this.rf1AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.rfMonitorChannelCheck = new System.Windows.Forms.CheckBox();
 			this.rf1PowerMonitorTextBox = new System.Windows.Forms.TextBox();
@@ -273,7 +290,7 @@ namespace EDMHardwareControl
 			this.label23 = new System.Windows.Forms.Label();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
-			this.button1 = new System.Windows.Forms.Button();
+			this.updateLaserPhotodiodesButton = new System.Windows.Forms.Button();
 			this.pumpMonitorTextBox = new System.Windows.Forms.TextBox();
 			this.pump2MonitorTextBox = new System.Windows.Forms.TextBox();
 			this.probeMonitorTextBox = new System.Windows.Forms.TextBox();
@@ -282,7 +299,7 @@ namespace EDMHardwareControl
 			this.label31 = new System.Windows.Forms.Label();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
 			this.label32 = new System.Windows.Forms.Label();
-			this.pump2EnableCheck = new System.Windows.Forms.CheckBox();
+			this.pump2ShutterCheck = new System.Windows.Forms.CheckBox();
 			this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.checkYagInterlockButton = new System.Windows.Forms.Button();
@@ -295,7 +312,6 @@ namespace EDMHardwareControl
 			this.updateFlashlampVButton = new System.Windows.Forms.Button();
 			this.label33 = new System.Windows.Forms.Label();
 			this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-			this.consoleBox = new System.Windows.Forms.TextBox();
 			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -307,6 +323,8 @@ namespace EDMHardwareControl
 			this.groupBox6.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
+			this.groupBox16.SuspendLayout();
+			this.groupBox14.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox12.SuspendLayout();
@@ -413,7 +431,7 @@ namespace EDMHardwareControl
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(96, 23);
 			this.label3.TabIndex = 15;
-			this.label3.Text = "UR Frequency";
+			this.label3.Text = "rf2 Frequency";
 			// 
 			// urFrequencyBox
 			// 
@@ -429,7 +447,7 @@ namespace EDMHardwareControl
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(96, 23);
 			this.label2.TabIndex = 13;
-			this.label2.Text = "LR Frequency";
+			this.label2.Text = "rf1 Frequency";
 			// 
 			// lrFrequencyBox
 			// 
@@ -441,10 +459,8 @@ namespace EDMHardwareControl
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.greenFMEnableCheck);
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.greenDCFMBox);
-			this.groupBox3.Controls.Add(this.redRFSwitchEnableCheck);
 			this.groupBox3.Controls.Add(this.greenOnCheck);
 			this.groupBox3.Controls.Add(this.label6);
 			this.groupBox3.Controls.Add(this.redOnFreqBox);
@@ -452,23 +468,13 @@ namespace EDMHardwareControl
 			this.groupBox3.Controls.Add(this.greenOnAmpBox);
 			this.groupBox3.Controls.Add(this.label8);
 			this.groupBox3.Controls.Add(this.greenOnFreqBox);
-			this.groupBox3.Controls.Add(this.greenRFSwitchEnableCheck);
 			this.groupBox3.Controls.Add(this.redOnCheck);
 			this.groupBox3.Location = new System.Drawing.Point(8, 16);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(296, 280);
+			this.groupBox3.Size = new System.Drawing.Size(296, 195);
 			this.groupBox3.TabIndex = 21;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Direct synth control";
-			// 
-			// greenFMEnableCheck
-			// 
-			this.greenFMEnableCheck.Location = new System.Drawing.Point(24, 248);
-			this.greenFMEnableCheck.Name = "greenFMEnableCheck";
-			this.greenFMEnableCheck.Size = new System.Drawing.Size(152, 24);
-			this.greenFMEnableCheck.TabIndex = 24;
-			this.greenFMEnableCheck.Text = "Green DC FM enabled";
-			this.greenFMEnableCheck.CheckedChanged += new System.EventHandler(this.greenFMEnableCheck_CheckedChanged);
 			// 
 			// label1
 			// 
@@ -486,15 +492,6 @@ namespace EDMHardwareControl
 			this.greenDCFMBox.TabIndex = 22;
 			this.greenDCFMBox.Text = "20";
 			// 
-			// redRFSwitchEnableCheck
-			// 
-			this.redRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 216);
-			this.redRFSwitchEnableCheck.Name = "redRFSwitchEnableCheck";
-			this.redRFSwitchEnableCheck.Size = new System.Drawing.Size(136, 24);
-			this.redRFSwitchEnableCheck.TabIndex = 21;
-			this.redRFSwitchEnableCheck.Text = "Enable rf2 switch";
-			this.redRFSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.redRFSwitchEnableCheck_CheckedChanged);
-			// 
 			// greenOnCheck
 			// 
 			this.greenOnCheck.Location = new System.Drawing.Point(24, 152);
@@ -506,6 +503,7 @@ namespace EDMHardwareControl
 			// 
 			// label6
 			// 
+			this.label6.Enabled = false;
 			this.label6.Location = new System.Drawing.Point(24, 120);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(144, 23);
@@ -514,6 +512,7 @@ namespace EDMHardwareControl
 			// 
 			// redOnFreqBox
 			// 
+			this.redOnFreqBox.Enabled = false;
 			this.redOnFreqBox.Location = new System.Drawing.Point(168, 120);
 			this.redOnFreqBox.Name = "redOnFreqBox";
 			this.redOnFreqBox.Size = new System.Drawing.Size(64, 20);
@@ -552,17 +551,9 @@ namespace EDMHardwareControl
 			this.greenOnFreqBox.TabIndex = 10;
 			this.greenOnFreqBox.Text = "170.795";
 			// 
-			// greenRFSwitchEnableCheck
-			// 
-			this.greenRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 184);
-			this.greenRFSwitchEnableCheck.Name = "greenRFSwitchEnableCheck";
-			this.greenRFSwitchEnableCheck.Size = new System.Drawing.Size(152, 24);
-			this.greenRFSwitchEnableCheck.TabIndex = 20;
-			this.greenRFSwitchEnableCheck.Text = "Enable rf1 switch";
-			this.greenRFSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.GreenRFSwitchEnableCheck_CheckedChanged);
-			// 
 			// redOnCheck
 			// 
+			this.redOnCheck.Enabled = false;
 			this.redOnCheck.Location = new System.Drawing.Point(152, 152);
 			this.redOnCheck.Name = "redOnCheck";
 			this.redOnCheck.Size = new System.Drawing.Size(104, 24);
@@ -700,7 +691,7 @@ namespace EDMHardwareControl
 			this.tabControl1.Location = new System.Drawing.Point(8, 16);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(624, 384);
+			this.tabControl1.Size = new System.Drawing.Size(624, 530);
 			this.tabControl1.TabIndex = 25;
 			// 
 			// tabPage1
@@ -712,7 +703,7 @@ namespace EDMHardwareControl
 			this.tabPage1.Controls.Add(this.groupBox7);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(616, 358);
+			this.tabPage1.Size = new System.Drawing.Size(616, 504);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "E-field";
 			// 
@@ -978,14 +969,126 @@ namespace EDMHardwareControl
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.groupBox16);
+			this.tabPage2.Controls.Add(this.groupBox14);
 			this.tabPage2.Controls.Add(this.groupBox9);
 			this.tabPage2.Controls.Add(this.groupBox3);
 			this.tabPage2.Controls.Add(this.groupBox4);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(616, 358);
+			this.tabPage2.Size = new System.Drawing.Size(616, 504);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Synths";
+			// 
+			// groupBox16
+			// 
+			this.groupBox16.Controls.Add(this.phaseFlip2CheckBox);
+			this.groupBox16.Controls.Add(this.phaseFlip1CheckBox);
+			this.groupBox16.Controls.Add(this.greenFMEnableCheck);
+			this.groupBox16.Controls.Add(this.redRFSwitchEnableCheck);
+			this.groupBox16.Controls.Add(this.greenRFSwitchEnableCheck);
+			this.groupBox16.Location = new System.Drawing.Point(8, 217);
+			this.groupBox16.Name = "groupBox16";
+			this.groupBox16.Size = new System.Drawing.Size(296, 180);
+			this.groupBox16.TabIndex = 26;
+			this.groupBox16.TabStop = false;
+			this.groupBox16.Text = "TTL controls";
+			// 
+			// phaseFlip2CheckBox
+			// 
+			this.phaseFlip2CheckBox.Location = new System.Drawing.Point(24, 143);
+			this.phaseFlip2CheckBox.Name = "phaseFlip2CheckBox";
+			this.phaseFlip2CheckBox.Size = new System.Drawing.Size(152, 24);
+			this.phaseFlip2CheckBox.TabIndex = 29;
+			this.phaseFlip2CheckBox.Text = "phase flip TTL 2";
+			this.phaseFlip2CheckBox.CheckedChanged += new System.EventHandler(this.phaseFlip2CheckBox_CheckedChanged);
+			// 
+			// phaseFlip1CheckBox
+			// 
+			this.phaseFlip1CheckBox.Location = new System.Drawing.Point(24, 113);
+			this.phaseFlip1CheckBox.Name = "phaseFlip1CheckBox";
+			this.phaseFlip1CheckBox.Size = new System.Drawing.Size(152, 24);
+			this.phaseFlip1CheckBox.TabIndex = 28;
+			this.phaseFlip1CheckBox.Text = "phase flip TTL 1";
+			this.phaseFlip1CheckBox.CheckedChanged += new System.EventHandler(this.phaseFlip1CheckBox_CheckedChanged);
+			// 
+			// greenFMEnableCheck
+			// 
+			this.greenFMEnableCheck.Location = new System.Drawing.Point(24, 84);
+			this.greenFMEnableCheck.Name = "greenFMEnableCheck";
+			this.greenFMEnableCheck.Size = new System.Drawing.Size(152, 24);
+			this.greenFMEnableCheck.TabIndex = 27;
+			this.greenFMEnableCheck.Text = "Green DC FM enabled";
+			// 
+			// redRFSwitchEnableCheck
+			// 
+			this.redRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 54);
+			this.redRFSwitchEnableCheck.Name = "redRFSwitchEnableCheck";
+			this.redRFSwitchEnableCheck.Size = new System.Drawing.Size(136, 24);
+			this.redRFSwitchEnableCheck.TabIndex = 23;
+			this.redRFSwitchEnableCheck.Text = "Enable rf2 switch";
+			// 
+			// greenRFSwitchEnableCheck
+			// 
+			this.greenRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 22);
+			this.greenRFSwitchEnableCheck.Name = "greenRFSwitchEnableCheck";
+			this.greenRFSwitchEnableCheck.Size = new System.Drawing.Size(152, 24);
+			this.greenRFSwitchEnableCheck.TabIndex = 22;
+			this.greenRFSwitchEnableCheck.Text = "Enable rf1 switch";
+			// 
+			// groupBox14
+			// 
+			this.groupBox14.Controls.Add(this.setAttenuatorsButton);
+			this.groupBox14.Controls.Add(this.label36);
+			this.groupBox14.Controls.Add(this.rf2AttenuatorVoltageTextBox);
+			this.groupBox14.Controls.Add(this.label39);
+			this.groupBox14.Controls.Add(this.rf1AttenuatorVoltageTextBox);
+			this.groupBox14.Location = new System.Drawing.Point(312, 350);
+			this.groupBox14.Name = "groupBox14";
+			this.groupBox14.Size = new System.Drawing.Size(296, 118);
+			this.groupBox14.TabIndex = 24;
+			this.groupBox14.TabStop = false;
+			this.groupBox14.Text = "rf attenuators";
+			// 
+			// setAttenuatorsButton
+			// 
+			this.setAttenuatorsButton.Location = new System.Drawing.Point(79, 82);
+			this.setAttenuatorsButton.Name = "setAttenuatorsButton";
+			this.setAttenuatorsButton.Size = new System.Drawing.Size(94, 23);
+			this.setAttenuatorsButton.TabIndex = 18;
+			this.setAttenuatorsButton.Text = "Set attenuators";
+			// 
+			// label36
+			// 
+			this.label36.Location = new System.Drawing.Point(24, 56);
+			this.label36.Name = "label36";
+			this.label36.Size = new System.Drawing.Size(96, 23);
+			this.label36.TabIndex = 15;
+			this.label36.Text = "rf2 voltage (V)";
+			// 
+			// rf2AttenuatorVoltageTextBox
+			// 
+			this.rf2AttenuatorVoltageTextBox.Location = new System.Drawing.Point(136, 56);
+			this.rf2AttenuatorVoltageTextBox.Name = "rf2AttenuatorVoltageTextBox";
+			this.rf2AttenuatorVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+			this.rf2AttenuatorVoltageTextBox.TabIndex = 14;
+			this.rf2AttenuatorVoltageTextBox.Text = "1";
+			// 
+			// label39
+			// 
+			this.label39.Location = new System.Drawing.Point(24, 24);
+			this.label39.Name = "label39";
+			this.label39.Size = new System.Drawing.Size(96, 23);
+			this.label39.TabIndex = 13;
+			this.label39.Text = "rf1 voltage (V)";
+			// 
+			// rf1AttenuatorVoltageTextBox
+			// 
+			this.rf1AttenuatorVoltageTextBox.Location = new System.Drawing.Point(136, 24);
+			this.rf1AttenuatorVoltageTextBox.Name = "rf1AttenuatorVoltageTextBox";
+			this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+			this.rf1AttenuatorVoltageTextBox.TabIndex = 12;
+			this.rf1AttenuatorVoltageTextBox.Text = "1";
 			// 
 			// groupBox9
 			// 
@@ -1064,7 +1167,7 @@ namespace EDMHardwareControl
 			this.tabPage3.Controls.Add(this.groupBox5);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(616, 358);
+			this.tabPage3.Size = new System.Drawing.Size(616, 504);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "B-field";
 			// 
@@ -1297,13 +1400,13 @@ namespace EDMHardwareControl
 			this.tabPage4.Controls.Add(this.groupBox10);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(616, 358);
+			this.tabPage4.Size = new System.Drawing.Size(616, 504);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "Laser";
 			// 
 			// groupBox11
 			// 
-			this.groupBox11.Controls.Add(this.button1);
+			this.groupBox11.Controls.Add(this.updateLaserPhotodiodesButton);
 			this.groupBox11.Controls.Add(this.pumpMonitorTextBox);
 			this.groupBox11.Controls.Add(this.pump2MonitorTextBox);
 			this.groupBox11.Controls.Add(this.probeMonitorTextBox);
@@ -1317,13 +1420,14 @@ namespace EDMHardwareControl
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "Photodiodes";
 			// 
-			// button1
+			// updateLaserPhotodiodesButton
 			// 
-			this.button1.Location = new System.Drawing.Point(72, 136);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 52;
-			this.button1.Text = "Update";
+			this.updateLaserPhotodiodesButton.Location = new System.Drawing.Point(72, 136);
+			this.updateLaserPhotodiodesButton.Name = "updateLaserPhotodiodesButton";
+			this.updateLaserPhotodiodesButton.Size = new System.Drawing.Size(75, 23);
+			this.updateLaserPhotodiodesButton.TabIndex = 52;
+			this.updateLaserPhotodiodesButton.Text = "Update";
+			this.updateLaserPhotodiodesButton.Click += new System.EventHandler(this.updateLaserPhotodiodesButton_Click);
 			// 
 			// pumpMonitorTextBox
 			// 
@@ -1385,7 +1489,7 @@ namespace EDMHardwareControl
 			// groupBox10
 			// 
 			this.groupBox10.Controls.Add(this.label32);
-			this.groupBox10.Controls.Add(this.pump2EnableCheck);
+			this.groupBox10.Controls.Add(this.pump2ShutterCheck);
 			this.groupBox10.Controls.Add(this.pumpShutterCheck);
 			this.groupBox10.Location = new System.Drawing.Point(8, 16);
 			this.groupBox10.Name = "groupBox10";
@@ -1402,13 +1506,14 @@ namespace EDMHardwareControl
 			this.label32.TabIndex = 24;
 			this.label32.Text = "False is blocked. True is open.";
 			// 
-			// pump2EnableCheck
+			// pump2ShutterCheck
 			// 
-			this.pump2EnableCheck.Location = new System.Drawing.Point(24, 56);
-			this.pump2EnableCheck.Name = "pump2EnableCheck";
-			this.pump2EnableCheck.Size = new System.Drawing.Size(72, 24);
-			this.pump2EnableCheck.TabIndex = 23;
-			this.pump2EnableCheck.Text = "Pump 2";
+			this.pump2ShutterCheck.Location = new System.Drawing.Point(24, 56);
+			this.pump2ShutterCheck.Name = "pump2ShutterCheck";
+			this.pump2ShutterCheck.Size = new System.Drawing.Size(72, 24);
+			this.pump2ShutterCheck.TabIndex = 23;
+			this.pump2ShutterCheck.Text = "Pump 2";
+			this.pump2ShutterCheck.CheckedChanged += new System.EventHandler(this.pump2ShutterCheck_CheckedChanged);
 			// 
 			// pumpShutterCheck
 			// 
@@ -1417,6 +1522,7 @@ namespace EDMHardwareControl
 			this.pumpShutterCheck.Size = new System.Drawing.Size(72, 24);
 			this.pumpShutterCheck.TabIndex = 22;
 			this.pumpShutterCheck.Text = "Pump";
+			this.pumpShutterCheck.CheckedChanged += new System.EventHandler(this.pumpShutterCheck_CheckedChanged);
 			// 
 			// tabPage5
 			// 
@@ -1432,7 +1538,7 @@ namespace EDMHardwareControl
 			this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
 			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(616, 358);
+			this.tabPage5.Size = new System.Drawing.Size(616, 504);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "YAG";
 			// 
@@ -1527,24 +1633,12 @@ namespace EDMHardwareControl
 			this.yagFlashlampVTextBox.TabIndex = 12;
 			this.yagFlashlampVTextBox.Text = "1220";
 			// 
-			// consoleBox
-			// 
-			this.consoleBox.BackColor = System.Drawing.Color.Black;
-			this.consoleBox.ForeColor = System.Drawing.Color.Chartreuse;
-			this.consoleBox.Location = new System.Drawing.Point(8, 408);
-			this.consoleBox.Multiline = true;
-			this.consoleBox.Name = "consoleBox";
-			this.consoleBox.ReadOnly = true;
-			this.consoleBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.consoleBox.Size = new System.Drawing.Size(624, 136);
-			this.consoleBox.TabIndex = 26;
-			// 
 			// ControlWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(648, 558);
-			this.Controls.Add(this.consoleBox);
 			this.Controls.Add(this.tabControl1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ControlWindow";
 			this.Text = "EDM Hardware Control";
@@ -1566,6 +1660,9 @@ namespace EDMHardwareControl
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
+			this.groupBox16.ResumeLayout(false);
+			this.groupBox14.ResumeLayout(false);
+			this.groupBox14.PerformLayout();
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
@@ -1580,7 +1677,6 @@ namespace EDMHardwareControl
 			this.tabPage5.ResumeLayout(false);
 			this.tabPage5.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 		#endregion
@@ -1633,6 +1729,16 @@ namespace EDMHardwareControl
 			controller.EnableGreenDCFM(greenFMEnableCheck.Checked);
 		}
 
+		private void phaseFlip1CheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			controller.SetPhaseFlip1(phaseFlip1CheckBox.Checked);
+		}
+
+		private void phaseFlip2CheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			controller.SetPhaseFlip2(phaseFlip2CheckBox.Checked);
+		}
+		
 		private void updateFieldButton_Click(object sender, System.EventArgs e)
 		{
 			controller.UpdateVoltages();
@@ -1720,6 +1826,20 @@ namespace EDMHardwareControl
 			controller.SetScanningBFS();
 		}
 
+		private void pumpShutterCheck_CheckedChanged(object sender, EventArgs e)
+		{
+			controller.SetPumpShutter(pumpShutterCheck.Checked);
+		}
+
+		private void pump2ShutterCheck_CheckedChanged(object sender, EventArgs e)
+		{
+			controller.SetPump2Shutter(pump2ShutterCheck.Checked);
+		}
+
+		private void updateLaserPhotodiodesButton_Click(object sender, EventArgs e)
+		{
+			controller.UpdateLaserPhotodiodes();
+		}
 
 		#endregion
 
@@ -1751,6 +1871,7 @@ namespace EDMHardwareControl
 		{
 			controller.WindowLoaded();
 		}
+
 
 	}
 }

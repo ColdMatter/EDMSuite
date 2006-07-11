@@ -21,6 +21,9 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev1");
 			Boards.Add("pg", "/dev2");
 			Boards.Add("counter", "/dev3");
+			string pgBoard = (string)Boards["pg"];
+			string daqBoard = (string)Boards["daq"];
+			string counterBoard = (string)Boards["counter"];
 
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");
@@ -32,7 +35,6 @@ namespace DAQ.HAL
 			GPIBInstruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
 
 			// map the digital channels
-			string pgBoard = (string)Boards["pg"];
 			// these channels are generally switched by the pattern generator
 			// they're all in the lower half of the pg
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0);
@@ -63,17 +65,22 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 2);
 
+			// These channels are on the daq board. Used mainly for diagnostic purposes.
+			// On no account should they switch during the edm acquisition pattern.
+			AddDigitalOutputChannel("pumpShutter", daqBoard, 0, 0);
+			AddDigitalOutputChannel("pump2Shutter", daqBoard, 0, 1);
+
 			// map the analog channels
-			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt",  daqBoard + "/ai0", AITerminalConfiguration.Differential);
 			AddAnalogInputChannel("magnetometer", daqBoard + "/ai1", AITerminalConfiguration.Differential);
 			AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
 			AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
+			AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
+			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
 			// map the counter channels
-			string counterBoard = (string)Boards["counter"];
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
 			AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
 			AddCounterChannel("northCLeakage", counterBoard +"/ctr0");

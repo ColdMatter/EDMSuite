@@ -74,6 +74,8 @@ namespace EDMHardwareControl
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"], 1, 5000 );
 		BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
 		Task bBoxAnalogOutputTask;
+		Task probeMonitorInputTask;
+		Task pumpMonitorInputTask;
 
 		ControlWindow window;
 
@@ -99,6 +101,10 @@ namespace EDMHardwareControl
 			CreateDigitalTask("greenFM");
 			CreateDigitalTask("b");
 			CreateDigitalTask("notDB");
+			CreateDigitalTask("piFlip");
+			CreateDigitalTask("piFlipEnable");
+			CreateDigitalTask("pumpShutter");
+			CreateDigitalTask("pump2Shutter");
 
 			// initialise the current leakage monitors
 			northCLeakageMonitor.Initialize();
@@ -106,7 +112,7 @@ namespace EDMHardwareControl
 //			northGLeakageMonitor.Initialize();
 //			southGLeakageMonitor.Initialize();
 
-			// analog output
+			// analog outputs
 			bBoxAnalogOutputTask = new Task("EDMHCBBoxAnalogOut");
 			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["b"]).AddToTask(
 				bBoxAnalogOutputTask,
@@ -114,6 +120,10 @@ namespace EDMHardwareControl
 				10
 				);
 			bBoxAnalogOutputTask.Control(TaskAction.Verify);
+
+			// analog inputs
+			probeMonitorInputTask = CreateAnalogInputTask("probePD");
+			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
 
 			// make the control window
 			window = new ControlWindow();
@@ -132,6 +142,25 @@ namespace EDMHardwareControl
 			lastCMinus = CMinusVoltage;
 		}
 
+		private Task CreateAnalogInputTask(string channel)
+		{
+			Task task = new Task("EDMHC" + channel);
+			((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+				task,
+				0,
+				10
+			);
+			task.Control(TaskAction.Verify);
+			return task;
+		}
+
+		private double ReadAnalogInput(Task task)
+		{
+			AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+			double val = reader.ReadSingleSample();
+			task.Control(TaskAction.Unreserve);
+			return val;
+		}
 
 		private void CreateDigitalTask(String name)
 		{
@@ -147,11 +176,6 @@ namespace EDMHardwareControl
 			DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
 			writer.WriteSingleSampleSingleLine(true, value);
 			digitalTask.Control(TaskAction.Unreserve);
-		}
-
-		private void ConsoleWriteLine(string text)
-		{
-			window.SetTextBox(window.consoleBox, window.consoleBox.Text + text + System.Environment.NewLine);
 		}
 
 		#endregion
@@ -375,6 +399,30 @@ namespace EDMHardwareControl
 			}
 		}
 
+		public bool PumpShutter
+		{
+			get
+			{
+				return window.pumpShutterCheck.Checked;
+			}
+			set
+			{
+				window.SetCheckBox(window.pumpShutterCheck, value);
+			}
+		}
+
+		public bool Pump2Shutter
+		{
+			get
+			{
+				return window.pump2ShutterCheck.Checked;
+			}
+			set
+			{
+				window.SetCheckBox(window.pump2ShutterCheck, value);
+			}
+		}
+
 		/* This is something of a cheesy hack. It lets the edm script check to see if the YAG
 		 * laser has failed.
 		 */
@@ -512,7 +560,6 @@ namespace EDMHardwareControl
 		public void UpdateBCurrentMonitor()
 		{
 			// DB0 dB0
-			ConsoleWriteLine("Measuring b-current state: 00");
 			BFlipEnabled = false;
 			CalFlipEnabled = false;
 			double i00 = 1000000 * bCurrentMeter.ReadCurrent();
@@ -520,7 +567,6 @@ namespace EDMHardwareControl
 			Thread.Sleep(50);
 
 			// DB0 dB1
-			ConsoleWriteLine("Measuring b-current state: 01");
 			BFlipEnabled = false;
 			CalFlipEnabled = true;
 			double i01 = 1000000 * bCurrentMeter.ReadCurrent();
@@ -528,7 +574,6 @@ namespace EDMHardwareControl
 			Thread.Sleep(50);
 
 			// DB1 dB0
-			ConsoleWriteLine("Measuring b-current state: 10");
 			BFlipEnabled = true;
 			CalFlipEnabled = false;
 			double i10 = 1000000 * bCurrentMeter.ReadCurrent();
@@ -536,7 +581,6 @@ namespace EDMHardwareControl
 			Thread.Sleep(50);
 			
 			// DB1 dB1
-			ConsoleWriteLine("Measuring b-current state: 11");
 			BFlipEnabled = true;
 			CalFlipEnabled = true;
 			double i11 = 1000000 * bCurrentMeter.ReadCurrent();
@@ -575,6 +619,15 @@ namespace EDMHardwareControl
 
 		public void UpdateRFPowerMonitor()
 		{
+		}
+
+
+		public void UpdateLaserPhotodiodes()
+		{
+			double probePDValue = ReadAnalogInput(probeMonitorInputTask);
+			window.SetTextBox(window.probeMonitorTextBox, probePDValue.ToString());
+			double pumpPDValue = ReadAnalogInput(pumpMonitorInputTask);
+			window.SetTextBox(window.pumpMonitorTextBox, pumpPDValue.ToString());
 		}
 
 		// TODO: I'm not sure whether these button enabling properties are threadsafe.
@@ -727,6 +780,26 @@ namespace EDMHardwareControl
 			SetDigitalLine("greenFM", enable);
 		}
 
+		public void SetPhaseFlip1(bool enable)
+		{
+			SetDigitalLine("piFlip", enable);
+		}
+
+		public void SetPhaseFlip2(bool enable)
+		{
+			SetDigitalLine("piFlipEnable", enable);
+		}
+
+		internal void SetPumpShutter(bool enable)
+		{
+			SetDigitalLine("pumpShutter", enable); 
+		}
+
+		internal void SetPump2Shutter(bool enable)
+		{
+			SetDigitalLine("pump2Shutter", enable);
+		}
+
 		public void SetDualRF()
 		{
 			double lrFreq = Double.Parse(window.lrFrequencyBox.Text);
@@ -768,6 +841,5 @@ namespace EDMHardwareControl
 		}
 
 		#endregion
-
 	}
 }
