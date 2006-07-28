@@ -74,6 +74,8 @@ namespace EDMHardwareControl
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"], 1, 5000 );
 		BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
 		Task bBoxAnalogOutputTask;
+		Task rf1AttenuatorOutputTask;
+		Task rf2AttenuatorOutputTask;
 		Task probeMonitorInputTask;
 		Task pumpMonitorInputTask;
 
@@ -113,13 +115,9 @@ namespace EDMHardwareControl
 //			southGLeakageMonitor.Initialize();
 
 			// analog outputs
-			bBoxAnalogOutputTask = new Task("EDMHCBBoxAnalogOut");
-			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["b"]).AddToTask(
-				bBoxAnalogOutputTask,
-				-10,
-				10
-				);
-			bBoxAnalogOutputTask.Control(TaskAction.Verify);
+			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
+			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
+			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
@@ -144,7 +142,7 @@ namespace EDMHardwareControl
 
 		private Task CreateAnalogInputTask(string channel)
 		{
-			Task task = new Task("EDMHC" + channel);
+			Task task = new Task("EDMHCIn" + channel);
 			((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
 				task,
 				0,
@@ -152,6 +150,25 @@ namespace EDMHardwareControl
 			);
 			task.Control(TaskAction.Verify);
 			return task;
+		}
+
+		private Task CreateAnalogOutputTask(string channel)
+		{
+			Task task = new Task("EDMHCOut" + channel);
+			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]).AddToTask(
+				task,
+				-10,
+				10
+				);
+			task.Control(TaskAction.Verify);
+			return task;
+		}
+
+		private void SetAnalogOutput(Task task, double voltage)
+		{
+			AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
+			writer.WriteSingleSample(true, voltage);
+			task.Control(TaskAction.Unreserve);
 		}
 
 		private double ReadAnalogInput(Task task)
@@ -823,9 +840,7 @@ namespace EDMHardwareControl
 		public void SetScanningBVoltage()
 		{
 			double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
-			AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(bBoxAnalogOutputTask.Stream);
-			writer.WriteSingleSample(true, bBoxVoltage);
-			bBoxAnalogOutputTask.Control(TaskAction.Unreserve);
+			SetAnalogOutput(bBoxAnalogOutputTask, bBoxVoltage);
 		}
 
 		public void SetScanningBZero()
@@ -838,6 +853,15 @@ namespace EDMHardwareControl
 		{
 			window.SetTextBox(window.scanningBVoltageBox, "5.0");
 			SetScanningBVoltage();
+		}
+
+
+		public void SetAttenutatorVoltages()
+		{
+			double rf1AttenuatorVoltage = Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
+			double rf2AttenuatorVoltage = Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
+			SetAnalogOutput(rf1AttenuatorOutputTask, rf1AttenuatorVoltage);
+			SetAnalogOutput(rf2AttenuatorOutputTask, rf2AttenuatorVoltage);
 		}
 
 		#endregion

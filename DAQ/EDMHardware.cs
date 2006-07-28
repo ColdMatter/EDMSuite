@@ -21,9 +21,11 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev1");
 			Boards.Add("pg", "/dev2");
 			Boards.Add("counter", "/dev3");
+			Boards.Add("usbDAQ1", "/dev4");
 			string pgBoard = (string)Boards["pg"];
 			string daqBoard = (string)Boards["daq"];
 			string counterBoard = (string)Boards["counter"];
+			string usbDAQ1 = (string)Boards["usbDAQ1"];
 
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");
@@ -79,6 +81,9 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
+
+			AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
+			AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");

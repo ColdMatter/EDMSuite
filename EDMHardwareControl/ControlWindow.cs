@@ -676,7 +676,7 @@ namespace EDMHardwareControl
 			// 
 			this.bFlipCheck.Location = new System.Drawing.Point(16, 24);
 			this.bFlipCheck.Name = "bFlipCheck";
-			this.bFlipCheck.Size = new System.Drawing.Size(40, 24);
+			this.bFlipCheck.Size = new System.Drawing.Size(61, 24);
 			this.bFlipCheck.TabIndex = 0;
 			this.bFlipCheck.Text = "DB";
 			this.bFlipCheck.CheckedChanged += new System.EventHandler(this.bFlipCheck_CheckedChanged);
@@ -1057,6 +1057,7 @@ namespace EDMHardwareControl
 			this.setAttenuatorsButton.Size = new System.Drawing.Size(94, 23);
 			this.setAttenuatorsButton.TabIndex = 18;
 			this.setAttenuatorsButton.Text = "Set attenuators";
+			this.setAttenuatorsButton.Click += new System.EventHandler(this.setAttenuatorsButton_Click);
 			// 
 			// label36
 			// 
@@ -1870,6 +1871,11 @@ namespace EDMHardwareControl
 		private void ControlWindow_Load(object sender, EventArgs e)
 		{
 			controller.WindowLoaded();
+		}
+
+		private void setAttenuatorsButton_Click(object sender, EventArgs e)
+		{
+			controller.SetAttenutatorVoltages();
 		}
 
 
