@@ -66,11 +66,12 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
 			AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 2);
+            AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
+            AddDigitalOutputChannel("pump2Shutter", pgBoard, 3, 4);
 
 			// These channels are on the daq board. Used mainly for diagnostic purposes.
 			// On no account should they switch during the edm acquisition pattern.
-			AddDigitalOutputChannel("pumpShutter", daqBoard, 0, 0);
-			AddDigitalOutputChannel("pump2Shutter", daqBoard, 0, 1);
+
 
 			// map the analog channels
 			AddAnalogInputChannel("pmt",  daqBoard + "/ai0", AITerminalConfiguration.Differential);
