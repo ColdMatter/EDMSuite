@@ -9,7 +9,7 @@ namespace ScanMaster.Acquire.Plugin
 	/// The plugin registry keeps track of the installed plugins. It's rather simple
 	/// - it just keeps track of a table of plugins for each plugin type. It has some
 	/// helper methods to get a plugin instance. When writing new plugins, they must
-	/// be added to the constructor of this class by hand (simple but not to difficult).
+	/// be added to the constructor of this class by hand.
 	/// </summary>
 	public class PluginRegistry
 	{
@@ -39,6 +39,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
+            patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

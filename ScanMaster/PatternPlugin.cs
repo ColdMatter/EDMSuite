@@ -12,7 +12,7 @@ namespace ScanMaster.Acquire.Plugin
 	[Serializable]
 	[XmlInclude(typeof(DecelerationPatternPlugin)), XmlInclude(typeof(NullPGPlugin)),
 	 XmlInclude(typeof(CommonRamanPatternPlugin)),XmlInclude(typeof(PulsedRFScanPatternPlugin)),
-	 XmlInclude(typeof(PumpProbePatternPlugin))]
+	 XmlInclude(typeof(PumpProbePatternPlugin)), XmlInclude(typeof(DualAblationPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{
 

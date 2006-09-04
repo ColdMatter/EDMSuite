@@ -190,6 +190,8 @@
     <Compile Include="DefaultYAGPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DualAblationPatternBuilder.cs" />
+    <Compile Include="DualAblationPatternPlugin.cs" />
     <Compile Include="Fitter.cs">
       <SubType>Code</SubType>
     </Compile>
