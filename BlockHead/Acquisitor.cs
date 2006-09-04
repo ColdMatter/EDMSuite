@@ -21,7 +21,11 @@ namespace BlockHead.Acquire
 	/// One thing that is not obvious is the way that pattern output works. BlockHead asks ScanMaster
 	/// to output the pattern. It selects the "Scan B" profile (heaven forbid if there isn't such a profile).
 	/// This way there is no tedious mucking around with copying parameters. BlockHead copies out the generic
-	/// pg settings from the profile into the block config. (It doesn't copy everything, as this would mean
+	/// pg settings from the profile into the block config. 
+	/// 
+	/// !!!!I don't think the following is true any more!!!!
+	/// 
+	/// (It doesn't copy everything, as this would mean
 	/// BlockConfig would have to be tailored to a particular pg plugin (or at least it would have to be more
 	/// complicated)).
 	/// </summary>
@@ -237,6 +241,17 @@ namespace BlockHead.Acquire
 			eChan.ChargeTime = (int)config.Settings["eChargeTime"];
 			eChan.Modulation = config.GetModulationByName("E");
 			switchedChannels.Add(eChan);
+
+			AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
+			rf1AChannel.Channel = "rf1Attenuator";
+			rf1AChannel.Modulation = config.GetModulationByName("RF1A");
+			switchedChannels.Add(rf1AChannel);
+
+			AnalogSwitchedChannel rf2AChannel = new AnalogSwitchedChannel();
+			rf2AChannel.Channel = "rf2Attenuator";
+			rf2AChannel.Modulation = config.GetModulationByName("RF2A");
+			switchedChannels.Add(rf2AChannel);
+
 		}
 
 		// this sets up the scanned analog inputs. It's complicated a bit by the fact that

@@ -107,23 +107,24 @@ namespace BlockHead
 		// is to use BlockHead to save this config and then modify it.
 		private void MakeDefaultBlockConfig()
 		{
+			const int CODE_LENGTH = 12;
 			config = new BlockConfig();
 
 			DigitalModulation dm = new DigitalModulation();
 			dm.Name = "E";
-			dm.Waveform = new Waveform("E Modulation", 12);
+			dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
 			dm.Waveform.Code = new bool[] {true,true,false,false,false,false,false,false,false,false,false,false};
 			config.DigitalModulations.Add(dm);
 
 			DigitalModulation pi = new DigitalModulation();
 			pi.Name = "PI";
-			pi.Waveform = new Waveform("Pi Modulation", 12);
+			pi.Waveform = new Waveform("Pi Modulation", CODE_LENGTH);
 			pi.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
 			config.DigitalModulations.Add(pi);
 
 			AnalogModulation b = new AnalogModulation();
 			b.Name = "B";
-			b.Waveform = new Waveform("B Modulation", 12);
+			b.Waveform = new Waveform("B Modulation", CODE_LENGTH);
 			b.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
 			b.DelayAfterSwitch = 5;
 			b.Centre = 0;
@@ -132,14 +133,32 @@ namespace BlockHead
 
 			AnalogModulation db = new AnalogModulation();
 			db.Name = "DB";
-			db.Waveform = new Waveform("DB Modulation", 12);
+			db.Waveform = new Waveform("DB Modulation", CODE_LENGTH);
 			db.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,true,false};
 			db.DelayAfterSwitch = 5;
 			db.Centre = 0;
 			db.Step = 0.1;
 			config.AnalogModulations.Add(db);
 
-			config.Settings["codeLength"] = 12;
+			AnalogModulation rf1A = new AnalogModulation();
+			rf1A.Name = "RF1A";
+			rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
+			rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+			rf1A.DelayAfterSwitch = 0;
+			rf1A.Centre = 1.5;
+			rf1A.Step = 0.1;
+			config.AnalogModulations.Add(rf1A);
+
+			AnalogModulation rf2A = new AnalogModulation();
+			rf2A.Name = "RF2A";
+			rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
+			rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+			rf2A.DelayAfterSwitch = 0;
+			rf2A.Centre = 2.5;
+			rf2A.Step = 0.1;
+			config.AnalogModulations.Add(rf2A);
+
+			config.Settings["codeLength"] = CODE_LENGTH;
 			config.Settings["numberOfPoints"] = 4096;
 			config.Settings["pgClockFrequency"] = 1000000;
 			config.Settings["eDischargeTime"] = 1000;
