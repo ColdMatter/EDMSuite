@@ -34,7 +34,7 @@ namespace ScanMaster.Acquire.Patterns
                 // now with only one ablation laser, if modulation is true (otherwise another with both lasers)
                 if (modulation)
                 {
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, flash2ToQ2, qToQ2, delayToDetectorTrigger, "detector", false);
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, flash2ToQ2, qToQ2, delayToDetectorTrigger, "detectorprime", false);
                     time += flashlampPulseInterval;
                 }
                 else

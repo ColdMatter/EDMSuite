@@ -31,10 +31,11 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
 			AddDigitalOutputChannel("detector", pgBoard, 3, 0); //Pin 29
+            AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6); //Pin 67
 			AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
-			AddDigitalOutputChannel("aom", pgBoard, 0, 4);
-            AddDigitalOutputChannel("flash2", pgBoard, 0, 5);
-            AddDigitalOutputChannel("q2", pgBoard, 0, 6);
+			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
+            AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
+            AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
 	//		AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0);
 	//		AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1);
 	//		AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2);

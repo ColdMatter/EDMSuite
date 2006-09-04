@@ -51,7 +51,7 @@ namespace DAQ.HAL
 		
 		private void SleepOnePattern()
 		{
-			int sleepTime = (int)((length * 1000) / realClockFrequency);
+			int sleepTime = (int)(((double)length * 1000) / realClockFrequency);
 			Thread.Sleep(sleepTime);
 		}
 
