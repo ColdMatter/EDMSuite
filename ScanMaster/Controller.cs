@@ -17,6 +17,7 @@ using ScanMaster.Acquire.Plugin;
 using ScanMaster.Analyze;
 
 
+
 namespace ScanMaster
 {
 	/// <summary>
@@ -46,6 +47,8 @@ namespace ScanMaster
 		#region Class members
 
 		public enum AppState {stopped, running};
+
+        private System.IO.FileStream fs;
 
 		private ControllerWindow controllerWindow;
 		private Acquisitor acquisitor;
@@ -188,8 +191,24 @@ namespace ScanMaster
 		// Main window File->Save
 		public void SaveData() 
 		{
-			// iterate through the scan objects and deserialize them,
-			// then reserialize as xml	
+            // saves a zip file containing each scan, plus the average
+            if (Environs.FullStorage)
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "zipped xml data file|*.zip";
+                saveFileDialog1.Title = "Save scan data";
+                saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
+                                                    (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+                saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        File.Copy((String)Environs.FileSystem.Paths["tempPath"] + "scans.zip", saveFileDialog1.FileName, true);
+                    }
+                }
+            }
+            // otherwise - do nothing
 		}
 
 		// Main window File->Save Average
@@ -319,7 +338,15 @@ namespace ScanMaster
 
 				// tell the viewers acquisition has stopped
 				viewerManager.AcquireStop();
-			}
+
+                //append the average dataset to the temp file, and close it
+                if (Environs.FullStorage && DataStore.NumberOfScans >= 1)
+                {
+                    serializer.AppendToZip(dataStore.AverageScan, "average.xml");
+                    serializer.CloseZip();
+                    fs.Close();
+                }
+             }
 		}
 
 		public void AcquireAndWait(int numberOfScans)
@@ -404,7 +431,7 @@ namespace ScanMaster
 		// Saves the latest average scan in the datastore to the given filestream
 		public void SaveAverageData( System.IO.FileStream fs )
 		{
-			serializer.SerializeScanAsZippedXML(fs, dataStore.AverageScan);
+			serializer.SerializeScanAsZippedXML(fs, dataStore.AverageScan, "average.xml");
 			fs.Close();
 		}
 
@@ -454,12 +481,19 @@ namespace ScanMaster
 				// update the datastore
 				dataStore.UpdateTotal();
 
-				// serialize the last scan				
-//				System.IO.FileStream fs = new FileStream(
-//					"d:\\temp\\12Oct0405_" + dataStore.NumberOfScans.ToString() + ".zip",
-//					System.IO.FileMode.Create);
-//				serializer.SerializeScanAsZippedXML(fs, dataStore.CurrentScan);
-//				fs.Close();
+				// serialize the last scan (if we're in that mode)
+                if (Environs.FullStorage)
+                {
+                    if (dataStore.NumberOfScans == 1)
+                    {
+                        string tempPath = (String)Environs.FileSystem.Paths["tempPath"];
+                        if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);
+                        fs = new FileStream(tempPath +
+                            "scans.zip", System.IO.FileMode.Create);
+                        serializer.PrepareZip(fs);
+                    }
+                    serializer.AppendToZip(dataStore.CurrentScan, "scan_" + dataStore.NumberOfScans.ToString() + ".xml");
+                }
 
 				dataStore.ClearCurrentScan();
 

@@ -13,6 +13,7 @@ namespace DAQ.Environment
 			Paths.Add("scanMasterDataPath", "d:\\mike\\data\\coldmols\\");
 			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.1/mathkernel.exe");
 			Paths.Add("fakeData","d:\\mike\\data\\examples\\");
+            Paths.Add("tempPath", "d:\\temp\\");
 
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

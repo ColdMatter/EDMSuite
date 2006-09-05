@@ -36,6 +36,13 @@ namespace DAQ.Environment
 		/// </summary>
 		public static bool Debug;
 
+        /// <summary>
+        /// When FullStorage is true, every scan of a run is saved to a temporary diretory - all the
+        /// data is available for writing to file at the end of the run. If this setting is false,
+        /// only the average over the scans is available - keeps things fast.
+        /// </summary>
+        public static bool FullStorage;
+
 		/// <summary>
 		/// Experiment type is for code that needs to know what experiment it's running on.
 		/// </summary>
@@ -54,6 +61,7 @@ namespace DAQ.Environment
 					Hardware = new DecelerationHardware();
 					FileSystem = new CrashFileSystem();
 					Debug = false;
+                    FullStorage = false;
 					ExperimentType = "decelerator";
 					break;
 
@@ -62,12 +70,14 @@ namespace DAQ.Environment
 					FileSystem = new SchnapsFileSystem();
 					ExperimentType = "decelerator";
 					Debug = false;
+                    FullStorage = false;
 					break;
 
 				case "OYSTER":
 					Hardware = new DecelerationHardware();
 					FileSystem = new OysterFileSystem();
 					Debug = true;
+                    FullStorage = false;
 					ExperimentType = "decelerator";
 					break;
 
@@ -75,6 +85,7 @@ namespace DAQ.Environment
 					Hardware = new DecelerationHardware();
 					FileSystem = new ClamFileSystem();
 					Debug = true;
+                    FullStorage = true;
 					ExperimentType = "decelerator";
 					break;
 
@@ -82,6 +93,7 @@ namespace DAQ.Environment
 					Hardware = new EDMHardware();
 					FileSystem = new ChromeFileSystem();
 					Debug = false;
+                    FullStorage = false;
 					ExperimentType = "edm";
 					break;
 
@@ -89,13 +101,15 @@ namespace DAQ.Environment
 					Hardware = new EDMHardware();
 					FileSystem = new DiscoBanditFileSystem();
 					Debug = true;
-					ExperimentType = "edm";
+                    FullStorage = false;
+                    ExperimentType = "edm";
 					break;
 
 				case "GANYMEDE0":
 					Hardware = new LiHHardware();
 					FileSystem = new GanymedeFileSystem();
 					Debug = false;
+                    FullStorage = true;
 					ExperimentType = "lih";
 					break;
 
@@ -103,6 +117,7 @@ namespace DAQ.Environment
 					Hardware = new BufferGasHardware();
 					FileSystem = new CarmeliteFileSystem();
 					Debug = false;
+                    FullStorage = false;
 					ExperimentType = "buffer";
 					break;
 				
@@ -110,6 +125,7 @@ namespace DAQ.Environment
 					Hardware = new EDMHardware();
 					FileSystem = new YBFFileSystem();
 					Debug = true;
+                    FullStorage = false;
 					ExperimentType = "edm";
 					break;
 
@@ -117,6 +133,7 @@ namespace DAQ.Environment
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
+                    FullStorage = false;
 					ExperimentType = "edm";
 					break;
 			}

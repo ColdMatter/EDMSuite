@@ -15,17 +15,43 @@ namespace Data.Scans
 	{
 
 		private XmlSerializer xmls;
+        private ZipOutputStream runningZipStream;
 
 		public ScanSerializer()
 		{
 			xmls = new XmlSerializer(typeof(Scan));
 		}
 
-		public void SerializeScanAsZippedXML(Stream stream, Scan scan)
+        public void PrepareZip(Stream stream)
+        {
+            runningZipStream = new ZipOutputStream(stream);
+            runningZipStream.SetLevel(5);
+        }
+
+        public void AppendToZip(Scan scan, String name)
+        {
+            lock (this)
+            {
+                ZipEntry entry = new ZipEntry(name);
+                runningZipStream.PutNextEntry(entry);
+                xmls.Serialize(runningZipStream, scan);
+            }
+        }
+
+        public void CloseZip()
+        {
+            if (runningZipStream != null)
+            {
+                runningZipStream.Finish();
+                runningZipStream.Close();
+            }
+        }
+
+		public void SerializeScanAsZippedXML(Stream stream, Scan scan, String name)
 		{
 			ZipOutputStream zippedStream = new ZipOutputStream(stream);
 			zippedStream.SetLevel(5);
-			ZipEntry entry = new ZipEntry("average.xml");
+			ZipEntry entry = new ZipEntry(name);
 			zippedStream.PutNextEntry(entry);
 			xmls.Serialize(zippedStream, scan);
 			zippedStream.Finish();

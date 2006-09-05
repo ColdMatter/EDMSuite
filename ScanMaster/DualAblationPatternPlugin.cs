@@ -32,8 +32,6 @@ namespace ScanMaster.Acquire.Plugins
             settings["flash2ToQ2"] = 150;
             settings["qToQ2"] = 10;
             settings["sequenceLength"] = 2;
-            settings["switchLineDuration"] = 1000;
-            settings["switchLineDelay"] = 0;
         }
 
         protected override void DoAcquisitionStarting()
