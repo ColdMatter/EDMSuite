@@ -48,9 +48,7 @@ namespace ScanMaster
 
 		public enum AppState {stopped, running};
 
-        private System.IO.FileStream fs;
-
-		private ControllerWindow controllerWindow;
+     	private ControllerWindow controllerWindow;
 		private Acquisitor acquisitor;
 		public Acquisitor Acquisitor
 		{
@@ -109,7 +107,7 @@ namespace ScanMaster
 		// This function is called at the very start of application execution.
 		public void StartApplication() 
 		{
-			// make an acquisitor and connect ourself to its events
+            // make an acquisitor and connect ourself to its events
 			acquisitor = new Acquisitor();
 			acquisitor.Data += new DataEventHandler(DataHandler);
 			acquisitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
@@ -189,27 +187,24 @@ namespace ScanMaster
 		#region Local functions - these should only be called locally
 		
 		// Main window File->Save
-		public void SaveData() 
-		{
+        public void SaveData()
+        {
             // saves a zip file containing each scan, plus the average
-            if (Environs.FullStorage)
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "zipped xml data file|*.zip";
+            saveFileDialog1.Title = "Save scan data";
+            saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
+                                                (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "zipped xml data file|*.zip";
-                saveFileDialog1.Title = "Save scan data";
-                saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
-                                                    (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
-                saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                if (saveFileDialog1.FileName != "")
                 {
-                    if (saveFileDialog1.FileName != "")
-                    {
-                        File.Copy((String)Environs.FileSystem.Paths["tempPath"] + "scans.zip", saveFileDialog1.FileName, true);
-                    }
+                    SaveData(saveFileDialog1.FileName);
                 }
+
             }
-            // otherwise - do nothing
-		}
+        }
 
 		// Main window File->Save Average
 		public void SaveAverageData()
@@ -318,6 +313,14 @@ namespace ScanMaster
 				// clear stored data
 				dataStore.ClearAll();
 
+                // delete any temporary files
+                string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+                if (Directory.Exists(tempPath))
+                {
+                    string[] tempFiles = Directory.GetFiles(tempPath);
+                    foreach (string file in tempFiles) File.Delete(file);
+                }
+
 				// tell the viewers that acquisition is starting
 				viewerManager.AcquireStart();
 
@@ -338,14 +341,6 @@ namespace ScanMaster
 
 				// tell the viewers acquisition has stopped
 				viewerManager.AcquireStop();
-
-                //append the average dataset to the temp file, and close it
-                if (Environs.FullStorage && DataStore.NumberOfScans >= 1)
-                {
-                    serializer.AppendToZip(dataStore.AverageScan, "average.xml");
-                    serializer.CloseZip();
-                    fs.Close();
-                }
              }
 		}
 
@@ -428,6 +423,22 @@ namespace ScanMaster
             return profileManager.CurrentProfile.AcquisitorConfig.outputPlugin.Settings[key];
         }
 
+        // Saves the scan data to the specified file
+        public void SaveData(string filename)
+        {
+            System.IO.FileStream fs = new FileStream(filename, FileMode.Create);
+            serializer.PrepareZip(fs);
+            string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+            for (int k = 1; k <= DataStore.NumberOfScans; k++)
+            {
+                Scan sc = serializer.DeserializeScanAsBinary(tempPath + "\\scan_" + k.ToString());
+                serializer.AppendToZip(sc, "scan_" + k.ToString() + ".xml");
+            }
+            serializer.AppendToZip(DataStore.AverageScan, "average.xml");
+            serializer.CloseZip();
+            fs.Close();
+        }
+
 		// Saves the latest average scan in the datastore to the given filestream
 		public void SaveAverageData( System.IO.FileStream fs )
 		{
@@ -481,19 +492,11 @@ namespace ScanMaster
 				// update the datastore
 				dataStore.UpdateTotal();
 
-				// serialize the last scan (if we're in that mode)
-                if (Environs.FullStorage)
-                {
-                    if (dataStore.NumberOfScans == 1)
-                    {
-                        string tempPath = (String)Environs.FileSystem.Paths["tempPath"];
-                        if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);
-                        fs = new FileStream(tempPath +
-                            "scans.zip", System.IO.FileMode.Create);
-                        serializer.PrepareZip(fs);
-                    }
-                    serializer.AppendToZip(dataStore.CurrentScan, "scan_" + dataStore.NumberOfScans.ToString() + ".xml");
-                }
+				// serialize the last scan
+                string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+                if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);
+                serializer.SerializeScanAsBinary(tempPath + "\\scan_" +
+                    dataStore.NumberOfScans.ToString(), dataStore.CurrentScan);
 
 				dataStore.ClearCurrentScan();
 

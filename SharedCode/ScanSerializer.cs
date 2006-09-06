@@ -94,7 +94,7 @@ namespace Data.Scans
 
 		public Scan DeserializeScanAsBinary(String filePath)
 		{
-			Stream scanStream = new FileStream(filePath, FileMode.Create);
+			Stream scanStream = new FileStream(filePath, FileMode.Open);
 			Scan scan = (Scan)(new BinaryFormatter()).Deserialize(scanStream);
 			scanStream.Close();
 			return scan;

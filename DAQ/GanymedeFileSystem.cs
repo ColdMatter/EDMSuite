@@ -13,8 +13,7 @@ namespace DAQ.Environment
 			Paths.Add("scanMasterDataPath", "d:\\Data\\LiH\\");
 			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.2/mathkernel.exe");
 			Paths.Add("fakeData","d:\\data\\examples\\");
-            Paths.Add("tempPath", "d:\\data\\temp\\");
-
+           
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
 			SortDataByDate = false;
