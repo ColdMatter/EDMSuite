@@ -28,7 +28,7 @@ namespace ScanMaster.Analyze
 			double q = parameters[1];
 			double c = parameters[2];
 			double w = parameters[3];
-			if (x == c) x += double.Epsilon; // watch out for divide by zero
+			if (x == c) x += 1e-3; // watch out for divide by zero
 			double z = 2.78 * (x - c) / w;
 			return n + q * Math.Pow(Math.Sin(z) / z, 2);
 		}

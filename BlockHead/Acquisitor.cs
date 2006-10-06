@@ -20,14 +20,8 @@ namespace BlockHead.Acquire
 	/// 
 	/// One thing that is not obvious is the way that pattern output works. BlockHead asks ScanMaster
 	/// to output the pattern. It selects the "Scan B" profile (heaven forbid if there isn't such a profile).
-	/// This way there is no tedious mucking around with copying parameters. BlockHead copies out the generic
+	/// This way there is no tedious mucking around with copying parameters. BlockHead copies out the
 	/// pg settings from the profile into the block config. 
-	/// 
-	/// !!!!I don't think the following is true any more!!!!
-	/// 
-	/// (It doesn't copy everything, as this would mean
-	/// BlockConfig would have to be tailored to a particular pg plugin (or at least it would have to be more
-	/// complicated)).
 	/// </summary>
 	public class Acquisitor
 	{
@@ -262,7 +256,7 @@ namespace BlockHead.Acquire
 			inputs = new ScannedAnalogInputCollection();
 			inputs.RawSampleRate = 100000;
 			inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-			inputs.GateLength = 200;
+			inputs.GateLength = 220;
 			// NOTE: this long version is for null runs, don't set it so long that the shots overlap!
 			// Comment the following line out if you're not null running.
 			//inputs.GateLength = 3000;
@@ -271,11 +265,11 @@ namespace BlockHead.Acquire
 			// this code should be used for normal running
 			ScannedAnalogInput pmt = new ScannedAnalogInput();
 			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
-			pmt.ReductionMode = DataReductionMode.Chop;
-			pmt.ChopLength = 80;
+			pmt.ReductionMode = DataReductionMode.None;
+			//pmt.ChopLength = 220;
 			pmt.LowLimit = 0;
 			pmt.HighLimit = 10;
-			pmt.Calibration = 0.14;
+			pmt.Calibration = 1/6.9;
 			inputs.Channels.Add(pmt);
 
 //			// this code can be enabled for faster null runs
@@ -287,6 +281,15 @@ namespace BlockHead.Acquire
 //			pmt.HighLimit = 10;
 //			pmt.Calibration = 0.14;
 //			inputs.Channels.Add(pmt);
+
+			ScannedAnalogInput normPMT = new ScannedAnalogInput();
+			normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["normTemp"];
+			normPMT.ReductionMode = DataReductionMode.Chop;
+			normPMT.ChopLength = 20;
+			normPMT.LowLimit = 0;
+			normPMT.HighLimit = 10;
+			normPMT.Calibration = 1/11.2;
+			inputs.Channels.Add(normPMT);
 
 			ScannedAnalogInput mag = new ScannedAnalogInput();
 			mag.ReductionMode = DataReductionMode.Average;
