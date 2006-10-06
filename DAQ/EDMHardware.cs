@@ -80,6 +80,8 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
 			AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
 			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("normTemp", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
