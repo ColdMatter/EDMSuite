@@ -52,7 +52,7 @@ namespace EDMHardwareControl
 		private const int gMinusChan = 2;
 		// E field controller mode
 		private enum EFieldMode { TTL, GPIB };
-		private EFieldMode eFieldMode = EFieldMode.GPIB;
+		private EFieldMode eFieldMode = EFieldMode.TTL;
 
 		#endregion
 
@@ -116,8 +116,8 @@ namespace EDMHardwareControl
 
 			// analog outputs
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
-			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
-			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
+//			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
+//			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
