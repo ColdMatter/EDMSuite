@@ -46,8 +46,13 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
 			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
 			AddAnalogInputChannel("cavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
+            AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
 		//	AddAnalogOutputChannel("aom", daqBoard + "/ao1"); 
+
+            // map the counter channels
+            AddCounterChannel("pmt", daqBoard + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
+            AddCounterChannel("sample clock", daqBoard + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
 		}
 
