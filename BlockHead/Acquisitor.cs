@@ -236,15 +236,15 @@ namespace BlockHead.Acquire
 			eChan.Modulation = config.GetModulationByName("E");
 			switchedChannels.Add(eChan);
 
-			AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
-			rf1AChannel.Channel = "rf1Attenuator";
-			rf1AChannel.Modulation = config.GetModulationByName("RF1A");
-			switchedChannels.Add(rf1AChannel);
+            //AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
+            //rf1AChannel.Channel = "rf1Attenuator";
+            //rf1AChannel.Modulation = config.GetModulationByName("RF1A");
+            //switchedChannels.Add(rf1AChannel);
 
-			AnalogSwitchedChannel rf2AChannel = new AnalogSwitchedChannel();
-			rf2AChannel.Channel = "rf2Attenuator";
-			rf2AChannel.Modulation = config.GetModulationByName("RF2A");
-			switchedChannels.Add(rf2AChannel);
+            //AnalogSwitchedChannel rf2AChannel = new AnalogSwitchedChannel();
+            //rf2AChannel.Channel = "rf2Attenuator";
+            //rf2AChannel.Modulation = config.GetModulationByName("RF2A");
+            //switchedChannels.Add(rf2AChannel);
 
 		}
 

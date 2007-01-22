@@ -85,8 +85,8 @@ namespace DAQ.HAL
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
-			AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
-			AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
+			//AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
+			//AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");

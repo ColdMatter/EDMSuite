@@ -31,7 +31,7 @@ namespace EDMHardwareControl
 		private const int eDischargeTime = 5000;
 		private const int eBleedTime = 1000;
 		private const int eWaitTime = 500;
-		private const int eChargeTime = 1000;
+		private const int eChargeTime = 5000;
 		// E field controller calibrations
 		private const double cPlusOffset = -18.917;
         private const double cPlusSlope = 9015.49;
@@ -116,8 +116,8 @@ namespace EDMHardwareControl
 
 			// analog outputs
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
-//			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
-//			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
+			//rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
+			//rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
@@ -157,8 +157,8 @@ namespace EDMHardwareControl
 			Task task = new Task("EDMHCOut" + channel);
 			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]).AddToTask(
 				task,
-				-10,
-				10
+				0,
+				5
 				);
 			task.Control(TaskAction.Verify);
 			return task;

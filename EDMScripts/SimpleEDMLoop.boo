@@ -14,8 +14,8 @@ def loadBlockConfig(path as string) as BlockConfig:
 
 def plotChannelGraph(clusterToPlot as String, kernel) as Form:
 	form = Form()
-	x = 600
-	y = 600
+	x = 1000
+	y = 1000
 	form.Size = Size(x, y)
 	form.Text = "Live analysis"
 	channelGraph = MathPictureBox(kernel);
