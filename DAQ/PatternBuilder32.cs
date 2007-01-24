@@ -115,7 +115,7 @@ namespace DAQ.Pattern
 			// Is that big enough ?
 			if ( length < layout.LastEventTime + 1 )
 				throw new PatternBuildException("Pattern will not fit in array of requested length.\n"
-					+ "Pattern length is " + layout.LastEventTime );
+                    + "Pattern length is " + layout.LastEventTime + ". Array length is " + length);
 		
 			// make the pattern array
 			pattern = new UInt32[length];
