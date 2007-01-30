@@ -94,9 +94,6 @@ namespace ScanMaster.Acquire
 							((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
 							/ (int)outputSettings["pointsPerScan"];
 
-						// Set the switch state
-						config.switchPlugin.State = true;
-
 						// move the scan along
 						config.outputPlugin.ScanParameter = scanParameter;
 
@@ -115,20 +112,28 @@ namespace ScanMaster.Acquire
 							}
 						}
 
-						// wait for the data gatherer to finish
-						config.shotGathererPlugin.ArmAndWait();
-
-						// read out the data
-						ScanPoint sp = new ScanPoint();
+                        ScanPoint sp = new ScanPoint();
 						sp.ScanParameter = config.outputPlugin.ScanParameter;
-						sp.OnShots.Add(config.shotGathererPlugin.Shot);
 
-						if ((bool)config.switchPlugin.Settings["switchActive"]) 
-						{
-							config.switchPlugin.State = false;
-							config.shotGathererPlugin.ArmAndWait();
-							sp.OffShots.Add(config.shotGathererPlugin.Shot);
-						}
+                        for (int shotNum = 0; shotNum < (int)(config.outputPlugin.Settings["shotsPerPoint"]); shotNum++)
+                        {
+                            // Set the switch state
+                            config.switchPlugin.State = true;
+
+                            // wait for the data gatherer to finish
+                            config.shotGathererPlugin.ArmAndWait();
+
+                            // read out the data
+
+                            sp.OnShots.Add(config.shotGathererPlugin.Shot);
+
+                            if ((bool)config.switchPlugin.Settings["switchActive"])
+                            {
+                                config.switchPlugin.State = false;
+                                config.shotGathererPlugin.ArmAndWait();
+                                sp.OffShots.Add(config.shotGathererPlugin.Shot);
+                            }
+                        }
 
 						// sample the analog channels and add them to the ScanPoint
 						config.analogPlugin.ArmAndWait();

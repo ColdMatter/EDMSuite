@@ -167,6 +167,7 @@
     <Compile Include="EDMHardware.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EIP578Synth.cs" />
     <Compile Include="Environs.cs">
       <SubType>Code</SubType>
     </Compile>

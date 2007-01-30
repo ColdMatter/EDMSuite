@@ -20,6 +20,7 @@ namespace ScanMaster.Acquire.Plugin
 			settings["start"] = 0.0;
 			settings["end"] = 10.0;
 			settings["pointsPerScan"] = 200;
+            settings["shotsPerPoint"] = 1;
 		}
 
 		/// <summary>

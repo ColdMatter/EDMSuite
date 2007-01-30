@@ -24,8 +24,11 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
-			
-			// map the digital channels
+
+            // map the GPIB instruments
+            GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
+            
+            // map the digital channels
 			string pgBoard = (string)Boards["pg"];
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
