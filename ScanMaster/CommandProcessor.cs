@@ -63,6 +63,13 @@ namespace ScanMaster
 					continue;
 				}
 
+                // update profile set to incorporate any newly introduced settings
+                if (command == "refresh")
+                {
+                    manager.UpdateProfiles();                                                           
+                    continue;
+                }
+
 				if (command == "g")
 				{
 					if (groupEditMode)

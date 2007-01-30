@@ -188,6 +188,70 @@ namespace ScanMaster
 			if (Tweak != null) Tweak(this, e);
 		}
 
+        // When a new setting is introduced into a plugin, there needs to be a way to introduce it into existing
+        // profile sets. This is the code that does it. 
+        // For each profile, p, a dummy profile, d, is created whose plugins are the same as those of p.
+        // Because d is constructed anew, all plugin settings will have their default values and any newly
+        // introduced settings will be present in d. Any settings that are in d, but not in p, are then copied over
+        // into p. This is done for all the profiles in the set.
+        public void UpdateProfiles()
+        {
+            Type pluginType;
+            System.Reflection.ConstructorInfo info;
+           
+            Profile tempProfile = new Profile();
+
+            foreach (Profile prof in profiles)
+            {
+                // analog input plugin
+                pluginType = (Type)prof.AcquisitorConfig.analogPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.analogPlugin = (AnalogInputPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.analogPlugin.Settings, tempProfile.AcquisitorConfig.analogPlugin.Settings);
+
+                // scan output plugin
+                pluginType = (Type)prof.AcquisitorConfig.outputPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.outputPlugin = (ScanOutputPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.outputPlugin.Settings, tempProfile.AcquisitorConfig.outputPlugin.Settings);
+
+                // pattern plugin
+                pluginType = (Type)prof.AcquisitorConfig.pgPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.pgPlugin = (PatternPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.pgPlugin.Settings, tempProfile.AcquisitorConfig.pgPlugin.Settings);
+
+                // shot gatherer plugin
+                pluginType = (Type)prof.AcquisitorConfig.shotGathererPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.shotGathererPlugin = (ShotGathererPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.shotGathererPlugin.Settings, tempProfile.AcquisitorConfig.shotGathererPlugin.Settings);
+
+                // switch plugin
+                pluginType = (Type)prof.AcquisitorConfig.switchPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.switchPlugin = (SwitchOutputPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.switchPlugin.Settings, tempProfile.AcquisitorConfig.switchPlugin.Settings);
+
+                // yag plugin
+                pluginType = (Type)prof.AcquisitorConfig.yagPlugin.GetType();
+                info = pluginType.GetConstructor(new Type[] { });
+                tempProfile.AcquisitorConfig.yagPlugin = (YAGPlugin)info.Invoke(new object[] { });
+                updateSettings(prof.AcquisitorConfig.yagPlugin.Settings, tempProfile.AcquisitorConfig.yagPlugin.Settings);
+            }
+        }
+
+        // Supports the updateProfiles method
+        private void updateSettings(PluginSettings currentSettings, PluginSettings defaultSettings)
+        {
+            ICollection defaultKeys = defaultSettings.Keys;
+            String[] defaults = new String[defaultKeys.Count];
+            defaultKeys.CopyTo(defaults, 0);
+
+            foreach (String s in defaults)
+                if (currentSettings[s] == null) currentSettings[s] = defaultSettings[s];
+        }
+
 	}
 
 	public class TweakEventArgs : EventArgs
