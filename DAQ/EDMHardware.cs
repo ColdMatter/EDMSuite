@@ -47,7 +47,7 @@ namespace DAQ.HAL
 																	// see ModulatedAnalogShotGatherer.cs
 																	// for details.
 			AddDigitalOutputChannel("rf1Switch", pgBoard, 0, 4);
-			AddDigitalOutputChannel("rf2Switch", pgBoard, 0, 5);
+			AddDigitalOutputChannel("rf2Switch", pgBoard, 0, 4);
 			AddDigitalOutputChannel("greenFM", pgBoard, 1, 0);
 			AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
 			AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
@@ -81,12 +81,14 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
 			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("normTemp", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("rf1Power", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("rf2Power", usbDAQ1 + "/ai1", AITerminalConfiguration.Rse);
 
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
-			//AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
-			//AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
+			AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
+			AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");

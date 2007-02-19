@@ -64,10 +64,10 @@ namespace EDMHardwareControl
 		ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 		HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
 		Hashtable digitalTasks = new Hashtable();
-		LeakageMonitor northCLeakageMonitor = 
-			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"], 5049, 5040 );
-		LeakageMonitor southCLeakageMonitor = 
-			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"], 4976, 4990 );
+		LeakageMonitor northCLeakageMonitor =
+            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"], 2.33765, -11844.9);
+		LeakageMonitor southCLeakageMonitor =
+            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"], 2.05977, -10826.1);
 		LeakageMonitor northGLeakageMonitor = 
 			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"], 1, 5000 );
 		LeakageMonitor southGLeakageMonitor = 
@@ -76,6 +76,8 @@ namespace EDMHardwareControl
 		Task bBoxAnalogOutputTask;
 		Task rf1AttenuatorOutputTask;
 		Task rf2AttenuatorOutputTask;
+        Task rf1PowerInputTask;
+        Task rf2PowerInputTask;
 		Task probeMonitorInputTask;
 		Task pumpMonitorInputTask;
 
@@ -116,12 +118,14 @@ namespace EDMHardwareControl
 
 			// analog outputs
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
-			//rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
-			//rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
+			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
+			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
 			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
+            rf1PowerInputTask = CreateAnalogInputTask("rf1Power");
+            rf2PowerInputTask = CreateAnalogInputTask("rf2Power");
 
 			// make the control window
 			window = new ControlWindow();
@@ -636,6 +640,8 @@ namespace EDMHardwareControl
 
 		public void UpdateRFPowerMonitor()
 		{
+            window.SetTextBox(window.rf1PowerMonitorTextBox, (Math.Round(ReadAnalogInput(rf1PowerInputTask),3)).ToString());
+            window.SetTextBox(window.rf2PowerMonitorTextBox, (Math.Round(ReadAnalogInput(rf2PowerInputTask),3)).ToString());
 		}
 
 

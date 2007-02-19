@@ -36,7 +36,7 @@ namespace ScanMaster.Acquire.Patterns
             
 			// Disable both rf
 			AddEdge(rf1Channel, 0, false);
-			AddEdge(rf2Channel, 0, false);
+			//AddEdge(rf2Channel, 0, false);
 			AddEdge(piChannel, 0, true);
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 

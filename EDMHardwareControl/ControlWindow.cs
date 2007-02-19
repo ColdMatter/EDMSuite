@@ -1055,7 +1055,6 @@ namespace EDMHardwareControl
             // 
             // setAttenuatorsButton
             // 
-            this.setAttenuatorsButton.Enabled = false;
             this.setAttenuatorsButton.Location = new System.Drawing.Point(79, 82);
             this.setAttenuatorsButton.Name = "setAttenuatorsButton";
             this.setAttenuatorsButton.Size = new System.Drawing.Size(94, 23);
