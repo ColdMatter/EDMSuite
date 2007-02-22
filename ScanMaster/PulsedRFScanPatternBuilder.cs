@@ -125,7 +125,7 @@ namespace ScanMaster.Acquire.Patterns
 			tempTime = Pulse(startTime + START_PADDING, valveToQ + fmCentreTime - (fmLength/2), fmLength, fmChannel);
 			if (tempTime > time) time = tempTime;
 			// piFlip on
-			AddEdge(piChannel, startTime + piFlipTime + START_PADDING, true);
+            AddEdge(piChannel, startTime + START_PADDING + valveToQ + piFlipTime, true);
 
 			// Detector trigger
             if (modulated)
