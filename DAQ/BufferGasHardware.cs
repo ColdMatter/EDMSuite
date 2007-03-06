@@ -23,15 +23,15 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 			AddDigitalOutputChannel("flash", pgBoard, 0, 2);
 			AddDigitalOutputChannel("q", pgBoard, 0,0 );
-			AddDigitalOutputChannel("detector", pgBoard, 1, 0);
+			AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16
 			AddDigitalOutputChannel("aom", pgBoard, 2, 0);
 
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];
-			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
-			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse);
-			AddAnalogInputChannel("bogus", daqBoard + "/ai2", AITerminalConfiguration.Rse);
-			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
+			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 68
+			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 33
+			AddAnalogInputChannel("bogus", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 65
+			AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
 
 			//map the counter channels
 			AddCounterChannel("pmt", daqBoard + "/ctr0");
