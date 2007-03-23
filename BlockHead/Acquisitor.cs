@@ -130,7 +130,13 @@ namespace BlockHead.Acquire
 							double[] data = ipt.Reduce(rawData);
 							TOF t = new TOF();
 							t.Calibration = ipt.Calibration;
-							t.GateStartTime = inputs.GateStartTime;
+                            // the 1000000 is because clock period is in microseconds;
+                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+                            t.GateStartTime = inputs.GateStartTime;
+                            // this is a bit confusing. The chop is measured in points, so the gate
+                            // has to be adjusted by the number of points times the clock period!
+                            if (ipt.ReductionMode == DataReductionMode.Chop)
+                                t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
 							t.Data = data;
 							// the 1000000 is because clock period is in microseconds;
 							t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
