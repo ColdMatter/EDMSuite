@@ -15,14 +15,52 @@ namespace DAQ.HAL
 		private CounterReader leakageReader;
 	
 		// calibration constants
-		private double slope;
-		private double offset;
+        public double Slope
+        {
+            get
+            {
+                return slope;
+            }
+            set
+            {
+                slope = value;
+            }
+        }
+        public double Offset
+        {
+            get
+            {
+                return offset;
+            }
+            set
+            {
+                offset = value;
+            }
+        }
+        public double MeasurementTime
+        {
+            get
+            {
+                return measurementTime;
+            }
+            set
+            {
+                measurementTime = value;
+                setMeasurementTime();
+            }
+        }
 
-		public LeakageMonitor(CounterChannel clChannel, double slope, double offset)
+
+        private double slope;
+        private double offset;
+        private double measurementTime;
+
+		public LeakageMonitor(CounterChannel clChannel, double slope, double offset, double measurementTime)
 		{
 			currentLeakageCounterChannel = clChannel;
 			this.slope = slope;
 			this.offset = offset;
+            this.measurementTime = measurementTime;
 			rn = new Random();
 		}
 
@@ -35,20 +73,23 @@ namespace DAQ.HAL
 				this.counterTask.CIChannels.CreateFrequencyChannel(
 					currentLeakageCounterChannel.PhysicalChannel,
 					"",
-					4000,
+					3000,
 					6000,
 					CIFrequencyStartingEdge.Rising,
 					CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
-					.1,
+                    measurementTime,
 					10,			
 					CIFrequencyUnits.Hertz
 					);	
-				counterTask.Stream.Timeout = 100;
+				counterTask.Stream.Timeout = (int)(1000 * measurementTime);
 			}
 			leakageReader = new CounterReader(counterTask.Stream);	
 		}
 
-		public double GetCurrent()
+
+
+
+		private double getRawCount()
 		{
 			double raw;
 			if (!Environs.Debug)
@@ -67,7 +108,26 @@ namespace DAQ.HAL
 			{
 				raw = rn.NextDouble() * 5000;
 			}
-			return (raw * slope + offset);
+			return raw;
 		}
+
+        public double GetCurrent()
+        {
+            return ((getRawCount() - offset) / slope);
+        }
+
+
+        public void Calibrate()
+        {
+            offset = getRawCount();
+            return;
+        }
+
+        private void setMeasurementTime()
+        {
+            counterTask.Stream.Timeout = (int)(1000 * measurementTime);
+            counterTask.CIChannels[0].FrequencyMeasurementTime = measurementTime;
+        }        
+
 	}
 }

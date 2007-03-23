@@ -32,13 +32,13 @@ namespace EDMLeakageMonitor
 		{
 			this.frontEnd = frontEnd;
 			lmArray = new ArrayList();
-            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"]), 1, 0));
-            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"]), 1, 0));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"]), 1, 0,.200));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"]), 1, 0, .2));
             
             //this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"]), 0.00405203, 0.00405203 * -5263.0));
             //this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"]), 0.00454727, 0.00454727 * -5133.0));
-            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"]), 1, 0));
-            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"]), 1, 0));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"]), 1, 0,.2));
+            this.lmArray.Add(new LeakageMonitor(((CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"]), 1, 0,.2));
 		
 		}
 

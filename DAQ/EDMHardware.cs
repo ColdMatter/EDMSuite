@@ -93,10 +93,8 @@ namespace DAQ.HAL
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
 			AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
-			AddCounterChannel("northCLeakage", counterBoard +"/ctr0");
-			AddCounterChannel("southCLeakage", counterBoard +"/ctr1");
-			AddCounterChannel("northGLeakage", counterBoard +"/ctr2");
-			AddCounterChannel("southGLeakage", counterBoard +"/ctr3");
+			AddCounterChannel("northLeakage", counterBoard +"/ctr0");
+			AddCounterChannel("southLeakage", counterBoard +"/ctr1");
 
 		}
 

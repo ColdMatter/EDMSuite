@@ -57,7 +57,7 @@ def initialiseMathematica(kernel):
 	kernel.WaitAndDiscardAnswer();
 	kernel.Evaluate("dbName = \"running_temp\";loadDatabase[dbName];")
 	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("gates = {{0, 10^6}, {0, 10^6}};rf1KeepLength=0.02;rf2KeepLength=0.03;offset=0;extractFunc={integrateTOF[#,0,First[generatePulsedRFGates[#,rf1KeepLength,rf2KeepLength,offset]],Last[generatePulsedRFGates[#,rf1KeepLength,rf2KeepLength,offset]],True,\"pmt\"](*,integrateTOF[#,1,gates\\[LeftDoubleBracket]2\\[RightDoubleBracket]\\[LeftDoubleBracket]1\\[RightDoubleBracket],gates\\[LeftDoubleBracket]2\\[RightDoubleBracket]\\[LeftDoubleBracket]2\\[RightDoubleBracket],False,\"mag1\"]*)}&;")
+	kernel.Evaluate("gates={{0,10^6},{0,10^6},{0,10^6}};extractFunc = {integrateTOF[#, 0, gates[[1]][[1]], gates[[1]][[2]], True, \"pmt\"], integrateTOF[#, 1, gates[[2]][[1]], gates[[2]][[2]], False, \"mag1\"]} &;")
 	kernel.WaitAndDiscardAnswer();
 	kernel.Evaluate("viewSpecs = {};")
 	kernel.WaitAndDiscardAnswer();

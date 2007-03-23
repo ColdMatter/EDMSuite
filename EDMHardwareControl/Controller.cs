@@ -53,6 +53,17 @@ namespace EDMHardwareControl
 		// E field controller mode
 		private enum EFieldMode { TTL, GPIB };
 		private EFieldMode eFieldMode = EFieldMode.TTL;
+        //Current Leakage Monitor calibration 
+        //Convention for monitor to plate mapping:
+        //north -> monitor1
+        //south -> monitor2
+        private static double northSlope = 53.6954;
+        private static double southSlope = 46.9103;
+        private static double northOffset = 5256;
+        private static double southOffset = 5067;
+        private static double currentMonitorMeasurementTime = .5;
+
+
 
 		#endregion
 
@@ -64,15 +75,11 @@ namespace EDMHardwareControl
 		ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 		HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
 		Hashtable digitalTasks = new Hashtable();
-		LeakageMonitor northCLeakageMonitor =
-            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northCLeakage"], 2.33765, -11844.9);
-		LeakageMonitor southCLeakageMonitor =
-            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southCLeakage"], 2.05977, -10826.1);
-		LeakageMonitor northGLeakageMonitor = 
-			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["northGLeakage"], 1, 5000 );
-		LeakageMonitor southGLeakageMonitor = 
-			new LeakageMonitor( (CounterChannel)Environs.Hardware.CounterChannels["southGLeakage"], 1, 5000 );
-		BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
+		LeakageMonitor northLeakageMonitor =
+            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
+		LeakageMonitor southLeakageMonitor =
+            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southLeakage"], southSlope, southOffset, currentMonitorMeasurementTime);
+      	BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
 		Task bBoxAnalogOutputTask;
 		Task rf1AttenuatorOutputTask;
 		Task rf2AttenuatorOutputTask;
@@ -111,10 +118,9 @@ namespace EDMHardwareControl
 			CreateDigitalTask("pump2Shutter");
 
 			// initialise the current leakage monitors
-			northCLeakageMonitor.Initialize();
-			southCLeakageMonitor.Initialize();
-//			northGLeakageMonitor.Initialize();
-//			southGLeakageMonitor.Initialize();
+			northLeakageMonitor.Initialize();
+			southLeakageMonitor.Initialize();
+
 
 			// analog outputs
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
@@ -142,6 +148,10 @@ namespace EDMHardwareControl
 			lastGMinus = GMinusVoltage;
 			lastCPlus = CPlusVoltage;
 			lastCMinus = CMinusVoltage;
+            // Set the leakage current monitor textboxes to the default values.
+            window.SetTextBox(window.southOffsetIMonitorTextBox, southOffset.ToString());
+            window.SetTextBox(window.northOffsetIMonitorTextBox, northOffset.ToString());
+            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
 		}
 
 		private Task CreateAnalogInputTask(string channel)
@@ -632,11 +642,31 @@ namespace EDMHardwareControl
 
 		public void UpdateIMonitor()
 		{
-			window.SetTextBox(window.northCIMonitorTextBox, (northCLeakageMonitor.GetCurrent()).ToString());
-			window.SetTextBox(window.southCIMonitorTextBox, (southCLeakageMonitor.GetCurrent()).ToString());
-//			window.SetTextBox(window.northGIMonitorTextBox, (northGLeakageMonitor.GetCurrent()).ToString());
-//			window.SetTextBox(window.southGIMonitorTextBox, (southGLeakageMonitor.GetCurrent()).ToString());
+			window.SetTextBox(window.northIMonitorTextBox, (northLeakageMonitor.GetCurrent()).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (southLeakageMonitor.GetCurrent()).ToString());
 		}
+
+        public void CalibrateIMonitors()
+        {
+            southLeakageMonitor.Calibrate();
+            northLeakageMonitor.Calibrate();
+
+            northOffset = northLeakageMonitor.Offset;
+            southOffset = southLeakageMonitor.Offset;
+
+            window.SetTextBox(window.southOffsetIMonitorTextBox, southOffset.ToString());
+            window.SetTextBox(window.northOffsetIMonitorTextBox, northOffset.ToString());
+           
+        }
+
+        public void setIMonitorMeasurementLength()
+        {
+            currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
+            southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+        }
+
+
 
 		public void UpdateRFPowerMonitor()
 		{
