@@ -85,7 +85,7 @@ namespace DAQ.Environment
                     ExperimentType = "edm";
 					break;
 
-				case "DISCOBANDIT":
+				case "PH-JKITE":
 					Hardware = new EDMHardware();
 					FileSystem = new DiscoBanditFileSystem();
 					Debug = true;

@@ -19,6 +19,7 @@ namespace BlockHead.Acquire.Input
 	{
 		public AnalogInputChannel Channel;
 		public DataReductionMode ReductionMode;
+        public int ChopStart;
 		public int ChopLength;
 		public int AverageEvery;
 		public double LowLimit;
@@ -30,7 +31,7 @@ namespace BlockHead.Acquire.Input
 			if (ReductionMode == DataReductionMode.Chop)
 			{
 				double[] data = new double[ChopLength];
-				for (int q = 0 ; q < ChopLength ; q++) data[q] = rawData[q];
+				for (int q = 0 ; q < ChopLength ; q++) data[q] = rawData[q + ChopStart];
 				return data;
 			}
 

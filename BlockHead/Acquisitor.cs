@@ -265,9 +265,10 @@ namespace BlockHead.Acquire
 			// this code should be used for normal running
 			ScannedAnalogInput pmt = new ScannedAnalogInput();
 			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
-			pmt.ReductionMode = DataReductionMode.None;
-			//pmt.ChopLength = 220;
-			pmt.LowLimit = 0;
+			pmt.ReductionMode = DataReductionMode.Chop;
+            pmt.ChopStart = 140;
+            pmt.ChopLength = 80;
+            pmt.LowLimit = 0;
 			pmt.HighLimit = 10;
 			pmt.Calibration = 1/6.9;
 			inputs.Channels.Add(pmt);
@@ -285,7 +286,8 @@ namespace BlockHead.Acquire
 			ScannedAnalogInput normPMT = new ScannedAnalogInput();
 			normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["normTemp"];
 			normPMT.ReductionMode = DataReductionMode.Chop;
-			normPMT.ChopLength = 20;
+            normPMT.ChopStart = 0;
+			normPMT.ChopLength = 40;
 			normPMT.LowLimit = 0;
 			normPMT.HighLimit = 10;
 			normPMT.Calibration = 1/11.2;
@@ -294,7 +296,7 @@ namespace BlockHead.Acquire
 			ScannedAnalogInput mag = new ScannedAnalogInput();
 			mag.ReductionMode = DataReductionMode.Average;
 			mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
-			mag.AverageEvery = 40;
+			mag.AverageEvery = 20;
 			mag.LowLimit = -10;
 			mag.HighLimit = 10;
 			mag.Calibration = 0.00001;
