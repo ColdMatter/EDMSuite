@@ -287,9 +287,14 @@ namespace BlockHead
 			if ((point % UPDATE_EVERY) == 0)
 			{
 				mainWindow.TankLevel = point;
+
 				TOF tof = (TOF)data.TOFs[0];
-				mainWindow.PlotTOF(tof.Data, tof.GateStartTime, tof.ClockPeriod);
-			}
+				mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                tof = (TOF)data.TOFs[1];
+                mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                tof = (TOF)data.TOFs[2];
+                mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+            }
 		}
 
 		public void LoadConfig()
@@ -308,7 +313,7 @@ namespace BlockHead
 				fs.Close();
 				SetStatusReady();
 				mainWindow.AppendToTextArea("Loaded config.");
-				mainWindow.progressTank.Range= new NationalInstruments.UI.Range(0, (int)config.Settings["NumberOfPoints"]);
+//				mainWindow.progressTank.Range= new NationalInstruments.UI.Range(0, (int)config.Settings["NumberOfPoints"]);
 			}			
 		}
 
