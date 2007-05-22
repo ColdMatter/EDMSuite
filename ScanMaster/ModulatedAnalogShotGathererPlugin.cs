@@ -29,11 +29,12 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private Task inputTask2;
 		[NonSerialized]
-		private AnalogSingleChannelReader reader1;
+		private AnalogMultiChannelReader reader1;
 		[NonSerialized]
-		private AnalogSingleChannelReader reader2;
+		private AnalogMultiChannelReader reader2;
 		[NonSerialized]
-		private double[] latestData;
+        private double[,] latestData;
+		
 		
 		protected override void InitialiseSettings()
 		{
@@ -42,23 +43,29 @@ namespace ScanMaster.Acquire.Plugins
 		public override void AcquisitionStarting()
 		{
 			// configure the analog input
-			inputTask1 = new Task("analog gatherer 1 -" + (string)settings["channel"]);
-			inputTask2 = new Task("analog gatherer 2 -" + (string)settings["channel"]);
+			inputTask1 = new Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
+			inputTask2 = new Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
 
 			// new analog channel, range -10 to 10 volts
 			if (!Environs.Debug)
 			{
 
-				((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["channel"]]).AddToTask(
-					inputTask1, 
-					(double)settings["inputRangeLow"],
-					(double)settings["inputRangeHigh"]
-					);
-				((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["channel"]]).AddToTask(
-					inputTask2, 
-					(double)settings["inputRangeLow"],
-					(double)settings["inputRangeHigh"]
-					);
+                string channelList = (string)settings["channel"];
+                string[] channels = channelList.Split(new char[] { ',' });
+
+                foreach (string channel in channels)
+                {
+                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                        inputTask1,
+                        (double)settings["inputRangeLow"],
+                        (double)settings["inputRangeHigh"]
+                        );
+                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    inputTask2,
+                    (double)settings["inputRangeLow"],
+                    (double)settings["inputRangeHigh"]
+                    );
+                }
 
 
 				// internal clock, finite acquisition
@@ -88,8 +95,8 @@ namespace ScanMaster.Acquire.Plugins
 				inputTask1.Control(TaskAction.Verify);
 				inputTask2.Control(TaskAction.Verify);
 			}
-			reader1 = new AnalogSingleChannelReader(inputTask1.Stream);
-			reader2 = new AnalogSingleChannelReader(inputTask2.Stream); 
+            reader1 = new AnalogMultiChannelReader(inputTask1.Stream);
+			reader2 = new AnalogMultiChannelReader(inputTask2.Stream); 
 		}
 
 		public override void ScanStarting()
@@ -136,13 +143,19 @@ namespace ScanMaster.Acquire.Plugins
 				lock(this)
 				{
 					Shot s = new Shot();
-					TOF t = new TOF();
-					t.ClockPeriod = (int)settings["clockPeriod"];
-					t.GateStartTime = (int)settings["gateStartTime"];
 					if (!Environs.Debug)
 					{
-						t.Data = latestData;
-						s.TOFs.Add(t);
+						for (int i = 0 ; i < inputTask1.AIChannels.Count ; i++)
+						{
+							TOF t = new TOF();
+							t.ClockPeriod = (int)settings["clockPeriod"];
+							t.GateStartTime = (int)settings["gateStartTime"];
+							double[] tmp = new double[(int)settings["gateLength"]];
+							for (int j = 0 ; j < (int)settings["gateLength"] ; j++)
+								tmp[j] = latestData[i,j];
+							t.Data = tmp;
+							s.TOFs.Add(t);
+						}
 						return s;
 					}
 					else 
@@ -157,4 +170,3 @@ namespace ScanMaster.Acquire.Plugins
 		
 	}
 }
-
