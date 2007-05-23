@@ -85,9 +85,6 @@ namespace ScanMaster.GUI
 				item.Click +=new EventHandler(schonClicked);
 				schonMenu.MenuItems.Add(item);
 			}
-
-
-			UpdateUI();
 		}
 
 		protected override void Dispose( bool disposing )
@@ -110,57 +107,57 @@ namespace ScanMaster.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControllerWindow));
-			this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
-			this.fileMenu = new System.Windows.Forms.MenuItem();
-			this.menuItem13 = new System.Windows.Forms.MenuItem();
-			this.menuItem12 = new System.Windows.Forms.MenuItem();
-			this.menuItem9 = new System.Windows.Forms.MenuItem();
-			this.menuItem4 = new System.Windows.Forms.MenuItem();
-			this.menuItem14 = new System.Windows.Forms.MenuItem();
-			this.menuItem2 = new System.Windows.Forms.MenuItem();
-			this.menuItem7 = new System.Windows.Forms.MenuItem();
-			this.menuItem15 = new System.Windows.Forms.MenuItem();
-			this.menuItem3 = new System.Windows.Forms.MenuItem();
-			this.acquireMenu = new System.Windows.Forms.MenuItem();
-			this.menuItem5 = new System.Windows.Forms.MenuItem();
-			this.menuItem6 = new System.Windows.Forms.MenuItem();
-			this.viewerMenu = new System.Windows.Forms.MenuItem();
-			this.patternMenu = new System.Windows.Forms.MenuItem();
-			this.menuItem10 = new System.Windows.Forms.MenuItem();
-			this.menuItem11 = new System.Windows.Forms.MenuItem();
-			this.menuItem1 = new System.Windows.Forms.MenuItem();
-			this.menuItem8 = new System.Windows.Forms.MenuItem();
-			this.schonMenu = new System.Windows.Forms.MenuItem();
-			this.pmtXAxis = new NationalInstruments.UI.XAxis();
-			this.statusBar1 = new System.Windows.Forms.StatusBar();
-			this.renameButton = new System.Windows.Forms.Button();
-			this.currentProfileLabel = new System.Windows.Forms.Label();
-			this.commandTextBox = new System.Windows.Forms.TextBox();
-			this.outputTextBox = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.deleteButton = new System.Windows.Forms.Button();
-			this.cloneButton = new System.Windows.Forms.Button();
-			this.newButton = new System.Windows.Forms.Button();
-			this.selectButton = new System.Windows.Forms.Button();
-			this.profileListBox = new System.Windows.Forms.ListBox();
-			this.SuspendLayout();
-			// 
-			// mainMenu1
-			// 
-			this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControllerWindow));
+            this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
+            this.fileMenu = new System.Windows.Forms.MenuItem();
+            this.menuItem13 = new System.Windows.Forms.MenuItem();
+            this.menuItem12 = new System.Windows.Forms.MenuItem();
+            this.menuItem9 = new System.Windows.Forms.MenuItem();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
+            this.menuItem14 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.menuItem7 = new System.Windows.Forms.MenuItem();
+            this.menuItem15 = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
+            this.acquireMenu = new System.Windows.Forms.MenuItem();
+            this.menuItem5 = new System.Windows.Forms.MenuItem();
+            this.menuItem6 = new System.Windows.Forms.MenuItem();
+            this.viewerMenu = new System.Windows.Forms.MenuItem();
+            this.patternMenu = new System.Windows.Forms.MenuItem();
+            this.menuItem10 = new System.Windows.Forms.MenuItem();
+            this.menuItem11 = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.schonMenu = new System.Windows.Forms.MenuItem();
+            this.pmtXAxis = new NationalInstruments.UI.XAxis();
+            this.statusBar1 = new System.Windows.Forms.StatusBar();
+            this.renameButton = new System.Windows.Forms.Button();
+            this.currentProfileLabel = new System.Windows.Forms.Label();
+            this.commandTextBox = new System.Windows.Forms.TextBox();
+            this.outputTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.deleteButton = new System.Windows.Forms.Button();
+            this.cloneButton = new System.Windows.Forms.Button();
+            this.newButton = new System.Windows.Forms.Button();
+            this.selectButton = new System.Windows.Forms.Button();
+            this.profileListBox = new System.Windows.Forms.ListBox();
+            this.SuspendLayout();
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.fileMenu,
             this.acquireMenu,
             this.viewerMenu,
             this.patternMenu,
             this.menuItem1,
             this.schonMenu});
-			// 
-			// fileMenu
-			// 
-			this.fileMenu.Index = 0;
-			this.fileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            // 
+            // fileMenu
+            // 
+            this.fileMenu.Index = 0;
+            this.fileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem13,
             this.menuItem12,
             this.menuItem9,
@@ -170,257 +167,258 @@ namespace ScanMaster.GUI
             this.menuItem7,
             this.menuItem15,
             this.menuItem3});
-			this.fileMenu.Text = "File";
-			// 
-			// menuItem13
-			// 
-			this.menuItem13.Index = 0;
-			this.menuItem13.Text = "Load profile set ...";
-			this.menuItem13.Click += new System.EventHandler(this.LoadProfileSetHandler);
-			// 
-			// menuItem12
-			// 
-			this.menuItem12.Index = 1;
-			this.menuItem12.Text = "Save profile set ...";
-			this.menuItem12.Click += new System.EventHandler(this.SaveProfileSetHandler);
-			// 
-			// menuItem9
-			// 
-			this.menuItem9.Index = 2;
-			this.menuItem9.Text = "-";
-			// 
-			// menuItem4
-			// 
-			this.menuItem4.Index = 3;
-			this.menuItem4.Text = "Load average data ...";
-			this.menuItem4.Click += new System.EventHandler(this.LoadDataHandler);
-			// 
-			// menuItem14
-			// 
-			this.menuItem14.Index = 4;
-			this.menuItem14.Text = "-";
-			// 
-			// menuItem2
-			// 
-			this.menuItem2.Index = 5;
-			this.menuItem2.Text = "Save scan data ...";
-			this.menuItem2.Click += new System.EventHandler(this.SaveDataHandler);
-			// 
-			// menuItem7
-			// 
-			this.menuItem7.Index = 6;
-			this.menuItem7.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
-			this.menuItem7.Text = "Save average data ...";
-			this.menuItem7.Click += new System.EventHandler(this.SaveAverageDataHandler);
-			// 
-			// menuItem15
-			// 
-			this.menuItem15.Index = 7;
-			this.menuItem15.Text = "-";
-			// 
-			// menuItem3
-			// 
-			this.menuItem3.Index = 8;
-			this.menuItem3.Text = "Exit";
-			this.menuItem3.Click += new System.EventHandler(this.MenuExitClicked);
-			// 
-			// acquireMenu
-			// 
-			this.acquireMenu.Index = 1;
-			this.acquireMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.fileMenu.Text = "File";
+            // 
+            // menuItem13
+            // 
+            this.menuItem13.Index = 0;
+            this.menuItem13.Text = "Load profile set ...";
+            this.menuItem13.Click += new System.EventHandler(this.LoadProfileSetHandler);
+            // 
+            // menuItem12
+            // 
+            this.menuItem12.Index = 1;
+            this.menuItem12.Text = "Save profile set ...";
+            this.menuItem12.Click += new System.EventHandler(this.SaveProfileSetHandler);
+            // 
+            // menuItem9
+            // 
+            this.menuItem9.Index = 2;
+            this.menuItem9.Text = "-";
+            // 
+            // menuItem4
+            // 
+            this.menuItem4.Index = 3;
+            this.menuItem4.Text = "Load average data ...";
+            this.menuItem4.Click += new System.EventHandler(this.LoadDataHandler);
+            // 
+            // menuItem14
+            // 
+            this.menuItem14.Index = 4;
+            this.menuItem14.Text = "-";
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 5;
+            this.menuItem2.Text = "Save scan data ...";
+            this.menuItem2.Click += new System.EventHandler(this.SaveDataHandler);
+            // 
+            // menuItem7
+            // 
+            this.menuItem7.Index = 6;
+            this.menuItem7.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
+            this.menuItem7.Text = "Save average data ...";
+            this.menuItem7.Click += new System.EventHandler(this.SaveAverageDataHandler);
+            // 
+            // menuItem15
+            // 
+            this.menuItem15.Index = 7;
+            this.menuItem15.Text = "-";
+            // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 8;
+            this.menuItem3.Text = "Exit";
+            this.menuItem3.Click += new System.EventHandler(this.MenuExitClicked);
+            // 
+            // acquireMenu
+            // 
+            this.acquireMenu.Index = 1;
+            this.acquireMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem5,
             this.menuItem6});
-			this.acquireMenu.Text = "Acquire";
-			// 
-			// menuItem5
-			// 
-			this.menuItem5.Index = 0;
-			this.menuItem5.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
-			this.menuItem5.Text = "Start";
-			this.menuItem5.Click += new System.EventHandler(this.AcquireStartClicked);
-			// 
-			// menuItem6
-			// 
-			this.menuItem6.Index = 1;
-			this.menuItem6.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
-			this.menuItem6.Text = "Stop";
-			this.menuItem6.Click += new System.EventHandler(this.AcquireStopClicked);
-			// 
-			// viewerMenu
-			// 
-			this.viewerMenu.Index = 2;
-			this.viewerMenu.Text = "Viewers";
-			// 
-			// patternMenu
-			// 
-			this.patternMenu.Index = 3;
-			this.patternMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.acquireMenu.Text = "Acquire";
+            // 
+            // menuItem5
+            // 
+            this.menuItem5.Index = 0;
+            this.menuItem5.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
+            this.menuItem5.Text = "Start";
+            this.menuItem5.Click += new System.EventHandler(this.AcquireStartClicked);
+            // 
+            // menuItem6
+            // 
+            this.menuItem6.Index = 1;
+            this.menuItem6.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+            this.menuItem6.Text = "Stop";
+            this.menuItem6.Click += new System.EventHandler(this.AcquireStopClicked);
+            // 
+            // viewerMenu
+            // 
+            this.viewerMenu.Index = 2;
+            this.viewerMenu.Text = "Viewers";
+            // 
+            // patternMenu
+            // 
+            this.patternMenu.Index = 3;
+            this.patternMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem10,
             this.menuItem11});
-			this.patternMenu.Text = "Pattern";
-			// 
-			// menuItem10
-			// 
-			this.menuItem10.Index = 0;
-			this.menuItem10.Text = "Start pattern output";
-			this.menuItem10.Click += new System.EventHandler(this.menuItem10_Click);
-			// 
-			// menuItem11
-			// 
-			this.menuItem11.Index = 1;
-			this.menuItem11.Text = "Stop pattern output";
-			this.menuItem11.Click += new System.EventHandler(this.menuItem11_Click);
-			// 
-			// menuItem1
-			// 
-			this.menuItem1.Index = 4;
-			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.patternMenu.Text = "Pattern";
+            // 
+            // menuItem10
+            // 
+            this.menuItem10.Index = 0;
+            this.menuItem10.Text = "Start pattern output";
+            this.menuItem10.Click += new System.EventHandler(this.menuItem10_Click);
+            // 
+            // menuItem11
+            // 
+            this.menuItem11.Index = 1;
+            this.menuItem11.Text = "Stop pattern output";
+            this.menuItem11.Click += new System.EventHandler(this.menuItem11_Click);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 4;
+            this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem8});
-			this.menuItem1.Text = "Debug";
-			this.menuItem1.Visible = false;
-			// 
-			// menuItem8
-			// 
-			this.menuItem8.Index = 0;
-			this.menuItem8.Text = "Test interlock";
-			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
-			// 
-			// schonMenu
-			// 
-			this.schonMenu.Index = 5;
-			this.schonMenu.Text = "Schon\'s menu";
-			// 
-			// pmtXAxis
-			// 
-			this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
-			// 
-			// statusBar1
-			// 
-			this.statusBar1.Location = new System.Drawing.Point(0, 405);
-			this.statusBar1.Name = "statusBar1";
-			this.statusBar1.Size = new System.Drawing.Size(778, 22);
-			this.statusBar1.SizingGrip = false;
-			this.statusBar1.TabIndex = 13;
-			this.statusBar1.Text = "Ready";
-			// 
-			// renameButton
-			// 
-			this.renameButton.Location = new System.Drawing.Point(96, 376);
-			this.renameButton.Name = "renameButton";
-			this.renameButton.Size = new System.Drawing.Size(75, 23);
-			this.renameButton.TabIndex = 23;
-			this.renameButton.Text = "Rename ...";
-			this.renameButton.Click += new System.EventHandler(this.RenameHandler);
-			// 
-			// currentProfileLabel
-			// 
-			this.currentProfileLabel.Location = new System.Drawing.Point(8, 312);
-			this.currentProfileLabel.Name = "currentProfileLabel";
-			this.currentProfileLabel.Size = new System.Drawing.Size(232, 24);
-			this.currentProfileLabel.TabIndex = 22;
-			this.currentProfileLabel.Text = "Current profile: ";
-			// 
-			// commandTextBox
-			// 
-			this.commandTextBox.BackColor = System.Drawing.Color.Black;
-			this.commandTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.commandTextBox.ForeColor = System.Drawing.Color.Red;
-			this.commandTextBox.Location = new System.Drawing.Point(280, 376);
-			this.commandTextBox.Name = "commandTextBox";
-			this.commandTextBox.Size = new System.Drawing.Size(488, 22);
-			this.commandTextBox.TabIndex = 20;
-			this.commandTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUpHandler);
-			// 
-			// outputTextBox
-			// 
-			this.outputTextBox.BackColor = System.Drawing.Color.Black;
-			this.outputTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-			this.outputTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.outputTextBox.ForeColor = System.Drawing.Color.Lime;
-			this.outputTextBox.Location = new System.Drawing.Point(280, 32);
-			this.outputTextBox.Multiline = true;
-			this.outputTextBox.Name = "outputTextBox";
-			this.outputTextBox.ReadOnly = true;
-			this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.outputTextBox.Size = new System.Drawing.Size(488, 336);
-			this.outputTextBox.TabIndex = 21;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(8, 8);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(100, 24);
-			this.label1.TabIndex = 19;
-			this.label1.Text = "Profiles:";
-			// 
-			// deleteButton
-			// 
-			this.deleteButton.Location = new System.Drawing.Point(8, 376);
-			this.deleteButton.Name = "deleteButton";
-			this.deleteButton.Size = new System.Drawing.Size(75, 23);
-			this.deleteButton.TabIndex = 18;
-			this.deleteButton.Text = "Delete";
-			this.deleteButton.Click += new System.EventHandler(this.DeleteHandler);
-			// 
-			// cloneButton
-			// 
-			this.cloneButton.Location = new System.Drawing.Point(184, 344);
-			this.cloneButton.Name = "cloneButton";
-			this.cloneButton.Size = new System.Drawing.Size(75, 23);
-			this.cloneButton.TabIndex = 17;
-			this.cloneButton.Text = "Clone";
-			this.cloneButton.Click += new System.EventHandler(this.CloneHandler);
-			// 
-			// newButton
-			// 
-			this.newButton.Location = new System.Drawing.Point(96, 344);
-			this.newButton.Name = "newButton";
-			this.newButton.Size = new System.Drawing.Size(75, 23);
-			this.newButton.TabIndex = 16;
-			this.newButton.Text = "New";
-			this.newButton.Click += new System.EventHandler(this.NewProfileHandler);
-			// 
-			// selectButton
-			// 
-			this.selectButton.Location = new System.Drawing.Point(8, 344);
-			this.selectButton.Name = "selectButton";
-			this.selectButton.Size = new System.Drawing.Size(75, 23);
-			this.selectButton.TabIndex = 15;
-			this.selectButton.Text = "Select";
-			this.selectButton.Click += new System.EventHandler(this.SelectProfileHandler);
-			// 
-			// profileListBox
-			// 
-			this.profileListBox.Location = new System.Drawing.Point(8, 32);
-			this.profileListBox.Name = "profileListBox";
-			this.profileListBox.Size = new System.Drawing.Size(232, 264);
-			this.profileListBox.TabIndex = 14;
-			this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
-			// 
-			// ControllerWindow
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(778, 427);
-			this.Controls.Add(this.renameButton);
-			this.Controls.Add(this.currentProfileLabel);
-			this.Controls.Add(this.commandTextBox);
-			this.Controls.Add(this.outputTextBox);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.deleteButton);
-			this.Controls.Add(this.cloneButton);
-			this.Controls.Add(this.newButton);
-			this.Controls.Add(this.selectButton);
-			this.Controls.Add(this.profileListBox);
-			this.Controls.Add(this.statusBar1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.Menu = this.mainMenu1;
-			this.Name = "ControllerWindow";
-			this.Text = "ScanMaster 2k5";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.menuItem1.Text = "Debug";
+            this.menuItem1.Visible = false;
+            // 
+            // menuItem8
+            // 
+            this.menuItem8.Index = 0;
+            this.menuItem8.Text = "Test interlock";
+            this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
+            // 
+            // schonMenu
+            // 
+            this.schonMenu.Index = 5;
+            this.schonMenu.Text = "Schon\'s menu";
+            // 
+            // pmtXAxis
+            // 
+            this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
+            // statusBar1
+            // 
+            this.statusBar1.Location = new System.Drawing.Point(0, 405);
+            this.statusBar1.Name = "statusBar1";
+            this.statusBar1.Size = new System.Drawing.Size(778, 22);
+            this.statusBar1.SizingGrip = false;
+            this.statusBar1.TabIndex = 13;
+            this.statusBar1.Text = "Ready";
+            // 
+            // renameButton
+            // 
+            this.renameButton.Location = new System.Drawing.Point(96, 376);
+            this.renameButton.Name = "renameButton";
+            this.renameButton.Size = new System.Drawing.Size(75, 23);
+            this.renameButton.TabIndex = 23;
+            this.renameButton.Text = "Rename ...";
+            this.renameButton.Click += new System.EventHandler(this.RenameHandler);
+            // 
+            // currentProfileLabel
+            // 
+            this.currentProfileLabel.Location = new System.Drawing.Point(8, 312);
+            this.currentProfileLabel.Name = "currentProfileLabel";
+            this.currentProfileLabel.Size = new System.Drawing.Size(232, 24);
+            this.currentProfileLabel.TabIndex = 22;
+            this.currentProfileLabel.Text = "Current profile: ";
+            // 
+            // commandTextBox
+            // 
+            this.commandTextBox.BackColor = System.Drawing.Color.Black;
+            this.commandTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.commandTextBox.ForeColor = System.Drawing.Color.Red;
+            this.commandTextBox.Location = new System.Drawing.Point(280, 376);
+            this.commandTextBox.Name = "commandTextBox";
+            this.commandTextBox.Size = new System.Drawing.Size(488, 22);
+            this.commandTextBox.TabIndex = 20;
+            this.commandTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUpHandler);
+            // 
+            // outputTextBox
+            // 
+            this.outputTextBox.BackColor = System.Drawing.Color.Black;
+            this.outputTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.outputTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outputTextBox.ForeColor = System.Drawing.Color.Lime;
+            this.outputTextBox.Location = new System.Drawing.Point(280, 32);
+            this.outputTextBox.Multiline = true;
+            this.outputTextBox.Name = "outputTextBox";
+            this.outputTextBox.ReadOnly = true;
+            this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.outputTextBox.Size = new System.Drawing.Size(488, 336);
+            this.outputTextBox.TabIndex = 21;
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(8, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 24);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Profiles:";
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.Location = new System.Drawing.Point(8, 376);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.TabIndex = 18;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.Click += new System.EventHandler(this.DeleteHandler);
+            // 
+            // cloneButton
+            // 
+            this.cloneButton.Location = new System.Drawing.Point(184, 344);
+            this.cloneButton.Name = "cloneButton";
+            this.cloneButton.Size = new System.Drawing.Size(75, 23);
+            this.cloneButton.TabIndex = 17;
+            this.cloneButton.Text = "Clone";
+            this.cloneButton.Click += new System.EventHandler(this.CloneHandler);
+            // 
+            // newButton
+            // 
+            this.newButton.Location = new System.Drawing.Point(96, 344);
+            this.newButton.Name = "newButton";
+            this.newButton.Size = new System.Drawing.Size(75, 23);
+            this.newButton.TabIndex = 16;
+            this.newButton.Text = "New";
+            this.newButton.Click += new System.EventHandler(this.NewProfileHandler);
+            // 
+            // selectButton
+            // 
+            this.selectButton.Location = new System.Drawing.Point(8, 344);
+            this.selectButton.Name = "selectButton";
+            this.selectButton.Size = new System.Drawing.Size(75, 23);
+            this.selectButton.TabIndex = 15;
+            this.selectButton.Text = "Select";
+            this.selectButton.Click += new System.EventHandler(this.SelectProfileHandler);
+            // 
+            // profileListBox
+            // 
+            this.profileListBox.Location = new System.Drawing.Point(8, 32);
+            this.profileListBox.Name = "profileListBox";
+            this.profileListBox.Size = new System.Drawing.Size(232, 264);
+            this.profileListBox.TabIndex = 14;
+            this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
+            // 
+            // ControllerWindow
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.ClientSize = new System.Drawing.Size(778, 427);
+            this.Controls.Add(this.renameButton);
+            this.Controls.Add(this.currentProfileLabel);
+            this.Controls.Add(this.commandTextBox);
+            this.Controls.Add(this.outputTextBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.deleteButton);
+            this.Controls.Add(this.cloneButton);
+            this.Controls.Add(this.newButton);
+            this.Controls.Add(this.selectButton);
+            this.Controls.Add(this.profileListBox);
+            this.Controls.Add(this.statusBar1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Menu = this.mainMenu1;
+            this.Name = "ControllerWindow";
+            this.Text = "ScanMaster 2k5";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
+            this.Load += new System.EventHandler(this.ControllerWindow_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion
@@ -587,11 +585,18 @@ namespace ScanMaster.GUI
 
 		public void UpdateUI()
 		{
-			profileListBox.Items.Clear();
-			foreach (Profile p in manager.Profiles) profileListBox.Items.Add(p.Name);
-			if (manager.CurrentProfile == null) currentProfileLabel.Text = "Current profile: "; 
-			else currentProfileLabel.Text = "Current profile: " + manager.CurrentProfile.Name;
+            profileListBox.Invoke(new UpdateDelegate(ReallyUpdateUI), null);
 		}
+
+        private delegate void UpdateDelegate();
+        private void ReallyUpdateUI()
+        {
+            profileListBox.Items.Clear();
+            foreach (Profile p in manager.Profiles) profileListBox.Items.Add(p.Name);
+            if (manager.CurrentProfile == null) currentProfileLabel.Text = "Current profile: ";
+            else currentProfileLabel.Text = "Current profile: " + manager.CurrentProfile.Name;
+
+        }
 
 		public void DisableMenus()
 		{
@@ -653,6 +658,11 @@ namespace ScanMaster.GUI
 			bool test = laser.InterlockFailed;
 //			laser.Disconnect();
 		}
+
+        private void ControllerWindow_Load(object sender, EventArgs e)
+        {
+            UpdateUI();
+        }
 
 	}
 }

@@ -101,7 +101,7 @@ namespace BlockHead.Acquire
 					{
 						// just stuff a made up shot in
 						//Thread.Sleep(10);
-						s = DataFaker.GetFakeShot(1900,50,10,10,2);
+						s = DataFaker.GetFakeShot(1900,50,10,3,3);
 						((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
 						p = new EDMPoint();
 						p.Shot = s;

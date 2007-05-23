@@ -22,7 +22,7 @@ namespace ScanMaster.Acquire.Patterns
 
 		int rfSwitchChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rfSwitch"]).BitNumber;
 		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["fmSelect"]).BitNumber;
-        int attChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["attSelect"]).BitNumber;
+        int attChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["attenuatorSelect"]).BitNumber;
         int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
 
 	

@@ -47,9 +47,9 @@ namespace DAQ.HAL
 																	// see ModulatedAnalogShotGatherer.cs
 																	// for details.
 			AddDigitalOutputChannel("rfSwitch", pgBoard, 0, 4);
-			AddDigitalOutputChannel("rmSelect", pgBoard, 1, 0);      // This line selects which fm voltage is
+			AddDigitalOutputChannel("fmSelect", pgBoard, 1, 0);      // This line selects which fm voltage is
                                                                     // sent to the synth.
-            AddDigitalOutputChannel("attSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
+            AddDigitalOutputChannel("attenuatorSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
                                                                     // sent to the voltage-controlled attenuator.
 			AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
 			AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
