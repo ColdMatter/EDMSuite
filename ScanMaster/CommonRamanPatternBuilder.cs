@@ -18,8 +18,8 @@ namespace ScanMaster.Acquire.Patterns
 												// padding in the flashlamp pattern builder to avoid
 												// discontinuities.
 
-		int rf1Channel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rf1Switch"]).BitNumber;
-		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["greenFM"]).BitNumber;
+		int rfSwtichChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rfSwitch"]).BitNumber;
+		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["fmSelect"]).BitNumber;
 		int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
 
 	
@@ -31,7 +31,7 @@ namespace ScanMaster.Acquire.Patterns
 			int time = 0;
 
 			// Disable rf and fm
-			AddEdge(rf1Channel, 0, false);
+			AddEdge(rfSwtichChannel, 0, false);
 			AddEdge(fmChannel, 0, false);
 			AddEdge(piChannel, 0, true);
 	
@@ -80,7 +80,7 @@ namespace ScanMaster.Acquire.Patterns
 			if (tempTime > time) time = tempTime;
 
 			// pulse rf1
-			tempTime = Pulse(startTime + START_PADDING, valveToQ + rf1CentreTime - (rf1Length/2), rf1Length, rf1Channel);
+			tempTime = Pulse(startTime + START_PADDING, valveToQ + rf1CentreTime - (rf1Length/2), rf1Length, rfSwtichChannel);
 			if (tempTime > time) time = tempTime;
 			// pulse green fm
 			tempTime = Pulse(startTime + START_PADDING, valveToQ + fmCentreTime - (fmLength/2), fmLength, fmChannel);

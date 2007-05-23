@@ -30,7 +30,7 @@ namespace DAQ.HAL
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");
 
-			// add the synths
+			// add the GPIB instruments
 			GPIBInstruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
 			GPIBInstruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
 			GPIBInstruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
@@ -46,12 +46,14 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("detectorprime", pgBoard, 1, 2); // this trigger is for switch scanning
 																	// see ModulatedAnalogShotGatherer.cs
 																	// for details.
-			AddDigitalOutputChannel("rf1Switch", pgBoard, 0, 4);
-			AddDigitalOutputChannel("rf2Switch", pgBoard, 0, 4);
-			AddDigitalOutputChannel("greenFM", pgBoard, 1, 0);
+			AddDigitalOutputChannel("rfSwitch", pgBoard, 0, 4);
+			AddDigitalOutputChannel("rmSelect", pgBoard, 1, 0);      // This line selects which fm voltage is
+                                                                    // sent to the synth.
+            AddDigitalOutputChannel("attSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
+                                                                    // sent to the voltage-controlled attenuator.
 			AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
 			AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
-																	// will switch if it's switch scanning
+																	// will switch if it's switch scanning.
 
 			// these channel are usually software switched - they should not be in
 			// the lower half of the pattern generator
@@ -69,11 +71,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("pump2Shutter", pgBoard, 3, 4);
 
-			// These channels are on the daq board. Used mainly for diagnostic purposes.
+            // map the analog channels
+            
+            // These channels are on the daq board. Used mainly for diagnostic purposes.
 			// On no account should they switch during the edm acquisition pattern.
-
-
-			// map the analog channels
 			AddAnalogInputChannel("pmt",  daqBoard + "/ai0", AITerminalConfiguration.Differential);
 			AddAnalogInputChannel("magnetometer", daqBoard + "/ai1", AITerminalConfiguration.Differential);
 			AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
@@ -81,14 +82,18 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
 			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("normTemp", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+
+            AddAnalogOutputChannel("laser", daqBoard + "/ao0");
+			AddAnalogOutputChannel("b", daqBoard + "/ao1");
+
+            // rf rack control
             AddAnalogInputChannel("rf1Power", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("rf2Power", usbDAQ1 + "/ai1", AITerminalConfiguration.Rse);
 
-			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
-			AddAnalogOutputChannel("b", daqBoard + "/ao1");
-
-			AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
+            AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
 			AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
+            //AddAnalogOutputChannel("rf1FM", usbDAQ1 + "/ao0");
+            //AddAnalogOutputChannel("rf2FM", usbDAQ1 + "/ao1");
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");

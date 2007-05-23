@@ -83,8 +83,8 @@ namespace EDMHardwareControl
 		Task bBoxAnalogOutputTask;
 		Task rf1AttenuatorOutputTask;
 		Task rf2AttenuatorOutputTask;
-        Task rf1PowerInputTask;
-        Task rf2PowerInputTask;
+        //Task rf1FMOutputTask;
+        //Task rf2FMOutputTask;
 		Task probeMonitorInputTask;
 		Task pumpMonitorInputTask;
 
@@ -107,9 +107,9 @@ namespace EDMHardwareControl
 			CreateDigitalTask("ePol");
 			CreateDigitalTask("notEPol");
 			CreateDigitalTask("eBleed");
-			CreateDigitalTask("rf1Switch");
-			CreateDigitalTask("rf2Switch");
-			CreateDigitalTask("greenFM");
+			CreateDigitalTask("rfSwitch");
+			CreateDigitalTask("fmSelect");
+            CreateDigitalTask("attenuatorSelect");
 			CreateDigitalTask("b");
 			CreateDigitalTask("notDB");
 			CreateDigitalTask("piFlip");
@@ -126,12 +126,12 @@ namespace EDMHardwareControl
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
 			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
 			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
+            //rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
+            //rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
 			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
-            rf1PowerInputTask = CreateAnalogInputTask("rf1Power");
-            rf2PowerInputTask = CreateAnalogInputTask("rf2Power");
 
 			// make the control window
 			window = new ControlWindow();
@@ -249,17 +249,6 @@ namespace EDMHardwareControl
 			}
 		}
 
-		public double RedSynthOnFrequency
-		{
-			get
-			{
-				return Double.Parse(window.redOnFreqBox.Text);
-			}
-			set
-			{
-				window.SetTextBox(window.redOnFreqBox, value.ToString());
-			}
-		}
 
 		public bool GreenSynthEnabled
 		{
@@ -272,57 +261,45 @@ namespace EDMHardwareControl
 				window.SetCheckBox(window.greenOnCheck, value);
 			}
 		}
-
-		public bool RedSynthEnabled
-		{
-			get
-			{
-				return window.redOnCheck.Checked;
-			}
-			set
-			{
-				window.SetCheckBox(window.redOnCheck, value);
-			}
-		}
-		
 	
-		public bool GreenRFSwitchEnabled
+		public bool RFSwitchEnabled
 		{
 			get
 			{
-				return window.greenRFSwitchEnableCheck.Checked;
+				return window.rfSwitchEnableCheck.Checked;
 			}
 			set
 			{
-				window.SetCheckBox(window.greenRFSwitchEnableCheck, value);
+				window.SetCheckBox(window.rfSwitchEnableCheck, value);
 			}
 		}
 
-		public bool RedRFSwitchEnabled
+
+		public bool GreenDCFMSelected
 		{
 			get
 			{
-				return window.redRFSwitchEnableCheck.Checked;
+				return window.fmSelectCheck.Checked;
 			}
 			set
 			{
-				window.SetCheckBox(window.redRFSwitchEnableCheck, value);
+				window.SetCheckBox(window.fmSelectCheck, value);
 			}
 		}
 
-		public bool GreenDCFMEnabled
-		{
-			get
-			{
-				return window.greenFMEnableCheck.Checked;
-			}
-			set
-			{
-				window.SetCheckBox(window.greenFMEnableCheck, value);
-			}
-		}
+        public bool AttenuatorSelected
+        {
+            get
+            {
+                return window.attenuatorSelectCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.attenuatorSelectCheck, value);
+            }
+        }
 
-		public bool EFieldEnabled
+        public bool EFieldEnabled
 		{
 			get
 			{
@@ -666,15 +643,6 @@ namespace EDMHardwareControl
             northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
         }
 
-
-
-		public void UpdateRFPowerMonitor()
-		{
-            window.SetTextBox(window.rf1PowerMonitorTextBox, (Math.Round(ReadAnalogInput(rf1PowerInputTask),3)).ToString());
-            window.SetTextBox(window.rf2PowerMonitorTextBox, (Math.Round(ReadAnalogInput(rf2PowerInputTask),3)).ToString());
-		}
-
-
 		public void UpdateLaserPhotodiodes()
 		{
 			double probePDValue = ReadAnalogInput(probeMonitorInputTask);
@@ -744,28 +712,9 @@ namespace EDMHardwareControl
 			greenSynth.Disconnect();
 		}
 
-		public void EnableRedSynth(bool enable)
+		public void EnableRFSwitch(bool enable)
 		{
-			redSynth.Connect();
-			if (enable)
-			{
-				redSynth.Frequency = RedSynthOnFrequency;
-			}
-			else
-			{
-				redSynth.Frequency = redSynthOffFrequency;
-			}
-			redSynth.Disconnect();
-		}
-
-		public void EnableGreenRFSwitch(bool enable)
-		{
-			SetDigitalLine("rf1Switch", enable);
-		}
-
-		public void EnableRedRFSwitch(bool enable)
-		{
-			SetDigitalLine("rf2Switch", enable);
+			SetDigitalLine("rfSwitch", enable);
 		}
 
 		private double lastGPlus = 0;
@@ -828,12 +777,17 @@ namespace EDMHardwareControl
 			SetDigitalLine("notDB", !enable);
 		}
 
-		public void EnableGreenDCFM(bool enable)
+		public void SelectGreenDCFM(bool enable)
 		{
-			SetDigitalLine("greenFM", enable);
+			SetDigitalLine("fmSelect", enable);
 		}
 
-		public void SetPhaseFlip1(bool enable)
+        internal void SelectAttenuator(bool enable)
+        {
+            SetDigitalLine("attenuatorSelect", enable);
+        }
+        
+        public void SetPhaseFlip1(bool enable)
 		{
 			SetDigitalLine("piFlip", enable);
 		}
@@ -851,26 +805,6 @@ namespace EDMHardwareControl
 		internal void SetPump2Shutter(bool enable)
 		{
 			SetDigitalLine("pump2Shutter", enable);
-		}
-
-		public void SetDualRF()
-		{
-			double lrFreq = Double.Parse(window.lrFrequencyBox.Text);
-			double urFreq = Double.Parse(window.urFrequencyBox.Text);
-
-			if (lrFreq < urFreq)
-			{
-				GreenSynthOnFrequency = lrFreq;
-				GreenSynthDCFM = Math.Round( 1000 * (urFreq - lrFreq) );
-			}
-			else
-			{
-				GreenSynthOnFrequency = urFreq;
-				GreenSynthDCFM = Math.Round( 1000 * (lrFreq - urFreq) );
-			}
-			GreenSynthOnAmplitude = Double.Parse(window.ramanAmplitudeBox.Text);
-			GreenSynthEnabled = false;
-			GreenSynthEnabled = true;
 		}
 
 		public void SetScanningBVoltage()
@@ -900,6 +834,16 @@ namespace EDMHardwareControl
 			SetAnalogOutput(rf2AttenuatorOutputTask, rf2AttenuatorVoltage);
 		}
 
+        internal void SetFMVoltages()
+        {
+        //    double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
+        //    double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
+        //    SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
+        //    SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
+        }
+
 		#endregion
-	}
+
+
+     }
 }

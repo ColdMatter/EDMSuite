@@ -158,7 +158,25 @@ namespace BlockHead
 			rf2A.Step = 0.1;
 			config.AnalogModulations.Add(rf2A);
 
-			config.Settings["codeLength"] = CODE_LENGTH;
+            AnalogModulation rf1F = new AnalogModulation();
+            rf1F.Name = "RF1F";
+            rf1F.Waveform = new Waveform("rf1 frequency modulation", CODE_LENGTH);
+            rf1F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf1F.DelayAfterSwitch = 0;
+            rf1F.Centre = 2.5;
+            rf1F.Step = 0.1;
+            config.AnalogModulations.Add(rf1F);
+            
+            AnalogModulation rf2F = new AnalogModulation();
+            rf2F.Name = "RF2F";
+            rf2F.Waveform = new Waveform("rf2 frequency modulation", CODE_LENGTH);
+            rf2F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf2F.DelayAfterSwitch = 0;
+            rf2F.Centre = 2.5;
+            rf2F.Step = 0.1;
+            config.AnalogModulations.Add(rf2F);
+            
+            config.Settings["codeLength"] = CODE_LENGTH;
 			config.Settings["numberOfPoints"] = 4096;
 			config.Settings["pgClockFrequency"] = 1000000;
 			config.Settings["eDischargeTime"] = 1000;

@@ -20,26 +20,14 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.CheckBox ePolarityCheck;
 		public System.Windows.Forms.CheckBox eBleedCheck;
 		public System.Windows.Forms.Button switchEButton;
-		private System.ComponentModel.Container components = null;
-
-		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
+        private System.ComponentModel.Container components = null;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Label label1;
-		public System.Windows.Forms.CheckBox greenOnCheck;
-		private System.Windows.Forms.Label label6;
-		public System.Windows.Forms.TextBox redOnFreqBox;
+        public System.Windows.Forms.CheckBox greenOnCheck;
 		private System.Windows.Forms.Label label7;
 		public System.Windows.Forms.TextBox greenOnAmpBox;
 		private System.Windows.Forms.Label label8;
-		public System.Windows.Forms.TextBox greenOnFreqBox;
-		public System.Windows.Forms.CheckBox redOnCheck;
-		public System.Windows.Forms.Button setDualRFButton;
-		public System.Windows.Forms.TextBox ramanAmplitudeBox;
-		public System.Windows.Forms.TextBox urFrequencyBox;
-		public System.Windows.Forms.TextBox lrFrequencyBox;
+        public System.Windows.Forms.TextBox greenOnFreqBox;
 		public System.Windows.Forms.TextBox greenDCFMBox;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button updateFieldButton;
@@ -86,16 +74,9 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.TextBox bCurrentCalStepTextBox;
 		public System.Windows.Forms.TextBox bCurrentFlipStepTextBox;
 		public System.Windows.Forms.TextBox bCurrentBiasTextBox;
-		private System.Windows.Forms.Button updateBCurrentMonitorButton;
-		private System.Windows.Forms.GroupBox groupBox9;
-		private System.Windows.Forms.Label label24;
-		private System.Windows.Forms.Label label28;
-		private System.Windows.Forms.Button rfPowerMonitorUpdateButton;
+        private System.Windows.Forms.Button updateBCurrentMonitorButton;
         public System.Windows.Forms.TextBox southIMonitorTextBox;
-		public System.Windows.Forms.TextBox northIMonitorTextBox;
-		public System.Windows.Forms.TextBox rf1PowerMonitorTextBox;
-		public System.Windows.Forms.TextBox rf2PowerMonitorTextBox;
-		private System.Windows.Forms.CheckBox rfMonitorChannelCheck;
+        public System.Windows.Forms.TextBox northIMonitorTextBox;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.TabPage tabPage5;
@@ -142,9 +123,8 @@ namespace EDMHardwareControl
 		private GroupBox groupBox16;
 		public CheckBox phaseFlip2CheckBox;
 		public CheckBox phaseFlip1CheckBox;
-		public CheckBox greenFMEnableCheck;
-		public CheckBox redRFSwitchEnableCheck;
-		public CheckBox greenRFSwitchEnableCheck;
+        public CheckBox fmSelectCheck;
+		public CheckBox rfSwitchEnableCheck;
         private Label label16;
         public TextBox southOffsetIMonitorTextBox;
         private Button calibrateIMonitorButton;
@@ -153,6 +133,12 @@ namespace EDMHardwareControl
         public TextBox northOffsetIMonitorTextBox;
         public TextBox IMonitorMeasurementLengthTextBox;
         private Button setIMonitorMeasurementLengthButton;
+        public Button setFMVoltagesButton;
+        private Label label2;
+        public TextBox rf2FMVoltage;
+        private Label label3;
+        public TextBox rf1FMVoltage;
+        public CheckBox attenuatorSelectCheck;
 
 
 		public Controller controller;
@@ -189,25 +175,14 @@ namespace EDMHardwareControl
             this.eBleedCheck = new System.Windows.Forms.CheckBox();
             this.ePolarityCheck = new System.Windows.Forms.CheckBox();
             this.eOnCheck = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.setDualRFButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.ramanAmplitudeBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.urFrequencyBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lrFrequencyBox = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.greenDCFMBox = new System.Windows.Forms.TextBox();
             this.greenOnCheck = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.redOnFreqBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.greenOnAmpBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.greenOnFreqBox = new System.Windows.Forms.TextBox();
-            this.redOnCheck = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.updateFieldButton = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -240,6 +215,8 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.setIMonitorMeasurementLengthButton = new System.Windows.Forms.Button();
+            this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.northOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
@@ -253,24 +230,22 @@ namespace EDMHardwareControl
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.attenuatorSelectCheck = new System.Windows.Forms.CheckBox();
             this.phaseFlip2CheckBox = new System.Windows.Forms.CheckBox();
             this.phaseFlip1CheckBox = new System.Windows.Forms.CheckBox();
-            this.greenFMEnableCheck = new System.Windows.Forms.CheckBox();
-            this.redRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
-            this.greenRFSwitchEnableCheck = new System.Windows.Forms.CheckBox();
+            this.fmSelectCheck = new System.Windows.Forms.CheckBox();
+            this.rfSwitchEnableCheck = new System.Windows.Forms.CheckBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.setFMVoltagesButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.rf2FMVoltage = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.rf1FMVoltage = new System.Windows.Forms.TextBox();
             this.setAttenuatorsButton = new System.Windows.Forms.Button();
             this.label36 = new System.Windows.Forms.Label();
             this.rf2AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
             this.label39 = new System.Windows.Forms.Label();
             this.rf1AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.rfMonitorChannelCheck = new System.Windows.Forms.CheckBox();
-            this.rf1PowerMonitorTextBox = new System.Windows.Forms.TextBox();
-            this.rfPowerMonitorUpdateButton = new System.Windows.Forms.Button();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.rf2PowerMonitorTextBox = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.scanningBVoltageBox = new System.Windows.Forms.TextBox();
@@ -318,10 +293,7 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-            this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
-            this.setIMonitorMeasurementLengthButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -333,7 +305,6 @@ namespace EDMHardwareControl
             this.tabPage2.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox14.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -392,94 +363,18 @@ namespace EDMHardwareControl
             this.eOnCheck.Text = "Field on";
             this.eOnCheck.CheckedChanged += new System.EventHandler(this.eOnCheck_CheckedChanged);
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.setDualRFButton);
-            this.groupBox4.Controls.Add(this.label4);
-            this.groupBox4.Controls.Add(this.ramanAmplitudeBox);
-            this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Controls.Add(this.urFrequencyBox);
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.lrFrequencyBox);
-            this.groupBox4.Location = new System.Drawing.Point(312, 16);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(296, 160);
-            this.groupBox4.TabIndex = 22;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Dual rf (FM)";
-            // 
-            // setDualRFButton
-            // 
-            this.setDualRFButton.Location = new System.Drawing.Point(88, 128);
-            this.setDualRFButton.Name = "setDualRFButton";
-            this.setDualRFButton.Size = new System.Drawing.Size(75, 23);
-            this.setDualRFButton.TabIndex = 18;
-            this.setDualRFButton.Text = "Set synth";
-            this.setDualRFButton.Click += new System.EventHandler(this.setDualRFButton_Click);
-            // 
-            // label4
-            // 
-            this.label4.Location = new System.Drawing.Point(24, 88);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 23);
-            this.label4.TabIndex = 17;
-            this.label4.Text = "Amplitude";
-            // 
-            // ramanAmplitudeBox
-            // 
-            this.ramanAmplitudeBox.Location = new System.Drawing.Point(136, 88);
-            this.ramanAmplitudeBox.Name = "ramanAmplitudeBox";
-            this.ramanAmplitudeBox.Size = new System.Drawing.Size(64, 20);
-            this.ramanAmplitudeBox.TabIndex = 16;
-            this.ramanAmplitudeBox.Text = "3.3";
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(24, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(96, 23);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "rf2 Frequency";
-            // 
-            // urFrequencyBox
-            // 
-            this.urFrequencyBox.Location = new System.Drawing.Point(136, 56);
-            this.urFrequencyBox.Name = "urFrequencyBox";
-            this.urFrequencyBox.Size = new System.Drawing.Size(64, 20);
-            this.urFrequencyBox.TabIndex = 14;
-            this.urFrequencyBox.Text = "170.815";
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(24, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 23);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "rf1 Frequency";
-            // 
-            // lrFrequencyBox
-            // 
-            this.lrFrequencyBox.Location = new System.Drawing.Point(136, 24);
-            this.lrFrequencyBox.Name = "lrFrequencyBox";
-            this.lrFrequencyBox.Size = new System.Drawing.Size(64, 20);
-            this.lrFrequencyBox.TabIndex = 12;
-            this.lrFrequencyBox.Text = "170.795";
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.greenDCFMBox);
             this.groupBox3.Controls.Add(this.greenOnCheck);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.redOnFreqBox);
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.greenOnAmpBox);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.greenOnFreqBox);
-            this.groupBox3.Controls.Add(this.redOnCheck);
             this.groupBox3.Location = new System.Drawing.Point(8, 16);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(296, 195);
+            this.groupBox3.Size = new System.Drawing.Size(296, 160);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Direct synth control";
@@ -502,30 +397,12 @@ namespace EDMHardwareControl
             // 
             // greenOnCheck
             // 
-            this.greenOnCheck.Location = new System.Drawing.Point(24, 152);
+            this.greenOnCheck.Location = new System.Drawing.Point(24, 114);
             this.greenOnCheck.Name = "greenOnCheck";
             this.greenOnCheck.Size = new System.Drawing.Size(104, 24);
             this.greenOnCheck.TabIndex = 18;
             this.greenOnCheck.Text = "Green on";
             this.greenOnCheck.CheckedChanged += new System.EventHandler(this.greenOnCheck_CheckedChanged);
-            // 
-            // label6
-            // 
-            this.label6.Enabled = false;
-            this.label6.Location = new System.Drawing.Point(24, 120);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(144, 23);
-            this.label6.TabIndex = 15;
-            this.label6.Text = "Red synth frequency";
-            // 
-            // redOnFreqBox
-            // 
-            this.redOnFreqBox.Enabled = false;
-            this.redOnFreqBox.Location = new System.Drawing.Point(168, 120);
-            this.redOnFreqBox.Name = "redOnFreqBox";
-            this.redOnFreqBox.Size = new System.Drawing.Size(64, 20);
-            this.redOnFreqBox.TabIndex = 14;
-            this.redOnFreqBox.Text = "42.5";
             // 
             // label7
             // 
@@ -558,16 +435,6 @@ namespace EDMHardwareControl
             this.greenOnFreqBox.Size = new System.Drawing.Size(64, 20);
             this.greenOnFreqBox.TabIndex = 10;
             this.greenOnFreqBox.Text = "170.795";
-            // 
-            // redOnCheck
-            // 
-            this.redOnCheck.Enabled = false;
-            this.redOnCheck.Location = new System.Drawing.Point(152, 152);
-            this.redOnCheck.Name = "redOnCheck";
-            this.redOnCheck.Size = new System.Drawing.Size(104, 24);
-            this.redOnCheck.TabIndex = 19;
-            this.redOnCheck.Text = "Red on";
-            this.redOnCheck.CheckedChanged += new System.EventHandler(this.redOnCheck_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -894,6 +761,24 @@ namespace EDMHardwareControl
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
+            // setIMonitorMeasurementLengthButton
+            // 
+            this.setIMonitorMeasurementLengthButton.Location = new System.Drawing.Point(56, 290);
+            this.setIMonitorMeasurementLengthButton.Name = "setIMonitorMeasurementLengthButton";
+            this.setIMonitorMeasurementLengthButton.Size = new System.Drawing.Size(75, 23);
+            this.setIMonitorMeasurementLengthButton.TabIndex = 53;
+            this.setIMonitorMeasurementLengthButton.Text = "Set";
+            this.setIMonitorMeasurementLengthButton.UseVisualStyleBackColor = true;
+            this.setIMonitorMeasurementLengthButton.Click += new System.EventHandler(this.setIMonitorMEasurementLengthButton_Click);
+            // 
+            // IMonitorMeasurementLengthTextBox
+            // 
+            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(104, 256);
+            this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
+            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.IMonitorMeasurementLengthTextBox.TabIndex = 52;
+            this.IMonitorMeasurementLengthTextBox.Text = "200";
+            // 
             // label35
             // 
             this.label35.Location = new System.Drawing.Point(16, 256);
@@ -1001,9 +886,7 @@ namespace EDMHardwareControl
             // 
             this.tabPage2.Controls.Add(this.groupBox16);
             this.tabPage2.Controls.Add(this.groupBox14);
-            this.tabPage2.Controls.Add(this.groupBox9);
             this.tabPage2.Controls.Add(this.groupBox3);
-            this.tabPage2.Controls.Add(this.groupBox4);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Size = new System.Drawing.Size(616, 504);
@@ -1012,21 +895,30 @@ namespace EDMHardwareControl
             // 
             // groupBox16
             // 
+            this.groupBox16.Controls.Add(this.attenuatorSelectCheck);
             this.groupBox16.Controls.Add(this.phaseFlip2CheckBox);
             this.groupBox16.Controls.Add(this.phaseFlip1CheckBox);
-            this.groupBox16.Controls.Add(this.greenFMEnableCheck);
-            this.groupBox16.Controls.Add(this.redRFSwitchEnableCheck);
-            this.groupBox16.Controls.Add(this.greenRFSwitchEnableCheck);
-            this.groupBox16.Location = new System.Drawing.Point(8, 217);
+            this.groupBox16.Controls.Add(this.fmSelectCheck);
+            this.groupBox16.Controls.Add(this.rfSwitchEnableCheck);
+            this.groupBox16.Location = new System.Drawing.Point(8, 184);
             this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(296, 180);
+            this.groupBox16.Size = new System.Drawing.Size(296, 183);
             this.groupBox16.TabIndex = 26;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "TTL controls";
             // 
+            // attenuatorSelectCheck
+            // 
+            this.attenuatorSelectCheck.Location = new System.Drawing.Point(24, 82);
+            this.attenuatorSelectCheck.Name = "attenuatorSelectCheck";
+            this.attenuatorSelectCheck.Size = new System.Drawing.Size(152, 24);
+            this.attenuatorSelectCheck.TabIndex = 30;
+            this.attenuatorSelectCheck.Text = "Attenuator select";
+            this.attenuatorSelectCheck.CheckedChanged += new System.EventHandler(this.attenuatorSelectCheck_CheckedChanged);
+            // 
             // phaseFlip2CheckBox
             // 
-            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(24, 143);
+            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(24, 142);
             this.phaseFlip2CheckBox.Name = "phaseFlip2CheckBox";
             this.phaseFlip2CheckBox.Size = new System.Drawing.Size(152, 24);
             this.phaseFlip2CheckBox.TabIndex = 29;
@@ -1035,61 +927,98 @@ namespace EDMHardwareControl
             // 
             // phaseFlip1CheckBox
             // 
-            this.phaseFlip1CheckBox.Location = new System.Drawing.Point(24, 113);
+            this.phaseFlip1CheckBox.Location = new System.Drawing.Point(24, 112);
             this.phaseFlip1CheckBox.Name = "phaseFlip1CheckBox";
             this.phaseFlip1CheckBox.Size = new System.Drawing.Size(152, 24);
             this.phaseFlip1CheckBox.TabIndex = 28;
             this.phaseFlip1CheckBox.Text = "phase flip TTL 1";
             this.phaseFlip1CheckBox.CheckedChanged += new System.EventHandler(this.phaseFlip1CheckBox_CheckedChanged);
             // 
-            // greenFMEnableCheck
+            // fmSelectCheck
             // 
-            this.greenFMEnableCheck.Location = new System.Drawing.Point(24, 84);
-            this.greenFMEnableCheck.Name = "greenFMEnableCheck";
-            this.greenFMEnableCheck.Size = new System.Drawing.Size(152, 24);
-            this.greenFMEnableCheck.TabIndex = 27;
-            this.greenFMEnableCheck.Text = "Green DC FM enabled";
-            this.greenFMEnableCheck.CheckedChanged += new System.EventHandler(this.greenFMEnableCheck_CheckedChanged);
+            this.fmSelectCheck.Location = new System.Drawing.Point(24, 52);
+            this.fmSelectCheck.Name = "fmSelectCheck";
+            this.fmSelectCheck.Size = new System.Drawing.Size(152, 24);
+            this.fmSelectCheck.TabIndex = 27;
+            this.fmSelectCheck.Text = "DC FM select";
+            this.fmSelectCheck.CheckedChanged += new System.EventHandler(this.greenFMSelectCheck_CheckedChanged);
             // 
-            // redRFSwitchEnableCheck
+            // rfSwitchEnableCheck
             // 
-            this.redRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 54);
-            this.redRFSwitchEnableCheck.Name = "redRFSwitchEnableCheck";
-            this.redRFSwitchEnableCheck.Size = new System.Drawing.Size(136, 24);
-            this.redRFSwitchEnableCheck.TabIndex = 23;
-            this.redRFSwitchEnableCheck.Text = "Enable rf2 switch";
-            this.redRFSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.redRFSwitchEnableCheck_CheckedChanged);
-            // 
-            // greenRFSwitchEnableCheck
-            // 
-            this.greenRFSwitchEnableCheck.Location = new System.Drawing.Point(24, 22);
-            this.greenRFSwitchEnableCheck.Name = "greenRFSwitchEnableCheck";
-            this.greenRFSwitchEnableCheck.Size = new System.Drawing.Size(152, 24);
-            this.greenRFSwitchEnableCheck.TabIndex = 22;
-            this.greenRFSwitchEnableCheck.Text = "Enable rf1 switch";
-            this.greenRFSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.GreenRFSwitchEnableCheck_CheckedChanged);
+            this.rfSwitchEnableCheck.Location = new System.Drawing.Point(24, 22);
+            this.rfSwitchEnableCheck.Name = "rfSwitchEnableCheck";
+            this.rfSwitchEnableCheck.Size = new System.Drawing.Size(152, 24);
+            this.rfSwitchEnableCheck.TabIndex = 22;
+            this.rfSwitchEnableCheck.Text = "Enable rf1 switch";
+            this.rfSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.rfSwitchEnableCheck_CheckedChanged);
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add(this.setFMVoltagesButton);
+            this.groupBox14.Controls.Add(this.label2);
+            this.groupBox14.Controls.Add(this.rf2FMVoltage);
+            this.groupBox14.Controls.Add(this.label3);
+            this.groupBox14.Controls.Add(this.rf1FMVoltage);
             this.groupBox14.Controls.Add(this.setAttenuatorsButton);
             this.groupBox14.Controls.Add(this.label36);
             this.groupBox14.Controls.Add(this.rf2AttenuatorVoltageTextBox);
             this.groupBox14.Controls.Add(this.label39);
             this.groupBox14.Controls.Add(this.rf1AttenuatorVoltageTextBox);
-            this.groupBox14.Location = new System.Drawing.Point(312, 350);
+            this.groupBox14.Location = new System.Drawing.Point(320, 16);
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(296, 118);
+            this.groupBox14.Size = new System.Drawing.Size(285, 233);
             this.groupBox14.TabIndex = 24;
             this.groupBox14.TabStop = false;
-            this.groupBox14.Text = "rf attenuators";
+            this.groupBox14.Text = "fast rf control";
+            // 
+            // setFMVoltagesButton
+            // 
+            this.setFMVoltagesButton.Location = new System.Drawing.Point(69, 188);
+            this.setFMVoltagesButton.Name = "setFMVoltagesButton";
+            this.setFMVoltagesButton.Size = new System.Drawing.Size(131, 23);
+            this.setFMVoltagesButton.TabIndex = 23;
+            this.setFMVoltagesButton.Text = "Set fm voltages";
+            this.setFMVoltagesButton.Click += new System.EventHandler(this.setFMVoltagesButton_Click);
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(24, 162);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(96, 23);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "rf2 fm voltage (V)";
+            // 
+            // rf2FMVoltage
+            // 
+            this.rf2FMVoltage.Location = new System.Drawing.Point(136, 162);
+            this.rf2FMVoltage.Name = "rf2FMVoltage";
+            this.rf2FMVoltage.Size = new System.Drawing.Size(64, 20);
+            this.rf2FMVoltage.TabIndex = 21;
+            this.rf2FMVoltage.Text = "1";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(24, 130);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(96, 23);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "rf1 fm voltage (V)";
+            // 
+            // rf1FMVoltage
+            // 
+            this.rf1FMVoltage.Location = new System.Drawing.Point(136, 130);
+            this.rf1FMVoltage.Name = "rf1FMVoltage";
+            this.rf1FMVoltage.Size = new System.Drawing.Size(64, 20);
+            this.rf1FMVoltage.TabIndex = 19;
+            this.rf1FMVoltage.Text = "1";
             // 
             // setAttenuatorsButton
             // 
-            this.setAttenuatorsButton.Location = new System.Drawing.Point(79, 82);
+            this.setAttenuatorsButton.Location = new System.Drawing.Point(69, 82);
             this.setAttenuatorsButton.Name = "setAttenuatorsButton";
-            this.setAttenuatorsButton.Size = new System.Drawing.Size(94, 23);
+            this.setAttenuatorsButton.Size = new System.Drawing.Size(131, 23);
             this.setAttenuatorsButton.TabIndex = 18;
-            this.setAttenuatorsButton.Text = "Set attenuators";
+            this.setAttenuatorsButton.Text = "Set attenuator voltages";
             this.setAttenuatorsButton.Click += new System.EventHandler(this.setAttenuatorsButton_Click);
             // 
             // label36
@@ -1098,7 +1027,7 @@ namespace EDMHardwareControl
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(96, 23);
             this.label36.TabIndex = 15;
-            this.label36.Text = "rf2 voltage (V)";
+            this.label36.Text = "rf2 att. voltage (V)";
             // 
             // rf2AttenuatorVoltageTextBox
             // 
@@ -1114,7 +1043,7 @@ namespace EDMHardwareControl
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(96, 23);
             this.label39.TabIndex = 13;
-            this.label39.Text = "rf1 voltage (V)";
+            this.label39.Text = "rf1 att. voltage (V)";
             // 
             // rf1AttenuatorVoltageTextBox
             // 
@@ -1123,76 +1052,6 @@ namespace EDMHardwareControl
             this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(64, 20);
             this.rf1AttenuatorVoltageTextBox.TabIndex = 12;
             this.rf1AttenuatorVoltageTextBox.Text = "1";
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.rfMonitorChannelCheck);
-            this.groupBox9.Controls.Add(this.rf1PowerMonitorTextBox);
-            this.groupBox9.Controls.Add(this.rfPowerMonitorUpdateButton);
-            this.groupBox9.Controls.Add(this.label24);
-            this.groupBox9.Controls.Add(this.label28);
-            this.groupBox9.Controls.Add(this.rf2PowerMonitorTextBox);
-            this.groupBox9.Location = new System.Drawing.Point(312, 184);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(296, 160);
-            this.groupBox9.TabIndex = 23;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "rf power monitors";
-            // 
-            // rfMonitorChannelCheck
-            // 
-            this.rfMonitorChannelCheck.Location = new System.Drawing.Point(64, 96);
-            this.rfMonitorChannelCheck.Name = "rfMonitorChannelCheck";
-            this.rfMonitorChannelCheck.Size = new System.Drawing.Size(168, 24);
-            this.rfMonitorChannelCheck.TabIndex = 48;
-            this.rfMonitorChannelCheck.Text = "Monitor channel (1 = False)";
-            // 
-            // rf1PowerMonitorTextBox
-            // 
-            this.rf1PowerMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.rf1PowerMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1PowerMonitorTextBox.Location = new System.Drawing.Point(136, 32);
-            this.rf1PowerMonitorTextBox.Name = "rf1PowerMonitorTextBox";
-            this.rf1PowerMonitorTextBox.ReadOnly = true;
-            this.rf1PowerMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.rf1PowerMonitorTextBox.TabIndex = 47;
-            this.rf1PowerMonitorTextBox.Text = "0";
-            // 
-            // rfPowerMonitorUpdateButton
-            // 
-            this.rfPowerMonitorUpdateButton.Location = new System.Drawing.Point(88, 128);
-            this.rfPowerMonitorUpdateButton.Name = "rfPowerMonitorUpdateButton";
-            this.rfPowerMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
-            this.rfPowerMonitorUpdateButton.TabIndex = 46;
-            this.rfPowerMonitorUpdateButton.Text = "Update";
-            this.rfPowerMonitorUpdateButton.Click += new System.EventHandler(this.rfPowerMonitorUpdateButton_Click);
-            // 
-            // label24
-            // 
-            this.label24.Location = new System.Drawing.Point(24, 64);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(80, 23);
-            this.label24.TabIndex = 45;
-            this.label24.Text = "rf2 (dBm)";
-            // 
-            // label28
-            // 
-            this.label28.Location = new System.Drawing.Point(24, 32);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(80, 23);
-            this.label28.TabIndex = 44;
-            this.label28.Text = "rf1 (dBm)";
-            // 
-            // rf2PowerMonitorTextBox
-            // 
-            this.rf2PowerMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.rf2PowerMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2PowerMonitorTextBox.Location = new System.Drawing.Point(136, 64);
-            this.rf2PowerMonitorTextBox.Name = "rf2PowerMonitorTextBox";
-            this.rf2PowerMonitorTextBox.ReadOnly = true;
-            this.rf2PowerMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.rf2PowerMonitorTextBox.TabIndex = 43;
-            this.rf2PowerMonitorTextBox.Text = "0";
             // 
             // tabPage3
             // 
@@ -1667,24 +1526,6 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
-            // IMonitorMeasurementLengthTextBox
-            // 
-            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(104, 256);
-            this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
-            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
-            this.IMonitorMeasurementLengthTextBox.TabIndex = 52;
-            this.IMonitorMeasurementLengthTextBox.Text = "200";
-            // 
-            // setIMonitorMeasurementLengthButton
-            // 
-            this.setIMonitorMeasurementLengthButton.Location = new System.Drawing.Point(56, 290);
-            this.setIMonitorMeasurementLengthButton.Name = "setIMonitorMeasurementLengthButton";
-            this.setIMonitorMeasurementLengthButton.Size = new System.Drawing.Size(75, 23);
-            this.setIMonitorMeasurementLengthButton.TabIndex = 53;
-            this.setIMonitorMeasurementLengthButton.Text = "Set";
-            this.setIMonitorMeasurementLengthButton.UseVisualStyleBackColor = true;
-            this.setIMonitorMeasurementLengthButton.Click += new System.EventHandler(this.setIMonitorMEasurementLengthButton_Click);
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1696,8 +1537,6 @@ namespace EDMHardwareControl
             this.Text = "EDM Hardware Control";
             this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.groupBox2.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1715,8 +1554,6 @@ namespace EDMHardwareControl
             this.groupBox16.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
@@ -1745,20 +1582,9 @@ namespace EDMHardwareControl
 			controller.EnableGreenSynth(greenOnCheck.Checked);
 		}
 
-	
-		private void redOnCheck_CheckedChanged(object sender, System.EventArgs e)
+	    private void rfSwitchEnableCheck_CheckedChanged(object sender, System.EventArgs e)
 		{
-			controller.EnableRedSynth(redOnCheck.Checked);
-		}
-
-		private void GreenRFSwitchEnableCheck_CheckedChanged(object sender, System.EventArgs e)
-		{
-			controller.EnableGreenRFSwitch(greenRFSwitchEnableCheck.Checked);	
-		}
-
-		private void redRFSwitchEnableCheck_CheckedChanged(object sender, System.EventArgs e)
-		{
-			controller.EnableRedRFSwitch(redRFSwitchEnableCheck.Checked);			
+			controller.EnableRFSwitch(rfSwitchEnableCheck.Checked);	
 		}
 
 		private void eOnCheck_CheckedChanged(object sender, System.EventArgs e)
@@ -1776,10 +1602,15 @@ namespace EDMHardwareControl
 			controller.SetBleed(eBleedCheck.Checked);
 		}
 
-		private void greenFMEnableCheck_CheckedChanged(object sender, System.EventArgs e)
+		private void greenFMSelectCheck_CheckedChanged(object sender, System.EventArgs e)
 		{
-			controller.EnableGreenDCFM(greenFMEnableCheck.Checked);
+			controller.SelectGreenDCFM(fmSelectCheck.Checked);
 		}
+
+        private void attenuatorSelectCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SelectAttenuator(attenuatorSelectCheck.Checked);
+        }
 
 		private void phaseFlip1CheckBox_CheckedChanged(object sender, EventArgs e)
 		{
@@ -1794,12 +1625,6 @@ namespace EDMHardwareControl
 		private void updateFieldButton_Click(object sender, System.EventArgs e)
 		{
 			controller.UpdateVoltages();
-		}
-
-		// convenience method to set up synths dual rf
-		private void setDualRFButton_Click(object sender, System.EventArgs e)
-		{
-			controller.SetDualRF();
 		}
 
 		private void bFlipCheck_CheckedChanged(object sender, System.EventArgs e)
@@ -1828,11 +1653,6 @@ namespace EDMHardwareControl
 		}
 
 		
-		private void rfPowerMonitorUpdateButton_Click(object sender, System.EventArgs e)
-		{
-			controller.UpdateRFPowerMonitor();
-		}
-
 		private void updateFlashlampVButton_Click(object sender, System.EventArgs e)
 		{
 			controller.UpdateYAGFlashlampVoltage();
@@ -1893,6 +1713,27 @@ namespace EDMHardwareControl
 			controller.UpdateLaserPhotodiodes();
 		}
 
+        private void setAttenuatorsButton_Click(object sender, EventArgs e)
+        {
+            controller.SetAttenutatorVoltages();
+        }
+
+        private void setFMVoltagesButton_Click(object sender, EventArgs e)
+        {
+            //controller.SetFMVoltages();
+        }
+
+        private void calibrateIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.CalibrateIMonitors();
+        }
+
+        private void setIMonitorMEasurementLengthButton_Click(object sender, EventArgs e)
+        {
+            controller.setIMonitorMeasurementLength();
+        }
+
+
 		#endregion
 
 		#region ThreadSafe wrappers
@@ -1924,19 +1765,6 @@ namespace EDMHardwareControl
 			controller.WindowLoaded();
 		}
 
-		private void setAttenuatorsButton_Click(object sender, EventArgs e)
-		{
-			controller.SetAttenutatorVoltages();
-		}
-
-        private void calibrateIMonitorButton_Click(object sender, EventArgs e)
-        {
-            controller.CalibrateIMonitors();    
-        }
-
-        private void setIMonitorMEasurementLengthButton_Click(object sender, EventArgs e)
-        {
-            controller.setIMonitorMeasurementLength();
-        }
+ 
 	}
 }

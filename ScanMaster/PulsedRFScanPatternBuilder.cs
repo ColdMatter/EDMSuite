@@ -20,29 +20,29 @@ namespace ScanMaster.Acquire.Patterns
 
         private bool switchState = false;
 
-		int rf1Channel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rf1Switch"]).BitNumber;
-		int rf2Channel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rf2Switch"]).BitNumber;
-		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["greenFM"]).BitNumber;
-		int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
+		int rfSwitchChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rfSwitch"]).BitNumber;
+		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["fmSelect"]).BitNumber;
+        int attChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["attSelect"]).BitNumber;
+        int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
 
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
 			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipTime,
-            int fmCentreTime, int fmLength, bool modulateOn) 
+            int fmCentreTime, int fmLength, int attCentreTime, int attLength, bool modulateOn) 
 		{
 		
 			int time = 0;
             
-			// Disable both rf
-			AddEdge(rf1Channel, 0, false);
-			//AddEdge(rf2Channel, 0, false);
+			// Disable rf
+			AddEdge(rfSwitchChannel, 0, false);
 			AddEdge(piChannel, 0, true);
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, true );
+						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+                        attCentreTime, attLength, true );
 				time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
                 {
@@ -52,12 +52,14 @@ namespace ScanMaster.Acquire.Patterns
                 if (modulateOn)
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, false );
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+                        attCentreTime, attLength, false);
                 }
                 else
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength, true );
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+                        attCentreTime, attLength, true);
                 }
                 time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
@@ -77,7 +79,7 @@ namespace ScanMaster.Acquire.Patterns
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
 			int delayToDetectorTrigger, int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length,
-			int piFlipTime, int fmCentreTime, int fmLength, bool modulated )  
+            int piFlipTime, int fmCentreTime, int fmLength, int attCentreTime, int attLength, bool modulated)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -112,18 +114,24 @@ namespace ScanMaster.Acquire.Patterns
 			// pulse rf1
 			if (rf1Length != 0)
 			{
-				tempTime = Pulse(startTime + START_PADDING, valveToQ + rf1CentreTime - (rf1Length/2), rf1Length, rf1Channel);
+				tempTime = Pulse(startTime + START_PADDING, valveToQ + rf1CentreTime - (rf1Length/2), rf1Length, rfSwitchChannel);
 				if (tempTime > time) time = tempTime;
 			}
 			// pulse rf2
 			if (rf2Length != 0)
 			{
-				tempTime = Pulse(startTime + START_PADDING, valveToQ + rf2CentreTime - (rf2Length/2), rf2Length, rf2Channel);
+				tempTime = Pulse(startTime + START_PADDING, valveToQ + rf2CentreTime - (rf2Length/2), rf2Length, rfSwitchChannel);
 				if (tempTime > time) time = tempTime;
 			}
-			// pulse green fm
+			// pulse fm
 			tempTime = Pulse(startTime + START_PADDING, valveToQ + fmCentreTime - (fmLength/2), fmLength, fmChannel);
 			if (tempTime > time) time = tempTime;
+
+            // pulse attenuators
+            tempTime = Pulse(startTime + START_PADDING, valveToQ + attCentreTime - (attLength / 2), attLength, attChannel);
+            if (tempTime > time) time = tempTime;
+
+
 			// piFlip on
             AddEdge(piChannel, startTime + START_PADDING + valveToQ + piFlipTime, true);
 

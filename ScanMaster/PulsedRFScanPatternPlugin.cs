@@ -30,6 +30,8 @@ namespace ScanMaster.Acquire.Plugins
 			settings["rf2Length"] = 650;
 			settings["fmCentreTime"] = 700;
 			settings["fmLength"] = 650;
+            settings["attCentreTime"] = 700;
+            settings["attLength"] = 700;
 			settings["piFlipTime"] = 1400;
 		}
 
@@ -59,6 +61,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["piFlipTime"],
 				(int)settings["fmCentreTime"],
 				(int)settings["fmLength"],
+                (int)settings["attCentreTime"],
+                (int)settings["attLength"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
             scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

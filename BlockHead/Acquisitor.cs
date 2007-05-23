@@ -242,15 +242,26 @@ namespace BlockHead.Acquire
 			eChan.Modulation = config.GetModulationByName("E");
 			switchedChannels.Add(eChan);
 
-            //AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
-            //rf1AChannel.Channel = "rf1Attenuator";
-            //rf1AChannel.Modulation = config.GetModulationByName("RF1A");
-            //switchedChannels.Add(rf1AChannel);
+            AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
+            rf1AChannel.Channel = "rf1Attenuator";
+            rf1AChannel.Modulation = config.GetModulationByName("RF1A");
+            switchedChannels.Add(rf1AChannel);
 
-            //AnalogSwitchedChannel rf2AChannel = new AnalogSwitchedChannel();
-            //rf2AChannel.Channel = "rf2Attenuator";
-            //rf2AChannel.Modulation = config.GetModulationByName("RF2A");
-            //switchedChannels.Add(rf2AChannel);
+            AnalogSwitchedChannel rf2AChannel = new AnalogSwitchedChannel();
+            rf2AChannel.Channel = "rf2Attenuator";
+            rf2AChannel.Modulation = config.GetModulationByName("RF2A");
+            switchedChannels.Add(rf2AChannel);
+
+            //AnalogSwitchedChannel rf1FChannel = new AnalogSwitchedChannel();
+            //rf1AChannel.Channel = "rf1FM";
+            //rf1AChannel.Modulation = config.GetModulationByName("RF1F");
+            //switchedChannels.Add(rf1FChannel);
+
+            //AnalogSwitchedChannel rf2FChannel = new AnalogSwitchedChannel();
+            //rf2AChannel.Channel = "rf2FM";
+            //rf2AChannel.Modulation = config.GetModulationByName("RF2F");
+            //switchedChannels.Add(rf2FChannel);
+
 
 		}
 
@@ -355,7 +366,7 @@ namespace BlockHead.Acquire
 			ScanMaster.Acquire.Plugin.PluginSettings pgSettings = scanMaster.GetPGSettings();
 			foreach (String key in pgSettings.Keys) config.Settings[key] = pgSettings[key];
 
-			// Raman parameters
+			// rf parameters
 			EDMHardwareControl.Controller hwController = new EDMHardwareControl.Controller();
 			config.Settings["greenSynthFrequency"] = hwController.GreenSynthOnFrequency;
 			config.Settings["greenSynthDCFM"] = hwController.GreenSynthDCFM;
