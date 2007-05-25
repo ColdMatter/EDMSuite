@@ -3,6 +3,8 @@ using System.Collections;
 using System.Text;
 using System.Windows.Forms;
 using DAQ.Environment;
+using DAQ.HAL;
+using NationalInstruments.DAQmx;
 
 namespace DecelerationHardwareControl
 {
@@ -12,8 +14,17 @@ namespace DecelerationHardwareControl
         ControlWindow window;
         private bool analogsAvailable;
         private double lastCavityData;
+        private double lastrefCavityData;
         private DateTime cavityTimestamp;
+        private DateTime refcavityTimestamp;
         private double laserFrequencyControlVoltage;
+
+        private double aomControlVoltage;
+        private Task outputTask = new Task("AomControllerOutput");
+        private AnalogOutputChannel aomChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["highvoltage"];
+        public AnalogSingleChannelWriter aomWriter;
+
+        public double normsigGain;
 
         // The keys of the hashtable are the names of the analog output channels
         // The values are all booleans - true means the channel is blocked
@@ -34,7 +45,12 @@ namespace DecelerationHardwareControl
             // all the analog outputs are unblocked at the outset
             analogOutputsBlocked = new Hashtable();
             foreach (DictionaryEntry de in Environs.Hardware.AnalogOutputChannels) 
-                analogOutputsBlocked.Add(de.Key, false);            
+                analogOutputsBlocked.Add(de.Key, false);
+
+            aomChannel.AddToTask(outputTask, -10, 10);
+            outputTask.Control(TaskAction.Verify);
+            aomWriter = new AnalogSingleChannelWriter(outputTask.Stream);
+
             window = new ControlWindow();
             window.controller = this;
             Application.Run(window);
@@ -46,6 +62,12 @@ namespace DecelerationHardwareControl
         {
             get { return laserFrequencyControlVoltage; }
             set { laserFrequencyControlVoltage = value; }
+        }
+
+        public double AOMControlVoltage
+        {
+            get { return aomControlVoltage; }
+            set { aomControlVoltage = value; }
         }
 
         // returns true if the channel is blocked
@@ -85,6 +107,12 @@ namespace DecelerationHardwareControl
             cavityTimestamp = DateTime.Now;
         }
 
+        public void UpdateReferenceCavityData(double refcavityValue)
+        {
+            lastrefCavityData = refcavityValue;
+            refcavityTimestamp = DateTime.Now;
+        }
+
         public double LastCavityData
         {
             get { return lastCavityData; }
@@ -97,6 +125,37 @@ namespace DecelerationHardwareControl
                 TimeSpan delta = DateTime.Now - cavityTimestamp;
                 return (delta.Milliseconds + 1000 * delta.Seconds + 60 * 1000 * delta.Minutes);
             }
+        }
+
+        public double AOMVoltage
+        {
+            get
+            {
+                return AOMControlVoltage;
+            }
+            set
+            {
+                if (!Environs.Debug)
+                {
+                    aomWriter.WriteSingleSample(true, value);
+                    outputTask.Control(TaskAction.Unreserve);
+                }
+                else
+                {
+                    // Debug mode, do nothing
+                }
+                aomControlVoltage = value;
+                
+            }
+        }
+
+        public void diodeSaturationError()
+        {
+            window.SetDiodeWarning(window.diodeSaturation, true);
+        }
+        public void diodeSaturation()
+        {
+            window.SetDiodeWarning(window.diodeSaturation, false);
         }
     }
 }

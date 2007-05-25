@@ -161,7 +161,10 @@ namespace LaserLock
         {
             controller.SetProportionalGain(pSlider.Value);
         }
-
+        private void iSlider_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
+        {
+            controller.SetIntegralGain(iSlider.Value);
+        }
         private void setpointNumericEdit_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
         {
             controller.SetPoint = setpointNumericEdit.Value;

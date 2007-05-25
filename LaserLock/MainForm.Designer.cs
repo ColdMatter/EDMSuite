@@ -275,6 +275,7 @@ namespace LaserLock
             this.iSlider.PointerColor = System.Drawing.SystemColors.HotTrack;
             this.iSlider.Size = new System.Drawing.Size(50, 175);
             this.iSlider.TabIndex = 1;
+            this.iSlider.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.iSlider_AfterChangeValue);
             // 
             // pSlider
             // 

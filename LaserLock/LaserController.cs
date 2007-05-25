@@ -34,10 +34,11 @@ namespace LaserLock
         private const int HARDWARE_CONTROL_TALK_PERIOD = 2000; //milliseconds
         
         private double proportionalGain;
-//        private double integralGain;
+        private double integralGain;
 //        private double derivativeGain;
         private double setPoint;
         private double deviation;
+        private double integratedDeviation;
                 
         private ScanMaster.Controller scanMaster;
         private ScanMaster.Analyze.GaussianFitter fitter;
@@ -52,6 +53,11 @@ namespace LaserLock
         private Task inputTask;
         private AnalogInputChannel cavityChannel;
         private AnalogSingleChannelReader cavityReader;
+        //private AnalogMultiChannelReader cavityReader;
+
+        private Task inputrefTask;
+        private AnalogInputChannel cavityrefChannel;
+        private AnalogSingleChannelReader cavityrefReader;
 
         public enum ControllerState { free, busy, stopping };
         private ControllerState status = ControllerState.free;
@@ -60,6 +66,7 @@ namespace LaserLock
         private TimerCallback timerDelegate;
 
         private double[] latestData;
+        private double[] latestrefData;
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -74,7 +81,7 @@ namespace LaserLock
         public void Start()
         {
             proportionalGain = 0;
-//            integralGain = 0;
+            integralGain = 0;
 //            derivativeGain = 0;
                         
             ui = new MainForm();
@@ -102,6 +109,11 @@ namespace LaserLock
                 cavityChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["lockcavity"];
                 cavityChannel.AddToTask(inputTask, -10, 10);
                 cavityReader = new AnalogSingleChannelReader(inputTask.Stream);
+
+                inputrefTask = new Task("ReferenceLaserControllerInput");
+                cavityrefChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["refcavity"];
+                cavityrefChannel.AddToTask(inputrefTask, -10, 10);
+                cavityrefReader = new AnalogSingleChannelReader(inputrefTask.Stream);
             }
 
             timerDelegate = new TimerCallback(TalkToHardwareControl);
@@ -210,6 +222,7 @@ namespace LaserLock
         public void Lock()
         {
             double singleValue;
+            double singlerefValue;
             double averageValue = 0;
             int reads = 0;
             bool firstTime = true;
@@ -224,15 +237,33 @@ namespace LaserLock
                 if (!Environs.Debug)
                 {
                     // read the cavity
-                    if (hardwareControl.AnalogInputsAvailable)
+                    if (hardwareControl.AnalogInputsAvailable)//scanmaster not running
                     {
                         singleValue = 0;
                         inputTask.Start();
                         latestData = cavityReader.ReadMultiSample(SAMPLES_PER_READ);
                         inputTask.Stop();
+
+                        singlerefValue = 0;
+                        inputrefTask.Start();
+                        latestrefData = cavityrefReader.ReadMultiSample(SAMPLES_PER_READ);
+                        inputrefTask.Stop();
+
                         foreach (double d in latestData) singleValue += d;
+                        foreach (double e in latestrefData) singlerefValue += e;
                         singleValue = singleValue / SAMPLES_PER_READ;
+                        singlerefValue = singlerefValue / SAMPLES_PER_READ;
+                        if (singleValue > 4.7)
+                        {
+                            hardwareControl.diodeSaturationError();
+                        }
+                        else
+                        {
+                            hardwareControl.diodeSaturation();
+                        }
+                        singleValue = singleValue / singlerefValue;
                         hardwareControl.UpdateLockCavityData(singleValue);
+                        //hardwareControl.UpdateLockCavityData(singleValue / singlerefValue);
                     }
                     else
                     {
@@ -245,6 +276,7 @@ namespace LaserLock
                         // if this is the first read since throwing the lock, the result defines the set-point
                         if (firstTime)
                         {
+                            integratedDeviation = 0;
                             setPoint = singleValue;
                             ui.SetSetPointNumericEditorValue(setPoint);
                             firstTime = false;
@@ -254,13 +286,16 @@ namespace LaserLock
                         {
                             averageValue += singleValue;
                             reads++;
+                            deviation = averageValue / reads - setPoint;
+                            integratedDeviation = integratedDeviation + deviation * hardwareControl.TimeSinceLastCavityRead;
                         }
                         // is it time to feed-back to the laser
                         if (reads != 0 && (reads >= READS_PER_FEEDBACK || ui.SpeedSwitchState))
                         {
                             averageValue = averageValue / reads;
                             deviation = averageValue - setPoint;
-                            LaserVoltage = LaserVoltage + SignOfFeedback * proportionalGain * deviation; //other terms to go here 
+                            LaserVoltage = LaserVoltage + SignOfFeedback * proportionalGain * deviation + 
+                                integralGain * integratedDeviation; //other terms to go here 
                             // update the deviation plot
                             ui.DeviationPlotXYAppend(deviation);
                             // reset the variables
@@ -286,7 +321,15 @@ namespace LaserLock
         public void SetProportionalGain(double frontPanelValue)
         {
             // the pre-factor of 0.2 is chosen so that a front-panel setting of 5 (mid-range) is close to the threshold for oscillation
-            proportionalGain = 0.2 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION) * frontPanelValue;
+            // empirical evidence says a value of 0.4 makes 5 the oscillation threshold
+            proportionalGain = 0.4 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION) * frontPanelValue;
+        }
+
+        public void SetIntegralGain(double frontPanelValue)
+        {
+            // integralGain = proportionalGain / T where T is the integral time. hardwareControl.TimeSinceLastCavityRead is used
+            // below which is probably too short, so prefactor should be << 1 ?
+            integralGain = 0.2 * CAVITY_FWHM / (CAVITY_PEAK_HEIGHT * LASER_SCAN_CALIBRATION * hardwareControl.TimeSinceLastCavityRead) * frontPanelValue;
         }
 
         #endregion
