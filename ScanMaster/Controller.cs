@@ -36,7 +36,7 @@ namespace ScanMaster
 	/// registering the Controller type as well known within your application and then using new to
 	/// to get a reference, but you shouldn't forget that you're actually dealing with a singleton !
 	/// 
-	/// The controller is published at "tcp://localhost:666/controller.rem".
+	/// The controller is published at "tcp://localhost:1170/controller.rem".
 	/// 
 	/// The controller inherits from MarshalByRefObject so that references to it can be passed
 	/// around by the remoting system.

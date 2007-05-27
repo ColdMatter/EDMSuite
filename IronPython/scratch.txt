@@ -1,0 +1,1 @@
+sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:666/controller.rem'), ScanMaster.Controller)

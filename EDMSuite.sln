@@ -17,9 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMRemotingHelper", "EDMRemotingHelper\EDMRemotingHelper.csproj", "{27126CF5-7E76-48CC-A96E-A157706F19B1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CE823F3-EB70-424E-AD0D-2E2CF1BD0861}"
-	ProjectSection(SolutionItems) = preProject
-		EDMScripts\SimpleEDMLoop.boo = EDMScripts\SimpleEDMLoop.boo
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserLock", "LaserLock\LaserLock.csproj", "{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}"
 	ProjectSection(ProjectDependencies) = postProject
