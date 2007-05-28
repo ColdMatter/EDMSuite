@@ -171,3 +171,6 @@ def EDMGoNull():
 def EDMGo():
 	EDMGoReal(False)
 
+def run_script():
+	EDMGo()
+

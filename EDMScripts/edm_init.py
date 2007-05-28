@@ -44,7 +44,7 @@ bh = typedproxy(System.Activator.GetObject(BlockHead.Controller, 'tcp://localhos
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
 
 # usage message
-print("EDM interactive scripting control")
+print('EDM interactive scripting control')
 print('''
 The variables sm, bh, and hc are pre-assigned to the ScanMaster, BlockHead
 and EDMHardwareControl Controller objects respectively. You can call any of
@@ -52,12 +52,22 @@ these objects methods, for example: sm.AcquireAndWait(5). Look at the c#
 code to see which remote methods are available. You can use any Python code
 you like to script these calls.
 
-Scripts in the directory EDMScripts are automatically loaded.
-''')
+You can run scripts in the EDMScripts directory with the command run(i),
+where i is the script's index number (below). For this to work the script
+must have a run_script() function defined somewhere. You'd be unwise to
+try and run more than one script in a session with this method!
 
-# autoload scripts
+Available scripts:''')
+
+# script shortcuts
 import nt
 pp = Path.GetFullPath("..\\EDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e[0:-3] for e in files if e.EndsWith(".py") and e != "edm_init.py"]
-print(scriptsToLoad)
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "edm_init.py"]
+for i in range(len(scriptsToLoad)):
+            print str(i) + ": " + scriptsToLoad[i]
+print ""
+
+def run(i):
+	execfile(scriptsToLoad[i])
+	run_script()
