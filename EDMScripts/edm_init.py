@@ -21,10 +21,6 @@ clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
-# add the EDMScripts directory to the module search path
-#pp = System.IO.Path.GetFullPath("..\\EDMScripts")
-#sys.path.append(pp)
-
 # code for IronPython remoting problem workaround
 class typedproxy(object):
     __slots__ = ['obj', 'proxyType']
@@ -49,4 +45,19 @@ hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp:/
 
 # usage message
 print("EDM interactive scripting control")
-print("")
+print('''
+The variables sm, bh, and hc are pre-assigned to the ScanMaster, BlockHead
+and EDMHardwareControl Controller objects respectively. You can call any of
+these objects methods, for example: sm.AcquireAndWait(5). Look at the c#
+code to see which remote methods are available. You can use any Python code
+you like to script these calls.
+
+Scripts in the directory EDMScripts are automatically loaded.
+''')
+
+# autoload scripts
+import nt
+pp = Path.GetFullPath("..\\EDMScripts")
+files = nt.listdir(pp)
+scriptsToLoad = [e[0:-3] for e in files if e.EndsWith(".py") and e != "edm_init.py"]
+print(scriptsToLoad)
