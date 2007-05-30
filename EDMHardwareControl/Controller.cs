@@ -83,8 +83,8 @@ namespace EDMHardwareControl
 		Task bBoxAnalogOutputTask;
 		Task rf1AttenuatorOutputTask;
 		Task rf2AttenuatorOutputTask;
-        //Task rf1FMOutputTask;
-        //Task rf2FMOutputTask;
+        Task rf1FMOutputTask;
+        Task rf2FMOutputTask;
 		Task probeMonitorInputTask;
 		Task pumpMonitorInputTask;
 
@@ -126,8 +126,8 @@ namespace EDMHardwareControl
 			bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
 			rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
 			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
-            //rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
-            //rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
+            rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
+            rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
@@ -836,10 +836,10 @@ namespace EDMHardwareControl
 
         internal void SetFMVoltages()
         {
-        //    double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
-        //    double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
-        //    SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
-        //    SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
+            double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
+            double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
+            SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
+            SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
 
 		#endregion

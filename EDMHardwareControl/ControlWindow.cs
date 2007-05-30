@@ -1720,7 +1720,7 @@ namespace EDMHardwareControl
 
         private void setFMVoltagesButton_Click(object sender, EventArgs e)
         {
-            //controller.SetFMVoltages();
+            controller.SetFMVoltages();
         }
 
         private void calibrateIMonitorButton_Click(object sender, EventArgs e)
