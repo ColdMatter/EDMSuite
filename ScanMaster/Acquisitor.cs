@@ -60,8 +60,8 @@ namespace ScanMaster.Acquire
 
 		private void Acquire() 
 		{
-			try 
-			{
+            try 
+            {
 				// lock a monitor onto the acquisitor, to synchronise with the controller
 				// when acquiring a set number of scans - the monitor is released in
 				// AcquisitionFinishing()
@@ -159,6 +159,10 @@ namespace ScanMaster.Acquire
 					config.shotGathererPlugin.ScanFinished();
 					config.switchPlugin.ScanFinished();
 					config.analogPlugin.ScanFinished();
+                    // I think that this pause will workaround an annoying threading bug
+                    // I should probably be less cheezy and put a lock in, but I'm not really
+                    // sure that I know what the bug is as it's intermittent (and rare).
+                    Thread.Sleep(750);
 
 					// check if we are finished scanning
 					if (scanNumber + 1 == numberOfScans)
@@ -171,20 +175,20 @@ namespace ScanMaster.Acquire
 					}
 				}
 
-			} 
-			catch (Exception e) 
-			{
-				// last chance exception handler - this stops a rogue exception in the
-				// acquire loop from killing the whole program
-				Console.Error.Write(e.Message + e.StackTrace);
-				MessageBox.Show("Exception caught in acquire loop.\nTake care - the program " +
-					"is probably unstable.\n" + e.Message + "\n" + e.StackTrace, "Acquire error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-				// Try and stop the pattern gracefully before the program dies
-				config.pgPlugin.AcquisitionFinished();
-				lock (this) backendState = AcquisitorState.stopped;
-			}
-		}
+            }
+            catch (Exception e)
+            {
+                // last chance exception handler - this stops a rogue exception in the
+                // acquire loop from killing the whole program
+                Console.Error.Write(e.Message + e.StackTrace);
+                MessageBox.Show("Exception caught in acquire loop.\nTake care - the program " +
+                    "is probably unstable.\n" + e.Message + "\n" + e.StackTrace, "Acquire error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Try and stop the pattern gracefully before the program dies
+                config.pgPlugin.AcquisitionFinished();
+                lock (this) backendState = AcquisitorState.stopped;
+            }
+        }
 
 		private void AcquisitionFinishing(AcquisitorConfiguration config)
 		{
