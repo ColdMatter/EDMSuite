@@ -72,7 +72,13 @@ namespace DAQ.HAL
 			analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel));
 		}
 
-		protected void AddDigitalOutputChannel(String name, string device, int port, int line)
+        protected void AddAnalogOutputChannel(String name, String physicalChannel,
+                                                    double rangeLow, double rangeHigh)
+        {
+            analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel, rangeLow, rangeHigh));
+        }
+        
+        protected void AddDigitalOutputChannel(String name, string device, int port, int line)
 		{
 			digitalOutputChannels.Add(name, new DigitalOutputChannel(name, device, port, line));
 		}

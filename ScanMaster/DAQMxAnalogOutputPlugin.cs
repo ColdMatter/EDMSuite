@@ -36,13 +36,13 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionStarting()
 		{
-			// initialise the output hardware, full scale -10 to 10 volts
+			// initialise the output hardware
 			outputTask = new Task("analog output");
 			if (!Environs.Debug)
 			{
 				AnalogOutputChannel oc = 
 					(AnalogOutputChannel) Environs.Hardware.AnalogOutputChannels[(string)settings["channel"]];
-				oc.AddToTask(outputTask, -10, 10);
+				oc.AddToTask(outputTask, oc.RangeLow, oc.RangeHigh);
 				writer = new AnalogSingleChannelWriter(outputTask.Stream);
 				writer.WriteSingleSample(true, 0);
 			}

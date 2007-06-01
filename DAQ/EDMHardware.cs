@@ -94,10 +94,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("rf1Power", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("rf2Power", usbDAQ1 + "/ai1", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0");
-			AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1");
-            AddAnalogOutputChannel("rf1FM", usbDAQ2 + "/ao0");
-            AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1");
+            AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0", 0, 5);
+            AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("rf1FM", usbDAQ2 + "/ao0", 0, 5);
+            AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
