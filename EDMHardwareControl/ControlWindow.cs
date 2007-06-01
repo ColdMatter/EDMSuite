@@ -393,7 +393,7 @@ namespace EDMHardwareControl
             this.greenDCFMBox.Name = "greenDCFMBox";
             this.greenDCFMBox.Size = new System.Drawing.Size(64, 20);
             this.greenDCFMBox.TabIndex = 22;
-            this.greenDCFMBox.Text = "20";
+            this.greenDCFMBox.Text = "50";
             // 
             // greenOnCheck
             // 
@@ -911,9 +911,9 @@ namespace EDMHardwareControl
             // 
             this.attenuatorSelectCheck.Location = new System.Drawing.Point(24, 82);
             this.attenuatorSelectCheck.Name = "attenuatorSelectCheck";
-            this.attenuatorSelectCheck.Size = new System.Drawing.Size(152, 24);
+            this.attenuatorSelectCheck.Size = new System.Drawing.Size(208, 24);
             this.attenuatorSelectCheck.TabIndex = 30;
-            this.attenuatorSelectCheck.Text = "Attenuator select";
+            this.attenuatorSelectCheck.Text = "Attenuator select (check rf1)";
             this.attenuatorSelectCheck.CheckedChanged += new System.EventHandler(this.attenuatorSelectCheck_CheckedChanged);
             // 
             // phaseFlip2CheckBox
@@ -938,18 +938,18 @@ namespace EDMHardwareControl
             // 
             this.fmSelectCheck.Location = new System.Drawing.Point(24, 52);
             this.fmSelectCheck.Name = "fmSelectCheck";
-            this.fmSelectCheck.Size = new System.Drawing.Size(152, 24);
+            this.fmSelectCheck.Size = new System.Drawing.Size(208, 24);
             this.fmSelectCheck.TabIndex = 27;
-            this.fmSelectCheck.Text = "DC FM select";
+            this.fmSelectCheck.Text = "DC FM select (check rf1)";
             this.fmSelectCheck.CheckedChanged += new System.EventHandler(this.greenFMSelectCheck_CheckedChanged);
             // 
             // rfSwitchEnableCheck
             // 
             this.rfSwitchEnableCheck.Location = new System.Drawing.Point(24, 22);
             this.rfSwitchEnableCheck.Name = "rfSwitchEnableCheck";
-            this.rfSwitchEnableCheck.Size = new System.Drawing.Size(152, 24);
+            this.rfSwitchEnableCheck.Size = new System.Drawing.Size(208, 24);
             this.rfSwitchEnableCheck.TabIndex = 22;
-            this.rfSwitchEnableCheck.Text = "Enable rf1 switch";
+            this.rfSwitchEnableCheck.Text = "Enable rf1 switch (check on)";
             this.rfSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.rfSwitchEnableCheck_CheckedChanged);
             // 
             // groupBox14
@@ -986,7 +986,7 @@ namespace EDMHardwareControl
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(96, 23);
             this.label2.TabIndex = 22;
-            this.label2.Text = "rf2 fm voltage (V)";
+            this.label2.Text = "rf2 fm (%)";
             // 
             // rf2FMVoltage
             // 
@@ -994,7 +994,7 @@ namespace EDMHardwareControl
             this.rf2FMVoltage.Name = "rf2FMVoltage";
             this.rf2FMVoltage.Size = new System.Drawing.Size(64, 20);
             this.rf2FMVoltage.TabIndex = 21;
-            this.rf2FMVoltage.Text = "1";
+            this.rf2FMVoltage.Text = "0";
             // 
             // label3
             // 
@@ -1002,7 +1002,7 @@ namespace EDMHardwareControl
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(96, 23);
             this.label3.TabIndex = 20;
-            this.label3.Text = "rf1 fm voltage (V)";
+            this.label3.Text = "rf1 fm (%)";
             // 
             // rf1FMVoltage
             // 
@@ -1010,7 +1010,7 @@ namespace EDMHardwareControl
             this.rf1FMVoltage.Name = "rf1FMVoltage";
             this.rf1FMVoltage.Size = new System.Drawing.Size(64, 20);
             this.rf1FMVoltage.TabIndex = 19;
-            this.rf1FMVoltage.Text = "1";
+            this.rf1FMVoltage.Text = "0";
             // 
             // setAttenuatorsButton
             // 

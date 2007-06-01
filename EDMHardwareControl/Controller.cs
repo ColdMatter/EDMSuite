@@ -825,19 +825,30 @@ namespace EDMHardwareControl
 			SetScanningBVoltage();
 		}
 
+        private double windowVoltage(double vIn, double vMin, double vMax)
+        {
+            if (vIn < vMin) return vMin;
+            if (vIn > vMax) return vMax;
+            return vIn;
+        }
 
 		public void SetAttenutatorVoltages()
 		{
 			double rf1AttenuatorVoltage = Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
+            rf1AttenuatorVoltage = windowVoltage(rf1AttenuatorVoltage, 0, 5);
 			double rf2AttenuatorVoltage = Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
+            rf2AttenuatorVoltage = windowVoltage(rf2AttenuatorVoltage, 0, 5);
 			SetAnalogOutput(rf1AttenuatorOutputTask, rf1AttenuatorVoltage);
 			SetAnalogOutput(rf2AttenuatorOutputTask, rf2AttenuatorVoltage);
 		}
 
         internal void SetFMVoltages()
         {
-            double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
-            double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
+            // the user interface advertises these as percentages, so convert to volts. sqrt(2) V == 100%
+            double rf1FMPercent = Double.Parse(window.rf1FMVoltage.Text);
+            double rf1FMVoltage = windowVoltage(rf1FMPercent * 1.414 / 100, 0, 1.414);
+            double rf2FMPercent = Double.Parse(window.rf2FMVoltage.Text);
+            double rf2FMVoltage = windowVoltage(rf2FMPercent * 1.414 / 100, 0, 1.414);
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
