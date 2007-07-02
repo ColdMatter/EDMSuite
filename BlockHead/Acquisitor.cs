@@ -150,8 +150,8 @@ namespace BlockHead.Acquire
 					}
 					// do the "SinglePointData" (i.e. things that are measured once per point)
 					// keep an eye on what the phase lock is doing
-					p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
-					p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+                    p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
 
 					b.Points.Add(p);
 
@@ -197,50 +197,50 @@ namespace BlockHead.Acquire
 		{
 			switchedChannels = new ArrayList();
 
-			TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-			bChan.Channel = "b";
-			bChan.Invert = false;
-			bChan.Modulation = config.GetModulationByName("B");
-			switchedChannels.Add(bChan);
+            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            bChan.Channel = "b";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
 
-			TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-			notBChan.Channel = "notB";
-			notBChan.Invert = true;
-			notBChan.Modulation = config.GetModulationByName("B");
-			switchedChannels.Add(notBChan);
+            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            notBChan.Channel = "notB";
+            notBChan.Invert = true;
+            notBChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(notBChan);
 
-			TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-			dbChan.Channel = "db";
-			dbChan.Invert = false;
-			dbChan.Modulation = config.GetModulationByName("DB");
-			switchedChannels.Add(dbChan);
+            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            dbChan.Channel = "db";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
 
-			TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-			notDBChan.Channel = "notDB";
-			notDBChan.Invert = true;
-			notDBChan.Modulation = config.GetModulationByName("DB");
-			switchedChannels.Add(notDBChan);
+            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            notDBChan.Channel = "notDB";
+            notDBChan.Invert = true;
+            notDBChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(notDBChan);
 
-			TTLSwitchedChannel piChan = new TTLSwitchedChannel();
-			piChan.Channel = "piFlipEnable";
-			piChan.Invert = false;
-			piChan.Modulation = config.GetModulationByName("PI");
-			switchedChannels.Add(piChan);
+            TTLSwitchedChannel piChan = new TTLSwitchedChannel();
+            piChan.Channel = "piFlipEnable";
+            piChan.Invert = false;
+            piChan.Modulation = config.GetModulationByName("PI");
+            switchedChannels.Add(piChan);
 
-			TTLSwitchedChannel notPIChan = new TTLSwitchedChannel();
-			notPIChan.Channel = "notPIFlipEnable";
-			notPIChan.Invert = true;
-			notPIChan.Modulation = config.GetModulationByName("PI");
-			switchedChannels.Add(notPIChan);
+            TTLSwitchedChannel notPIChan = new TTLSwitchedChannel();
+            notPIChan.Channel = "notPIFlipEnable";
+            notPIChan.Invert = true;
+            notPIChan.Modulation = config.GetModulationByName("PI");
+            switchedChannels.Add(notPIChan);
 
-			ESwitchChannel eChan = new ESwitchChannel();
-			eChan.Invert = false;
-			eChan.DischargeTime = (int)config.Settings["eDischargeTime"];
-			eChan.BleedTime = (int)config.Settings["eBleedTime"];
-			eChan.SwitchTime = (int)config.Settings["eSwitchTime"];
-			eChan.ChargeTime = (int)config.Settings["eChargeTime"];
-			eChan.Modulation = config.GetModulationByName("E");
-			switchedChannels.Add(eChan);
+            ESwitchChannel eChan = new ESwitchChannel();
+            eChan.Invert = false;
+            eChan.DischargeTime = (int)config.Settings["eDischargeTime"];
+            eChan.BleedTime = (int)config.Settings["eBleedTime"];
+            eChan.SwitchTime = (int)config.Settings["eSwitchTime"];
+            eChan.ChargeTime = (int)config.Settings["eChargeTime"];
+            eChan.Modulation = config.GetModulationByName("E");
+            switchedChannels.Add(eChan);
 
             AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
             rf1AChannel.Channel = "rf1Attenuator";
@@ -252,15 +252,15 @@ namespace BlockHead.Acquire
             rf2AChannel.Modulation = config.GetModulationByName("RF2A");
             switchedChannels.Add(rf2AChannel);
 
-            //AnalogSwitchedChannel rf1FChannel = new AnalogSwitchedChannel();
-            //rf1AChannel.Channel = "rf1FM";
-            //rf1AChannel.Modulation = config.GetModulationByName("RF1F");
-            //switchedChannels.Add(rf1FChannel);
+            AnalogSwitchedChannel rf1FChannel = new AnalogSwitchedChannel();
+            rf1FChannel.Channel = "rf1FM";
+            rf1FChannel.Modulation = config.GetModulationByName("RF1F");
+            switchedChannels.Add(rf1FChannel);
 
-            //AnalogSwitchedChannel rf2FChannel = new AnalogSwitchedChannel();
-            //rf2AChannel.Channel = "rf2FM";
-            //rf2AChannel.Modulation = config.GetModulationByName("RF2F");
-            //switchedChannels.Add(rf2FChannel);
+            AnalogSwitchedChannel rf2FChannel = new AnalogSwitchedChannel();
+            rf2FChannel.Channel = "rf2FM";
+            rf2FChannel.Modulation = config.GetModulationByName("RF2F");
+            switchedChannels.Add(rf2FChannel);
 
 
 		}

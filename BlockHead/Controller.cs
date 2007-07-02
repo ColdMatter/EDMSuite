@@ -122,41 +122,41 @@ namespace BlockHead
 			pi.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
 			config.DigitalModulations.Add(pi);
 
-			AnalogModulation b = new AnalogModulation();
-			b.Name = "B";
-			b.Waveform = new Waveform("B Modulation", CODE_LENGTH);
-			b.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
-			b.DelayAfterSwitch = 5;
-			b.Centre = 0;
-			b.Step = 0.46;
-			config.AnalogModulations.Add(b);
+            AnalogModulation b = new AnalogModulation();
+            b.Name = "B";
+            b.Waveform = new Waveform("B Modulation", CODE_LENGTH);
+            b.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, false, true };
+            b.DelayAfterSwitch = 5;
+            b.Centre = 0;
+            b.Step = 0.46;
+            config.AnalogModulations.Add(b);
 
-			AnalogModulation db = new AnalogModulation();
-			db.Name = "DB";
-			db.Waveform = new Waveform("DB Modulation", CODE_LENGTH);
-			db.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,true,false};
-			db.DelayAfterSwitch = 5;
-			db.Centre = 0;
-			db.Step = 0.1;
-			config.AnalogModulations.Add(db);
+            AnalogModulation db = new AnalogModulation();
+            db.Name = "DB";
+            db.Waveform = new Waveform("DB Modulation", CODE_LENGTH);
+            db.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            db.DelayAfterSwitch = 5;
+            db.Centre = 0;
+            db.Step = 0.1;
+            config.AnalogModulations.Add(db);
 
-			AnalogModulation rf1A = new AnalogModulation();
-			rf1A.Name = "RF1A";
-			rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
-			rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
-			rf1A.DelayAfterSwitch = 0;
-			rf1A.Centre = 1.5;
-			rf1A.Step = 0.1;
-			config.AnalogModulations.Add(rf1A);
+            AnalogModulation rf1A = new AnalogModulation();
+            rf1A.Name = "RF1A";
+            rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
+            rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf1A.DelayAfterSwitch = 0;
+            rf1A.Centre = 1.5;
+            rf1A.Step = 0.1;
+            config.AnalogModulations.Add(rf1A);
 
-			AnalogModulation rf2A = new AnalogModulation();
-			rf2A.Name = "RF2A";
-			rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
-			rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
-			rf2A.DelayAfterSwitch = 0;
-			rf2A.Centre = 2.5;
-			rf2A.Step = 0.1;
-			config.AnalogModulations.Add(rf2A);
+            AnalogModulation rf2A = new AnalogModulation();
+            rf2A.Name = "RF2A";
+            rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
+            rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf2A.DelayAfterSwitch = 0;
+            rf2A.Centre = 2.5;
+            rf2A.Step = 0.1;
+            config.AnalogModulations.Add(rf2A);
 
             AnalogModulation rf1F = new AnalogModulation();
             rf1F.Name = "RF1F";
@@ -166,7 +166,7 @@ namespace BlockHead
             rf1F.Centre = 2.5;
             rf1F.Step = 0.1;
             config.AnalogModulations.Add(rf1F);
-            
+
             AnalogModulation rf2F = new AnalogModulation();
             rf2F.Name = "RF2F";
             rf2F.Waveform = new Waveform("rf2 frequency modulation", CODE_LENGTH);
