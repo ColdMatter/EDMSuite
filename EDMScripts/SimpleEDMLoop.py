@@ -42,7 +42,7 @@ def plotChannelGraph(clusterToPlot, kernel):
 	channelGraph.PictureType = "Automatic"
 	channelGraph.MathCommand = "plotLiveDiagnostics[\"%(c)s\"]" % {"c": clusterToPlot}
 	form.Controls.Add(channelGraph)
-	Thread(ThreadStart(Application.Run(form))).Start()
+	form.Show()
 	return form
 
 def updateChannelGraph(form):
@@ -161,7 +161,7 @@ def EDMGoReal(nullRun):
 		File.Delete(tempConfigFile)
 		# if not nullRun:
 		checkYAGAndFix()
-		++blockIndex
+		blockIndex = blockIndex + 1
 	bh.StopPattern()
 
 

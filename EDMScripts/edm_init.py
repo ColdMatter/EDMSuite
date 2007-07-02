@@ -3,6 +3,7 @@
 
 import clr
 import sys
+import winforms
 from System.IO import Path
 
 # Import the edm control software assemblies into IronPython
@@ -63,7 +64,7 @@ Available scripts:''')
 import nt
 pp = Path.GetFullPath("..\\EDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "edm_init.py"]
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "edm_init.py" and e != "winforms.py"]
 for i in range(len(scriptsToLoad)):
             print str(i) + ": " + scriptsToLoad[i]
 print ""
