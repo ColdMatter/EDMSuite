@@ -986,7 +986,7 @@ namespace EDMHardwareControl
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(96, 23);
             this.label2.TabIndex = 22;
-            this.label2.Text = "rf2 fm (%)";
+            this.label2.Text = "rf2 fm (V)";
             // 
             // rf2FMVoltage
             // 
@@ -1002,7 +1002,7 @@ namespace EDMHardwareControl
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(96, 23);
             this.label3.TabIndex = 20;
-            this.label3.Text = "rf1 fm (%)";
+            this.label3.Text = "rf1 fm (V)";
             // 
             // rf1FMVoltage
             // 
