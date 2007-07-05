@@ -169,10 +169,11 @@ namespace EDMHardwareControl
 		private Task CreateAnalogOutputTask(string channel)
 		{
 			Task task = new Task("EDMHCOut" + channel);
-			((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]).AddToTask(
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
 				task,
-				0,
-				5
+				c.RangeLow,
+				c.RangeHigh
 				);
 			task.Control(TaskAction.Verify);
 			return task;
