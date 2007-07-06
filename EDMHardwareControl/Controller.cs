@@ -87,6 +87,11 @@ namespace EDMHardwareControl
         Task rf2FMOutputTask;
 		Task probeMonitorInputTask;
 		Task pumpMonitorInputTask;
+        Task cPlusOutputTask;
+        Task cMinusOutputTask;
+        Task cPlusMonitorInputTask;
+        Task cMinusMonitorInputTask;
+        
 
 		ControlWindow window;
 
@@ -128,10 +133,14 @@ namespace EDMHardwareControl
 			rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
             rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
+            cPlusOutputTask = CreateAnalogOutputTask("cPlus");
+            cMinusOutputTask = CreateAnalogOutputTask("cMinus");
 
 			// analog inputs
 			probeMonitorInputTask = CreateAnalogInputTask("probePD");
 			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
+            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
+            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
 			// make the control window
 			window = new ControlWindow();
@@ -560,10 +569,14 @@ namespace EDMHardwareControl
 				}
 			}
 
-            voltageController.SetOutputVoltage(cPlusChan, (cPlus - cPlusOffset) / cPlusSlope);
-            voltageController.SetOutputVoltage(cMinusChan, (cMinus - cMinusOffset) / cMinusSlope);
-            voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage - gPlusOffset) / gPlusSlope);
-            voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
+            //voltageController.SetOutputVoltage(cPlusChan, (cPlus - cPlusOffset) / cPlusSlope);
+            //voltageController.SetOutputVoltage(cMinusChan, (cMinus - cMinusOffset) / cMinusSlope);
+            //voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage - gPlusOffset) / gPlusSlope);
+            //voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
+            cPlus = windowVoltage(cPlus, -4, 4);
+            cMinus = windowVoltage(cMinus, -4, 4);
+            SetAnalogOutput(cPlusOutputTask, cPlus);
+            SetAnalogOutput(cMinusOutputTask, cMinus);
         }
 
 		public void UpdateBCurrentMonitor()
@@ -608,14 +621,18 @@ namespace EDMHardwareControl
 
 		public void UpdateVMonitor()
 		{
-			window.SetTextBox(window.cPlusVMonitorTextBox, 
+			/*window.SetTextBox(window.cPlusVMonitorTextBox, 
 				(cScale * voltageController.ReadInputVoltage(cPlusChan)).ToString());
 			window.SetTextBox(window.cMinusVMonitorTextBox, 
 				(cScale * voltageController.ReadInputVoltage(cMinusChan)).ToString());
 			window.SetTextBox(window.gPlusVMonitorTextBox, 
 				(gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
 			window.SetTextBox(window.gMinusVMonitorTextBox, 
-				(gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());
+				(gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
+            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask);
+			window.SetTextBox(window.cPlusVMonitorTextBox, cPlusMonitor.ToString());
+			double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask);
+			window.SetTextBox(window.cMinusVMonitorTextBox, cMinusMonitor.ToString());
 		}
 
 		public void UpdateIMonitor()
@@ -851,7 +868,7 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
 
-		#endregion
+#endregion
 
 
      }

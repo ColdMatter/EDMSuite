@@ -137,6 +137,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PhkaraFileSystem.cs" />
     <Compile Include="CounterChannel.cs">
       <SubType>Code</SubType>
     </Compile>

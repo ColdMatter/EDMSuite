@@ -24,13 +24,14 @@ namespace DAQ.HAL
 			Boards.Add("usbDAQ1", "/dev4");
             Boards.Add("analogIn", "/dev5");
             Boards.Add("usbDAQ2", "/dev6");
+            Boards.Add("usbDAQ3", "/dev7");
 			string pgBoard = (string)Boards["pg"];
 			string daqBoard = (string)Boards["daq"];
 			string counterBoard = (string)Boards["counter"];
 			string usbDAQ1 = (string)Boards["usbDAQ1"];
             string analogIn = (string)Boards["analogIn"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
-
+            string usbDAQ3 = (string)Boards["usbDAQ3"];
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");
 
@@ -98,6 +99,13 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rf1FM", usbDAQ2 + "/ao0", 0, 5);
             AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
+
+            // E field control and monitoring
+            AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
+
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0");
+            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1");
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
