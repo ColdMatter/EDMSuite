@@ -35,8 +35,8 @@ namespace EDMHardwareControl
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label5;
-		public System.Windows.Forms.TextBox gPlusTextBox;
-		public System.Windows.Forms.TextBox gMinusTextBox;
+		public System.Windows.Forms.TextBox cPlusOffTextBox;
+		public System.Windows.Forms.TextBox cMinusOffTextBox;
 		public System.Windows.Forms.TextBox cMinusTextBox;
 		public System.Windows.Forms.TextBox cPlusTextBox;
 		private System.Windows.Forms.GroupBox groupBox5;
@@ -139,6 +139,7 @@ namespace EDMHardwareControl
         private Label label3;
         public TextBox rf1FMVoltage;
         public CheckBox attenuatorSelectCheck;
+        public Button fieldsOffButton;
 
 
 		public Controller controller;
@@ -189,8 +190,8 @@ namespace EDMHardwareControl
             this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.gPlusTextBox = new System.Windows.Forms.TextBox();
-            this.gMinusTextBox = new System.Windows.Forms.TextBox();
+            this.cPlusOffTextBox = new System.Windows.Forms.TextBox();
+            this.cMinusOffTextBox = new System.Windows.Forms.TextBox();
             this.cMinusTextBox = new System.Windows.Forms.TextBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -293,6 +294,7 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
+            this.fieldsOffButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -316,6 +318,7 @@ namespace EDMHardwareControl
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.fieldsOffButton);
             this.groupBox2.Controls.Add(this.switchEButton);
             this.groupBox2.Controls.Add(this.eBleedCheck);
             this.groupBox2.Controls.Add(this.ePolarityCheck);
@@ -327,6 +330,15 @@ namespace EDMHardwareControl
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Switch";
             // 
+            // fieldsOffButton
+            // 
+            this.fieldsOffButton.Location = new System.Drawing.Point(19, 103);
+            this.fieldsOffButton.Name = "fieldsOffButton";
+            this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
+            this.fieldsOffButton.TabIndex = 23;
+            this.fieldsOffButton.Text = "Turn Off Fields";
+            this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
+            //
             // switchEButton
             // 
             this.switchEButton.Location = new System.Drawing.Point(136, 64);
@@ -443,8 +455,8 @@ namespace EDMHardwareControl
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.gPlusTextBox);
-            this.groupBox1.Controls.Add(this.gMinusTextBox);
+            this.groupBox1.Controls.Add(this.cPlusOffTextBox);
+            this.groupBox1.Controls.Add(this.cMinusOffTextBox);
             this.groupBox1.Controls.Add(this.cMinusTextBox);
             this.groupBox1.Controls.Add(this.cPlusTextBox);
             this.groupBox1.Location = new System.Drawing.Point(17, 16);
@@ -469,7 +481,7 @@ namespace EDMHardwareControl
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(80, 23);
             this.label10.TabIndex = 39;
-            this.label10.Text = "G minus (V)";
+            this.label10.Text = "C minus off (V)";
             // 
             // label11
             // 
@@ -477,7 +489,7 @@ namespace EDMHardwareControl
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(80, 23);
             this.label11.TabIndex = 38;
-            this.label11.Text = "G plus (V)";
+            this.label11.Text = "C plus off (V)";
             // 
             // label9
             // 
@@ -495,21 +507,21 @@ namespace EDMHardwareControl
             this.label5.TabIndex = 36;
             this.label5.Text = "C plus (V)";
             // 
-            // gPlusTextBox
+            // cPlusOffTextBox
             // 
-            this.gPlusTextBox.Location = new System.Drawing.Point(104, 96);
-            this.gPlusTextBox.Name = "gPlusTextBox";
-            this.gPlusTextBox.Size = new System.Drawing.Size(64, 20);
-            this.gPlusTextBox.TabIndex = 35;
-            this.gPlusTextBox.Text = "160";
+            this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 96);
+            this.cPlusOffTextBox.Name = "cPlusOffTextBox";
+            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusOffTextBox.TabIndex = 35;
+            this.cPlusOffTextBox.Text = "0";
             // 
-            // gMinusTextBox
+            // cMinusOffTextBox
             // 
-            this.gMinusTextBox.Location = new System.Drawing.Point(104, 128);
-            this.gMinusTextBox.Name = "gMinusTextBox";
-            this.gMinusTextBox.Size = new System.Drawing.Size(64, 20);
-            this.gMinusTextBox.TabIndex = 34;
-            this.gMinusTextBox.Text = "-160";
+            this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 128);
+            this.cMinusOffTextBox.Name = "cMinusOffTextBox";
+            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusOffTextBox.TabIndex = 34;
+            this.cMinusOffTextBox.Text = "0";
             // 
             // cMinusTextBox
             // 
@@ -517,7 +529,7 @@ namespace EDMHardwareControl
             this.cMinusTextBox.Name = "cMinusTextBox";
             this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusTextBox.TabIndex = 33;
-            this.cMinusTextBox.Text = "-200";
+            this.cMinusTextBox.Text = "0";
             // 
             // cPlusTextBox
             // 
@@ -525,7 +537,7 @@ namespace EDMHardwareControl
             this.cPlusTextBox.Name = "cPlusTextBox";
             this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusTextBox.TabIndex = 32;
-            this.cPlusTextBox.Text = "200";
+            this.cPlusTextBox.Text = "0";
             // 
             // groupBox5
             // 
@@ -581,6 +593,7 @@ namespace EDMHardwareControl
             this.tabPage1.Size = new System.Drawing.Size(616, 504);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
             // groupBox13
             // 
@@ -626,7 +639,7 @@ namespace EDMHardwareControl
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
             this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusOneMinusBoostTextBox.TabIndex = 33;
-            this.zeroPlusOneMinusBoostTextBox.Text = "-200";
+            this.zeroPlusOneMinusBoostTextBox.Text = "0";
             // 
             // zeroPlusBoostTextBox
             // 
@@ -634,7 +647,7 @@ namespace EDMHardwareControl
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
             this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusBoostTextBox.TabIndex = 32;
-            this.zeroPlusBoostTextBox.Text = "200";
+            this.zeroPlusBoostTextBox.Text = "0";
             // 
             // groupBox6
             // 
@@ -1572,6 +1585,11 @@ namespace EDMHardwareControl
 
 		#region Click handlers
 
+        private void fieldsOffButton_Click(object sender, System.EventArgs e)
+        {
+            controller.FieldsOff();
+        }
+
 		private void switchEButton_Click(object sender, System.EventArgs e)
 		{
 			controller.SwitchE();
@@ -1764,6 +1782,11 @@ namespace EDMHardwareControl
 		{
 			controller.WindowLoaded();
 		}
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
 
  
 	}

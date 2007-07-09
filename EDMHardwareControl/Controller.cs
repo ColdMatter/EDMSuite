@@ -51,8 +51,8 @@ namespace EDMHardwareControl
 		private const int gPlusChan = 1;
 		private const int gMinusChan = 2;
 		// E field controller mode
-		private enum EFieldMode { TTL, GPIB };
-		private EFieldMode eFieldMode = EFieldMode.TTL;
+		/*private enum EFieldMode { TTL, GPIB };
+		private EFieldMode eFieldMode = EFieldMode.TTL;*/
         //Current Leakage Monitor calibration 
         //Convention for monitor to plate mapping:
         //north -> monitor1
@@ -153,10 +153,11 @@ namespace EDMHardwareControl
 		{
 			// update the GPIB switcher's cached voltages
 			// works around a "first-time" bug with the E-field switch
-			lastGPlus = GPlusVoltage;
+            FieldsOff();
+            /*lastGPlus = GPlusVoltage;
 			lastGMinus = GMinusVoltage;
 			lastCPlus = CPlusVoltage;
-			lastCMinus = CMinusVoltage;
+			lastCMinus = CMinusVoltage;*/
             // Set the leakage current monitor textboxes to the default values.
             window.SetTextBox(window.southOffsetIMonitorTextBox, southOffset.ToString());
             window.SetTextBox(window.northOffsetIMonitorTextBox, northOffset.ToString());
@@ -369,27 +370,27 @@ namespace EDMHardwareControl
 			}
 		}
 
-		public double GPlusVoltage
+		public double CPlusOffVoltage
 		{
 			get
 			{
-				return Double.Parse(window.gPlusTextBox.Text);
+				return Double.Parse(window.cPlusOffTextBox.Text);
 			}
 			set
 			{
-				window.SetTextBox(window.gPlusTextBox, value.ToString());
+				window.SetTextBox(window.cPlusOffTextBox, value.ToString());
 			}
 		}
 		
-		public double GMinusVoltage
+		public double CMinusOffVoltage
 		{
 			get
 			{
-				return Double.Parse(window.gMinusTextBox.Text);
+				return Double.Parse(window.cMinusOffTextBox.Text);
 			}
 			set
 			{
-				window.SetTextBox(window.gMinusTextBox, value.ToString());
+				window.SetTextBox(window.cMinusOffTextBox, value.ToString());
 			}
 		}
 
@@ -516,6 +517,16 @@ namespace EDMHardwareControl
 
 		#region Hardware control methods - safe for remote
 
+        public void FieldsOff()
+        {
+            CPlusVoltage = 0;
+            CMinusVoltage = 0;
+            CPlusOffVoltage = 0;
+            CMinusOffVoltage = 0;  
+            SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+            SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+        }
+
 		public void SwitchE()
 		{
 			SwitchE(!EFieldPolarity, eDischargeTime, eBleedTime, eWaitTime, eChargeTime);
@@ -536,6 +547,7 @@ namespace EDMHardwareControl
 				EFieldEnabled = true;
 				Thread.Sleep(chargeTime);
 			}
+           
 		}
 
         //Commented out by Henry, 20.4.06 I have fitted my measured voltage as a function of AO voltage, so to get a 
@@ -575,8 +587,13 @@ namespace EDMHardwareControl
             //voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
             cPlus = windowVoltage(cPlus, -4, 4);
             cMinus = windowVoltage(cMinus, -4, 4);
+            //the following two lines reset the values in the text E field box incase they
+            //lied outside the window voltage
+            CPlusVoltage = cPlus;
+            CMinusVoltage = cMinus;
             SetAnalogOutput(cPlusOutputTask, cPlus);
             SetAnalogOutput(cMinusOutputTask, cMinus);
+            
         }
 
 		public void UpdateBCurrentMonitor()
@@ -735,13 +752,13 @@ namespace EDMHardwareControl
 			SetDigitalLine("rfSwitch", enable);
 		}
 
-		private double lastGPlus = 0;
+		/*private double lastGPlus = 0;
 		private double lastGMinus = 0;
 		private double lastCPlus = 0;
-		private double lastCMinus = 0;
+		private double lastCMinus = 0;*/
 		public void SetEFieldOnOff(bool enable)
 		{
-			if (eFieldMode == EFieldMode.TTL)
+			/*if (eFieldMode == EFieldMode.TTL)
 			{
 				SetDigitalLine("eOnOff", enable);
 				SetDigitalLine("notEOnOff", !enable);
@@ -771,7 +788,17 @@ namespace EDMHardwareControl
 					CMinusVoltage = lastCMinus;
 					UpdateVoltages();
 				}
-			}
+			}*/
+            if (!enable)
+            {
+                SetAnalogOutput(cPlusOutputTask, CPlusOffVoltage);
+                SetAnalogOutput(cMinusOutputTask, CMinusOffVoltage);
+            }
+            else
+            {
+                SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+                SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+            }
 		}
 
 		public void SetEPolarity(bool state)
