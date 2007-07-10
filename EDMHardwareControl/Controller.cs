@@ -522,9 +522,9 @@ namespace EDMHardwareControl
             CPlusVoltage = 0;
             CMinusVoltage = 0;
             CPlusOffVoltage = 0;
-            CMinusOffVoltage = 0;  
-            SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
-            SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+            CMinusOffVoltage = 0;
+            UpdateVoltages();
+            UpdateVMonitor();
         }
 
 		public void SwitchE()
@@ -537,7 +537,7 @@ namespace EDMHardwareControl
 			// don't waste time if the field isn't really switching
 			if (state != EFieldPolarity)
 			{
-				EFieldEnabled = false;
+                EFieldEnabled = false;
 				Thread.Sleep(dischargeTime);
 				EBleedEnabled = true;
 				Thread.Sleep(bleedTime);
@@ -568,6 +568,8 @@ namespace EDMHardwareControl
 			// kludge in the asymmetric field switch here
 			double cPlus = CPlusVoltage;
 			double cMinus = CMinusVoltage;
+            double cPlusOff = CPlusOffVoltage;
+            double cMinusOff = CMinusOffVoltage;
 			if (EFieldEnabled && window.eFieldAsymmetryCheckBox.Checked)
 			{
 				if (EFieldPolarity == false)
@@ -587,13 +589,17 @@ namespace EDMHardwareControl
             //voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
             cPlus = windowVoltage(cPlus, -4, 4);
             cMinus = windowVoltage(cMinus, -4, 4);
-            //the following two lines reset the values in the text E field box incase they
+            cPlusOff = windowVoltage(cPlusOff, -4, 4);
+            cMinusOff = windowVoltage(cMinusOff, -4, 4);
+            //the following four lines reset the values in the text E field box incase they
             //lied outside the window voltage
             CPlusVoltage = cPlus;
             CMinusVoltage = cMinus;
-            SetAnalogOutput(cPlusOutputTask, cPlus);
-            SetAnalogOutput(cMinusOutputTask, cMinus);
-            
+            CPlusOffVoltage = cPlusOff;
+            CMinusOffVoltage = cMinusOff;
+            //Checks if E field enable box is checked or not before setting the fields
+            SetEFieldOnOff(EFieldEnabled);
+
         }
 
 		public void UpdateBCurrentMonitor()
@@ -789,15 +795,15 @@ namespace EDMHardwareControl
 					UpdateVoltages();
 				}
 			}*/
-            if (!enable)
-            {
-                SetAnalogOutput(cPlusOutputTask, CPlusOffVoltage);
-                SetAnalogOutput(cMinusOutputTask, CMinusOffVoltage);
-            }
-            else
+            if (enable)
             {
                 SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
                 SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+            }
+            else
+            {
+                SetAnalogOutput(cPlusOutputTask, CPlusOffVoltage);
+                SetAnalogOutput(cMinusOutputTask, CMinusOffVoltage);
             }
 		}
 
