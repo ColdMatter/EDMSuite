@@ -1607,7 +1607,8 @@ namespace EDMHardwareControl
 
 		private void eOnCheck_CheckedChanged(object sender, System.EventArgs e)
 		{
-			controller.SetEFieldOnOff(eOnCheck.Checked);
+			/*controller.SetEFieldOnOff(eOnCheck.Checked);*/
+            controller.UpdateVoltages();
 		}
 
 		private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)

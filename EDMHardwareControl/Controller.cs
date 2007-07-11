@@ -524,7 +524,6 @@ namespace EDMHardwareControl
             CPlusOffVoltage = 0;
             CMinusOffVoltage = 0;
             UpdateVoltages();
-            UpdateVMonitor();
         }
 
 		public void SwitchE()
@@ -587,18 +586,17 @@ namespace EDMHardwareControl
             //voltageController.SetOutputVoltage(cMinusChan, (cMinus - cMinusOffset) / cMinusSlope);
             //voltageController.SetOutputVoltage(gPlusChan, (GPlusVoltage - gPlusOffset) / gPlusSlope);
             //voltageController.SetOutputVoltage(gMinusChan, (GMinusVoltage - gMinusOffset) / gMinusSlope);
-            cPlus = windowVoltage(cPlus, -4, 4);
-            cMinus = windowVoltage(cMinus, -4, 4);
-            cPlusOff = windowVoltage(cPlusOff, -4, 4);
-            cMinusOff = windowVoltage(cMinusOff, -4, 4);
-            //the following four lines reset the values in the text E field box incase they
-            //lied outside the window voltage
-            CPlusVoltage = cPlus;
-            CMinusVoltage = cMinus;
-            CPlusOffVoltage = cPlusOff;
-            CMinusOffVoltage = cMinusOff;
             //Checks if E field enable box is checked or not before setting the fields
-            SetEFieldOnOff(EFieldEnabled);
+            if (EFieldEnabled)
+            {
+                SetAnalogOutput(cPlusOutputTask, cPlus);
+                SetAnalogOutput(cMinusOutputTask, cMinus);
+            }
+            else
+            {
+                SetAnalogOutput(cPlusOutputTask, cPlusOff);
+                SetAnalogOutput(cMinusOutputTask, cMinusOff);
+            }
 
         }
 
@@ -762,7 +760,7 @@ namespace EDMHardwareControl
 		private double lastGMinus = 0;
 		private double lastCPlus = 0;
 		private double lastCMinus = 0;*/
-		public void SetEFieldOnOff(bool enable)
+		/*public void SetEFieldOnOff(bool enable)
 		{
 			/*if (eFieldMode == EFieldMode.TTL)
 			{
@@ -794,18 +792,9 @@ namespace EDMHardwareControl
 					CMinusVoltage = lastCMinus;
 					UpdateVoltages();
 				}
-			}*/
-            if (enable)
-            {
-                SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
-                SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
-            }
-            else
-            {
-                SetAnalogOutput(cPlusOutputTask, CPlusOffVoltage);
-                SetAnalogOutput(cMinusOutputTask, CMinusOffVoltage);
-            }
-		}
+			}               
+            
+		}*/
 
 		public void SetEPolarity(bool state)
 		{
