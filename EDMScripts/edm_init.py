@@ -3,7 +3,6 @@
 
 import clr
 import sys
-import winforms
 from System.IO import Path
 
 # Import the edm control software assemblies into IronPython
@@ -15,7 +14,6 @@ sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\Debug\\"))
 clr.AddReferenceToFile("EDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
-clr.AddReferenceToFile("Wolfram.NETLink.dll")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")

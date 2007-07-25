@@ -7,15 +7,8 @@ from System.Windows.Forms import *
 from System.Xml.Serialization import *
 from System import *
 
-from Wolfram.NETLink.UI import *
-
 from DAQ.Environment import *
-from DAQ.Mathematica import *
 from EDMConfig import *
-
-
-# function definitions
-# define functions that might be generally useful here
 
 def saveBlockConfig(path, config):
 	fs = FileStream(path, FileMode.Create)
@@ -30,55 +23,18 @@ def loadBlockConfig(path):
 	fs.Close()
 	return bc
 
-def plotChannelGraph(clusterToPlot, kernel):
-	form = Form()
-	x = 1000
-	y = 1000
-	form.Size = Size(x, y)
-	form.Text = "Live analysis"
-	channelGraph = MathPictureBox(kernel);
-	channelGraph.Size = Size(x, y - 30)
-	channelGraph.UseFrontEnd = False
-	channelGraph.PictureType = "Automatic"
-	channelGraph.MathCommand = "plotLiveDiagnostics[\"%(c)s\"]" % {"c": clusterToPlot}
-	form.Controls.Add(channelGraph)
-	form.Show()
-	return form
-
-def updateChannelGraph(form):
-	if form.Controls.Count > 0:
-		mpb = form.Controls[0]
-		mpb.Recompute()
-
-def analyseBlock(path, kernel):
-	mmedPath = path.Replace("\\","\\\\")
-	kernel.Evaluate("addFileToDatabase[\"%(m)s\",extractFunc,viewSpecs]" % {"m": mmedPath})
-	kernel.WaitAndDiscardAnswer();
-	#kernel.Evaluate("saveDatabase[\"running_temp\"]")
-	#kernel.WaitAndDiscardAnswer();
+def writeLatestBlockNotificationFile(cluster, blockIndex):
+	fs = FileStream(Environs.FileSystem.Paths["settingsPath"] + "\\BlockHead\\latestBlock.txt", FileMode.Create)
+	sw = StreamWriter(fs)
+	sw.WriteLine(cluster + "\t" + str(blockIndex))
+	sw.Close()
+	fs.Close()
 
 def checkYAGAndFix():
 	interlockFailed = hc.YAGInterlockFailed;
 	if (interlockFailed):
 		bh.StopPattern();
 		bh.StartPattern();	
-
-def initialiseMathematica(kernel):
-	#MathematicaService.LoadPackage("SEDM2`Database`", False)
-	kernel.Evaluate("Needs[\"SEDM2`Database`\"];Needs[\"SEDM2`SharedCode`\"];Needs[\"SEDM2`Graphics`\"]")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("initialiseSharedCode[]")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("createBlockSerializer[]")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("$allowDBReplace = False;")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("dbName = \"running_temp\";loadDatabase[dbName];")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("gates={{0,10^6},{0,10^6},{0,10^6}};extractFunc = {integrateTOF[#, 0, gates[[1]][[1]], gates[[1]][[2]], True, \"pmt\"], integrateTOF[#, 1, gates[[2]][[1]], gates[[2]][[2]], False, \"mag1\"]} &;")
-	kernel.WaitAndDiscardAnswer();
-	kernel.Evaluate("viewSpecs = {};")
-	kernel.WaitAndDiscardAnswer();
 
 def prompt(text):
 	sys.stdout.write(text)
@@ -118,11 +74,6 @@ def EDMGoReal(nullRun):
 	bc.Settings["gtMinus"] = -gVoltage
 	bc.Settings["gbMinus"] = -gVoltage
 	bc.GetModulationByName("B").Centre = biasCurrent
-	prompt("Have you closed the last Mathematica ? [return]")
-
-	# establish a Mathematica kernel link
-	kernel = MathematicaService.GetKernel()
-	initialiseMathematica(kernel)
 
 	# loop and take data
 	bh.StartPattern()
@@ -148,15 +99,11 @@ def EDMGoReal(nullRun):
 		blockPath = '%(p)s%(c)s_%(i)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex}
 		bh.SaveBlock(blockPath)
 		print("Saved block "+ str(blockIndex) + ".")
-		# hand the block off to mathematica for analysis
-		print("Analysing block "+ str(blockIndex) + "...")
-		analyseBlock(blockPath, kernel)
+		# give mma a chance to analyse the block
+		print("Notifying Mathematica and waiting ...")
+		writeLatestBlockNotificationFile(cluster, blockIndex)
+		System.Threading.Thread.Sleep(5000)
 		print("Done.")
-		# display some diagnostic information
-		if f == None:
-			f = plotChannelGraph(cluster, kernel)
-		else:
-			updateChannelGraph(f)
 		# increment and loop
 		File.Delete(tempConfigFile)
 		# if not nullRun:
