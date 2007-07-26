@@ -172,6 +172,7 @@ namespace EDMHardwareControl
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.fieldsOffButton = new System.Windows.Forms.Button();
             this.switchEButton = new System.Windows.Forms.Button();
             this.eBleedCheck = new System.Windows.Forms.CheckBox();
             this.ePolarityCheck = new System.Windows.Forms.CheckBox();
@@ -294,7 +295,6 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-            this.fieldsOffButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -338,7 +338,7 @@ namespace EDMHardwareControl
             this.fieldsOffButton.TabIndex = 23;
             this.fieldsOffButton.Text = "Turn Off Fields";
             this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
-            //
+            // 
             // switchEButton
             // 
             this.switchEButton.Location = new System.Drawing.Point(136, 64);
@@ -405,7 +405,7 @@ namespace EDMHardwareControl
             this.greenDCFMBox.Name = "greenDCFMBox";
             this.greenDCFMBox.Size = new System.Drawing.Size(64, 20);
             this.greenDCFMBox.TabIndex = 22;
-            this.greenDCFMBox.Text = "50";
+            this.greenDCFMBox.Text = "0";
             // 
             // greenOnCheck
             // 
@@ -430,7 +430,7 @@ namespace EDMHardwareControl
             this.greenOnAmpBox.Name = "greenOnAmpBox";
             this.greenOnAmpBox.Size = new System.Drawing.Size(64, 20);
             this.greenOnAmpBox.TabIndex = 12;
-            this.greenOnAmpBox.Text = "3.3";
+            this.greenOnAmpBox.Text = "-6";
             // 
             // label8
             // 
@@ -446,7 +446,7 @@ namespace EDMHardwareControl
             this.greenOnFreqBox.Name = "greenOnFreqBox";
             this.greenOnFreqBox.Size = new System.Drawing.Size(64, 20);
             this.greenOnFreqBox.TabIndex = 10;
-            this.greenOnFreqBox.Text = "170.795";
+            this.greenOnFreqBox.Text = "170.800";
             // 
             // groupBox1
             // 
@@ -1048,7 +1048,7 @@ namespace EDMHardwareControl
             this.rf2AttenuatorVoltageTextBox.Name = "rf2AttenuatorVoltageTextBox";
             this.rf2AttenuatorVoltageTextBox.Size = new System.Drawing.Size(64, 20);
             this.rf2AttenuatorVoltageTextBox.TabIndex = 14;
-            this.rf2AttenuatorVoltageTextBox.Text = "1";
+            this.rf2AttenuatorVoltageTextBox.Text = "5";
             // 
             // label39
             // 
@@ -1064,7 +1064,7 @@ namespace EDMHardwareControl
             this.rf1AttenuatorVoltageTextBox.Name = "rf1AttenuatorVoltageTextBox";
             this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(64, 20);
             this.rf1AttenuatorVoltageTextBox.TabIndex = 12;
-            this.rf1AttenuatorVoltageTextBox.Text = "1";
+            this.rf1AttenuatorVoltageTextBox.Text = "5";
             // 
             // tabPage3
             // 

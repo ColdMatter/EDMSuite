@@ -204,6 +204,20 @@ namespace EDMHardwareControl
 			return val;
 		}
 
+        /*private double ReadAnalogInput(Task task, int numberofSamples)
+        {
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+            double[] valArray = reader.ReadMultiSample(numberofSamples);
+            task.Control(TaskAction.Unreserve);
+            double sum = 0;
+            for (int j = 0; j < numberofSamples; j++)
+            {
+                sum = sum + valArray[j];
+            }
+            double val = sum / numberofSamples;
+            return val;
+        }*/
+
 		private void CreateDigitalTask(String name)
 		{
 			Task digitalTask = new Task(name);
@@ -524,6 +538,8 @@ namespace EDMHardwareControl
             CPlusOffVoltage = 0;
             CMinusOffVoltage = 0;
             UpdateVoltages();
+            EFieldEnabled = false;
+
         }
 
 		public void SwitchE()
