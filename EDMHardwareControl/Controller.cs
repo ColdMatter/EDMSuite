@@ -141,8 +141,8 @@ namespace EDMHardwareControl
 			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-
-			// make the control window
+		
+            // make the control window
 			window = new ControlWindow();
 			window.controller = this;
 			Application.Run(window);
@@ -204,19 +204,26 @@ namespace EDMHardwareControl
 			return val;
 		}
 
-        /*private double ReadAnalogInput(Task task, int numberofSamples)
+        private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
         {
+            //Configure the timing parameters of the task
+            task.Timing.ConfigureSampleClock("", sampleRate,
+                SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, numOfSamples);
+           
+            //Read in multiple samples
             AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
-            double[] valArray = reader.ReadMultiSample(numberofSamples);
+            double[] valArray = reader.ReadMultiSample(numOfSamples);
             task.Control(TaskAction.Unreserve);
+            
+            //Calculate the average of the samples
             double sum = 0;
-            for (int j = 0; j < numberofSamples; j++)
+            for (int j = 0; j < numOfSamples; j++)
             {
                 sum = sum + valArray[j];
             }
-            double val = sum / numberofSamples;
+            double val = sum / numOfSamples;
             return val;
-        }*/
+        }
 
 		private void CreateDigitalTask(String name)
 		{
@@ -666,9 +673,9 @@ namespace EDMHardwareControl
 				(gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
 			window.SetTextBox(window.gMinusVMonitorTextBox, 
 				(gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
-            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask);
+            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask, 10000, 5000);
 			window.SetTextBox(window.cPlusVMonitorTextBox, cPlusMonitor.ToString());
-			double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask);
+			double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask, 10000, 5000);
 			window.SetTextBox(window.cMinusVMonitorTextBox, cMinusMonitor.ToString());
 		}
 
