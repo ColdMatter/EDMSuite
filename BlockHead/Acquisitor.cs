@@ -393,7 +393,7 @@ namespace BlockHead.Acquire
 				if (tempDelay > delayBeforeSwitch) delayBeforeSwitch = tempDelay;
 			}
 			// impose the delay
-			//if (delayBeforeSwitch != 0) Thread.Sleep(delayBeforeSwitch);
+			if (delayBeforeSwitch != 0) Thread.Sleep(delayBeforeSwitch);
 
 			// now actually throw the switches
 			foreach(SwitchedChannel s in switchedChannels)
@@ -425,7 +425,7 @@ namespace BlockHead.Acquire
 				if (tempDelay > delayAfterSwitch) delayAfterSwitch = tempDelay;
 			}
 			// impose the delay
-			//if (delayAfterSwitch != 0) Thread.Sleep(delayAfterSwitch);			
+			if (delayAfterSwitch != 0) Thread.Sleep(delayAfterSwitch);			
 		}
 
 		// stop pattern output and release hardware

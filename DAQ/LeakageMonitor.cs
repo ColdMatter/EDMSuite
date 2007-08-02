@@ -73,8 +73,8 @@ namespace DAQ.HAL
 				this.counterTask.CIChannels.CreateFrequencyChannel(
 					currentLeakageCounterChannel.PhysicalChannel,
 					"",
-					3000,
-					6000,
+					0,
+					10000,
 					CIFrequencyStartingEdge.Rising,
 					CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
                     measurementTime,

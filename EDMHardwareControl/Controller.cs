@@ -57,10 +57,10 @@ namespace EDMHardwareControl
         //Convention for monitor to plate mapping:
         //north -> monitor1
         //south -> monitor2
-        private static double northSlope = 53.6954;
-        private static double southSlope = 46.9103;
-        private static double northOffset = 5256;
-        private static double southOffset = 5067;
+        private static double northSlope = 1;
+        private static double southSlope = 1;
+        private static double northOffset = 0;
+        private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = .5;
 
 
@@ -673,9 +673,9 @@ namespace EDMHardwareControl
 				(gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
 			window.SetTextBox(window.gMinusVMonitorTextBox, 
 				(gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
-            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask, 10000, 5000);
+            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask, 100000, 50000);
 			window.SetTextBox(window.cPlusVMonitorTextBox, cPlusMonitor.ToString());
-			double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask, 10000, 5000);
+			double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask, 100000, 50000);
 			window.SetTextBox(window.cMinusVMonitorTextBox, cMinusMonitor.ToString());
 		}
 
