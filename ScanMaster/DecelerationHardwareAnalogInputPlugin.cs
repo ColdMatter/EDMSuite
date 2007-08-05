@@ -31,7 +31,7 @@ namespace ScanMaster.Acquire.Plugins
 
         protected override void InitialiseSettings()
         {
-            settings["channelList"] = "longcavity,lockcavity,refcavity";
+            settings["channelList"] = "lockcavity,refcavity";
             settings["inputRangeLow"] = -5.0;
             settings["inputRangeHigh"] = 5.0;
         } 

@@ -44,6 +44,7 @@ namespace ScanMaster.Acquire.Plugin
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
 			yagPlugins.Add("Not-so-Brilliant YAG", typeof(NotInTheLeastBitBrilliantYAGPlugin));
+            yagPlugins.Add("Quanta-Ray", typeof(QuantaRayYAGPlugin));
 			// shotGathererPlugins
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));

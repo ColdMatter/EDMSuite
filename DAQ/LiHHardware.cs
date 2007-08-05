@@ -4,6 +4,7 @@ using System.Collections;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using DAQ.Remoting;
 
 namespace DAQ.HAL
 {
@@ -27,6 +28,7 @@ namespace DAQ.HAL
 
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
+            GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));
             
             // map the digital channels
 			string pgBoard = (string)Boards["pg"];
@@ -47,17 +49,23 @@ namespace DAQ.HAL
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
-			AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
-			AddAnalogInputChannel("cavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
+            AddAnalogInputChannel("lockcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
+            AddAnalogInputChannel("refcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-		//	AddAnalogOutputChannel("aom", daqBoard + "/ao1"); 
+            AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1"); // Pin 21
+            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
 
             // map the counter channels
             AddCounterChannel("pmt", daqBoard + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", daqBoard + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
 		}
+
+        public override void ConnectApplications()
+        {
+            RemotingHelper.ConnectDecelerationHardwareControl();
+        }
 
 
 	}

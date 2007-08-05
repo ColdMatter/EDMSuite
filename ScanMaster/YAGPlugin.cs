@@ -10,7 +10,7 @@ namespace ScanMaster.Acquire.Plugin
 	/// </summary>
 	[Serializable]
 	[XmlInclude(typeof(NullYAGPlugin)), XmlInclude(typeof(DefaultYAGPlugin)),
-		XmlInclude(typeof(NotInTheLeastBitBrilliantYAGPlugin))]
+       XmlInclude(typeof(NotInTheLeastBitBrilliantYAGPlugin)), XmlInclude(typeof(QuantaRayYAGPlugin))]
 	public abstract class YAGPlugin : AcquisitorPlugin
 	{
 		protected override void InitialiseBaseSettings()

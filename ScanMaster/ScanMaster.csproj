@@ -276,6 +276,7 @@
     <Compile Include="PumpProbePatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="QuantaRayYAGPlugin.cs" />
     <Compile Include="RollViewer.cs">
       <SubType>Code</SubType>
     </Compile>

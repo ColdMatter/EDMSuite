@@ -118,6 +118,11 @@ namespace DecelerationHardwareControl
             get { return lastCavityData; }
         }
 
+        public DateTime LastCavityTimeStamp
+        {
+            get { return cavityTimestamp; }
+        }
+
         public double TimeSinceLastCavityRead
         {
             get

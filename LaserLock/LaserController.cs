@@ -23,6 +23,8 @@ namespace LaserLock
 
         private const double UPPER_VOLTAGE_LIMIT = 10.0; //volts
         private const double LOWER_VOLTAGE_LIMIT = -10.0; //volts
+        private const double UPPER_SETPOINT_LIMIT = 100.0; //volts
+        private const double LOWER_SETPOINT_LIMIT = -100.0; //volts
         private const int SAMPLES_PER_READ = 10;
         private const int READS_PER_FEEDBACK = 4;
         private const int SLEEPING_TIME = 500; //milliseconds
@@ -226,6 +228,9 @@ namespace LaserLock
             double averageValue = 0;
             int reads = 0;
             bool firstTime = true;
+            DateTime oldCavityStamp = new DateTime();
+            DateTime newCavityStamp = new DateTime();
+            newCavityStamp = DateTime.Now;
             
             status = ControllerState.busy;
             ui.ControlVoltageEditorEnabledState(false);
@@ -236,6 +241,7 @@ namespace LaserLock
             {
                 if (!Environs.Debug)
                 {
+                    oldCavityStamp = newCavityStamp;
                     // read the cavity
                     if (hardwareControl.AnalogInputsAvailable)//scanmaster not running
                     {
@@ -262,21 +268,26 @@ namespace LaserLock
                             hardwareControl.diodeSaturation();
                         }
                         singleValue = singleValue / singlerefValue;
+                        newCavityStamp = DateTime.Now;
                         hardwareControl.UpdateLockCavityData(singleValue);
                         //hardwareControl.UpdateLockCavityData(singleValue / singlerefValue);
                     }
                     else
                     {
                         singleValue = hardwareControl.LastCavityData;
+                        newCavityStamp = hardwareControl.LastCavityTimeStamp;
                     }
                     
                     // provided the last cavity read is recent, do something with it
-                    if (hardwareControl.TimeSinceLastCavityRead < LATENCY)
+                    if (hardwareControl.TimeSinceLastCavityRead < LATENCY && newCavityStamp.CompareTo(oldCavityStamp) != 0)
                     {
                         // if this is the first read since throwing the lock, the result defines the set-point
                         if (firstTime)
                         {
                             integratedDeviation = 0;
+                            // make sure we don't have a value that's out of range
+                            if (singleValue > UPPER_SETPOINT_LIMIT) singleValue = UPPER_SETPOINT_LIMIT;
+                            if (singleValue < LOWER_SETPOINT_LIMIT) singleValue = LOWER_SETPOINT_LIMIT;
                             setPoint = singleValue;
                             ui.SetSetPointNumericEditorValue(setPoint);
                             firstTime = false;

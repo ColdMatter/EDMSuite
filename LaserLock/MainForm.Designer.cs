@@ -129,7 +129,7 @@ namespace LaserLock
             this.controlVoltageNumericEditor.Location = new System.Drawing.Point(91, 26);
             this.controlVoltageNumericEditor.Name = "controlVoltageNumericEditor";
             this.controlVoltageNumericEditor.OutOfRangeMode = NationalInstruments.UI.NumericOutOfRangeMode.CoerceToRange;
-            this.controlVoltageNumericEditor.Range = new NationalInstruments.UI.Range(-5, 5);
+            this.controlVoltageNumericEditor.Range = new NationalInstruments.UI.Range(-10, 10);
             this.controlVoltageNumericEditor.Size = new System.Drawing.Size(61, 20);
             this.controlVoltageNumericEditor.TabIndex = 4;
             this.controlVoltageNumericEditor.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.controlVoltageNumericEditor_AfterChangeValue);
@@ -261,7 +261,9 @@ namespace LaserLock
             // dSlider
             // 
             this.dSlider.CoercionInterval = 0.1;
-            this.dSlider.Location = new System.Drawing.Point(123, 19);
+            this.dSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
+                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
+            this.dSlider.Location = new System.Drawing.Point(121, 19);
             this.dSlider.Name = "dSlider";
             this.dSlider.PointerColor = System.Drawing.SystemColors.HotTrack;
             this.dSlider.Size = new System.Drawing.Size(50, 175);
@@ -270,6 +272,8 @@ namespace LaserLock
             // iSlider
             // 
             this.iSlider.CoercionInterval = 0.1;
+            this.iSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
+                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
             this.iSlider.Location = new System.Drawing.Point(78, 19);
             this.iSlider.Name = "iSlider";
             this.iSlider.PointerColor = System.Drawing.SystemColors.HotTrack;
@@ -282,6 +286,8 @@ namespace LaserLock
             this.pSlider.CaptionBackColor = System.Drawing.SystemColors.Control;
             this.pSlider.CaptionForeColor = System.Drawing.SystemColors.ControlText;
             this.pSlider.CoercionInterval = 0.1;
+            this.pSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
+                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
             this.pSlider.Location = new System.Drawing.Point(33, 19);
             this.pSlider.Name = "pSlider";
             this.pSlider.OutOfRangeMode = NationalInstruments.UI.NumericOutOfRangeMode.CoerceToRange;
@@ -314,6 +320,10 @@ namespace LaserLock
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
             this.xAxis1.Range = new NationalInstruments.UI.Range(0, 100);
             // 
+            // yAxis1
+            // 
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleExact;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -329,7 +339,7 @@ namespace LaserLock
             this.setpointNumericEdit.FormatMode = NationalInstruments.UI.NumericFormatMode.CreateSimpleDoubleMode(3);
             this.setpointNumericEdit.Location = new System.Drawing.Point(257, 26);
             this.setpointNumericEdit.Name = "setpointNumericEdit";
-            this.setpointNumericEdit.Range = new NationalInstruments.UI.Range(0, 10);
+            this.setpointNumericEdit.Range = new NationalInstruments.UI.Range(-100, 100);
             this.setpointNumericEdit.Size = new System.Drawing.Size(59, 20);
             this.setpointNumericEdit.TabIndex = 11;
             this.setpointNumericEdit.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.setpointNumericEdit_AfterChangeValue);
