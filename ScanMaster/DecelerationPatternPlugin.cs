@@ -81,7 +81,7 @@ namespace ScanMaster.Acquire.Plugins
 			int initspeed, int initposition, int onposition, int offposition, int numberOfStages)
 		{
 			IKernelLink ml = MathematicaService.GetKernel();
-			MathematicaService.LoadPackage("SwitchSequenceV1`", false);
+			MathematicaService.LoadPackage((String)Environs.Info["SwitchSequenceCode"], false);
 			if (ml != null) 
 			{
 				//Here's the call to the Mathematica makeSequence function
@@ -184,7 +184,7 @@ namespace ScanMaster.Acquire.Plugins
 					
 				}
         
-				//Console.WriteLine(decelSequence.ToString());
+				Console.WriteLine(decelSequence.ToString());
 			}
 		}
 	

@@ -68,6 +68,7 @@ namespace DAQ.Environment
 					Hardware = new DecelerationHardware();
 					FileSystem = new SchnapsFileSystem();
 					ExperimentType = "decelerator";
+                    Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
 					Debug = false;
                     break;
 
@@ -104,6 +105,7 @@ namespace DAQ.Environment
 					FileSystem = new GanymedeFileSystem();
 					Debug = false;
                     ExperimentType = "lih";
+                    Info.Add("SwitchSequenceCode", "WFSwitchSequenceV1`");
 					break;
 
 				case "CARMELITE":
