@@ -32,25 +32,11 @@ namespace EDMHardwareControl
 		private const int eBleedTime = 1000;
 		private const int eWaitTime = 500;
 		private const int eChargeTime = 5000;
-		// E field controller calibrations
-		private const double cPlusOffset = -18.917;
-        private const double cPlusSlope = 9015.49;
-		private const double cMinusOffset = -5.24;
-        private const double cMinusSlope = 9505.59;
-		private const double gPlusOffset = 4.71;
-		private const double gPlusSlope = -2908.07;
-		private const double gMinusOffset = -15.49;
-		private const double gMinusSlope = -3072.35;
-		// E field monitor scale factors - what you need to multiply the monitor voltage by
-		// to get the plate voltage
-		private const double cScale = 1000;
-		private const double gScale = 1000;
-		// E field controller channel mappings
-		private const int cPlusChan = 3;
-		private const int cMinusChan = 4;
-		private const int gPlusChan = 1;
-		private const int gMinusChan = 2;
-		// E field controller mode
+        // E field monitor scale factors - what you need to multiply the monitor voltage by
+        // to get the plate voltage
+        public double CPlusMonitorScale { get { return 10000; } }
+        public double CMinusMonitorScale { get { return 10000; } }
+        // E field controller mode
 		/*private enum EFieldMode { TTL, GPIB };
 		private EFieldMode eFieldMode = EFieldMode.TTL;*/
         //Current Leakage Monitor calibration 
@@ -533,6 +519,23 @@ namespace EDMHardwareControl
 				return Double.Parse(window.bCurrentCalStepTextBox.Text);
 			}
 		}
+
+        public double CPlusMonitorVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cPlusVMonitorTextBox.Text);
+            }
+        }
+
+        public double CMinusMonitorVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cMinusVMonitorTextBox.Text);
+            }
+        }
+
 
 		#endregion
 

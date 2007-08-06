@@ -56,24 +56,26 @@ def EDMGoReal(nullRun):
 		print("Using cluster " + suggestedClusterName)
 	eState = Boolean.Parse(prompt("E-state: "))
 	bState = Boolean.Parse(prompt("B-state: "))
-	gVoltage = Double.Parse(prompt("G-voltage (kV): "))
-	plusCVoltage = Double.Parse(prompt("+ve C-voltage (kV): "))
-	minusCVoltage = Double.Parse(prompt("-ve C-voltage (kV, -ve number !): "))
-	biasCurrent = Double.Parse(prompt("Bias current (uA): "))
-
+	print("Measuring parameters ...")
+	hc.UpdateBCurrentMonitor()
+	hc.UpdateBCurrentMonitor()
+	hc.UpdateVMonitor()
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	bc = loadBlockConfig(settingsPath + "default.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
-	bc.Settings["ePlus"] = plusCVoltage
-	bc.Settings["eMinus"] = minusCVoltage
-	bc.Settings["gtPlus"] = gVoltage
-	bc.Settings["gbPlus"] = gVoltage
-	bc.Settings["gtMinus"] = -gVoltage
-	bc.Settings["gbMinus"] = -gVoltage
-	bc.GetModulationByName("B").Centre = biasCurrent
+	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
+	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
+	bc.GetModulationByName("B").Centre = hc.BiasCurrent
+	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)
+	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)
+	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
+	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
+	print("Bias: " + str(hc.BiasCurrent))
+	print("B step: " + str(abs(hc.FlipStepCurrent)))
+	print("DB step: " + str(abs(hc.CalStepCurrent)))
 
 	# loop and take data
 	bh.StartPattern()
