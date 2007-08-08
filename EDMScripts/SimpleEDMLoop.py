@@ -68,9 +68,9 @@ def EDMGoReal(nullRun):
 	bc.Settings["bState"] = bState
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	bc.GetModulationByName("B").Centre = hc.BiasCurrent
-	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)
-	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)
+	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
+	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
+	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
