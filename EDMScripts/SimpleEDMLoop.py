@@ -76,6 +76,15 @@ def EDMGoReal(nullRun):
 	print("Bias: " + str(hc.BiasCurrent))
 	print("B step: " + str(abs(hc.FlipStepCurrent)))
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
+	print("Setting rf parameters ...")
+	bc.GetModulationByName("RF1A").Centre = hc.RF1AttCentre
+	bc.GetModulationByName("RF1A").Step = hc.RF1AttStep
+	bc.GetModulationByName("RF2A").Centre = hc.RF2AttCentre
+	bc.GetModulationByName("RF2A").Step = hc.RF2AttStep
+	bc.GetModulationByName("RF1F").Centre = hc.RF1FMCentre
+	bc.GetModulationByName("RF1F").Step = hc.RF1FMStep
+	bc.GetModulationByName("RF2F").Centre = hc.RF2FMCentre
+	bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
 
 	# loop and take data
 	bh.StartPattern()

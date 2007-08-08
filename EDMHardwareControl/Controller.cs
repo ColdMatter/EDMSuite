@@ -536,8 +536,71 @@ namespace EDMHardwareControl
             }
         }
 
+        public double RF1AttCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
+            }
+        }
 
-		#endregion
+        public double RF1AttStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1AttIncTextBox.Text);
+            }
+        }
+
+        public double RF2AttCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
+            }
+        }
+
+        public double RF2AttStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2AttIncTextBox.Text);
+            }
+        }
+
+        public double RF1FMCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1FMVoltage.Text);
+            }
+        }
+
+        public double RF1FMStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1FMIncTextBox.Text);
+            }
+        }
+
+        public double RF2FMCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2FMVoltage.Text);
+            }
+        }
+
+        public double RF2FMStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2FMIncTextBox.Text);
+            }
+        }
+
+        #endregion
 
 		#region Hardware control methods - safe for remote
 
@@ -901,8 +964,12 @@ namespace EDMHardwareControl
 		public void SetAttenutatorVoltages()
 		{
 			double rf1AttenuatorVoltage = Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
+            if (window.rf1AttMinusRB.Checked) rf1AttenuatorVoltage -= Double.Parse(window.rf1AttIncTextBox.Text);
+            if (window.rf1AttPlusRB.Checked) rf1AttenuatorVoltage += Double.Parse(window.rf1AttIncTextBox.Text);
             rf1AttenuatorVoltage = windowVoltage(rf1AttenuatorVoltage, 0, 5);
 			double rf2AttenuatorVoltage = Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
+            if (window.rf2AttMinusRB.Checked) rf2AttenuatorVoltage -= Double.Parse(window.rf2AttIncTextBox.Text);
+            if (window.rf2AttPlusRB.Checked) rf2AttenuatorVoltage += Double.Parse(window.rf2AttIncTextBox.Text);
             rf2AttenuatorVoltage = windowVoltage(rf2AttenuatorVoltage, 0, 5);
 			SetAnalogOutput(rf1AttenuatorOutputTask, rf1AttenuatorVoltage);
 			SetAnalogOutput(rf2AttenuatorOutputTask, rf2AttenuatorVoltage);
@@ -911,7 +978,11 @@ namespace EDMHardwareControl
         internal void SetFMVoltages()
         {
             double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
+            if (window.rf1FMMinusRB.Checked) rf1FMVoltage -= Double.Parse(window.rf1FMIncTextBox.Text);
+            if (window.rf1FMPlusRB.Checked) rf1FMVoltage += Double.Parse(window.rf1FMIncTextBox.Text);
             double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
+            if (window.rf2FMMinusRB.Checked) rf2FMVoltage -= Double.Parse(window.rf2FMIncTextBox.Text);
+            if (window.rf2FMPlusRB.Checked) rf2FMVoltage += Double.Parse(window.rf2FMIncTextBox.Text);
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
