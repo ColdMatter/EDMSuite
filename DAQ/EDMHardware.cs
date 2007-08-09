@@ -40,6 +40,7 @@ namespace DAQ.HAL
 			GPIBInstruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
 			GPIBInstruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
 			GPIBInstruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
+            GPIBInstruments.Add("rfCounter", new EIP575("GPIB0::19::INSTR"));
 
 			// map the digital channels
 			// these channels are generally switched by the pattern generator
@@ -92,8 +93,7 @@ namespace DAQ.HAL
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
             // rf rack control
-            AddAnalogInputChannel("rf1Power", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("rf2Power", usbDAQ1 + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("rfPower", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0", 0, 5);
             AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1", 0, 5);

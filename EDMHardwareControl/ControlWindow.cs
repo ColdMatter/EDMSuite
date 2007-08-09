@@ -165,6 +165,40 @@ namespace EDMHardwareControl
         public RadioButton rf2AttZeroRB;
         public RadioButton rf2AttPlusRB;
         public RadioButton rf2AttMinusRB;
+        public TextBox rf1StepFreqMon;
+        public TextBox rf1CentreFreqMon;
+        private Label label40;
+        private Label label42;
+        public TextBox rf1MinusFreqMon;
+        public TextBox rf1PlusFreqMon;
+        private Button rfFrequencyUpdateButton;
+        private Label label43;
+        private Label label44;
+        public TextBox rf2StepFreqMon;
+        public TextBox rf2CentreFreqMon;
+        private Label label48;
+        private Label label47;
+        public TextBox rf2MinusFreqMon;
+        public TextBox rf2PlusFreqMon;
+        private Label label46;
+        private Label label45;
+        public TextBox rf2StepPowerMon;
+        public TextBox rf1StepPowerMon;
+        public TextBox rf2CentrePowerMon;
+        public TextBox rf1CentrePowerMon;
+        private Label label56;
+        private Label label55;
+        private Label label54;
+        private Label label53;
+        public TextBox rf2MinusPowerMon;
+        public TextBox rf1MinusPowerMon;
+        public TextBox rf2PlusPowerMon;
+        public TextBox rf1PlusPowerMon;
+        private Button rfPowerUpdateButton;
+        private Label label52;
+        private Label label51;
+        private Label label50;
+        private Label label49;
 
 
 		public Controller controller;
@@ -256,6 +290,7 @@ namespace EDMHardwareControl
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.attenuatorSelectCheck = new System.Windows.Forms.CheckBox();
             this.phaseFlip2CheckBox = new System.Windows.Forms.CheckBox();
@@ -263,9 +298,22 @@ namespace EDMHardwareControl
             this.fmSelectCheck = new System.Windows.Forms.CheckBox();
             this.rfSwitchEnableCheck = new System.Windows.Forms.CheckBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.rf2FMZeroRB = new System.Windows.Forms.RadioButton();
+            this.rf2FMPlusRB = new System.Windows.Forms.RadioButton();
+            this.rf2FMMinusRB = new System.Windows.Forms.RadioButton();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.rf1FMZeroRB = new System.Windows.Forms.RadioButton();
+            this.rf1FMPlusRB = new System.Windows.Forms.RadioButton();
+            this.rf1FMMinusRB = new System.Windows.Forms.RadioButton();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.rf2AttZeroRB = new System.Windows.Forms.RadioButton();
+            this.rf2AttPlusRB = new System.Windows.Forms.RadioButton();
+            this.rf2AttMinusRB = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.rf1AttZeroRB = new System.Windows.Forms.RadioButton();
-            this.rf1AttMinusRB = new System.Windows.Forms.RadioButton();
             this.rf1AttPlusRB = new System.Windows.Forms.RadioButton();
+            this.rf1AttMinusRB = new System.Windows.Forms.RadioButton();
             this.rf2FMIncTextBox = new System.Windows.Forms.TextBox();
             this.label24 = new System.Windows.Forms.Label();
             this.rf1FMIncTextBox = new System.Windows.Forms.TextBox();
@@ -331,20 +379,40 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.rf2AttZeroRB = new System.Windows.Forms.RadioButton();
-            this.rf2AttPlusRB = new System.Windows.Forms.RadioButton();
-            this.rf2AttMinusRB = new System.Windows.Forms.RadioButton();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.rf1FMZeroRB = new System.Windows.Forms.RadioButton();
-            this.rf1FMPlusRB = new System.Windows.Forms.RadioButton();
-            this.rf1FMMinusRB = new System.Windows.Forms.RadioButton();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.rf2FMZeroRB = new System.Windows.Forms.RadioButton();
-            this.rf2FMPlusRB = new System.Windows.Forms.RadioButton();
-            this.rf2FMMinusRB = new System.Windows.Forms.RadioButton();
+            this.rf1MinusFreqMon = new System.Windows.Forms.TextBox();
+            this.rf1PlusFreqMon = new System.Windows.Forms.TextBox();
+            this.rfFrequencyUpdateButton = new System.Windows.Forms.Button();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.rf1StepFreqMon = new System.Windows.Forms.TextBox();
+            this.rf1CentreFreqMon = new System.Windows.Forms.TextBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
+            this.label46 = new System.Windows.Forms.Label();
+            this.rf2PlusFreqMon = new System.Windows.Forms.TextBox();
+            this.rf2MinusFreqMon = new System.Windows.Forms.TextBox();
+            this.label47 = new System.Windows.Forms.Label();
+            this.label48 = new System.Windows.Forms.Label();
+            this.rf2CentreFreqMon = new System.Windows.Forms.TextBox();
+            this.rf2StepFreqMon = new System.Windows.Forms.TextBox();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
+            this.rfPowerUpdateButton = new System.Windows.Forms.Button();
+            this.rf1PlusPowerMon = new System.Windows.Forms.TextBox();
+            this.rf2PlusPowerMon = new System.Windows.Forms.TextBox();
+            this.rf1MinusPowerMon = new System.Windows.Forms.TextBox();
+            this.rf2MinusPowerMon = new System.Windows.Forms.TextBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.label56 = new System.Windows.Forms.Label();
+            this.rf1CentrePowerMon = new System.Windows.Forms.TextBox();
+            this.rf2CentrePowerMon = new System.Windows.Forms.TextBox();
+            this.rf1StepPowerMon = new System.Windows.Forms.TextBox();
+            this.rf2StepPowerMon = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -355,8 +423,13 @@ namespace EDMHardwareControl
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox14.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -364,10 +437,6 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -632,7 +701,7 @@ namespace EDMHardwareControl
             this.tabControl1.Location = new System.Drawing.Point(12, 25);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(705, 530);
+            this.tabControl1.Size = new System.Drawing.Size(705, 546);
             this.tabControl1.TabIndex = 25;
             // 
             // tabPage1
@@ -644,7 +713,7 @@ namespace EDMHardwareControl
             this.tabPage1.Controls.Add(this.groupBox7);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(697, 504);
+            this.tabPage1.Size = new System.Drawing.Size(697, 520);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
             // 
@@ -956,9 +1025,52 @@ namespace EDMHardwareControl
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(697, 504);
+            this.tabPage2.Size = new System.Drawing.Size(697, 520);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rf2StepPowerMon);
+            this.groupBox4.Controls.Add(this.rf2StepFreqMon);
+            this.groupBox4.Controls.Add(this.rf1StepPowerMon);
+            this.groupBox4.Controls.Add(this.rf1StepFreqMon);
+            this.groupBox4.Controls.Add(this.rf2CentrePowerMon);
+            this.groupBox4.Controls.Add(this.rf2CentreFreqMon);
+            this.groupBox4.Controls.Add(this.rf1CentrePowerMon);
+            this.groupBox4.Controls.Add(this.rf1CentreFreqMon);
+            this.groupBox4.Controls.Add(this.label56);
+            this.groupBox4.Controls.Add(this.label48);
+            this.groupBox4.Controls.Add(this.label55);
+            this.groupBox4.Controls.Add(this.label40);
+            this.groupBox4.Controls.Add(this.label54);
+            this.groupBox4.Controls.Add(this.label47);
+            this.groupBox4.Controls.Add(this.label53);
+            this.groupBox4.Controls.Add(this.label42);
+            this.groupBox4.Controls.Add(this.rf2MinusPowerMon);
+            this.groupBox4.Controls.Add(this.rf2MinusFreqMon);
+            this.groupBox4.Controls.Add(this.rf1MinusPowerMon);
+            this.groupBox4.Controls.Add(this.rf1MinusFreqMon);
+            this.groupBox4.Controls.Add(this.rf2PlusPowerMon);
+            this.groupBox4.Controls.Add(this.rf2PlusFreqMon);
+            this.groupBox4.Controls.Add(this.rf1PlusPowerMon);
+            this.groupBox4.Controls.Add(this.rf1PlusFreqMon);
+            this.groupBox4.Controls.Add(this.rfPowerUpdateButton);
+            this.groupBox4.Controls.Add(this.label52);
+            this.groupBox4.Controls.Add(this.rfFrequencyUpdateButton);
+            this.groupBox4.Controls.Add(this.label51);
+            this.groupBox4.Controls.Add(this.label46);
+            this.groupBox4.Controls.Add(this.label50);
+            this.groupBox4.Controls.Add(this.label43);
+            this.groupBox4.Controls.Add(this.label49);
+            this.groupBox4.Controls.Add(this.label45);
+            this.groupBox4.Controls.Add(this.label44);
+            this.groupBox4.Location = new System.Drawing.Point(8, 373);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(675, 138);
+            this.groupBox4.TabIndex = 27;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "rf measurement";
             // 
             // groupBox16
             // 
@@ -1050,6 +1162,142 @@ namespace EDMHardwareControl
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "fast rf control";
             // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.rf2FMZeroRB);
+            this.panel4.Controls.Add(this.rf2FMPlusRB);
+            this.panel4.Controls.Add(this.rf2FMMinusRB);
+            this.panel4.Location = new System.Drawing.Point(249, 157);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(108, 32);
+            this.panel4.TabIndex = 0;
+            // 
+            // rf2FMZeroRB
+            // 
+            this.rf2FMZeroRB.AutoSize = true;
+            this.rf2FMZeroRB.Checked = true;
+            this.rf2FMZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf2FMZeroRB.Name = "rf2FMZeroRB";
+            this.rf2FMZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2FMZeroRB.TabIndex = 32;
+            this.rf2FMZeroRB.TabStop = true;
+            this.rf2FMZeroRB.Text = "0";
+            this.rf2FMZeroRB.UseVisualStyleBackColor = true;
+            // 
+            // rf2FMPlusRB
+            // 
+            this.rf2FMPlusRB.AutoSize = true;
+            this.rf2FMPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf2FMPlusRB.Name = "rf2FMPlusRB";
+            this.rf2FMPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2FMPlusRB.TabIndex = 32;
+            this.rf2FMPlusRB.Text = "+";
+            this.rf2FMPlusRB.UseVisualStyleBackColor = true;
+            // 
+            // rf2FMMinusRB
+            // 
+            this.rf2FMMinusRB.AutoSize = true;
+            this.rf2FMMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf2FMMinusRB.Name = "rf2FMMinusRB";
+            this.rf2FMMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf2FMMinusRB.TabIndex = 32;
+            this.rf2FMMinusRB.Text = "-";
+            this.rf2FMMinusRB.UseVisualStyleBackColor = true;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.rf1FMZeroRB);
+            this.panel3.Controls.Add(this.rf1FMPlusRB);
+            this.panel3.Controls.Add(this.rf1FMMinusRB);
+            this.panel3.Location = new System.Drawing.Point(249, 129);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(108, 32);
+            this.panel3.TabIndex = 0;
+            // 
+            // rf1FMZeroRB
+            // 
+            this.rf1FMZeroRB.AutoSize = true;
+            this.rf1FMZeroRB.Checked = true;
+            this.rf1FMZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf1FMZeroRB.Name = "rf1FMZeroRB";
+            this.rf1FMZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1FMZeroRB.TabIndex = 32;
+            this.rf1FMZeroRB.TabStop = true;
+            this.rf1FMZeroRB.Text = "0";
+            this.rf1FMZeroRB.UseVisualStyleBackColor = true;
+            // 
+            // rf1FMPlusRB
+            // 
+            this.rf1FMPlusRB.AutoSize = true;
+            this.rf1FMPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf1FMPlusRB.Name = "rf1FMPlusRB";
+            this.rf1FMPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1FMPlusRB.TabIndex = 32;
+            this.rf1FMPlusRB.Text = "+";
+            this.rf1FMPlusRB.UseVisualStyleBackColor = true;
+            // 
+            // rf1FMMinusRB
+            // 
+            this.rf1FMMinusRB.AutoSize = true;
+            this.rf1FMMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf1FMMinusRB.Name = "rf1FMMinusRB";
+            this.rf1FMMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf1FMMinusRB.TabIndex = 32;
+            this.rf1FMMinusRB.Text = "-";
+            this.rf1FMMinusRB.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.rf2AttZeroRB);
+            this.panel2.Controls.Add(this.rf2AttPlusRB);
+            this.panel2.Controls.Add(this.rf2AttMinusRB);
+            this.panel2.Location = new System.Drawing.Point(249, 47);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(108, 32);
+            this.panel2.TabIndex = 0;
+            // 
+            // rf2AttZeroRB
+            // 
+            this.rf2AttZeroRB.AutoSize = true;
+            this.rf2AttZeroRB.Checked = true;
+            this.rf2AttZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf2AttZeroRB.Name = "rf2AttZeroRB";
+            this.rf2AttZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2AttZeroRB.TabIndex = 32;
+            this.rf2AttZeroRB.TabStop = true;
+            this.rf2AttZeroRB.Text = "0";
+            this.rf2AttZeroRB.UseVisualStyleBackColor = true;
+            // 
+            // rf2AttPlusRB
+            // 
+            this.rf2AttPlusRB.AutoSize = true;
+            this.rf2AttPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf2AttPlusRB.Name = "rf2AttPlusRB";
+            this.rf2AttPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2AttPlusRB.TabIndex = 32;
+            this.rf2AttPlusRB.Text = "+";
+            this.rf2AttPlusRB.UseVisualStyleBackColor = true;
+            // 
+            // rf2AttMinusRB
+            // 
+            this.rf2AttMinusRB.AutoSize = true;
+            this.rf2AttMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf2AttMinusRB.Name = "rf2AttMinusRB";
+            this.rf2AttMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf2AttMinusRB.TabIndex = 32;
+            this.rf2AttMinusRB.Text = "-";
+            this.rf2AttMinusRB.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rf1AttZeroRB);
+            this.panel1.Controls.Add(this.rf1AttPlusRB);
+            this.panel1.Controls.Add(this.rf1AttMinusRB);
+            this.panel1.Location = new System.Drawing.Point(249, 19);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(108, 32);
+            this.panel1.TabIndex = 0;
+            // 
             // rf1AttZeroRB
             // 
             this.rf1AttZeroRB.AutoSize = true;
@@ -1062,16 +1310,6 @@ namespace EDMHardwareControl
             this.rf1AttZeroRB.Text = "0";
             this.rf1AttZeroRB.UseVisualStyleBackColor = true;
             // 
-            // rf1AttMinusRB
-            // 
-            this.rf1AttMinusRB.AutoSize = true;
-            this.rf1AttMinusRB.Location = new System.Drawing.Point(42, 7);
-            this.rf1AttMinusRB.Name = "rf1AttMinusRB";
-            this.rf1AttMinusRB.Size = new System.Drawing.Size(28, 17);
-            this.rf1AttMinusRB.TabIndex = 32;
-            this.rf1AttMinusRB.Text = "-";
-            this.rf1AttMinusRB.UseVisualStyleBackColor = true;
-            // 
             // rf1AttPlusRB
             // 
             this.rf1AttPlusRB.AutoSize = true;
@@ -1081,6 +1319,16 @@ namespace EDMHardwareControl
             this.rf1AttPlusRB.TabIndex = 32;
             this.rf1AttPlusRB.Text = "+";
             this.rf1AttPlusRB.UseVisualStyleBackColor = true;
+            // 
+            // rf1AttMinusRB
+            // 
+            this.rf1AttMinusRB.AutoSize = true;
+            this.rf1AttMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf1AttMinusRB.Name = "rf1AttMinusRB";
+            this.rf1AttMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf1AttMinusRB.TabIndex = 32;
+            this.rf1AttMinusRB.Text = "-";
+            this.rf1AttMinusRB.UseVisualStyleBackColor = true;
             // 
             // rf2FMIncTextBox
             // 
@@ -1235,7 +1483,7 @@ namespace EDMHardwareControl
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(697, 504);
+            this.tabPage3.Size = new System.Drawing.Size(697, 520);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
             // 
@@ -1468,7 +1716,7 @@ namespace EDMHardwareControl
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(697, 504);
+            this.tabPage4.Size = new System.Drawing.Size(697, 520);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Laser";
             // 
@@ -1606,7 +1854,7 @@ namespace EDMHardwareControl
             this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(697, 504);
+            this.tabPage5.Size = new System.Drawing.Size(697, 520);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "YAG";
             // 
@@ -1701,155 +1949,332 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
-            // groupBox4
+            // rf1MinusFreqMon
             // 
-            this.groupBox4.Location = new System.Drawing.Point(320, 266);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(363, 221);
-            this.groupBox4.TabIndex = 27;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "rf measurement";
+            this.rf1MinusFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf1MinusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1MinusFreqMon.Location = new System.Drawing.Point(98, 44);
+            this.rf1MinusFreqMon.Name = "rf1MinusFreqMon";
+            this.rf1MinusFreqMon.ReadOnly = true;
+            this.rf1MinusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1MinusFreqMon.TabIndex = 54;
+            this.rf1MinusFreqMon.Text = "0";
             // 
-            // panel1
+            // rf1PlusFreqMon
             // 
-            this.panel1.Controls.Add(this.rf1AttZeroRB);
-            this.panel1.Controls.Add(this.rf1AttPlusRB);
-            this.panel1.Controls.Add(this.rf1AttMinusRB);
-            this.panel1.Location = new System.Drawing.Point(249, 19);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(108, 32);
-            this.panel1.TabIndex = 0;
+            this.rf1PlusFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf1PlusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1PlusFreqMon.Location = new System.Drawing.Point(27, 44);
+            this.rf1PlusFreqMon.Name = "rf1PlusFreqMon";
+            this.rf1PlusFreqMon.ReadOnly = true;
+            this.rf1PlusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1PlusFreqMon.TabIndex = 51;
+            this.rf1PlusFreqMon.Text = "0";
             // 
-            // panel2
+            // rfFrequencyUpdateButton
             // 
-            this.panel2.Controls.Add(this.rf2AttZeroRB);
-            this.panel2.Controls.Add(this.rf2AttPlusRB);
-            this.panel2.Controls.Add(this.rf2AttMinusRB);
-            this.panel2.Location = new System.Drawing.Point(249, 47);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(108, 32);
-            this.panel2.TabIndex = 0;
+            this.rfFrequencyUpdateButton.Location = new System.Drawing.Point(139, 107);
+            this.rfFrequencyUpdateButton.Name = "rfFrequencyUpdateButton";
+            this.rfFrequencyUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.rfFrequencyUpdateButton.TabIndex = 50;
+            this.rfFrequencyUpdateButton.Text = "Update";
+            this.rfFrequencyUpdateButton.Click += new System.EventHandler(this.rfFrequencyUpdateButton_Click);
             // 
-            // rf2AttZeroRB
+            // label43
             // 
-            this.rf2AttZeroRB.AutoSize = true;
-            this.rf2AttZeroRB.Checked = true;
-            this.rf2AttZeroRB.Location = new System.Drawing.Point(77, 7);
-            this.rf2AttZeroRB.Name = "rf2AttZeroRB";
-            this.rf2AttZeroRB.Size = new System.Drawing.Size(31, 17);
-            this.rf2AttZeroRB.TabIndex = 32;
-            this.rf2AttZeroRB.TabStop = true;
-            this.rf2AttZeroRB.Text = "0";
-            this.rf2AttZeroRB.UseVisualStyleBackColor = true;
+            this.label43.Location = new System.Drawing.Point(95, 25);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(80, 23);
+            this.label43.TabIndex = 47;
+            this.label43.Text = "rf1 fr - (MHZ)";
             // 
-            // rf2AttPlusRB
+            // label44
             // 
-            this.rf2AttPlusRB.AutoSize = true;
-            this.rf2AttPlusRB.Location = new System.Drawing.Point(3, 6);
-            this.rf2AttPlusRB.Name = "rf2AttPlusRB";
-            this.rf2AttPlusRB.Size = new System.Drawing.Size(31, 17);
-            this.rf2AttPlusRB.TabIndex = 32;
-            this.rf2AttPlusRB.Text = "+";
-            this.rf2AttPlusRB.UseVisualStyleBackColor = true;
+            this.label44.Location = new System.Drawing.Point(24, 25);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(80, 23);
+            this.label44.TabIndex = 46;
+            this.label44.Text = "rf1 fr + (MHZ)";
             // 
-            // rf2AttMinusRB
+            // rf1StepFreqMon
             // 
-            this.rf2AttMinusRB.AutoSize = true;
-            this.rf2AttMinusRB.Location = new System.Drawing.Point(42, 7);
-            this.rf2AttMinusRB.Name = "rf2AttMinusRB";
-            this.rf2AttMinusRB.Size = new System.Drawing.Size(28, 17);
-            this.rf2AttMinusRB.TabIndex = 32;
-            this.rf2AttMinusRB.Text = "-";
-            this.rf2AttMinusRB.UseVisualStyleBackColor = true;
+            this.rf1StepFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf1StepFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1StepFreqMon.Location = new System.Drawing.Point(98, 81);
+            this.rf1StepFreqMon.Name = "rf1StepFreqMon";
+            this.rf1StepFreqMon.ReadOnly = true;
+            this.rf1StepFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1StepFreqMon.TabIndex = 58;
+            this.rf1StepFreqMon.Text = "0";
             // 
-            // panel3
+            // rf1CentreFreqMon
             // 
-            this.panel3.Controls.Add(this.rf1FMZeroRB);
-            this.panel3.Controls.Add(this.rf1FMPlusRB);
-            this.panel3.Controls.Add(this.rf1FMMinusRB);
-            this.panel3.Location = new System.Drawing.Point(249, 129);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(108, 32);
-            this.panel3.TabIndex = 0;
+            this.rf1CentreFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf1CentreFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1CentreFreqMon.Location = new System.Drawing.Point(27, 81);
+            this.rf1CentreFreqMon.Name = "rf1CentreFreqMon";
+            this.rf1CentreFreqMon.ReadOnly = true;
+            this.rf1CentreFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1CentreFreqMon.TabIndex = 57;
+            this.rf1CentreFreqMon.Text = "0";
             // 
-            // rf1FMZeroRB
+            // label40
             // 
-            this.rf1FMZeroRB.AutoSize = true;
-            this.rf1FMZeroRB.Checked = true;
-            this.rf1FMZeroRB.Location = new System.Drawing.Point(77, 7);
-            this.rf1FMZeroRB.Name = "rf1FMZeroRB";
-            this.rf1FMZeroRB.Size = new System.Drawing.Size(31, 17);
-            this.rf1FMZeroRB.TabIndex = 32;
-            this.rf1FMZeroRB.TabStop = true;
-            this.rf1FMZeroRB.Text = "0";
-            this.rf1FMZeroRB.UseVisualStyleBackColor = true;
+            this.label40.Location = new System.Drawing.Point(95, 62);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(80, 23);
+            this.label40.TabIndex = 56;
+            this.label40.Text = "Step";
             // 
-            // rf1FMPlusRB
+            // label42
             // 
-            this.rf1FMPlusRB.AutoSize = true;
-            this.rf1FMPlusRB.Location = new System.Drawing.Point(3, 6);
-            this.rf1FMPlusRB.Name = "rf1FMPlusRB";
-            this.rf1FMPlusRB.Size = new System.Drawing.Size(31, 17);
-            this.rf1FMPlusRB.TabIndex = 32;
-            this.rf1FMPlusRB.Text = "+";
-            this.rf1FMPlusRB.UseVisualStyleBackColor = true;
+            this.label42.Location = new System.Drawing.Point(24, 62);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(80, 23);
+            this.label42.TabIndex = 55;
+            this.label42.Text = "Centre";
             // 
-            // rf1FMMinusRB
+            // label45
             // 
-            this.rf1FMMinusRB.AutoSize = true;
-            this.rf1FMMinusRB.Location = new System.Drawing.Point(42, 7);
-            this.rf1FMMinusRB.Name = "rf1FMMinusRB";
-            this.rf1FMMinusRB.Size = new System.Drawing.Size(28, 17);
-            this.rf1FMMinusRB.TabIndex = 32;
-            this.rf1FMMinusRB.Text = "-";
-            this.rf1FMMinusRB.UseVisualStyleBackColor = true;
+            this.label45.Location = new System.Drawing.Point(184, 25);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(80, 23);
+            this.label45.TabIndex = 46;
+            this.label45.Text = "rf2 fr + (MHZ)";
             // 
-            // panel4
+            // label46
             // 
-            this.panel4.Controls.Add(this.rf2FMZeroRB);
-            this.panel4.Controls.Add(this.rf2FMPlusRB);
-            this.panel4.Controls.Add(this.rf2FMMinusRB);
-            this.panel4.Location = new System.Drawing.Point(249, 157);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(108, 32);
-            this.panel4.TabIndex = 0;
+            this.label46.Location = new System.Drawing.Point(255, 25);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(80, 23);
+            this.label46.TabIndex = 47;
+            this.label46.Text = "rf2 fr - (MHZ)";
             // 
-            // rf2FMZeroRB
+            // rf2PlusFreqMon
             // 
-            this.rf2FMZeroRB.AutoSize = true;
-            this.rf2FMZeroRB.Checked = true;
-            this.rf2FMZeroRB.Location = new System.Drawing.Point(77, 7);
-            this.rf2FMZeroRB.Name = "rf2FMZeroRB";
-            this.rf2FMZeroRB.Size = new System.Drawing.Size(31, 17);
-            this.rf2FMZeroRB.TabIndex = 32;
-            this.rf2FMZeroRB.TabStop = true;
-            this.rf2FMZeroRB.Text = "0";
-            this.rf2FMZeroRB.UseVisualStyleBackColor = true;
+            this.rf2PlusFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf2PlusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2PlusFreqMon.Location = new System.Drawing.Point(187, 44);
+            this.rf2PlusFreqMon.Name = "rf2PlusFreqMon";
+            this.rf2PlusFreqMon.ReadOnly = true;
+            this.rf2PlusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2PlusFreqMon.TabIndex = 51;
+            this.rf2PlusFreqMon.Text = "0";
             // 
-            // rf2FMPlusRB
+            // rf2MinusFreqMon
             // 
-            this.rf2FMPlusRB.AutoSize = true;
-            this.rf2FMPlusRB.Location = new System.Drawing.Point(3, 6);
-            this.rf2FMPlusRB.Name = "rf2FMPlusRB";
-            this.rf2FMPlusRB.Size = new System.Drawing.Size(31, 17);
-            this.rf2FMPlusRB.TabIndex = 32;
-            this.rf2FMPlusRB.Text = "+";
-            this.rf2FMPlusRB.UseVisualStyleBackColor = true;
+            this.rf2MinusFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf2MinusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2MinusFreqMon.Location = new System.Drawing.Point(258, 44);
+            this.rf2MinusFreqMon.Name = "rf2MinusFreqMon";
+            this.rf2MinusFreqMon.ReadOnly = true;
+            this.rf2MinusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2MinusFreqMon.TabIndex = 54;
+            this.rf2MinusFreqMon.Text = "0";
             // 
-            // rf2FMMinusRB
+            // label47
             // 
-            this.rf2FMMinusRB.AutoSize = true;
-            this.rf2FMMinusRB.Location = new System.Drawing.Point(42, 7);
-            this.rf2FMMinusRB.Name = "rf2FMMinusRB";
-            this.rf2FMMinusRB.Size = new System.Drawing.Size(28, 17);
-            this.rf2FMMinusRB.TabIndex = 32;
-            this.rf2FMMinusRB.Text = "-";
-            this.rf2FMMinusRB.UseVisualStyleBackColor = true;
+            this.label47.Location = new System.Drawing.Point(184, 62);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(80, 23);
+            this.label47.TabIndex = 55;
+            this.label47.Text = "Centre";
+            // 
+            // label48
+            // 
+            this.label48.Location = new System.Drawing.Point(255, 62);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(80, 23);
+            this.label48.TabIndex = 56;
+            this.label48.Text = "Step";
+            // 
+            // rf2CentreFreqMon
+            // 
+            this.rf2CentreFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf2CentreFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2CentreFreqMon.Location = new System.Drawing.Point(187, 81);
+            this.rf2CentreFreqMon.Name = "rf2CentreFreqMon";
+            this.rf2CentreFreqMon.ReadOnly = true;
+            this.rf2CentreFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2CentreFreqMon.TabIndex = 57;
+            this.rf2CentreFreqMon.Text = "0";
+            // 
+            // rf2StepFreqMon
+            // 
+            this.rf2StepFreqMon.BackColor = System.Drawing.Color.Black;
+            this.rf2StepFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2StepFreqMon.Location = new System.Drawing.Point(258, 81);
+            this.rf2StepFreqMon.Name = "rf2StepFreqMon";
+            this.rf2StepFreqMon.ReadOnly = true;
+            this.rf2StepFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2StepFreqMon.TabIndex = 58;
+            this.rf2StepFreqMon.Text = "0";
+            // 
+            // label49
+            // 
+            this.label49.Location = new System.Drawing.Point(357, 25);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(80, 23);
+            this.label49.TabIndex = 46;
+            this.label49.Text = "rf1ap + (dBm)";
+            // 
+            // label50
+            // 
+            this.label50.Location = new System.Drawing.Point(518, 25);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(80, 23);
+            this.label50.TabIndex = 46;
+            this.label50.Text = "rf2 ap + (dBm)";
+            // 
+            // label51
+            // 
+            this.label51.Location = new System.Drawing.Point(428, 25);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(80, 23);
+            this.label51.TabIndex = 47;
+            this.label51.Text = "rf1 ap - (dBm)";
+            // 
+            // label52
+            // 
+            this.label52.Location = new System.Drawing.Point(589, 25);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(80, 23);
+            this.label52.TabIndex = 47;
+            this.label52.Text = "rf2 ap - (dBm)";
+            // 
+            // rfPowerUpdateButton
+            // 
+            this.rfPowerUpdateButton.Location = new System.Drawing.Point(469, 107);
+            this.rfPowerUpdateButton.Name = "rfPowerUpdateButton";
+            this.rfPowerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.rfPowerUpdateButton.TabIndex = 50;
+            this.rfPowerUpdateButton.Text = "Update";
+            this.rfPowerUpdateButton.Click += new System.EventHandler(this.rfPowerUpdateButton_Click);
+            // 
+            // rf1PlusPowerMon
+            // 
+            this.rf1PlusPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf1PlusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1PlusPowerMon.Location = new System.Drawing.Point(360, 44);
+            this.rf1PlusPowerMon.Name = "rf1PlusPowerMon";
+            this.rf1PlusPowerMon.ReadOnly = true;
+            this.rf1PlusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1PlusPowerMon.TabIndex = 51;
+            this.rf1PlusPowerMon.Text = "0";
+            // 
+            // rf2PlusPowerMon
+            // 
+            this.rf2PlusPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf2PlusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2PlusPowerMon.Location = new System.Drawing.Point(521, 44);
+            this.rf2PlusPowerMon.Name = "rf2PlusPowerMon";
+            this.rf2PlusPowerMon.ReadOnly = true;
+            this.rf2PlusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2PlusPowerMon.TabIndex = 51;
+            this.rf2PlusPowerMon.Text = "0";
+            // 
+            // rf1MinusPowerMon
+            // 
+            this.rf1MinusPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf1MinusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1MinusPowerMon.Location = new System.Drawing.Point(431, 44);
+            this.rf1MinusPowerMon.Name = "rf1MinusPowerMon";
+            this.rf1MinusPowerMon.ReadOnly = true;
+            this.rf1MinusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1MinusPowerMon.TabIndex = 54;
+            this.rf1MinusPowerMon.Text = "0";
+            // 
+            // rf2MinusPowerMon
+            // 
+            this.rf2MinusPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf2MinusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2MinusPowerMon.Location = new System.Drawing.Point(592, 44);
+            this.rf2MinusPowerMon.Name = "rf2MinusPowerMon";
+            this.rf2MinusPowerMon.ReadOnly = true;
+            this.rf2MinusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2MinusPowerMon.TabIndex = 54;
+            this.rf2MinusPowerMon.Text = "0";
+            // 
+            // label53
+            // 
+            this.label53.Location = new System.Drawing.Point(357, 62);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(80, 23);
+            this.label53.TabIndex = 55;
+            this.label53.Text = "Centre";
+            // 
+            // label54
+            // 
+            this.label54.Location = new System.Drawing.Point(518, 62);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(80, 23);
+            this.label54.TabIndex = 55;
+            this.label54.Text = "Centre";
+            // 
+            // label55
+            // 
+            this.label55.Location = new System.Drawing.Point(428, 62);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(80, 23);
+            this.label55.TabIndex = 56;
+            this.label55.Text = "Step";
+            // 
+            // label56
+            // 
+            this.label56.Location = new System.Drawing.Point(589, 62);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(80, 23);
+            this.label56.TabIndex = 56;
+            this.label56.Text = "Step";
+            // 
+            // rf1CentrePowerMon
+            // 
+            this.rf1CentrePowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf1CentrePowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1CentrePowerMon.Location = new System.Drawing.Point(360, 81);
+            this.rf1CentrePowerMon.Name = "rf1CentrePowerMon";
+            this.rf1CentrePowerMon.ReadOnly = true;
+            this.rf1CentrePowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1CentrePowerMon.TabIndex = 57;
+            this.rf1CentrePowerMon.Text = "0";
+            // 
+            // rf2CentrePowerMon
+            // 
+            this.rf2CentrePowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf2CentrePowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2CentrePowerMon.Location = new System.Drawing.Point(521, 81);
+            this.rf2CentrePowerMon.Name = "rf2CentrePowerMon";
+            this.rf2CentrePowerMon.ReadOnly = true;
+            this.rf2CentrePowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2CentrePowerMon.TabIndex = 57;
+            this.rf2CentrePowerMon.Text = "0";
+            // 
+            // rf1StepPowerMon
+            // 
+            this.rf1StepPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf1StepPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf1StepPowerMon.Location = new System.Drawing.Point(431, 81);
+            this.rf1StepPowerMon.Name = "rf1StepPowerMon";
+            this.rf1StepPowerMon.ReadOnly = true;
+            this.rf1StepPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1StepPowerMon.TabIndex = 58;
+            this.rf1StepPowerMon.Text = "0";
+            // 
+            // rf2StepPowerMon
+            // 
+            this.rf2StepPowerMon.BackColor = System.Drawing.Color.Black;
+            this.rf2StepPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.rf2StepPowerMon.Location = new System.Drawing.Point(592, 81);
+            this.rf2StepPowerMon.Name = "rf2StepPowerMon";
+            this.rf2StepPowerMon.ReadOnly = true;
+            this.rf2StepPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2StepPowerMon.TabIndex = 58;
+            this.rf2StepPowerMon.Text = "0";
             // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(729, 558);
+            this.ClientSize = new System.Drawing.Size(729, 583);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1871,9 +2296,19 @@ namespace EDMHardwareControl
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox16.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
@@ -1885,14 +2320,6 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -2067,6 +2494,16 @@ namespace EDMHardwareControl
             controller.setIMonitorMeasurementLength();
         }
 
+        private void rfFrequencyUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateRFFrequencyMonitor();
+        }
+
+        private void rfPowerUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateRFPowerMonitor();
+        }
+
 
 		#endregion
 
@@ -2082,7 +2519,17 @@ namespace EDMHardwareControl
 			box.Checked = state;
 		}
 
-		public void SetTextBox(TextBox box, string text)
+        public void SetRadioButton(RadioButton button, bool state)
+        {
+            button.Invoke(new SetRadioButtonDelegate(SetRadioButtonHelper), new object[] { button, state });
+        }
+        private delegate void SetRadioButtonDelegate(RadioButton button, bool state);
+        private void SetRadioButtonHelper(RadioButton button, bool state)
+        {
+            button.Checked = state;
+        }
+        
+        public void SetTextBox(TextBox box, string text)
 		{
 			box.Invoke(new SetTextDelegate(SetTextHelper), new object[] {box, text});
 		}

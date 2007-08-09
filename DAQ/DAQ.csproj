@@ -138,6 +138,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EIP575.cs" />
     <Compile Include="FrequencyCounter.cs" />
     <Compile Include="PhkaraFileSystem.cs" />
     <Compile Include="CounterChannel.cs">

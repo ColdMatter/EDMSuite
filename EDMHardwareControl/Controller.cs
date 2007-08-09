@@ -60,7 +60,8 @@ namespace EDMHardwareControl
 		Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
 		ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 		HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
-		Hashtable digitalTasks = new Hashtable();
+        EIP575 rfCounter = (EIP575)Environs.Hardware.GPIBInstruments["rfCounter"];
+        Hashtable digitalTasks = new Hashtable();
 		LeakageMonitor northLeakageMonitor =
             new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
 		LeakageMonitor southLeakageMonitor =
@@ -77,7 +78,7 @@ namespace EDMHardwareControl
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
-        
+        Task rfPowerMonitorInputTask;
 
 		ControlWindow window;
 
@@ -127,6 +128,7 @@ namespace EDMHardwareControl
 			pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
+            rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
 		
             // make the control window
 			window = new ControlWindow();
@@ -687,6 +689,80 @@ namespace EDMHardwareControl
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
             }
 
+        }
+
+        public void UpdateRFFrequencyMonitor()
+        {
+            // make sure rf switch is off (this routes power to the measurement devices)
+            window.SetCheckBox(window.rfSwitchEnableCheck, false);
+            // rf1 - switch box off and then on to make sure it fires the checkChanged event
+            window.SetCheckBox(window.fmSelectCheck, false);
+            window.SetCheckBox(window.fmSelectCheck, true);
+            window.SetRadioButton(window.rf1FMPlusRB, true);
+            SetFMVoltages();
+            double rf1PlusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.rf1PlusFreqMon, rf1PlusFreq.ToString());
+            window.SetRadioButton(window.rf1FMMinusRB, true);
+            SetFMVoltages();
+            double rf1MinusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.rf1MinusFreqMon, rf1MinusFreq.ToString());
+            window.SetTextBox(window.rf1CentreFreqMon, ((rf1MinusFreq + rf1PlusFreq) / 2).ToString());
+            window.SetTextBox(window.rf1StepFreqMon, ((rf1PlusFreq - rf1MinusFreq) / 2).ToString());
+
+            // rf2
+            window.SetCheckBox(window.fmSelectCheck, false);
+            window.SetRadioButton(window.rf2FMPlusRB, true);
+            SetFMVoltages();
+            double rf2PlusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.rf2PlusFreqMon, rf2PlusFreq.ToString());
+            window.SetRadioButton(window.rf2FMMinusRB, true);
+            SetFMVoltages();
+            double rf2MinusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.rf2MinusFreqMon, rf2MinusFreq.ToString());
+            window.SetTextBox(window.rf2CentreFreqMon, ((rf2MinusFreq + rf2PlusFreq) / 2).ToString());
+            window.SetTextBox(window.rf2StepFreqMon, ((rf2PlusFreq - rf2MinusFreq) / 2).ToString());
+
+        }
+
+        public void UpdateRFPowerMonitor()
+        {
+            // make sure rf switch is off (this routes power to the measurement devices)
+            window.SetCheckBox(window.rfSwitchEnableCheck, false);
+            // rf1 - switch box off and then on to make sure it fires the checkChanged event
+            window.SetCheckBox(window.attenuatorSelectCheck, false);
+            window.SetCheckBox(window.attenuatorSelectCheck, true);
+            window.SetRadioButton(window.rf1AttPlusRB, true);
+            SetAttenutatorVoltages();
+            double rf1PlusPower = ReadPowerMonitor();
+            window.SetTextBox(window.rf1PlusPowerMon, rf1PlusPower.ToString());
+            window.SetRadioButton(window.rf1AttMinusRB, true);
+            SetAttenutatorVoltages();
+            double rf1MinusPower = ReadPowerMonitor();
+            window.SetTextBox(window.rf1MinusPowerMon, rf1MinusPower.ToString());
+            window.SetTextBox(window.rf1CentrePowerMon, ((rf1MinusPower + rf1PlusPower) / 2).ToString());
+            window.SetTextBox(window.rf1StepPowerMon, ((rf1PlusPower - rf1MinusPower) / 2).ToString());
+
+            // rf2
+            window.SetCheckBox(window.attenuatorSelectCheck, false);
+            window.SetRadioButton(window.rf2AttPlusRB, true);
+            SetAttenutatorVoltages();
+            double rf2PlusPower = ReadPowerMonitor();
+            window.SetTextBox(window.rf2PlusPowerMon, rf2PlusPower.ToString());
+            window.SetRadioButton(window.rf2AttMinusRB, true);
+            SetAttenutatorVoltages();
+            double rf2MinusPower = ReadPowerMonitor();
+            window.SetTextBox(window.rf2MinusPowerMon, rf2MinusPower.ToString());
+            window.SetTextBox(window.rf2CentrePowerMon, ((rf2MinusPower + rf2PlusPower) / 2).ToString());
+            window.SetTextBox(window.rf2StepPowerMon, ((rf2PlusPower - rf2MinusPower) / 2).ToString());
+
+        }
+
+        // This is a little cheezy - it probably should be in its own class.
+        // This method reads the power meter input and converts the result to dBm.
+        private double ReadPowerMonitor()
+        {
+            double rawReading = ReadAnalogInput(rfPowerMonitorInputTask);
+            return rawReading;
         }
 
 		public void UpdateBCurrentMonitor()

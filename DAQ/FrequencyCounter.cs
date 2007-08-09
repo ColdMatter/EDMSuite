@@ -15,6 +15,7 @@ namespace DAQ.HAL
         {
             get;
         }
+
         public abstract double Amplitude
         {
             get;
