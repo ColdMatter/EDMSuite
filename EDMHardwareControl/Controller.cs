@@ -700,10 +700,12 @@ namespace EDMHardwareControl
             window.SetCheckBox(window.fmSelectCheck, true);
             window.SetRadioButton(window.rf1FMPlusRB, true);
             SetFMVoltages();
+            Thread.Sleep(100);
             double rf1PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1PlusFreqMon, rf1PlusFreq.ToString());
             window.SetRadioButton(window.rf1FMMinusRB, true);
             SetFMVoltages();
+            Thread.Sleep(100);
             double rf1MinusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1MinusFreqMon, rf1MinusFreq.ToString());
             window.SetTextBox(window.rf1CentreFreqMon, ((rf1MinusFreq + rf1PlusFreq) / 2).ToString());
@@ -713,10 +715,12 @@ namespace EDMHardwareControl
             window.SetCheckBox(window.fmSelectCheck, false);
             window.SetRadioButton(window.rf2FMPlusRB, true);
             SetFMVoltages();
+            Thread.Sleep(100);
             double rf2PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf2PlusFreqMon, rf2PlusFreq.ToString());
             window.SetRadioButton(window.rf2FMMinusRB, true);
             SetFMVoltages();
+            Thread.Sleep(100);
             double rf2MinusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf2MinusFreqMon, rf2MinusFreq.ToString());
             window.SetTextBox(window.rf2CentreFreqMon, ((rf2MinusFreq + rf2PlusFreq) / 2).ToString());
@@ -733,10 +737,12 @@ namespace EDMHardwareControl
             window.SetCheckBox(window.attenuatorSelectCheck, true);
             window.SetRadioButton(window.rf1AttPlusRB, true);
             SetAttenutatorVoltages();
+            Thread.Sleep(100);
             double rf1PlusPower = ReadPowerMonitor();
             window.SetTextBox(window.rf1PlusPowerMon, rf1PlusPower.ToString());
             window.SetRadioButton(window.rf1AttMinusRB, true);
             SetAttenutatorVoltages();
+            Thread.Sleep(100);
             double rf1MinusPower = ReadPowerMonitor();
             window.SetTextBox(window.rf1MinusPowerMon, rf1MinusPower.ToString());
             window.SetTextBox(window.rf1CentrePowerMon, ((rf1MinusPower + rf1PlusPower) / 2).ToString());
@@ -746,22 +752,23 @@ namespace EDMHardwareControl
             window.SetCheckBox(window.attenuatorSelectCheck, false);
             window.SetRadioButton(window.rf2AttPlusRB, true);
             SetAttenutatorVoltages();
+            Thread.Sleep(100);
             double rf2PlusPower = ReadPowerMonitor();
             window.SetTextBox(window.rf2PlusPowerMon, rf2PlusPower.ToString());
             window.SetRadioButton(window.rf2AttMinusRB, true);
             SetAttenutatorVoltages();
+            Thread.Sleep(100);
             double rf2MinusPower = ReadPowerMonitor();
             window.SetTextBox(window.rf2MinusPowerMon, rf2MinusPower.ToString());
             window.SetTextBox(window.rf2CentrePowerMon, ((rf2MinusPower + rf2PlusPower) / 2).ToString());
             window.SetTextBox(window.rf2StepPowerMon, ((rf2PlusPower - rf2MinusPower) / 2).ToString());
-
         }
 
         // This is a little cheezy - it probably should be in its own class.
         // This method reads the power meter input and converts the result to dBm.
         private double ReadPowerMonitor()
         {
-            double rawReading = ReadAnalogInput(rfPowerMonitorInputTask);
+            double rawReading = ReadAnalogInput(rfPowerMonitorInputTask, 10000, 5000);
             return rawReading;
         }
 
