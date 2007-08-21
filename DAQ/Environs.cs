@@ -95,12 +95,19 @@ namespace DAQ.Environment
 
 				case "PH-JKITE":
 					Hardware = new EDMHardware();
-					FileSystem = new DiscoBanditFileSystem();
+					FileSystem = new PHJKiteFileSystem();
 					Debug = true;
                     ExperimentType = "edm";
 					break;
 
-				case "GANYMEDE0":
+                case "SEALCLUBBER":
+                    Hardware = new EDMHardware();
+                    FileSystem = new SealClubberFileSystem();
+                    Debug = true;
+                    ExperimentType = "edm";
+                    break;
+                
+                case "GANYMEDE0":
 					Hardware = new LiHHardware();
 					FileSystem = new GanymedeFileSystem();
 					Debug = false;

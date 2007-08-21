@@ -7,9 +7,9 @@ using DAQ.Environment;
 
 namespace DAQ.HAL
 {
-    public class EIP575 : FrequencyCounter
+    public class Agilent53131A : FrequencyCounter
     {
- 		public EIP575(String visaAddress) : base(visaAddress)
+        public Agilent53131A(String visaAddress) : base(visaAddress)
 		{}
 
         public override double Frequency
@@ -18,9 +18,11 @@ namespace DAQ.HAL
             {
                 if (!Environs.Debug)
                 {
-
-                    Write("B2");
-                    Write("FR");
+                    Write(":FUNC 'FREQ 1'");
+                    Write(":FREQ:ARM:STAR:SOUR IMM");
+                    Write(":FREQ:ARM:STOP:SOUR TIM");
+                    Write(":FREQ:ARM:STOP:TIM 1.0");
+                    Write("READ:FREQ?");
                     string fr = Read();
                     return Double.Parse(fr);
                 }

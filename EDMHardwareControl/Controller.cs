@@ -60,7 +60,7 @@ namespace EDMHardwareControl
 		Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
 		ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 		HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
-        EIP575 rfCounter = (EIP575)Environs.Hardware.GPIBInstruments["rfCounter"];
+        Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
         Hashtable digitalTasks = new Hashtable();
 		LeakageMonitor northLeakageMonitor =
             new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);

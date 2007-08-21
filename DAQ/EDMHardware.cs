@@ -40,7 +40,7 @@ namespace DAQ.HAL
 			GPIBInstruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
 			GPIBInstruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
 			GPIBInstruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
-            GPIBInstruments.Add("rfCounter", new EIP575("GPIB0::19::INSTR"));
+            GPIBInstruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
 
 			// map the digital channels
 			// these channels are generally switched by the pattern generator

@@ -138,7 +138,8 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EIP575.cs" />
+    <Compile Include="SealClubberFileSystem.cs" />
+    <Compile Include="Agilent53131A.cs" />
     <Compile Include="FrequencyCounter.cs" />
     <Compile Include="PhkaraFileSystem.cs" />
     <Compile Include="CounterChannel.cs">
@@ -162,7 +163,7 @@
     <Compile Include="DigitalOutputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DiscoBanditFileSystem.cs">
+    <Compile Include="PHJKiteFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EdgeSet.cs">

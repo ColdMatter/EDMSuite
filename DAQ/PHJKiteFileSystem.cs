@@ -5,9 +5,9 @@ namespace DAQ.Environment
 	/// <summary>
 	/// 
 	/// </summary>
-	public class DiscoBanditFileSystem : DAQ.Environment.FileSystem
+	public class PHJKiteFileSystem : DAQ.Environment.FileSystem
 	{
-		public DiscoBanditFileSystem()
+		public PHJKiteFileSystem()
 		{
 			Paths.Add("settingsPath","d:\\jony\\data\\settings\\");
 			Paths.Add("scanMasterDataPath", "d:\\jony\\data\\general\\");
