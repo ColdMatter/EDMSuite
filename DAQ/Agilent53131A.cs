@@ -18,12 +18,14 @@ namespace DAQ.HAL
             {
                 if (!Environs.Debug)
                 {
+                    Connect();
                     Write(":FUNC 'FREQ 1'");
                     Write(":FREQ:ARM:STAR:SOUR IMM");
                     Write(":FREQ:ARM:STOP:SOUR TIM");
                     Write(":FREQ:ARM:STOP:TIM 1.0");
                     Write("READ:FREQ?");
                     string fr = Read();
+                    Disconnect();
                     return Double.Parse(fr);
                 }
                 else
