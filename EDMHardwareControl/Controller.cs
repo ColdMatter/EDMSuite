@@ -602,6 +602,70 @@ namespace EDMHardwareControl
             }
         }
 
+        public double RF1FrequencyCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1CentreFreqMon.Text);
+            }
+        }
+
+        public double RF2FrequencyCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2CentreFreqMon.Text);
+            }
+        }
+
+        public double RF1FrequencyStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1StepFreqMon.Text);
+            }
+        }
+
+        public double RF2FrequencyStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2StepFreqMon.Text);
+            }
+        }
+
+        public double RF1PowerCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1CentrePowerMon.Text);
+            }
+        }
+
+        public double RF2PowerCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2CentrePowerMon.Text);
+            }
+        }
+
+        public double RF1PowerStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1StepPowerMon.Text);
+            }
+        }
+
+        public double RF2PowerStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2StepPowerMon.Text);
+            }
+        }
+        
         #endregion
 
 		#region Hardware control methods - safe for remote
@@ -702,14 +766,14 @@ namespace EDMHardwareControl
             SetFMVoltages();
             Thread.Sleep(100);
             double rf1PlusFreq = rfCounter.Frequency;
-            window.SetTextBox(window.rf1PlusFreqMon, rf1PlusFreq.ToString());
+            window.SetTextBox(window.rf1PlusFreqMon, String.Format("{0:F0}",rf1PlusFreq));
             window.SetRadioButton(window.rf1FMMinusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
             double rf1MinusFreq = rfCounter.Frequency;
-            window.SetTextBox(window.rf1MinusFreqMon, rf1MinusFreq.ToString());
-            window.SetTextBox(window.rf1CentreFreqMon, ((rf1MinusFreq + rf1PlusFreq) / 2).ToString());
-            window.SetTextBox(window.rf1StepFreqMon, ((rf1PlusFreq - rf1MinusFreq) / 2).ToString());
+            window.SetTextBox(window.rf1MinusFreqMon, String.Format("{0:F0}",rf1MinusFreq));
+            window.SetTextBox(window.rf1CentreFreqMon, String.Format("{0:F0}",((rf1MinusFreq + rf1PlusFreq) / 2)));
+            window.SetTextBox(window.rf1StepFreqMon, String.Format("{0:F0}",((rf1PlusFreq - rf1MinusFreq) / 2)));
 
             // rf2
             window.SetCheckBox(window.fmSelectCheck, false);
@@ -717,14 +781,14 @@ namespace EDMHardwareControl
             SetFMVoltages();
             Thread.Sleep(100);
             double rf2PlusFreq = rfCounter.Frequency;
-            window.SetTextBox(window.rf2PlusFreqMon, rf2PlusFreq.ToString());
+            window.SetTextBox(window.rf2PlusFreqMon, String.Format("{0:F0}",rf2PlusFreq));
             window.SetRadioButton(window.rf2FMMinusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
             double rf2MinusFreq = rfCounter.Frequency;
-            window.SetTextBox(window.rf2MinusFreqMon, rf2MinusFreq.ToString());
-            window.SetTextBox(window.rf2CentreFreqMon, ((rf2MinusFreq + rf2PlusFreq) / 2).ToString());
-            window.SetTextBox(window.rf2StepFreqMon, ((rf2PlusFreq - rf2MinusFreq) / 2).ToString());
+            window.SetTextBox(window.rf2MinusFreqMon, String.Format("{0:F0}",rf2MinusFreq));
+            window.SetTextBox(window.rf2CentreFreqMon, String.Format("{0:F0}",((rf2MinusFreq + rf2PlusFreq) / 2)));
+            window.SetTextBox(window.rf2StepFreqMon, String.Format("{0:F0}",((rf2PlusFreq - rf2MinusFreq) / 2)));
 
         }
 
@@ -739,14 +803,14 @@ namespace EDMHardwareControl
             SetAttenutatorVoltages();
             Thread.Sleep(100);
             double rf1PlusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf1PlusPowerMon, rf1PlusPower.ToString());
+            window.SetTextBox(window.rf1PlusPowerMon, String.Format("{0:F2}",rf1PlusPower));
             window.SetRadioButton(window.rf1AttMinusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
             double rf1MinusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf1MinusPowerMon, rf1MinusPower.ToString());
-            window.SetTextBox(window.rf1CentrePowerMon, ((rf1MinusPower + rf1PlusPower) / 2).ToString());
-            window.SetTextBox(window.rf1StepPowerMon, ((rf1PlusPower - rf1MinusPower) / 2).ToString());
+            window.SetTextBox(window.rf1MinusPowerMon, String.Format("{0:F2}", rf1MinusPower));
+            window.SetTextBox(window.rf1CentrePowerMon, String.Format("{0:F2}",((rf1MinusPower + rf1PlusPower) / 2)));
+            window.SetTextBox(window.rf1StepPowerMon, String.Format("{0:F2}", ((rf1PlusPower - rf1MinusPower) / 2)));
 
             // rf2
             window.SetCheckBox(window.attenuatorSelectCheck, false);
@@ -754,14 +818,14 @@ namespace EDMHardwareControl
             SetAttenutatorVoltages();
             Thread.Sleep(100);
             double rf2PlusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf2PlusPowerMon, rf2PlusPower.ToString());
+            window.SetTextBox(window.rf2PlusPowerMon, String.Format("{0:F2}", rf2PlusPower));
             window.SetRadioButton(window.rf2AttMinusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
             double rf2MinusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf2MinusPowerMon, rf2MinusPower.ToString());
-            window.SetTextBox(window.rf2CentrePowerMon, ((rf2MinusPower + rf2PlusPower) / 2).ToString());
-            window.SetTextBox(window.rf2StepPowerMon, ((rf2PlusPower - rf2MinusPower) / 2).ToString());
+            window.SetTextBox(window.rf2MinusPowerMon, String.Format("{0:F2}", rf2MinusPower));
+            window.SetTextBox(window.rf2CentrePowerMon, String.Format("{0:F2}", ((rf2MinusPower + rf2PlusPower) / 2)));
+            window.SetTextBox(window.rf2StepPowerMon, String.Format("{0:F2}", ((rf2PlusPower - rf2MinusPower) / 2)));
         }
 
         // This is a little cheezy - it probably should be in its own class.

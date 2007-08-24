@@ -12,6 +12,7 @@ namespace DAQ.HAL
         public Agilent53131A(String visaAddress) : base(visaAddress)
 		{}
 
+        // returns the frequency in Hz, 1s gate time.
         public override double Frequency
         {
             get
@@ -30,7 +31,7 @@ namespace DAQ.HAL
                 }
                 else
                 {
-                    return 170.730 + (new Random()).NextDouble();
+                    return 170751000.0 + 2000 *(new Random()).NextDouble();
                 }
             }
         }
