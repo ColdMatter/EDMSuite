@@ -8,8 +8,8 @@ from System.IO import Path
 # Import the edm control software assemblies into IronPython
 sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\Debug\\"))
 clr.AddReferenceToFile("ScanMaster.exe")
-sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\Debug\\"))
-clr.AddReferenceToFile("EDMBlockHead.exe")
+sys.path.append(Path.GetFullPath("..\\BlockHead\\bin\\Debug\\"))
+clr.AddReferenceToFile("BlockHead.exe")
 sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\Debug\\"))
 clr.AddReferenceToFile("EDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
@@ -35,11 +35,11 @@ class typedproxy(object):
 # create connections to the control programs
 import System
 import ScanMaster
-import EDMBlockHead
+import BlockHead
 import EDMHardwareControl
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1171/controller.rem'), EDMBlockHead.Controller)
+bh = typedproxy(System.Activator.GetObject(BlockHead.Controller, 'tcp://localhost:1171/controller.rem'), BlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
 
 # usage message

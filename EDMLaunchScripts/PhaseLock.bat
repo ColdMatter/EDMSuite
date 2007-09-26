@@ -1,1 +1,1 @@
-start ..\PhaseLock\bin\Debug\PhaseLock.exe
+start ..\EDMPhaseLock\bin\Debug\EDMPhaseLock.exe

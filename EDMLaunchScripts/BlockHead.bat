@@ -1,2 +1,2 @@
-start ..\BlockHead\bin\Debug\BlockHead.exe
+start ..\EDMBlockHead\bin\Debug\EDMBlockHead.exe
 

@@ -2,26 +2,23 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockHead", "BlockHead\BlockHead.csproj", "{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAQ", "DAQ\DAQ.csproj", "{BB737B99-2E9F-40C9-9809-895A7C51AD40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\SharedCode.csproj", "{BA0A0540-3F1C-483B-A180-CB78DF424F15}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMHardwareControl", "EDMHardwareControl\EDMHardwareControl.csproj", "{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseLock", "PhaseLock\PhaseLock.csproj", "{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMLeakageMonitor", "EDMLeakageMonitor\EDMLeakageMonitor.csproj", "{76C7FA01-415B-4492-8FE8-34A3F3CFAF7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CE823F3-EB70-424E-AD0D-2E2CF1BD0861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserLock", "LaserLock\LaserLock.csproj", "{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40} = {373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecelerationHardwareControl", "DecelerationHardwareControl\DecelerationHardwareControl.csproj", "{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecelerationLaserLock", "DecelerationLaserLock\DecelerationLaserLock.csproj", "{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMBlockHead", "EDMBlockHead\EDMBlockHead.csproj", "{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMPhaseLock", "EDMPhaseLock\EDMPhaseLock.csproj", "{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +30,6 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,22 +42,26 @@ Global
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{76C7FA01-415B-4492-8FE8-34A3F3CFAF7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{76C7FA01-415B-4492-8FE8-34A3F3CFAF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76C7FA01-415B-4492-8FE8-34A3F3CFAF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76C7FA01-415B-4492-8FE8-34A3F3CFAF7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
