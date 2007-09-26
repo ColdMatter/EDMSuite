@@ -49,7 +49,15 @@ namespace Data.EDM
 			return temp;
 		}
 
-		public TOF GetAverageTOF(int index)
+        public double[] GetTOFMeanArray(int index, double startTime, double endTime)
+        {
+            double[] temp = new double[points.Count];
+            for (int i = 0; i < points.Count; i++) temp[i] =
+                              (double)((EDMPoint)points[i]).Shot.GatedMean(index, startTime, endTime);
+            return temp;
+        }
+        
+        public TOF GetAverageTOF(int index)
 		{
 			TOF temp = new TOF();
 			for (int i = 0 ; i < points.Count ; i++) temp += (TOF)((EDMPoint)points[i]).Shot.TOFs[index];

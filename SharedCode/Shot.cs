@@ -28,10 +28,15 @@ namespace Data
 
         public double Mean(int index)
         {
-            return ((TOF)tofs[0]).Mean;
+            return ((TOF)tofs[index]).Mean;
         }
 
-		public static Shot operator +(Shot s1, Shot s2)
+        public double GatedMean(int index, double startTime, double endTime)
+        {
+            return ((TOF)tofs[index]).GatedMean(startTime, endTime);
+        }
+        
+        public static Shot operator +(Shot s1, Shot s2)
 		{
 			if (s1.TOFs.Count == s2.TOFs.Count) 
 			{
