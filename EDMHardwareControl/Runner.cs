@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Windows.Forms;
 
 
 namespace EDMHardwareControl
@@ -23,6 +24,7 @@ namespace EDMHardwareControl
 			RemotingServices.Marshal(controller, "controller.rem");
 
 			// hand over to the controller
+            Application.EnableVisualStyles();
 			controller.Start();
 
 			// the application is finishing - close down the remoting channel

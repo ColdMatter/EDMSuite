@@ -235,10 +235,6 @@ namespace EDMBlockHead.Acquire
 
             ESwitchChannel eChan = new ESwitchChannel();
             eChan.Invert = false;
-            eChan.DischargeTime = (int)config.Settings["eDischargeTime"];
-            eChan.BleedTime = (int)config.Settings["eBleedTime"];
-            eChan.SwitchTime = (int)config.Settings["eSwitchTime"];
-            eChan.ChargeTime = (int)config.Settings["eChargeTime"];
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 

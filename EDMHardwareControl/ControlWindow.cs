@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
+
 namespace EDMHardwareControl
 {
 	/// <summary>
@@ -199,6 +200,21 @@ namespace EDMHardwareControl
         private Label label51;
         private Label label50;
         private Label label49;
+        private Label label60;
+        public TextBox eRampUpDelayTextBox;
+        private Label label59;
+        public TextBox eRampUpTimeTextBox;
+        private Label label57;
+        private Label label58;
+        public TextBox eRampDownDelayTextBox;
+        public TextBox eRampDownTimeTextBox;
+        private Label label61;
+        public TextBox eBleedTimeTextBox;
+        private Label label62;
+        public TextBox eSwitchTimeTextBox;
+        public NationalInstruments.UI.WindowsForms.Led rampLED;
+        public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        private Label label63;
 
 
 		public Controller controller;
@@ -231,6 +247,19 @@ namespace EDMHardwareControl
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label62 = new System.Windows.Forms.Label();
+            this.eSwitchTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label61 = new System.Windows.Forms.Label();
+            this.eBleedTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.eRampUpDelayTextBox = new System.Windows.Forms.TextBox();
+            this.label58 = new System.Windows.Forms.Label();
+            this.eRampDownDelayTextBox = new System.Windows.Forms.TextBox();
+            this.label59 = new System.Windows.Forms.Label();
+            this.eRampDownTimeTextBox = new System.Windows.Forms.TextBox();
+            this.eRampUpTimeTextBox = new System.Windows.Forms.TextBox();
             this.fieldsOffButton = new System.Windows.Forms.Button();
             this.switchEButton = new System.Windows.Forms.Button();
             this.eBleedCheck = new System.Windows.Forms.CheckBox();
@@ -413,7 +442,10 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
+            this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label63 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -437,25 +469,144 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.switchingLED);
+            this.groupBox2.Controls.Add(this.rampLED);
+            this.groupBox2.Controls.Add(this.label62);
+            this.groupBox2.Controls.Add(this.eSwitchTimeTextBox);
+            this.groupBox2.Controls.Add(this.label61);
+            this.groupBox2.Controls.Add(this.eBleedTimeTextBox);
+            this.groupBox2.Controls.Add(this.label60);
+            this.groupBox2.Controls.Add(this.label57);
+            this.groupBox2.Controls.Add(this.eRampUpDelayTextBox);
+            this.groupBox2.Controls.Add(this.label58);
+            this.groupBox2.Controls.Add(this.eRampDownDelayTextBox);
+            this.groupBox2.Controls.Add(this.label59);
+            this.groupBox2.Controls.Add(this.eRampDownTimeTextBox);
+            this.groupBox2.Controls.Add(this.eRampUpTimeTextBox);
             this.groupBox2.Controls.Add(this.fieldsOffButton);
             this.groupBox2.Controls.Add(this.switchEButton);
             this.groupBox2.Controls.Add(this.eBleedCheck);
             this.groupBox2.Controls.Add(this.ePolarityCheck);
             this.groupBox2.Controls.Add(this.eOnCheck);
-            this.groupBox2.Location = new System.Drawing.Point(216, 230);
+            this.groupBox2.Location = new System.Drawing.Point(207, 16);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(280, 142);
+            this.groupBox2.Size = new System.Drawing.Size(280, 276);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Switch";
             // 
+            // rampLED
+            // 
+            this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.rampLED.Location = new System.Drawing.Point(253, 40);
+            this.rampLED.Name = "rampLED";
+            this.rampLED.Size = new System.Drawing.Size(21, 22);
+            this.rampLED.TabIndex = 48;
+            // 
+            // label62
+            // 
+            this.label62.Location = new System.Drawing.Point(25, 156);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(115, 23);
+            this.label62.TabIndex = 47;
+            this.label62.Text = "Switch time (s)";
+            // 
+            // eSwitchTimeTextBox
+            // 
+            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 153);
+            this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
+            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eSwitchTimeTextBox.TabIndex = 46;
+            this.eSwitchTimeTextBox.Text = "1";
+            // 
+            // label61
+            // 
+            this.label61.Location = new System.Drawing.Point(25, 130);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(115, 23);
+            this.label61.TabIndex = 45;
+            this.label61.Text = "Bleed time (s)";
+            // 
+            // eBleedTimeTextBox
+            // 
+            this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 127);
+            this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
+            this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eBleedTimeTextBox.TabIndex = 44;
+            this.eBleedTimeTextBox.Text = "0.5";
+            // 
+            // label60
+            // 
+            this.label60.Location = new System.Drawing.Point(25, 208);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(115, 23);
+            this.label60.TabIndex = 45;
+            this.label60.Text = "Ramp up delay (s)";
+            // 
+            // label57
+            // 
+            this.label57.Location = new System.Drawing.Point(25, 105);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(115, 23);
+            this.label57.TabIndex = 41;
+            this.label57.Text = "Ramp down delay (s)";
+            // 
+            // eRampUpDelayTextBox
+            // 
+            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 205);
+            this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
+            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpDelayTextBox.TabIndex = 44;
+            this.eRampUpDelayTextBox.Text = "5";
+            // 
+            // label58
+            // 
+            this.label58.Location = new System.Drawing.Point(25, 79);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(115, 23);
+            this.label58.TabIndex = 40;
+            this.label58.Text = "Ramp down time (s)";
+            // 
+            // eRampDownDelayTextBox
+            // 
+            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 102);
+            this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
+            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownDelayTextBox.TabIndex = 39;
+            this.eRampDownDelayTextBox.Text = "5";
+            // 
+            // label59
+            // 
+            this.label59.Location = new System.Drawing.Point(25, 182);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(115, 23);
+            this.label59.TabIndex = 43;
+            this.label59.Text = "Ramp up time (s)";
+            // 
+            // eRampDownTimeTextBox
+            // 
+            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 76);
+            this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
+            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownTimeTextBox.TabIndex = 38;
+            this.eRampDownTimeTextBox.Text = "5";
+            // 
+            // eRampUpTimeTextBox
+            // 
+            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 179);
+            this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
+            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpTimeTextBox.TabIndex = 42;
+            this.eRampUpTimeTextBox.Text = "5";
+            // 
             // fieldsOffButton
             // 
-            this.fieldsOffButton.Location = new System.Drawing.Point(19, 103);
+            this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
             this.fieldsOffButton.Name = "fieldsOffButton";
             this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
             this.fieldsOffButton.TabIndex = 23;
@@ -464,7 +615,7 @@ namespace EDMHardwareControl
             // 
             // switchEButton
             // 
-            this.switchEButton.Location = new System.Drawing.Point(136, 64);
+            this.switchEButton.Location = new System.Drawing.Point(136, 241);
             this.switchEButton.Name = "switchEButton";
             this.switchEButton.Size = new System.Drawing.Size(96, 23);
             this.switchEButton.TabIndex = 22;
@@ -473,7 +624,7 @@ namespace EDMHardwareControl
             // 
             // eBleedCheck
             // 
-            this.eBleedCheck.Location = new System.Drawing.Point(24, 64);
+            this.eBleedCheck.Location = new System.Drawing.Point(96, 19);
             this.eBleedCheck.Name = "eBleedCheck";
             this.eBleedCheck.Size = new System.Drawing.Size(72, 24);
             this.eBleedCheck.TabIndex = 21;
@@ -482,7 +633,7 @@ namespace EDMHardwareControl
             // 
             // ePolarityCheck
             // 
-            this.ePolarityCheck.Location = new System.Drawing.Point(136, 32);
+            this.ePolarityCheck.Location = new System.Drawing.Point(24, 40);
             this.ePolarityCheck.Name = "ePolarityCheck";
             this.ePolarityCheck.Size = new System.Drawing.Size(136, 24);
             this.ePolarityCheck.TabIndex = 20;
@@ -491,7 +642,7 @@ namespace EDMHardwareControl
             // 
             // eOnCheck
             // 
-            this.eOnCheck.Location = new System.Drawing.Point(24, 32);
+            this.eOnCheck.Location = new System.Drawing.Point(24, 19);
             this.eOnCheck.Name = "eOnCheck";
             this.eOnCheck.Size = new System.Drawing.Size(72, 24);
             this.eOnCheck.TabIndex = 19;
@@ -706,6 +857,7 @@ namespace EDMHardwareControl
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label63);
             this.tabPage1.Controls.Add(this.groupBox13);
             this.tabPage1.Controls.Add(this.groupBox6);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -726,7 +878,7 @@ namespace EDMHardwareControl
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
             this.groupBox13.Location = new System.Drawing.Point(17, 230);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(184, 112);
+            this.groupBox13.Size = new System.Drawing.Size(184, 113);
             this.groupBox13.TabIndex = 41;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Supply asymmetry";
@@ -741,17 +893,17 @@ namespace EDMHardwareControl
             // 
             // label37
             // 
-            this.label37.Location = new System.Drawing.Point(16, 83);
+            this.label37.Location = new System.Drawing.Point(6, 83);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(75, 23);
+            this.label37.Size = new System.Drawing.Size(84, 23);
             this.label37.TabIndex = 37;
             this.label37.Text = "0+1- boost (V)";
             // 
             // label38
             // 
-            this.label38.Location = new System.Drawing.Point(16, 51);
+            this.label38.Location = new System.Drawing.Point(6, 51);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(80, 23);
+            this.label38.Size = new System.Drawing.Size(89, 23);
             this.label38.TabIndex = 36;
             this.label38.Text = "0+ boost (V)";
             // 
@@ -782,7 +934,7 @@ namespace EDMHardwareControl
             this.groupBox6.Controls.Add(this.label14);
             this.groupBox6.Controls.Add(this.label15);
             this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
-            this.groupBox6.Location = new System.Drawing.Point(216, 16);
+            this.groupBox6.Location = new System.Drawing.Point(493, 16);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(184, 208);
             this.groupBox6.TabIndex = 24;
@@ -889,16 +1041,16 @@ namespace EDMHardwareControl
             this.groupBox7.Controls.Add(this.updateIMonitorButton);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.label19);
-            this.groupBox7.Location = new System.Drawing.Point(502, 16);
+            this.groupBox7.Location = new System.Drawing.Point(493, 230);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(184, 326);
+            this.groupBox7.Size = new System.Drawing.Size(184, 276);
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
             // setIMonitorMeasurementLengthButton
             // 
-            this.setIMonitorMeasurementLengthButton.Location = new System.Drawing.Point(56, 290);
+            this.setIMonitorMeasurementLengthButton.Location = new System.Drawing.Point(56, 234);
             this.setIMonitorMeasurementLengthButton.Name = "setIMonitorMeasurementLengthButton";
             this.setIMonitorMeasurementLengthButton.Size = new System.Drawing.Size(75, 23);
             this.setIMonitorMeasurementLengthButton.TabIndex = 53;
@@ -908,7 +1060,7 @@ namespace EDMHardwareControl
             // 
             // IMonitorMeasurementLengthTextBox
             // 
-            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(104, 256);
+            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(104, 200);
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
             this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
             this.IMonitorMeasurementLengthTextBox.TabIndex = 52;
@@ -916,7 +1068,7 @@ namespace EDMHardwareControl
             // 
             // label35
             // 
-            this.label35.Location = new System.Drawing.Point(16, 256);
+            this.label35.Location = new System.Drawing.Point(16, 200);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(80, 31);
             this.label35.TabIndex = 51;
@@ -924,7 +1076,7 @@ namespace EDMHardwareControl
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(16, 162);
+            this.label17.Location = new System.Drawing.Point(16, 116);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(80, 23);
             this.label17.TabIndex = 50;
@@ -934,7 +1086,7 @@ namespace EDMHardwareControl
             // 
             this.northOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.northOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(104, 162);
+            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(104, 116);
             this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
             this.northOffsetIMonitorTextBox.ReadOnly = true;
             this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
@@ -943,7 +1095,7 @@ namespace EDMHardwareControl
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(16, 188);
+            this.label16.Location = new System.Drawing.Point(16, 142);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(80, 23);
             this.label16.TabIndex = 48;
@@ -953,7 +1105,7 @@ namespace EDMHardwareControl
             // 
             this.southOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.southOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(104, 188);
+            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(104, 142);
             this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
             this.southOffsetIMonitorTextBox.ReadOnly = true;
             this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
@@ -962,7 +1114,7 @@ namespace EDMHardwareControl
             // 
             // calibrateIMonitorButton
             // 
-            this.calibrateIMonitorButton.Location = new System.Drawing.Point(56, 214);
+            this.calibrateIMonitorButton.Location = new System.Drawing.Point(56, 168);
             this.calibrateIMonitorButton.Name = "calibrateIMonitorButton";
             this.calibrateIMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.calibrateIMonitorButton.TabIndex = 46;
@@ -2271,6 +2423,25 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
+            // switchingLED
+            // 
+            this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.switchingLED.Location = new System.Drawing.Point(253, 19);
+            this.switchingLED.Name = "switchingLED";
+            this.switchingLED.OffColor = System.Drawing.Color.Maroon;
+            this.switchingLED.OnColor = System.Drawing.Color.Red;
+            this.switchingLED.Size = new System.Drawing.Size(21, 22);
+            this.switchingLED.TabIndex = 48;
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(14, 346);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(303, 13);
+            this.label63.TabIndex = 39;
+            this.label63.Text = "Note: the ramp does not currently deal with the asymmetry well.";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2282,6 +2453,8 @@ namespace EDMHardwareControl
             this.Text = "EDM Hardware Control";
             this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -2289,6 +2462,7 @@ namespace EDMHardwareControl
             this.groupBox5.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -2320,6 +2494,7 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -2539,7 +2714,27 @@ namespace EDMHardwareControl
 			box.Text = text;
 		}
 
-		#endregion
+        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
+        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void EnableControl(Control control, bool enabled)
+        {
+            control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
+        }
+        private delegate void EnableControlDelegate(Control control, bool enabled);
+        private void EnableControlHelper(Control control, bool enabled)
+        {
+            control.Enabled = enabled;
+        }
+ 
+        #endregion
 
 		private void ControlWindow_Load(object sender, EventArgs e)
 		{

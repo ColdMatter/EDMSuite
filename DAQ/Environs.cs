@@ -100,19 +100,19 @@ namespace DAQ.Environment
                     ExperimentType = "edm";
 					break;
 
-                //case "SEALCLUBBER":
-                //    Hardware = new EDMHardware();
-                //    FileSystem = new SealClubberFileSystem();
-                //    Debug = true;
-                //    ExperimentType = "edm";
-                //    break;
-
                 case "SEALCLUBBER":
-                    Hardware = new DecelerationHardware();
+                    Hardware = new EDMHardware();
                     FileSystem = new SealClubberFileSystem();
                     Debug = true;
-                    ExperimentType = "decelerator";
+                    ExperimentType = "edm";
                     break;
+
+                //case "SEALCLUBBER":
+                //    Hardware = new DecelerationHardware();
+                //    FileSystem = new SealClubberFileSystem();
+                //    Debug = true;
+                //    ExperimentType = "decelerator";
+                //    break;
                 
                 case "GANYMEDE0":
 					Hardware = new LiHHardware();

@@ -85,6 +85,16 @@ def EDMGoReal(nullRun):
 	bc.GetModulationByName("RF1F").Step = hc.RF1FMStep
 	bc.GetModulationByName("RF2F").Centre = hc.RF2FMCentre
 	bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
+	print("Storing E switch parameters ...")
+	bc.Settings["eRampDownTime"] = hc.ERampDownTime
+	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
+	bc.Settings["eBleedTime"] = hc.EBleedTime
+	bc.Settings["eSwitchTime"] = hc.ESwitchTime
+	bc.Settings["eRampUpTime"] = hc.ERampUpTime
+	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
+	# this is for legacy analysis compatibility
+	bc.Settings["eDischargeTime"] = hc.ERampDownTime + hc.ERampDownDelay
+	bc.Settings["eChargeTime"] = hc.ERampUpTime + hc.ERampUpDelay
 
 	# loop and take data
 	bh.StartPattern()

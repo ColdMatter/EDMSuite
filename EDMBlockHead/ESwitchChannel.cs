@@ -15,10 +15,6 @@ namespace EDMBlockHead.Acquire.Channels
 	public class ESwitchChannel : SwitchedChannel
 	{
 		public bool Invert;
-		public int DischargeTime;
-		public int BleedTime;
-		public int SwitchTime;
-		public int ChargeTime;
 
 		private bool currentState = false;
 		static private EDMHardwareControl.Controller hardwareController;
@@ -34,7 +30,7 @@ namespace EDMBlockHead.Acquire.Channels
 				currentState = value;
 				try
 				{
-					hardwareController.SwitchE(value, DischargeTime, BleedTime, SwitchTime, ChargeTime);
+					hardwareController.SwitchE(value);
 				}
 				catch (Exception e)
 				{
