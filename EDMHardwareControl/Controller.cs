@@ -731,18 +731,24 @@ namespace EDMHardwareControl
             SwitchE(!EFieldPolarity);
         }
 
+        public void SwitchEAndWait(bool state)
+        {
+            SwitchE(state);
+            switchThread.Join();
+        }
+
         private bool newEPolarity;
         private object switchingLock = new object();
+        private Thread switchThread;
         public void SwitchE(bool state)
         {
-            Thread switchThread;
             lock (switchingLock)
             {
                 newEPolarity = state;
                 switchThread = new Thread(new ThreadStart(SwitchEWorker));
-                window.switchEButton.Enabled = false;
+                window.EnableControl(window.switchEButton, false);
+                switchThread.Start();
             }
-            switchThread.Start();
         }
 
         // this function switches the E field polarity with ramped turn on and off

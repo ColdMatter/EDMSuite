@@ -39,7 +39,7 @@ namespace DAQ.Environment
        	/// <summary>
 		/// Experiment type is for code that needs to know what experiment it's running on.
 		/// </summary>
-		public static String ExperimentType;
+		//public static String ExperimentType;
 
 		/// <summary>
 		/// Initialise the environment. This code switches on computer name and
@@ -54,20 +54,20 @@ namespace DAQ.Environment
                     Hardware = new EDMHardware();
                     FileSystem = new PhkaraFileSystem();
                     Debug = false;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
                     break;
 
                 case "CRASH1":
 					Hardware = new DecelerationHardware();
 					FileSystem = new CrashFileSystem();
 					Debug = false;
-                    ExperimentType = "decelerator";
+                    //ExperimentType = "decelerator";
 					break;
 
 				case "SCHNAPS":
 					Hardware = new DecelerationHardware();
 					FileSystem = new SchnapsFileSystem();
-					ExperimentType = "decelerator";
+					//ExperimentType = "decelerator";
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
 					Debug = false;
                     break;
@@ -76,35 +76,35 @@ namespace DAQ.Environment
 					Hardware = new DecelerationHardware();
 					FileSystem = new OysterFileSystem();
 					Debug = true;
-                    ExperimentType = "decelerator";
+                    //ExperimentType = "decelerator";
 					break;
 
 				case "CLAM":
 					Hardware = new DecelerationHardware();
 					FileSystem = new ClamFileSystem();
 					Debug = true;
-                    ExperimentType = "decelerator";
+                    //ExperimentType = "decelerator";
 					break;
 
 				case "CHROME1":
 					Hardware = new EDMHardware();
 					FileSystem = new ChromeFileSystem();
 					Debug = false;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
 					break;
 
 				case "PH-JKITE":
 					Hardware = new EDMHardware();
 					FileSystem = new PHJKiteFileSystem();
 					Debug = true;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
 					break;
 
                 case "SEALCLUBBER":
                     Hardware = new EDMHardware();
                     FileSystem = new SealClubberFileSystem();
                     Debug = true;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
                     break;
 
                 //case "SEALCLUBBER":
@@ -118,7 +118,7 @@ namespace DAQ.Environment
 					Hardware = new LiHHardware();
 					FileSystem = new GanymedeFileSystem();
 					Debug = false;
-                    ExperimentType = "lih";
+                    //ExperimentType = "lih";
                     Info.Add("SwitchSequenceCode", "WFSwitchSequenceV1`");
 					break;
 
@@ -126,21 +126,21 @@ namespace DAQ.Environment
 					Hardware = new BufferGasHardware();
 					FileSystem = new CarmeliteFileSystem();
 					Debug = false;
-                    ExperimentType = "buffer";
+                    //ExperimentType = "buffer";
 					break;
 				
 				case "YBF":
 					Hardware = new EDMHardware();
 					FileSystem = new YBFFileSystem();
 					Debug = true;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
 					break;
 
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
-                    ExperimentType = "edm";
+                    //ExperimentType = "edm";
 					break;
 			}
 		}
