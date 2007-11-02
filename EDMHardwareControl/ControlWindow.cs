@@ -316,6 +316,15 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label63 = new System.Windows.Forms.Label();
+            this.stopIMonitorPollButton = new System.Windows.Forms.Button();
+            this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
+            this.startIMonitorPollButton = new System.Windows.Forms.Button();
+            this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis1 = new NationalInstruments.UI.XAxis();
+            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.southLeakagePlot = new NationalInstruments.UI.WaveformPlot();
             this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
@@ -452,15 +461,6 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-            this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
-            this.xAxis1 = new NationalInstruments.UI.XAxis();
-            this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
-            this.southLeakagePlot = new NationalInstruments.UI.WaveformPlot();
-            this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
-            this.startIMonitorPollButton = new System.Windows.Forms.Button();
-            this.stopIMonitorPollButton = new System.Windows.Forms.Button();
-            this.label63 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -472,6 +472,7 @@ namespace EDMHardwareControl
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox16.SuspendLayout();
@@ -487,7 +488,6 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1078,6 +1078,92 @@ namespace EDMHardwareControl
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // label63
+            // 
+            this.label63.Location = new System.Drawing.Point(485, 27);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(99, 23);
+            this.label63.TabIndex = 56;
+            this.label63.Text = "Poll period (ms)";
+            // 
+            // stopIMonitorPollButton
+            // 
+            this.stopIMonitorPollButton.Enabled = false;
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 80);
+            this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
+            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopIMonitorPollButton.TabIndex = 55;
+            this.stopIMonitorPollButton.Text = "Stop poll";
+            this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
+            // 
+            // iMonitorPollPeriod
+            // 
+            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 25);
+            this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
+            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
+            this.iMonitorPollPeriod.TabIndex = 54;
+            this.iMonitorPollPeriod.Text = "200";
+            // 
+            // startIMonitorPollButton
+            // 
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(579, 51);
+            this.startIMonitorPollButton.Name = "startIMonitorPollButton";
+            this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startIMonitorPollButton.TabIndex = 53;
+            this.startIMonitorPollButton.Text = "Start poll";
+            this.startIMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startIMonitorPollButton.Click += new System.EventHandler(this.startIMonitorPollButton_Click);
+            // 
+            // leakageGraph
+            // 
+            this.leakageGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY)
+                        | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint)
+                        | NationalInstruments.UI.GraphInteractionModes.PanX)
+                        | NationalInstruments.UI.GraphInteractionModes.PanY)
+                        | NationalInstruments.UI.GraphInteractionModes.DragCursor)
+                        | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption)
+                        | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.leakageGraph.Location = new System.Drawing.Point(17, 111);
+            this.leakageGraph.Name = "leakageGraph";
+            this.leakageGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.northLeakagePlot,
+            this.southLeakagePlot});
+            this.leakageGraph.Size = new System.Drawing.Size(637, 153);
+            this.leakageGraph.TabIndex = 45;
+            this.leakageGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis1});
+            this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis1});
+            // 
+            // northLeakagePlot
+            // 
+            this.northLeakagePlot.AntiAliased = true;
+            this.northLeakagePlot.HistoryCapacity = 10000;
+            this.northLeakagePlot.LineColor = System.Drawing.Color.Crimson;
+            this.northLeakagePlot.LineWidth = 2F;
+            this.northLeakagePlot.XAxis = this.xAxis1;
+            this.northLeakagePlot.YAxis = this.yAxis1;
+            // 
+            // xAxis1
+            // 
+            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 500);
+            // 
+            // yAxis1
+            // 
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis1.OriginLineVisible = true;
+            this.yAxis1.Range = new NationalInstruments.UI.Range(-500, 500);
+            // 
+            // southLeakagePlot
+            // 
+            this.southLeakagePlot.HistoryCapacity = 10000;
+            this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southLeakagePlot.LineWidth = 2F;
+            this.southLeakagePlot.XAxis = this.xAxis1;
+            this.southLeakagePlot.YAxis = this.yAxis1;
             // 
             // IMonitorMeasurementLengthTextBox
             // 
@@ -2444,79 +2530,6 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
-            // leakageGraph
-            // 
-            this.leakageGraph.Location = new System.Drawing.Point(17, 111);
-            this.leakageGraph.Name = "leakageGraph";
-            this.leakageGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.northLeakagePlot,
-            this.southLeakagePlot});
-            this.leakageGraph.Size = new System.Drawing.Size(637, 153);
-            this.leakageGraph.TabIndex = 45;
-            this.leakageGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis1});
-            this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis1});
-            // 
-            // xAxis1
-            // 
-            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 1500);
-            // 
-            // northLeakagePlot
-            // 
-            this.northLeakagePlot.AntiAliased = true;
-            this.northLeakagePlot.HistoryCapacity = 10000;
-            this.northLeakagePlot.LineColor = System.Drawing.Color.Crimson;
-            this.northLeakagePlot.LineWidth = 2F;
-            this.northLeakagePlot.XAxis = this.xAxis1;
-            this.northLeakagePlot.YAxis = this.yAxis1;
-            // 
-            // southLeakagePlot
-            // 
-            this.southLeakagePlot.HistoryCapacity = 10000;
-            this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
-            this.southLeakagePlot.LineWidth = 2F;
-            this.southLeakagePlot.XAxis = this.xAxis1;
-            this.southLeakagePlot.YAxis = this.yAxis1;
-            // 
-            // iMonitorPollPeriod
-            // 
-            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 25);
-            this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
-            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
-            this.iMonitorPollPeriod.TabIndex = 54;
-            this.iMonitorPollPeriod.Text = "200";
-            // 
-            // startIMonitorPollButton
-            // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(579, 51);
-            this.startIMonitorPollButton.Name = "startIMonitorPollButton";
-            this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
-            this.startIMonitorPollButton.TabIndex = 53;
-            this.startIMonitorPollButton.Text = "Start poll";
-            this.startIMonitorPollButton.UseVisualStyleBackColor = true;
-            this.startIMonitorPollButton.Click += new System.EventHandler(this.startIMonitorPollButton_Click);
-            // 
-            // stopIMonitorPollButton
-            // 
-            this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 80);
-            this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
-            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
-            this.stopIMonitorPollButton.TabIndex = 55;
-            this.stopIMonitorPollButton.Text = "Stop poll";
-            this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
-            this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
-            // 
-            // label63
-            // 
-            this.label63.Location = new System.Drawing.Point(485, 27);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(99, 23);
-            this.label63.TabIndex = 56;
-            this.label63.Text = "Poll period (ms)";
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2544,6 +2557,7 @@ namespace EDMHardwareControl
             this.groupBox6.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -2569,7 +2583,6 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.ResumeLayout(false);
 
 		}
