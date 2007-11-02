@@ -43,8 +43,8 @@ namespace EDMHardwareControl
         //Convention for monitor to plate mapping:
         //north -> monitor1
         //south -> monitor2
-        private static double northSlope = 1;
-        private static double southSlope = 1;
+        private static double northSlope = 0.1;
+        private static double southSlope = 0.1;
         private static double northOffset = 0;
         private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = .5;
@@ -990,14 +990,21 @@ namespace EDMHardwareControl
 
         public void UpdateIMonitor()
         {
+            setIMonitorMeasurementLength();
             window.SetTextBox(window.northIMonitorTextBox, (northLeakageMonitor.GetCurrent()).ToString());
             window.SetTextBox(window.southIMonitorTextBox, (southLeakageMonitor.GetCurrent()).ToString());
+            window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
+                                    new double[] { northLeakageMonitor.GetCurrent() });
+            window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
+                                    new double[] { southLeakageMonitor.GetCurrent() });
+
         }
 
         public void CalibrateIMonitors()
         {
-            southLeakageMonitor.Calibrate();
-            northLeakageMonitor.Calibrate();
+            setIMonitorMeasurementLength();
+            southLeakageMonitor.SetZero();
+            northLeakageMonitor.SetZero();
 
             northOffset = northLeakageMonitor.Offset;
             southOffset = southLeakageMonitor.Offset;
@@ -1007,11 +1014,52 @@ namespace EDMHardwareControl
 
         }
 
-        public void setIMonitorMeasurementLength()
+        private void setIMonitorMeasurementLength()
         {
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+        }
+
+        private Thread iMonitorPollThread;
+        private object iMonitorLock = new object();
+        private bool iMonitorStopFlag = false;
+        private int iMonitorPollPeriod = 200;
+        internal void StartIMonitorPoll()
+        {
+            lock (iMonitorLock)
+            {
+                iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
+                window.EnableControl(window.startIMonitorPollButton, false);
+                window.EnableControl(window.stopIMonitorPollButton, true);
+                iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+                iMonitorPollThread.Start();
+            }
+            
+        }
+
+        internal void StopIMonitorPoll()
+        {
+            lock (iMonitorLock) iMonitorStopFlag = true;
+        }
+
+        private void IMonitorPollWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(iMonitorPollPeriod);
+                UpdateIMonitor();
+                lock (iMonitorLock)
+                {
+                    if (iMonitorStopFlag)
+                    {
+                        iMonitorStopFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startIMonitorPollButton, true);
+            window.EnableControl(window.stopIMonitorPollButton, false);
         }
 
         public void UpdateLaserPhotodiodes()
@@ -1231,7 +1279,5 @@ namespace EDMHardwareControl
         }
 
         #endregion
-
-
     }
 }

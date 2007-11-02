@@ -7,14 +7,19 @@ using DAQ.HAL;
 
 namespace DAQ.HAL
 {
-	public class LeakageMonitor
-	{
-		private Random rn;
-		private CounterChannel currentLeakageCounterChannel;
-		private Task counterTask;
-		private CounterReader leakageReader;
-	
-		// calibration constants
+    /* Measures the value from a HV leakage monitor. The leakage monitor outputs a train of pulses whose
+     * frequency depends on the current flowing through it. This class uses a counter (well, pair of
+     * counters to measure that frequency. The class provides a re-settable zero offset as the 
+     * leakage monitors are prone to drifiting.
+     */
+    public class LeakageMonitor
+    {
+        private Random rn;
+        private CounterChannel currentLeakageCounterChannel;
+        private Task counterTask;
+        private CounterReader leakageReader;
+
+        // calibration constants
         public double Slope
         {
             get
@@ -55,69 +60,61 @@ namespace DAQ.HAL
         private double offset;
         private double measurementTime;
 
-		public LeakageMonitor(CounterChannel clChannel, double slope, double offset, double measurementTime)
-		{
-			currentLeakageCounterChannel = clChannel;
-			this.slope = slope;
-			this.offset = offset;
+        public LeakageMonitor(CounterChannel clChannel, double slope, double offset, double measurementTime)
+        {
+            currentLeakageCounterChannel = clChannel;
+            this.slope = slope;
+            this.offset = offset;
             this.measurementTime = measurementTime;
-			rn = new Random();
-		}
+            rn = new Random((int)DateTime.Now.Ticks);
+        }
 
-		public void Initialize()
-		{
-			counterTask = new Task("");	
-			if (!Environs.Debug)
-			{
-               
-				this.counterTask.CIChannels.CreateFrequencyChannel(
-					currentLeakageCounterChannel.PhysicalChannel,
-					"",
-					0,
-					10000,
-					CIFrequencyStartingEdge.Rising,
-					CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
-                    measurementTime,
-					10,			
-					CIFrequencyUnits.Hertz
-					);	
-				counterTask.Stream.Timeout = (int)(1000 * measurementTime);
-			}
-			leakageReader = new CounterReader(counterTask.Stream);	
-		}
+        public void Initialize()
+        {
+            counterTask = new Task("");
+            this.counterTask.CIChannels.CreateFrequencyChannel(
+                currentLeakageCounterChannel.PhysicalChannel,
+                "",
+                0,
+                150000,
+                CIFrequencyStartingEdge.Rising,
+                CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
+                // the units of measurement time are not specified anywhere in the docs :-(
+                measurementTime,
+                // this has to be more than four to stop NIDAQ crashing, even though it is not used in this mode!
+                10,
+                CIFrequencyUnits.Hertz
+                );
+            counterTask.Stream.Timeout = (int)(1000 * measurementTime);
+            leakageReader = new CounterReader(counterTask.Stream);
+        }
 
 
 
 
-		private double getRawCount()
-		{
-			double raw;
-			if (!Environs.Debug)
-			{
-                try
-                {
-                    raw = leakageReader.ReadSingleSampleDouble();
-                    counterTask.Control(TaskAction.Unreserve);
-                }
-                catch
-                {
-                    raw = 0;
-                }
-			}
-			else
-			{
-				raw = rn.NextDouble() * 5000;
-			}
-			return raw;
-		}
+        private double getRawCount()
+        {
+            double raw;
+            if (!Environs.Debug)
+            {
+
+                raw = leakageReader.ReadSingleSampleDouble();
+                counterTask.Control(TaskAction.Unreserve);
+
+            }
+            else
+            {
+                raw = rn.NextDouble() * 5000;
+            }
+            return raw;
+        }
 
         public double GetCurrent()
         {
             return ((getRawCount() - offset) / slope);
         }
 
-
-        public void Calibrate()
+        public void SetZero()
         {
             offset = getRawCount();
             return;
@@ -127,7 +124,7 @@ namespace DAQ.HAL
         {
             counterTask.Stream.Timeout = (int)(1000 * measurementTime);
             counterTask.CIChannels[0].FrequencyMeasurementTime = measurementTime;
-        }        
+        }
 
-	}
+    }
 }
