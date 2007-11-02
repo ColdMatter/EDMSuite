@@ -43,8 +43,8 @@ namespace EDMHardwareControl
         //Convention for monitor to plate mapping:
         //north -> monitor1
         //south -> monitor2
-        private static double northSlope = 0.1;
-        private static double southSlope = 0.1;
+        private static double northSlope = 200;
+        private static double southSlope = 200;
         private static double northOffset = 0;
         private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = .5;
