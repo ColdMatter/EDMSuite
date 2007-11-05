@@ -47,7 +47,7 @@ namespace EDMHardwareControl
         private static double southSlope = 200;
         private static double northOffset = 0;
         private static double southOffset = 0;
-        private static double currentMonitorMeasurementTime = .5;
+        private static double currentMonitorMeasurementTime = 0.01;
 
 
 
@@ -990,7 +990,7 @@ namespace EDMHardwareControl
 
         public void UpdateIMonitor()
         {
-            setIMonitorMeasurementLength();
+            ReconfigureIMonitors();
             window.SetTextBox(window.northIMonitorTextBox, (northLeakageMonitor.GetCurrent()).ToString());
             window.SetTextBox(window.southIMonitorTextBox, (southLeakageMonitor.GetCurrent()).ToString());
             window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
@@ -1002,7 +1002,7 @@ namespace EDMHardwareControl
 
         public void CalibrateIMonitors()
         {
-            setIMonitorMeasurementLength();
+            ReconfigureIMonitors();
             southLeakageMonitor.SetZero();
             northLeakageMonitor.SetZero();
 
@@ -1014,11 +1014,15 @@ namespace EDMHardwareControl
 
         }
 
-        private void setIMonitorMeasurementLength()
+        private void ReconfigureIMonitors()
         {
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            northSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            southSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            northLeakageMonitor.Slope = northSlope;
+            southLeakageMonitor.Slope = southSlope;
         }
 
         private Thread iMonitorPollThread;

@@ -225,6 +225,11 @@ namespace EDMHardwareControl
         public Button stopIMonitorPollButton;
         public TextBox iMonitorPollPeriod;
         public Button startIMonitorPollButton;
+        private Label label64;
+        public TextBox leakageMonitorSlopeTextBox;
+        private Legend legend1;
+        private LegendItem NorthLegendItem;
+        private LegendItem SouthLegendItem;
 
 
 		public Controller controller;
@@ -461,6 +466,11 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.legend1 = new NationalInstruments.UI.WindowsForms.Legend();
+            this.NorthLegendItem = new NationalInstruments.UI.LegendItem();
+            this.SouthLegendItem = new NationalInstruments.UI.LegendItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -488,6 +498,7 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1055,6 +1066,9 @@ namespace EDMHardwareControl
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.legend1);
+            this.groupBox7.Controls.Add(this.label64);
+            this.groupBox7.Controls.Add(this.leakageMonitorSlopeTextBox);
             this.groupBox7.Controls.Add(this.label63);
             this.groupBox7.Controls.Add(this.stopIMonitorPollButton);
             this.groupBox7.Controls.Add(this.iMonitorPollPeriod);
@@ -2530,6 +2544,43 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
+            // label64
+            // 
+            this.label64.Location = new System.Drawing.Point(362, 14);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(108, 59);
+            this.label64.TabIndex = 58;
+            this.label64.Text = "Monitor slope (Hz/I)\r\nShould be:\r\n~200Hz/nA hi\r\n~100Hz/uA lo";
+            // 
+            // leakageMonitorSlopeTextBox
+            // 
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(365, 76);
+            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.leakageMonitorSlopeTextBox.TabIndex = 57;
+            this.leakageMonitorSlopeTextBox.Text = "200";
+            // 
+            // legend1
+            // 
+            this.legend1.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
+            this.NorthLegendItem,
+            this.SouthLegendItem});
+            this.legend1.ItemSize = new System.Drawing.Size(12, 12);
+            this.legend1.Location = new System.Drawing.Point(452, 86);
+            this.legend1.Name = "legend1";
+            this.legend1.Size = new System.Drawing.Size(115, 22);
+            this.legend1.TabIndex = 59;
+            // 
+            // NorthLegendItem
+            // 
+            this.NorthLegendItem.Source = this.northLeakagePlot;
+            this.NorthLegendItem.Text = "North";
+            // 
+            // SouthLegendItem
+            // 
+            this.SouthLegendItem.Source = this.southLeakagePlot;
+            this.SouthLegendItem.Text = "South";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2583,6 +2634,7 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend1)).EndInit();
             this.ResumeLayout(false);
 
 		}

@@ -85,7 +85,7 @@ namespace DAQ.HAL
                 100,
                 CIFrequencyUnits.Hertz
                 );
-//            counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
+            counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
             leakageReader = new CounterReader(counterTask.Stream);
         }
 
@@ -97,9 +97,15 @@ namespace DAQ.HAL
             double raw;
             if (!Environs.Debug)
             {
-                raw = leakageReader.ReadSingleSampleDouble();
-                //counterTask.Control(TaskAction.Unreserve);
-
+                try
+                {
+                    raw = leakageReader.ReadSingleSampleDouble();
+                    //counterTask.Control(TaskAction.Unreserve);
+                }
+                catch (NationalInstruments.DAQmx.DaqException)
+                {
+                    raw = offset;
+                }
             }
             else
             {
@@ -121,7 +127,7 @@ namespace DAQ.HAL
 
         private void setMeasurementTime()
         {
- //           counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
+            counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
             counterTask.CIChannels[0].FrequencyMeasurementTime = measurementTime;
         }
 
