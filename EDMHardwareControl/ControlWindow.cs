@@ -321,15 +321,20 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.legend1 = new NationalInstruments.UI.WindowsForms.Legend();
+            this.NorthLegendItem = new NationalInstruments.UI.LegendItem();
+            this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis1 = new NationalInstruments.UI.XAxis();
+            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.SouthLegendItem = new NationalInstruments.UI.LegendItem();
+            this.southLeakagePlot = new NationalInstruments.UI.WaveformPlot();
+            this.label64 = new System.Windows.Forms.Label();
+            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
             this.label63 = new System.Windows.Forms.Label();
             this.stopIMonitorPollButton = new System.Windows.Forms.Button();
             this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.startIMonitorPollButton = new System.Windows.Forms.Button();
             this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
-            this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
-            this.xAxis1 = new NationalInstruments.UI.XAxis();
-            this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.southLeakagePlot = new NationalInstruments.UI.WaveformPlot();
             this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
@@ -466,11 +471,6 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
-            this.label64 = new System.Windows.Forms.Label();
-            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
-            this.legend1 = new NationalInstruments.UI.WindowsForms.Legend();
-            this.NorthLegendItem = new NationalInstruments.UI.LegendItem();
-            this.SouthLegendItem = new NationalInstruments.UI.LegendItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -482,6 +482,7 @@ namespace EDMHardwareControl
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -498,7 +499,6 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.legend1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -577,7 +577,7 @@ namespace EDMHardwareControl
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
             this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eBleedTimeTextBox.TabIndex = 44;
-            this.eBleedTimeTextBox.Text = "0.5";
+            this.eBleedTimeTextBox.Text = "0.01";
             // 
             // label60
             // 
@@ -601,7 +601,7 @@ namespace EDMHardwareControl
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
             this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpDelayTextBox.TabIndex = 44;
-            this.eRampUpDelayTextBox.Text = "5";
+            this.eRampUpDelayTextBox.Text = "1";
             // 
             // label58
             // 
@@ -617,7 +617,7 @@ namespace EDMHardwareControl
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
             this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownDelayTextBox.TabIndex = 39;
-            this.eRampDownDelayTextBox.Text = "5";
+            this.eRampDownDelayTextBox.Text = "3";
             // 
             // label59
             // 
@@ -633,7 +633,7 @@ namespace EDMHardwareControl
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
             this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownTimeTextBox.TabIndex = 38;
-            this.eRampDownTimeTextBox.Text = "5";
+            this.eRampDownTimeTextBox.Text = "2";
             // 
             // eRampUpTimeTextBox
             // 
@@ -641,7 +641,7 @@ namespace EDMHardwareControl
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
             this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpTimeTextBox.TabIndex = 42;
-            this.eRampUpTimeTextBox.Text = "5";
+            this.eRampUpTimeTextBox.Text = "2";
             // 
             // fieldsOffButton
             // 
@@ -1093,6 +1093,71 @@ namespace EDMHardwareControl
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
+            // legend1
+            // 
+            this.legend1.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
+            this.NorthLegendItem,
+            this.SouthLegendItem});
+            this.legend1.ItemSize = new System.Drawing.Size(12, 12);
+            this.legend1.Location = new System.Drawing.Point(452, 86);
+            this.legend1.Name = "legend1";
+            this.legend1.Size = new System.Drawing.Size(115, 22);
+            this.legend1.TabIndex = 59;
+            // 
+            // NorthLegendItem
+            // 
+            this.NorthLegendItem.Source = this.northLeakagePlot;
+            this.NorthLegendItem.Text = "North";
+            // 
+            // northLeakagePlot
+            // 
+            this.northLeakagePlot.AntiAliased = true;
+            this.northLeakagePlot.HistoryCapacity = 10000;
+            this.northLeakagePlot.LineColor = System.Drawing.Color.Crimson;
+            this.northLeakagePlot.LineWidth = 2F;
+            this.northLeakagePlot.XAxis = this.xAxis1;
+            this.northLeakagePlot.YAxis = this.yAxis1;
+            // 
+            // xAxis1
+            // 
+            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 500);
+            // 
+            // yAxis1
+            // 
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis1.OriginLineVisible = true;
+            this.yAxis1.Range = new NationalInstruments.UI.Range(-500, 500);
+            // 
+            // SouthLegendItem
+            // 
+            this.SouthLegendItem.Source = this.southLeakagePlot;
+            this.SouthLegendItem.Text = "South";
+            // 
+            // southLeakagePlot
+            // 
+            this.southLeakagePlot.HistoryCapacity = 10000;
+            this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southLeakagePlot.LineWidth = 2F;
+            this.southLeakagePlot.XAxis = this.xAxis1;
+            this.southLeakagePlot.YAxis = this.yAxis1;
+            // 
+            // label64
+            // 
+            this.label64.Location = new System.Drawing.Point(362, 14);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(108, 59);
+            this.label64.TabIndex = 58;
+            this.label64.Text = "Monitor slope (Hz/I)\r\nShould be:\r\n~200Hz/nA hi\r\n~100Hz/uA lo";
+            // 
+            // leakageMonitorSlopeTextBox
+            // 
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(365, 76);
+            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.leakageMonitorSlopeTextBox.TabIndex = 57;
+            this.leakageMonitorSlopeTextBox.Text = "200";
+            // 
             // label63
             // 
             this.label63.Location = new System.Drawing.Point(485, 27);
@@ -1118,7 +1183,7 @@ namespace EDMHardwareControl
             this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
             this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
             this.iMonitorPollPeriod.TabIndex = 54;
-            this.iMonitorPollPeriod.Text = "200";
+            this.iMonitorPollPeriod.Text = "100";
             // 
             // startIMonitorPollButton
             // 
@@ -1150,34 +1215,6 @@ namespace EDMHardwareControl
             this.xAxis1});
             this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
-            // 
-            // northLeakagePlot
-            // 
-            this.northLeakagePlot.AntiAliased = true;
-            this.northLeakagePlot.HistoryCapacity = 10000;
-            this.northLeakagePlot.LineColor = System.Drawing.Color.Crimson;
-            this.northLeakagePlot.LineWidth = 2F;
-            this.northLeakagePlot.XAxis = this.xAxis1;
-            this.northLeakagePlot.YAxis = this.yAxis1;
-            // 
-            // xAxis1
-            // 
-            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 500);
-            // 
-            // yAxis1
-            // 
-            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis1.OriginLineVisible = true;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(-500, 500);
-            // 
-            // southLeakagePlot
-            // 
-            this.southLeakagePlot.HistoryCapacity = 10000;
-            this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
-            this.southLeakagePlot.LineWidth = 2F;
-            this.southLeakagePlot.XAxis = this.xAxis1;
-            this.southLeakagePlot.YAxis = this.yAxis1;
             // 
             // IMonitorMeasurementLengthTextBox
             // 
@@ -2544,43 +2581,6 @@ namespace EDMHardwareControl
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
-            // label64
-            // 
-            this.label64.Location = new System.Drawing.Point(362, 14);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(108, 59);
-            this.label64.TabIndex = 58;
-            this.label64.Text = "Monitor slope (Hz/I)\r\nShould be:\r\n~200Hz/nA hi\r\n~100Hz/uA lo";
-            // 
-            // leakageMonitorSlopeTextBox
-            // 
-            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(365, 76);
-            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
-            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.leakageMonitorSlopeTextBox.TabIndex = 57;
-            this.leakageMonitorSlopeTextBox.Text = "200";
-            // 
-            // legend1
-            // 
-            this.legend1.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
-            this.NorthLegendItem,
-            this.SouthLegendItem});
-            this.legend1.ItemSize = new System.Drawing.Size(12, 12);
-            this.legend1.Location = new System.Drawing.Point(452, 86);
-            this.legend1.Name = "legend1";
-            this.legend1.Size = new System.Drawing.Size(115, 22);
-            this.legend1.TabIndex = 59;
-            // 
-            // NorthLegendItem
-            // 
-            this.NorthLegendItem.Source = this.northLeakagePlot;
-            this.NorthLegendItem.Text = "North";
-            // 
-            // SouthLegendItem
-            // 
-            this.SouthLegendItem.Source = this.southLeakagePlot;
-            this.SouthLegendItem.Text = "South";
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2608,6 +2608,7 @@ namespace EDMHardwareControl
             this.groupBox6.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
@@ -2634,7 +2635,6 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.legend1)).EndInit();
             this.ResumeLayout(false);
 
 		}
