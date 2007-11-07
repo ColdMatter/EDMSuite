@@ -58,6 +58,15 @@ namespace DAQ.HAL
 			get {return gpibInstruments;}
 		}
 
+        // You can dump anything you like in here that's specific to your experiment.
+        // You can only add to it from within the Hardware subclass, but can access
+        // from anywhere.
+        protected Hashtable Info = new Hashtable();
+        public object GetInfo(object key)
+        {
+            return Info[key];
+        }
+
 		protected void AddAnalogInputChannel(
 			String name,
 			String physicalChannel,

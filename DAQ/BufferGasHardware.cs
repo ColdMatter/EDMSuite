@@ -18,6 +18,11 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev1");
 			Boards.Add("pg", "/dev2");
 
+            // add things to the info
+            // the analog triggers
+            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
+            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+
 			// map the digital channels
 			string pgBoard = (string)Boards["pg"];
 			AddDigitalOutputChannel("valve", pgBoard, 0, 6);

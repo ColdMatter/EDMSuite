@@ -85,11 +85,11 @@ namespace ScanMaster.Acquire.Plugins
 
 				// trigger off PFI0 (with the standard routing, that's the same as trig1)
 				inputTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					(string)Environs.Hardware.Boards["daq"] + "/PFI0",
+                    (string)Environs.Hardware.GetInfo("analogTrigger0"),
 					DigitalEdgeStartTriggerEdge.Rising);
 				// trigger off PFI1 (with the standard routing, that's the same as trig2)
 				inputTask2.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					(string)Environs.Hardware.Boards["daq"] + "/PFI1",
+					(string)Environs.Hardware.GetInfo("analogTrigger1"),
 					DigitalEdgeStartTriggerEdge.Rising);
 
 				inputTask1.Control(TaskAction.Verify);

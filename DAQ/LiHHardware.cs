@@ -26,6 +26,11 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
 
+            // add things to the info
+            // the analog triggers
+            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
+            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
             GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));

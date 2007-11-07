@@ -32,6 +32,12 @@ namespace DAQ.HAL
             string analogIn = (string)Boards["analogIn"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbDAQ3 = (string)Boards["usbDAQ3"];
+            
+            // add things to the info
+            // the analog triggers
+            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
+            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");
 
