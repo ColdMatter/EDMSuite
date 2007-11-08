@@ -50,8 +50,11 @@ namespace DAQ.HAL
             }
             set
             {
-                measurementTime = value;
-                setMeasurementTime();
+                if (value != measurementTime)
+                {
+                    measurementTime = value;
+                    setMeasurementTime();
+                }
             }
         }
 
@@ -85,7 +88,7 @@ namespace DAQ.HAL
                 100,
                 CIFrequencyUnits.Hertz
                 );
-            counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
+            counterTask.Stream.Timeout = (int)(1.1 * 1000 * measurementTime);
             leakageReader = new CounterReader(counterTask.Stream);
         }
 
@@ -127,7 +130,7 @@ namespace DAQ.HAL
 
         private void setMeasurementTime()
         {
-            counterTask.Stream.Timeout = (int)(1.5 * 1000 * measurementTime);
+            counterTask.Stream.Timeout = (int)(1.1 * 1000 * measurementTime);
             counterTask.CIChannels[0].FrequencyMeasurementTime = measurementTime;
         }
 

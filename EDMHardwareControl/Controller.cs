@@ -1017,10 +1017,11 @@ namespace EDMHardwareControl
         private void ReconfigureIMonitors()
         {
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
-            southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
-            northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             northSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
             southSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+
+            southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             northLeakageMonitor.Slope = northSlope;
             southLeakageMonitor.Slope = southSlope;
         }
