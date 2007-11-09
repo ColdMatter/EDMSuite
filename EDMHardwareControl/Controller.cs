@@ -1189,7 +1189,7 @@ namespace EDMHardwareControl
 
         public void SetBleed(bool enable)
         {
-            SetDigitalLine("eBleed", enable);
+            SetDigitalLine("eBleed", !enable);
         }
 
         public void SetBFlip(bool enable)
