@@ -142,6 +142,7 @@ namespace EDMHardwareControl
             // update the GPIB switcher's cached voltages
             // works around a "first-time" bug with the E-field switch
             FieldsOff();
+            EBleedEnabled = false;
             /*lastGPlus = GPlusVoltage;
 			lastGMinus = GMinusVoltage;
 			lastCPlus = CPlusVoltage;
@@ -761,7 +762,7 @@ namespace EDMHardwareControl
                 {
                     window.SetLED(window.switchingLED, true);
                     // ramp the field down
-                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 50, ERampDownTime);
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
                     // set as disabled
                     EFieldEnabled = false;
                     Thread.Sleep((int)(1000 * ERampDownDelay));
@@ -771,7 +772,7 @@ namespace EDMHardwareControl
                     EFieldPolarity = newEPolarity;
                     Thread.Sleep((int)(1000 * ESwitchTime));
                     // ramp the field up
-                    RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 50, ERampDownTime);
+                    RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampDownTime);
                     // set as enabled
                     EFieldEnabled = true;
                     Thread.Sleep((int)(1000 * ERampUpDelay));
