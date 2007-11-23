@@ -1,16 +1,16 @@
-# function definitions
+from System.Threading import *
 
-def Conditioner():
-	# Setup (none)
-	# User inputs data
-	switchTime = 1000*Double.Parse(prompt("Switch time (s): "))
-	# loop and switch
-	blockIndex = 1
-		#loop forever
-	while blockIndex > 0:
-		print("Switching E  ${blockIndex} ")
-		remote.HardwareControl.SwitchE()
-		System.Threading.Thread.Sleep(switchTime)
-		++blockIndex
+def condition(switchTime):
+	switchCount = 1
+	#loop forever
+	while switchCount > 0:
+		print("Switching E " + str(switchCount))
+		hc.SwitchEAndWait()
+		System.Threading.Thread.Sleep(1000 * switchTime)
+		switchCount = switchCount + 1
 
 	
+def run_script():
+	print "Use condition(switchTime)"
+
+

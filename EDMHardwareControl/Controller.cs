@@ -738,6 +738,12 @@ namespace EDMHardwareControl
             switchThread.Join();
         }
 
+        public void SwitchEAndWait()
+        {
+            SwitchEAndWait(!EFieldPolarity);
+        }
+
+
         private bool newEPolarity;
         private object switchingLock = new object();
         private Thread switchThread;
