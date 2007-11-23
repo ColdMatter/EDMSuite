@@ -38,7 +38,7 @@ namespace EDMBlockHead.Acquire
 		ArrayList switchedChannels;
 		ScannedAnalogInputCollection inputs;
 		Task inputTask;
-		AnalogMultiChannelReader inputReader;
+ 		AnalogMultiChannelReader inputReader;
 		ScanMaster.Controller scanMaster;
 		EDMPhaseLock.MainForm phaseLock;
 
@@ -114,8 +114,9 @@ namespace EDMBlockHead.Acquire
 						inputTask.Start();
 
 						// get the raw data
-						double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
-						inputTask.Stop();
+                        double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+                        inputTask.Stop();
+
 
 						// extract the data for each scanned channel and put it in a TOF
 						s = new Shot();
@@ -297,7 +298,7 @@ namespace EDMBlockHead.Acquire
 //			inputs.Channels.Add(pmt);
 
 			ScannedAnalogInput normPMT = new ScannedAnalogInput();
-			normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["normTemp"];
+			normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
 			normPMT.ReductionMode = DataReductionMode.Chop;
             normPMT.ChopStart = 0;
 			normPMT.ChopLength = 40;
@@ -325,32 +326,32 @@ namespace EDMBlockHead.Acquire
 			// copy running parameters into the BlockConfig
 			StuffConfig();
 
-			// prepare the inputs
-			inputTask = new Task("BlockHead analog input");
+            // prepare the inputs
+            inputTask = new Task("BlockHead analog input");
 
-			foreach (ScannedAnalogInput i in inputs.Channels)
-				i.Channel.AddToTask(
-					inputTask, 
-					i.LowLimit,
-					i.HighLimit
-					);
+            foreach (ScannedAnalogInput i in inputs.Channels)
+                i.Channel.AddToTask(
+                    inputTask,
+                    i.LowLimit,
+                    i.HighLimit
+                    );
 
-			inputTask.Timing.ConfigureSampleClock(
-				"",
-				inputs.RawSampleRate,
-				SampleClockActiveEdge.Rising, 
-				SampleQuantityMode.FiniteSamples,
-				inputs.GateLength
-				);
+            inputTask.Timing.ConfigureSampleClock(
+                "",
+                inputs.RawSampleRate,
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples,
+                inputs.GateLength * inputs.Channels.Count
+                );
 
-			inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-				(string)Environs.Hardware.Boards["daq"] + "/PFI0",
-				DigitalEdgeStartTriggerEdge.Rising
-				);
+            inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("analogTrigger0"),
+                DigitalEdgeStartTriggerEdge.Rising
+                );
 
-			if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
-			inputReader = new AnalogMultiChannelReader(inputTask.Stream); 
-
+            if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
+            inputReader = new AnalogMultiChannelReader(inputTask.Stream); 
+    
 		}
 
 		// If you want to store any information in the BlockConfig this is the place to do it.

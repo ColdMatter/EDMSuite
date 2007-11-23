@@ -1239,6 +1239,13 @@ namespace EDMHardwareControl
             SetAnalogOutput(bBoxAnalogOutputTask, bBoxVoltage);
         }
 
+        //cheezy temporary hack
+        public void SetScanningBVoltage(double v)
+        {
+            window.SetTextBox(window.scanningBVoltageBox, v.ToString());
+            SetAnalogOutput(bBoxAnalogOutputTask, v);
+        }
+
         public void SetScanningBZero()
         {
             window.SetTextBox(window.scanningBVoltageBox, "0.0");

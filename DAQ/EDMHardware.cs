@@ -87,14 +87,19 @@ namespace DAQ.HAL
             
             // These channels are on the daq board. Used mainly for diagnostic purposes.
 			// On no account should they switch during the edm acquisition pattern.
-			AddAnalogInputChannel("pmt",  daqBoard + "/ai0", AITerminalConfiguration.Differential);
-			AddAnalogInputChannel("magnetometer", daqBoard + "/ai1", AITerminalConfiguration.Differential);
-			AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
-			AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
-			AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
-			AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
-            AddAnalogInputChannel("normTemp", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
 
+            // high quality analog inputs (will be) on the S-series analog in board
+            AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("magnetometer", daqBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("norm", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+            //AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            
+          
             AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 

@@ -40,7 +40,7 @@ namespace ScanMaster.Analyze
 				if (yDat[i] > yMax) yMax = yDat[i];
 				if (yDat[i] < yMin) yMin = yDat[i];
 			}
-			return new double[] { yMin, yMax - yMin, 2.5, 0.3 };
+			return new double[] { yMin, yMax - yMin, 2.5, 0.4 };
 		}
 
 		public override string ParameterReport
