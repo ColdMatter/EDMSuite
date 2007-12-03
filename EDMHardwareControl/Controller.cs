@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
@@ -151,6 +154,12 @@ namespace EDMHardwareControl
             window.SetTextBox(window.southOffsetIMonitorTextBox, southOffset.ToString());
             window.SetTextBox(window.northOffsetIMonitorTextBox, northOffset.ToString());
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
+            LoadParameters();
+        }
+
+        internal void WindowClosing()
+        {
+            StoreParameters();
         }
 
         private Task CreateAnalogInputTask(string channel)
@@ -228,6 +237,103 @@ namespace EDMHardwareControl
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
             writer.WriteSingleSampleSingleLine(true, value);
             digitalTask.Control(TaskAction.Unreserve);
+        }
+
+        // this isn't really very classy, but it works
+        [Serializable]
+        private struct DataStore
+        {
+            public double cPlus;
+            public double cMinus;
+            public double rampDownTime;
+            public double rampDownDelay;
+            public double bleedTime;
+            public double switchTime;
+            public double rampUpTime;
+            public double rampUpDelay;
+            public double frequency;
+            public double amplitude;
+            public double dcfm;
+            public double rf1AttC;
+            public double rf1AttS;
+            public double rf2AttC;
+            public double rf2AttS;
+            public double rf1FMC;
+            public double rf1FMS;
+            public double rf2FMC;
+            public double rf2FMS;
+        }
+
+        private void StoreParameters()
+        {
+            DataStore dataStore = new DataStore();
+            // fill the struct
+            dataStore.cPlus = CPlusVoltage;
+            dataStore.cMinus = CMinusVoltage;
+            dataStore.rampDownTime = ERampDownTime;
+            dataStore.rampDownDelay = ERampDownDelay;
+            dataStore.bleedTime = EBleedTime;
+            dataStore.switchTime = ESwitchTime;
+            dataStore.rampUpTime = ERampUpTime;
+            dataStore.rampUpDelay = ERampUpDelay;
+            dataStore.frequency = GreenSynthOnFrequency;
+            dataStore.amplitude = GreenSynthOnAmplitude;
+            dataStore.dcfm = GreenSynthDCFM;
+            dataStore.rf1AttC = RF1AttCentre;
+            dataStore.rf1AttS = RF1AttStep;
+            dataStore.rf2AttC = RF2AttCentre;
+            dataStore.rf2AttS = RF2AttStep;
+            dataStore.rf1FMC = RF1FMCentre;
+            dataStore.rf1FMS = RF1FMStep;
+            dataStore.rf2FMC = RF2FMCentre;
+            dataStore.rf2FMS = RF2FMStep;
+ 
+            // serialize it
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
+            BinaryFormatter s = new BinaryFormatter();
+            try
+            {
+                s.Serialize(new FileStream(dataStoreFilePath, FileMode.Create), dataStore);
+            }
+            catch (Exception)
+            { Console.Out.WriteLine("Unable to store settings"); }
+        }
+
+        private void LoadParameters()
+        {
+            // deserialize
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
+            BinaryFormatter s = new BinaryFormatter();
+            // eat any errors in the following, as it's just a convenience function
+            try
+            {
+                DataStore dataStore = (DataStore)s.Deserialize(new FileStream(dataStoreFilePath, FileMode.Open));
+
+                // copy parameters out of the struct
+                CPlusVoltage = dataStore.cPlus;
+                CMinusVoltage = dataStore.cMinus;
+                ERampDownTime = dataStore.rampDownTime;
+                ERampDownDelay = dataStore.rampDownDelay;
+                EBleedTime = dataStore.bleedTime;
+                ESwitchTime = dataStore.switchTime;
+                ERampUpTime = dataStore.rampUpTime;
+                ERampUpDelay = dataStore.rampUpDelay;
+                GreenSynthOnFrequency = dataStore.frequency;
+                GreenSynthOnAmplitude = dataStore.amplitude;
+                GreenSynthDCFM = dataStore.dcfm;
+                RF1AttCentre = dataStore.rf1AttC;
+                RF1AttStep = dataStore.rf1AttS;
+                RF2AttCentre = dataStore.rf2AttC;
+                RF2AttStep = dataStore.rf2AttS;
+                RF1FMCentre = dataStore.rf1FMC;
+                RF1FMStep = dataStore.rf1FMS;
+                RF2FMCentre = dataStore.rf2FMC;
+                RF2FMStep = dataStore.rf2FMS;
+            }
+            catch (Exception)
+            { Console.Out.WriteLine("Unable to load settings"); }
         }
 
         #endregion
@@ -463,6 +569,172 @@ namespace EDMHardwareControl
             }
         }
 
+        public double ERampDownTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownTimeTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
+            }
+        }
+      
+        public double EBleedTime
+        {
+            get
+            {
+                return Double.Parse(window.eBleedTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eBleedTimeTextBox, value.ToString());
+            }
+        }
+        public double ESwitchTime
+        {
+            get
+            {
+                return Double.Parse(window.eSwitchTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eSwitchTimeTextBox, value.ToString());
+            }
+        }
+        public double ERampUpTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpTimeTextBox, value.ToString());
+            }
+        }
+
+        public double ERampUpDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpDelayTextBox, value.ToString());
+            }
+        }
+
+        public double RF1AttCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf1AttenuatorVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double RF1AttStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1AttIncTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf1AttIncTextBox, value.ToString());
+            }
+        }
+
+        public double RF2AttCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf2AttenuatorVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double RF2AttStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2AttIncTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf2AttIncTextBox, value.ToString());
+            }
+        }
+
+        public double RF1FMCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf1FMVoltage.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf1FMVoltage, value.ToString());
+            }
+        }
+
+        public double RF1FMStep
+        {
+            get
+            {
+                return Double.Parse(window.rf1FMIncTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf1FMIncTextBox, value.ToString());
+            }
+        }
+
+        public double RF2FMCentre
+        {
+            get
+            {
+                return Double.Parse(window.rf2FMVoltage.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf2FMVoltage, value.ToString());
+            }
+        }
+
+        public double RF2FMStep
+        {
+            get
+            {
+                return Double.Parse(window.rf2FMIncTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rf2FMIncTextBox, value.ToString());
+            }
+        }
+
         #endregion
 
         #region Public properties for monitoring the hardware
@@ -539,69 +811,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double RF1AttCentre
-        {
-            get
-            {
-                return Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);
-            }
-        }
-
-        public double RF1AttStep
-        {
-            get
-            {
-                return Double.Parse(window.rf1AttIncTextBox.Text);
-            }
-        }
-
-        public double RF2AttCentre
-        {
-            get
-            {
-                return Double.Parse(window.rf2AttenuatorVoltageTextBox.Text);
-            }
-        }
-
-        public double RF2AttStep
-        {
-            get
-            {
-                return Double.Parse(window.rf2AttIncTextBox.Text);
-            }
-        }
-
-        public double RF1FMCentre
-        {
-            get
-            {
-                return Double.Parse(window.rf1FMVoltage.Text);
-            }
-        }
-
-        public double RF1FMStep
-        {
-            get
-            {
-                return Double.Parse(window.rf1FMIncTextBox.Text);
-            }
-        }
-
-        public double RF2FMCentre
-        {
-            get
-            {
-                return Double.Parse(window.rf2FMVoltage.Text);
-            }
-        }
-
-        public double RF2FMStep
-        {
-            get
-            {
-                return Double.Parse(window.rf2FMIncTextBox.Text);
-            }
-        }
+  
 
         public double RF1FrequencyCentre
         {
@@ -667,50 +877,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double ERampDownTime
-        {
-            get
-            {
-                return Double.Parse(window.eRampDownTimeTextBox.Text);
-            }
-        }
-
-        public double ERampDownDelay
-        {
-            get
-            {
-                return Double.Parse(window.eRampDownDelayTextBox.Text);
-            }
-        }
-        public double EBleedTime
-        {
-            get
-            {
-                return Double.Parse(window.eBleedTimeTextBox.Text);
-            }
-        }
-        public double ESwitchTime
-        {
-            get
-            {
-                return Double.Parse(window.eSwitchTimeTextBox.Text);
-            }
-        }
-        public double ERampUpTime
-        {
-            get
-            {
-                return Double.Parse(window.eRampUpTimeTextBox.Text);
-            }
-        }
-
-        public double ERampUpDelay
-        {
-            get
-            {
-                return Double.Parse(window.eRampUpDelayTextBox.Text);
-            }
-        }
+ 
 
         #endregion
 
@@ -1047,7 +1214,7 @@ namespace EDMHardwareControl
                 iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
                 iMonitorPollThread.Start();
             }
-            
+
         }
 
         internal void StopIMonitorPoll()

@@ -560,7 +560,7 @@ namespace EDMHardwareControl
             this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 153);
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
             this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eSwitchTimeTextBox.TabIndex = 46;
+            this.eSwitchTimeTextBox.TabIndex = 3;
             this.eSwitchTimeTextBox.Text = "1";
             // 
             // label61
@@ -576,7 +576,7 @@ namespace EDMHardwareControl
             this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 127);
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
             this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eBleedTimeTextBox.TabIndex = 44;
+            this.eBleedTimeTextBox.TabIndex = 2;
             this.eBleedTimeTextBox.Text = "0.01";
             // 
             // label60
@@ -600,7 +600,7 @@ namespace EDMHardwareControl
             this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 205);
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
             this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eRampUpDelayTextBox.TabIndex = 44;
+            this.eRampUpDelayTextBox.TabIndex = 5;
             this.eRampUpDelayTextBox.Text = "1";
             // 
             // label58
@@ -616,7 +616,7 @@ namespace EDMHardwareControl
             this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 102);
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
             this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eRampDownDelayTextBox.TabIndex = 39;
+            this.eRampDownDelayTextBox.TabIndex = 1;
             this.eRampDownDelayTextBox.Text = "3";
             // 
             // label59
@@ -632,7 +632,7 @@ namespace EDMHardwareControl
             this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 76);
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
             this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eRampDownTimeTextBox.TabIndex = 38;
+            this.eRampDownTimeTextBox.TabIndex = 0;
             this.eRampDownTimeTextBox.Text = "2";
             // 
             // eRampUpTimeTextBox
@@ -640,7 +640,7 @@ namespace EDMHardwareControl
             this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 179);
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
             this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eRampUpTimeTextBox.TabIndex = 42;
+            this.eRampUpTimeTextBox.TabIndex = 4;
             this.eRampUpTimeTextBox.Text = "2";
             // 
             // fieldsOffButton
@@ -649,7 +649,7 @@ namespace EDMHardwareControl
             this.fieldsOffButton.Name = "fieldsOffButton";
             this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
             this.fieldsOffButton.TabIndex = 23;
-            this.fieldsOffButton.Text = "Turn Off Fields";
+            this.fieldsOffButton.Text = "Zero E fields";
             this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
             // 
             // switchEButton
@@ -717,7 +717,7 @@ namespace EDMHardwareControl
             this.greenDCFMBox.Location = new System.Drawing.Point(168, 88);
             this.greenDCFMBox.Name = "greenDCFMBox";
             this.greenDCFMBox.Size = new System.Drawing.Size(64, 20);
-            this.greenDCFMBox.TabIndex = 22;
+            this.greenDCFMBox.TabIndex = 2;
             this.greenDCFMBox.Text = "0";
             // 
             // greenOnCheck
@@ -742,7 +742,7 @@ namespace EDMHardwareControl
             this.greenOnAmpBox.Location = new System.Drawing.Point(168, 56);
             this.greenOnAmpBox.Name = "greenOnAmpBox";
             this.greenOnAmpBox.Size = new System.Drawing.Size(64, 20);
-            this.greenOnAmpBox.TabIndex = 12;
+            this.greenOnAmpBox.TabIndex = 1;
             this.greenOnAmpBox.Text = "-6";
             // 
             // label8
@@ -758,7 +758,7 @@ namespace EDMHardwareControl
             this.greenOnFreqBox.Location = new System.Drawing.Point(168, 24);
             this.greenOnFreqBox.Name = "greenOnFreqBox";
             this.greenOnFreqBox.Size = new System.Drawing.Size(64, 20);
-            this.greenOnFreqBox.TabIndex = 10;
+            this.greenOnFreqBox.TabIndex = 0;
             this.greenOnFreqBox.Text = "170.800";
             // 
             // groupBox1
@@ -809,7 +809,7 @@ namespace EDMHardwareControl
             this.label9.Location = new System.Drawing.Point(16, 56);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(80, 23);
-            this.label9.TabIndex = 37;
+            this.label9.TabIndex = 1;
             this.label9.Text = "C minus (V)";
             // 
             // label5
@@ -817,7 +817,7 @@ namespace EDMHardwareControl
             this.label5.Location = new System.Drawing.Point(16, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(80, 23);
-            this.label5.TabIndex = 36;
+            this.label5.TabIndex = 0;
             this.label5.Text = "C plus (V)";
             // 
             // cPlusOffTextBox
@@ -825,7 +825,7 @@ namespace EDMHardwareControl
             this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 96);
             this.cPlusOffTextBox.Name = "cPlusOffTextBox";
             this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
-            this.cPlusOffTextBox.TabIndex = 35;
+            this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
             // 
             // cMinusOffTextBox
@@ -833,7 +833,7 @@ namespace EDMHardwareControl
             this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 128);
             this.cMinusOffTextBox.Name = "cMinusOffTextBox";
             this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
-            this.cMinusOffTextBox.TabIndex = 34;
+            this.cMinusOffTextBox.TabIndex = 3;
             this.cMinusOffTextBox.Text = "0";
             // 
             // cMinusTextBox
@@ -841,7 +841,7 @@ namespace EDMHardwareControl
             this.cMinusTextBox.Location = new System.Drawing.Point(104, 56);
             this.cMinusTextBox.Name = "cMinusTextBox";
             this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
-            this.cMinusTextBox.TabIndex = 33;
+            this.cMinusTextBox.TabIndex = 1;
             this.cMinusTextBox.Text = "0";
             // 
             // cPlusTextBox
@@ -849,7 +849,7 @@ namespace EDMHardwareControl
             this.cPlusTextBox.Location = new System.Drawing.Point(104, 24);
             this.cPlusTextBox.Name = "cPlusTextBox";
             this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
-            this.cPlusTextBox.TabIndex = 32;
+            this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
             // 
             // groupBox5
@@ -950,7 +950,7 @@ namespace EDMHardwareControl
             this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
             this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
-            this.zeroPlusOneMinusBoostTextBox.TabIndex = 33;
+            this.zeroPlusOneMinusBoostTextBox.TabIndex = 1;
             this.zeroPlusOneMinusBoostTextBox.Text = "0";
             // 
             // zeroPlusBoostTextBox
@@ -958,7 +958,7 @@ namespace EDMHardwareControl
             this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
             this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
-            this.zeroPlusBoostTextBox.TabIndex = 32;
+            this.zeroPlusBoostTextBox.TabIndex = 0;
             this.zeroPlusBoostTextBox.Text = "0";
             // 
             // groupBox6
@@ -1148,14 +1148,14 @@ namespace EDMHardwareControl
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(108, 59);
             this.label64.TabIndex = 58;
-            this.label64.Text = "Monitor slope (Hz/I)\r\nShould be:\r\n~200Hz/nA hi\r\n~100Hz/uA lo";
+            this.label64.Text = "Monitor slope (Hz/I)\r\nShould be:\r\n~200Hz/nA hi\r\n~2000Hz/uA lo";
             // 
             // leakageMonitorSlopeTextBox
             // 
             this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(365, 76);
             this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
             this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(64, 20);
-            this.leakageMonitorSlopeTextBox.TabIndex = 57;
+            this.leakageMonitorSlopeTextBox.TabIndex = 2;
             this.leakageMonitorSlopeTextBox.Text = "200";
             // 
             // label63
@@ -1182,7 +1182,7 @@ namespace EDMHardwareControl
             this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 25);
             this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
             this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
-            this.iMonitorPollPeriod.TabIndex = 54;
+            this.iMonitorPollPeriod.TabIndex = 0;
             this.iMonitorPollPeriod.Text = "100";
             // 
             // startIMonitorPollButton
@@ -1221,7 +1221,7 @@ namespace EDMHardwareControl
             this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(280, 76);
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
             this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
-            this.IMonitorMeasurementLengthTextBox.TabIndex = 52;
+            this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
             this.IMonitorMeasurementLengthTextBox.Text = "200";
             // 
             // label35
@@ -1967,7 +1967,7 @@ namespace EDMHardwareControl
             this.rf2FMIncTextBox.Location = new System.Drawing.Point(198, 159);
             this.rf2FMIncTextBox.Name = "rf2FMIncTextBox";
             this.rf2FMIncTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf2FMIncTextBox.TabIndex = 31;
+            this.rf2FMIncTextBox.TabIndex = 7;
             this.rf2FMIncTextBox.Text = "0";
             // 
             // label24
@@ -1983,7 +1983,7 @@ namespace EDMHardwareControl
             this.rf1FMIncTextBox.Location = new System.Drawing.Point(198, 133);
             this.rf1FMIncTextBox.Name = "rf1FMIncTextBox";
             this.rf1FMIncTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf1FMIncTextBox.TabIndex = 29;
+            this.rf1FMIncTextBox.TabIndex = 5;
             this.rf1FMIncTextBox.Text = "0";
             // 
             // label28
@@ -1999,7 +1999,7 @@ namespace EDMHardwareControl
             this.rf2AttIncTextBox.Location = new System.Drawing.Point(198, 50);
             this.rf2AttIncTextBox.Name = "rf2AttIncTextBox";
             this.rf2AttIncTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf2AttIncTextBox.TabIndex = 27;
+            this.rf2AttIncTextBox.TabIndex = 3;
             this.rf2AttIncTextBox.Text = "0";
             // 
             // label6
@@ -2007,7 +2007,7 @@ namespace EDMHardwareControl
             this.label6.Location = new System.Drawing.Point(168, 50);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(24, 23);
-            this.label6.TabIndex = 26;
+            this.label6.TabIndex = 2;
             this.label6.Text = "+-";
             // 
             // rf1AttIncTextBox
@@ -2015,7 +2015,7 @@ namespace EDMHardwareControl
             this.rf1AttIncTextBox.Location = new System.Drawing.Point(198, 24);
             this.rf1AttIncTextBox.Name = "rf1AttIncTextBox";
             this.rf1AttIncTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf1AttIncTextBox.TabIndex = 25;
+            this.rf1AttIncTextBox.TabIndex = 1;
             this.rf1AttIncTextBox.Text = "0";
             // 
             // label4
@@ -2023,7 +2023,7 @@ namespace EDMHardwareControl
             this.label4.Location = new System.Drawing.Point(168, 24);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(24, 23);
-            this.label4.TabIndex = 24;
+            this.label4.TabIndex = 0;
             this.label4.Text = "+-";
             // 
             // setFMVoltagesButton
@@ -2048,7 +2048,7 @@ namespace EDMHardwareControl
             this.rf2FMVoltage.Location = new System.Drawing.Point(128, 159);
             this.rf2FMVoltage.Name = "rf2FMVoltage";
             this.rf2FMVoltage.Size = new System.Drawing.Size(34, 20);
-            this.rf2FMVoltage.TabIndex = 21;
+            this.rf2FMVoltage.TabIndex = 6;
             this.rf2FMVoltage.Text = "0";
             // 
             // label3
@@ -2064,7 +2064,7 @@ namespace EDMHardwareControl
             this.rf1FMVoltage.Location = new System.Drawing.Point(128, 133);
             this.rf1FMVoltage.Name = "rf1FMVoltage";
             this.rf1FMVoltage.Size = new System.Drawing.Size(34, 20);
-            this.rf1FMVoltage.TabIndex = 19;
+            this.rf1FMVoltage.TabIndex = 4;
             this.rf1FMVoltage.Text = "0";
             // 
             // setAttenuatorsButton
@@ -2089,7 +2089,7 @@ namespace EDMHardwareControl
             this.rf2AttenuatorVoltageTextBox.Location = new System.Drawing.Point(128, 50);
             this.rf2AttenuatorVoltageTextBox.Name = "rf2AttenuatorVoltageTextBox";
             this.rf2AttenuatorVoltageTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf2AttenuatorVoltageTextBox.TabIndex = 14;
+            this.rf2AttenuatorVoltageTextBox.TabIndex = 2;
             this.rf2AttenuatorVoltageTextBox.Text = "5";
             // 
             // label39
@@ -2105,7 +2105,7 @@ namespace EDMHardwareControl
             this.rf1AttenuatorVoltageTextBox.Location = new System.Drawing.Point(128, 24);
             this.rf1AttenuatorVoltageTextBox.Name = "rf1AttenuatorVoltageTextBox";
             this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(34, 20);
-            this.rf1AttenuatorVoltageTextBox.TabIndex = 12;
+            this.rf1AttenuatorVoltageTextBox.TabIndex = 0;
             this.rf1AttenuatorVoltageTextBox.Text = "5";
             // 
             // tabPage3
@@ -2590,6 +2590,7 @@ namespace EDMHardwareControl
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ControlWindow";
             this.Text = "EDM Hardware Control";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -2893,6 +2894,11 @@ namespace EDMHardwareControl
         }
  
         #endregion
+
+        private void WindowClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.WindowClosing();
+        }
 
 
 
