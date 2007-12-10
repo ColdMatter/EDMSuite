@@ -107,9 +107,7 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.Button startYAGFlashlampsButton;
 		public System.Windows.Forms.TextBox interlockStatusTextBox;
 		private System.Windows.Forms.GroupBox groupBox12;
-		private System.Windows.Forms.Label label41;
-		private System.Windows.Forms.Button scanningBFSButton;
-		private System.Windows.Forms.Button scanningBZeroButton;
+        private System.Windows.Forms.Label label41;
 		private System.Windows.Forms.Button scanningBUpdateButton;
 		public System.Windows.Forms.TextBox scanningBVoltageBox;
 		private GroupBox groupBox13;
@@ -230,6 +228,17 @@ namespace EDMHardwareControl
         private Legend legend1;
         private LegendItem NorthLegendItem;
         private LegendItem SouthLegendItem;
+        private GroupBox groupBox9;
+        public TextBox steppingBBoxBiasTextBox;
+        private Button SteppingBBoxBiasUpdateButton;
+        private Label label65;
+        private Button scanningBFSButton;
+        private Button scanningBZeroButton;
+        private GroupBox groupBox17;
+        private GroupBox groupBox15;
+        private Button TargetStepButton;
+        private Label label66;
+        public TextBox TargetNumStepsTextBox;
 
 
 		public Controller controller;
@@ -427,8 +436,6 @@ namespace EDMHardwareControl
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.scanningBVoltageBox = new System.Windows.Forms.TextBox();
-            this.scanningBFSButton = new System.Windows.Forms.Button();
-            this.scanningBZeroButton = new System.Windows.Forms.Button();
             this.scanningBUpdateButton = new System.Windows.Forms.Button();
             this.label41 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -471,6 +478,17 @@ namespace EDMHardwareControl
             this.updateFlashlampVButton = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
             this.yagFlashlampVTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.steppingBBoxBiasTextBox = new System.Windows.Forms.TextBox();
+            this.SteppingBBoxBiasUpdateButton = new System.Windows.Forms.Button();
+            this.label65 = new System.Windows.Forms.Label();
+            this.scanningBZeroButton = new System.Windows.Forms.Button();
+            this.scanningBFSButton = new System.Windows.Forms.Button();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.TargetNumStepsTextBox = new System.Windows.Forms.TextBox();
+            this.label66 = new System.Windows.Forms.Label();
+            this.TargetStepButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -499,6 +517,9 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.groupBox15.SuspendLayout();
+            this.groupBox17.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -2110,6 +2131,7 @@ namespace EDMHardwareControl
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox9);
             this.tabPage3.Controls.Add(this.groupBox12);
             this.tabPage3.Controls.Add(this.groupBox8);
             this.tabPage3.Controls.Add(this.groupBox5);
@@ -2126,7 +2148,7 @@ namespace EDMHardwareControl
             this.groupBox12.Controls.Add(this.scanningBZeroButton);
             this.groupBox12.Controls.Add(this.scanningBUpdateButton);
             this.groupBox12.Controls.Add(this.label41);
-            this.groupBox12.Location = new System.Drawing.Point(304, 16);
+            this.groupBox12.Location = new System.Drawing.Point(8, 276);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(296, 96);
             this.groupBox12.TabIndex = 46;
@@ -2140,24 +2162,6 @@ namespace EDMHardwareControl
             this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
             this.scanningBVoltageBox.TabIndex = 45;
             this.scanningBVoltageBox.Text = "0";
-            // 
-            // scanningBFSButton
-            // 
-            this.scanningBFSButton.Location = new System.Drawing.Point(152, 56);
-            this.scanningBFSButton.Name = "scanningBFSButton";
-            this.scanningBFSButton.Size = new System.Drawing.Size(75, 23);
-            this.scanningBFSButton.TabIndex = 44;
-            this.scanningBFSButton.Text = "Max";
-            this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
-            // 
-            // scanningBZeroButton
-            // 
-            this.scanningBZeroButton.Location = new System.Drawing.Point(64, 56);
-            this.scanningBZeroButton.Name = "scanningBZeroButton";
-            this.scanningBZeroButton.Size = new System.Drawing.Size(75, 23);
-            this.scanningBZeroButton.TabIndex = 43;
-            this.scanningBZeroButton.Text = "Zero";
-            this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
             // 
             // scanningBUpdateButton
             // 
@@ -2193,7 +2197,7 @@ namespace EDMHardwareControl
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.label22);
             this.groupBox8.Controls.Add(this.label23);
-            this.groupBox8.Location = new System.Drawing.Point(8, 120);
+            this.groupBox8.Location = new System.Drawing.Point(8, 78);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(376, 192);
             this.groupBox8.TabIndex = 45;
@@ -2474,25 +2478,17 @@ namespace EDMHardwareControl
             // 
             // tabPage5
             // 
-            this.tabPage5.Controls.Add(this.checkYagInterlockButton);
-            this.tabPage5.Controls.Add(this.interlockStatusTextBox);
-            this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.yagQDisableButton);
-            this.tabPage5.Controls.Add(this.yagQEnableButton);
-            this.tabPage5.Controls.Add(this.stopYagFlashlampsButton);
-            this.tabPage5.Controls.Add(this.startYAGFlashlampsButton);
-            this.tabPage5.Controls.Add(this.updateFlashlampVButton);
-            this.tabPage5.Controls.Add(this.label33);
-            this.tabPage5.Controls.Add(this.yagFlashlampVTextBox);
+            this.tabPage5.Controls.Add(this.groupBox17);
+            this.tabPage5.Controls.Add(this.groupBox15);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Size = new System.Drawing.Size(697, 581);
             this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "YAG";
+            this.tabPage5.Text = "Source";
             // 
             // checkYagInterlockButton
             // 
-            this.checkYagInterlockButton.Location = new System.Drawing.Point(264, 64);
+            this.checkYagInterlockButton.Location = new System.Drawing.Point(256, 63);
             this.checkYagInterlockButton.Name = "checkYagInterlockButton";
             this.checkYagInterlockButton.Size = new System.Drawing.Size(75, 23);
             this.checkYagInterlockButton.TabIndex = 45;
@@ -2503,7 +2499,7 @@ namespace EDMHardwareControl
             // 
             this.interlockStatusTextBox.BackColor = System.Drawing.Color.Black;
             this.interlockStatusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.interlockStatusTextBox.Location = new System.Drawing.Point(168, 64);
+            this.interlockStatusTextBox.Location = new System.Drawing.Point(160, 63);
             this.interlockStatusTextBox.Name = "interlockStatusTextBox";
             this.interlockStatusTextBox.ReadOnly = true;
             this.interlockStatusTextBox.Size = new System.Drawing.Size(64, 20);
@@ -2512,7 +2508,7 @@ namespace EDMHardwareControl
             // 
             // label34
             // 
-            this.label34.Location = new System.Drawing.Point(24, 64);
+            this.label34.Location = new System.Drawing.Point(16, 63);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(104, 23);
             this.label34.TabIndex = 43;
@@ -2521,7 +2517,7 @@ namespace EDMHardwareControl
             // yagQDisableButton
             // 
             this.yagQDisableButton.Enabled = false;
-            this.yagQDisableButton.Location = new System.Drawing.Point(408, 104);
+            this.yagQDisableButton.Location = new System.Drawing.Point(400, 103);
             this.yagQDisableButton.Name = "yagQDisableButton";
             this.yagQDisableButton.Size = new System.Drawing.Size(112, 23);
             this.yagQDisableButton.TabIndex = 18;
@@ -2530,7 +2526,7 @@ namespace EDMHardwareControl
             // 
             // yagQEnableButton
             // 
-            this.yagQEnableButton.Location = new System.Drawing.Point(280, 104);
+            this.yagQEnableButton.Location = new System.Drawing.Point(272, 103);
             this.yagQEnableButton.Name = "yagQEnableButton";
             this.yagQEnableButton.Size = new System.Drawing.Size(112, 23);
             this.yagQEnableButton.TabIndex = 17;
@@ -2540,7 +2536,7 @@ namespace EDMHardwareControl
             // stopYagFlashlampsButton
             // 
             this.stopYagFlashlampsButton.Enabled = false;
-            this.stopYagFlashlampsButton.Location = new System.Drawing.Point(152, 104);
+            this.stopYagFlashlampsButton.Location = new System.Drawing.Point(144, 103);
             this.stopYagFlashlampsButton.Name = "stopYagFlashlampsButton";
             this.stopYagFlashlampsButton.Size = new System.Drawing.Size(112, 23);
             this.stopYagFlashlampsButton.TabIndex = 16;
@@ -2549,7 +2545,7 @@ namespace EDMHardwareControl
             // 
             // startYAGFlashlampsButton
             // 
-            this.startYAGFlashlampsButton.Location = new System.Drawing.Point(24, 104);
+            this.startYAGFlashlampsButton.Location = new System.Drawing.Point(16, 103);
             this.startYAGFlashlampsButton.Name = "startYAGFlashlampsButton";
             this.startYAGFlashlampsButton.Size = new System.Drawing.Size(112, 23);
             this.startYAGFlashlampsButton.TabIndex = 15;
@@ -2558,7 +2554,7 @@ namespace EDMHardwareControl
             // 
             // updateFlashlampVButton
             // 
-            this.updateFlashlampVButton.Location = new System.Drawing.Point(264, 32);
+            this.updateFlashlampVButton.Location = new System.Drawing.Point(256, 31);
             this.updateFlashlampVButton.Name = "updateFlashlampVButton";
             this.updateFlashlampVButton.Size = new System.Drawing.Size(75, 23);
             this.updateFlashlampVButton.TabIndex = 14;
@@ -2567,7 +2563,7 @@ namespace EDMHardwareControl
             // 
             // label33
             // 
-            this.label33.Location = new System.Drawing.Point(24, 32);
+            this.label33.Location = new System.Drawing.Point(16, 31);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(144, 23);
             this.label33.TabIndex = 13;
@@ -2575,11 +2571,124 @@ namespace EDMHardwareControl
             // 
             // yagFlashlampVTextBox
             // 
-            this.yagFlashlampVTextBox.Location = new System.Drawing.Point(168, 32);
+            this.yagFlashlampVTextBox.Location = new System.Drawing.Point(160, 31);
             this.yagFlashlampVTextBox.Name = "yagFlashlampVTextBox";
             this.yagFlashlampVTextBox.Size = new System.Drawing.Size(64, 20);
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.steppingBBoxBiasTextBox);
+            this.groupBox9.Controls.Add(this.SteppingBBoxBiasUpdateButton);
+            this.groupBox9.Controls.Add(this.label65);
+            this.groupBox9.Location = new System.Drawing.Point(310, 276);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(296, 96);
+            this.groupBox9.TabIndex = 47;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Stepping B box bias";
+            // 
+            // steppingBBoxBiasTextBox
+            // 
+            this.steppingBBoxBiasTextBox.Location = new System.Drawing.Point(96, 24);
+            this.steppingBBoxBiasTextBox.Name = "steppingBBoxBiasTextBox";
+            this.steppingBBoxBiasTextBox.Size = new System.Drawing.Size(64, 20);
+            this.steppingBBoxBiasTextBox.TabIndex = 45;
+            this.steppingBBoxBiasTextBox.Text = "0";
+            // 
+            // SteppingBBoxBiasUpdateButton
+            // 
+            this.SteppingBBoxBiasUpdateButton.Location = new System.Drawing.Point(184, 24);
+            this.SteppingBBoxBiasUpdateButton.Name = "SteppingBBoxBiasUpdateButton";
+            this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.SteppingBBoxBiasUpdateButton.TabIndex = 40;
+            this.SteppingBBoxBiasUpdateButton.Text = "Update";
+            this.SteppingBBoxBiasUpdateButton.Click += new System.EventHandler(this.SteppingBBoxBiasUpdateButton_Click);
+            // 
+            // label65
+            // 
+            this.label65.Location = new System.Drawing.Point(16, 24);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(80, 23);
+            this.label65.TabIndex = 36;
+            this.label65.Text = "Voltage (V)";
+            // 
+            // scanningBZeroButton
+            // 
+            this.scanningBZeroButton.Location = new System.Drawing.Point(64, 56);
+            this.scanningBZeroButton.Name = "scanningBZeroButton";
+            this.scanningBZeroButton.Size = new System.Drawing.Size(75, 23);
+            this.scanningBZeroButton.TabIndex = 43;
+            this.scanningBZeroButton.Text = "Zero";
+            this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
+            // 
+            // scanningBFSButton
+            // 
+            this.scanningBFSButton.Location = new System.Drawing.Point(152, 56);
+            this.scanningBFSButton.Name = "scanningBFSButton";
+            this.scanningBFSButton.Size = new System.Drawing.Size(75, 23);
+            this.scanningBFSButton.TabIndex = 44;
+            this.scanningBFSButton.Text = "Max";
+            this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.label33);
+            this.groupBox15.Controls.Add(this.checkYagInterlockButton);
+            this.groupBox15.Controls.Add(this.yagFlashlampVTextBox);
+            this.groupBox15.Controls.Add(this.interlockStatusTextBox);
+            this.groupBox15.Controls.Add(this.updateFlashlampVButton);
+            this.groupBox15.Controls.Add(this.label34);
+            this.groupBox15.Controls.Add(this.startYAGFlashlampsButton);
+            this.groupBox15.Controls.Add(this.yagQDisableButton);
+            this.groupBox15.Controls.Add(this.stopYagFlashlampsButton);
+            this.groupBox15.Controls.Add(this.yagQEnableButton);
+            this.groupBox15.Location = new System.Drawing.Point(13, 14);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(528, 145);
+            this.groupBox15.TabIndex = 46;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "YAG";
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.TargetStepButton);
+            this.groupBox17.Controls.Add(this.label66);
+            this.groupBox17.Controls.Add(this.TargetNumStepsTextBox);
+            this.groupBox17.Location = new System.Drawing.Point(13, 165);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(351, 64);
+            this.groupBox17.TabIndex = 47;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "Target stepper";
+            // 
+            // TargetNumStepsTextBox
+            // 
+            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(158, 22);
+            this.TargetNumStepsTextBox.Name = "TargetNumStepsTextBox";
+            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(66, 20);
+            this.TargetNumStepsTextBox.TabIndex = 0;
+            this.TargetNumStepsTextBox.Text = "1";
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(19, 25);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(89, 13);
+            this.label66.TabIndex = 1;
+            this.label66.Text = "Number of pulses";
+            // 
+            // TargetStepButton
+            // 
+            this.TargetStepButton.Location = new System.Drawing.Point(256, 20);
+            this.TargetStepButton.Name = "TargetStepButton";
+            this.TargetStepButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetStepButton.TabIndex = 2;
+            this.TargetStepButton.Text = "Step!";
+            this.TargetStepButton.UseVisualStyleBackColor = true;
+            this.TargetStepButton.Click += new System.EventHandler(this.TargetStepButton_Click);
             // 
             // ControlWindow
             // 
@@ -2635,7 +2744,12 @@ namespace EDMHardwareControl
             this.groupBox11.PerformLayout();
             this.groupBox10.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -2770,6 +2884,11 @@ namespace EDMHardwareControl
 			controller.SetScanningBVoltage();
 		}
 
+        private void SteppingBBoxBiasUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.SetSteppingBBiasBVoltage();
+        }
+
 		private void scanningBFSButton_Click(object sender, System.EventArgs e)
 		{
 			controller.SetScanningBFS();
@@ -2899,6 +3018,13 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
+
+        private void TargetStepButton_Click(object sender, EventArgs e)
+        {
+            controller.StepTarget();
+        }
+
+
 
 
 

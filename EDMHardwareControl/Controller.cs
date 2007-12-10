@@ -71,6 +71,7 @@ namespace EDMHardwareControl
             new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southLeakage"], southSlope, southOffset, currentMonitorMeasurementTime);
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
+        Task steppingBBiasAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -119,6 +120,7 @@ namespace EDMHardwareControl
 
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
+            steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -779,6 +781,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double SteppingBiasCurrent
+        {
+            get
+            {
+                return Double.Parse(window.steppingBBoxBiasTextBox.Text);
+            }
+        }
+
         public double FlipStepCurrent
         {
             get
@@ -1289,6 +1299,17 @@ namespace EDMHardwareControl
             yag.SetFlashlampVoltage((int)Double.Parse(window.yagFlashlampVTextBox.Text));
         }
 
+        public void StepTarget()
+        {
+            int numSteps = (int)Double.Parse(window.TargetNumStepsTextBox.Text);
+            StepTarget(numSteps);
+        }
+
+        public void StepTarget(int numSteps)
+        {
+            // TODO: implement once we buy stepper controller.
+        }
+
         #endregion
 
         #region Hardware control methods - local use only
@@ -1417,6 +1438,19 @@ namespace EDMHardwareControl
         {
             window.SetTextBox(window.scanningBVoltageBox, v.ToString());
             SetAnalogOutput(bBoxAnalogOutputTask, v);
+        }
+
+        public void SetSteppingBBiasBVoltage()
+        {
+            double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
+        }
+
+
+        public void SetSteppingBBiasBVoltage(double v)
+        {
+            window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
         public void SetScanningBZero()

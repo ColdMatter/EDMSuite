@@ -25,6 +25,7 @@ namespace DAQ.HAL
             Boards.Add("analogIn", "/dev5");
             Boards.Add("usbDAQ2", "/dev6");
             Boards.Add("usbDAQ3", "/dev7");
+            Boards.Add("usbDAQ4", "/dev9");
 			string pgBoard = (string)Boards["pg"];
 			string daqBoard = (string)Boards["daq"];
 			string counterBoard = (string)Boards["counter"];
@@ -32,7 +33,8 @@ namespace DAQ.HAL
             string analogIn = (string)Boards["analogIn"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbDAQ3 = (string)Boards["usbDAQ3"];
-            
+            string usbDAQ4 = (string)Boards["usbDAQ4"];
+
             // add things to the info
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
@@ -117,6 +119,9 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0");
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1");
+
+            // B field control
+            AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
 
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
