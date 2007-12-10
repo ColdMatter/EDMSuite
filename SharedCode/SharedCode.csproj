@@ -78,6 +78,10 @@
       <Name>ICSharpCode.SharpZipLib</Name>
       <HintPath>C:\Program Files\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.1.20.377, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Common, Version=8.1.20.235, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -101,15 +105,22 @@
     <Compile Include="BlockConfig.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BlockDemodulator.cs" />
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DemodulatedBlock.cs" />
+    <Compile Include="DemodulationConfig.cs" />
+    <Compile Include="DetectorChannelValues.cs" />
+    <Compile Include="DetectorFT.cs" />
+    <Compile Include="DetectorExtractSpec.cs" />
     <Compile Include="DigitalModulation.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EDMPoint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GatedDetectorData.cs" />
     <Compile Include="Modulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,6 +145,7 @@
     <Compile Include="TOF.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TOFFitter.cs" />
     <Compile Include="Waveform.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,6 +153,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="licenses.licx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
