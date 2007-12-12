@@ -21,11 +21,21 @@ namespace Analysis.EDM
             DemodulatedBlock db = new DemodulatedBlock();
             db.TimeStamp = b.TimeStamp;
             db.Config = b.Config;
+            db.DemodulationConfig = config;
 
             // *** extract the gated detector data using the given config ***
             List<GatedDetectorData> detectorData = new List<GatedDetectorData>();
             foreach (DetectorExtractSpec gate in config.DetectorExtractSpecs)
+            {
                 detectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
+                // the detector name->index mapping is stored in the DemodulatedBlock
+                // for convenience
+                db.DetectorIndices.Add(gate.Name, gate.Index);
+            }
+            // ** normalise the top detector **
+            detectorData.Add(
+                detectorData[db.DetectorIndices["top"]] / detectorData[db.DetectorIndices["norm"]]);
+            db.DetectorIndices.Add("topNormed", db.DetectorIndices.Count);
 
             // calculate the norm FFT
             db.NormFourier = DetectorFT.MakeFT(detectorData[1], kFourierAverage);
@@ -132,6 +142,8 @@ namespace Analysis.EDM
                 // of the loop.
                 // This could be optimised if need be, again using the symmetry properties
                 // of the covariance matrix for a factor 2 or so speed up.
+                // A more sophisticated matrix multiplication algorithm could perhaps speed it up
+                // by a further factor 4-10 (depending on the number of channels).
                 double[] channelErrors = new double[numStates];
                 for (int channel = 0; channel < numStates; channel++)
                 {

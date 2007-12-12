@@ -15,16 +15,19 @@ bd = BlockDemodulator()
 dc = DemodulationConfig()
 #dg0 = DetectorExtractSpec.MakeGateFWHM(block, 0, 0, 1)
 dg0 = DetectorExtractSpec()
+dg0.Name = "top"
 dg0.Index = 0
 dg0.GateLow = 2100
 dg0.GateHigh = 2300
 #dg1 = DetectorExtractSpec.MakeGateFWHM(block, 1, 0, 1)
 dg1 = DetectorExtractSpec()
+dg1.Name = "norm"
 dg1.Index = 1
 dg1.GateLow = 548
 dg1.GateHigh = 601
 dg1.BackgroundSubtract = False
 dg2 = DetectorExtractSpec.MakeWideGate(2)
+dg2.Name = "mag1"
 dg2.Integrate = False
 dc.DetectorExtractSpecs.Add(dg0)
 dc.DetectorExtractSpecs.Add(dg1)

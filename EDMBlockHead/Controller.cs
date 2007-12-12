@@ -10,6 +10,8 @@ using System.Xml.Serialization;
 using EDMBlockHead.Acquire;
 using EDMBlockHead.GUI;
 
+using Analysis;
+using Analysis.EDM;
 using Data;
 using Data.EDM;
 
@@ -37,6 +39,8 @@ namespace EDMBlockHead
 		private BlockConfig config;
 		private XmlSerializer serializer = new XmlSerializer(typeof(BlockConfig));
 		BlockSerializer blockSerializer = new BlockSerializer();
+        BlockDemodulator blockDemodulator = new BlockDemodulator();
+        public DemodulatedBlock DBlock;
 		private bool haveBlock = false;
 
 		// State information
@@ -294,8 +298,21 @@ namespace EDMBlockHead
 		public void AcquisitionFinished(Block b)
 		{
 			this.Block = b;
-			haveBlock = true;
-			appState = AppState.stopped;
+            mainWindow.AppendToTextArea("Demodulating block.");
+            DemodulationConfig dc = new DemodulationConfig();
+            DetectorExtractSpec dg0 = DetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
+            dg0.Name = "top";
+            DetectorExtractSpec dg1 = DetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
+            dg1.Name = "norm";
+            DetectorExtractSpec dg2 = DetectorExtractSpec.MakeWideGate(2);
+            dg2.Name = "mag1";
+            dg2.Integrate = false;
+            dc.DetectorExtractSpecs.Add(dg0);
+            dc.DetectorExtractSpecs.Add(dg1);
+            dc.DetectorExtractSpecs.Add(dg2);
+            DBlock = blockDemodulator.DemodulateBlock(b, dc);
+            haveBlock = true;
+            appState = AppState.stopped;
 			mainWindow.AppendToTextArea("Acquisition finished");
 			SetStatusReady();
 		}

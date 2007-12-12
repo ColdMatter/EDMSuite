@@ -13,6 +13,7 @@ namespace Analysis.EDM
         public BlockConfig Config;
         public DemodulationConfig DemodulationConfig;
 
+        public Dictionary<string, int> DetectorIndices = new Dictionary<string, int>();
         public List<DetectorChannelValues> ChannelValues = new List<DetectorChannelValues>();
         public DetectorFT NormFourier;
 

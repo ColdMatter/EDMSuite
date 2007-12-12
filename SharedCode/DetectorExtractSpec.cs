@@ -10,7 +10,7 @@ namespace Analysis.EDM
     [Serializable]
     public class DetectorExtractSpec
     {
-        public string name = "";
+        public string Name = "";
         public int Index;
         public int GateLow;
         public int GateHigh;
