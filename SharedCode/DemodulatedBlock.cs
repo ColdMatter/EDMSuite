@@ -13,10 +13,8 @@ namespace Analysis.EDM
         public BlockConfig Config;
         public DemodulationConfig DemodulationConfig;
 
-        private List<DetectorChannelValues> channelList = new List<DetectorChannelValues>();
+        public List<DetectorChannelValues> ChannelValues = new List<DetectorChannelValues>();
         public DetectorFT NormFourier;
 
-        // debug stuff - to be removed
-        public List<uint> switchStates;
     }
 }

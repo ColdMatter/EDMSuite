@@ -5,25 +5,41 @@ using System.Text;
 namespace Analysis.EDM
 {
     [Serializable]
-    class DetectorChannelValues
+    public class DetectorChannelValues
     {
-        Dictionary<string, int> switchBits = new Dictionary<string, int>();
-        internal double[] values;
-        internal double[] errors;
+        public double[] Values;
+        public double[] Errors;
 
-        public int GetChannelIndex(string channelName)
+        public Dictionary<string, uint> SwitchMasks = new Dictionary<string, uint>();
+        public uint GetChannelIndex(string[] switches)
         {
-            return 0;
+            if (switches[0] == "SIG") return 0;
+            else
+            {
+                uint index = 0;
+                foreach (string s in switches) index += SwitchMasks[s];
+                return index;
+            }
         }
 
-        public double GetChannel(int channelIndex)
+        public double GetValue(int channelIndex)
         {
-            return 0;
+            return Values[channelIndex];
         }
 
-        public double GetChannelError(int channelIndex)
+        public double GetValue(string[] switches)
         {
-            return 0;
+            return Values[GetChannelIndex(switches)];
+        }
+
+        public double GetError(int channelIndex)
+        {
+            return Errors[channelIndex];
+        }
+
+        public double GetError(string[] switches)
+        {
+            return Errors[GetChannelIndex(switches)];
         }
     }
 }
