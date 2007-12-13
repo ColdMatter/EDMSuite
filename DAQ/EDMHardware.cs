@@ -84,6 +84,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 2);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("pump2Shutter", pgBoard, 3, 4);
+            AddDigitalOutputChannel("targetStepper", pgBoard, 3, 5);
 
             // map the analog channels
             

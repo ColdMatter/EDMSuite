@@ -112,6 +112,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("piFlipEnable");
             CreateDigitalTask("pumpShutter");
             CreateDigitalTask("pump2Shutter");
+            CreateDigitalTask("targetStepper");
 
             // initialise the current leakage monitors
             northLeakageMonitor.Initialize();
@@ -1307,7 +1308,13 @@ namespace EDMHardwareControl
 
         public void StepTarget(int numSteps)
         {
-            // TODO: implement once we buy stepper controller.
+            for (int i = 0; i < numSteps; i++)
+            {
+                SetDigitalLine("targetStepper", true);
+                Thread.Sleep(5);
+                SetDigitalLine("targetStepper", false);
+                Thread.Sleep(5);
+            }
         }
 
         #endregion
