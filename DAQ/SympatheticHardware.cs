@@ -10,13 +10,13 @@ namespace DAQ.HAL
 {
 	
 	/// <summary>
-	/// This is the specific hardware that the LiH experiment has. This class conforms
+	/// This is the specific hardware that the sympathetic cooling experiment has. This class conforms
 	/// to the Hardware interface.
 	/// </summary>
-	public class LiHHardware : DAQ.HAL.Hardware
+	public class SympatheticHardware : DAQ.HAL.Hardware
 	{
 
-		public LiHHardware()
+		public SympatheticHardware()
 		{
 
 			// YAG laser
@@ -46,10 +46,10 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
             AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
             AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
-	//		AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0);
-	//		AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1);
-	//		AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2);
-	//		AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3);
+			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
+	        AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
+			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
+			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
 
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];

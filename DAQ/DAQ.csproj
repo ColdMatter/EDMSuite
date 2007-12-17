@@ -209,7 +209,7 @@
     <Compile Include="LeakageMonitor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LiHHardware.cs">
+    <Compile Include="SympatheticHardware.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MathematicaService.cs">
