@@ -17,6 +17,7 @@ namespace ScanMaster.GUI
 		private int shotCounter = 0;
 
 		private RollViewerWindow window;
+        public string dataSelection = "On";
 		bool visible = false;
 		Scan pointsToPlot = new Scan();
 
@@ -28,6 +29,7 @@ namespace ScanMaster.GUI
 		public RollViewer()
 		{
 			window = new RollViewerWindow(this);
+            window.dataSelectorCombo.SelectedIndex = 0;
 		}
 
 		public void Show()
@@ -60,6 +62,11 @@ namespace ScanMaster.GUI
 			window.ClearAll();
 		}
 
+        public void updateDataSelection(string selection)
+        {
+            dataSelection = selection;
+        }
+
 		public void HandleDataPoint(ScanMaster.Acquire.DataEventArgs e)
 		{
 			pointsToPlot.Points.Add(e.point);
@@ -70,7 +77,11 @@ namespace ScanMaster.GUI
 					AcquisitorConfig.shotGathererPlugin.Settings["gateStartTime"];
 				int gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
 					AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
-				double[] values = pointsToPlot.GetTOFOnIntegralArray(0, gateStart, gateStart + gateLength);
+                double[] values = pointsToPlot.GetTOFOnIntegralArray(0, gateStart, gateStart + gateLength);
+                if (dataSelection == "Off" && (bool)Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
+                {
+                   values = pointsToPlot.GetTOFOffIntegralArray(0, gateStart, gateStart + gateLength);
+                }
 				double[] iodine = pointsToPlot.GetAnalogArray(0);
 
 				window.AppendToSignalGraph(values);

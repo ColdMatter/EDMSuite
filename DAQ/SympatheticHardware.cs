@@ -28,8 +28,8 @@ namespace DAQ.HAL
 
             // add things to the info
             // the analog triggers
-            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
-            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0"); //DAQ Pin 11
+            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
             
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
@@ -69,7 +69,7 @@ namespace DAQ.HAL
 
         public override void ConnectApplications()
         {
-            RemotingHelper.ConnectDecelerationHardwareControl();
+           // RemotingHelper.ConnectDecelerationHardwareControl();
         }
 
 
