@@ -782,7 +782,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double SteppingBiasCurrent
+        public double SteppingBiasVoltage
         {
             get
             {
