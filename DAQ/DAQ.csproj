@@ -138,6 +138,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="SealClubberFileSystem.cs" />
     <Compile Include="Agilent53131A.cs" />
     <Compile Include="FrequencyCounter.cs" />
