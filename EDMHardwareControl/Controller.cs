@@ -72,6 +72,7 @@ namespace EDMHardwareControl
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
+        Task flPZTVAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -122,6 +123,7 @@ namespace EDMHardwareControl
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -1460,6 +1462,19 @@ namespace EDMHardwareControl
             SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
+
+        public void UpdateFLPZTV()
+        {
+            double pztVoltage = Double.Parse(window.FLPZTVTextBox.Text);
+            SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
+        }
+
+        public void SetFLPZTVoltage(double v)
+        {
+            window.SetTextBox(window.FLPZTVTextBox, v.ToString());
+            SetAnalogOutput(flPZTVAnalogOutputTask, v);
+        }
+        
         public void SetScanningBZero()
         {
             window.SetTextBox(window.scanningBVoltageBox, "0.0");
@@ -1506,5 +1521,6 @@ namespace EDMHardwareControl
         }
 
         #endregion
+
     }
 }

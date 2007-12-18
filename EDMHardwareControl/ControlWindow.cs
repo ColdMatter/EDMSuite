@@ -239,6 +239,13 @@ namespace EDMHardwareControl
         private Button TargetStepButton;
         private Label label66;
         public TextBox TargetNumStepsTextBox;
+        private GroupBox groupBox18;
+        public TextBox FLPZTVTextBox;
+        private Button UpdateFLPZTVButton;
+        private Label label68;
+        public TextBox textBox1;
+        private Button button1;
+        private Label label67;
 
 
 		public Controller controller;
@@ -489,6 +496,13 @@ namespace EDMHardwareControl
             this.yagQDisableButton = new System.Windows.Forms.Button();
             this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
             this.yagQEnableButton = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label67 = new System.Windows.Forms.Label();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.FLPZTVTextBox = new System.Windows.Forms.TextBox();
+            this.UpdateFLPZTVButton = new System.Windows.Forms.Button();
+            this.label68 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -520,6 +534,7 @@ namespace EDMHardwareControl
             this.tabPage5.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
+            this.groupBox18.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -2403,6 +2418,7 @@ namespace EDMHardwareControl
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.groupBox18);
             this.tabPage4.Controls.Add(this.groupBox11);
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -2690,6 +2706,67 @@ namespace EDMHardwareControl
             this.yagQEnableButton.Text = "Q-switch Enable";
             this.yagQEnableButton.Click += new System.EventHandler(this.yagQEnableButton_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(96, 24);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(64, 20);
+            this.textBox1.TabIndex = 45;
+            this.textBox1.Text = "0";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(184, 24);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 40;
+            this.button1.Text = "Update";
+            // 
+            // label67
+            // 
+            this.label67.Location = new System.Drawing.Point(16, 24);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(80, 23);
+            this.label67.TabIndex = 36;
+            this.label67.Text = "Voltage (V)";
+            // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.FLPZTVTextBox);
+            this.groupBox18.Controls.Add(this.UpdateFLPZTVButton);
+            this.groupBox18.Controls.Add(this.label68);
+            this.groupBox18.Location = new System.Drawing.Point(238, 20);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Size = new System.Drawing.Size(296, 96);
+            this.groupBox18.TabIndex = 48;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = "Fibre laser PZT";
+            // 
+            // FLPZTVTextBox
+            // 
+            this.FLPZTVTextBox.Location = new System.Drawing.Point(96, 24);
+            this.FLPZTVTextBox.Name = "FLPZTVTextBox";
+            this.FLPZTVTextBox.Size = new System.Drawing.Size(64, 20);
+            this.FLPZTVTextBox.TabIndex = 45;
+            this.FLPZTVTextBox.Text = "0";
+            // 
+            // UpdateFLPZTVButton
+            // 
+            this.UpdateFLPZTVButton.Location = new System.Drawing.Point(184, 24);
+            this.UpdateFLPZTVButton.Name = "UpdateFLPZTVButton";
+            this.UpdateFLPZTVButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdateFLPZTVButton.TabIndex = 40;
+            this.UpdateFLPZTVButton.Text = "Update";
+            this.UpdateFLPZTVButton.Click += new System.EventHandler(this.UpdateFLPZTVButton_Click);
+            // 
+            // label68
+            // 
+            this.label68.Location = new System.Drawing.Point(16, 24);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(80, 23);
+            this.label68.TabIndex = 36;
+            this.label68.Text = "Voltage (V)";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2750,6 +2827,8 @@ namespace EDMHardwareControl
             this.groupBox17.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
+            this.groupBox18.ResumeLayout(false);
+            this.groupBox18.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -2950,7 +3029,15 @@ namespace EDMHardwareControl
             controller.StopIMonitorPoll();
         }
 
+        private void TargetStepButton_Click(object sender, EventArgs e)
+        {
+            controller.StepTarget();
+        }
 
+        private void UpdateFLPZTVButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFLPZTV();
+        }
 
 		#endregion
 
@@ -3019,10 +3106,7 @@ namespace EDMHardwareControl
             controller.WindowClosing();
         }
 
-        private void TargetStepButton_Click(object sender, EventArgs e)
-        {
-            controller.StepTarget();
-        }
+ 
 
 
 

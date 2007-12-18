@@ -124,6 +124,9 @@ namespace DAQ.HAL
             // B field control
             AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
 
+            // FL control
+            AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
+
 			// map the counter channels
 			AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
 			AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");

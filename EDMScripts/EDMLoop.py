@@ -98,7 +98,7 @@ def updateLocks():
 	dbError = pmtChannelValues.GetError(dbIndex)
 	# B bias lock
 	# feedback only 1/5 of what we think we should - very loose
-	deltaBias = (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = (1/5) * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 	print "Changing stepping B bias by " + str(deltaBias) + " V."
 	hc.SetSteppingBBiasBVoltage( hc.SteppingBiasVoltage - deltaBias )
 
