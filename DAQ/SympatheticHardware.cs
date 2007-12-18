@@ -25,6 +25,10 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
+            Boards.Add("usbDAQ1", "/dev3");
+            string pgBoard = (string)Boards["pg"];
+            string daqBoard = (string)Boards["daq"];
+            string usbDAQ1 = (string)Boards["usbDAQ1"];
 
             // add things to the info
             // the analog triggers
@@ -36,7 +40,6 @@ namespace DAQ.HAL
             GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));
             
             // map the digital channels
-			string pgBoard = (string)Boards["pg"];
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
@@ -51,12 +54,15 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
 
-			// map the analog channels
-			string daqBoard = (string)Boards["daq"];
+			// map the analog input channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
             AddAnalogInputChannel("refcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
+            AddAnalogInputChannel("atomsourcepressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
+            AddAnalogInputChannel("atomsourcepressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
+
+            //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
             AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1"); // Pin 21
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
