@@ -28,7 +28,7 @@ namespace ScanMaster.Acquire.Patterns
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, bool modulation) 
 		{
 		
-			int time = 0;
+			int time = startTime;
             			
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 

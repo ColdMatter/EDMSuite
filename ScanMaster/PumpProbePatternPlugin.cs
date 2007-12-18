@@ -48,7 +48,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			scanPatternBuilder.Clear();
 			scanPatternBuilder.ShotSequence(
-				0,
+                (int)settings["padStart"],
 				(int)settings["sequenceLength"],
 				(int)settings["padShots"],
 				(int)settings["flashlampPulseInterval"],

@@ -63,7 +63,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			decelPatternBuilder.Clear();
 			decelPatternBuilder.ShotSequence(
-				0,
+				(int)settings["padStart"],
 				(int)settings["sequenceLength"],
 				(int)settings["padShots"], 
 				(int)settings["flashlampPulseInterval"],

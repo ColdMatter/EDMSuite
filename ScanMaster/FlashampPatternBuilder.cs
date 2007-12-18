@@ -13,12 +13,11 @@ namespace ScanMaster.Acquire.Patterns
 	public class FlashlampPatternBuilder : PatternBuilder32 
 	{
 		private const int FLASH_PULSE_LENGTH = 100;
-		private const int START_PADDING = 500;
 		
 		public int ShotSequence( int startTime, int sequenceLength, int flashlampPulseInterval,
 									int valveToQ, int flashToQ ) 
 		{
-			int time = 0;
+			int time = startTime;
 			for (int i = 0 ; i < sequenceLength ; i++ ) 
 			{
 				Shot( time, valveToQ, flashToQ );
@@ -30,7 +29,7 @@ namespace ScanMaster.Acquire.Patterns
 
 		public int Shot( int startTime, int valveToQ, int flashToQ )  
 		{
-			return Pulse(startTime + START_PADDING, valveToQ - flashToQ, FLASH_PULSE_LENGTH,
+			return Pulse(startTime, valveToQ - flashToQ, FLASH_PULSE_LENGTH,
 					((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 		}
 	

@@ -34,6 +34,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["sequenceLength"] = 1;
 			settings["clockFrequency"] = 1000000;
 			settings["padShots"] = 0;
+            settings["padStart"] = 0;
 			settings["fullWidth"] = true;
 			settings["lowGroup"] = true;
 
@@ -108,7 +109,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			flashlampPatternBuilder.Clear();
 			flashlampPatternBuilder.ShotSequence(
-				0,
+				(int)settings["padStart"],
 				((int)settings["padShots"] + 1) * (int)settings["sequenceLength"],
 				(int)settings["flashlampPulseInterval"],
 				(int)settings["valveToQ"],

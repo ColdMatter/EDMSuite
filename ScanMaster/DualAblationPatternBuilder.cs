@@ -24,7 +24,7 @@ namespace ScanMaster.Acquire.Patterns
             int valvePulseLength, int valveToQ, int flashToQ, int flash2ToQ2, int qToQ2, int delayToDetectorTrigger, bool modulation)
         {
 
-            int time = 0;
+            int time = startTime;
             
             for (int i = 0; i < numberOfOnOffShots; i++)
             {
