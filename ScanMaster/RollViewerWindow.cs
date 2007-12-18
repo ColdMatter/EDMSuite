@@ -24,6 +24,7 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.WindowsForms.WaveformGraph iodineGraph;
         private NationalInstruments.UI.WaveformPlot iodinePlot;
         public ComboBox dataSelectorCombo;
+        private Label dataSelectionLabel;
 
 		private System.ComponentModel.Container components = null;
 
@@ -65,6 +66,7 @@ namespace ScanMaster.GUI
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.dataSelectorCombo = new System.Windows.Forms.ComboBox();
+            this.dataSelectionLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.signalGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iodineGraph)).BeginInit();
             this.SuspendLayout();
@@ -133,16 +135,26 @@ namespace ScanMaster.GUI
             this.dataSelectorCombo.Items.AddRange(new object[] {
             "On",
             "Off"});
-            this.dataSelectorCombo.Location = new System.Drawing.Point(16, 566);
+            this.dataSelectorCombo.Location = new System.Drawing.Point(49, 566);
             this.dataSelectorCombo.Name = "dataSelectorCombo";
             this.dataSelectorCombo.Size = new System.Drawing.Size(55, 21);
             this.dataSelectorCombo.TabIndex = 2;
             this.dataSelectorCombo.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
+            // dataSelectionLabel
+            // 
+            this.dataSelectionLabel.AutoSize = true;
+            this.dataSelectionLabel.Location = new System.Drawing.Point(13, 569);
+            this.dataSelectionLabel.Name = "dataSelectionLabel";
+            this.dataSelectionLabel.Size = new System.Drawing.Size(30, 13);
+            this.dataSelectionLabel.TabIndex = 3;
+            this.dataSelectionLabel.Text = "Data";
+            // 
             // RollViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(730, 599);
+            this.Controls.Add(this.dataSelectionLabel);
             this.Controls.Add(this.dataSelectorCombo);
             this.Controls.Add(this.iodineGraph);
             this.Controls.Add(this.signalGraph);
@@ -155,6 +167,7 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.signalGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iodineGraph)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion

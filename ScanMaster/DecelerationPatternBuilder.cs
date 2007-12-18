@@ -20,7 +20,7 @@ namespace ScanMaster.Acquire.Patterns
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
-			int delayToDeceleration, TimingSequence decelSequence, bool modulation)
+			int delayToDeceleration, TimingSequence decelSequence, string modulationMode, int decelOnStart, int decelOnDuration, bool modulation)
 		{
 		
 			int time = 0;
@@ -29,18 +29,18 @@ namespace ScanMaster.Acquire.Patterns
 			{
 				// first with decelerator on
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
-					decelSequence);
+					decelSequence, modulationMode, decelOnStart, decelOnDuration);
 				time += flashlampPulseInterval;
 				// then with the decelerator off if modulation is true (otherwise another on shot)
 				if (modulation)
 				{
 					Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detectorprime",
-						null);
+                        null, modulationMode, decelOnStart, decelOnDuration);
 				}
 				else
 				{
 					Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
-						decelSequence);
+                        decelSequence, modulationMode, decelOnStart, decelOnDuration);
 				}
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
@@ -61,7 +61,8 @@ namespace ScanMaster.Acquire.Patterns
 		}
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
-			int delayToDetectorTrigger, int delayToDeceleration, string detectorTriggerSource, TimingSequence decelSequence)  
+			int delayToDetectorTrigger, int delayToDeceleration, string detectorTriggerSource, TimingSequence decelSequence, 
+            string modulationMode, int decelOnStart, int decelOnDuration)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -83,18 +84,34 @@ namespace ScanMaster.Acquire.Patterns
 			if (tempTime > time) time = tempTime;
 
 			// Deceleration sequence
-			if (decelSequence != null)
-			{
-				foreach (TimingSequence.Edge edge in decelSequence.Sequence)
-				{
-					tempTime = startTime + valveToQ + delayToDeceleration + edge.Time;
-					AddEdge(
-						((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[edge.Channel]).BitNumber,
-						tempTime,
-						edge.Sense
-						);
-				}	
-			}
+            if (decelSequence != null)
+            {
+                foreach (TimingSequence.Edge edge in decelSequence.Sequence)
+                {
+                    tempTime = startTime + valveToQ + delayToDeceleration + edge.Time;
+                    AddEdge(
+                        ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[edge.Channel]).BitNumber,
+                        tempTime,
+                        edge.Sense
+                        );
+                }
+            }
+            else
+            {
+                if (modulationMode == "BurstAndOn") // long on pulse every other shot; otherwise, the decelerator stays off on every other shot
+                {
+                    tempTime = startTime + valveToQ + decelOnStart;
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelhplus"]).BitNumber, tempTime, true);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelhminus"]).BitNumber, tempTime, true);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelvplus"]).BitNumber, tempTime, true);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelvminus"]).BitNumber, tempTime, true);
+                    tempTime = startTime + valveToQ + decelOnStart + decelOnDuration;
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelhplus"]).BitNumber, tempTime, false);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelhminus"]).BitNumber, tempTime, false);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelvplus"]).BitNumber, tempTime, false);
+                    AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelvminus"]).BitNumber, tempTime, false);
+                }
+            }
 			return time;
 		}
 

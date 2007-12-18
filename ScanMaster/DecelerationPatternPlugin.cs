@@ -31,10 +31,14 @@ namespace ScanMaster.Acquire.Plugins
 			settings["voltage"] = 10;
 			settings["initspeed"] = 337;
 			settings["initposition"] = 0;
-			settings["onposition"] = 16;
-			settings["offposition"] = 28;
+			settings["onposition"] = 16.0;
+			settings["offposition"] = 28.0;
 			settings["numberOfStages"] = 12;
             settings["sequenceLength"] = 2;
+            settings["resonanceOrder"] = 1;
+            settings["decelOnStart"] = 300;
+            settings["decelOnDuration"] = 800;
+            settings["modulationMode"] = "BurstAndOff";
 		}
 
 
@@ -48,9 +52,10 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["voltage"],
 				(int)settings["initspeed"],
 				(int)settings["initposition"],
-				(int)settings["onposition"],
-				(int)settings["offposition"],
-				(int)settings["numberOfStages"]
+				(double)settings["onposition"],
+				(double)settings["offposition"],
+				(int)settings["numberOfStages"],
+                (int)settings["resonanceOrder"]
 				);
 		}
 
@@ -67,7 +72,10 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["flashToQ"],
 				(int)config.shotGathererPlugin.Settings["gateStartTime"],
 				(int)settings["delayToDeceleration"],
-				decelSequence, 
+				decelSequence,
+                (string)settings["modulationMode"],
+                (int)settings["decelOnStart"],
+                (int)settings["decelOnDuration"],
 				(bool)config.switchPlugin.Settings["switchActive"]
 				);
 			decelPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
@@ -78,7 +86,7 @@ namespace ScanMaster.Acquire.Plugins
 
 
 		private void buildDecelerationSequence(String molecule, int voltage,
-			int initspeed, int initposition, int onposition, int offposition, int numberOfStages)
+			int initspeed, int initposition, double onposition, double offposition, int numberOfStages, int resonanceOrder)
 		{
 			IKernelLink ml = MathematicaService.GetKernel();
 			MathematicaService.LoadPackage((String)Environs.Info["SwitchSequenceCode"], false);
@@ -86,15 +94,15 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				//Here's the call to the Mathematica makeSequence function
 				String argString = "makeSequence[" + molecule + ", " + voltage + ", " + initspeed + ", " + initposition + ", " +
-					onposition + ", " + offposition + ", " + numberOfStages + "]";
+					onposition + ", " + offposition + ", " + numberOfStages + ", " + resonanceOrder + "]";
 				ml.Evaluate(argString);
 				ml.WaitForAnswer();
 				double[] timesdouble = (double[]) ml.GetArray(typeof(double),1); // get the list of switch times
-				// The list of times is in seconds. Convert to microseconds and round to nearest microsecond
+				// The list of times is in seconds. Convert to the units of the clockFrequency and round to the nearest unit
 				int[] times = new int[timesdouble.Length];
 				for(int i = 0; i < timesdouble.Length; i++)
 				{
-					times[i] = (int)Math.Round(1000000*timesdouble[i]);
+					times[i] = (int)Math.Round((int)settings["clockFrequency"]*timesdouble[i]);
 				}
 				//Console.WriteLine("Generated Timing Sequence");
 				decelSequence = new TimingSequence();
@@ -108,7 +116,7 @@ namespace ScanMaster.Acquire.Plugins
 				decelSequence.Name = ml.GetString();
 
 				// Get the decelerator structure
-				ml.Evaluate("getStructure[]");
+				ml.Evaluate("getStructure[" + resonanceOrder + "]");
 				ml.WaitForAnswer();
 				int[] structure = (int[])ml.GetArray(typeof(int),1);
 				// keep track of the state of the horizontal and vertical electrodes
@@ -184,7 +192,7 @@ namespace ScanMaster.Acquire.Plugins
 					
 				}
         
-				Console.WriteLine(decelSequence.ToString());
+				//Console.WriteLine(decelSequence.ToString());
 			}
 		}
 	
