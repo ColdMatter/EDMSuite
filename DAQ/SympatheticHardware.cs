@@ -40,6 +40,7 @@ namespace DAQ.HAL
             GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));
             
             // map the digital channels
+            // these channels are to be part of the "pattern" and shoud all be on the low half of the board
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
@@ -49,18 +50,32 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
             AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
             AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
+            // the following are the decelerator channels for the burst
 			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
 	        AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
+
+            // these channels are to be switched "manually" and should all be on the high half of the board
+            // the following set of switches are used to enable or disable the burst
+            AddDigitalOutputChannel("hplusBurstEnable", pgBoard, 2, 0);
+            AddDigitalOutputChannel("hminusBurstEnable", pgBoard, 2, 1);
+            AddDigitalOutputChannel("vplusBurstEnable", pgBoard, 2, 2);
+            AddDigitalOutputChannel("vminusBurstEnable", pgBoard, 2, 3);
+            // the following set of switches are used for dc on or off
+            AddDigitalOutputChannel("hplusdc", pgBoard, 2, 4);
+            AddDigitalOutputChannel("hminusdc", pgBoard, 2, 5);
+            AddDigitalOutputChannel("vplusdc", pgBoard, 2, 6);
+            AddDigitalOutputChannel("vminusdc", pgBoard, 2, 7);
+
 
 			// map the analog input channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
             AddAnalogInputChannel("refcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
-            AddAnalogInputChannel("atomsourcepressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
-            AddAnalogInputChannel("atomsourcepressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
+            AddAnalogInputChannel("atomSourcePressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
+            AddAnalogInputChannel("atomSourcePressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
 
             //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
