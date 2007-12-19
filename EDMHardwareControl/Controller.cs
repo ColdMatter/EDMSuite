@@ -1487,6 +1487,24 @@ namespace EDMHardwareControl
             SetScanningBVoltage();
         }
 
+        // these are here as it seems IronPython has trouble setting attributes remotely
+        public void SetRF1AttCentre(double v)
+        {
+            RF1AttCentre = v;
+        }
+        public void SetRF2AttCentre(double v)
+        {
+            RF2AttCentre = v;
+        }
+        public void SetRF1FMCentre(double v)
+        {
+            RF1FMCentre = v;
+        }
+        public void SetRF2FMCentre(double v)
+        {
+            RF2FMCentre = v;
+        }
+
         private double windowVoltage(double vIn, double vMin, double vMax)
         {
             if (vIn < vMin) return vMin;
