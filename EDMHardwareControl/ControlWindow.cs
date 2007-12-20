@@ -246,6 +246,10 @@ namespace EDMHardwareControl
         public TextBox textBox1;
         private Button button1;
         private Label label67;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem saveParametersToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
 
 
 		public Controller controller;
@@ -468,6 +472,10 @@ namespace EDMHardwareControl
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.FLPZTVTextBox = new System.Windows.Forms.TextBox();
+            this.UpdateFLPZTVButton = new System.Windows.Forms.Button();
+            this.label68 = new System.Windows.Forms.Label();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.updateLaserPhotodiodesButton = new System.Windows.Forms.Button();
             this.pumpMonitorTextBox = new System.Windows.Forms.TextBox();
@@ -499,10 +507,10 @@ namespace EDMHardwareControl
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
-            this.groupBox18 = new System.Windows.Forms.GroupBox();
-            this.FLPZTVTextBox = new System.Windows.Forms.TextBox();
-            this.UpdateFLPZTVButton = new System.Windows.Forms.Button();
-            this.label68 = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -529,12 +537,13 @@ namespace EDMHardwareControl
             this.groupBox12.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.groupBox18.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
-            this.groupBox18.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -2427,6 +2436,43 @@ namespace EDMHardwareControl
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Laser";
             // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.FLPZTVTextBox);
+            this.groupBox18.Controls.Add(this.UpdateFLPZTVButton);
+            this.groupBox18.Controls.Add(this.label68);
+            this.groupBox18.Location = new System.Drawing.Point(238, 20);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Size = new System.Drawing.Size(296, 96);
+            this.groupBox18.TabIndex = 48;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = "Fibre laser PZT";
+            // 
+            // FLPZTVTextBox
+            // 
+            this.FLPZTVTextBox.Location = new System.Drawing.Point(96, 24);
+            this.FLPZTVTextBox.Name = "FLPZTVTextBox";
+            this.FLPZTVTextBox.Size = new System.Drawing.Size(64, 20);
+            this.FLPZTVTextBox.TabIndex = 45;
+            this.FLPZTVTextBox.Text = "0";
+            // 
+            // UpdateFLPZTVButton
+            // 
+            this.UpdateFLPZTVButton.Location = new System.Drawing.Point(184, 24);
+            this.UpdateFLPZTVButton.Name = "UpdateFLPZTVButton";
+            this.UpdateFLPZTVButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdateFLPZTVButton.TabIndex = 40;
+            this.UpdateFLPZTVButton.Text = "Update";
+            this.UpdateFLPZTVButton.Click += new System.EventHandler(this.UpdateFLPZTVButton_Click);
+            // 
+            // label68
+            // 
+            this.label68.Location = new System.Drawing.Point(16, 24);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(80, 23);
+            this.label68.TabIndex = 36;
+            this.label68.Text = "Voltage (V)";
+            // 
             // groupBox11
             // 
             this.groupBox11.Controls.Add(this.updateLaserPhotodiodesButton);
@@ -2730,50 +2776,48 @@ namespace EDMHardwareControl
             this.label67.TabIndex = 36;
             this.label67.Text = "Voltage (V)";
             // 
-            // groupBox18
+            // menuStrip1
             // 
-            this.groupBox18.Controls.Add(this.FLPZTVTextBox);
-            this.groupBox18.Controls.Add(this.UpdateFLPZTVButton);
-            this.groupBox18.Controls.Add(this.label68);
-            this.groupBox18.Location = new System.Drawing.Point(238, 20);
-            this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(296, 96);
-            this.groupBox18.TabIndex = 48;
-            this.groupBox18.TabStop = false;
-            this.groupBox18.Text = "Fibre laser PZT";
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(726, 24);
+            this.menuStrip1.TabIndex = 26;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // FLPZTVTextBox
+            // fileToolStripMenuItem
             // 
-            this.FLPZTVTextBox.Location = new System.Drawing.Point(96, 24);
-            this.FLPZTVTextBox.Name = "FLPZTVTextBox";
-            this.FLPZTVTextBox.Size = new System.Drawing.Size(64, 20);
-            this.FLPZTVTextBox.TabIndex = 45;
-            this.FLPZTVTextBox.Text = "0";
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveParametersToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
             // 
-            // UpdateFLPZTVButton
+            // saveParametersToolStripMenuItem
             // 
-            this.UpdateFLPZTVButton.Location = new System.Drawing.Point(184, 24);
-            this.UpdateFLPZTVButton.Name = "UpdateFLPZTVButton";
-            this.UpdateFLPZTVButton.Size = new System.Drawing.Size(75, 23);
-            this.UpdateFLPZTVButton.TabIndex = 40;
-            this.UpdateFLPZTVButton.Text = "Update";
-            this.UpdateFLPZTVButton.Click += new System.EventHandler(this.UpdateFLPZTVButton_Click);
+            this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.saveParametersToolStripMenuItem.Text = "Save parameters";
+            this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
-            // label68
+            // exitToolStripMenuItem
             // 
-            this.label68.Location = new System.Drawing.Point(16, 24);
-            this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(80, 23);
-            this.label68.TabIndex = 36;
-            this.label68.Text = "Voltage (V)";
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(726, 636);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "ControlWindow";
             this.Text = "EDM Hardware Control";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
@@ -2819,6 +2863,8 @@ namespace EDMHardwareControl
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.groupBox18.ResumeLayout(false);
+            this.groupBox18.PerformLayout();
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
             this.groupBox10.ResumeLayout(false);
@@ -2827,9 +2873,10 @@ namespace EDMHardwareControl
             this.groupBox17.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
-            this.groupBox18.ResumeLayout(false);
-            this.groupBox18.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion
@@ -3039,6 +3086,17 @@ namespace EDMHardwareControl
             controller.UpdateFLPZTV();
         }
 
+        private void SaveParametersMenuClicked(object sender, EventArgs e)
+        {
+            controller.StoreParameters();
+        }
+
+        private void ExitMenuClicked(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+
 		#endregion
 
 		#region ThreadSafe wrappers
@@ -3105,6 +3163,7 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
+
 
  
 

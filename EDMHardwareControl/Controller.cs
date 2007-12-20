@@ -271,7 +271,7 @@ namespace EDMHardwareControl
             public double flPZT;
         }
 
-        private void StoreParameters()
+        public void StoreParameters()
         {
             DataStore dataStore = new DataStore();
             // fill the struct
