@@ -267,6 +267,8 @@ namespace EDMHardwareControl
             public double rf1FMS;
             public double rf2FMC;
             public double rf2FMS;
+            public double steppingBias;
+            public double flPZT;
         }
 
         private void StoreParameters()
@@ -292,6 +294,8 @@ namespace EDMHardwareControl
             dataStore.rf1FMS = RF1FMStep;
             dataStore.rf2FMC = RF2FMCentre;
             dataStore.rf2FMS = RF2FMStep;
+            dataStore.steppingBias = SteppingBiasVoltage;
+            dataStore.flPZT = FLPZTVoltage;
  
             // serialize it
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
@@ -336,6 +340,8 @@ namespace EDMHardwareControl
                 RF1FMStep = dataStore.rf1FMS;
                 RF2FMCentre = dataStore.rf2FMC;
                 RF2FMStep = dataStore.rf2FMS;
+                SetSteppingBBiasVoltage( dataStore.steppingBias );
+                FLPZTVoltage = dataStore.flPZT;
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to load settings"); }
@@ -1462,14 +1468,14 @@ namespace EDMHardwareControl
             SetAnalogOutput(bBoxAnalogOutputTask, v);
         }
 
-        public void SetSteppingBBiasBVoltage()
+        public void SetSteppingBBiasVoltage()
         {
             double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
             SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
         }
 
 
-        public void SetSteppingBBiasBVoltage(double v)
+        public void SetSteppingBBiasVoltage(double v)
         {
             window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
             SetAnalogOutput(steppingBBiasAnalogOutputTask, v);

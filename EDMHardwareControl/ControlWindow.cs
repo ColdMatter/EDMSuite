@@ -2965,7 +2965,7 @@ namespace EDMHardwareControl
 
         private void SteppingBBoxBiasUpdateButton_Click(object sender, EventArgs e)
         {
-            controller.SetSteppingBBiasBVoltage();
+            controller.SetSteppingBBiasVoltage();
         }
 
 		private void scanningBFSButton_Click(object sender, System.EventArgs e)

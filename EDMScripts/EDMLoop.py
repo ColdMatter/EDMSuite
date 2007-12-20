@@ -93,6 +93,9 @@ kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
 kRFAVoltsPerCal = 4
 kRFAMaxChange = 0.1
+# volts of rf*f input required per cal's worth of offset
+kRFFVoltsPerCal = 4
+kRFFMaxChange = 0.1
 
 def updateLocks(bState):
 	pmtChannelValues = bh.DBlock.ChannelValues[0]
@@ -125,17 +128,16 @@ def updateLocks(bState):
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
 	print "LF1: " + str(lf1Value) + " LF1.DB: " + str(lf1dbValue)
 	# B bias lock
-	# feedback only 1/5 of what we think we should - very loose
 	# the sign of the feedback depends on the b-state
 	if bState: 
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = - (1.0/5.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = - (1.0/3.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
-	hc.SetSteppingBBiasBVoltage( newBiasVoltage )
+	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
 	deltaRF1A = - (1.0/5.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
@@ -148,7 +150,19 @@ def updateLocks(bState):
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
+	# RFF  locks
+	deltaRF1F = - (1.0/5.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
+	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+	hc.SetRF1FMCentre( newRF1F )
 	#
+	deltaRF2F = - (1.0/5.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
+	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+	hc.SetRF2FMCentre( newRF2F )
+	# Laser frequency lock
 	deltaLF1 = -1.0 * 0.1 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
