@@ -71,6 +71,8 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	bc.GetModulationByName("RF1F").Step = hc.RF1FMStep
 	bc.GetModulationByName("RF2F").Centre = hc.RF2FMCentre
 	bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
+	bc.GetModulationByName("LF1").Centre = hc.FLPZTVoltage
+	#bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
 	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
@@ -85,37 +87,43 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 
 # lock gains
 # microamps of current per volt of control input
-kSteppingBiasCurrentPerVolt = 100.0
+kSteppingBiasCurrentPerVolt = 1000.0
 # max change in the b-bias voltage per block
-kBMaxChange = 0.1
+kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
-kRFAVoltsPerCal = 0.3
-kRFAMaxChange = 0.05
+kRFAVoltsPerCal = 4
+kRFAMaxChange = 0.1
 
 def updateLocks(bState):
 	pmtChannelValues = bh.DBlock.ChannelValues[0]
 	# note the weird python syntax for a one element list
 	bIndex = pmtChannelValues.GetChannelIndex(("B",))
 	bValue = pmtChannelValues.GetValue(bIndex)
-	bError = pmtChannelValues.GetError(bIndex)
+	#bError = pmtChannelValues.GetError(bIndex)
 	dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 	dbValue = pmtChannelValues.GetValue(dbIndex)
-	dbError = pmtChannelValues.GetError(dbIndex)
+	#dbError = pmtChannelValues.GetError(dbIndex)
 	rf1aIndex = pmtChannelValues.GetChannelIndex(("RF1A",))
 	rf1aValue = pmtChannelValues.GetValue(rf1aIndex)
-	rf1aError = pmtChannelValues.GetError(rf1aIndex)
+	#rf1aError = pmtChannelValues.GetError(rf1aIndex)
 	rf2aIndex = pmtChannelValues.GetChannelIndex(("RF2A",))
 	rf2aValue = pmtChannelValues.GetValue(rf2aIndex)
-	rf2aError = pmtChannelValues.GetError(rf2aIndex)
+	#rf2aError = pmtChannelValues.GetError(rf2aIndex)
 	rf1fIndex = pmtChannelValues.GetChannelIndex(("RF1F",))
 	rf1fValue = pmtChannelValues.GetValue(rf1fIndex)
-	rf1fError = pmtChannelValues.GetError(rf1fIndex)
+	#rf1fError = pmtChannelValues.GetError(rf1fIndex)
 	rf2fIndex = pmtChannelValues.GetChannelIndex(("RF2F",))
 	rf2fValue = pmtChannelValues.GetValue(rf2fIndex)
-	rf2fError = pmtChannelValues.GetError(rf2fIndex)
+	#rf2fError = pmtChannelValues.GetError(rf2fIndex)
+	lf1Index = pmtChannelValues.GetChannelIndex(("LF1",))
+	lf1Value = pmtChannelValues.GetValue(lf1Index)
+	#lf1Error = pmtChannelValues.GetError(lf1Index)
+	lf1dbIndex = pmtChannelValues.GetChannelIndex(("LF1","DB"))
+	lf1dbValue = pmtChannelValues.GetValue(lf1dbIndex)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
+	print "LF1: " + str(lf1Value) + " LF1.DB: " + str(lf1dbValue)
 	# B bias lock
 	# feedback only 1/5 of what we think we should - very loose
 	# the sign of the feedback depends on the b-state
@@ -123,33 +131,39 @@ def updateLocks(bState):
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = (1.0/5.0) * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = - (1.0/5.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
 	hc.SetSteppingBBiasBVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = (1.0/5.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
-	deltaRF1A = windowValue(deltaBias, -kRFAMaxChange, kRFAMaxChange)
+	deltaRF1A = - (1.0/5.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
-	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, 0, 5)
+	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
 	hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = (1.0/5.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
-	deltaRF2A = windowValue(deltaBias, -kRFAMaxChange, kRFAMaxChange)
+	deltaRF2A = - (1.0/5.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
-	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, 0, 5)
+	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
+	#
+	deltaLF1 = -1.0 * 0.1 * (lf1Value / dbValue)
+	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
+	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
+	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
+	hc.SetFLPZTVoltage( newLF1 )
 
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):
 		return value
 	else:
-		if (value < maxValue):
-			return maxValue
-		else:
+		if (value < minValue):
 			return minValue
+		else:
+			return maxValue
 
 def EDMGoReal(nullRun):
 	# Setup

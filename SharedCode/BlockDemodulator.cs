@@ -113,51 +113,51 @@ namespace Analysis.EDM
                 // * calculate the channel errors *
                 // build the covariance matrix
                 // zero the means of the states
-                List<List<double>> offsetStatePoints = new List<List<double>>(numStates);
-                for (int i = 0; i < numStates; i++)
-                {
-                    offsetStatePoints.Add(new List<double>(blockLength / numStates));
-                    foreach (double d in statePoints[i]) offsetStatePoints[i].Add(d - stateMeans[i]);
-                }
-                // calculate the covariance matrix elements
-                double[,] covarianceMatrix = new double[numStates, numStates];
-                // somewhat non-obvious order is to take advantage of symmetry of
-                // covariance matrix
-                for (int i = 0; i < numStates; i++) 
-                    covarianceMatrix[i,i] = covariance(offsetStatePoints[i], offsetStatePoints[i]);
-                for (int i = 0; i < numStates - 1; i++)
-                {
-                    for (int j = i + 1; j < numStates; j++)
-                    {
-                        double cov = covariance(offsetStatePoints[i], offsetStatePoints[j]);
-                        covarianceMatrix[i,j] = cov;
-                        covarianceMatrix[j,i] = cov;
-                    }
-                }
-                // calculate diagonal elements of transformed covariance matrix.
-                // The transformed matrix is sign.cov.sign^T where sign is the
-                // matrix of signs for states calculated above and cov is the
-                // covariance matrix, ^T is the transpose.
-                // There's some normalisation to take of as well - see the last line
-                // of the loop.
-                // This could be optimised if need be, again using the symmetry properties
-                // of the covariance matrix for a factor 2 or so speed up.
-                // A more sophisticated matrix multiplication algorithm could perhaps speed it up
-                // by a further factor 4-10 (depending on the number of channels).
-                double[] channelErrors = new double[numStates];
-                for (int channel = 0; channel < numStates; channel++)
-                {
-                    double sum = 0;
-                    for (int k = 0; k < numStates; k++)
-                    {
-                        for (int l = 0; l < numStates; l++)
-                        {
-                            sum += stateSigns[channel, l] * covarianceMatrix[l, k] * stateSigns[channel, k];
-                        }
-                    }
-                    channelErrors[channel] = Math.Sqrt(sum / (blockLength * numStates));
-                }
-                dcv.Errors = channelErrors;
+                //List<List<double>> offsetStatePoints = new List<List<double>>(numStates);
+                //for (int i = 0; i < numStates; i++)
+                //{
+                //    offsetStatePoints.Add(new List<double>(blockLength / numStates));
+                //    foreach (double d in statePoints[i]) offsetStatePoints[i].Add(d - stateMeans[i]);
+                //}
+                //// calculate the covariance matrix elements
+                //double[,] covarianceMatrix = new double[numStates, numStates];
+                //// somewhat non-obvious order is to take advantage of symmetry of
+                //// covariance matrix
+                //for (int i = 0; i < numStates; i++) 
+                //    covarianceMatrix[i,i] = covariance(offsetStatePoints[i], offsetStatePoints[i]);
+                //for (int i = 0; i < numStates - 1; i++)
+                //{
+                //    for (int j = i + 1; j < numStates; j++)
+                //    {
+                //        double cov = covariance(offsetStatePoints[i], offsetStatePoints[j]);
+                //        covarianceMatrix[i,j] = cov;
+                //        covarianceMatrix[j,i] = cov;
+                //    }
+                //}
+                //// calculate diagonal elements of transformed covariance matrix.
+                //// The transformed matrix is sign.cov.sign^T where sign is the
+                //// matrix of signs for states calculated above and cov is the
+                //// covariance matrix, ^T is the transpose.
+                //// There's some normalisation to take of as well - see the last line
+                //// of the loop.
+                //// This could be optimised if need be, again using the symmetry properties
+                //// of the covariance matrix for a factor 2 or so speed up.
+                //// A more sophisticated matrix multiplication algorithm could perhaps speed it up
+                //// by a further factor 4-10 (depending on the number of channels).
+                //double[] channelErrors = new double[numStates];
+                //for (int channel = 0; channel < numStates; channel++)
+                //{
+                //    double sum = 0;
+                //    for (int k = 0; k < numStates; k++)
+                //    {
+                //        for (int l = 0; l < numStates; l++)
+                //        {
+                //            sum += stateSigns[channel, l] * covarianceMatrix[l, k] * stateSigns[channel, k];
+                //        }
+                //    }
+                //    channelErrors[channel] = Math.Sqrt(sum / (blockLength * numStates));
+                //}
+                //dcv.Errors = channelErrors;
                 db.ChannelValues.Add(dcv);
             }
 

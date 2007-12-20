@@ -740,6 +740,19 @@ namespace EDMHardwareControl
             }
         }
 
+        public double FLPZTVoltage
+        {
+            get
+            {
+                return Double.Parse(window.FLPZTVTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.FLPZTVTextBox, value.ToString());
+            }
+        }
+
+
         #endregion
 
         #region Public properties for monitoring the hardware
@@ -1490,19 +1503,19 @@ namespace EDMHardwareControl
         // these are here as it seems IronPython has trouble setting attributes remotely
         public void SetRF1AttCentre(double v)
         {
-            RF1AttCentre = v;
+            RF1AttCentre = windowVoltage(v, 0, 5);
         }
         public void SetRF2AttCentre(double v)
         {
-            RF2AttCentre = v;
+            RF2AttCentre = windowVoltage(v, 0, 5);
         }
         public void SetRF1FMCentre(double v)
         {
-            RF1FMCentre = v;
+            RF1FMCentre = windowVoltage(v, 0, 5);
         }
         public void SetRF2FMCentre(double v)
         {
-            RF2FMCentre = v;
+            RF2FMCentre = windowVoltage(v, 0, 5);
         }
 
         private double windowVoltage(double vIn, double vMin, double vMax)

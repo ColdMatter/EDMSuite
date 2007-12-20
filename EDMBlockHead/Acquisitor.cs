@@ -259,6 +259,10 @@ namespace EDMBlockHead.Acquire
             rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             switchedChannels.Add(rf2FChannel);
 
+            AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
+            lf1Channel.Channel = "flPZT";
+            lf1Channel.Modulation = config.GetModulationByName("LF1");
+            switchedChannels.Add(lf1Channel);
 
 		}
 
