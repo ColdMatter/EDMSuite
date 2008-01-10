@@ -977,7 +977,7 @@ namespace EDMHardwareControl
                     EFieldPolarity = newEPolarity;
                     Thread.Sleep((int)(1000 * ESwitchTime));
                     // ramp the field up
-                    RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampDownTime);
+                    RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampUpTime);
                     // set as enabled
                     EFieldEnabled = true;
                     Thread.Sleep((int)(1000 * ERampUpDelay));
