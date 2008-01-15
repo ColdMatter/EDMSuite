@@ -569,6 +569,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double I2LockAOMFrequency
+        {
+            get
+            {
+                return Double.Parse(window.I2AOMFreqTextBox.Text);
+            }
+        }
+
         /* This is something of a cheesy hack. It lets the edm script check to see if the YAG
          * laser has failed.
          */
@@ -1067,6 +1075,8 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.rf1FMPlusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
+            // The synth is connected to channel one
+            rfCounter.Channel = 1;
             double rf1PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1PlusFreqMon, String.Format("{0:F0}", rf1PlusFreq));
             window.SetRadioButton(window.rf1FMMinusRB, true);
@@ -1336,6 +1346,12 @@ namespace EDMHardwareControl
                 SetDigitalLine("targetStepper", false);
                 Thread.Sleep(5);
             }
+        }
+
+        public void UpdateI2AOMFreq()
+        {
+            rfCounter.Channel = 2;
+            window.SetTextBox(window.I2AOMFreqTextBox, String.Format("{0:F0}", rfCounter.Frequency));
         }
 
         #endregion

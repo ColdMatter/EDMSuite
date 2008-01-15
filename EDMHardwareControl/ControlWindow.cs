@@ -250,6 +250,10 @@ namespace EDMHardwareControl
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem saveParametersToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        public TextBox I2AOMFreqTextBox;
+        private Button I2AOMFreqUpdateButton;
+        private Label label69;
+        private GroupBox groupBox19;
 
 
 		public Controller controller;
@@ -511,6 +515,10 @@ namespace EDMHardwareControl
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.I2AOMFreqTextBox = new System.Windows.Forms.TextBox();
+            this.I2AOMFreqUpdateButton = new System.Windows.Forms.Button();
+            this.label69 = new System.Windows.Forms.Label();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -544,6 +552,7 @@ namespace EDMHardwareControl
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox19.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -2427,6 +2436,7 @@ namespace EDMHardwareControl
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.groupBox19);
             this.tabPage4.Controls.Add(this.groupBox18);
             this.tabPage4.Controls.Add(this.groupBox11);
             this.tabPage4.Controls.Add(this.groupBox10);
@@ -2809,6 +2819,46 @@ namespace EDMHardwareControl
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
+            // I2AOMFreqTextBox
+            // 
+            this.I2AOMFreqTextBox.BackColor = System.Drawing.Color.Black;
+            this.I2AOMFreqTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.I2AOMFreqTextBox.Location = new System.Drawing.Point(101, 29);
+            this.I2AOMFreqTextBox.Name = "I2AOMFreqTextBox";
+            this.I2AOMFreqTextBox.ReadOnly = true;
+            this.I2AOMFreqTextBox.Size = new System.Drawing.Size(126, 20);
+            this.I2AOMFreqTextBox.TabIndex = 54;
+            this.I2AOMFreqTextBox.Text = "0";
+            // 
+            // I2AOMFreqUpdateButton
+            // 
+            this.I2AOMFreqUpdateButton.Location = new System.Drawing.Point(19, 58);
+            this.I2AOMFreqUpdateButton.Name = "I2AOMFreqUpdateButton";
+            this.I2AOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.I2AOMFreqUpdateButton.TabIndex = 53;
+            this.I2AOMFreqUpdateButton.Text = "Update";
+            this.I2AOMFreqUpdateButton.Click += new System.EventHandler(this.I2AOMFreqUpdateButton_Click);
+            // 
+            // label69
+            // 
+            this.label69.Location = new System.Drawing.Point(16, 32);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(79, 23);
+            this.label69.TabIndex = 52;
+            this.label69.Text = "AOM freq (Hz)";
+            // 
+            // groupBox19
+            // 
+            this.groupBox19.Controls.Add(this.I2AOMFreqTextBox);
+            this.groupBox19.Controls.Add(this.I2AOMFreqUpdateButton);
+            this.groupBox19.Controls.Add(this.label69);
+            this.groupBox19.Location = new System.Drawing.Point(238, 136);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(277, 97);
+            this.groupBox19.TabIndex = 55;
+            this.groupBox19.TabStop = false;
+            this.groupBox19.Text = "Iodine lock";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2875,6 +2925,8 @@ namespace EDMHardwareControl
             this.groupBox15.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox19.ResumeLayout(false);
+            this.groupBox19.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3084,6 +3136,11 @@ namespace EDMHardwareControl
         private void UpdateFLPZTVButton_Click(object sender, EventArgs e)
         {
             controller.UpdateFLPZTV();
+        }
+
+        private void I2AOMFreqUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateI2AOMFreq();
         }
 
         private void SaveParametersMenuClicked(object sender, EventArgs e)
