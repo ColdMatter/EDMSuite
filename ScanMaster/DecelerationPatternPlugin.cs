@@ -49,7 +49,7 @@ namespace ScanMaster.Acquire.Plugins
 			// prepare the deceleration sequence
 			buildDecelerationSequence(
 				(string)settings["molecule"],
-				(int)settings["voltage"],
+				(double)settings["voltage"],
 				(int)settings["initspeed"],
 				(int)settings["initposition"],
 				(double)settings["onposition"],
@@ -85,7 +85,7 @@ namespace ScanMaster.Acquire.Plugins
 		}
 
 
-		private void buildDecelerationSequence(String molecule, int voltage,
+		private void buildDecelerationSequence(String molecule, double voltage,
 			int initspeed, int initposition, double onposition, double offposition, int numberOfStages, int resonanceOrder)
 		{
 			IKernelLink ml = MathematicaService.GetKernel();
