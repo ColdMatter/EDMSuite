@@ -44,9 +44,9 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
-			AddDigitalOutputChannel("detector", pgBoard, 3, 0); //Pin 29
-            AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6); //Pin 67
-			AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
+			AddDigitalOutputChannel("detector", pgBoard, 0,7); //Pin 15
+            AddDigitalOutputChannel("detectorprime", pgBoard, 1, 7); //Pin 22
+		//	AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
 			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
             AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
             AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
@@ -59,7 +59,7 @@ namespace DAQ.HAL
             // these channels are to be switched "manually" and should all be on the high half of the board
             // the following set of switches are used to enable or disable the burst
             AddDigitalOutputChannel("hplusBurstEnable", pgBoard, 2, 0);
-            AddDigitalOutputChannel("hminusBurstEnable", pgBoard, 2, 1);
+            AddDigitalOutputChannel("hminusBurstEnable", pgBoard, 3, 4);
             AddDigitalOutputChannel("vplusBurstEnable", pgBoard, 2, 2);
             AddDigitalOutputChannel("vminusBurstEnable", pgBoard, 2, 3);
             // the following set of switches are used for dc on or off
