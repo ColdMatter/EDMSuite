@@ -56,6 +56,7 @@ namespace ScanMaster.GUI
             window.spectrumFitModeCombo.SelectedIndex = 0;
             window.tofFitFunctionCombo.SelectedIndex = 0;
 			window.spectrumFitFunctionCombo.SelectedIndex = 0;
+            window.tofFitDataSelectCombo.SelectedIndex = 0;
 		}
 
 		private void AddFitter(Fitter f)
@@ -270,10 +271,20 @@ namespace ScanMaster.GUI
 		private void FitAverageTOF()
 		{
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
-			TOF tof =
-				(TOF)((ArrayList)averageScan.GetGatedAverageOnShot(
-													startSpectrumGate,
-													endSpectrumGate).TOFs)[0];
+			TOF tof;
+            if (window.GetTofFitDataSelection() == 0)
+            {
+                tof = (TOF)((ArrayList)averageScan.GetGatedAverageOnShot(
+                                                    startSpectrumGate,
+                                                    endSpectrumGate).TOFs)[0];
+            }
+            else
+            {
+                if (((ScanPoint)(averageScan.Points[0])).OffShots.Count == 0) return; //make sure there are some offshots
+                tof = (TOF)((ArrayList)averageScan.GetGatedAverageOffShot(
+                                                    startSpectrumGate,
+                                                    endSpectrumGate).TOFs)[0];
+            }
 			double[] doubleTimes = new double[tof.Times.Length];
 			for (int i = 0; i < tof.Times.Length; i++) doubleTimes[i] = (double)tof.Times[i];
 			tofFitter.Fit(
