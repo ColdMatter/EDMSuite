@@ -31,10 +31,10 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
-            Info.Add("sourceToDetect", 0.81);
-            Info.Add("moleculeMass", 59);
-
-			
+            Info.Add("sourceToDetect", 0.81); //in m
+            Info.Add("moleculeMass", 59); // in atomic mass units
+            Info.Add("sourceToSoftwareDecelerator", 0.11); //in m
+            			
 			// map the digital channels
 			string pgBoard = (string)Boards["pg"];
 			AddDigitalOutputChannel("valve", pgBoard, 0, 6);

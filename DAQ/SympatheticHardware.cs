@@ -36,6 +36,7 @@ namespace DAQ.HAL
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
             Info.Add("sourceToDetect", 0.787);
             Info.Add("moleculeMass", 8);
+            Info.Add("sourceToSoftwareDecelerator", 0.123);
             
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));

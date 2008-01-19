@@ -26,7 +26,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseCustomSettings()
 		{
-			settings["delayToDeceleration"] = 1000;
+			settings["delayToDeceleration"] = 0;
 			settings["molecule"] = "YbF";
 			settings["voltage"] = 10;
 			settings["initspeed"] = 337;
@@ -98,11 +98,15 @@ namespace ScanMaster.Acquire.Plugins
 				ml.Evaluate(argString);
 				ml.WaitForAnswer();
 				double[] timesdouble = (double[]) ml.GetArray(typeof(double),1); // get the list of switch times
-				// The list of times is in seconds. Convert to the units of the clockFrequency and round to the nearest unit
-				int[] times = new int[timesdouble.Length];
+
+				// The list of times is in seconds and is measured from the moment when the synchronous molecule 
+                // reaches the decelerator. Add on the amount of time it takes to reach this point.
+                // Then convert to the units of the clockFrequency and round to the nearest unit.
+                double nominalTimeToDecelerator = (double)Environs.Hardware.GetInfo("sourceToSoftwareDecelerator") / initspeed;
+                int[] times = new int[timesdouble.Length];
 				for(int i = 0; i < timesdouble.Length; i++)
 				{
-					times[i] = (int)Math.Round((int)settings["clockFrequency"]*timesdouble[i]);
+					times[i] = (int)Math.Round((int)settings["clockFrequency"]*(nominalTimeToDecelerator + timesdouble[i]));
 				}
 				//Console.WriteLine("Generated Timing Sequence");
 				decelSequence = new TimingSequence();
