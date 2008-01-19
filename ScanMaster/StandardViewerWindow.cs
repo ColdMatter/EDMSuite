@@ -474,7 +474,7 @@ namespace ScanMaster.GUI
             // tofFitResultsLabel
             // 
             this.tofFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
-            this.tofFitResultsLabel.Location = new System.Drawing.Point(260, 601);
+            this.tofFitResultsLabel.Location = new System.Drawing.Point(260, 602);
             this.tofFitResultsLabel.Name = "tofFitResultsLabel";
             this.tofFitResultsLabel.Size = new System.Drawing.Size(206, 24);
             this.tofFitResultsLabel.TabIndex = 23;

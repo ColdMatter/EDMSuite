@@ -31,6 +31,8 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            Info.Add("sourceToDetect", 0.81);
+            Info.Add("moleculeMass", 59);
 
 			
 			// map the digital channels

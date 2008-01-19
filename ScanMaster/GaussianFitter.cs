@@ -25,7 +25,7 @@ namespace ScanMaster.Analyze
         // Q: signal
         // c: centre
         // w: width
-        private double gaussian(double x, double[] parameters)
+        protected double gaussian(double x, double[] parameters)
         {
             double n = parameters[0];
             double q = parameters[1];

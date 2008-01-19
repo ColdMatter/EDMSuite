@@ -48,6 +48,7 @@ namespace ScanMaster.GUI
 		public StandardViewer()
 		{
 			window = new StandardViewerWindow(this);
+            AddFitter(new TofFitter());
 			AddFitter( new LorentzianFitter() );
             AddFitter(new GaussianFitter());
 			AddFitter(new SincFitter());

@@ -318,6 +318,7 @@
     <Compile Include="SynthFrequencyOutputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TofFitter.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Code</SubType>
     </Compile>
