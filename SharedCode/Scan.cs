@@ -5,12 +5,15 @@ using System.Xml.Serialization;
 namespace Data.Scans
 {
 	/// <summary>
-	/// A scan is a set of scan points.
+	/// A scan is a set of scan points. Also holds a list of the settings used during its acquisition.
 	/// </summary>
 	[Serializable]
 	public class Scan : MarshalByRefObject
 	{
 		private ArrayList points = new ArrayList();
+
+        // this is a list of the acquisitor settings used for this scan, stored as strings
+        private ArrayList settings = new ArrayList();
 
 		public double[] ScanParameterArray
 		{
@@ -105,6 +108,7 @@ namespace Data.Scans
 				Scan temp = new Scan();
 				for (int i = 0 ; i < s1.Points.Count ; i++)
 					temp.Points.Add((ScanPoint)s1.Points[i] + (ScanPoint)s2.Points[i]);
+                temp.settings = s1.settings;
 				return temp;
 			}
 			else
@@ -119,9 +123,21 @@ namespace Data.Scans
 		{
 			Scan temp = new Scan();
 			foreach (ScanPoint sp in s.Points) temp.Points.Add(sp/n);
+            temp.settings = s.settings;
 			return temp;
 		}
 
+        public void AddSetting(string description)
+        {
+            settings.Add(description);
+        }
+
+        [XmlArray]
+        [XmlArrayItem("Setting")]
+        public ArrayList Settings
+        {
+            get { return settings; }
+        }
 
 		[XmlArray]
 		[XmlArrayItem(Type = typeof(ScanPoint))]

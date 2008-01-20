@@ -5,6 +5,7 @@ using System.Runtime.Remoting.Lifetime;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text;
 
 using DAQ.Environment;
 using DAQ.HAL;
@@ -326,6 +327,7 @@ namespace ScanMaster
 
 				// start the acquisition
 				acquisitor.Configuration = currentProfile.AcquisitorConfig;
+                WriteScanSettings(DataStore.TotalScan);
 				acquisitor.AcquireStart(numberOfScans);
 				appState = AppState.running;
 			}
@@ -442,7 +444,7 @@ namespace ScanMaster
 		// Saves the latest average scan in the datastore to the given filestream
 		public void SaveAverageData( System.IO.FileStream fs )
 		{
-			serializer.SerializeScanAsZippedXML(fs, dataStore.AverageScan, "average.xml");
+            serializer.SerializeScanAsZippedXML(fs, dataStore.AverageScan, "average.xml");
 			fs.Close();
 		}
 
@@ -481,6 +483,44 @@ namespace ScanMaster
 			}
 		}
 
+        // a method for saving the acquisitior settings into the scan
+        private void WriteScanSettings(Scan scan)
+        {
+            PluginSettings settings;
+            ICollection keys;
+
+            // settings from the output plugin
+            settings = acquisitor.Configuration.outputPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("out:" + key + " " + settings[key].ToString());
+
+            // settings from the switch plugin
+            settings = acquisitor.Configuration.switchPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("switch:" + key + " " + settings[key].ToString());
+
+            // settings from the shot gatherer plugin
+            settings = acquisitor.Configuration.shotGathererPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("shot:" + key + " " + settings[key].ToString());
+
+            // settings from the pattern plugin
+            settings = acquisitor.Configuration.pgPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("pg:" + key + " " + settings[key].ToString());
+
+            // settings from the yag plugin
+            settings = acquisitor.Configuration.yagPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("yag:" + key + " " + settings[key].ToString());
+
+            // settings from the analog plugin
+            settings = acquisitor.Configuration.analogPlugin.Settings;
+            keys = settings.Keys;
+            foreach (String key in keys) scan.AddSetting("analog:" + key + " " + settings[key].ToString());
+        }
+
+
 		// This function is registered with the acquisitor to handle
 		// scan finished events.
 		// Note well that this will be called on the acquisitor thread (meaning
@@ -492,6 +532,9 @@ namespace ScanMaster
 				// update the datastore
 				dataStore.UpdateTotal();
 
+                // save the acquisitior settings in the scan
+                WriteScanSettings(DataStore.CurrentScan);
+               
 				// serialize the last scan
                 string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
                 if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);

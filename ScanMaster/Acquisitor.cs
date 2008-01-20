@@ -31,6 +31,7 @@ namespace ScanMaster.Acquire
 		public AcquisitorConfiguration Configuration
 		{
 			set { config = value; }
+            get { return config; }
 		}
 
 		private Thread acquireThread;
