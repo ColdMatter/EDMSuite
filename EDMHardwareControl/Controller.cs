@@ -269,6 +269,7 @@ namespace EDMHardwareControl
             public double rf2FMS;
             public double steppingBias;
             public double flPZT;
+            public double flPZTStep;
         }
 
         public void StoreParameters()
@@ -296,7 +297,8 @@ namespace EDMHardwareControl
             dataStore.rf2FMS = RF2FMStep;
             dataStore.steppingBias = SteppingBiasVoltage;
             dataStore.flPZT = FLPZTVoltage;
- 
+            dataStore.flPZTStep = FLPZTStep;
+
             // serialize it
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
             String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
@@ -342,6 +344,7 @@ namespace EDMHardwareControl
                 RF2FMStep = dataStore.rf2FMS;
                 SetSteppingBBiasVoltage( dataStore.steppingBias );
                 FLPZTVoltage = dataStore.flPZT;
+                FLPZTStep = dataStore.flPZTStep;
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to load settings"); }
@@ -569,17 +572,25 @@ namespace EDMHardwareControl
             }
         }
 
-        public double I2LockAOMFrequency
+        public double I2LockAOMFrequencyCentre
         {
             get
             {
-                return Double.Parse(window.I2AOMFreqTextBox.Text);
+                return Double.Parse(window.I2AOMFreqCentreTextBox.Text);
             }
         }
 
+        public double I2LockAOMFrequencyStep
+        {
+            get
+            {
+                return Double.Parse(window.I2AOMFreqStepTextBox.Text);
+            }
+        }
+        
         /* This is something of a cheesy hack. It lets the edm script check to see if the YAG
-         * laser has failed.
-         */
+          * laser has failed.
+          */
         public bool YAGInterlockFailed
         {
             get
@@ -763,6 +774,18 @@ namespace EDMHardwareControl
             set
             {
                 window.SetTextBox(window.FLPZTVTextBox, value.ToString());
+            }
+        }
+
+        public double FLPZTStep
+        {
+            get
+            {
+                return Double.Parse(window.FLPZTStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.FLPZTStepTextBox, value.ToString());
             }
         }
 
@@ -1348,10 +1371,23 @@ namespace EDMHardwareControl
             }
         }
 
-        public void UpdateI2AOMFreq()
+        public void UpdateI2AOMFreqMonitor()
         {
+            window.SetRadioButton(window.FLPZTStepPlusButton, true);
+            UpdateFLPZTV();
+            Thread.Sleep(10);
+            // The I2 VCO is connected to channel two
             rfCounter.Channel = 2;
-            window.SetTextBox(window.I2AOMFreqTextBox, String.Format("{0:F0}", rfCounter.Frequency));
+            double I2PlusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.I2AOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
+
+            window.SetRadioButton(window.FLPZTStepMinusButton, true);
+            UpdateFLPZTV();
+            Thread.Sleep(10);
+            double I2MinusFreq = rfCounter.Frequency;
+            window.SetTextBox(window.I2AOMFreqMinusTextBox, String.Format("{0:F0}", I2MinusFreq));
+            window.SetTextBox(window.I2AOMFreqCentreTextBox, String.Format("{0:F0}", ((I2PlusFreq + I2MinusFreq) / 2)));
+            window.SetTextBox(window.I2AOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
         }
 
         #endregion
@@ -1501,6 +1537,9 @@ namespace EDMHardwareControl
         public void UpdateFLPZTV()
         {
             double pztVoltage = Double.Parse(window.FLPZTVTextBox.Text);
+            if (window.FLPZTStepMinusButton.Checked) pztVoltage -= Double.Parse(window.FLPZTStepTextBox.Text);
+            if (window.FLPZTStepPlusButton.Checked) pztVoltage += Double.Parse(window.FLPZTStepTextBox.Text);
+            pztVoltage = windowVoltage(pztVoltage, 0, 5);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
         }
 

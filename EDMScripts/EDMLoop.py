@@ -43,9 +43,17 @@ def prompt(text):
 
 def measureParametersAndMakeBC(cluster, eState, bState):
 	fileSystem = Environs.FileSystem
-	hc.UpdateBCurrentMonitor()
+	print("Measuring parameters ...")
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
+	hc.UpdateI2AOMFreqMonitor()
+	hc.UpdateRFPowerMonitor()
+	hc.UpdateRFFrequencyMonitor()
+	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
+	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
+	print("Bias: " + str(hc.BiasCurrent))
+	print("B step: " + str(abs(hc.FlipStepCurrent)))
+	print("DB step: " + str(abs(hc.CalStepCurrent)))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	bc = loadBlockConfig(settingsPath + "default.xml")
@@ -57,22 +65,30 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
-	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
-	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
-	print("Bias: " + str(hc.BiasCurrent))
-	print("B step: " + str(abs(hc.FlipStepCurrent)))
-	print("DB step: " + str(abs(hc.CalStepCurrent)))
-	print("Setting rf parameters ...")
+	# these next 3, seemingly redundant, lines are to preserve backward compatibility
+	bc.GetModulationByName("B").PhysicalCentre = (hc.BiasCurrent)/1000
+	bc.GetModulationByName("B").PhysicalStep = abs(hc.FlipStepCurrent)/1000
+	bc.GetModulationByName("DB").PhysicalStep = abs(hc.CalStepCurrent)/1000
 	bc.GetModulationByName("RF1A").Centre = hc.RF1AttCentre
 	bc.GetModulationByName("RF1A").Step = hc.RF1AttStep
+	bc.GetModulationByName("RF1A").PhysicalCentre = hc.RF1PowerCentre
+	bc.GetModulationByName("RF1A").PhysicalStep = hc.RF1PowerStep
 	bc.GetModulationByName("RF2A").Centre = hc.RF2AttCentre
 	bc.GetModulationByName("RF2A").Step = hc.RF2AttStep
+	bc.GetModulationByName("RF2A").PhysicalCentre = hc.RF2PowerCentre
+	bc.GetModulationByName("RF2A").PhysicalStep = hc.RF2PowerStep
 	bc.GetModulationByName("RF1F").Centre = hc.RF1FMCentre
 	bc.GetModulationByName("RF1F").Step = hc.RF1FMStep
+	bc.GetModulationByName("RF1F").PhysicalCentre = hc.RF1FrequencyCentre
+	bc.GetModulationByName("RF1F").PhysicalStep = hc.RF1FrequencyStep
 	bc.GetModulationByName("RF2F").Centre = hc.RF2FMCentre
 	bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
+	bc.GetModulationByName("RF2F").PhysicalCentre = hc.RF2FrequencyCentre
+	bc.GetModulationByName("RF2F").PhysicalStep = hc.RF2FrequencyStep
 	bc.GetModulationByName("LF1").Centre = hc.FLPZTVoltage
-	#bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
+	bc.GetModulationByName("LF1").Step = hc.FLPZTStep
+	bc.GetModulationByName("LF1").PhysicalCentre = hc.I2LockAOMFrequencyCentre
+	bc.GetModulationByName("LF1").PhysicalStep = hc.I2LockAOMFrequencyStep
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
 	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
@@ -179,7 +195,7 @@ def windowValue(value, minValue, maxValue):
 		else:
 			return maxValue
 
-def EDMGoReal(nullRun):
+def EDMGo():
 	# Setup
 	f = None
 	fileSystem = Environs.FileSystem
@@ -197,6 +213,8 @@ def EDMGoReal(nullRun):
 	eState = Boolean.Parse(prompt("E-state: "))
 	bState = Boolean.Parse(prompt("B-state: "))
 
+	# this is to make sure the B current monitor is in a sensible state
+	hc.UpdateBCurrentMonitor()
 	bc = measureParametersAndMakeBC(cluster, eState, bState)
 
 	# loop and take data
@@ -233,12 +251,6 @@ def EDMGoReal(nullRun):
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
 	bh.StopPattern()
 
-
-def EDMGoNull():
-	EDMGoReal(True)
-
-def EDMGo():
-	EDMGoReal(False)
 
 def run_script():
 	EDMGo()
