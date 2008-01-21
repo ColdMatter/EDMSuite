@@ -439,6 +439,7 @@ namespace ScanMaster
             serializer.AppendToZip(DataStore.AverageScan, "average.xml");
             serializer.CloseZip();
             fs.Close();
+            Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
         }
 
 		// Saves the latest average scan in the datastore to the given filestream
@@ -486,38 +487,45 @@ namespace ScanMaster
         // a method for saving the acquisitior settings into the scan
         private void WriteScanSettings(Scan scan)
         {
-            PluginSettings settings;
+            PluginSettings st;
             ICollection keys;
 
+            scan.ScanSettings.Add("out:pluginName", acquisitor.Configuration.outputPlugin.GetType().ToString());
+            scan.ScanSettings.Add("switch:pluginName", acquisitor.Configuration.switchPlugin.GetType().ToString());
+            scan.ScanSettings.Add("shot:pluginName", acquisitor.Configuration.shotGathererPlugin.GetType().ToString());
+            scan.ScanSettings.Add("pg:pluginName", acquisitor.Configuration.pgPlugin.GetType().ToString());
+            scan.ScanSettings.Add("yag:pluginName", acquisitor.Configuration.yagPlugin.GetType().ToString());
+            scan.ScanSettings.Add("analog:pluginName", acquisitor.Configuration.analogPlugin.GetType().ToString());
+
             // settings from the output plugin
-            settings = acquisitor.Configuration.outputPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("out:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.outputPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("out:" + key, st[key]);
 
             // settings from the switch plugin
-            settings = acquisitor.Configuration.switchPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("switch:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.switchPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("switch:" + key, st[key]);
 
             // settings from the shot gatherer plugin
-            settings = acquisitor.Configuration.shotGathererPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("shot:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.shotGathererPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("shot:" + key, st[key]);
 
             // settings from the pattern plugin
-            settings = acquisitor.Configuration.pgPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("pg:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.pgPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("pg:" + key, st[key]);
 
             // settings from the yag plugin
-            settings = acquisitor.Configuration.yagPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("yag:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.yagPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("yag:" + key, st[key]);
 
             // settings from the analog plugin
-            settings = acquisitor.Configuration.analogPlugin.Settings;
-            keys = settings.Keys;
-            foreach (String key in keys) scan.AddSetting("analog:" + key + " " + settings[key].ToString());
+            st = acquisitor.Configuration.analogPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("analog:" + key, st[key]);
         }
 
 

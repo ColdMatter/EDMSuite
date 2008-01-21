@@ -148,8 +148,9 @@ namespace ScanMaster.Acquire.Plugins
 						for (int i = 0 ; i < inputTask1.AIChannels.Count ; i++)
 						{
 							TOF t = new TOF();
+                            int startTime = (int)Math.Round((int)settings["gateStartTime"] * 1000000.0 / (((int)Config.pgPlugin.Settings["clockFrequency"])));
 							t.ClockPeriod = (int)settings["clockPeriod"];
-							t.GateStartTime = (int)settings["gateStartTime"];
+							t.GateStartTime = startTime;
 							double[] tmp = new double[(int)settings["gateLength"]];
 							for (int j = 0 ; j < (int)settings["gateLength"] ; j++)
 								tmp[j] = latestData[i,j];

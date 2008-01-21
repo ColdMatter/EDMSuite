@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Xml.Serialization;
+using Utility;
 
 namespace Data.Scans
 {
@@ -12,8 +13,8 @@ namespace Data.Scans
 	{
 		private ArrayList points = new ArrayList();
 
-        // this is a list of the acquisitor settings used for this scan, stored as strings
-        private ArrayList settings = new ArrayList();
+        // this is a hashtable of the acquisitor settings used for this scan
+        public XmlSerializableHashtable ScanSettings = new XmlSerializableHashtable();
 
 		public double[] ScanParameterArray
 		{
@@ -108,7 +109,7 @@ namespace Data.Scans
 				Scan temp = new Scan();
 				for (int i = 0 ; i < s1.Points.Count ; i++)
 					temp.Points.Add((ScanPoint)s1.Points[i] + (ScanPoint)s2.Points[i]);
-                temp.settings = s1.settings;
+                temp.ScanSettings = s1.ScanSettings;
 				return temp;
 			}
 			else
@@ -123,20 +124,13 @@ namespace Data.Scans
 		{
 			Scan temp = new Scan();
 			foreach (ScanPoint sp in s.Points) temp.Points.Add(sp/n);
-            temp.settings = s.settings;
+            temp.ScanSettings = s.ScanSettings;
 			return temp;
 		}
 
-        public void AddSetting(string description)
+        public object GetSetting(string pluginType, string parameter)
         {
-            settings.Add(description);
-        }
-
-        [XmlArray]
-        [XmlArrayItem("Setting")]
-        public ArrayList Settings
-        {
-            get { return settings; }
+            return ScanSettings[pluginType + ":" + parameter];
         }
 
 		[XmlArray]
