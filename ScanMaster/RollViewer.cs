@@ -4,6 +4,7 @@ using NationalInstruments.Analysis.Math;
 
 using Data.Scans;
 using ScanMaster.GUI;
+using ScanMaster.Acquire.Plugin;
 
 namespace ScanMaster.GUI
 {
@@ -15,6 +16,8 @@ namespace ScanMaster.GUI
 
 		private static int UPDATE_EVERY = 2;
 		private int shotCounter = 0;
+        private int gateStart;
+        private int gateLength;
 
 		private RollViewerWindow window;
         public string dataSelection = "On";
@@ -52,7 +55,13 @@ namespace ScanMaster.GUI
 
 		public void AcquireStart()
 		{
-			pointsToPlot.Points.Clear();
+            PluginSettings shotSettings = Controller.GetController().ProfileManager.
+                CurrentProfile.AcquisitorConfig.shotGathererPlugin.Settings;
+            PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
+            gateStart = (int)Math.Round((int)shotSettings["gateStartTime"] * 1000000.0 / (((int)pgSettings["clockFrequency"])));
+            gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
+                    AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
+            pointsToPlot.Points.Clear();
 			shotCounter = 0;
 			window.ClearAll();
 		}
@@ -73,10 +82,6 @@ namespace ScanMaster.GUI
 			shotCounter++;
 			if (shotCounter % UPDATE_EVERY == 0)
 			{
-				int gateStart = (int)Controller.GetController().ProfileManager.CurrentProfile.
-					AcquisitorConfig.shotGathererPlugin.Settings["gateStartTime"];
-				int gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
-					AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
                 double[] values = pointsToPlot.GetTOFOnIntegralArray(0, gateStart, gateStart + gateLength);
                 if (dataSelection == "Off" && (bool)Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
                 {

@@ -94,12 +94,14 @@ namespace ScanMaster.GUI
 				CurrentProfile.AcquisitorConfig.outputPlugin.Settings;
 			PluginSettings shotSettings = Controller.GetController().ProfileManager.
 				CurrentProfile.AcquisitorConfig.shotGathererPlugin.Settings;
+            PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
 
 			// initially set the gates to full
 			startSpectrumGate = (double)outputSettings["start"];
 			endSpectrumGate = (double)outputSettings["end"];
-			startTOFGate = (int)shotSettings["gateStartTime"];
-			endTOFGate = (int)shotSettings["gateStartTime"] + (int)shotSettings["gateLength"];
+            int startTime = (int)Math.Round((int)shotSettings["gateStartTime"] * 1000000.0 / (((int)pgSettings["clockFrequency"])));
+			startTOFGate = startTime;
+			endTOFGate = startTime + (int)shotSettings["gateLength"];
 
 			// prepare the front panel
 			window.ClearAll();

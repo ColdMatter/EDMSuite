@@ -357,8 +357,10 @@ namespace ScanMaster.GUI
             // 
             this.tofLowCursor.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
             this.tofLowCursor.LabelVisible = true;
+            this.tofLowCursor.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
+            this.tofLowCursor.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofLowCursor.Plot = this.tofOnAveragePlot;
-            this.tofLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
+            this.tofLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
             this.tofLowCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.TOFCursorMoved);
             // 
             // tofOnAveragePlot
@@ -376,8 +378,10 @@ namespace ScanMaster.GUI
             this.tofHighCursor.Color = System.Drawing.Color.Lime;
             this.tofHighCursor.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
             this.tofHighCursor.LabelVisible = true;
+            this.tofHighCursor.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
+            this.tofHighCursor.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofHighCursor.Plot = this.tofOnAveragePlot;
-            this.tofHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
+            this.tofHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
             this.tofHighCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.TOFCursorMoved);
             // 
             // tofOnPlot

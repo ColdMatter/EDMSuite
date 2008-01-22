@@ -4,6 +4,7 @@ using NationalInstruments.Analysis.Math;
 
 using Data.Scans;
 using ScanMaster.GUI;
+using ScanMaster.Acquire.Plugin;
 
 namespace ScanMaster.GUI
 {
@@ -16,6 +17,8 @@ namespace ScanMaster.GUI
 		// hard coded in like this.
 		private static int BIN = 50;
 		private int shotCounter = 0;
+        private int gateStart;
+        private int gateLength;
 
 		private StatisticsViewerWindow window;
 		bool visible = false;
@@ -51,7 +54,14 @@ namespace ScanMaster.GUI
 
 		public void AcquireStart()
 		{
-			pointsToAverage.Points.Clear();
+            PluginSettings shotSettings = Controller.GetController().ProfileManager.
+                CurrentProfile.AcquisitorConfig.shotGathererPlugin.Settings;
+            PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
+            gateStart = (int)Math.Round((int)shotSettings["gateStartTime"] * 1000000.0 / (((int)pgSettings["clockFrequency"])));
+            gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
+                    AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
+            
+            pointsToAverage.Points.Clear();
 			shotCounter = 0;
 			window.ClearAll();
 		}
@@ -67,10 +77,6 @@ namespace ScanMaster.GUI
 			shotCounter++;
 			if (shotCounter % BIN == 0)
 			{
-				int gateStart = (int)Controller.GetController().ProfileManager.CurrentProfile.
-					AcquisitorConfig.shotGathererPlugin.Settings["gateStartTime"];
-				int gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
-					AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
 				double[] values = pointsToAverage.GetTOFOnIntegralArray(0, gateStart, gateStart + gateLength);
 
 				double mean = Statistics.Mean(values);
