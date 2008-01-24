@@ -107,15 +107,17 @@ kSteppingBiasCurrentPerVolt = 1000.0
 # max change in the b-bias voltage per block
 kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
-kRFAVoltsPerCal = 4
+kRFAVoltsPerCal = 0.8
 kRFAMaxChange = 0.1
 # volts of rf*f input required per cal's worth of offset
-kRFFVoltsPerCal = 4
+kRFFVoltsPerCal = 8
 kRFFMaxChange = 0.1
 
 def updateLocks(bState):
 	pmtChannelValues = bh.DBlock.ChannelValues[0]
 	# note the weird python syntax for a one element list
+	sigIndex = pmtChannelValues.GetChannelIndex(("SIG",))
+	sigValue = pmtChannelValues.GetValue(sigIndex)
 	bIndex = pmtChannelValues.GetChannelIndex(("B",))
 	bValue = pmtChannelValues.GetValue(bIndex)
 	#bError = pmtChannelValues.GetError(bIndex)
@@ -139,6 +141,7 @@ def updateLocks(bState):
 	#lf1Error = pmtChannelValues.GetError(lf1Index)
 	lf1dbIndex = pmtChannelValues.GetChannelIndex(("LF1","DB"))
 	lf1dbValue = pmtChannelValues.GetValue(lf1dbIndex)
+	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
@@ -155,13 +158,13 @@ def updateLocks(bState):
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = - (1.0/5.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF1A = - (1.0/4.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
 	hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (1.0/5.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF2A = - (1.0/4.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
@@ -179,7 +182,7 @@ def updateLocks(bState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock
-	deltaLF1 = -1.0 * 0.1 * (lf1Value / dbValue)
+	deltaLF1 = 0.01 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
@@ -194,6 +197,9 @@ def windowValue(value, minValue, maxValue):
 			return minValue
 		else:
 			return maxValue
+
+
+kTargetRotationPeriod = 30
 
 def EDMGo():
 	# Setup
@@ -249,6 +255,8 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
+		if ((blockIndex % kTargetRotationPeriod) == 0):
+			hc.StepTarget(10)
 	bh.StopPattern()
 
 
