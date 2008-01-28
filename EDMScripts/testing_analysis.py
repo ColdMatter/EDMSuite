@@ -7,7 +7,7 @@ from System.Runtime.Serialization.Formatters.Binary import *
 import time
 
 bs = BlockSerializer()
-block = bs.DeserializeBlockFromZippedXML("C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2007\\November2007\\14Nov0702_2.zip", "block.xml")
+block = bs.DeserializeBlockFromZippedXML("C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2008\\January2008\\16Jan0808_0.zip", "block.xml")
 #tf = TOFFitter()
 #rs = tf.FitTOF(block.GetAverageTOF(0))
 
@@ -40,19 +40,28 @@ bf = BinaryFormatter()
 bf.Serialize(fs, db)
 fs.Close()
 
-t1 = time.clock()
-for i in range(0,100000):
-	db.ChannelValues[0].GetChannelIndex( ("E",) )
-dt = (time.clock() - t1)
-print "Time for 10^5 channel index lookups"
-print dt
+#t1 = time.clock()
+#for i in range(0,100000):
+#	db.ChannelValues[0].GetChannelIndex( ("E",) )
+#dt = (time.clock() - t1)
+#print "Time for 10^5 channel index lookups"
+#print dt
 
 t1 = time.clock()
-for i in range(0,1):
+for i in range(0,10):
 	bd.DemodulateBlock(block, dc)
 dt = (time.clock() - t1)
-print "Time for 10^0 demodulations"
+print "Time for 10^1 demodulations"
 print dt
 
 def run_script():
 	print("done!")
+
+l = list()
+def deserialize_a_lot():
+	for i in range(0,1000):
+		fs = FileStream("C:\\Users\\jony\\Desktop\\db.bin", FileMode.Open)
+		l.Add(bf.Deserialize(fs))
+		fs.Close()
+
+
