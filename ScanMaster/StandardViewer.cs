@@ -99,16 +99,15 @@ namespace ScanMaster.GUI
 			// initially set the gates to full
 			startSpectrumGate = (double)outputSettings["start"];
 			endSpectrumGate = (double)outputSettings["end"];
-            int startTime = (int)Math.Round((int)shotSettings["gateStartTime"] * 1000000.0 / (((int)pgSettings["clockFrequency"])));
-			startTOFGate = startTime;
-			endTOFGate = startTime + (int)shotSettings["gateLength"];
 
 			// prepare the front panel
 			window.ClearAll();
 			window.SpectrumAxes = new NationalInstruments.UI.Range(
 				(double)outputSettings["start"], (double)outputSettings["end"]);
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
-			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
+            startTOFGate = (int)shotSettings["gateStartTime"];
+            endTOFGate = startTOFGate + (int)shotSettings["gateLength"];
+            window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
 
 			// disable the fit function selectors
             window.SetTofFitFunctionComboState(false);
@@ -150,7 +149,7 @@ namespace ScanMaster.GUI
 		{
 			Profile currentProfile = Controller.GetController().ProfileManager.CurrentProfile;
 			// update the TOF graphs
-
+ 
 			if (currentProfile.GUIConfig.average)
 			{
 				if (shotCounter % currentProfile.GUIConfig.updateTOFsEvery == 0) 

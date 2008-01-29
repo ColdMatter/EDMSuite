@@ -53,7 +53,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["valvePulseLength"],
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
-				(int)config.shotGathererPlugin.Settings["gateStartTime"],
+				GateStartTimePGUnits,
 				(int)settings["rf1CentreTime"],
 				(int)settings["rf1Length"],
 				(int)settings["fmCentreTime"],

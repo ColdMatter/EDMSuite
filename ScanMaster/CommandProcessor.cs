@@ -66,7 +66,8 @@ namespace ScanMaster
                 // update profile set to incorporate any newly introduced settings
                 if (command == "refresh")
                 {
-                    manager.UpdateProfiles();                                                           
+                    manager.UpdateProfiles();
+                    manager.Window.WriteLine("Updated profiles.");
                     continue;
                 }
 

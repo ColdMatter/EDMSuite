@@ -123,6 +123,11 @@ namespace Data
             set { gateStartTime = value; }
         }
 
+        public int GateLength
+        {
+            get { return length * clockPeriod; }
+        }
+
         public int ClockPeriod
         {
             get { return clockPeriod; }

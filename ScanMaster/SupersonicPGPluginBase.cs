@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["valvePulseLength"] = 350;
 			settings["sequenceLength"] = 1;
 			settings["clockFrequency"] = 1000000;
+            settings["internalClock"] = true;
 			settings["padShots"] = 0;
             settings["padStart"] = 0;
 			settings["fullWidth"] = true;
@@ -62,12 +63,13 @@ namespace ScanMaster.Acquire.Plugins
 			patternLength = (int)settings["flashlampPulseInterval"] * (int)settings["sequenceLength"]
 				* ((int)settings["padShots"] + 1);
 
-			pg.Configure(
+ 			pg.Configure(
 				(int)settings["clockFrequency"],
 				true,
 				(bool)settings["fullWidth"],
 				(bool)settings["lowGroup"],
-				patternLength
+				patternLength,
+                (bool)settings["internalClock"]
 				);
 			
 						
@@ -139,5 +141,17 @@ namespace ScanMaster.Acquire.Plugins
 				}
 			}
 		}
+
+        protected int GateStartTimePGUnits
+        {
+            get
+            {
+                long gateStartShotUnits = (int)config.shotGathererPlugin.Settings["gateStartTime"];
+                long clockFreq = (int)Settings["clockFrequency"];
+                return (int)(
+                    (double)(gateStartShotUnits * clockFreq) / 1000000.0
+                    );
+            }
+        }
 	}
 }

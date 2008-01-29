@@ -13,7 +13,8 @@ namespace DAQ.HAL
 //		event DisruptivePatternChangeStartingEventHandler DisruptivePatternChangeStarting;
 //		event DisruptivePatternChangeEndedEventHandler DisruptivePatternChangeEnded;
 		
-		void Configure(double clockFrequency, bool loop, bool fullWidth, bool lowGroup, int length );
+		void Configure(double clockFrequency, bool loop, bool fullWidth, bool lowGroup, 
+                            int length, bool internalClock );
 		// It's important that this call blocks until the pattern is being output. Without this,
 		// tweak and pg scans won't work correctly.
 		void OutputPattern(UInt32[] pattern);

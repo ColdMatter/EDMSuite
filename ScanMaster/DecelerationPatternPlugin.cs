@@ -70,7 +70,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["valvePulseLength"],
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
-				(int)config.shotGathererPlugin.Settings["gateStartTime"],
+                GateStartTimePGUnits,
 				(int)settings["delayToDeceleration"],
 				decelSequence,
                 (string)settings["modulationMode"],

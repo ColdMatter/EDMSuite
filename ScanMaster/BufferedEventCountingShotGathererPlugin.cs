@@ -200,9 +200,8 @@ namespace ScanMaster.Acquire.Plugins
 				{
 					Shot s = new Shot();
 					TOF t = new TOF();
-                    int startTime = (int)Math.Round((int)settings["gateStartTime"] * 1000000.0 / (((int)Config.pgPlugin.Settings["clockFrequency"])));
 					t.ClockPeriod = (int)settings["clockPeriod"];
-					t.GateStartTime = startTime;
+                    t.GateStartTime = (int)settings["gateStartTime"];
 					if (!Environs.Debug)
 					{
 						t.Data = latestData;

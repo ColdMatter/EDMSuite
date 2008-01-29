@@ -15,10 +15,7 @@ namespace DAQ.HAL
 		private String device;
 		private DigitalSingleChannelWriter writer;
 		private double clockFrequency;
-		private double realClockFrequency;
 		private int length;
-
-		private const double EXTERNAL_CLOCK_RATE = 1000000;
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -51,11 +48,12 @@ namespace DAQ.HAL
 		
 		private void SleepOnePattern()
 		{
-			int sleepTime = (int)(((double)length * 1000) / realClockFrequency);
+			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
 			Thread.Sleep(sleepTime);
 		}
 
-		public void Configure( double clockFrequency, bool loop, bool fullWidth, bool lowGroup, int length )
+		public void Configure( double clockFrequency, bool loop, bool fullWidth,
+                                    bool lowGroup, int length, bool internalClock)
 		{	
 			this.clockFrequency = clockFrequency;
 			this.length = length;
@@ -79,16 +77,9 @@ namespace DAQ.HAL
 				);
 
 			String clockSource;
-			if (clockFrequency == -1) 
-			{
-				clockSource = device + "/PFI2";
-				realClockFrequency = EXTERNAL_CLOCK_RATE;
-			} 
-			else
-			{
-				clockSource = "";
-				realClockFrequency = clockFrequency;
-			}
+			if (!internalClock) clockSource = device + "/PFI2";
+			else clockSource = "";
+
 			SampleQuantityMode sqm;
 			if (loop)
 			{

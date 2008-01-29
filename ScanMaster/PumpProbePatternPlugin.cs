@@ -60,7 +60,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
 				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
 				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
-				(int)config.shotGathererPlugin.Settings["gateStartTime"],
+                GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],

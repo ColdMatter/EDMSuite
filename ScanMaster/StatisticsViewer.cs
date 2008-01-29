@@ -2,6 +2,7 @@ using System;
 
 using NationalInstruments.Analysis.Math;
 
+using Data;
 using Data.Scans;
 using ScanMaster.GUI;
 using ScanMaster.Acquire.Plugin;
@@ -57,10 +58,9 @@ namespace ScanMaster.GUI
             PluginSettings shotSettings = Controller.GetController().ProfileManager.
                 CurrentProfile.AcquisitorConfig.shotGathererPlugin.Settings;
             PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
-            gateStart = (int)Math.Round((int)shotSettings["gateStartTime"] * 1000000.0 / (((int)pgSettings["clockFrequency"])));
-            gateLength = (int)Controller.GetController().ProfileManager.CurrentProfile.
-                    AcquisitorConfig.shotGathererPlugin.Settings["gateLength"];
-            
+            gateStart = (int)shotSettings["gateStartTime"];
+            gateLength = (int)shotSettings["gateLength"];
+           
             pointsToAverage.Points.Clear();
 			shotCounter = 0;
 			window.ClearAll();
@@ -75,7 +75,8 @@ namespace ScanMaster.GUI
 		{
 			pointsToAverage.Points.Add(e.point);
 			shotCounter++;
-			if (shotCounter % BIN == 0)
+            
+            if (shotCounter % BIN == 0)
 			{
 				double[] values = pointsToAverage.GetTOFOnIntegralArray(0, gateStart, gateStart + gateLength);
 

@@ -51,7 +51,7 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["flashToQ"],
                 (int)settings["flash2ToQ2"],
                 (int)settings["qToQ2"],
-                (int)config.shotGathererPlugin.Settings["gateStartTime"],
+                GateStartTimePGUnits,
                 (bool)config.switchPlugin.Settings["switchActive"]
                 );
 
