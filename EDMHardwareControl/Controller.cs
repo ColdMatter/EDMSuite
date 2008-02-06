@@ -272,7 +272,31 @@ namespace EDMHardwareControl
             public double flPZTStep;
         }
 
+        public void SaveParametersWithDialog()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "edmhc parameters|*.bin";
+            saveFileDialog1.Title = "Save parameters";
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreDir = settingsPath + "EDMHardwareController";
+            saveFileDialog1.InitialDirectory = dataStoreDir;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if (saveFileDialog1.FileName != "")
+                {
+                    StoreParameters(saveFileDialog1.FileName);
+                }
+            }
+        }
+
         public void StoreParameters()
+        {
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
+            StoreParameters(dataStoreFilePath);
+        }
+
+        public void StoreParameters(String dataStoreFilePath)
         {
             DataStore dataStore = new DataStore();
             // fill the struct
@@ -300,8 +324,6 @@ namespace EDMHardwareControl
             dataStore.flPZTStep = FLPZTStep;
 
             // serialize it
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
             BinaryFormatter s = new BinaryFormatter();
             try
             {
@@ -311,11 +333,28 @@ namespace EDMHardwareControl
             { Console.Out.WriteLine("Unable to store settings"); }
         }
 
+        public void LoadParametersWithDialog()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "edmhc parameters|*.bin";
+            dialog.Title = "Load parameters";
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreDir = settingsPath + "EDMHardwareController";
+            dialog.InitialDirectory = dataStoreDir;
+            dialog.ShowDialog();
+            if (dialog.FileName != "") LoadParameters(dialog.FileName);
+        }
+
         private void LoadParameters()
         {
-            // deserialize
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
             String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
+            StoreParameters(dataStoreFilePath);
+        }
+
+        private void LoadParameters(String dataStoreFilePath)
+        {
+            // deserialize
             BinaryFormatter s = new BinaryFormatter();
             // eat any errors in the following, as it's just a convenience function
             try

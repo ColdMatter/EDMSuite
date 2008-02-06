@@ -269,6 +269,7 @@ namespace EDMHardwareControl
         public TextBox I2AOMFreqCentreTextBox;
         private Label label71;
         private Label label72;
+        private ToolStripMenuItem loadParametersToolStripMenuItem;
 
 
 		public Controller controller;
@@ -492,7 +493,13 @@ namespace EDMHardwareControl
             this.label23 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.I2AOMFreqStepTextBox = new System.Windows.Forms.TextBox();
+            this.label73 = new System.Windows.Forms.Label();
+            this.I2AOMFreqMinusTextBox = new System.Windows.Forms.TextBox();
+            this.I2AOMFreqCentreTextBox = new System.Windows.Forms.TextBox();
+            this.label71 = new System.Windows.Forms.Label();
             this.I2AOMFreqPlusTextBox = new System.Windows.Forms.TextBox();
+            this.label72 = new System.Windows.Forms.Label();
             this.I2AOMFreqUpdateButton = new System.Windows.Forms.Button();
             this.label69 = new System.Windows.Forms.Label();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -543,12 +550,7 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.I2AOMFreqMinusTextBox = new System.Windows.Forms.TextBox();
-            this.label71 = new System.Windows.Forms.Label();
-            this.label72 = new System.Windows.Forms.Label();
-            this.I2AOMFreqCentreTextBox = new System.Windows.Forms.TextBox();
-            this.label73 = new System.Windows.Forms.Label();
-            this.I2AOMFreqStepTextBox = new System.Windows.Forms.TextBox();
+            this.loadParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -2495,6 +2497,55 @@ namespace EDMHardwareControl
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Iodine lock";
             // 
+            // I2AOMFreqStepTextBox
+            // 
+            this.I2AOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
+            this.I2AOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.I2AOMFreqStepTextBox.Location = new System.Drawing.Point(145, 109);
+            this.I2AOMFreqStepTextBox.Name = "I2AOMFreqStepTextBox";
+            this.I2AOMFreqStepTextBox.ReadOnly = true;
+            this.I2AOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
+            this.I2AOMFreqStepTextBox.TabIndex = 56;
+            this.I2AOMFreqStepTextBox.Text = "0";
+            // 
+            // label73
+            // 
+            this.label73.Location = new System.Drawing.Point(16, 112);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(111, 23);
+            this.label73.TabIndex = 55;
+            this.label73.Text = "Step (Hz)";
+            // 
+            // I2AOMFreqMinusTextBox
+            // 
+            this.I2AOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
+            this.I2AOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.I2AOMFreqMinusTextBox.Location = new System.Drawing.Point(145, 55);
+            this.I2AOMFreqMinusTextBox.Name = "I2AOMFreqMinusTextBox";
+            this.I2AOMFreqMinusTextBox.ReadOnly = true;
+            this.I2AOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.I2AOMFreqMinusTextBox.TabIndex = 56;
+            this.I2AOMFreqMinusTextBox.Text = "0";
+            // 
+            // I2AOMFreqCentreTextBox
+            // 
+            this.I2AOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
+            this.I2AOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.I2AOMFreqCentreTextBox.Location = new System.Drawing.Point(145, 83);
+            this.I2AOMFreqCentreTextBox.Name = "I2AOMFreqCentreTextBox";
+            this.I2AOMFreqCentreTextBox.ReadOnly = true;
+            this.I2AOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
+            this.I2AOMFreqCentreTextBox.TabIndex = 54;
+            this.I2AOMFreqCentreTextBox.Text = "0";
+            // 
+            // label71
+            // 
+            this.label71.Location = new System.Drawing.Point(16, 58);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(111, 23);
+            this.label71.TabIndex = 55;
+            this.label71.Text = "AOM freq high (Hz)";
+            // 
             // I2AOMFreqPlusTextBox
             // 
             this.I2AOMFreqPlusTextBox.BackColor = System.Drawing.Color.Black;
@@ -2505,6 +2556,14 @@ namespace EDMHardwareControl
             this.I2AOMFreqPlusTextBox.Size = new System.Drawing.Size(126, 20);
             this.I2AOMFreqPlusTextBox.TabIndex = 54;
             this.I2AOMFreqPlusTextBox.Text = "0";
+            // 
+            // label72
+            // 
+            this.label72.Location = new System.Drawing.Point(16, 86);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(111, 23);
+            this.label72.TabIndex = 52;
+            this.label72.Text = "Centre (Hz)";
             // 
             // I2AOMFreqUpdateButton
             // 
@@ -2937,6 +2996,7 @@ namespace EDMHardwareControl
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadParametersToolStripMenuItem,
             this.saveParametersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -2946,14 +3006,14 @@ namespace EDMHardwareControl
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.saveParametersToolStripMenuItem.Text = "Save parameters";
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -2989,62 +3049,12 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
-            // I2AOMFreqMinusTextBox
+            // loadParametersToolStripMenuItem
             // 
-            this.I2AOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
-            this.I2AOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.I2AOMFreqMinusTextBox.Location = new System.Drawing.Point(145, 55);
-            this.I2AOMFreqMinusTextBox.Name = "I2AOMFreqMinusTextBox";
-            this.I2AOMFreqMinusTextBox.ReadOnly = true;
-            this.I2AOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
-            this.I2AOMFreqMinusTextBox.TabIndex = 56;
-            this.I2AOMFreqMinusTextBox.Text = "0";
-            // 
-            // label71
-            // 
-            this.label71.Location = new System.Drawing.Point(16, 58);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(111, 23);
-            this.label71.TabIndex = 55;
-            this.label71.Text = "AOM freq high (Hz)";
-            // 
-            // label72
-            // 
-            this.label72.Location = new System.Drawing.Point(16, 86);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(111, 23);
-            this.label72.TabIndex = 52;
-            this.label72.Text = "Centre (Hz)";
-            // 
-            // I2AOMFreqCentreTextBox
-            // 
-            this.I2AOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
-            this.I2AOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.I2AOMFreqCentreTextBox.Location = new System.Drawing.Point(145, 83);
-            this.I2AOMFreqCentreTextBox.Name = "I2AOMFreqCentreTextBox";
-            this.I2AOMFreqCentreTextBox.ReadOnly = true;
-            this.I2AOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
-            this.I2AOMFreqCentreTextBox.TabIndex = 54;
-            this.I2AOMFreqCentreTextBox.Text = "0";
-            // 
-            // label73
-            // 
-            this.label73.Location = new System.Drawing.Point(16, 112);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(111, 23);
-            this.label73.TabIndex = 55;
-            this.label73.Text = "Step (Hz)";
-            // 
-            // I2AOMFreqStepTextBox
-            // 
-            this.I2AOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
-            this.I2AOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.I2AOMFreqStepTextBox.Location = new System.Drawing.Point(145, 109);
-            this.I2AOMFreqStepTextBox.Name = "I2AOMFreqStepTextBox";
-            this.I2AOMFreqStepTextBox.ReadOnly = true;
-            this.I2AOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
-            this.I2AOMFreqStepTextBox.TabIndex = 56;
-            this.I2AOMFreqStepTextBox.Text = "0";
+            this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
+            this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // ControlWindow
             // 
@@ -3332,9 +3342,14 @@ namespace EDMHardwareControl
             controller.UpdateI2AOMFreqMonitor();
         }
 
+        private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadParametersWithDialog();
+        }
+
         private void SaveParametersMenuClicked(object sender, EventArgs e)
         {
-            controller.StoreParameters();
+            controller.SaveParametersWithDialog();
         }
 
         private void ExitMenuClicked(object sender, EventArgs e)
@@ -3409,12 +3424,6 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
-
-
- 
-
-
-
 
 
     }

@@ -58,10 +58,23 @@ def run_script():
 	print("done!")
 
 l = list()
+numBlocks = 10000
+
+def serialize_a_lot():
+	for i in range(0,numBlocks):
+		fs = FileStream("C:\\Users\\jony\\Desktop\\test\\" + str(i) + ".bin", FileMode.Create)
+		bf.Serialize(fs, db)
+		fs.Close()
+
 def deserialize_a_lot():
-	for i in range(0,1000):
-		fs = FileStream("C:\\Users\\jony\\Desktop\\db.bin", FileMode.Open)
+	for i in range(0,numBlocks):
+		fs = FileStream("C:\\Users\\jony\\Desktop\\test\\" + str(i) + ".bin", FileMode.Open)
 		l.Add(bf.Deserialize(fs))
 		fs.Close()
 
+p = list()
+def grab_a_property(l):
+	p.Clear()
+	for i in range(0, l.Count):
+		if (l[i].ChannelValues[0].GetValue(0) < 600) and (l[i].ChannelValues[0].GetValue(0) > 500): p.Add(i)
 
