@@ -136,6 +136,13 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
+                case "PH-CDSLAP":
+                    Hardware = new BufferGasHardware();
+                    FileSystem = new PHCDSLapFileSystem();
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
