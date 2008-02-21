@@ -14,7 +14,7 @@ def bLoop(start, end, step, numScans):
 	print("")
 	# start looping
 
-	r = [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3., 3.1, 3.2, 3.3, 3.4, 3.5]
+	r = [1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3., 3.1, 3.2, 3.3, 3.4, 3.5]
 	for i in range(len(r)):
 		print "B -> " + str(r[i])
 		hc.SetScanningBVoltage(r[i])

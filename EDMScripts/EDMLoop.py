@@ -47,8 +47,8 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
-	hc.UpdateRFPowerMonitor()
-	hc.UpdateRFFrequencyMonitor()
+#	hc.UpdateRFPowerMonitor()
+#	hc.UpdateRFFrequencyMonitor()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -107,7 +107,7 @@ kSteppingBiasCurrentPerVolt = 1000.0
 # max change in the b-bias voltage per block
 kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
-kRFAVoltsPerCal = 0.8
+kRFAVoltsPerCal = 3.2
 kRFAMaxChange = 0.1
 # volts of rf*f input required per cal's worth of offset
 kRFFVoltsPerCal = 8
