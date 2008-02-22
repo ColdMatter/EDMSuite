@@ -21,12 +21,13 @@ namespace ScanMaster.Acquire.Patterns
 		int fmChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["fmSelect"]).BitNumber;
         int attChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["attenuatorSelect"]).BitNumber;
         int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
-
+        int scramblerChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["scramblerEnable"]).BitNumber;
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
 			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipTime,
-            int fmCentreTime, int fmLength, int attCentreTime, int attLength, bool modulateOn) 
+            int fmCentreTime, int fmLength, int attCentreTime, int attLength, int scramblerCentreTime,
+            int scramblerLength, bool modulateOn) 
 		{
 		
 			int time = startTime;
@@ -39,7 +40,7 @@ namespace ScanMaster.Acquire.Patterns
 			{
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
 						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, true );
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, true );
 				time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
                 {
@@ -50,13 +51,13 @@ namespace ScanMaster.Acquire.Patterns
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
                         rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, false);
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, false);
                 }
                 else
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
                         rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, true);
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, true);
                 }
                 time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
@@ -76,7 +77,8 @@ namespace ScanMaster.Acquire.Patterns
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
 			int delayToDetectorTrigger, int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length,
-            int piFlipTime, int fmCentreTime, int fmLength, int attCentreTime, int attLength, bool modulated)  
+            int piFlipTime, int fmCentreTime, int fmLength, int attCentreTime, int attLength,
+            int scramblerCentreTime, int scramblerLength, bool modulated)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -128,8 +130,12 @@ namespace ScanMaster.Acquire.Patterns
             tempTime = Pulse(startTime, valveToQ + attCentreTime - (attLength / 2), attLength, attChannel);
             if (tempTime > time) time = tempTime;
 
-
-			// piFlip on
+            // pulse scrambler
+            tempTime = Pulse(startTime, valveToQ + scramblerCentreTime - (scramblerLength / 2),
+                                scramblerLength, scramblerChannel);
+            if (tempTime > time) time = tempTime;
+            
+            // piFlip on
             AddEdge(piChannel, startTime + valveToQ + piFlipTime, true);
 
 			// Detector trigger

@@ -33,6 +33,8 @@ namespace ScanMaster.Acquire.Plugins
             settings["attCentreTime"] = 700;
             settings["attLength"] = 700;
 			settings["piFlipTime"] = 1400;
+            settings["scramblerCentreTime"] = 1400;
+            settings["scramblerLength"] = 200;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -63,6 +65,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["fmLength"],
                 (int)settings["attCentreTime"],
                 (int)settings["attLength"],
+                (int)settings["scramblerCentreTime"],
+                (int)settings["scramblerLength"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
             scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

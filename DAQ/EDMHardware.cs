@@ -70,6 +70,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
 			AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
 																	// will switch if it's switch scanning.
+            AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
 
 			// these channel are usually software switched - they should not be in
 			// the lower half of the pattern generator
@@ -105,7 +106,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             
           
-            AddAnalogOutputChannel("laser", daqBoard + "/ao0");
+            AddAnalogOutputChannel("phaseScramblerVoltage", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 
             // rf rack control

@@ -84,6 +84,7 @@ namespace EDMHardwareControl
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
         Task rfPowerMonitorInputTask;
+        Task phaseScramblerVoltageOutputTask;
 
         ControlWindow window;
 
@@ -107,6 +108,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("rfSwitch");
             CreateDigitalTask("fmSelect");
             CreateDigitalTask("attenuatorSelect");
+            CreateDigitalTask("scramblerEnable");
             CreateDigitalTask("b");
             CreateDigitalTask("notDB");
             CreateDigitalTask("piFlip");
@@ -130,6 +132,7 @@ namespace EDMHardwareControl
             rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
+            phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD");
@@ -1536,6 +1539,11 @@ namespace EDMHardwareControl
             SetDigitalLine("piFlipEnable", enable);
         }
 
+        internal void SetScramblerTTL(bool enable)
+        {
+            SetDigitalLine("scramblerEnable", enable);
+        }
+
         internal void SetPumpShutter(bool enable)
         {
             SetDigitalLine("pumpShutter", enable);
@@ -1572,6 +1580,18 @@ namespace EDMHardwareControl
             SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
+        public void SetScramblerVoltage()
+        {
+            double scramblerVoltage = Double.Parse(window.scramblerVoltageTextBox.Text);
+            SetAnalogOutput(phaseScramblerVoltageOutputTask, scramblerVoltage);
+        }
+
+
+        public void SetScramblerVoltage(double v)
+        {
+            window.SetTextBox(window.scramblerVoltageTextBox, v.ToString());
+            SetAnalogOutput(phaseScramblerVoltageOutputTask, v);
+        }
 
         public void UpdateFLPZTV()
         {
