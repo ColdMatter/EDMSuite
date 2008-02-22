@@ -41,6 +41,7 @@ namespace EDMBlockHead.Acquire
  		AnalogMultiChannelReader inputReader;
 		ScanMaster.Controller scanMaster;
 		EDMPhaseLock.MainForm phaseLock;
+        EDMHardwareControl.Controller hardwareController;
 
 		// calling this method starts acquisition
 		public void Start(BlockConfig config) 
@@ -72,6 +73,7 @@ namespace EDMBlockHead.Acquire
 
 			scanMaster = new ScanMaster.Controller();
 			phaseLock = new EDMPhaseLock.MainForm();
+            hardwareController = new EDMHardwareControl.Controller();
 	
 			// map modulations to physical channels
 			MapChannels();
@@ -153,6 +155,12 @@ namespace EDMBlockHead.Acquire
 					// keep an eye on what the phase lock is doing
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+
+                    // randomise the Ramsey phase
+                    // TODO: enable this once we know what we want to do.
+                    // TODO: check whether the .net rng is good enough
+                    //double d = new Random().NextDouble();
+                    //hardwareController.SetScramblerVoltage(d);
 
 					b.Points.Add(p);
 
