@@ -7,28 +7,22 @@ using DAQ.Pattern;
 
 namespace DAQ.HAL
 
-    //test comment
-
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class BufferGasHardware : DAQ.HAL.Hardware
     {
         public BufferGasHardware()
         {
-            //			// add the boards
+          // add the boards
             Boards.Add("daq", "/dev1");
             Boards.Add("pg", "/dev2");
 
             // map the digital channels
             string pgBoard = (string)Boards["pg"];
-            //AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+         
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);
             AddDigitalOutputChannel("q", pgBoard, 0, 0);
             AddDigitalOutputChannel("detector", pgBoard, 2, 0); //Pin 16
-            //AddDigitalOutputChannel("aom", pgBoard, 1, 0);//Pin 44
             AddDigitalOutputChannel("aom", pgBoard, 0, 1);//
 
             // map the analog channels
@@ -42,6 +36,5 @@ namespace DAQ.HAL
             AddCounterChannel("pmt", daqBoard + "/ctr0");
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
         }
-
     }
 }
