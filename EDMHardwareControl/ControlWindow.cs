@@ -3350,7 +3350,7 @@ namespace EDMHardwareControl
 
         private void setScramblerVoltageButton_Click(object sender, EventArgs e)
         {
-
+            controller.SetScramblerVoltage();
         }
         
         private void calibrateIMonitorButton_Click(object sender, EventArgs e)

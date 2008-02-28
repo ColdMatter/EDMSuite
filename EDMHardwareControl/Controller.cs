@@ -352,7 +352,7 @@ namespace EDMHardwareControl
         {
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
             String dataStoreFilePath = settingsPath + "\\EDMHardwareController\\parameters.bin";
-            StoreParameters(dataStoreFilePath);
+            LoadParameters(dataStoreFilePath);
         }
 
         private void LoadParameters(String dataStoreFilePath)
