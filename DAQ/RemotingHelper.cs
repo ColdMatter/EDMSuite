@@ -49,6 +49,14 @@ namespace DAQ.Remoting
                 );
         }
 
+        public static void ConnectCameraHardwareControl()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("CameraHardwareControl.Controller, CameraHardwareControl"),
+                    "tcp://localhost:1178/controller.rem"
+                    );
+        }
+
         public static void ConnectDecelerationHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(
@@ -56,6 +64,8 @@ namespace DAQ.Remoting
                     "tcp://localhost:1177/controller.rem"
                     );
         }
+
+
 
     }
 }

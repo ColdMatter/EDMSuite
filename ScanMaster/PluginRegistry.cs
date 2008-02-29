@@ -40,6 +40,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
+            patternPlugins.Add("Camera Image", typeof(ImagingPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -50,6 +51,7 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
+            shotGathererPlugins.Add("Camera Shot Gatherer", typeof(AnalogCameraShotGathererPlugin));
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
