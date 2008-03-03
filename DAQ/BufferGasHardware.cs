@@ -20,12 +20,12 @@ namespace DAQ.HAL
             // map the digital channels
             string pgBoard = (string)Boards["pg"];
 
-            AddDigitalOutputChannel("q", pgBoard, 0, 0);
-            AddDigitalOutputChannel("aom", pgBoard, 0, 1);//pin 44
+            AddDigitalOutputChannel("q", pgBoard, 0, 0);//pin 10
+            AddDigitalOutputChannel("aom", pgBoard, 2, 1);
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);
             //(0,3) pin 12 is unconnected
             AddDigitalOutputChannel("shutter", pgBoard, 0, 4);//
-            AddDigitalOutputChannel("probe", pgBoard, 2, 1);//
+            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//pin 44
             //(0,5) is reserved as the switch line
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 

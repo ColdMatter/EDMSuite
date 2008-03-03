@@ -32,15 +32,19 @@ namespace CameraHardwareControl
             Application.Run(window);
         }
 
+        public void primeScan()
+        {
+            window.clearSequences();
+        }
         public void primeAquisition(int numShots)
         {
             window.aquireSequence(numShots);
         }
 
-        //public void haltAndDisplay()
-        //{
-        //    window.haltAndDisplay;
-        //}
+        public void CloseCamera()
+        {
+            window.CloseCamera();
+        }
 
         public void scanFinished()
         {

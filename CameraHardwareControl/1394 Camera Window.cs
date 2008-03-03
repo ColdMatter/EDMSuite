@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Data;
 using NationalInstruments;
 using NationalInstruments.CWIMAQControls;
+using System.IO;
 
 
 namespace CameraHardwareControl
@@ -33,6 +34,7 @@ namespace CameraHardwareControl
         public Object[] imageArray;
         public Object[] imageData;
         public ArrayList imageSequences = new ArrayList();
+        public int scanCount = 0;
     
 
 		public uint sid;	
@@ -45,7 +47,12 @@ namespace CameraHardwareControl
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem saveImageSequenceToolStripMenuItem;
         private Label label2;
+        private ToolStripMenuItem saveLatestImageSequenceToolStripMenuItem;
+        private ToolStripMenuItem saveAllScanSequenceImagesToolStripMenuItem;
+        private Button button2;
 		public string errorMessage;
+
+
 
 		public ControlWindow()
 		{
@@ -92,6 +99,9 @@ namespace CameraHardwareControl
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveImageSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
+            this.saveLatestImageSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAllScanSequenceImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.axCWIMAQViewer1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -139,7 +149,7 @@ namespace CameraHardwareControl
             this.SnapButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.SnapButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SnapButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SnapButton.Location = new System.Drawing.Point(168, 539);
+            this.SnapButton.Location = new System.Drawing.Point(143, 533);
             this.SnapButton.Name = "SnapButton";
             this.SnapButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.SnapButton.Size = new System.Drawing.Size(45, 33);
@@ -154,7 +164,7 @@ namespace CameraHardwareControl
             this.QuitButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.QuitButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.QuitButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.QuitButton.Location = new System.Drawing.Point(647, 539);
+            this.QuitButton.Location = new System.Drawing.Point(636, 536);
             this.QuitButton.Name = "QuitButton";
             this.QuitButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.QuitButton.Size = new System.Drawing.Size(50, 33);
@@ -170,7 +180,7 @@ namespace CameraHardwareControl
             this.StopButton.Enabled = false;
             this.StopButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StopButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.StopButton.Location = new System.Drawing.Point(569, 539);
+            this.StopButton.Location = new System.Drawing.Point(569, 536);
             this.StopButton.Name = "StopButton";
             this.StopButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.StopButton.Size = new System.Drawing.Size(42, 33);
@@ -185,7 +195,7 @@ namespace CameraHardwareControl
             this.GrabButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.GrabButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GrabButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.GrabButton.Location = new System.Drawing.Point(517, 539);
+            this.GrabButton.Location = new System.Drawing.Point(517, 536);
             this.GrabButton.Name = "GrabButton";
             this.GrabButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.GrabButton.Size = new System.Drawing.Size(46, 33);
@@ -202,7 +212,7 @@ namespace CameraHardwareControl
             // ImageList
             // 
             this.ImageList.LargeChange = 1;
-            this.ImageList.Location = new System.Drawing.Point(352, 539);
+            this.ImageList.Location = new System.Drawing.Point(347, 575);
             this.ImageList.Maximum = 5;
             this.ImageList.Name = "ImageList";
             this.ImageList.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -213,18 +223,18 @@ namespace CameraHardwareControl
             // 
             // AquireSequenceButton
             // 
-            this.AquireSequenceButton.Location = new System.Drawing.Point(268, 539);
+            this.AquireSequenceButton.Location = new System.Drawing.Point(227, 533);
             this.AquireSequenceButton.Name = "AquireSequenceButton";
-            this.AquireSequenceButton.Size = new System.Drawing.Size(71, 30);
+            this.AquireSequenceButton.Size = new System.Drawing.Size(101, 27);
             this.AquireSequenceButton.TabIndex = 11;
-            this.AquireSequenceButton.Text = "Sequence";
+            this.AquireSequenceButton.Text = "Start Sequence";
             this.AquireSequenceButton.UseVisualStyleBackColor = true;
             this.AquireSequenceButton.Click += new System.EventHandler(this.AquireSequenceButton_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(359, 562);
+            this.label1.Location = new System.Drawing.Point(430, 578);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(70, 13);
             this.label1.TabIndex = 12;
@@ -244,7 +254,9 @@ namespace CameraHardwareControl
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageSequenceToolStripMenuItem});
+            this.saveImageSequenceToolStripMenuItem,
+            this.saveLatestImageSequenceToolStripMenuItem,
+            this.saveAllScanSequenceImagesToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -252,23 +264,48 @@ namespace CameraHardwareControl
             // saveImageSequenceToolStripMenuItem
             // 
             this.saveImageSequenceToolStripMenuItem.Name = "saveImageSequenceToolStripMenuItem";
-            this.saveImageSequenceToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.saveImageSequenceToolStripMenuItem.Text = "Save Image Sequence";
+            this.saveImageSequenceToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.saveImageSequenceToolStripMenuItem.Text = "Save Snap Image";
             this.saveImageSequenceToolStripMenuItem.Click += new System.EventHandler(this.saveImageSequenceToolStripMenuItem_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(265, 572);
+            this.label2.Location = new System.Drawing.Point(334, 536);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 13);
             this.label2.TabIndex = 17;
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
+            // saveLatestImageSequenceToolStripMenuItem
+            // 
+            this.saveLatestImageSequenceToolStripMenuItem.Name = "saveLatestImageSequenceToolStripMenuItem";
+            this.saveLatestImageSequenceToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.saveLatestImageSequenceToolStripMenuItem.Text = "Save Latest Image Sequence";
+            this.saveLatestImageSequenceToolStripMenuItem.Click += new System.EventHandler(this.saveLatestImageSequenceToolStripMenuItem_Click);
+            // 
+            // saveAllScanSequenceImagesToolStripMenuItem
+            // 
+            this.saveAllScanSequenceImagesToolStripMenuItem.Name = "saveAllScanSequenceImagesToolStripMenuItem";
+            this.saveAllScanSequenceImagesToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.saveAllScanSequenceImagesToolStripMenuItem.Text = "Save All Scan Sequence Images";
+            this.saveAllScanSequenceImagesToolStripMenuItem.Click += new System.EventHandler(this.saveAllScanSequenceImagesToolStripMenuItem_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(227, 566);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(101, 25);
+            this.button2.TabIndex = 19;
+            this.button2.Text = "Stop Sequence";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(707, 602);
+            this.ClientSize = new System.Drawing.Size(707, 646);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AquireSequenceButton);
@@ -353,8 +390,20 @@ namespace CameraHardwareControl
 
             ImageList_Change(0);
 
+            scanCount++;
+
             CWIMAQ1394.Close(sid);
 
+        }
+
+        public void CloseCamera()
+        {
+            //errorCode = CWIMAQ1394.StopAcquisition(sid);
+
+            //if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
+            //    DisplayError(errorCode, out errorMessage);
+
+            //CWIMAQ1394.Close(sid);
         }
 
         private void indefiniteSynchrnousAquisition()
@@ -376,40 +425,9 @@ namespace CameraHardwareControl
 
             imageSequences.Add(currentImage);
 
-    
         }
 
-        public void haltAndDisplay()
-        {
-            //for (int i = 0; i < imageFrames.Count; i++)
-            //{
-            //    imageFrames.t
-            //    axCWIMAQViewer1.Attach(myImage);
-            //}
-            imageArray = new Object[imageSequences.Count];
-
-            for (int i = 0; i <= imageSequences.Count-1; i++)
-            {
-                imageArray[i] = imageSequences[i];
-            }
-
-            ImageList.Value = ImageList.Minimum;
-            ImageList.Maximum = imageSequences.Count - 1;
-
-            ImageList_Change(0);
-
-            CWIMAQ1394.Close(sid);
-        }
-
-        //private void imagesToArray()
-        //{
-        //    imageData = new Object[imageArray.Length];
-        //    for (int i = 0; i <= imageArray.Length; i++)
-        //    {
-        //        imageData[i] = new Object();
-        //        imageData[i] = imageArray[i].ImageToArray(0, 0, myImage.Width, myImage.Height);
-        //    }
-        //}
+        
 
 		private void SnapButton_Click(object sender, System.EventArgs e)
 		{
@@ -434,6 +452,13 @@ namespace CameraHardwareControl
         private void ImageList_Change(int newScrollValue)
         {
             currentImage = (NationalInstruments.CWIMAQControls.CWIMAQImageClass)(imageArray[newScrollValue]);
+            axCWIMAQViewer1.Attach(currentImage);
+        }
+
+        private void ImageList_Change(Object[] obj, int newScrollValue)
+        {
+
+            currentImage = (NationalInstruments.CWIMAQControls.CWIMAQImageClass)(obj[newScrollValue]);
             axCWIMAQViewer1.Attach(currentImage);
         }
 
@@ -492,41 +517,124 @@ namespace CameraHardwareControl
             StopButton.Enabled = true;
         }
 
-        //public void SaveData()
-        //{
-        //    {
-        //        // saves a zip file containing each scan, plus the average
-        //        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-        //        saveFileDialog1.Title = "Save image data";
-        //        saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
-        //                                            (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
-        //        saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
-        //        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-        //        {
-        //            if (saveFileDialog1.FileName != "")
-        //            {
-        //                SaveData(saveFileDialog1.FileName);
-        //            }
+        public void SaveData()
+        {
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Title = "Save image data";
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        SaveData(saveFileDialog1.FileName);
+                    }
 
-        //        }
-        //    }
-        //}
+                }
+            }
+        }
 
-        //public void SaveData(string filename)
-        //{
-        //    System.IO.FileStream fs = new FileStream(filename, FileMode.Create);
-        //    serializer.PrepareZip(fs);
-        //    string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
-        //    for (int k = 1; k <= DataStore.NumberOfScans; k++)
-        //    {
-        //        Scan sc = serializer.DeserializeScanAsBinary(tempPath + "\\scan_" + k.ToString());
-        //        serializer.AppendToZip(sc, "scan_" + k.ToString() + ".xml");
-        //    }
-        //    serializer.AppendToZip(DataStore.AverageScan, "average.xml");
-        //    serializer.CloseZip();
-        //    fs.Close();
-        //    Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
-        //}
+
+        public void SaveDataSequence()
+        {
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Title = "Save image data";
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        SaveDataSequence(saveFileDialog1.FileName);
+                    }
+
+                }
+            }
+        }
+
+        public string GetSaveDialogFilename()
+        {
+            string file = "";
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Title = "Save image data";
+               
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        file = saveFileDialog1.FileName;
+                    }
+                }
+            }
+            return file;
+        }
+
+        public void SaveScanSequenceImages()
+        {
+            string filename = GetSaveDialogFilename();
+
+            for(int i = 0; i<imageSequences.Count; i++)
+            {
+                string scanIndexedFilename = filename+"_scan_" + i.ToString();
+                SaveDataSequence(scanIndexedFilename);
+            }
+            
+        }
+
+        public void SaveSnapImage()
+        {
+            string filename = GetSaveDialogFilename();
+            SaveData(filename);
+
+        }
+
+
+        public void SaveData(string filename)
+        {
+            string indexedFilename = filename+".dat";
+
+            Byte[,] arrImage = (Byte[,])(currentImage.ImageToArray(0, 0, currentImage.Width, currentImage.Height));
+            byte[,] arrayImage = (byte[,])(arrImage);
+            byte[] flatImage = new byte[currentImage.Height * currentImage.Width];
+
+            int byteIndex = 0;
+            for (int i = 0; i < arrayImage.GetLength(1); i++)
+            {
+                for (int j = 0; j < arrayImage.GetLength(0); j++)
+                {
+                    flatImage[byteIndex] = arrayImage[j, i];
+                    byteIndex++;
+                }
+            }
+            File.WriteAllBytes(indexedFilename, flatImage);
+        
+        }
+
+        
+        public void SaveDataSequence(string filename)
+        {
+            for (int k = 0; k <= imageArray.Length - 1; k++)
+            {
+                string indexedFilename = filename + "_image_" + k.ToString() + ".dat";
+
+                currentImage = (NationalInstruments.CWIMAQControls.CWIMAQImageClass)(imageArray[k]);
+                Byte[,] arrImage = (Byte[,])(currentImage.ImageToArray(0, 0, currentImage.Width, currentImage.Height));
+                byte[,] arrayImage = (byte[,])(arrImage);
+                byte[] flatImage = new byte[currentImage.Height * currentImage.Width];
+
+                int byteIndex = 0;
+                for (int i = 0; i < arrayImage.GetLength(1); i++)
+                {
+                    for (int j = 0; j < arrayImage.GetLength(0); j++)
+                    {
+                        flatImage[byteIndex] = arrayImage[j, i];
+                        byteIndex++;
+                    }
+                }
+                File.WriteAllBytes(indexedFilename, flatImage);
+            }
+         
+        }
+
 
 
 		private void StopButton_Click(object sender, System.EventArgs e)
@@ -576,14 +684,11 @@ namespace CameraHardwareControl
             indefiniteSynchrnousAquisition();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            haltAndDisplay();
-        }
+
 
         private void saveImageSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-        // SaveData();
+             SaveData();
             
         }
 
@@ -592,9 +697,30 @@ namespace CameraHardwareControl
 
         }
 
+        private void sequenceChooser_SelectedIndexChanged(object sender, EventArgs e)
+        {
+        
+        }
 
+        public void clearSequences()
+        {
+            imageSequences.Clear();
+            scanCount = 0;
+        }
 
+        private void saveLatestImageSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.SaveDataSequence();
+        }
 
-  
+        private void saveAllScanSequenceImagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveScanSequenceImages();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            DumpAndDisplay();
+        }
     }
 }
