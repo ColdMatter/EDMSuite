@@ -23,6 +23,10 @@ namespace ScanMaster.GUI
 		Scan pointsToPlot = new Scan();
 		double startSpectrumGate;
         double endSpectrumGate;
+		double axisMax;
+		double axisMin;
+		double averageAxisMax;
+		double averageAxisMin;
         double startTOFGate;
 		double endTOFGate;
 		private int shotCounter = 0;
@@ -97,13 +101,23 @@ namespace ScanMaster.GUI
             PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
 
 			// initially set the gates to full
-			startSpectrumGate = (double)outputSettings["start"];
-			endSpectrumGate = (double)outputSettings["end"];
+			startSpectrumGate = System.Math.Min((double)outputSettings["start"], (double)outputSettings["end"]);
+			endSpectrumGate = System.Math.Max((double)outputSettings["start"], (double)outputSettings["end"]);
+			//It shouldn't be assumed that outputSettings["start"] > outputSettings["end"]. If that is assumed
+			//and you want to start at a high value and scan down, scanMaster crashes when trying to draw the window
+			//because NationalInstruments.UI.Range(low,high) doesn't like it if low > high.
+			//If you choose to scan from high to low, the average TOF graph will not be updated properly.
+			//startSpectrumGate = (double)outputSettings["start"];
+			//endSpectrumGate = (double)outputSettings["end"];
 
 			// prepare the front panel
 			window.ClearAll();
-			window.SpectrumAxes = new NationalInstruments.UI.Range(
-				(double)outputSettings["start"], (double)outputSettings["end"]);
+
+			axisMax = System.Math.Max((double)outputSettings["start"], (double)outputSettings["end"]);
+			axisMin = System.Math.Min((double)outputSettings["start"],(double)outputSettings["end"]);
+			//window.SpectrumAxes = new NationalInstruments.UI.Range(
+			//	(double)outputSettings["start"], (double)outputSettings["end"]);
+			window.SpectrumAxes = new NationalInstruments.UI.Range(axisMin, axisMax);
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
             startTOFGate = (int)shotSettings["gateStartTime"];
             endTOFGate = startTOFGate + (int)shotSettings["gateLength"];
@@ -272,6 +286,7 @@ namespace ScanMaster.GUI
 
 		private void FitAverageTOF()
 		{
+			//Profile currentProfile = Controller.GetController().ProfileManager.CurrentProfile;
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			TOF tof;
             if (window.GetTofFitDataSelection() == 0)
@@ -287,19 +302,39 @@ namespace ScanMaster.GUI
                                                     startSpectrumGate,
                                                     endSpectrumGate).TOFs)[0];
             }
-			double[] doubleTimes = new double[tof.Times.Length];
-			for (int i = 0; i < tof.Times.Length; i++) doubleTimes[i] = (double)tof.Times[i];
+			//the calculation of gatedTimesLength, gatedData, intTOFGateLow and intTOFGateHigh are for 
+			//fitting only the part of the TOF that is between the gates.
+			int intTOFGateHigh = tof.ClockPeriod * ((int)(Math.Round(TOFGateHigh / tof.ClockPeriod)));
+			int intTOFGateLow = tof.ClockPeriod * ((int)(Math.Round(TOFGateLow / tof.ClockPeriod)));
+			int gatedTimesLength;
+			bool tofFitGated = false;
+			if (window.GetTOFGatedFitSelection())
+			{
+				tofFitGated = true;
+			}
+			if ((intTOFGateHigh - intTOFGateLow > 0) & tofFitGated)
+			{
+				gatedTimesLength = (intTOFGateHigh - intTOFGateLow) / tof.ClockPeriod;
+			}
+			else
+			{
+				gatedTimesLength = tof.Times.Length;
+				intTOFGateLow = tof.Times[0];
+				intTOFGateHigh = tof.Times[tof.Times.Length - 1];
+			}
+
+			double[] doubleTimes = new double[gatedTimesLength];
+			for (int i = 0; i < gatedTimesLength; i++) doubleTimes[i] = intTOFGateLow + i * tof.ClockPeriod;
+			double[] gatedData = new double[gatedTimesLength];
+			for (int i = 0; i < gatedTimesLength; i++) gatedData[i] = tof.Data[i+(intTOFGateLow-tof.Times[0])/tof.ClockPeriod];
 			tofFitter.Fit(
 				doubleTimes,
-				tof.Data,
-				tofFitter.SuggestParameters(
-					doubleTimes,
-					tof.Data,
-					tof.Times[0],
-					tof.Times[tof.Times.Length - 1])
-			);
+				gatedData,
+				tofFitter.SuggestParameters(doubleTimes,gatedData,intTOFGateLow,intTOFGateHigh-tof.ClockPeriod)
+				);
+
 			window.ClearTOFFit();
-			window.PlotTOFFit(tof.GateStartTime, tof.ClockPeriod, tofFitter.FittedValues);
+			window.PlotTOFFit(intTOFGateLow, tof.ClockPeriod, tofFitter.FittedValues);
 			// update the parameter report
 			window.SetLabel(window.tofFitResultsLabel, tofFitter.ParameterReport);
 		}
@@ -391,13 +426,19 @@ namespace ScanMaster.GUI
 					(TOF)averageScan.GetGatedAverageOffShot(startSpectrumGate, endSpectrumGate).TOFs[0]);
 			}
 		}
-
+		public int fudge = 0;
 		private void UpdatePMTAveragePlots()
 		{
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			if (averageScan.Points.Count == 0) return;
-			window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.ScanParameterArray[0],
-										averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1]);
+			averageAxisMax = System.Math.Max(averageScan.ScanParameterArray[0], 
+				averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1]);
+			averageAxisMin = System.Math.Min(averageScan.ScanParameterArray[0],
+				averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1]);
+			window.SpectrumAxes = new NationalInstruments.UI.Range(averageAxisMin,averageAxisMax);
+			//window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.ScanParameterArray[0],
+			//							averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1]);
+
 			window.PlotAveragePMTOn(averageScan.ScanParameterArray,
 				averageScan.GetTOFOnIntegralArray(0,
 				startTOFGate, endTOFGate));

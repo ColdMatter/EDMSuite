@@ -91,9 +91,23 @@ namespace ScanMaster.Acquire
 					{
 						// calculate the new scan parameter
 						PluginSettings outputSettings = config.outputPlugin.Settings;
+
 						scanParameter = (double)outputSettings["start"] +
 							((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
 							/ (int)outputSettings["pointsPerScan"];
+
+						//scan backwards on every other scan if desired.
+						//This option comes with a bug. When updating the average PMT graph, 
+						//ScanMaster doesn't care that the scanparamter array for half the scans goes 
+						//in a different order. It just averages the amplitude held at the ith element 
+						//for each scan. The result is an average PMT graph that looks as if two mirror 
+						//images of each other are superimposed onto one another.
+						if ((bool)outputSettings["reverseScan"] && scanNumber % 2 != 0)
+						{
+							scanParameter = (double)outputSettings["end"] +
+								((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
+								/ (int)outputSettings["pointsPerScan"];
+						}
 
 						// move the scan along
 						config.outputPlugin.ScanParameter = scanParameter;

@@ -51,12 +51,18 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void ScanStarting()
 		{
-			rampOutputToVoltage((double)settings["start"]);
+			if (!(bool)config.outputPlugin.Settings["reverseScan"])
+			{
+				rampOutputToVoltage((double)settings["start"]);
+			}
 		}
 
 		public override void ScanFinished()
 		{
-			rampOutputToVoltage((double)settings["start"]);
+			if (!(bool)config.outputPlugin.Settings["reverseScan"])
+			{
+				rampOutputToVoltage((double)settings["start"]);
+			}
 		}
 
 		public override void AcquisitionFinished()
