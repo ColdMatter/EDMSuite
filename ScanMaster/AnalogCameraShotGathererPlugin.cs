@@ -37,9 +37,7 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionStarting()
         {
-            cameraControl = new CameraHardwareControl.Controller();
 
-            cameraControl.primeScan();
            
             // configure the analog input
             inputTask = new Task("analog gatherer " /*+ (string)settings["channel"]*/);
@@ -73,13 +71,21 @@ namespace ScanMaster.Acquire.Plugins
             inputTask.Control(TaskAction.Verify);
             //			}
             reader = new AnalogMultiChannelReader(inputTask.Stream);
+
+            cameraControl = new CameraHardwareControl.Controller();
+
+            cameraControl.primeScan();
+
+           
+           
+           
         }
 
         public override void ScanStarting()
         {
 
-            cameraControl.primeAquisition((int)config.outputPlugin.Settings["pointsPerScan"]);
-       
+         cameraControl.primeAquisition((int)config.outputPlugin.Settings["pointsPerScan"]);
+           
         }
 
         public override void ScanFinished()
@@ -93,7 +99,6 @@ namespace ScanMaster.Acquire.Plugins
             // release the analog input
             inputTask.Dispose();
 
-            cameraControl.scanFinished();
             cameraControl.CloseCamera();
 
         }
@@ -104,7 +109,10 @@ namespace ScanMaster.Acquire.Plugins
             {
                 if (!Environs.Debug)
                 {
-                    
+
+                   // cameraControl.RecordScanParameter(ToString[config.outputPlugin.ScanParameter));
+
+                    cameraControl.CameraArmAndWait(config.outputPlugin.ScanParameter);
 
                     inputTask.Start();
                     latestData = reader.ReadMultiSample((int)settings["gateLength"]);
