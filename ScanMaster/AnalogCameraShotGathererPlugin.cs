@@ -14,8 +14,7 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
     /// <summary>
-    /// A plugin to capture time of flight data by sampling an analog input
-    /// on an E-series board.
+    /// A plugin to capture camera pictures from a Marlin or other fish (as well as analog shots from an E series board)
     /// </summary>
     [Serializable]
     public class AnalogCameraShotGathererPlugin : ShotGathererPlugin

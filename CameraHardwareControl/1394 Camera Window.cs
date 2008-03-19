@@ -32,6 +32,8 @@ namespace CameraHardwareControl
         public NationalInstruments.CWIMAQControls.CWIMAQImageClass tempImage;
      
 
+
+        //This group of fields are all GUI independent.
         public Object[] imageArray;
         public Object[] tempImageArray;
         public ArrayList currentSequence = new ArrayList();
@@ -49,6 +51,8 @@ namespace CameraHardwareControl
 		public int errorCode;
         private HScrollBar ImageList;
         private Button AquireSequenceButton;
+
+
         private Label label1;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
@@ -355,7 +359,7 @@ namespace CameraHardwareControl
 			MessageBox.Show(y);
 		}
 
-
+        //Establishes a link to the camera based an intialises an array to collect N images
         public void OpenCameraLink(int numFrames) 
         {
 
@@ -368,12 +372,17 @@ namespace CameraHardwareControl
                 DisplayError(errorCode, out errorMessage);
 
             errorCode = CWIMAQ1394.TriggerConfigure(sid, CWIMAQ1394.TriggerPolarity.IMG1394_TRIG_POLAR_ACTIVEL, 60000, CWIMAQ1394.TriggerMode.IMG1394_TRIG_MODE1, 1);
-            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
+            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) // camera trigger polarity needs to be falling edge - see page 153 of Marlin  manual. Also for explanation of trigger mode 1
                 DisplayError(errorCode, out errorMessage);
 
            
 
         }
+
+
+        //This method is called by ArmAndWait() in the plugin and takes a single image when hardware triggered, displays it in the
+        //GUI and adds it to the temporary image array. It  also keeps track of the number of frames taken.
+
 
         public void AquireSingleImage(double scanParameter)
         {
@@ -399,6 +408,9 @@ namespace CameraHardwareControl
             currentSequence.Add(tempImage);
         }
 
+
+        //Called at the end of a scan, this method transfers the images to imageArray and displays them on 
+        //a scroll bar
         internal void DumpAndDisplay()
         {
             imageArray = new Object[frameCount];
@@ -417,13 +429,12 @@ namespace CameraHardwareControl
 
             currentSequence.Clear();
 
-          //  latestScanParameters = tempScanParameters;
-
             latestScanParameters.Clear();
 
-            foreach (double d in tempScanParameters){
+            foreach (double d in tempScanParameters)
+            {
                 latestScanParameters.Add(d);
-                }
+            }
 
             tempScanParameters.Clear();
 
@@ -444,6 +455,8 @@ namespace CameraHardwareControl
 
         }
 
+
+        //Allows the camera link to be closed when scan master finishes.
         public void CloseCameraLink()
         {
             CWIMAQ1394.Close(sid);
@@ -452,7 +465,23 @@ namespace CameraHardwareControl
             label2.Update();
         }
 
+
+        //A method to clear the collections and reset counters at the start of aquisition.
+        public void clearSequences()
+        {
+            imageSequences.Clear();
+
+            tempScanParameters.Clear();
+
+            scanCount = 0;
+
+            frameCount = 0;
+
+        }
+
+
         //Acquires a sequence of N frames , given N triggers
+        //This method is never implemented but illustrates how to take a sequence of images.
         public void aquireSequence(int numFrames)
         {
 
@@ -484,31 +513,9 @@ namespace CameraHardwareControl
                 DisplayError(errorCode, out errorMessage);
          
         }
-
-
-       private void indefiniteSynchrnousAquisition()
-        {
-
-            currentImage = new NationalInstruments.CWIMAQControls.CWIMAQImageClass();
-
-            errorCode = CWIMAQ1394.CameraOpen2(InterfaceName.Text, CWIMAQ1394.CameraMode.IMG1394_CAMERA_MODE_CONTROLLER, out sid);
-            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
-                DisplayError(errorCode, out errorMessage);
-
-            errorCode = CWIMAQ1394.TriggerConfigure(sid, CWIMAQ1394.TriggerPolarity.IMG1394_TRIG_POLAR_ACTIVEL, 60000, CWIMAQ1394.TriggerMode.IMG1394_TRIG_MODE1, 1);
-            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
-                DisplayError(errorCode, out errorMessage);
-
-            errorCode = CWIMAQ1394.SnapCW(sid, currentImage);
-            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
-                DisplayError(errorCode, out errorMessage);
-
-            imageSequences.Add(currentImage);
-
-        }
-
         
 
+        //Take a single image with a press of a button on the GUI
 		private void SnapButton_Click(object sender, System.EventArgs e)
 		{
 
@@ -529,13 +536,15 @@ namespace CameraHardwareControl
              CWIMAQ1394.Close(sid);
 
 		}
+
+        //Attaches the appropriate image when the scoll br is updated
         private void ImageList_Change(int newScrollValue)
         {
-
             axCWIMAQViewer1.Attach((NationalInstruments.CWIMAQControls.CWIMAQImageClass)imageArray[newScrollValue]);
         }
 
-  
+        
+        //Quit
 		private void QuitButton_Click(object sender, System.EventArgs e)
 		{
 			if (Timer1.Enabled)
@@ -544,6 +553,7 @@ namespace CameraHardwareControl
 			Application.Exit();
 		}
 
+        //Asynchronous video mode
 		private void GrabButton_Click(object sender, System.EventArgs e)
 		{
 			currentImage = new NationalInstruments.CWIMAQControls.CWIMAQImageClass();			
@@ -556,8 +566,6 @@ namespace CameraHardwareControl
 			errorCode = CWIMAQ1394.SetupGrabCW(sid);
 			if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) 
 				DisplayError(errorCode, out errorMessage);
-
-       
 
 			
 			Timer1.Enabled = true;
@@ -625,6 +633,8 @@ namespace CameraHardwareControl
             }
         }
 
+
+        //Method used to get the directory name from a File Chooser
         public string GetSaveDialogFilename()
         {
             string file = "";
@@ -643,6 +653,9 @@ namespace CameraHardwareControl
             return file;
         }
 
+
+       
+        //Saves all the scans recorded
         public void SaveScanSequenceImages()
         {
             string filepath = GetSaveDialogFilename();
@@ -659,6 +672,8 @@ namespace CameraHardwareControl
             
         }
 
+       
+        //Saves an indivdual frame
         public void SaveSnapImage()
         {
             string filename = GetSaveDialogFilename();
@@ -667,6 +682,8 @@ namespace CameraHardwareControl
         }
 
 
+
+        //Writes out a  binary image data to a set of files in a directory determined by the file chooser.
         public void SaveData(string filename)
         {
             string indexedFilename = filename+".dat";
@@ -689,6 +706,7 @@ namespace CameraHardwareControl
         }
 
         
+        //Writes all the images in the (latest) scan to a binary file and saves an xml copy of the scan parameters.
         public void SaveDataSequence(string filename)
         {
             string fileText = Path.GetFileName(filename);
@@ -719,8 +737,7 @@ namespace CameraHardwareControl
        
             }
 
-            //File.WriteAllText(parametersFilename,latestScanParameters.t,System.Text.Encoding.Unicode);
-            //File.OpenWrite(parametersFilename);
+            
             XmlSerializer s = new XmlSerializer(typeof(ArrayList));
             TextWriter w = new StreamWriter(parametersFilename);
             s.Serialize(w, latestScanParameters);
@@ -728,7 +745,7 @@ namespace CameraHardwareControl
          
         }
 
-
+//Event driven methods 
 
 		private void StopButton_Click(object sender, System.EventArgs e)
 		{
@@ -772,10 +789,10 @@ namespace CameraHardwareControl
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            indefiniteSynchrnousAquisition();
-        }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    indefiniteSynchrnousAquisition();
+        //}
 
 
 
@@ -790,21 +807,6 @@ namespace CameraHardwareControl
 
         }
 
-        private void sequenceChooser_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        
-        }
-
-        public void clearSequences()
-        {
-            imageSequences.Clear();
-           
-            scanCount = 0;
-
-            frameCount = 0;
-
-            tempScanParameters.Clear();
-        }
 
         private void saveLatestImageSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {

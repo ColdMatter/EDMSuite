@@ -11,7 +11,7 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
     /// <summary>
-   // A plugin that does evrything the pump probe plugin does but also controls two digital lines called 'probe' and 'camera' to trigger and aquire images.
+   // A plugin that does evrything the pump probe plugin does but also controls two digital lines called 'probe' and 'shutter' to trigger and aquire images.
     /// </summary>
     [Serializable]
     public class ImagingPatternPlugin : SupersonicPGPluginBase
