@@ -56,18 +56,12 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ScanStarting()
         {
-			if (!(bool)config.outputPlugin.Settings["reverseScan"])
-			{
-				if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
-			}
+            if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
         }
 
         public override void ScanFinished()
         {
-			if (!(bool)config.outputPlugin.Settings["reverseScan"])
-			{
-				if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
-			}
+            if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
         }
 
         public override void AcquisitionFinished()

@@ -21,7 +21,6 @@ namespace ScanMaster.Acquire.Plugin
 			settings["end"] = 10.0;
 			settings["pointsPerScan"] = 200;
             settings["shotsPerPoint"] = 1;
-			settings["reverseScan"] = false;
 		}
 
 		/// <summary>
