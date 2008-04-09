@@ -72,7 +72,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accessibility" />
     <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.0.20.334, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -119,10 +118,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DAQ\Wolfram.NETLink.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\CameraHardwareControl\CameraHardwareControl.csproj">
-      <Project>{661F5823-7B8F-4286-82B1-4F099DE6AF8E}</Project>
-      <Name>CameraHardwareControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Name>DAQ</Name>
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
@@ -148,7 +143,6 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AnalogCameraShotGathererPlugin.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -208,8 +202,6 @@
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImagingPatternBuilder.cs" />
-    <Compile Include="ImagingPatternPlugin.cs" />
     <Compile Include="InterferenceFitter.cs" />
     <Compile Include="LorentzianFitter.cs">
       <SubType>Code</SubType>

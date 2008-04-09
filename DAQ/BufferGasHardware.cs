@@ -4,7 +4,6 @@ using System.Collections;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
-using DAQ.Remoting;
 
 namespace DAQ.HAL
 
@@ -20,12 +19,12 @@ namespace DAQ.HAL
             // map the digital channels
             string pgBoard = (string)Boards["pg"];
 
-            AddDigitalOutputChannel("q", pgBoard, 0, 0);//pin 10
-            AddDigitalOutputChannel("aom", pgBoard, 2, 1);
+            AddDigitalOutputChannel("q", pgBoard, 0, 0);
+            AddDigitalOutputChannel("aom", pgBoard, 0, 1);//pin 44
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);
             //(0,3) pin 12 is unconnected
-            AddDigitalOutputChannel("shutter", pgBoard, 0, 4);//
-            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//pin 44
+            //AddDigitalOutputChannel("shutter", pgBoard, 0, 4);//pin 13
+            //AddDigitalOutputChannel("probe", pgBoard, 0, 1);//pin 13
             //(0,5) is reserved as the switch line
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 
@@ -46,11 +45,6 @@ namespace DAQ.HAL
             //map the counter channels
             AddCounterChannel("pmt", daqBoard + "/ctr0");
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
-        }
-
-        public override void ConnectApplications()
-        {
-            RemotingHelper.ConnectCameraHardwareControl();
         }
     }
 }
