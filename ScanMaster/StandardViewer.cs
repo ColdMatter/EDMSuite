@@ -344,8 +344,8 @@ namespace ScanMaster.GUI
 			window.ClearAll();
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			if (averageScan.Points.Count == 0) return;
-			startSpectrumGate = averageScan.ScanParameterArray[0];
-			endSpectrumGate = averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1];
+            startSpectrumGate = averageScan.MinimumScanParameter;
+			endSpectrumGate = averageScan.MaximumScanParameter;
 			TOF tof = ((TOF)((Shot)((ScanPoint)averageScan.Points[0]).OnShots[0]).TOFs[0]);
 			startTOFGate = tof.GateStartTime;
 			endTOFGate = tof.GateStartTime + tof.Length;
@@ -396,8 +396,8 @@ namespace ScanMaster.GUI
 		{
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			if (averageScan.Points.Count == 0) return;
-			window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.ScanParameterArray[0],
-										averageScan.ScanParameterArray[averageScan.ScanParameterArray.Length - 1]);
+            window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.MinimumScanParameter,
+                 averageScan.MaximumScanParameter);
 			window.PlotAveragePMTOn(averageScan.ScanParameterArray,
 				averageScan.GetTOFOnIntegralArray(0,
 				startTOFGate, endTOFGate));

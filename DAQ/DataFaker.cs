@@ -49,6 +49,31 @@ namespace DAQ.FakeData
 			return sOn;
 		}
 
+        //slight variant which can be useful for debugging
+        public static Shot GetFakeShot(int gateStart, int gateLength, int clockPeriod, double intensity,
+                                        int numberOfDetectors, double scanParameter)
+        {
+            Random rng = new Random();
+            // generate some fake data
+            double[] detectorOnData = new double[gateLength];
+            double newRand = rng.NextDouble();
+            double centre = gateLength / 2 + 10 * scanParameter;
+            for (int i = 0; i < gateLength; i++)
+            {
+                detectorOnData[i] = (5 * rng.NextDouble()) + 5 * intensity *
+                    Math.Exp(-Math.Pow((i - centre), 2) / (0.9 * gateLength));
+            }
+
+            TOF tofOn = new TOF();
+            tofOn.Data = detectorOnData;
+            tofOn.GateStartTime = gateStart;
+            tofOn.ClockPeriod = clockPeriod;
+            tofOn.Calibration = 1;
+            Shot sOn = new Shot();
+            for (int j = 0; j < numberOfDetectors; j++) sOn.TOFs.Add(tofOn);
+            return sOn;
+        }
+
 		public static String GetFakeDataPath(String key)
 		{
 			return (String)FakeScans[key];

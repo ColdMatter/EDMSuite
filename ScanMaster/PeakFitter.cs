@@ -19,22 +19,29 @@ namespace ScanMaster.Analyze
 			double nGuess;
 			double ySum = 0;
 			double yMax = 0;
+            double yMin = yDat[0];
+            double xMin = xDat[0];
+            double xMax = xDat[0];
 			int yMaxIndex = 0;
-			// calculate the maximum and the integral
+			// calculate the maxima, the minima, and the integral
 			for (int i = 0; i < yDat.Length; i++)
 			{
-				ySum += yDat[i];
+                ySum += yDat[i];
 				if (yDat[i] > yMax)
 				{
 					yMax = yDat[i];
 					yMaxIndex = i;
 				}
+                if (yDat[i] < yMin) yMin = yDat[i];
+                if (xDat[i] < xMin) xMin = xDat[i];
+                if (xDat[i] > xMax) xMax = xDat[i];
 			}
 
-			nGuess = yDat[0];
+			//nGuess = yDat[0];
+            nGuess = yMin;
 			cGuess = xDat[yMaxIndex];
 			qGuess = yMax - nGuess;
-			wGuess = 0.25 * (xDat[1] - xDat[0]) * (ySum - (yDat.Length * nGuess)) / qGuess; // the 0.25 is chosen fairly arbitrarily
+			wGuess = 0.25 * ((xMax - xMin) / xDat.Length) * (ySum - (yDat.Length * nGuess)) / qGuess; // the 0.25 is chosen fairly arbitrarily
 
 			double[] guess = new double[] { nGuess, qGuess, cGuess, wGuess };
 			return guess;

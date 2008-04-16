@@ -25,7 +25,83 @@ namespace Data.Scans
 				return temp;
 			}
 		}
+        
+         /* Returns the index in the array of ScanPoints where the ScanPoint with the given scanParameter 
+          * can be found */ 
+        public int GetIndex(double scanParameter)
+        {
+            double[] spa = ScanParameterArray;
+            for (int i = 0; i < spa.Length; i++)
+            {
+                if (spa[i] == scanParameter) return i;
+            }
+            return -1;
+        }
 
+        /* Finds the ScanPoint in the array of ScanPoints whose ScanParameter most nearly matches the argument.
+         * Returns the index in the array of this ScanPoint */
+        public int GetNearestIndex(double scanParameter)
+        {
+            double[] spa = ScanParameterArray;
+            int bestIndex = 0;
+            double temp;
+            double diff = (double)Math.Abs(spa[0] - scanParameter);
+            for (int i = 0; i < spa.Length; i++)
+            {
+                temp = (double)Math.Abs(spa[i] - scanParameter);
+                if (temp < diff) 
+                {
+                    diff = temp;
+                    bestIndex = i;
+                }
+            }
+            return bestIndex;
+        }
+
+        /* Returns the ScanPoint that has the given scanParameter, or null if there isn't one */
+        public ScanPoint GetScanPointAt(double scanParameter)
+        {
+            int ind = GetIndex(scanParameter);
+            if (ind != -1) return (ScanPoint)points[ind];
+            else return null;
+        }
+
+        /* Returns the ScanPoint in the array of ScanPoints whose ScanParameter most nearly matches the argument */
+        public ScanPoint GetNearestScanPoint(double scanParameter)
+        {
+            return (ScanPoint)points[GetNearestIndex(scanParameter)];
+        }
+
+        public double MinimumScanParameter
+        {
+            get
+            {
+                double[] spa = ScanParameterArray;
+                double temp = spa[0];
+
+                foreach (double d in spa)
+                {
+                    if (d < temp) temp = d;
+                }
+                return temp;
+            }
+        }
+
+        public double MaximumScanParameter
+        {
+            get
+            {
+                double[] spa = ScanParameterArray;
+                double temp = spa[0];
+
+                foreach (double d in spa)
+                {
+                    if (d > temp) temp = d;
+                }
+                return temp;
+            }
+        }            
+        
 		public double[] GetAnalogArray(int index)
 		{
 			double[] temp = new double[points.Count];
@@ -85,21 +161,18 @@ namespace Data.Scans
 
 		private ScanPoint GetAverageScanPoint(double lowGate, double highGate)
 		{
-			double scanParameterStart = ((ScanPoint)points[0]).ScanParameter;
-			double scanParameterEnd = ((ScanPoint)points[points.Count -1]).ScanParameter;
-			int low = (int)Math.Ceiling(points.Count * (lowGate - scanParameterStart) /
-				(scanParameterEnd - scanParameterStart));
-			int high = (int)Math.Floor(points.Count * (highGate - scanParameterStart) /
-				(scanParameterEnd - scanParameterStart));
-			if (low < 0) low = 0;
-			if (low >= points.Count) low = points.Count - 2;
-			if (high < low) high = low + 1;
-			if (high >= points.Count) high = points.Count -1;
-
-			ScanPoint temp = new ScanPoint();
-			for (int i = low ; i < high ; i++) temp += (ScanPoint)points[i];
-
-			return temp /(high-low);
+            double scanResolution = (MaximumScanParameter - MinimumScanParameter) / (points.Count - 1);
+            ScanPoint temp = new ScanPoint();
+            double paramVal = lowGate;
+            int numberOfPoints = 0;
+            if (highGate < lowGate) highGate = lowGate + scanResolution;
+            while (paramVal < highGate)
+            {
+                temp += GetNearestScanPoint(paramVal);
+                paramVal += scanResolution;
+                numberOfPoints++;
+            }
+            return temp / numberOfPoints;
 		}
 
 		public static Scan operator +(Scan s1, Scan s2)
@@ -107,8 +180,14 @@ namespace Data.Scans
 			if (s1.Points.Count == s2.Points.Count)
 			{
 				Scan temp = new Scan();
-				for (int i = 0 ; i < s1.Points.Count ; i++)
-					temp.Points.Add((ScanPoint)s1.Points[i] + (ScanPoint)s2.Points[i]);
+                ScanPoint sp1;
+                ScanPoint sp2;
+                for (int i = 0; i < s1.Points.Count; i++)
+                {
+                    sp1 = (ScanPoint)s1.Points[i];
+                    sp2 = s2.GetNearestScanPoint(sp1.ScanParameter);
+                    temp.Points.Add(sp1 + sp2);
+                }
                 temp.ScanSettings = s1.ScanSettings;
 				return temp;
 			}

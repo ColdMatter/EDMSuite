@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.Collections;
 using DAQ.Environment;
 using Data;
 using Data.Scans;
@@ -78,8 +78,7 @@ namespace ScanMaster.Acquire
 
 				for (int scanNumber = 0 ;; scanNumber++)
 				{
-					double scanParameter;
-
+					
 					// prepare for the scan start
 					config.outputPlugin.ScanStarting();
 					config.pgPlugin.ScanStarting();
@@ -89,14 +88,8 @@ namespace ScanMaster.Acquire
 					config.analogPlugin.ScanStarting();
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
 					{
-						// calculate the new scan parameter
-						PluginSettings outputSettings = config.outputPlugin.Settings;
-						scanParameter = (double)outputSettings["start"] +
-							((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
-							/ (int)outputSettings["pointsPerScan"];
-
-						// move the scan along
-						config.outputPlugin.ScanParameter = scanParameter;
+						// calculate the new scan parameter and move the scan along
+                        config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
 
 						// check for a change in the pg parameters
 						lock(this)
@@ -174,7 +167,8 @@ namespace ScanMaster.Acquire
 						AcquisitionFinishing(config);
 						return;
 					}
-				}
+
+                }
 
             }
             catch (Exception e)
@@ -202,6 +196,77 @@ namespace ScanMaster.Acquire
 			Monitor.Pulse(AcquisitorMonitorLock);
 			Monitor.Exit(AcquisitorMonitorLock);
 		}
+
+        private ArrayList scanValues;
+        private double NextScanParameter(int pointNumber, int scanNumber)
+        {
+            PluginSettings outputSettings = config.outputPlugin.Settings;
+            double scanParameter;
+            string mode = (string)outputSettings["scanMode"];
+            switch (mode)
+            {
+                case "up":
+                    scanParameter = (double)outputSettings["start"] +
+                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
+                    / ((int)outputSettings["pointsPerScan"] - 1);
+                    break;
+                case "down":
+                    scanParameter = (double)outputSettings["end"] +
+                        ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
+                        / ((int)outputSettings["pointsPerScan"] - 1);
+                    break;
+                case "updown":
+                    if (scanNumber % 2 == 0)
+                    {
+                        scanParameter = (double)outputSettings["start"] +
+                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
+                            / ((int)outputSettings["pointsPerScan"] - 1);
+                    }
+                    else
+                    {
+                        scanParameter = (double)outputSettings["end"] +
+                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
+                                / ((int)outputSettings["pointsPerScan"] - 1);
+                    }
+                    break;
+                case "downup":
+                    if (scanNumber % 2 != 0)
+                    {
+                        scanParameter = (double)outputSettings["start"] +
+                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
+                            / ((int)outputSettings["pointsPerScan"] - 1);
+                    }
+                    else
+                    {
+                        scanParameter = (double)outputSettings["end"] +
+                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
+                                / ((int)outputSettings["pointsPerScan"] - 1);
+                    }
+                    break;
+                case "random":
+                    if (pointNumber == 0)
+                    {
+                        scanValues = new ArrayList();
+                        for (int i = 0; i < (int)outputSettings["pointsPerScan"]; i++) // fill the array at the beginning of the scan
+                        {
+                            scanValues.Add((double)outputSettings["start"] +
+                                ((double)outputSettings["end"] - (double)outputSettings["start"]) * i
+                                / ((int)outputSettings["pointsPerScan"] - 1));
+                        }
+                    }
+                    Random rnd = new Random();
+                    int selectedIndex = rnd.Next(0, scanValues.Count - 1);
+                    scanParameter = (double)scanValues[selectedIndex];
+                    scanValues.RemoveAt(selectedIndex);
+                    break;
+                default: //scan up by default
+                    scanParameter = (double)outputSettings["start"] +
+                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
+                    / ((int)outputSettings["pointsPerScan"] - 1);
+                    break;
+            }
+            return scanParameter;
+        }
 
 		private bool CheckIfStopping() 
 		{

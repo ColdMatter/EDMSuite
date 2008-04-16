@@ -50,7 +50,7 @@ namespace ScanMaster.Acquire.Plugins
                 double sp = outputPlugin.ScanParameter;
                 double start = (double)outputPlugin.Settings["start"];
                 double end = (double)outputPlugin.Settings["end"];
-
+                
                 double intensity = 1 + 10 * (1 / (1 + Math.Pow((sp - 2), 2) / Math.Pow((end + start) / 1, 2)));
 			//	double intensity = 1 + 10 * Math.Pow(Math.Sin((sp - 2.5) / 0.3), 2);
 				return DataFaker.GetFakeShot(1900, 700, 1, intensity, 1);

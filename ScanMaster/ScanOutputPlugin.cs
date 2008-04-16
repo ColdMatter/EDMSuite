@@ -21,6 +21,7 @@ namespace ScanMaster.Acquire.Plugin
 			settings["end"] = 10.0;
 			settings["pointsPerScan"] = 200;
             settings["shotsPerPoint"] = 1;
+            settings["scanMode"] = "up"; //allowed values are up, down, updown, downup and random
 		}
 
 		/// <summary>
