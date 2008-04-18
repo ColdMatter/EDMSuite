@@ -255,7 +255,7 @@ namespace ScanMaster.Acquire
                         }
                     }
                     Random rnd = new Random();
-                    int selectedIndex = rnd.Next(0, scanValues.Count - 1);
+                    int selectedIndex = rnd.Next(0, scanValues.Count);
                     scanParameter = (double)scanValues[selectedIndex];
                     scanValues.RemoveAt(selectedIndex);
                     break;

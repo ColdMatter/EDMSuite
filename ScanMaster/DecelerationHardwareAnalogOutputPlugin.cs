@@ -52,16 +52,23 @@ namespace ScanMaster.Acquire.Plugins
                 if (!Blocked()) writer.WriteSingleSample(true, 0);
             }
             scanParameter = 0;
+			//go gently to the correct start position
+			if (((string)settings["scanMode"] == "up" || (string)settings["scanMode"] == "updown") && !Blocked()) 
+				rampOutputToVoltage((double)settings["start"]);
+			if (((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup") && !Blocked()) 
+				rampOutputToVoltage((double)settings["end"]);
         }
 
         public override void ScanStarting()
         {
-            if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
+			// do nothing
         }
 
         public override void ScanFinished()
         {
-            if (!Blocked()) rampOutputToVoltage((double)settings["start"]);
+			if ((string)settings["scanMode"] == "up" && !Blocked()) rampOutputToVoltage((double)settings["start"]);
+			if ((string)settings["scanMode"] == "down" && !Blocked()) rampOutputToVoltage((double)settings["end"]);
+			// all other cases, do nothing
         }
 
         public override void AcquisitionFinished()
