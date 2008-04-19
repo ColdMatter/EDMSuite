@@ -90,7 +90,7 @@ namespace ScanMaster.Acquire
 					{
 						// calculate the new scan parameter and move the scan along
                         config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
-
+                       
 						// check for a change in the pg parameters
 						lock(this)
 						{
@@ -207,40 +207,40 @@ namespace ScanMaster.Acquire
             {
                 case "up":
                     scanParameter = (double)outputSettings["start"] +
-                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
-                    / ((int)outputSettings["pointsPerScan"] - 1);
+                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * (pointNumber + 0.5)
+                    / ((int)outputSettings["pointsPerScan"]);
                     break;
                 case "down":
                     scanParameter = (double)outputSettings["end"] +
-                        ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
-                        / ((int)outputSettings["pointsPerScan"] - 1);
+                        ((double)outputSettings["start"] - (double)outputSettings["end"]) * (pointNumber + 0.5)
+                        / ((int)outputSettings["pointsPerScan"]);
                     break;
                 case "updown":
                     if (scanNumber % 2 == 0)
                     {
                         scanParameter = (double)outputSettings["start"] +
-                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
-                            / ((int)outputSettings["pointsPerScan"] - 1);
+                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * (pointNumber + 0.5)
+                            / ((int)outputSettings["pointsPerScan"]);
                     }
                     else
                     {
                         scanParameter = (double)outputSettings["end"] +
-                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
-                                / ((int)outputSettings["pointsPerScan"] - 1);
+                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * (pointNumber + 0.5)
+                                / ((int)outputSettings["pointsPerScan"]);
                     }
                     break;
                 case "downup":
                     if (scanNumber % 2 != 0)
                     {
                         scanParameter = (double)outputSettings["start"] +
-                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
-                            / ((int)outputSettings["pointsPerScan"] - 1);
+                            ((double)outputSettings["end"] - (double)outputSettings["start"]) * (pointNumber + 0.5)
+                            / ((int)outputSettings["pointsPerScan"]);
                     }
                     else
                     {
                         scanParameter = (double)outputSettings["end"] +
-                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * pointNumber
-                                / ((int)outputSettings["pointsPerScan"] - 1);
+                                ((double)outputSettings["start"] - (double)outputSettings["end"]) * (pointNumber + 0.5)
+                                / ((int)outputSettings["pointsPerScan"]);
                     }
                     break;
                 case "random":
@@ -250,8 +250,8 @@ namespace ScanMaster.Acquire
                         for (int i = 0; i < (int)outputSettings["pointsPerScan"]; i++) // fill the array at the beginning of the scan
                         {
                             scanValues.Add((double)outputSettings["start"] +
-                                ((double)outputSettings["end"] - (double)outputSettings["start"]) * i
-                                / ((int)outputSettings["pointsPerScan"] - 1));
+                                ((double)outputSettings["end"] - (double)outputSettings["start"]) * (i + 0.5)
+                                / ((int)outputSettings["pointsPerScan"]));
                         }
                     }
                     Random rnd = new Random();
@@ -261,8 +261,8 @@ namespace ScanMaster.Acquire
                     break;
                 default: //scan up by default
                     scanParameter = (double)outputSettings["start"] +
-                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * pointNumber
-                    / ((int)outputSettings["pointsPerScan"] - 1);
+                    ((double)outputSettings["end"] - (double)outputSettings["start"]) * (pointNumber + 0.5)
+                    / ((int)outputSettings["pointsPerScan"]);
                     break;
             }
             return scanParameter;
