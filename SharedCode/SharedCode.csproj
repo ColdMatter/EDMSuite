@@ -109,6 +109,8 @@
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DecelerationExperiment.cs" />
+    <Compile Include="Decelerator.cs" />
     <Compile Include="DemodulatedBlock.cs" />
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="DetectorChannelValues.cs" />
@@ -120,10 +122,13 @@
     <Compile Include="EDMPoint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FieldMap.cs" />
     <Compile Include="GatedDetectorData.cs" />
     <Compile Include="Modulation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Molecule.cs" />
+    <Compile Include="RotorStark.cs" />
     <Compile Include="Scan.cs">
       <SubType>Code</SubType>
     </Compile>

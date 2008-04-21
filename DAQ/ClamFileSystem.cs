@@ -11,8 +11,9 @@ namespace DAQ.Environment
 		{
 			Paths.Add("settingsPath","d:\\mike\\data\\settings\\");
 			Paths.Add("scanMasterDataPath", "d:\\mike\\data\\coldmols\\");
-			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.1/mathkernel.exe");
+			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/6.0/mathkernel.exe");
 			Paths.Add("fakeData","d:\\mike\\data\\examples\\");
+            Paths.Add("decelerationUtilitiesPath", "d:\\Mike\\Work\\");
             
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

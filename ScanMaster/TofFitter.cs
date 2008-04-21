@@ -29,7 +29,7 @@ namespace ScanMaster.Analyze
                 if (Environs.Hardware.GetInfo("sourceToDetect") != null && Environs.Hardware.GetInfo("moleculeMass") != null)
                 {
                     double distance = (double)Environs.Hardware.GetInfo("sourceToDetect");
-                    int mass = (int)Environs.Hardware.GetInfo("moleculeMass");
+                    double mass = (double)Environs.Hardware.GetInfo("moleculeMass");
                     double speed = 1000000 * (double)Environs.Hardware.GetInfo("sourceToDetect") / lastFittedParameters[2];
                     double temperature = 2.169 * 10000000 * mass * Math.Pow(distance, 2) * Math.Pow(lastFittedParameters[3], 2) / Math.Pow(lastFittedParameters[2], 4);
                     returnString = returnString + Environment.NewLine + "v: " + speed.ToString("G4") + " m/s" +

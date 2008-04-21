@@ -31,13 +31,25 @@ namespace DAQ.HAL
             string usbDAQ1 = (string)Boards["usbDAQ1"];
 
             // add things to the info
+
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0"); //DAQ Pin 11
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
+            //distance information
             Info.Add("sourceToDetect", 0.787);
-            Info.Add("moleculeMass", 8);
             Info.Add("sourceToSoftwareDecelerator", 0.123);
-            
+            //information about the molecule
+            Info.Add("moleculeMass", 8.024); //this is 7LiH in amu
+            Info.Add("moleculeRotationalConstant", 2.22545E11); //in Hz
+            Info.Add("moleculeDipoleMoment", 29600.0); //in Hz/(V/m)
+            //information about the decelerator
+            Info.Add("deceleratorStructure", DecelerationConfig.DecelerationExperiment.SwitchStructure.H_V); //Horizontal first
+            Info.Add("deceleratorLensSpacing", 0.006);
+            Info.Add("deceleratorFieldMap", "RodLayout3_EonAxis.dat");
+            Info.Add("mapPoints", 121);
+            Info.Add("mapStartPoint", 0.0);
+            Info.Add("mapResolution", 0.0001);
+
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
             GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));

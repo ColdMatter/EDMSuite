@@ -72,17 +72,11 @@ namespace DAQ.Environment
 					Debug = false;
                     break;
 
-				case "OYSTER":
-					Hardware = new DecelerationHardware();
-					FileSystem = new OysterFileSystem();
-					Debug = true;
-                    //ExperimentType = "decelerator";
-					break;
-
 				case "CLAM":
-					Hardware = new DecelerationHardware();
+					Hardware = new SympatheticHardware();
 					FileSystem = new ClamFileSystem();
 					Debug = true;
+                    Info.Add("SwitchSequenceCode", "WFSwitchSequenceV1`");
                     //ExperimentType = "decelerator";
 					break;
 
