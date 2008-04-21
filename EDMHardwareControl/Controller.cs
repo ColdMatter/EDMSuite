@@ -114,7 +114,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
             CreateDigitalTask("pumpShutter");
-            CreateDigitalTask("pump2Shutter");
+            CreateDigitalTask("probeShutter");
             CreateDigitalTask("targetStepper");
 
             // initialise the current leakage monitors
@@ -182,6 +182,17 @@ namespace EDMHardwareControl
             return task;
         }
 
+        //private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
+        //{
+        //    Task task = new Task("EDMHCIn" + channel);
+        //    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+        //        task,
+        //        lowRange,
+        //        highRange
+        //    );
+        //    task.Control(TaskAction.Verify);
+        //    return task;
+        //}
         private Task CreateAnalogOutputTask(string channel)
         {
             Task task = new Task("EDMHCOut" + channel);
@@ -606,11 +617,11 @@ namespace EDMHardwareControl
         {
             get
             {
-                return window.pump2ShutterCheck.Checked;
+                return window.probeShutterCheck.Checked;
             }
             set
             {
-                window.SetCheckBox(window.pump2ShutterCheck, value);
+                window.SetCheckBox(window.probeShutterCheck, value);
             }
         }
 
@@ -1549,9 +1560,9 @@ namespace EDMHardwareControl
             SetDigitalLine("pumpShutter", enable);
         }
 
-        internal void SetPump2Shutter(bool enable)
+        internal void SetProbeShutter(bool enable)
         {
-            SetDigitalLine("pump2Shutter", enable);
+            SetDigitalLine("probeShutter", enable);
         }
 
         public void SetScanningBVoltage()

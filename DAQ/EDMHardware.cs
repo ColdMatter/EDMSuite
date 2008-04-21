@@ -37,8 +37,8 @@ namespace DAQ.HAL
 
             // add things to the info
             // the analog triggers
-            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
-            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
+            Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193);
 
@@ -86,7 +86,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 2);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
-            AddDigitalOutputChannel("pump2Shutter", pgBoard, 3, 4);
+            AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
             AddDigitalOutputChannel("targetStepper", pgBoard, 3, 5);
 
             // map the analog channels
@@ -99,11 +99,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
 
             // high quality analog inputs (will be) on the S-series analog in board
-            AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("magnetometer", daqBoard + "/ai1", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("norm", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
-            //AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("pmt", analogIn + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("norm", analogIn + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             
           
             AddAnalogOutputChannel("phaseScramblerVoltage", daqBoard + "/ao0");

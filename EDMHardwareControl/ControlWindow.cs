@@ -94,7 +94,7 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.TextBox pumpMonitorTextBox;
 		public System.Windows.Forms.TextBox pump2MonitorTextBox;
 		public System.Windows.Forms.TextBox probeMonitorTextBox;
-		public System.Windows.Forms.CheckBox pump2ShutterCheck;
+		public System.Windows.Forms.CheckBox probeShutterCheck;
 		public System.Windows.Forms.CheckBox pumpShutterCheck;
 		private System.Windows.Forms.Label label33;
 		public System.Windows.Forms.TextBox yagFlashlampVTextBox;
@@ -392,6 +392,7 @@ namespace EDMHardwareControl
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label74 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rf2StepPowerMon = new System.Windows.Forms.TextBox();
             this.rf2StepFreqMon = new System.Windows.Forms.TextBox();
@@ -427,13 +428,16 @@ namespace EDMHardwareControl
             this.label49 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
+            this.scramblerVoltageTextBox = new System.Windows.Forms.TextBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.scramblerCheckBox = new System.Windows.Forms.CheckBox();
             this.attenuatorSelectCheck = new System.Windows.Forms.CheckBox();
             this.phaseFlip2CheckBox = new System.Windows.Forms.CheckBox();
             this.phaseFlip1CheckBox = new System.Windows.Forms.CheckBox();
             this.fmSelectCheck = new System.Windows.Forms.CheckBox();
             this.rfSwitchEnableCheck = new System.Windows.Forms.CheckBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.setScramblerVoltageButton = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.rf2FMZeroRB = new System.Windows.Forms.RadioButton();
             this.rf2FMPlusRB = new System.Windows.Forms.RadioButton();
@@ -526,7 +530,7 @@ namespace EDMHardwareControl
             this.label31 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.pump2ShutterCheck = new System.Windows.Forms.CheckBox();
+            this.probeShutterCheck = new System.Windows.Forms.CheckBox();
             this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
@@ -555,10 +559,6 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.scramblerCheckBox = new System.Windows.Forms.CheckBox();
-            this.setScramblerVoltageButton = new System.Windows.Forms.Button();
-            this.label74 = new System.Windows.Forms.Label();
-            this.scramblerVoltageTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -946,6 +946,7 @@ namespace EDMHardwareControl
             this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
+            this.cPlusTextBox.TextChanged += new System.EventHandler(this.cPlusTextBox_TextChanged);
             // 
             // groupBox5
             // 
@@ -1436,6 +1437,14 @@ namespace EDMHardwareControl
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
             // 
+            // label74
+            // 
+            this.label74.Location = new System.Drawing.Point(326, 253);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(114, 23);
+            this.label74.TabIndex = 32;
+            this.label74.Text = "scrambler voltage (V)";
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.rf2StepPowerMon);
@@ -1801,6 +1810,14 @@ namespace EDMHardwareControl
             this.label44.TabIndex = 46;
             this.label44.Text = "rf1 fr + (Hz)";
             // 
+            // scramblerVoltageTextBox
+            // 
+            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(448, 249);
+            this.scramblerVoltageTextBox.Name = "scramblerVoltageTextBox";
+            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(34, 20);
+            this.scramblerVoltageTextBox.TabIndex = 31;
+            this.scramblerVoltageTextBox.Text = "0";
+            // 
             // groupBox16
             // 
             this.groupBox16.Controls.Add(this.scramblerCheckBox);
@@ -1815,6 +1832,15 @@ namespace EDMHardwareControl
             this.groupBox16.TabIndex = 26;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "TTL controls";
+            // 
+            // scramblerCheckBox
+            // 
+            this.scramblerCheckBox.Location = new System.Drawing.Point(156, 142);
+            this.scramblerCheckBox.Name = "scramblerCheckBox";
+            this.scramblerCheckBox.Size = new System.Drawing.Size(122, 24);
+            this.scramblerCheckBox.TabIndex = 31;
+            this.scramblerCheckBox.Text = "scrambler TTL";
+            this.scramblerCheckBox.CheckedChanged += new System.EventHandler(this.scramblerCheckBox_CheckedChanged);
             // 
             // attenuatorSelectCheck
             // 
@@ -1892,6 +1918,15 @@ namespace EDMHardwareControl
             this.groupBox14.TabIndex = 24;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "fast rf control";
+            // 
+            // setScramblerVoltageButton
+            // 
+            this.setScramblerVoltageButton.Location = new System.Drawing.Point(125, 259);
+            this.setScramblerVoltageButton.Name = "setScramblerVoltageButton";
+            this.setScramblerVoltageButton.Size = new System.Drawing.Size(131, 23);
+            this.setScramblerVoltageButton.TabIndex = 33;
+            this.setScramblerVoltageButton.Text = "Set scrambler voltage";
+            this.setScramblerVoltageButton.Click += new System.EventHandler(this.setScramblerVoltageButton_Click);
             // 
             // panel4
             // 
@@ -2727,6 +2762,7 @@ namespace EDMHardwareControl
             this.pumpMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.pumpMonitorTextBox.TabIndex = 51;
             this.pumpMonitorTextBox.Text = "0";
+            this.pumpMonitorTextBox.TextChanged += new System.EventHandler(this.pumpMonitorTextBox_TextChanged);
             // 
             // pump2MonitorTextBox
             // 
@@ -2738,6 +2774,7 @@ namespace EDMHardwareControl
             this.pump2MonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.pump2MonitorTextBox.TabIndex = 50;
             this.pump2MonitorTextBox.Text = "0";
+            this.pump2MonitorTextBox.TextChanged += new System.EventHandler(this.pump2MonitorTextBox_TextChanged);
             // 
             // probeMonitorTextBox
             // 
@@ -2749,6 +2786,7 @@ namespace EDMHardwareControl
             this.probeMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.probeMonitorTextBox.TabIndex = 49;
             this.probeMonitorTextBox.Text = "0";
+            this.probeMonitorTextBox.TextChanged += new System.EventHandler(this.probeMonitorTextBox_TextChanged);
             // 
             // label29
             // 
@@ -2777,7 +2815,7 @@ namespace EDMHardwareControl
             // groupBox10
             // 
             this.groupBox10.Controls.Add(this.label32);
-            this.groupBox10.Controls.Add(this.pump2ShutterCheck);
+            this.groupBox10.Controls.Add(this.probeShutterCheck);
             this.groupBox10.Controls.Add(this.pumpShutterCheck);
             this.groupBox10.Location = new System.Drawing.Point(8, 16);
             this.groupBox10.Name = "groupBox10";
@@ -2788,20 +2826,20 @@ namespace EDMHardwareControl
             // 
             // label32
             // 
-            this.label32.Location = new System.Drawing.Point(104, 40);
+            this.label32.Location = new System.Drawing.Point(95, 29);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(100, 32);
+            this.label32.Size = new System.Drawing.Size(105, 43);
             this.label32.TabIndex = 24;
-            this.label32.Text = "False is blocked. True is open.";
+            this.label32.Text = "Checked is blocked.";
             // 
-            // pump2ShutterCheck
+            // probeShutterCheck
             // 
-            this.pump2ShutterCheck.Location = new System.Drawing.Point(24, 56);
-            this.pump2ShutterCheck.Name = "pump2ShutterCheck";
-            this.pump2ShutterCheck.Size = new System.Drawing.Size(72, 24);
-            this.pump2ShutterCheck.TabIndex = 23;
-            this.pump2ShutterCheck.Text = "Pump 2";
-            this.pump2ShutterCheck.CheckedChanged += new System.EventHandler(this.pump2ShutterCheck_CheckedChanged);
+            this.probeShutterCheck.Location = new System.Drawing.Point(24, 56);
+            this.probeShutterCheck.Name = "probeShutterCheck";
+            this.probeShutterCheck.Size = new System.Drawing.Size(72, 24);
+            this.probeShutterCheck.TabIndex = 23;
+            this.probeShutterCheck.Text = "Probe";
+            this.probeShutterCheck.CheckedChanged += new System.EventHandler(this.probeShutterCheck_CheckedChanged);
             // 
             // pumpShutterCheck
             // 
@@ -3012,27 +3050,27 @@ namespace EDMHardwareControl
             this.saveParametersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -3067,40 +3105,6 @@ namespace EDMHardwareControl
             this.radioButton3.TabIndex = 32;
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
-            // 
-            // scramblerCheckBox
-            // 
-            this.scramblerCheckBox.Location = new System.Drawing.Point(156, 142);
-            this.scramblerCheckBox.Name = "scramblerCheckBox";
-            this.scramblerCheckBox.Size = new System.Drawing.Size(122, 24);
-            this.scramblerCheckBox.TabIndex = 31;
-            this.scramblerCheckBox.Text = "scrambler TTL";
-            this.scramblerCheckBox.CheckedChanged += new System.EventHandler(this.scramblerCheckBox_CheckedChanged);
-            // 
-            // setScramblerVoltageButton
-            // 
-            this.setScramblerVoltageButton.Location = new System.Drawing.Point(125, 259);
-            this.setScramblerVoltageButton.Name = "setScramblerVoltageButton";
-            this.setScramblerVoltageButton.Size = new System.Drawing.Size(131, 23);
-            this.setScramblerVoltageButton.TabIndex = 33;
-            this.setScramblerVoltageButton.Text = "Set scrambler voltage";
-            this.setScramblerVoltageButton.Click += new System.EventHandler(this.setScramblerVoltageButton_Click);
-            // 
-            // label74
-            // 
-            this.label74.Location = new System.Drawing.Point(326, 253);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(114, 23);
-            this.label74.TabIndex = 32;
-            this.label74.Text = "scrambler voltage (V)";
-            // 
-            // scramblerVoltageTextBox
-            // 
-            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(448, 249);
-            this.scramblerVoltageTextBox.Name = "scramblerVoltageTextBox";
-            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(34, 20);
-            this.scramblerVoltageTextBox.TabIndex = 31;
-            this.scramblerVoltageTextBox.Text = "0";
             // 
             // ControlWindow
             // 
@@ -3328,9 +3332,9 @@ namespace EDMHardwareControl
 			controller.SetPumpShutter(pumpShutterCheck.Checked);
 		}
 
-		private void pump2ShutterCheck_CheckedChanged(object sender, EventArgs e)
+		private void probeShutterCheck_CheckedChanged(object sender, EventArgs e)
 		{
-			controller.SetPump2Shutter(pump2ShutterCheck.Checked);
+			controller.SetProbeShutter(probeShutterCheck.Checked);
 		}
 
 		private void updateLaserPhotodiodesButton_Click(object sender, EventArgs e)
@@ -3479,6 +3483,26 @@ namespace EDMHardwareControl
         private void WindowClosing(object sender, FormClosingEventArgs e)
         {
             controller.WindowClosing();
+        }
+
+        private void probeMonitorTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cPlusTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pumpMonitorTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pump2MonitorTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
     }

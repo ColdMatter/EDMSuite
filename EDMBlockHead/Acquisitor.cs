@@ -327,7 +327,26 @@ namespace EDMBlockHead.Acquire
 			mag.HighLimit = 10;
 			mag.Calibration = 0.00001;
 			inputs.Channels.Add(mag);
-		}
+
+            ScannedAnalogInput gnd = new ScannedAnalogInput();
+            gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
+            gnd.ReductionMode = DataReductionMode.Average;
+            gnd.AverageEvery = 20;
+            gnd.LowLimit = -1;
+            gnd.HighLimit = 1;
+            gnd.Calibration = 1;
+            inputs.Channels.Add(gnd);
+
+            ScannedAnalogInput battery = new ScannedAnalogInput();
+            battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
+            battery.ReductionMode = DataReductionMode.Chop;
+            battery.ChopStart = 140;
+            battery.ChopLength = 80;
+            battery.LowLimit = 0;
+            battery.HighLimit = 10;
+            battery.Calibration = 1;
+            inputs.Channels.Add(battery);
+        }
 
 		// configure hardware and start the pattern output
 		private void AcquisitionStarting()
