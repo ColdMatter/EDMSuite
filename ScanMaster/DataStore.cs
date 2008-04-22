@@ -44,7 +44,7 @@ namespace ScanMaster
 
 		public void UpdateTotal() 
 		{
-			totalScan += currentScan;
+			totalScan += currentScan.GetSortedScan();
 			scansInTotal++;
 		}
 

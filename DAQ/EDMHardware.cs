@@ -40,7 +40,7 @@ namespace DAQ.HAL
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
             Info.Add("sourceToDetect", 1.3);
-            Info.Add("moleculeMass", 193);
+            Info.Add("moleculeMass", 193.0);
 
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");

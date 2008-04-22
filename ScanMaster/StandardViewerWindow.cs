@@ -166,10 +166,11 @@ namespace ScanMaster.GUI
             // 
             // analog1Plot
             // 
+            this.analog1Plot.AntiAliased = true;
             this.analog1Plot.LineColor = System.Drawing.Color.Red;
             this.analog1Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog1Plot.PointColor = System.Drawing.Color.Red;
-            this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
             this.analog1Plot.XAxis = this.xAxis1;
             this.analog1Plot.YAxis = this.yAxis1;
             // 
@@ -192,10 +193,11 @@ namespace ScanMaster.GUI
             // 
             // analog2Plot
             // 
+            this.analog2Plot.AntiAliased = true;
             this.analog2Plot.LineColor = System.Drawing.Color.Blue;
             this.analog2Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog2Plot.PointColor = System.Drawing.Color.Blue;
-            this.analog2Plot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.analog2Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
             this.analog2Plot.XAxis = this.xAxis2;
             this.analog2Plot.YAxis = this.yAxis2;
             // 
@@ -241,10 +243,6 @@ namespace ScanMaster.GUI
             // pmtOnAvgPlot
             // 
             this.pmtOnAvgPlot.LineColor = System.Drawing.Color.Red;
-            this.pmtOnAvgPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.pmtOnAvgPlot.PointColor = System.Drawing.Color.Red;
-            this.pmtOnAvgPlot.PointSize = new System.Drawing.Size(2, 2);
-            this.pmtOnAvgPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidSquare;
             this.pmtOnAvgPlot.XAxis = this.xAxis3;
             this.pmtOnAvgPlot.YAxis = this.pmtYAxis;
             // 
@@ -279,21 +277,14 @@ namespace ScanMaster.GUI
             // pmtOffAvgPlot
             // 
             this.pmtOffAvgPlot.LineColor = System.Drawing.Color.PowderBlue;
-            this.pmtOffAvgPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.pmtOffAvgPlot.PointColor = System.Drawing.Color.PowderBlue;
-            this.pmtOffAvgPlot.PointSize = new System.Drawing.Size(2, 2);
-            this.pmtOffAvgPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
             this.pmtOffAvgPlot.XAxis = this.xAxis3;
             this.pmtOffAvgPlot.YAxis = this.pmtYAxis;
             // 
             // pmtFitPlot
             // 
             this.pmtFitPlot.LineColor = System.Drawing.Color.Silver;
-            this.pmtFitPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.pmtFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.pmtFitPlot.LineWidth = 2F;
-            this.pmtFitPlot.PointColor = System.Drawing.Color.Silver;
-            this.pmtFitPlot.PointSize = new System.Drawing.Size(3, 3);
-            this.pmtFitPlot.PointStyle = NationalInstruments.UI.PointStyle.EmptySquare;
             this.pmtFitPlot.XAxis = this.xAxis3;
             this.pmtFitPlot.YAxis = this.pmtYAxis;
             // 
@@ -344,10 +335,6 @@ namespace ScanMaster.GUI
             // differenceAvgPlot
             // 
             this.differenceAvgPlot.LineColor = System.Drawing.Color.Red;
-            this.differenceAvgPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.differenceAvgPlot.PointColor = System.Drawing.Color.Red;
-            this.differenceAvgPlot.PointSize = new System.Drawing.Size(2, 2);
-            this.differenceAvgPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidSquare;
             this.differenceAvgPlot.XAxis = this.xAxis5;
             this.differenceAvgPlot.YAxis = this.differenceYAxis;
             // 
