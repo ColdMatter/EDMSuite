@@ -20,7 +20,7 @@ namespace DAQ.HAL
         private const double VOLTAGE_LOWER_BOUND = 0;
         private const double VOLTAGE_UPPER_BOUND = 10;
         private const double GAUGE_CAL = 10.875;
-        private const double MAX_PRESSURE = 1E-3;
+        private const double MAX_PRESSURE = 1E-1;
 
         private double highPressureWarningLevel = MAX_PRESSURE;
         

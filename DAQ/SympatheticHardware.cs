@@ -81,7 +81,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("hplusdc", pgBoard, 2, 4);
             AddDigitalOutputChannel("hminusdc", pgBoard, 2, 5);
             AddDigitalOutputChannel("vplusdc", pgBoard, 2, 6);
-            AddDigitalOutputChannel("vminusdc", pgBoard, 2, 7);
+            AddDigitalOutputChannel("vminusdc", pgBoard, 3, 3);
 
 
 			// map the analog input channels
