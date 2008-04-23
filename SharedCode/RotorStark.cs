@@ -37,7 +37,7 @@ namespace DecelerationConfig
                 case "SCHNAPS":
                     filename = "d:\\Tools\\starkTable.txt";
                     break;
-                case "GANYMEDED0":
+                case "GANYMEDE0":
                     filename = "d:\\Experiment Control\\Packages\\starkTable.txt";
                     break;
                 default:

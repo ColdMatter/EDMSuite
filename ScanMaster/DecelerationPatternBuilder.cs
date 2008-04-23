@@ -27,22 +27,44 @@ namespace ScanMaster.Acquire.Patterns
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
-				// first with decelerator on
-				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
-					decelSequence, modulationMode, decelOnStart, decelOnDuration);
-				time += flashlampPulseInterval;
-				// then with the decelerator off if modulation is true (otherwise another on shot)
-				if (modulation)
-				{
-					Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detectorprime",
-                        null, modulationMode, decelOnStart, decelOnDuration);
-				}
-				else
-				{
-					Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
+                if (modulationMode == "BurstAndOff" || modulationMode == "BurstAndOn")
+                {
+                    // first with decelerator on
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
                         decelSequence, modulationMode, decelOnStart, decelOnDuration);
-				}
-				time += flashlampPulseInterval;
+                    time += flashlampPulseInterval;
+                    // then with the decelerator off if modulation is true (otherwise another on shot)
+                    if (modulation)
+                    {
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detectorprime",
+                            null, modulationMode, decelOnStart, decelOnDuration);
+                    }
+                    else
+                    {
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
+                            decelSequence, modulationMode, decelOnStart, decelOnDuration);
+                    }
+                    time += flashlampPulseInterval;
+                }
+                if (modulationMode == "OffAndBurst" || modulationMode == "OnAndBurst")
+                {
+                    // first with decelerator off
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
+                        null, modulationMode, decelOnStart, decelOnDuration);
+                    time += flashlampPulseInterval;
+                    // then with the decelerator on if modulation is true (otherwise another off shot)
+                    if (modulation)
+                    {
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detectorprime",
+                            decelSequence, modulationMode, decelOnStart, decelOnDuration);
+                    }
+                    else
+                    {
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger, delayToDeceleration, "detector",
+                            null, modulationMode, decelOnStart, decelOnDuration);
+                    }
+                    time += flashlampPulseInterval;
+                }
 				for (int p = 0 ; p < padShots ; p++)
 				{
 					FlashlampPulse(time, valveToQ, flashToQ);
@@ -98,7 +120,7 @@ namespace ScanMaster.Acquire.Patterns
             }
             else
             {
-                if (modulationMode == "BurstAndOn") // long on pulse every other shot; otherwise, the decelerator stays off on every other shot
+                if (modulationMode == "BurstAndOn" || modulationMode == "OnAndBurst") // long on pulse every other shot; otherwise, the decelerator stays off on every other shot
                 {
                     tempTime = startTime + valveToQ + decelOnStart;
                     AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["decelhplus"]).BitNumber, tempTime, true);

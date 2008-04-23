@@ -50,7 +50,7 @@ namespace ScanMaster.Acquire.Plugins
 		
 		protected override void InitialiseSettings()
 		{
-			settings["triggerActive"] = false;
+			settings["triggerActive"] = true;
 		}
 
 		public override void AcquisitionStarting()
