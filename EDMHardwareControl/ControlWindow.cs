@@ -274,6 +274,14 @@ namespace EDMHardwareControl
         public Button setScramblerVoltageButton;
         private Label label74;
         public TextBox scramblerVoltageTextBox;
+        private GroupBox groupBox20;
+        public TextBox miniFlux1TextBox;
+        private Button updateMiniFluxgatesButton;
+        private Label label75;
+        public TextBox miniFlux2TextBox;
+        public TextBox miniFlux3TextBox;
+        private Label label77;
+        private Label label76;
 
 
 		public Controller controller;
@@ -473,6 +481,14 @@ namespace EDMHardwareControl
             this.label39 = new System.Windows.Forms.Label();
             this.rf1AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox20 = new System.Windows.Forms.GroupBox();
+            this.miniFlux2TextBox = new System.Windows.Forms.TextBox();
+            this.miniFlux3TextBox = new System.Windows.Forms.TextBox();
+            this.label77 = new System.Windows.Forms.Label();
+            this.label76 = new System.Windows.Forms.Label();
+            this.miniFlux1TextBox = new System.Windows.Forms.TextBox();
+            this.updateMiniFluxgatesButton = new System.Windows.Forms.Button();
+            this.label75 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.steppingBBoxBiasTextBox = new System.Windows.Forms.TextBox();
             this.SteppingBBoxBiasUpdateButton = new System.Windows.Forms.Button();
@@ -581,6 +597,7 @@ namespace EDMHardwareControl
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox20.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -2244,6 +2261,7 @@ namespace EDMHardwareControl
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox20);
             this.tabPage3.Controls.Add(this.groupBox9);
             this.tabPage3.Controls.Add(this.groupBox12);
             this.tabPage3.Controls.Add(this.groupBox8);
@@ -2253,6 +2271,88 @@ namespace EDMHardwareControl
             this.tabPage3.Size = new System.Drawing.Size(697, 581);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
+            // 
+            // groupBox20
+            // 
+            this.groupBox20.Controls.Add(this.miniFlux2TextBox);
+            this.groupBox20.Controls.Add(this.miniFlux3TextBox);
+            this.groupBox20.Controls.Add(this.label77);
+            this.groupBox20.Controls.Add(this.label76);
+            this.groupBox20.Controls.Add(this.miniFlux1TextBox);
+            this.groupBox20.Controls.Add(this.updateMiniFluxgatesButton);
+            this.groupBox20.Controls.Add(this.label75);
+            this.groupBox20.Location = new System.Drawing.Point(390, 78);
+            this.groupBox20.Name = "groupBox20";
+            this.groupBox20.Size = new System.Drawing.Size(233, 192);
+            this.groupBox20.TabIndex = 48;
+            this.groupBox20.TabStop = false;
+            this.groupBox20.Text = "Mini-Fluxgate Monitor";
+            // 
+            // miniFlux2TextBox
+            // 
+            this.miniFlux2TextBox.BackColor = System.Drawing.Color.Black;
+            this.miniFlux2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.miniFlux2TextBox.Location = new System.Drawing.Point(140, 50);
+            this.miniFlux2TextBox.Name = "miniFlux2TextBox";
+            this.miniFlux2TextBox.ReadOnly = true;
+            this.miniFlux2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux2TextBox.TabIndex = 49;
+            this.miniFlux2TextBox.Text = "0";
+            // 
+            // miniFlux3TextBox
+            // 
+            this.miniFlux3TextBox.BackColor = System.Drawing.Color.Black;
+            this.miniFlux3TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.miniFlux3TextBox.Location = new System.Drawing.Point(140, 79);
+            this.miniFlux3TextBox.Name = "miniFlux3TextBox";
+            this.miniFlux3TextBox.ReadOnly = true;
+            this.miniFlux3TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux3TextBox.TabIndex = 48;
+            this.miniFlux3TextBox.Text = "0";
+            // 
+            // label77
+            // 
+            this.label77.Location = new System.Drawing.Point(16, 82);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(101, 23);
+            this.label77.TabIndex = 47;
+            this.label77.Text = "Computer Rack (V)";
+            // 
+            // label76
+            // 
+            this.label76.Location = new System.Drawing.Point(16, 53);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(80, 23);
+            this.label76.TabIndex = 46;
+            this.label76.Text = "Optic Table (V)";
+            // 
+            // miniFlux1TextBox
+            // 
+            this.miniFlux1TextBox.BackColor = System.Drawing.Color.Black;
+            this.miniFlux1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.miniFlux1TextBox.Location = new System.Drawing.Point(140, 21);
+            this.miniFlux1TextBox.Name = "miniFlux1TextBox";
+            this.miniFlux1TextBox.ReadOnly = true;
+            this.miniFlux1TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux1TextBox.TabIndex = 45;
+            this.miniFlux1TextBox.Text = "0";
+            // 
+            // updateMiniFluxgatesButton
+            // 
+            this.updateMiniFluxgatesButton.Location = new System.Drawing.Point(16, 120);
+            this.updateMiniFluxgatesButton.Name = "updateMiniFluxgatesButton";
+            this.updateMiniFluxgatesButton.Size = new System.Drawing.Size(75, 23);
+            this.updateMiniFluxgatesButton.TabIndex = 40;
+            this.updateMiniFluxgatesButton.Text = "Update";
+            this.updateMiniFluxgatesButton.Click += new System.EventHandler(this.updateMiniFluxgatesButton_Click);
+            // 
+            // label75
+            // 
+            this.label75.Location = new System.Drawing.Point(16, 24);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(80, 23);
+            this.label75.TabIndex = 36;
+            this.label75.Text = "Supplies (V)";
             // 
             // groupBox9
             // 
@@ -3117,8 +3217,8 @@ namespace EDMHardwareControl
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ControlWindow";
             this.Text = "EDM Hardware Control";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.Load += new System.EventHandler(this.ControlWindow_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
@@ -3154,6 +3254,8 @@ namespace EDMHardwareControl
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.groupBox20.ResumeLayout(false);
+            this.groupBox20.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             this.groupBox12.ResumeLayout(false);
@@ -3341,6 +3443,11 @@ namespace EDMHardwareControl
 		{
 			controller.UpdateLaserPhotodiodes();
 		}
+       
+        private void updateMiniFluxgatesButton_Click(object sender, EventArgs e)
+        {
+           controller.UpdateMiniFluxgates();
+        }
 
         private void setAttenuatorsButton_Click(object sender, EventArgs e)
         {
@@ -3504,6 +3611,8 @@ namespace EDMHardwareControl
         {
 
         }
+
+        
 
     }
 }

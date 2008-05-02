@@ -97,6 +97,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
+            // Used ai10,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
+            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+
 
             // high quality analog inputs (will be) on the S-series analog in board
             AddAnalogInputChannel("pmt", analogIn + "/ai0", AITerminalConfiguration.Differential);

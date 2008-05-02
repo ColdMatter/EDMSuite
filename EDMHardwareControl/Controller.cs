@@ -85,6 +85,9 @@ namespace EDMHardwareControl
         Task cMinusMonitorInputTask;
         Task rfPowerMonitorInputTask;
         Task phaseScramblerVoltageOutputTask;
+        Task miniFlux1MonitorInputTask;
+        Task miniFlux2MonitorInputTask;
+        Task miniFlux3MonitorInputTask;
 
         ControlWindow window;
 
@@ -135,11 +138,14 @@ namespace EDMHardwareControl
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
 
             // analog inputs
-            probeMonitorInputTask = CreateAnalogInputTask("probePD");
-            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD");
+            probeMonitorInputTask = CreateAnalogInputTask("probePD",0,5);
+            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD",0,5);
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
             rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
+            miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
+            miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
+            miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
 
             // make the control window
             window = new ControlWindow();
@@ -182,17 +188,18 @@ namespace EDMHardwareControl
             return task;
         }
 
-        //private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
-        //{
-        //    Task task = new Task("EDMHCIn" + channel);
-        //    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-        //        task,
-        //        lowRange,
-        //        highRange
-        //    );
-        //    task.Control(TaskAction.Verify);
-        //    return task;
-        //}
+        private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
+        {
+            Task task = new Task("EDMHCIn" + channel);
+            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                task,
+                lowRange,
+                highRange
+            );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
         private Task CreateAnalogOutputTask(string channel)
         {
             Task task = new Task("EDMHCOut" + channel);
@@ -1365,6 +1372,16 @@ namespace EDMHardwareControl
             window.SetTextBox(window.probeMonitorTextBox, probePDValue.ToString());
             double pumpPDValue = ReadAnalogInput(pumpMonitorInputTask);
             window.SetTextBox(window.pumpMonitorTextBox, pumpPDValue.ToString());
+        }
+
+        public void UpdateMiniFluxgates()
+        {
+            double miniFlux1Value = ReadAnalogInput(miniFlux1MonitorInputTask);
+            window.SetTextBox(window.miniFlux1TextBox, miniFlux1Value.ToString());
+            double miniFlux2Value = ReadAnalogInput(miniFlux2MonitorInputTask);
+            window.SetTextBox(window.miniFlux2TextBox, miniFlux2Value.ToString());
+            double miniFlux3Value = ReadAnalogInput(miniFlux3MonitorInputTask);
+            window.SetTextBox(window.miniFlux3TextBox, miniFlux3Value.ToString());
         }
 
         // TODO: I'm not sure whether these button enabling properties are threadsafe.
