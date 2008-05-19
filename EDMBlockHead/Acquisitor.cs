@@ -38,8 +38,10 @@ namespace EDMBlockHead.Acquire
 		ArrayList switchedChannels;
 		ScannedAnalogInputCollection inputs;
 		Task inputTask;
+        Task singlePointInputTask;
  		AnalogMultiChannelReader inputReader;
-		ScanMaster.Controller scanMaster;
+        AnalogMultiChannelReader singlePointInputReader;
+        ScanMaster.Controller scanMaster;
 		EDMPhaseLock.MainForm phaseLock;
         EDMHardwareControl.Controller hardwareController;
 
@@ -155,6 +157,27 @@ namespace EDMBlockHead.Acquire
 					// keep an eye on what the phase lock is doing
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    // scan the analog inputs
+                    double[,] spd;
+                    // fake some data if we're in debug mode
+                    if (Environs.Debug)
+                    {
+                        spd = new double[4,1];
+                        spd[0, 0] = 1;
+                        spd[1, 0] = 2;
+                        spd[2, 0] = 3;
+                        spd[3, 0] = 4;
+                    }
+                    else
+                    {
+                        singlePointInputTask.Start();
+                        spd = singlePointInputReader.ReadMultiSample(1);
+                        singlePointInputTask.Stop();
+                    }
+                    p.SinglePointData.Add("ProbePD", spd[0, 0]);
+                    p.SinglePointData.Add("PumpPD", spd[1, 0]);
+                    p.SinglePointData.Add("MiniFlux1", spd[2, 0]);
+                    p.SinglePointData.Add("MiniFlux2", spd[3, 0]);
 
                     // randomise the Ramsey phase
                     // TODO: enable this once we know what we want to do.
@@ -348,6 +371,37 @@ namespace EDMBlockHead.Acquire
             inputs.Channels.Add(battery);
         }
 
+        private void ConfigureSinglePointAnalogInputs()
+        {
+            // here we configure the scan of analog inputs that happens after each shot.
+            singlePointInputTask = new Task("Blockhead single point inputs");
+
+            AddChannelToSinglePointTask("probePD");
+            AddChannelToSinglePointTask("pumpPD");
+            AddChannelToSinglePointTask("miniFlux1");
+            AddChannelToSinglePointTask("miniFlux2");
+
+            singlePointInputTask.Timing.ConfigureSampleClock(
+                    "",
+                    1000,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.FiniteSamples,
+                    1
+                 );
+
+            singlePointInputTask.Triggers.StartTrigger.ConfigureNone();
+
+            if (!Environs.Debug) singlePointInputTask.Control(TaskAction.Verify);
+            singlePointInputReader = new AnalogMultiChannelReader(singlePointInputTask.Stream);
+
+        }
+
+        private void AddChannelToSinglePointTask(string chan)
+        {
+            AnalogInputChannel aic = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[chan]);
+            aic.AddToTask(singlePointInputTask, 0, 10);
+        }
+
 		// configure hardware and start the pattern output
 		private void AcquisitionStarting()
 		{
@@ -381,8 +435,9 @@ namespace EDMBlockHead.Acquire
                 );
 
             if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
-            inputReader = new AnalogMultiChannelReader(inputTask.Stream); 
-    
+            inputReader = new AnalogMultiChannelReader(inputTask.Stream);
+
+            ConfigureSinglePointAnalogInputs();
 		}
 
 		// If you want to store any information in the BlockConfig this is the place to do it.
@@ -461,6 +516,7 @@ namespace EDMBlockHead.Acquire
 		{
 			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
 			inputTask.Dispose();
+            singlePointInputTask.Dispose();
 		}
 
 		private bool CheckIfStopping() 
