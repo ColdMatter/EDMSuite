@@ -125,10 +125,12 @@ namespace ScanMaster.GUI
 				UpdateTOFAveragePlots();
 
 				// plot the average analog channels in the analog plots for convenience
-				window.AppendToAnalog1(dataStore.AverageScan.ScanParameterArray,
-					dataStore.AverageScan.GetAnalogArray(0));
-				window.AppendToAnalog2(dataStore.AverageScan.ScanParameterArray,
-					dataStore.AverageScan.GetAnalogArray(1));
+				if (dataStore.AverageScan.AnalogChannelCount >= 1)
+                    window.AppendToAnalog1(dataStore.AverageScan.ScanParameterArray,
+					    dataStore.AverageScan.GetAnalogArray(0));
+                if (dataStore.AverageScan.AnalogChannelCount >= 2) 
+                    window.AppendToAnalog2(dataStore.AverageScan.ScanParameterArray,
+					    dataStore.AverageScan.GetAnalogArray(1));
 
                 // replot the fits
                 if (spectrumFitMode != FitMode.None && spectrumFitter.FittedValues.Length != 0)
@@ -203,8 +205,10 @@ namespace ScanMaster.GUI
 			pointsToPlot.Points.Add(e.point);
 			if (shotCounter % currentProfile.GUIConfig.updateSpectraEvery == 0)
 			{
-				window.AppendToAnalog1(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(0));
-				window.AppendToAnalog2(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(1));
+                if (pointsToPlot.AnalogChannelCount >= 1)
+				    window.AppendToAnalog1(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(0));
+                if (pointsToPlot.AnalogChannelCount >= 2) 
+                    window.AppendToAnalog2(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(1));
 				window.AppendToPMTOn(pointsToPlot.ScanParameterArray,
 					pointsToPlot.GetTOFOnIntegralArray(0,
 					startTOFGate, endTOFGate));

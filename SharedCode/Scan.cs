@@ -61,6 +61,14 @@ namespace Data.Scans
 			return temp;
 		}
 
+        public int AnalogChannelCount
+        {
+            get
+            {
+                return ((ScanPoint)points[0]).Analogs.Count;
+            }
+        }
+
 		public double[] GetTOFOnIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];
