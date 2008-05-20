@@ -44,11 +44,13 @@ def prompt(text):
 def measureParametersAndMakeBC(cluster, eState, bState):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
+	bh.StopPattern()
+	hc.UpdateRFPowerMonitor()
+	hc.UpdateRFFrequencyMonitor()
+	bh.StartPattern()
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
-#	hc.UpdateRFPowerMonitor()
-#	hc.UpdateRFFrequencyMonitor()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -224,7 +226,6 @@ def EDMGo():
 	bc = measureParametersAndMakeBC(cluster, eState, bState)
 
 	# loop and take data
-	bh.StartPattern()
 	blockIndex = 0
 	maxBlockIndex = 10000
 	while blockIndex < maxBlockIndex:
