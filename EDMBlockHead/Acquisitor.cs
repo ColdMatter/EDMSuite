@@ -178,7 +178,10 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("PumpPD", spd[1, 0]);
                     p.SinglePointData.Add("MiniFlux1", spd[2, 0]);
                     p.SinglePointData.Add("MiniFlux2", spd[3, 0]);
-
+                    hardwareController.UpdateIMonitor();
+                    p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
+                    p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                    
                     // randomise the Ramsey phase
                     // TODO: enable this once we know what we want to do.
                     // TODO: check whether the .net rng is good enough
@@ -438,6 +441,9 @@ namespace EDMBlockHead.Acquire
             inputReader = new AnalogMultiChannelReader(inputTask.Stream);
 
             ConfigureSinglePointAnalogInputs();
+
+            // set the leakage monitor measurement time to something fast
+            hardwareController.LeakageMonitorMeasurementTime = 0.01;
 		}
 
 		// If you want to store any information in the BlockConfig this is the place to do it.

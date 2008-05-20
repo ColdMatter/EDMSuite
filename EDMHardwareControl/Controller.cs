@@ -849,6 +849,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double LeakageMonitorMeasurementTime
+        {
+            set
+            {
+                window.IMonitorMeasurementLengthTextBox.Text = value.ToString();
+            }
+        }
+
 
         #endregion
 
@@ -1000,7 +1008,21 @@ namespace EDMHardwareControl
             }
         }
 
- 
+        public double NorthCurrent
+        {
+            get
+            {
+                return lastNorthCurrent;
+            }
+        }
+
+        public double SouthCurrent
+        {
+            get
+            {
+                return lastSouthCurrent;
+            }
+        }
 
         #endregion
 
@@ -1287,15 +1309,19 @@ namespace EDMHardwareControl
             window.SetTextBox(window.cMinusVMonitorTextBox, cMinusMonitor.ToString());
         }
 
+        private double lastNorthCurrent;
+        private double lastSouthCurrent;
         public void UpdateIMonitor()
         {
             ReconfigureIMonitors();
-            window.SetTextBox(window.northIMonitorTextBox, (northLeakageMonitor.GetCurrent()).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (southLeakageMonitor.GetCurrent()).ToString());
+            lastNorthCurrent = northLeakageMonitor.GetCurrent();
+            lastSouthCurrent = southLeakageMonitor.GetCurrent();
+            window.SetTextBox(window.northIMonitorTextBox, (lastNorthCurrent).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (lastSouthCurrent).ToString());
             window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-                                    new double[] { northLeakageMonitor.GetCurrent() });
+                                    new double[] { lastNorthCurrent });
             window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
-                                    new double[] { southLeakageMonitor.GetCurrent() });
+                                    new double[] { lastSouthCurrent });
 
         }
 
