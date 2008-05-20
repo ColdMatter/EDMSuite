@@ -202,6 +202,7 @@ def windowValue(value, minValue, maxValue):
 
 
 kTargetRotationPeriod = 30
+kReZeroLeakageMonitorsPeriod = 10
 
 def EDMGo():
 	# Setup
@@ -256,8 +257,17 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
+		# do things that need periodically doing
 		if ((blockIndex % kTargetRotationPeriod) == 0):
+			print("Rotating target.")
 			hc.StepTarget(10)
+		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
+			print("Recalibrating leakage monitors.")
+			hc.EFieldEnabled = False
+			System.Threading.Thread.Sleep(15000)
+			hc.CalibrateIMonitors()
+			hc.EFieldEnabled = True
+
 	bh.StopPattern()
 
 
