@@ -1325,6 +1325,14 @@ namespace EDMHardwareControl
 
         }
 
+        public void UpdateIMonitorFast()
+        {
+            lastNorthCurrent = northLeakageMonitor.GetCurrent();
+            lastSouthCurrent = southLeakageMonitor.GetCurrent();
+        }
+        
+ 
+
         public void CalibrateIMonitors()
         {
             ReconfigureIMonitors();
@@ -1339,7 +1347,7 @@ namespace EDMHardwareControl
 
         }
 
-        private void ReconfigureIMonitors()
+        public void ReconfigureIMonitors()
         {
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             northSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
