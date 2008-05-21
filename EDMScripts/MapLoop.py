@@ -23,5 +23,5 @@ def mapLoop(plugin, param, start, end, step, numScans):
 
 def run_script():
 	print "Use mapLoop(plugin, param, start, end, step, numScans)"
-
+	print "\"plugin\", \"param\" must be in double quotes!"
 

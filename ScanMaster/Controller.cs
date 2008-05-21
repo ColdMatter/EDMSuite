@@ -356,25 +356,35 @@ namespace ScanMaster
 			AcquireStop();
 		}
 
+        bool patternRunning = false;
+
 		// outputs the pattern from the currently selected profile - used by BlockHead
 		public void OutputPattern()
 		{
-			PatternPlugin pgPlugin = profileManager.CurrentProfile.AcquisitorConfig.pgPlugin;
-			YAGPlugin yagPlugin = profileManager.CurrentProfile.AcquisitorConfig.yagPlugin;
-			pgPlugin.AcquisitionStarting();
-			yagPlugin.AcquisitionStarting();
-			pgPlugin.ScanStarting();
-			yagPlugin.ScanStarting();
+            if (!patternRunning)
+            {
+                PatternPlugin pgPlugin = profileManager.CurrentProfile.AcquisitorConfig.pgPlugin;
+                YAGPlugin yagPlugin = profileManager.CurrentProfile.AcquisitorConfig.yagPlugin;
+                pgPlugin.AcquisitionStarting();
+                yagPlugin.AcquisitionStarting();
+                pgPlugin.ScanStarting();
+                yagPlugin.ScanStarting();
+                patternRunning = true;
+            }
 		}
 
 		// stop outputting the pattern started above
 		public void StopPatternOutput()
 		{
-			PatternPlugin pgPlugin = profileManager.CurrentProfile.AcquisitorConfig.pgPlugin;
-			YAGPlugin yagPlugin = profileManager.CurrentProfile.AcquisitorConfig.yagPlugin;
-			yagPlugin.AcquisitionFinished();
-			pgPlugin.AcquisitionFinished();
-			controllerWindow.EnableMenus();
+            if (patternRunning)
+            {
+                PatternPlugin pgPlugin = profileManager.CurrentProfile.AcquisitorConfig.pgPlugin;
+                YAGPlugin yagPlugin = profileManager.CurrentProfile.AcquisitorConfig.yagPlugin;
+                yagPlugin.AcquisitionFinished();
+                pgPlugin.AcquisitionFinished();
+                controllerWindow.EnableMenus();
+                patternRunning = false;
+            }
 		}
 
 		// select a profile by name

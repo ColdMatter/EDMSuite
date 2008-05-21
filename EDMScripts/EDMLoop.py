@@ -213,6 +213,7 @@ def EDMGo():
 	print("Data directory is : " + dataPath)
 	print("")
 	suggestedClusterName = fileSystem.GenerateNextDataFileName()
+	sm.SelectProfile("Scan B")
 
 	# User inputs data
 	cluster = prompt("Cluster name [" + suggestedClusterName +"]: ")
