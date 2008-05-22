@@ -113,7 +113,7 @@ namespace EDMBlockHead.Acquire
 					}
 					else
 					{
-						// everything should be ready now so start the analog
+ 						// everything should be ready now so start the analog
 						// input task (it will wait for a trigger)
 						inputTask.Start();
 
@@ -154,6 +154,7 @@ namespace EDMBlockHead.Acquire
 
 					}
 					// do the "SinglePointData" (i.e. things that are measured once per point)
+                    // We'll save the leakage monitor until right at the end.
 					// keep an eye on what the phase lock is doing
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
@@ -179,14 +180,19 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("PumpPD", spd[1]);
                     p.SinglePointData.Add("MiniFlux1", spd[2]);
                     p.SinglePointData.Add("MiniFlux2", spd[3]);
-                    p.SinglePointData.Add("MiniFlux3", spd[4]); 
-                    //hardwareController.UpdateIMonitorFast();
+                    p.SinglePointData.Add("MiniFlux3", spd[4]);
+                    // Hopefully the leakage monitors will have finished reading by now.
+                    // We join them, read out the data, and then launch another asynchronous
+                    // acquisition. [If this is the first shot of the block, the leakage monitor
+                    // measurement will have been launched in AcquisitionStarting() ].
+                    hardwareController.WaitForIMonitorAsync();
                     p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
                     p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
-                    
+                    hardwareController.UpdateIMonitorAsync();
+
                     // randomise the Ramsey phase
-                    // TODO: enable this once we know what we want to do.
                     // TODO: check whether the .net rng is good enough
+                    // TODO: reference where this number comes from
                     double d = 2.3814 * (new Random().NextDouble());
                     hardwareController.SetScramblerVoltage(d);
 
@@ -445,9 +451,12 @@ namespace EDMBlockHead.Acquire
 
             ConfigureSinglePointAnalogInputs();
 
-            // set the leakage monitor measurement time to something fast
-            hardwareController.LeakageMonitorMeasurementTime = 0.001;
-            //hardwareController.ReconfigureIMonitors();
+            // set the leakage monitor measurement time to 5ms.
+            // With this setting it actually takes 26ms total to acquire two channels.
+            hardwareController.LeakageMonitorMeasurementTime = 0.005;
+            hardwareController.ReconfigureIMonitors();
+            // Start the first asynchronous acquisition
+            hardwareController.UpdateIMonitorAsync();
 		}
 
 		// If you want to store any information in the BlockConfig this is the place to do it.

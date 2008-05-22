@@ -1335,13 +1335,21 @@ namespace EDMHardwareControl
 
         }
 
-        public void UpdateIMonitorFast()
+        Thread updateIMonThread;
+        public void UpdateIMonitorAsync()
         {
-            lastNorthCurrent = northLeakageMonitor.GetCurrent();
-            lastSouthCurrent = southLeakageMonitor.GetCurrent();
+            updateIMonThread = new Thread(delegate()
+                {
+                    lastNorthCurrent = northLeakageMonitor.GetCurrent();
+                    lastSouthCurrent = southLeakageMonitor.GetCurrent();
+                });
+            updateIMonThread.Start();
         }
-        
- 
+
+        public void WaitForIMonitorAsync()
+        {
+            updateIMonThread.Join();
+        }
 
         public void CalibrateIMonitors()
         {
