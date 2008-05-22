@@ -853,8 +853,18 @@ namespace EDMHardwareControl
         {
             set
             {
-                window.IMonitorMeasurementLengthTextBox.Text = value.ToString();
+                window.SetTextBox(window.IMonitorMeasurementLengthTextBox, value.ToString());
             }
+            get
+            {
+                return Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
+            }
+        }
+
+        // Another annoying method to work around stupid IronPython property setting bug
+        public void SetLeakageMonitorMeasurementTime(double time)
+        {
+            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
         }
 
 
