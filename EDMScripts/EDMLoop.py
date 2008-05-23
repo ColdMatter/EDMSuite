@@ -264,10 +264,14 @@ def EDMGo():
 			hc.StepTarget(10)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
-			hc.EFieldEnabled = False
-			System.Threading.Thread.Sleep(15000)
+			hc.EnableEField( False )
+			System.Threading.Thread.Sleep(10000)
+			hc.EnableBleed( True )
+			System.Threading.Thread.Sleep(1000)
+			hc.EnableBleed( False )
+			System.Threading.Thread.Sleep(5000)
 			hc.CalibrateIMonitors()
-			hc.EFieldEnabled = True
+			hc.EnableEField( True )
 
 	bh.StopPattern()
 

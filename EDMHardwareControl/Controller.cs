@@ -512,6 +512,11 @@ namespace EDMHardwareControl
             }
         }
 
+        public void EnableEField(bool enabled)
+        {
+            window.SetCheckBox(window.eOnCheck, enabled);
+        }
+
         public bool EFieldPolarity
         {
             get
@@ -534,6 +539,11 @@ namespace EDMHardwareControl
             {
                 window.SetCheckBox(window.eBleedCheck, value);
             }
+        }
+
+        public void EnableBleed(bool enabled)
+        {
+            window.SetCheckBox(window.eBleedCheck, enabled);
         }
 
         public double CPlusVoltage
