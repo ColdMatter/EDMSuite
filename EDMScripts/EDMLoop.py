@@ -184,7 +184,7 @@ def updateLocks(bState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock
-	deltaLF1 = 0.01 * (lf1Value / dbValue)
+	deltaLF1 = 0.5 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
@@ -201,7 +201,7 @@ def windowValue(value, minValue, maxValue):
 			return maxValue
 
 
-kTargetRotationPeriod = 30
+kTargetRotationPeriod = 20
 kReZeroLeakageMonitorsPeriod = 10
 
 def EDMGo():
