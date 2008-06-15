@@ -4,6 +4,7 @@ from Data.EDM import *
 from System.Collections.Generic import *
 from System.IO import *
 from System.Runtime.Serialization.Formatters.Binary import *
+from BeIT.MemCached import *
 import time
 
 bs = BlockSerializer()
@@ -54,6 +55,11 @@ dt = (time.clock() - t1)
 print "Time for 10^1 demodulations"
 print dt
 
+print "Setting up memcache."
+MemcachedClient.Setup("EDMAnalysisCache", ("127.0.0.1:11211",) );
+cache = MemcachedClient.GetInstance("EDMAnalysisCache");
+
+
 def run_script():
 	print("done!")
 
@@ -77,4 +83,14 @@ def grab_a_property(l):
 	p.Clear()
 	for i in range(0, l.Count):
 		if (l[i].ChannelValues[0].GetValue(0) < 600) and (l[i].ChannelValues[0].GetValue(0) > 500): p.Add(i)
+
+
+memcacheSize = 1000;
+def stuff_memcache():
+	for i in range(0, memcacheSize):
+		cache.Set("test" + str(i), db)
+
+def get_from_memcache():
+	for i in range(0, memcacheSize):
+		cache.Get("test" + str(i))
 

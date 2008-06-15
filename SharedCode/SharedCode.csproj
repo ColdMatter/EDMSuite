@@ -85,6 +85,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -124,10 +125,15 @@
     </Compile>
     <Compile Include="FieldMap.cs" />
     <Compile Include="GatedDetectorData.cs" />
+    <Compile Include="HashAlgorithms.cs" />
+    <Compile Include="LogAdapter.cs" />
+    <Compile Include="MemcachedClient.cs" />
+    <Compile Include="MemcachedClientException.cs" />
     <Compile Include="Modulation.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Molecule.cs" />
+    <Compile Include="PooledSocket.cs" />
     <Compile Include="RotorStark.cs" />
     <Compile Include="Scan.cs">
       <SubType>Code</SubType>
@@ -138,9 +144,12 @@
     <Compile Include="ScanSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Serializer.cs" />
+    <Compile Include="ServerPool.cs" />
     <Compile Include="Shot.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SocketPool.cs" />
     <Compile Include="TimingModulation.cs">
       <SubType>Code</SubType>
     </Compile>
