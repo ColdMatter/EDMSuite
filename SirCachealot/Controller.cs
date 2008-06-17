@@ -35,7 +35,7 @@ namespace SirCachealot
         {
             //set up memcached
             cache = new Cache();
-            cache.Start();
+//            cache.Start();
 
             //set up sql database
             blockStore = new MySqlDBlockStore();
@@ -54,7 +54,7 @@ namespace SirCachealot
         internal void Exit()
         {
             blockStore.Stop();
-            cache.Stop();
+//            cache.Stop();
         }
 
         internal void CreateDB()
@@ -91,6 +91,7 @@ namespace SirCachealot
             Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
 
             DemodulationConfig dc = new DemodulationConfig();
+            dc.AnalysisTag = "findme";
             DetectorExtractSpec dg0 = DetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
             dg0.Name = "top";
             DetectorExtractSpec dg1 = DetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
@@ -104,10 +105,82 @@ namespace SirCachealot
             dc.DetectorExtractSpecs.Add(dg2);
             BlockDemodulator blockDemodulator = new BlockDemodulator();
             DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
-            for (int i = 1; i < 100000; i++)
+            DateTime start, end;
+            TimeSpan ts;
+
+            log("Adding blocks");
+            start = DateTime.Now;
+            for (int i = 1; i < 10000; i++)
             {
                 blockStore.AddDBlock(dBlock);
             }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to add 10000: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Retrieving blocks, pass 1");
+            start = DateTime.Now;
+            for (UInt32 i = 1; i < 1000; i++)
+            {
+                DemodulatedBlock dbb = blockStore.GetDBlock(i);
+            }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to retrieve 1000 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Retrieving blocks, pass 2");
+            start = DateTime.Now;
+            for (UInt32 i = 1; i < 1000; i++)
+            {
+                DemodulatedBlock dbb = blockStore.GetDBlock(i);
+            }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to retrieve 1000 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Deleting blocks");
+            start = DateTime.Now;
+            for (UInt32 i = 500; i < 1000; i++)
+            {
+                blockStore.RemoveDBlock(i);
+            }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to delete 500 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Selecting blocks by cluster");
+            start = DateTime.Now;
+            for (UInt32 i = 0; i < 1000; i++)
+            {
+                blockStore.GetUIDsByCluster("02Jun0805", new UInt32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
+            }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to select blocks x 1000: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Selecting blocks by tag");
+            start = DateTime.Now;
+            for (UInt32 i = 0; i < 1000; i++)
+            {
+                UInt32[] fm = blockStore.GetUIDsByTag("testing");
+            }
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to select blocks x 1000: " + ts.Minutes + "m" + ts.Seconds + "s.");
+
+            log("Selecting blocks by predicate");
+            start = DateTime.Now;
+            UInt32[] fmm = blockStore.GetUIDsByPredicate(
+                delegate(DemodulatedBlock db)
+                {
+                    return (db.ChannelValues[0].GetValue(5) > db.ChannelValues[0].GetValue(7));
+                },
+                blockStore.GetAllUIDs()
+                );
+            end = DateTime.Now;
+            ts = end.Subtract(start);
+            log("Time to check 10000 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+ 
         }
 
         private void log(string txt)

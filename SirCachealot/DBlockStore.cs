@@ -31,12 +31,16 @@ namespace SirCachealot
         UInt32 AddDBlock(DemodulatedBlock db);
   
         void RemoveDBlock(UInt32 uid);
+
+        UInt32[] GetAllUIDs();
         
         void AddTagToBlock(string clusterName, int blockIndex, string tag);
         
-        void RemoveTagToBlock(string clusterName, int blockIndex, string tag);
+        void RemoveTagFromBlock(string clusterName, int blockIndex, string tag);
     }
 
     public delegate bool PredicateFunction(DemodulatedBlock dblock);
+
+    public class BlockNotFoundException : Exception { }
 
 }

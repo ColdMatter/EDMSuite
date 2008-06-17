@@ -8,6 +8,6 @@ namespace Analysis.EDM
     public class DemodulationConfig
     {
         public List<DetectorExtractSpec> DetectorExtractSpecs = new List<DetectorExtractSpec>();
-        public String tag = "";
+        public String AnalysisTag = "";
     }
 }

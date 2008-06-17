@@ -20,86 +20,138 @@ namespace SirCachealot
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
 
-        public uint[] GetUIDsByCluster(string clusterName, uint[] fromUIDs)
+        public UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return GetByStringParameter("CLUSTER", clusterName, fromUIDs);
         }
 
-        public uint[] GetUIDsByCluster(string clusterName)
+        public UInt32[] GetUIDsByCluster(string clusterName)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return GetByStringParameter("CLUSTER", clusterName);
         }
 
-        public uint[] GetUIDsByTag(string tag, uint[] fromUIDs)
+        public UInt32[] GetUIDsByTag(string tag, UInt32[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
+                "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX AND UID IN " + MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?tag", tag);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
-        public uint[] GetUIDsByTag(string tag)
+        public UInt32[] GetUIDsByTag(string tag)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
+                "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX";
+            mySqlComm.Parameters.AddWithValue("?tag", tag);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
-        public uint[] GetUIDsByAnalysisTag(string tag, uint[] fromUIDs)
+        public UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return GetByStringParameter("ATAG", tag, fromUIDs);
         }
 
-        public uint[] GetUIDsByAnalysisTag(string tag)
+        public UInt32[] GetUIDsByAnalysisTag(string tag)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return GetByStringParameter("ATAG", tag);
         }
 
-        public uint[] GetUIDsByMachineState(bool eState, bool bState, uint[] fromUIDs)
+        public UInt32[] GetUIDsByMachineState(bool eState, bool bState, uint[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = 
+                "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            mySqlComm.Parameters.AddWithValue("?eState", bState);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
         public uint[] GetUIDsByMachineState(bool eState, bool bState)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState";
+            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            mySqlComm.Parameters.AddWithValue("?eState", bState);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
         public uint[] GetUIDsByDateRange(DateTime start, DateTime end, uint[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = 
+                "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?start", start);
+            mySqlComm.Parameters.AddWithValue("?end", end);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
         public uint[] GetUIDsByDateRange(DateTime start, DateTime end)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end";
+            mySqlComm.Parameters.AddWithValue("?start", start);
+            mySqlComm.Parameters.AddWithValue("?end", end);
+            return GetUIDsFromCommand(mySqlComm);
         }
 
         public uint[] GetUIDsByPredicate(PredicateFunction func, uint[] fromUIDs)
         {
-            throw new Exception("The method or operation is not implemented.");
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE UID IN " + MakeSQLArrayString(fromUIDs);
+            UInt32[] uids = GetUIDsFromCommand(mySqlComm);
+            List<UInt32> matchedUIDs = new List<UInt32>();
+            foreach (UInt32 uid in uids)
+            {
+                DemodulatedBlock db = GetDBlock(uid);
+                if (func(db)) matchedUIDs.Add(uid);
+            }
+            return matchedUIDs.ToArray();
         }
 
-        public Analysis.EDM.DemodulatedBlock GetDBlock(uint uid)
+        public DemodulatedBlock GetDBlock(uint uid)
         {
-            throw new Exception("The method or operation is not implemented.");
+            byte[] dbb;
+  
+            MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
+            DemodulatedBlock db;
+            if (rd.Read())
+            {
+                dbb = (byte[])rd["DBDAT"];
+                db = deserializeDBlockFromByteArray(dbb);
+            }
+            else
+            {
+                throw new BlockNotFoundException();
+            }
+            rd.Close();
+            return db;
         }
 
-        byte[] dbb;
-        public uint AddDBlock(DemodulatedBlock db)
+        public UInt32 AddDBlock(DemodulatedBlock db)
         {
             // extract the data that we're going to put in the sql database
             string clusterName = db.Config.Settings["cluster"] as string;
             int clusterIndex = (int)db.Config.Settings["clusterIndex"];
+            string aTag = db.DemodulationConfig.AnalysisTag;
             bool eState = (bool)db.Config.Settings["eState"];
             bool bState = (bool)db.Config.Settings["bState"];
             DateTime timeStamp = db.TimeStamp;
-            //byte[] dBlockBytes = serializeDBlockAsByteArray(db);
-            //dbb = dBlockBytes;
-            byte[] dBlockBytes = dbb;
+            byte[] dBlockBytes = serializeDBlockAsByteArray(db);
 
+            mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = 
                 "INSERT INTO DBLOCKS VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?ts);";
             // the uid column is defined auto_increment
             mySqlComm.Parameters.AddWithValue("?uint", null);
             mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
             mySqlComm.Parameters.AddWithValue("?clusterIndex", clusterIndex);
-            mySqlComm.Parameters.AddWithValue("?aTag", "fruity");
+            mySqlComm.Parameters.AddWithValue("?aTag", aTag);
             mySqlComm.Parameters.AddWithValue("?eState", eState);
             mySqlComm.Parameters.AddWithValue("?bState", bState);
             mySqlComm.Parameters.AddWithValue("?ts", timeStamp);
@@ -108,6 +160,7 @@ namespace SirCachealot
             mySqlComm.Parameters.Clear();
             UInt32 uid = (UInt32)mySqlComm.LastInsertedId;
 
+            mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
               "INSERT INTO DBLOCKDATA VALUES(?uint, ?dblock);";
             mySqlComm.Parameters.AddWithValue("?uint", uid);
@@ -119,19 +172,30 @@ namespace SirCachealot
             return uid;
         }
 
-        public void RemoveDBlock(uint uid)
+        public void RemoveDBlock(UInt32 uid)
         {
-            throw new Exception("The method or operation is not implemented.");
+            executeNonQuery("DELETE FROM DBLOCKS WHERE UID = " + uid);
+            executeNonQuery("DELETE FROM DBLOCKDATA WHERE UID = " + uid);
+        }
+
+        public UInt32[] GetAllUIDs()
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS";
+            return GetUIDsFromCommand(mySqlComm);
         }
 
         public void AddTagToBlock(string clusterName, int blockIndex, string tag)
         {
-            throw new Exception("The method or operation is not implemented.");
+            executeNonQuery("INSERT INTO TAGS VALUES(" + clusterName + ", " + blockIndex + ", " + tag + ")");
         }
 
-        public void RemoveTagToBlock(string clusterName, int blockIndex, string tag)
+        public void RemoveTagFromBlock(string clusterName, int blockIndex, string tag)
         {
-            throw new Exception("The method or operation is not implemented.");
+            executeNonQuery(
+                "DELETE FROM TAGS WHERE CLUSTER = " + clusterName + " AND BLOCKINDEX = " + blockIndex +
+                " AND TAG = " + tag + ")"
+                );
         }
 
         private string MakeSQLArrayString(UInt32[] uids)
@@ -139,7 +203,7 @@ namespace SirCachealot
             StringBuilder sqlArray = new StringBuilder("(");
             for (int i = 0; i < uids.Length - 1; i++)
             {
-                sqlArray.Append(i);
+                sqlArray.Append(uids[i]);
                 sqlArray.Append(", ");
             }
             sqlArray.Append(uids[uids.Length - 1]);
@@ -148,6 +212,32 @@ namespace SirCachealot
             return sqlArray.ToString();
         }
 
+        private UInt32[] GetByStringParameter(string parameter, string val)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE " + parameter + " = ?val";
+            mySqlComm.Parameters.AddWithValue("?val", val);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        private UInt32[] GetByStringParameter(string parameter, string val, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE " + parameter + 
+                " = ?val AND UID IN " + MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?val", val);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        private UInt32[] GetUIDsFromCommand(MySqlCommand cm)
+        {
+            MySqlDataReader rd = cm.ExecuteReader();
+            List<UInt32> uids = new List<UInt32>();
+            while (rd.Read()) uids.Add((UInt32)rd["UID"]);
+            rd.Close();
+            return uids.ToArray();
+        }
 
         internal void Start()
         {
@@ -196,12 +286,14 @@ namespace SirCachealot
 
         private int executeNonQuery(string command)
         {
+            mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = command;
             return mySqlComm.ExecuteNonQuery();
         }
 
         private MySqlDataReader executeReader(string command)
         {
+            mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = command;
             return mySqlComm.ExecuteReader();
         }
@@ -217,5 +309,13 @@ namespace SirCachealot
             ms.Close();
             return buffer;
         }
+
+        private DemodulatedBlock deserializeDBlockFromByteArray(byte[] ba)
+        {
+            MemoryStream ms = new MemoryStream(ba);
+            BinaryFormatter bf = new BinaryFormatter();
+            return (DemodulatedBlock)bf.Deserialize(ms);
+        }
+
     }
 }

@@ -16,27 +16,28 @@ namespace SirCachealot
         private MemcachedClient cache;
         //private Dictionary<string, Dictionary<string, string>> memcachedStats;
 
-        internal void Start()
+        public void Start()
         {
-            memcachedProcess = Process.Start("memcached.exe", "-m 200");
+            memcachedProcess = Process.Start("memcached.exe", "-m 800");
             MemcachedClient.Setup("EDMAnalysisMemcached",
                 new string[] { "127.0.0.1:11211" });
             cache = MemcachedClient.GetInstance("EDMAnalysisMemcached");
         }
 
-        internal void Stop()
+        public void Stop()
         {
             memcachedProcess.Kill();
         }
 
-        internal DemodulatedBlock Get(string key)
+        public byte[] Get(string key)
         {
-            return new DemodulatedBlock();
+            return (byte[])cache.Get(key);
         }
 
-        //private void Put(string key, DemodulatedBlock dblock)
-        //{
-        //}
+        public void Set(string key, byte[] dblock)
+        {
+            cache.Set(key, dblock);
+        }
 
     }
 }
