@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Data.Sql;
 
 using System.IO;
+using System.Runtime.Remoting;
 using System.Runtime.Serialization.Formatters.Binary;
 
 using MySql.Data.MySqlClient;
@@ -14,7 +15,7 @@ using Analysis.EDM;
 
 namespace SirCachealot
 {
-    class MySqlDBlockStore : DBlockStore
+    class MySqlDBlockStore : MarshalByRefObject, DBlockStore
     {
         public Cache cache;
         private MySqlConnection mySql;

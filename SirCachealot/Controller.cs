@@ -8,7 +8,7 @@ using Data.EDM;
 
 namespace SirCachealot
 {
-    public class Controller
+    public class Controller : MarshalByRefObject
     {
 
         internal MainWindow mainWindow;
@@ -27,6 +27,29 @@ namespace SirCachealot
             {
                 return blockStore;
             }
+        }
+
+        /* This is a convenient way to add a block, if you're using standard demodulation
+         * configurations.
+         */
+        public void AddBlock(Block b, string[] demodulationConfigs)
+        {
+            log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+            BlockDemodulator blockDemodulator = new BlockDemodulator();
+            foreach (string dcName in demodulationConfigs)
+            {
+                DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig(dcName, b);
+                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
+                blockStore.AddDBlock(dBlock);
+            }
+        }
+
+        public void AddBlock(string path, string[] demodulationConfigs)
+        {
+            BlockSerializer bs = new BlockSerializer();
+            Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
+
+            AddBlock(b, demodulationConfigs);
         }
 
         // This method is called before the main form is created.
@@ -78,10 +101,15 @@ namespace SirCachealot
                 string db = dialog.SelectedItem();
                 if (db != "")
                 {
-                    blockStore.Connect(db);
-                    log("Selected db: " + db);
+                    SelectDB(db);
                 }
             }
+        }
+
+        public void SelectDB(string db)
+        {
+            blockStore.Connect(db);
+            log("Selected db: " + db);
         }
 
         internal void Test1()
@@ -108,19 +136,19 @@ namespace SirCachealot
             DateTime start, end;
             TimeSpan ts;
 
-            log("Adding blocks");
-            start = DateTime.Now;
-            for (int i = 1; i < 10000; i++)
-            {
-                blockStore.AddDBlock(dBlock);
-            }
-            end = DateTime.Now;
-            ts = end.Subtract(start);
-            log("Time to add 10000: " + ts.Minutes + "m" + ts.Seconds + "s.");
+            //log("Adding blocks");
+            //start = DateTime.Now;
+            //for (int i = 1; i < 10000; i++)
+            //{
+            //    blockStore.AddDBlock(dBlock);
+            //}
+            //end = DateTime.Now;
+            //ts = end.Subtract(start);
+            //log("Time to add 10000: " + ts.Minutes + "m" + ts.Seconds + "s.");
 
             log("Retrieving blocks, pass 1");
             start = DateTime.Now;
-            for (UInt32 i = 1; i < 1000; i++)
+            for (UInt32 i = 2000; i < 3000; i++)
             {
                 DemodulatedBlock dbb = blockStore.GetDBlock(i);
             }
@@ -130,7 +158,7 @@ namespace SirCachealot
 
             log("Retrieving blocks, pass 2");
             start = DateTime.Now;
-            for (UInt32 i = 1; i < 1000; i++)
+            for (UInt32 i = 2000; i < 3000; i++)
             {
                 DemodulatedBlock dbb = blockStore.GetDBlock(i);
             }
@@ -138,15 +166,15 @@ namespace SirCachealot
             ts = end.Subtract(start);
             log("Time to retrieve 1000 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
 
-            log("Deleting blocks");
-            start = DateTime.Now;
-            for (UInt32 i = 500; i < 1000; i++)
-            {
-                blockStore.RemoveDBlock(i);
-            }
-            end = DateTime.Now;
-            ts = end.Subtract(start);
-            log("Time to delete 500 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+            //log("Deleting blocks");
+            //start = DateTime.Now;
+            //for (UInt32 i = 500; i < 1000; i++)
+            //{
+            //    blockStore.RemoveDBlock(i);
+            //}
+            //end = DateTime.Now;
+            //ts = end.Subtract(start);
+            //log("Time to delete 500 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
 
             log("Selecting blocks by cluster");
             start = DateTime.Now;
@@ -179,7 +207,7 @@ namespace SirCachealot
                 );
             end = DateTime.Now;
             ts = end.Subtract(start);
-            log("Time to check 10000 blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
+            log("Time to check all blocks: " + ts.Minutes + "m" + ts.Seconds + "s.");
  
         }
 
@@ -187,5 +215,14 @@ namespace SirCachealot
         {
             mainWindow.AppendToLog(txt);
         }
+
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
+
     }
 }
