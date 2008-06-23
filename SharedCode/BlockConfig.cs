@@ -6,7 +6,7 @@ using Utility;
 namespace EDMConfig
 {
 	/// <summary>
-	/// The idea is that an EDMConfig contains all of the configuration information that
+	/// The idea is that a BlockConfig contains all of the configuration information that
 	/// BlockHead needs to take a block (well, almost. It doesn't contain mappings to 
 	/// physical channels at the minute). The config is serialized inside the block so that,
 	/// in principle, the analysis code can analyse against any parameter.

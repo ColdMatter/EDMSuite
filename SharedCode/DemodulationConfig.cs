@@ -20,7 +20,8 @@ namespace Analysis.EDM
     [Serializable]
     public class DemodulationConfig
     {
-        public List<DetectorExtractSpec> DetectorExtractSpecs = new List<DetectorExtractSpec>();
+        public Dictionary<string, DetectorExtractSpec> DetectorExtractSpecs = 
+            new Dictionary<string, DetectorExtractSpec>();
         public String AnalysisTag = "";
 
         // static members for making standard configs
@@ -57,11 +58,11 @@ namespace Analysis.EDM
                 dg4 = DetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
 
-                dc.DetectorExtractSpecs.Add(dg0);
-                dc.DetectorExtractSpecs.Add(dg1);
-                dc.DetectorExtractSpecs.Add(dg2);
-                dc.DetectorExtractSpecs.Add(dg3);
-                dc.DetectorExtractSpecs.Add(dg4);
+                dc.DetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.DetectorExtractSpecs.Add(dg1.Name, dg1);
+                dc.DetectorExtractSpecs.Add(dg2.Name, dg2);
+                dc.DetectorExtractSpecs.Add(dg3.Name, dg3);
+                dc.DetectorExtractSpecs.Add(dg4.Name, dg4);
 
                 return dc;
             };

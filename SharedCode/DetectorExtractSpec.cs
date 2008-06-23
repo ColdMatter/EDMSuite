@@ -18,13 +18,15 @@ namespace Analysis.EDM
         public double WidthFWHM;
         public bool Integrate = true;
         public bool BackgroundSubtract = false;
+        public double Background;
 
-        public void SetGatesFromFWHM(TOF t)
+        public void FitToTOF(TOF t)
         {
             TOFFitter fitter = new TOFFitter();
             TOFFitResults results = fitter.FitTOF(t);
             GateLow = (int)(results.Centre - (0.5 * WidthFWHM * results.Width) + (OffsetFWHM * results.Width));
             GateHigh = (int)(results.Centre + (0.5 * WidthFWHM * results.Width) + (OffsetFWHM * results.Width));
+            Background = results.Background;
         }
 
         public static DetectorExtractSpec MakeGateFWHM(Block b, int detector, double offset, double width)
@@ -33,7 +35,7 @@ namespace Analysis.EDM
             dg.Index = detector;
             dg.OffsetFWHM = offset;
             dg.WidthFWHM = width;
-            dg.SetGatesFromFWHM(b.GetAverageTOF(detector));
+            dg.FitToTOF(b.GetAverageTOF(detector));
             return dg;
         }
 

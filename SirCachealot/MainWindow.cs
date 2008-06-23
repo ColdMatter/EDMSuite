@@ -52,8 +52,10 @@ namespace SirCachealot
 
         public void AppendToLog(string txt)
         {
-            logTextBox.AppendText(txt + "\n");
+            logTextBox.BeginInvoke(new AppendTextDelegate(logTextBox.AppendText),
+				new object[] {txt + Environment.NewLine});
         }
+ 		private delegate void AppendTextDelegate(String text);
 
         private void test1ToolStripMenuItem_Click(object sender, EventArgs e)
         {

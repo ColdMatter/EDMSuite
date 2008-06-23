@@ -128,9 +128,9 @@ namespace SirCachealot
             dg2.Name = "mag1";
             dg2.Integrate = false;
 
-            dc.DetectorExtractSpecs.Add(dg0);
-            dc.DetectorExtractSpecs.Add(dg1);
-            dc.DetectorExtractSpecs.Add(dg2);
+            dc.DetectorExtractSpecs.Add(dg0.Name, dg0);
+            dc.DetectorExtractSpecs.Add(dg1.Name, dg1);
+            dc.DetectorExtractSpecs.Add(dg2.Name, dg2);
             BlockDemodulator blockDemodulator = new BlockDemodulator();
             DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
             DateTime start, end;

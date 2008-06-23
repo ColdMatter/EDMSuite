@@ -35,7 +35,8 @@ namespace SirCachealot
         {
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
+                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " + 
+                "TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
                 "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX AND UID IN " + MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?tag", tag);
             return GetUIDsFromCommand(mySqlComm);
@@ -45,7 +46,8 @@ namespace SirCachealot
         {
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
+                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " + 
+                "TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
                 "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX";
             mySqlComm.Parameters.AddWithValue("?tag", tag);
             return GetUIDsFromCommand(mySqlComm);
@@ -125,12 +127,13 @@ namespace SirCachealot
             {
                 dbb = (byte[])rd["DBDAT"];
                 db = deserializeDBlockFromByteArray(dbb);
+                rd.Close();
             }
             else
             {
+                rd.Close();
                 throw new BlockNotFoundException();
             }
-            rd.Close();
             return db;
         }
 
@@ -188,14 +191,14 @@ namespace SirCachealot
 
         public void AddTagToBlock(string clusterName, int blockIndex, string tag)
         {
-            executeNonQuery("INSERT INTO TAGS VALUES(" + clusterName + ", " + blockIndex + ", " + tag + ")");
+            executeNonQuery("INSERT INTO TAGS VALUES('" + clusterName + "', " + blockIndex + ", '" + tag + "')");
         }
 
         public void RemoveTagFromBlock(string clusterName, int blockIndex, string tag)
         {
             executeNonQuery(
-                "DELETE FROM TAGS WHERE CLUSTER = " + clusterName + " AND BLOCKINDEX = " + blockIndex +
-                " AND TAG = " + tag + ")"
+                "DELETE FROM TAGS WHERE CLUSTER = '" + clusterName + "' AND CLUSTERINDEX = " + blockIndex +
+                " AND TAG = '" + tag + "'"
                 );
         }
 
