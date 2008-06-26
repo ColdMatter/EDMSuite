@@ -104,8 +104,8 @@ namespace EDMHardwareControl
         public void Start()
         {
             // make the digital tasks
-            CreateDigitalTask("notEOnOff");
-            CreateDigitalTask("eOnOff");
+            //CreateDigitalTask("notEOnOff");
+            //CreateDigitalTask("eOnOff");
             CreateDigitalTask("ePol");
             CreateDigitalTask("notEPol");
             CreateDigitalTask("eBleed");
@@ -117,6 +117,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("notDB");
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
+            CreateDigitalTask("notPIFlipEnable");
             CreateDigitalTask("pumpShutter");
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("targetStepper");
@@ -1629,6 +1630,7 @@ namespace EDMHardwareControl
         public void SetPhaseFlip2(bool enable)
         {
             SetDigitalLine("piFlipEnable", enable);
+            SetDigitalLine("notPIFlipEnable", !enable);
         }
 
         internal void SetScramblerTTL(bool enable)

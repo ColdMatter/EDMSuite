@@ -79,17 +79,17 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("notB", pgBoard, 2, 1);
 			AddDigitalOutputChannel("db", pgBoard, 2, 2);
 			AddDigitalOutputChannel("notDB", pgBoard, 2, 3);
-			AddDigitalOutputChannel("notEOnOff", pgBoard, 2, 4);  // this line seems to be broken on our pg board
-			AddDigitalOutputChannel("eOnOff", pgBoard, 2, 5);
-			AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
+//			AddDigitalOutputChannel("notEOnOff", pgBoard, 2, 4);  // this line seems to be broken on our pg board
+// 			AddDigitalOutputChannel("eOnOff", pgBoard, 2, 5);  // this and the above are not used now we have analog E control
+            AddDigitalOutputChannel("targetStepper", pgBoard, 2, 5);
+            AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
 			AddDigitalOutputChannel("notEPol", pgBoard, 2, 7);
 			AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
 			AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
-			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 2);
+			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
-            AddDigitalOutputChannel("targetStepper", pgBoard, 3, 5);
-
+ 
             // map the analog channels
             
             // These channels are on the daq board. Used mainly for diagnostic purposes.
