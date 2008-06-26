@@ -64,6 +64,7 @@ namespace EDMHardwareControl
         ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
+        HP438A rfPower = (HP438A)Environs.Hardware.GPIBInstruments["rfPower"];
         Hashtable digitalTasks = new Hashtable();
         LeakageMonitor northLeakageMonitor =
             new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
@@ -83,7 +84,7 @@ namespace EDMHardwareControl
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
-        Task rfPowerMonitorInputTask;
+        //Task rfPowerMonitorInputTask;
         Task phaseScramblerVoltageOutputTask;
         Task miniFlux1MonitorInputTask;
         Task miniFlux2MonitorInputTask;
@@ -142,7 +143,7 @@ namespace EDMHardwareControl
             pumpMonitorInputTask = CreateAnalogInputTask("pumpPD",0,5);
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-            rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
+            //rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
             miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
             miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
             miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
@@ -1239,40 +1240,41 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.rf1AttPlusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
-            double rf1PlusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf1PlusPowerMon, String.Format("{0:F2}", rf1PlusPower));
+            double rf1PlusPower = rfPower.Power;
+            window.SetTextBox(window.rf1PlusPowerMon, String.Format("{0:F3}",rf1PlusPower));
             window.SetRadioButton(window.rf1AttMinusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
-            double rf1MinusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf1MinusPowerMon, String.Format("{0:F2}", rf1MinusPower));
-            window.SetTextBox(window.rf1CentrePowerMon, String.Format("{0:F2}", ((rf1MinusPower + rf1PlusPower) / 2)));
-            window.SetTextBox(window.rf1StepPowerMon, String.Format("{0:F2}", ((rf1PlusPower - rf1MinusPower) / 2)));
+            double rf1MinusPower = rfPower.Power;
+            window.SetTextBox(window.rf1MinusPowerMon, String.Format("{0:F3}", rf1MinusPower));
+            window.SetTextBox(window.rf1CentrePowerMon, String.Format("{0:F3}", ((rf1MinusPower + rf1PlusPower) / 2)));
+            window.SetTextBox(window.rf1StepPowerMon, String.Format("{0:F3}", ((rf1PlusPower - rf1MinusPower) / 2)));
 
             // rf2
             window.SetCheckBox(window.attenuatorSelectCheck, false);
             window.SetRadioButton(window.rf2AttPlusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
-            double rf2PlusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf2PlusPowerMon, String.Format("{0:F2}", rf2PlusPower));
+            double rf2PlusPower = rfPower.Power;
+            window.SetTextBox(window.rf2PlusPowerMon, String.Format("{0:F3}", rf2PlusPower));
             window.SetRadioButton(window.rf2AttMinusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
-            double rf2MinusPower = ReadPowerMonitor();
-            window.SetTextBox(window.rf2MinusPowerMon, String.Format("{0:F2}", rf2MinusPower));
-            window.SetTextBox(window.rf2CentrePowerMon, String.Format("{0:F2}", ((rf2MinusPower + rf2PlusPower) / 2)));
-            window.SetTextBox(window.rf2StepPowerMon, String.Format("{0:F2}", ((rf2PlusPower - rf2MinusPower) / 2)));
+            double rf2MinusPower = rfPower.Power;
+            window.SetTextBox(window.rf2MinusPowerMon, String.Format("{0:F3}", rf2MinusPower));
+            window.SetTextBox(window.rf2CentrePowerMon, String.Format("{0:F3}", ((rf2MinusPower + rf2PlusPower) / 2)));
+            window.SetTextBox(window.rf2StepPowerMon, String.Format("{0:F3}", ((rf2PlusPower - rf2MinusPower) / 2)));
         }
 
         // This is a little cheezy - it probably should be in its own class.
         // This method reads the power meter input and converts the result to dBm.
-        private double ReadPowerMonitor()
+        // Have replaced the power monitor with the HP438A 24/06/08
+        /*private double ReadPowerMonitor()
         {
             double rawReading = ReadAnalogInput(rfPowerMonitorInputTask, 10000, 5000);
             return rawReading;
         }
-
+        */
         public void UpdateBCurrentMonitor()
         {
             // DB0 dB0

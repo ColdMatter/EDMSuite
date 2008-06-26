@@ -138,8 +138,10 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="HP438A.cs" />
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
+    <Compile Include="RFPower.cs" />
     <Compile Include="SealClubberFileSystem.cs" />
     <Compile Include="Agilent53131A.cs" />
     <Compile Include="FrequencyCounter.cs" />
