@@ -66,7 +66,40 @@ namespace Analysis.EDM
 
                 return dc;
             };
-            standardConfigs.Add("fwhm", fwhm); 
+            standardConfigs.Add("fwhm", fwhm);
+
+            DemodulationConfigBuilder wide = delegate(Block b)
+            {
+
+                DemodulationConfig dc;
+                DetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
+
+                dc = new DemodulationConfig();
+                dc.AnalysisTag = "wide";
+                dg0 = DetectorExtractSpec.MakeWideGate(0);
+                dg0.Name = "top";
+                dg1 = DetectorExtractSpec.MakeWideGate(1);
+                dg1.Name = "norm";
+                dg2 = DetectorExtractSpec.MakeWideGate(2);
+                dg2.Name = "mag1";
+                dg2.Integrate = false;
+                dg3 = DetectorExtractSpec.MakeWideGate(3);
+                dg3.Name = "short";
+                dg3.Integrate = false;
+                dg4 = DetectorExtractSpec.MakeWideGate(4);
+                dg4.Name = "battery";
+
+                dc.DetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.DetectorExtractSpecs.Add(dg1.Name, dg1);
+                dc.DetectorExtractSpecs.Add(dg2.Name, dg2);
+                dc.DetectorExtractSpecs.Add(dg3.Name, dg3);
+                dc.DetectorExtractSpecs.Add(dg4.Name, dg4);
+
+                return dc;
+            };
+            standardConfigs.Add("wide", wide);
+
+  
         }
 
      }
