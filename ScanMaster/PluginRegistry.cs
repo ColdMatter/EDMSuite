@@ -39,6 +39,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
+			patternPlugins.Add("Guide", typeof(GuidePatternPlugin));
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));

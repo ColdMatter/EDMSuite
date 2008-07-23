@@ -202,6 +202,8 @@
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GuidePatternBuilder.cs" />
+    <Compile Include="GuidePatternPlugin.cs" />
     <Compile Include="InterferenceFitter.cs" />
     <Compile Include="LorentzianFitter.cs">
       <SubType>Code</SubType>
