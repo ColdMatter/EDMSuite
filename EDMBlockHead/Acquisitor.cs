@@ -330,7 +330,7 @@ namespace EDMBlockHead.Acquire
             pmt.ChopLength = 80;
             pmt.LowLimit = 0;
 			pmt.HighLimit = 10;
-			pmt.Calibration = 1/6.9;
+            pmt.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
 			inputs.Channels.Add(pmt);
 
 //			// this code can be enabled for faster null runs
@@ -350,7 +350,7 @@ namespace EDMBlockHead.Acquire
 			normPMT.ChopLength = 40;
 			normPMT.LowLimit = 0;
 			normPMT.HighLimit = 10;
-			normPMT.Calibration = 1/11.2;
+            normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
 			inputs.Channels.Add(normPMT);
 
 			ScannedAnalogInput mag = new ScannedAnalogInput();
