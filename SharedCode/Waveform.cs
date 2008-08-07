@@ -14,6 +14,7 @@ namespace EDMConfig
 		private int bitsLength;
 		private bool[] code;
 		private bool[] bits;
+        public bool Inverted = false;
 
 		/// <summary>
 		/// Creates a waveform which can be represented by a code of codeLength bits.
