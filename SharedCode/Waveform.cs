@@ -112,7 +112,9 @@ namespace EDMConfig
 					}
 				}
 			}
+
+            if (Inverted) for (int i = 0; i < bitsLength; i++) bits[i] = !bits[i];
 		}
 
-	}
+    }
 }
