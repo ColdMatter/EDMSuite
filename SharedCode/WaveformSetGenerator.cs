@@ -44,10 +44,10 @@ namespace EDMConfig
                     ebCode[i] = eWave.Code[i] ^ bWave.Code[i];
                 // count the number of fast bits set (as defined by kFastBits)
                 int totalFastBits = 0;
-                for (int i = codeLength - kFastBits; i < codeLength; i++) totalFastBits += ebCode[i] ? 0 : 1;
+                for (int i = codeLength - kFastBits; i < codeLength; i++) totalFastBits += ebCode[i] ? 1 : 0;
                 // count the number of slow bits set
                 int totalSlowBits = 0;
-                for (int i = 0; i < codeLength - kFastBits; i++) totalSlowBits += ebCode[i] ? 0 : 1;
+                for (int i = 0; i < codeLength - kFastBits; i++) totalSlowBits += ebCode[i] ? 1 : 0;
                 bool passedEBTest = (totalFastBits >= kFastBitThreshold) && (totalSlowBits >= kSlowBitThreshold);
 
                 // now check that none of the codes are identical
