@@ -37,7 +37,7 @@ def checkYAGAndFix():
 		bh.StopPattern();
 		bh.StartPattern();
 
-def printWaveformCode(name):
+def printWaveformCode(bc, name):
 	print(name + ": " + str(bc.GetModulationByName(name).Waveform.Code) + " -- " + str(bc.GetModulationByName(name).Waveform.Inverted))
 
 def prompt(text):
@@ -101,26 +101,26 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	lf1Wave = bc.GetModulationByName("LF1").Waveform
 	lf1Wave.Name = "LF1"
 	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
-	bc.GetModulationByName["B"].Waveform = ws["B"]
-	bc.GetModulationByName["DB"].Waveform = ws["DB"]
-	bc.GetModulationByName["PI"].Waveform = ws["PI"]
-	bc.GetModulationByName["RF1A"].Waveform = ws["RF1A"]
-	bc.GetModulationByName["RF2A"].Waveform = ws["RF2A"]
-	bc.GetModulationByName["RF1F"].Waveform = ws["RF1F"]
-	bc.GetModulationByName["RF2F"].Waveform = ws["RF2F"]
+	bc.GetModulationByName("B").Waveform = ws["B"]
+	bc.GetModulationByName("DB").Waveform = ws["DB"]
+	bc.GetModulationByName("PI").Waveform = ws["PI"]
+	bc.GetModulationByName("RF1A").Waveform = ws["RF1A"]
+	bc.GetModulationByName("RF2A").Waveform = ws["RF2A"]
+	bc.GetModulationByName("RF1F").Waveform = ws["RF1F"]
+	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
 	# change the inversions of the static codes E and LF1
-	bc.GetModulationByName["E"].Waveform.Inverted = WaveformSetGenerator.RandomBool()
-	bc.GetModulationByName["LF1"].Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	bc.GetModulationByName("LF1").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# print the waveform codes
-	printWaveformCode("E")
-	printWaveformCode("B")
-	printWaveformCode("DB")
-	printWaveformCode("PI")
-	printWaveformCode("RF1A")
-	printWaveformCode("RF2A")
-	printWaveformCode("RF1F")
-	printWaveformCode("RF2F")
-	printWaveformCode("LF1")
+	printWaveformCode(bc, "E")
+	printWaveformCode(bc, "B")
+	printWaveformCode(bc, "DB")
+	printWaveformCode(bc, "PI")
+	printWaveformCode(bc, "RF1A")
+	printWaveformCode(bc, "RF2A")
+	printWaveformCode(bc, "RF1F")
+	printWaveformCode(bc, "RF2F")
+	printWaveformCode(bc, "LF1")
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
