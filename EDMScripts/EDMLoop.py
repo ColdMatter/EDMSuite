@@ -35,7 +35,10 @@ def checkYAGAndFix():
 	interlockFailed = hc.YAGInterlockFailed;
 	if (interlockFailed):
 		bh.StopPattern();
-		bh.StartPattern();	
+		bh.StartPattern();
+
+def printWaveformCode(name):
+	print(name + ": " + str(bc.GetModulationByName(name).Waveform.Code) + " -- " + str(bc.GetModulationByName(name).Waveform.Inverted))
 
 def prompt(text):
 	sys.stdout.write(text)
@@ -91,6 +94,34 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	bc.GetModulationByName("LF1").Step = hc.FLPZTStep
 	bc.GetModulationByName("LF1").PhysicalCentre = hc.I2LockAOMFrequencyCentre
 	bc.GetModulationByName("LF1").PhysicalStep = hc.I2LockAOMFrequencyStep
+	# generate the waveform codes
+	print("Generating waveform codes ...")
+	eWave = bc.GetModulationByName("E").Waveform
+	eWave.Name = "E"
+	lf1Wave = bc.GetModulationByName("LF1").Waveform
+	lf1Wave.Name = "LF1"
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	bc.GetModulationByName["B"].Waveform = ws["B"]
+	bc.GetModulationByName["DB"].Waveform = ws["DB"]
+	bc.GetModulationByName["PI"].Waveform = ws["PI"]
+	bc.GetModulationByName["RF1A"].Waveform = ws["RF1A"]
+	bc.GetModulationByName["RF2A"].Waveform = ws["RF2A"]
+	bc.GetModulationByName["RF1F"].Waveform = ws["RF1F"]
+	bc.GetModulationByName["RF2F"].Waveform = ws["RF2F"]
+	# change the inversions of the static codes E and LF1
+	bc.GetModulationByName["E"].Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	bc.GetModulationByName["LF1"].Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	# print the waveform codes
+	printWaveformCode("E")
+	printWaveformCode("B")
+	printWaveformCode("DB")
+	printWaveformCode("PI")
+	printWaveformCode("RF1A")
+	printWaveformCode("RF2A")
+	printWaveformCode("RF1F")
+	printWaveformCode("RF2F")
+	printWaveformCode("LF1")
+	# store e-switch info in block config
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
 	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
