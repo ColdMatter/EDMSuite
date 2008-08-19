@@ -146,28 +146,28 @@ namespace Analysis.EDM
 
                 //* bootstrap the channel errors *
                 double[] channelBSErrors = new double[numStates];
-                for (int channel = 0; channel < numStates; channel++)
-                {
-                    // pull out the channel sub-values for convenience
-                    double[] subValues = new double[subLength];
-                    for (int i = 0; i < subLength; i++) subValues[i] = channelValues[channel, i];
-                    // generate the means of a number of replicates
-                    double[] bsMeans = new double[kNumReplicates];
-                    for (int i = 0; i < kNumReplicates; i++) bsMeans[i] = bootstrapMean(subValues);
-                    // find the standard deviation of the replicate means
-                    // calculate mean of the means
-                    double meanOfMeans = 0;
-                    for (int i = 0; i < kNumReplicates; i++) meanOfMeans += bsMeans[i];
-                    meanOfMeans /= kNumReplicates;
-                    // now the variance
-                    double total = 0;
-                    for (int i = 0; i < kNumReplicates; i++)
-                        total += Math.Pow(bsMeans[i] - meanOfMeans, 2);
-                    total /= kNumReplicates;
-                    // finally the s.d.
-                    total = Math.Sqrt(total);
-                    channelBSErrors[channel] = total;
-                }
+                //for (int channel = 0; channel < numStates; channel++)
+                //{
+                //    // pull out the channel sub-values for convenience
+                //    double[] subValues = new double[subLength];
+                //    for (int i = 0; i < subLength; i++) subValues[i] = channelValues[channel, i];
+                //    // generate the means of a number of replicates
+                //    double[] bsMeans = new double[kNumReplicates];
+                //    for (int i = 0; i < kNumReplicates; i++) bsMeans[i] = bootstrapMean(subValues);
+                //    // find the standard deviation of the replicate means
+                //    // calculate mean of the means
+                //    double meanOfMeans = 0;
+                //    for (int i = 0; i < kNumReplicates; i++) meanOfMeans += bsMeans[i];
+                //    meanOfMeans /= kNumReplicates;
+                //    // now the variance
+                //    double total = 0;
+                //    for (int i = 0; i < kNumReplicates; i++)
+                //        total += Math.Pow(bsMeans[i] - meanOfMeans, 2);
+                //    total /= kNumReplicates;
+                //    // finally the s.d.
+                //    total = Math.Sqrt(total);
+                //    channelBSErrors[channel] = total;
+                //}
                 dcv.BSErrors = channelBSErrors;
 
                 db.ChannelValues.Add(dcv);
