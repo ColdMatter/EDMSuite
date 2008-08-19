@@ -110,6 +110,7 @@
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />
     <Compile Include="DemodulatedBlock.cs" />

@@ -200,7 +200,6 @@ def windowValue(value, minValue, maxValue):
 		else:
 			return maxValue
 
-
 kTargetRotationPeriod = 30
 kReZeroLeakageMonitorsPeriod = 10
 

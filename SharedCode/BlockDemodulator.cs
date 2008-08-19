@@ -15,6 +15,8 @@ namespace Analysis.EDM
     {
         // you'll be in trouble if the number of points per block is not divisible by this number!
         private const int kFourierAverage = 16;
+        private const int kNumReplicates = 75;
+        private Random r = new Random();
 
         public DemodulatedBlock DemodulateBlock(Block b, DemodulationConfig config)
         {
@@ -142,6 +144,32 @@ namespace Analysis.EDM
                 }
                 dcv.Errors = channelErrors;
 
+                //* bootstrap the channel errors *
+                double[] channelBSErrors = new double[numStates];
+                for (int channel = 0; channel < numStates; channel++)
+                {
+                    // pull out the channel sub-values for convenience
+                    double[] subValues = new double[subLength];
+                    for (int i = 0; i < subLength; i++) subValues[i] = channelValues[channel, i];
+                    // generate the means of a number of replicates
+                    double[] bsMeans = new double[kNumReplicates];
+                    for (int i = 0; i < kNumReplicates; i++) bsMeans[i] = bootstrapMean(subValues);
+                    // find the standard deviation of the replicate means
+                    // calculate mean of the means
+                    double meanOfMeans = 0;
+                    for (int i = 0; i < kNumReplicates; i++) meanOfMeans += bsMeans[i];
+                    meanOfMeans /= kNumReplicates;
+                    // now the variance
+                    double total = 0;
+                    for (int i = 0; i < kNumReplicates; i++)
+                        total += Math.Pow(bsMeans[i] - meanOfMeans, 2);
+                    total /= kNumReplicates;
+                    // finally the s.d.
+                    total = Math.Sqrt(total);
+                    channelBSErrors[channel] = total;
+                }
+                dcv.BSErrors = channelBSErrors;
+
                 db.ChannelValues.Add(dcv);
             }
 
@@ -168,15 +196,27 @@ namespace Analysis.EDM
             return p & 1; 
         }
 
-        // this function assumes that the lists have zero mean!
-        // the lists need to be the same size, but this is not checked.
-        // This is an "unbiased" covariance - note the -1 in the denominator.
-        public double covariance(List<double> offsetList1, List<double> offsetList2)
+        public double bootstrapMean(double[] values)
         {
-            double cov = 0;
-            for (int i = 0; i < offsetList1.Count; i++) cov += offsetList1[i] * offsetList2[i];
-            return cov / (double)(offsetList1.Count - 1);
+            // make the replicate
+            double[] replicate = new double[values.Length];
+            for (int i = 0; i < values.Length; i++) replicate[i] = values[r.Next(values.Length)];
+            // find its mean
+            double total = 0.0;
+            foreach (double d in replicate) total += d;
+            total /= replicate.Length;
+            return total;
         }
+
+        //// this function assumes that the lists have zero mean!
+        //// the lists need to be the same size, but this is not checked.
+        //// This is an "unbiased" covariance - note the -1 in the denominator.
+        //public double covariance(List<double> offsetList1, List<double> offsetList2)
+        //{
+        //    double cov = 0;
+        //    for (int i = 0; i < offsetList1.Count; i++) cov += offsetList1[i] * offsetList2[i];
+        //    return cov / (double)(offsetList1.Count - 1);
+        //}
     }
 }
 

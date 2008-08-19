@@ -3,7 +3,7 @@ using System;
 namespace EDMConfig
 {
 	/// <summary>
-	/// A switching waveform dictates when a channel has it's state switched.
+	/// A switching waveform dictates when a channel has its state switched.
 	/// They are compactly represented by a binary waveform code.
 	/// </summary>
 	[Serializable]

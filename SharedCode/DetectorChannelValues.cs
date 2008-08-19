@@ -9,6 +9,7 @@ namespace Analysis.EDM
     {
         public double[] Values;
         public double[] Errors;
+        public double[] BSErrors;
 
         public Dictionary<string, uint> SwitchMasks = new Dictionary<string, uint>();
         public uint GetChannelIndex(string[] switches)
@@ -41,5 +42,16 @@ namespace Analysis.EDM
         {
             return Errors[GetChannelIndex(switches)];
         }
+
+        public double GetBSError(int channelIndex)
+        {
+            return BSErrors[channelIndex];
+        }
+
+        public double GetBSError(string[] switches)
+        {
+            return BSErrors[GetChannelIndex(switches)];
+        }
+ 
     }
 }
