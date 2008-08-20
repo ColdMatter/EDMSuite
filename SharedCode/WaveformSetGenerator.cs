@@ -34,7 +34,7 @@ namespace EDMConfig
                 }
 
                 //* test the set *
-
+                Console.Out.WriteLine("Testing waveform set");
                 // first, test the E.B waveform
                 Waveform eWave = waves["E"];
                 Waveform bWave = waves["B"];
@@ -49,6 +49,7 @@ namespace EDMConfig
                 int totalSlowBits = 0;
                 for (int i = 0; i < codeLength - kFastBits; i++) totalSlowBits += ebCode[i] ? 1 : 0;
                 bool passedEBTest = (totalFastBits >= kFastBitThreshold) && (totalSlowBits >= kSlowBitThreshold);
+                Console.Out.WriteLine("Passed E.B test: " + passedEBTest);
 
                 // now check that none of the codes are identical
                 bool[][] codes = new bool[waves.Count][];
@@ -71,9 +72,36 @@ namespace EDMConfig
                         tmpDic.Add(num, num);
                     }
                 }
- 
-                // say whether the set is ok
-                gotGoodSet = passedEBTest && passedUniqueTest;
+                Console.Out.WriteLine("Passed uniqueness test: " + passedUniqueTest);
+
+                // check the codes for linear independence, modulo 2
+                // (what we sometimes erroneously call orthogonality).
+                // The problem with linearly dependent codes is that they
+                // don't sample all of the machine states in a block. As
+                // far as I can tell it's easier to test for this property
+                // than to test the linear indepence mod 2 of the codes.
+                // ** work out the switch state for each point **
+                int blockLength = staticWaveforms[0].Length;
+                List<bool[]> wfBits = new List<bool[]>();
+                foreach (KeyValuePair<string,Waveform> wf in waves) wfBits.Add(wf.Value.Bits);
+                List<uint> switchStates = new List<uint>(blockLength);
+                for (int i = 0; i < blockLength; i++)
+                {
+                    uint switchState = 0;
+                    for (int j = 0; j < wfBits.Count; j++)
+                    {
+                        if (wfBits[j][i]) switchState += (uint)Math.Pow(2, j);
+                    }
+                    switchStates.Add(switchState);
+                }
+                // ** now check that all switch states are represented **
+                bool passedIndependenceTest = true;
+                for (uint i = 0; i < (uint)Math.Pow(2, waves.Count); i++)
+                    if (!switchStates.Contains(i)) passedIndependenceTest = false;
+                Console.Out.WriteLine("Passed independence test: " + passedIndependenceTest);
+
+                // is the set is ok ?
+                gotGoodSet = passedEBTest && passedUniqueTest && passedIndependenceTest;
             }
             return waves;
         }
