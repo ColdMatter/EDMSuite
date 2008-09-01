@@ -120,17 +120,17 @@ namespace SirCachealot
 
             DemodulationConfig dc = new DemodulationConfig();
             dc.AnalysisTag = "findme";
-            DetectorExtractSpec dg0 = DetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
+            GatedDetectorExtractSpec dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
             dg0.Name = "top";
-            DetectorExtractSpec dg1 = DetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
+            GatedDetectorExtractSpec dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
             dg1.Name = "norm";
-            DetectorExtractSpec dg2 = DetectorExtractSpec.MakeWideGate(2);
+            GatedDetectorExtractSpec dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
             dg2.Name = "mag1";
             dg2.Integrate = false;
 
-            dc.DetectorExtractSpecs.Add(dg0.Name, dg0);
-            dc.DetectorExtractSpecs.Add(dg1.Name, dg1);
-            dc.DetectorExtractSpecs.Add(dg2.Name, dg2);
+            dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+            dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+            dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
             BlockDemodulator blockDemodulator = new BlockDemodulator();
             DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
             DateTime start, end;

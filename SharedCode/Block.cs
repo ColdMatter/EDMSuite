@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 using EDMConfig;
@@ -64,6 +65,13 @@ namespace Data.EDM
 
 			return temp /(points.Count);
 		}
+
+        public List<double> GetSPData(string channel)
+        {
+            List<double> d = new List<double>();
+            foreach (EDMPoint p in this.Points) d.Add((double)p.SinglePointData[channel]);
+            return d;
+        }
 
 	}
 }

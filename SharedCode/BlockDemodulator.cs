@@ -15,7 +15,7 @@ namespace Analysis.EDM
     {
         // you'll be in trouble if the number of points per block is not divisible by this number!
         private const int kFourierAverage = 16;
-        private const int kNumReplicates = 75;
+        private const int kNumReplicates = 50;
         private Random r = new Random();
 
         public DemodulatedBlock DemodulateBlock(Block b, DemodulationConfig config)
@@ -27,26 +27,44 @@ namespace Analysis.EDM
             db.DemodulationConfig = config;
 
             // *** extract the gated detector data using the given config ***
-            List<GatedDetectorData> detectorData = new List<GatedDetectorData>();
-            foreach (KeyValuePair<string, DetectorExtractSpec> spec in config.DetectorExtractSpecs)
+            List<GatedDetectorData> gatedDetectorData = new List<GatedDetectorData>();
+            int ind = 0;
+            foreach (KeyValuePair<string, GatedDetectorExtractSpec> spec in config.GatedDetectorExtractSpecs)
             {
-                DetectorExtractSpec gate = spec.Value;
-                detectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
-                // the detector name->index mapping is stored in the DemodulatedBlock
-                // for convenience
-                db.DetectorIndices.Add(gate.Name, gate.Index);
-
+                GatedDetectorExtractSpec gate = spec.Value;
+                gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
+                db.DetectorIndices.Add(gate.Name, ind);
+                ind++;
                 db.DetectorCalibrations.Add(gate.Name, 
                     ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
 
             }
             // ** normalise the top detector **
-            detectorData.Add(
-                detectorData[db.DetectorIndices["top"]] / detectorData[db.DetectorIndices["norm"]]);
+            gatedDetectorData.Add(
+                gatedDetectorData[db.DetectorIndices["top"]] / gatedDetectorData[db.DetectorIndices["norm"]]);
             db.DetectorIndices.Add("topNormed", db.DetectorIndices.Count);
 
+            // *** extract the point detector data ***
+            List<PointDetectorData> pointDetectorData = new List<PointDetectorData>();
+            foreach (string channel in config.PointDetectorChannels)
+            {
+                pointDetectorData.Add(PointDetectorData.ExtractFromBlock(b, channel));
+                // for the moment all single point detector channels are set to have a calibration
+                // of 1.0 .
+                db.DetectorCalibrations.Add(channel, 1.0);
+            }
+
+            // *** build the list of detector data ***
+            List<DetectorData> detectorData = new List<DetectorData>();
+            for (int i = 0; i < gatedDetectorData.Count; i++) detectorData.Add(gatedDetectorData[i]);
+            for (int i = 0; i < config.PointDetectorChannels.Count; i++)
+            {
+                detectorData.Add(pointDetectorData[i]);
+                db.DetectorIndices.Add(config.PointDetectorChannels[i], i + gatedDetectorData.Count);
+            }
+
             // calculate the norm FFT
-            db.NormFourier = DetectorFT.MakeFT(detectorData[1], kFourierAverage);
+            db.NormFourier = DetectorFT.MakeFT(gatedDetectorData[db.DetectorIndices["norm"]], kFourierAverage);
 
             // *** demodulate channels ***
             // ** build the list of modulations **

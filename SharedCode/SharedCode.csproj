@@ -110,6 +110,8 @@
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DetectorData.cs" />
+    <Compile Include="PointDetectorData.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />
@@ -117,7 +119,7 @@
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="DetectorChannelValues.cs" />
     <Compile Include="DetectorFT.cs" />
-    <Compile Include="DetectorExtractSpec.cs" />
+    <Compile Include="GatedDetectorExtractSpec.cs" />
     <Compile Include="DigitalModulation.cs">
       <SubType>Code</SubType>
     </Compile>

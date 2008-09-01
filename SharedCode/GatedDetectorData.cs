@@ -6,23 +6,20 @@ using Data.EDM;
 
 namespace Analysis.EDM
 {
-    public class GatedDetectorData
+    public class GatedDetectorData : DetectorData
     {
-        public List<double> PointValues = new List<double>();
-
-        public DetectorExtractSpec Gate;
+        public GatedDetectorExtractSpec Gate;
 
         public double SubtractedBackground = 0.0;
 
+        private delegate double[] GatedDetectorExtractFunction(int index, double startTime, double endTime);
 
-        private delegate double[] DetectorExtractFunction(int index, double startTime, double endTime);
-
-        public static GatedDetectorData ExtractFromBlock(Block b, DetectorExtractSpec gate)
+        public static GatedDetectorData ExtractFromBlock(Block b, GatedDetectorExtractSpec gate)
         {
             GatedDetectorData gd = new GatedDetectorData();
-            DetectorExtractFunction f;
-            if (gate.Integrate) f = new DetectorExtractFunction(b.GetTOFIntegralArray);
-            else f = new DetectorExtractFunction(b.GetTOFMeanArray);
+            GatedDetectorExtractFunction f;
+            if (gate.Integrate) f = new GatedDetectorExtractFunction(b.GetTOFIntegralArray);
+            else f = new GatedDetectorExtractFunction(b.GetTOFMeanArray);
             double[] rawData = f(gate.Index, gate.GateLow, gate.GateHigh);
             if (gate.BackgroundSubtract)
             {

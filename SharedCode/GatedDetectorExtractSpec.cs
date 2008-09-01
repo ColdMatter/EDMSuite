@@ -8,7 +8,7 @@ using Data.EDM;
 namespace Analysis.EDM
 {
     [Serializable]
-    public class DetectorExtractSpec
+    public class GatedDetectorExtractSpec
     {
         public string Name = "";
         public int Index;
@@ -29,9 +29,9 @@ namespace Analysis.EDM
             Background = results.Background;
         }
 
-        public static DetectorExtractSpec MakeGateFWHM(Block b, int detector, double offset, double width)
+        public static GatedDetectorExtractSpec MakeGateFWHM(Block b, int detector, double offset, double width)
         {
-            DetectorExtractSpec dg = new DetectorExtractSpec();
+            GatedDetectorExtractSpec dg = new GatedDetectorExtractSpec();
             dg.Index = detector;
             dg.OffsetFWHM = offset;
             dg.WidthFWHM = width;
@@ -39,9 +39,9 @@ namespace Analysis.EDM
             return dg;
         }
 
-        public static DetectorExtractSpec MakeWideGate(int detector)
+        public static GatedDetectorExtractSpec MakeWideGate(int detector)
         {
-            DetectorExtractSpec dg = new DetectorExtractSpec();
+            GatedDetectorExtractSpec dg = new GatedDetectorExtractSpec();
             dg.Index = detector;
             dg.GateLow = 0;
             dg.GateHigh = 100000000;
