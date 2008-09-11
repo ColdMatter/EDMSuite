@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -1347,6 +1348,24 @@ namespace EDMHardwareControl
                                     new double[] { lastSouthCurrent });
 
         }
+       
+        List<double> northCList = new List<double>();
+        List<double> southCList = new List<double>();
+        public void UpdateIRecord()
+        {
+            ReconfigureIMonitors();
+            lastNorthCurrent = northLeakageMonitor.GetCurrent();
+            lastSouthCurrent = southLeakageMonitor.GetCurrent();
+            window.SetTextBox(window.northIMonitorTextBox, (lastNorthCurrent).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (lastSouthCurrent).ToString());
+            window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
+                                    new double[] { lastNorthCurrent });
+            northCList.Add(lastNorthCurrent);
+            window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
+                                    new double[] { lastSouthCurrent });
+            southCList.Add(lastSouthCurrent);
+           
+        }
 
         Thread updateIMonThread;
         public void UpdateIMonitorAsync()
@@ -1431,6 +1450,70 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopIMonitorPollButton, false);
         }
 
+        private Thread iRecordThread;
+        private object iRecordLock = new object();
+        private bool iRecordStopFlag = false;
+        //private int iMonitorPollPeriod = 200;
+        internal void StartIRecord()
+        {
+            northCList.Clear();
+            southCList.Clear();
+            lock (iRecordLock)
+            {
+                iRecordThread = new Thread(new ThreadStart(IRecordWorker));
+                window.EnableControl(window.startIRecordButton, false);
+                window.EnableControl(window.stopIRecordButton, true);
+                iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+                iRecordThread.Start();
+            }
+
+        }
+
+        internal void StopIRecord()
+        {
+            lock (iRecordLock) iRecordStopFlag = true;
+        }
+
+        private void IRecordWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(iMonitorPollPeriod);
+                UpdateIRecord();
+                lock (iRecordLock)
+                {
+                    if (iRecordStopFlag)
+                    {
+                        iRecordStopFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startIRecordButton, true);
+            window.EnableControl(window.stopIRecordButton, false);
+        }
+        internal void SaveToFile()
+        {
+            using (StreamWriter sw = new StreamWriter("Current.csv"))
+                {
+                    sw.Write("northCurrent");
+                    sw.Write(",");
+                    sw.WriteLine("southCurrent");
+                    sw.Write(",");
+                    sw.WriteLine(iMonitorPollPeriod);
+                    sw.WriteLine(northLeakageMonitor.MeasurementTime);
+                    sw.WriteLine(northLeakageMonitor.Slope);
+                    sw.WriteLine(northLeakageMonitor.Offset);
+                    sw.WriteLine(southLeakageMonitor.Offset);
+                        for (int i = 0; i < northCList.ToArray().Length; i++)
+                            {
+                                sw.Write(northCList[i]);
+                                sw.Write(",");
+                                sw.WriteLine(southCList[i]);
+                            }
+                
+                }
+        }
         public void UpdateLaserPhotodiodes()
         {
             double probePDValue = ReadAnalogInput(probeMonitorInputTask);

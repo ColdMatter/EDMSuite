@@ -282,6 +282,9 @@ namespace EDMHardwareControl
         public TextBox miniFlux3TextBox;
         private Label label77;
         private Label label76;
+        public Button startIRecordButton;
+        public Button stopIRecordButton;
+        public Button saveToFile;
 
 
 		public Controller controller;
@@ -373,6 +376,9 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.saveToFile = new System.Windows.Forms.Button();
+            this.stopIRecordButton = new System.Windows.Forms.Button();
+            this.startIRecordButton = new System.Windows.Forms.Button();
             this.legend1 = new NationalInstruments.UI.WindowsForms.Legend();
             this.NorthLegendItem = new NationalInstruments.UI.LegendItem();
             this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
@@ -1179,6 +1185,9 @@ namespace EDMHardwareControl
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.saveToFile);
+            this.groupBox7.Controls.Add(this.stopIRecordButton);
+            this.groupBox7.Controls.Add(this.startIRecordButton);
             this.groupBox7.Controls.Add(this.legend1);
             this.groupBox7.Controls.Add(this.label64);
             this.groupBox7.Controls.Add(this.leakageMonitorSlopeTextBox);
@@ -1206,13 +1215,43 @@ namespace EDMHardwareControl
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
+            // saveToFile
+            // 
+            this.saveToFile.Enabled = false;
+            this.saveToFile.Location = new System.Drawing.Point(468, 63);
+            this.saveToFile.Name = "saveToFile";
+            this.saveToFile.Size = new System.Drawing.Size(87, 23);
+            this.saveToFile.TabIndex = 62;
+            this.saveToFile.Text = "Save";
+            this.saveToFile.UseVisualStyleBackColor = true;
+            this.saveToFile.Click += new System.EventHandler(this.saveToFile_Click);
+            // 
+            // stopIRecordButton
+            // 
+            this.stopIRecordButton.Enabled = false;
+            this.stopIRecordButton.Location = new System.Drawing.Point(516, 34);
+            this.stopIRecordButton.Name = "stopIRecordButton";
+            this.stopIRecordButton.Size = new System.Drawing.Size(39, 23);
+            this.stopIRecordButton.TabIndex = 61;
+            this.stopIRecordButton.Text = "Stop";
+            this.stopIRecordButton.UseVisualStyleBackColor = true;
+            // 
+            // startIRecordButton
+            // 
+            this.startIRecordButton.Location = new System.Drawing.Point(468, 34);
+            this.startIRecordButton.Name = "startIRecordButton";
+            this.startIRecordButton.Size = new System.Drawing.Size(42, 23);
+            this.startIRecordButton.TabIndex = 60;
+            this.startIRecordButton.Text = "Rec";
+            this.startIRecordButton.UseVisualStyleBackColor = true;
+            // 
             // legend1
             // 
             this.legend1.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
             this.NorthLegendItem,
             this.SouthLegendItem});
             this.legend1.ItemSize = new System.Drawing.Size(12, 12);
-            this.legend1.Location = new System.Drawing.Point(452, 86);
+            this.legend1.Location = new System.Drawing.Point(460, 89);
             this.legend1.Name = "legend1";
             this.legend1.Size = new System.Drawing.Size(115, 22);
             this.legend1.TabIndex = 59;
@@ -1273,16 +1312,16 @@ namespace EDMHardwareControl
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(485, 27);
+            this.label63.Location = new System.Drawing.Point(504, 15);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(99, 23);
+            this.label63.Size = new System.Drawing.Size(80, 23);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
             // stopIMonitorPollButton
             // 
             this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 80);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 76);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
             this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopIMonitorPollButton.TabIndex = 55;
@@ -1292,7 +1331,7 @@ namespace EDMHardwareControl
             // 
             // iMonitorPollPeriod
             // 
-            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 25);
+            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
             this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
             this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
             this.iMonitorPollPeriod.TabIndex = 0;
@@ -1300,7 +1339,7 @@ namespace EDMHardwareControl
             // 
             // startIMonitorPollButton
             // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(579, 51);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(579, 45);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
             this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startIMonitorPollButton.TabIndex = 53;
@@ -3156,21 +3195,21 @@ namespace EDMHardwareControl
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -3495,6 +3534,21 @@ namespace EDMHardwareControl
             controller.StopIMonitorPoll();
         }
 
+        private void startIRecordButton_Click(object sender, EventArgs e)
+        {
+            controller.StartIRecord();
+        }
+
+        private void stopIRecordButton_Click(object sender, EventArgs e)
+        {
+            controller.StopIRecord();
+        }
+        
+        private void saveToFile_Click(object sender, EventArgs e)
+        {
+            controller.StopIRecord();
+            controller.SaveToFile();
+        }
         private void TargetStepButton_Click(object sender, EventArgs e)
         {
             controller.StepTarget();
@@ -3611,6 +3665,8 @@ namespace EDMHardwareControl
         {
 
         }
+
+        
 
         
 
