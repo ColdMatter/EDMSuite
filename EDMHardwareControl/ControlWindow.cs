@@ -1235,6 +1235,7 @@ namespace EDMHardwareControl
             this.stopIRecordButton.TabIndex = 61;
             this.stopIRecordButton.Text = "Stop";
             this.stopIRecordButton.UseVisualStyleBackColor = true;
+            this.stopIRecordButton.Click += new System.EventHandler(this.stopIRecordButton_Click);
             // 
             // startIRecordButton
             // 
@@ -1244,6 +1245,7 @@ namespace EDMHardwareControl
             this.startIRecordButton.TabIndex = 60;
             this.startIRecordButton.Text = "Rec";
             this.startIRecordButton.UseVisualStyleBackColor = true;
+            this.startIRecordButton.Click += new System.EventHandler(this.startIRecordButton_Click);
             // 
             // legend1
             // 
@@ -1312,9 +1314,9 @@ namespace EDMHardwareControl
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(504, 15);
+            this.label63.Location = new System.Drawing.Point(479, 15);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(80, 23);
+            this.label63.Size = new System.Drawing.Size(108, 23);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
@@ -3195,21 +3197,21 @@ namespace EDMHardwareControl
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -3665,6 +3667,8 @@ namespace EDMHardwareControl
         {
 
         }
+
+        
 
         
 

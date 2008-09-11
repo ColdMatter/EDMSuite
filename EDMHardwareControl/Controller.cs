@@ -1367,7 +1367,7 @@ namespace EDMHardwareControl
            
         }
 
-        Thread updateIMonThread;
+       Thread updateIMonThread;
         public void UpdateIMonitorAsync()
         {
             updateIMonThread = new Thread(delegate()
@@ -1456,13 +1456,12 @@ namespace EDMHardwareControl
         //private int iMonitorPollPeriod = 200;
         internal void StartIRecord()
         {
-            northCList.Clear();
-            southCList.Clear();
             lock (iRecordLock)
             {
                 iRecordThread = new Thread(new ThreadStart(IRecordWorker));
                 window.EnableControl(window.startIRecordButton, false);
                 window.EnableControl(window.stopIRecordButton, true);
+                window.EnableControl(window.saveToFile, true);
                 iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
                 iRecordThread.Start();
             }
@@ -1496,22 +1495,22 @@ namespace EDMHardwareControl
         {
             using (StreamWriter sw = new StreamWriter("Current.csv"))
                 {
-                    sw.Write("northCurrent");
-                    sw.Write(",");
-                    sw.WriteLine("southCurrent");
-                    sw.Write(",");
-                    sw.WriteLine(iMonitorPollPeriod);
-                    sw.WriteLine(northLeakageMonitor.MeasurementTime);
-                    sw.WriteLine(northLeakageMonitor.Slope);
-                    sw.WriteLine(northLeakageMonitor.Offset);
-                    sw.WriteLine(southLeakageMonitor.Offset);
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
+                    sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
+                    sw.WriteLine("Slope =" + " " +  northLeakageMonitor.Slope);
+                    sw.WriteLine("North offset =" + " " + northLeakageMonitor.Offset);
+                    sw.WriteLine("South offset =" + " " + southLeakageMonitor.Offset);
+                    sw.WriteLine("northCurrent" + ","+ "southCurrent");
+                
                         for (int i = 0; i < northCList.ToArray().Length; i++)
                             {
-                                sw.Write(northCList[i]);
-                                sw.Write(",");
-                                sw.WriteLine(southCList[i]);
+                                sw.WriteLine(northCList[i]+","+ southCList[i]);
+                                //sw.WriteLine(southCList[i]);
                             }
-                
+                            northCList.Clear();
+                            southCList.Clear();
+                            window.EnableControl(window.saveToFile, false);
                 }
         }
         public void UpdateLaserPhotodiodes()
