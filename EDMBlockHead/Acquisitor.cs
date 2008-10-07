@@ -193,8 +193,8 @@ namespace EDMBlockHead.Acquire
                     // randomise the Ramsey phase
                     // TODO: check whether the .NET rng is good enough
                     // TODO: reference where this number comes from
-                    double d = 2.3814 * (new Random().NextDouble());
-                    hardwareController.SetScramblerVoltage(d);
+ //                   double d = 2.3814 * (new Random().NextDouble());
+ //                   hardwareController.SetScramblerVoltage(d);
 
 					b.Points.Add(p);
 

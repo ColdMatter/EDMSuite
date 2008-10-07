@@ -233,6 +233,7 @@ def windowValue(value, minValue, maxValue):
 
 kTargetRotationPeriod = 15
 kReZeroLeakageMonitorsPeriod = 10
+r = Random()
 
 def EDMGo():
 	# Setup
@@ -287,6 +288,8 @@ def EDMGo():
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
+		# randomise Ramsey phase
+		hc.SetScramblerVoltage(2.3814 * r.NextDouble())
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
 		# do things that need periodically doing
 		if ((blockIndex % kTargetRotationPeriod) == 0):
