@@ -32,10 +32,14 @@ def sniff(channel, numOfSamples, sampleRate, displayEvery):
 		if ((i % displayEvery) == 0):
 			mn = sum(vals) / len(vals)
 			se = sqrt(sum((x - mn)**2 for x in vals)) / len(vals)
-			print "i: " + str(i) + "\tMean: " + str(mn) + "\tS.E: " + str(se)
+			print "i: " + str(i) + "\tMean: " + str(1E6 * mn) + "uV\tS.E: " + str(1E6 * se) + "uV"
 
 	t.Dispose()
 	return va
+
+def sniff1():
+	sniff("magnetometer", 1000, 1000, 5)
+
 
 def run_script():
 	print """Field sniffer (tm). Measures an analog input a number of times, throws the
