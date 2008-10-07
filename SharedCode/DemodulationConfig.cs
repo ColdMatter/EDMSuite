@@ -37,44 +37,8 @@ namespace Analysis.EDM
         static DemodulationConfig()
         {
             // here we stock the class' static library of configs up with some standard configs
-
-            // first, fwhm of the tof pulse for top and norm, wide gates for everything else.
-            DemodulationConfigBuilder fwhm = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "fwhm";
-                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
-                dg0.Name = "top";
-                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
-                dg1.Name = "norm";
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
-                dg2.Integrate = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
-                dg3.Integrate = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-
-                return dc;
-            };
-            standardConfigs.Add("fwhm", fwhm);
-
+            
+            // a wide gate - integrate everything
             DemodulationConfigBuilder wide = delegate(Block b)
             {
 
@@ -112,91 +76,37 @@ namespace Analysis.EDM
             };
             standardConfigs.Add("wide", wide);
 
+            // fwhm of the tof pulse for top and norm, wide gates for everything else.
+            AddSliceConfig("fwhm", 0, 1);
             // narrower than fwhm, takes only the center hwhm
-            DemodulationConfigBuilder hwhm = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "hwhm";
-                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0, 0.5);
-                dg0.Name = "top";
-                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, 0, 0.5);
-                dg1.Name = "norm";
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
-                dg2.Integrate = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
-                dg3.Integrate = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-
-                return dc;
-            };
-            standardConfigs.Add("hwhm", hwhm);
-
+            AddSliceConfig("hwhm", 0, 0.5);
             // only the fast half of the fwhm
-            DemodulationConfigBuilder fast = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "fast";
-                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, -0.5, 0.5);
-                dg0.Name = "top";
-                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, -0.5, 0.5);
-                dg1.Name = "norm";
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
-                dg2.Integrate = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
-                dg3.Integrate = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-
-                return dc;
-            };
-            standardConfigs.Add("fast", fast);
-
+            AddSliceConfig("fast", -0.5, 0.5);
             // the slow half of the fwhm
-            DemodulationConfigBuilder slow = delegate(Block b)
+            AddSliceConfig("slow", 0.5, 0.5);
+
+            // now some finer slices
+            double d = -1.4;
+            for (int i = 0; i < 15; i++)
+            {
+                AddSliceConfig("slice" + i , d, 0.2);
+                d += 0.2;
+            }
+        }
+
+        private static void AddSliceConfig(string name, double offset, double width)
+        {
+            // the slow half of the fwhm
+            DemodulationConfigBuilder dcb = delegate(Block b)
             {
                 DemodulationConfig dc;
                 GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
 
                 dc = new DemodulationConfig();
-                dc.AnalysisTag = "slow";
-                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0.5, 0.5);
+                dc.AnalysisTag = name;
+                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, offset, width);
                 dg0.Name = "top";
-                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, 0.5, 0.5);
+                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, offset, width);
                 dg1.Name = "norm";
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "mag1";
@@ -221,11 +131,11 @@ namespace Analysis.EDM
 
                 return dc;
             };
-            standardConfigs.Add("slow", slow);
-
+            standardConfigs.Add(name, dcb);
         }
 
      }
+
 
      public delegate DemodulationConfig DemodulationConfigBuilder(Block b);
 }
