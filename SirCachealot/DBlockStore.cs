@@ -12,6 +12,9 @@ namespace SirCachealot
         UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs);
         UInt32[] GetUIDsByCluster(string clusterName);
 
+        UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex);
+
         UInt32[] GetUIDsByTag(string tag, UInt32[] fromUIDs);
         UInt32[] GetUIDsByTag(string tag);
 

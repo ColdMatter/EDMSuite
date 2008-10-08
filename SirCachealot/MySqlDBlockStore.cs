@@ -31,6 +31,27 @@ namespace SirCachealot
             return GetByStringParameter("CLUSTER", clusterName);
         }
 
+        public UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE CLUSTER = ?cluster AND CLUSTERINDEX = ?index AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
+            mySqlComm.Parameters.AddWithValue("?index", clusterIndex);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE CLUSTER = ?cluster AND CLUSTERINDEX = ?index";
+            mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
+            mySqlComm.Parameters.AddWithValue("?index", clusterIndex);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
         public UInt32[] GetUIDsByTag(string tag, UInt32[] fromUIDs)
         {
             mySqlComm = mySql.CreateCommand();
