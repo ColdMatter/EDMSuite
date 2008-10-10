@@ -689,8 +689,10 @@ namespace ScanMaster.GUI
 			}
 			get
 			{
-				return new Range(GetCursorPosition(tofGraph, tofLowCursor),
-					GetCursorPosition(tofGraph, tofHighCursor));
+                double min = GetCursorPosition(tofGraph, tofLowCursor);
+                double max = GetCursorPosition(tofGraph, tofHighCursor);
+                if (max <= min) max = min + 1; //also somewhat arbitrary
+                return new Range(min, max);
 			}
 		}
 

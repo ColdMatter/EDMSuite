@@ -236,7 +236,7 @@ namespace ScanMaster.Acquire.Plugins
                     }
                 }
             }
-            //Console.WriteLine(decelSequence.ToString());
+            Console.WriteLine(decelSequence.ToString());
         }
 
         //// This is old code that uses a Mathematica package to generate the timing sequence

@@ -94,7 +94,7 @@ namespace DAQ.HAL
 
             //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-            AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1"); // Pin 21
+            AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1",-5,5); // Pin 21
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
 
             // map the counter channels
