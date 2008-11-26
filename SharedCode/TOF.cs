@@ -47,10 +47,6 @@ namespace Data
             int lowest = (int)Math.Floor(p);
             int highest = (int)Math.Ceiling(q);
 
-            // this shouldn't happen
-            //if (lowest < 0) lowest = 0;
-            //if (highest > length - 1) highest = length - 1;
-
             // sum over all trapeziums included in the gate range, even those partially included
             double sum = 0.0;
             for (int i = lowest; i < highest; i++) sum += ((double)clockPeriod * 0.5) * (tofData[i] + tofData[i + 1]);
@@ -92,19 +88,7 @@ namespace Data
 
         public double GatedMean(double startTime, double endTime)
         {
-            int low = (int)Math.Ceiling((startTime - gateStartTime) / clockPeriod);
-            int high = (int)Math.Floor((endTime - gateStartTime) / clockPeriod);
-
-            // check the range is sensible
-            if (low < 0) low = 0;
-            if (high > length - 1) high = length - 1;
-            // cheezy, temporary hack to kill off some infinity errors
-            if (low > high) return 0.000001;
-
-            // cheezy, temporary hack to kill off some infinity errors
-            double sum = 0.000001;
-            for (int i = low; i <= high; i++) sum += tofData[i];
-            return (sum / (high - low + 1));
+            return Integrate(startTime, endTime) / (endTime - startTime);
         }
 
         public static TOF operator +(TOF p1, TOF p2)
