@@ -286,6 +286,10 @@ namespace EDMHardwareControl
         public Button stopIRecordButton;
         public Button saveToFile;
         public CheckBox argonShutterCheckBox;
+        private Label label78;
+        public TextBox eOvershootHoldTextBox;
+        private Label label79;
+        public TextBox eOvershootFactorTextBox;
 
 
 		public Controller controller;
@@ -552,6 +556,7 @@ namespace EDMHardwareControl
             this.label30 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.argonShutterCheckBox = new System.Windows.Forms.CheckBox();
             this.label32 = new System.Windows.Forms.Label();
             this.probeShutterCheck = new System.Windows.Forms.CheckBox();
             this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
@@ -582,7 +587,10 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.argonShutterCheckBox = new System.Windows.Forms.CheckBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.eOvershootFactorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -623,6 +631,10 @@ namespace EDMHardwareControl
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label78);
+            this.groupBox2.Controls.Add(this.eOvershootHoldTextBox);
+            this.groupBox2.Controls.Add(this.label79);
+            this.groupBox2.Controls.Add(this.eOvershootFactorTextBox);
             this.groupBox2.Controls.Add(this.switchingLED);
             this.groupBox2.Controls.Add(this.rampLED);
             this.groupBox2.Controls.Add(this.label62);
@@ -669,7 +681,7 @@ namespace EDMHardwareControl
             // 
             // label62
             // 
-            this.label62.Location = new System.Drawing.Point(25, 156);
+            this.label62.Location = new System.Drawing.Point(25, 131);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(115, 23);
             this.label62.TabIndex = 47;
@@ -677,7 +689,7 @@ namespace EDMHardwareControl
             // 
             // eSwitchTimeTextBox
             // 
-            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 153);
+            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 128);
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
             this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eSwitchTimeTextBox.TabIndex = 3;
@@ -685,7 +697,7 @@ namespace EDMHardwareControl
             // 
             // label61
             // 
-            this.label61.Location = new System.Drawing.Point(25, 130);
+            this.label61.Location = new System.Drawing.Point(25, 110);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(115, 23);
             this.label61.TabIndex = 45;
@@ -693,7 +705,7 @@ namespace EDMHardwareControl
             // 
             // eBleedTimeTextBox
             // 
-            this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 127);
+            this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 107);
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
             this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eBleedTimeTextBox.TabIndex = 2;
@@ -701,15 +713,15 @@ namespace EDMHardwareControl
             // 
             // label60
             // 
-            this.label60.Location = new System.Drawing.Point(25, 208);
+            this.label60.Location = new System.Drawing.Point(25, 173);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(115, 23);
             this.label60.TabIndex = 45;
-            this.label60.Text = "Ramp up delay (s)";
+            this.label60.Text = "Overshoot hold (s)";
             // 
             // label57
             // 
-            this.label57.Location = new System.Drawing.Point(25, 105);
+            this.label57.Location = new System.Drawing.Point(25, 89);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(115, 23);
             this.label57.TabIndex = 41;
@@ -717,7 +729,7 @@ namespace EDMHardwareControl
             // 
             // eRampUpDelayTextBox
             // 
-            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 205);
+            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 212);
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
             this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpDelayTextBox.TabIndex = 5;
@@ -725,7 +737,7 @@ namespace EDMHardwareControl
             // 
             // label58
             // 
-            this.label58.Location = new System.Drawing.Point(25, 79);
+            this.label58.Location = new System.Drawing.Point(25, 68);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(115, 23);
             this.label58.TabIndex = 40;
@@ -733,7 +745,7 @@ namespace EDMHardwareControl
             // 
             // eRampDownDelayTextBox
             // 
-            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 102);
+            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 86);
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
             this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownDelayTextBox.TabIndex = 1;
@@ -741,7 +753,7 @@ namespace EDMHardwareControl
             // 
             // label59
             // 
-            this.label59.Location = new System.Drawing.Point(25, 182);
+            this.label59.Location = new System.Drawing.Point(25, 152);
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(115, 23);
             this.label59.TabIndex = 43;
@@ -749,7 +761,7 @@ namespace EDMHardwareControl
             // 
             // eRampDownTimeTextBox
             // 
-            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 76);
+            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 65);
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
             this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownTimeTextBox.TabIndex = 0;
@@ -757,7 +769,7 @@ namespace EDMHardwareControl
             // 
             // eRampUpTimeTextBox
             // 
-            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 179);
+            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 149);
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
             this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpTimeTextBox.TabIndex = 4;
@@ -1034,6 +1046,7 @@ namespace EDMHardwareControl
             this.groupBox13.Controls.Add(this.label38);
             this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
+            this.groupBox13.Enabled = false;
             this.groupBox13.Location = new System.Drawing.Point(493, 179);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(184, 113);
@@ -1043,6 +1056,7 @@ namespace EDMHardwareControl
             // 
             // eFieldAsymmetryCheckBox
             // 
+            this.eFieldAsymmetryCheckBox.Enabled = false;
             this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
             this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
             this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
@@ -1067,6 +1081,7 @@ namespace EDMHardwareControl
             // 
             // zeroPlusOneMinusBoostTextBox
             // 
+            this.zeroPlusOneMinusBoostTextBox.Enabled = false;
             this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
             this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
@@ -1075,6 +1090,7 @@ namespace EDMHardwareControl
             // 
             // zeroPlusBoostTextBox
             // 
+            this.zeroPlusBoostTextBox.Enabled = false;
             this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
             this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
@@ -2964,6 +2980,15 @@ namespace EDMHardwareControl
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Shutters";
             // 
+            // argonShutterCheckBox
+            // 
+            this.argonShutterCheckBox.Location = new System.Drawing.Point(98, 56);
+            this.argonShutterCheckBox.Name = "argonShutterCheckBox";
+            this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
+            this.argonShutterCheckBox.TabIndex = 25;
+            this.argonShutterCheckBox.Text = "Ar+";
+            this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
+            // 
             // label32
             // 
             this.label32.Location = new System.Drawing.Point(95, 29);
@@ -3246,14 +3271,37 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
-            // argonShutterCheckBox
+            // label78
             // 
-            this.argonShutterCheckBox.Location = new System.Drawing.Point(98, 56);
-            this.argonShutterCheckBox.Name = "argonShutterCheckBox";
-            this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
-            this.argonShutterCheckBox.TabIndex = 25;
-            this.argonShutterCheckBox.Text = "Ar+";
-            this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
+            this.label78.Location = new System.Drawing.Point(25, 215);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(115, 23);
+            this.label78.TabIndex = 52;
+            this.label78.Text = "Ramp up delay (s)";
+            // 
+            // eOvershootHoldTextBox
+            // 
+            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
+            this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
+            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootHoldTextBox.TabIndex = 50;
+            this.eOvershootHoldTextBox.Text = "1";
+            // 
+            // label79
+            // 
+            this.label79.Location = new System.Drawing.Point(25, 194);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(115, 23);
+            this.label79.TabIndex = 51;
+            this.label79.Text = "Overshoot factor";
+            // 
+            // eOvershootFactorTextBox
+            // 
+            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
+            this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
+            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootFactorTextBox.TabIndex = 49;
+            this.eOvershootFactorTextBox.Text = "2";
             // 
             // ControlWindow
             // 

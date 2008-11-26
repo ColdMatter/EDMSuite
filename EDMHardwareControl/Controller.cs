@@ -295,6 +295,8 @@ namespace EDMHardwareControl
             public double steppingBias;
             public double flPZT;
             public double flPZTStep;
+            public double overshootFactor;
+            public double overshootHold;
         }
 
         public void SaveParametersWithDialog()
@@ -347,6 +349,8 @@ namespace EDMHardwareControl
             dataStore.steppingBias = SteppingBiasVoltage;
             dataStore.flPZT = FLPZTVoltage;
             dataStore.flPZTStep = FLPZTStep;
+            dataStore.overshootFactor = EOvershootFactor;
+            dataStore.overshootHold = EOvershootHold;
 
             // serialize it
             BinaryFormatter s = new BinaryFormatter();
@@ -409,6 +413,9 @@ namespace EDMHardwareControl
                 SetSteppingBBiasVoltage( dataStore.steppingBias );
                 FLPZTVoltage = dataStore.flPZT;
                 FLPZTStep = dataStore.flPZTStep;
+                EOvershootFactor = dataStore.overshootFactor;
+                EOvershootHold = dataStore.overshootHold;
+
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to load settings"); }
@@ -731,6 +738,30 @@ namespace EDMHardwareControl
             }
         }
 
+        public double EOvershootFactor
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootFactorTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootFactorTextBox, value.ToString());
+            }
+        }
+
+        public double EOvershootHold
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootHoldTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootHoldTextBox, value.ToString());
+            }
+        }
+        
         public double ERampUpDelay
         {
             get
@@ -1113,8 +1144,14 @@ namespace EDMHardwareControl
                     EBleedEnabled = false;
                     EFieldPolarity = newEPolarity;
                     Thread.Sleep((int)(1000 * ESwitchTime));
-                    // ramp the field up
-                    RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampUpTime);
+                    // ramp the field up to the overshoot voltage
+                    RampVoltages(CPlusOffVoltage, EOvershootFactor * CPlusVoltage, 
+                                    CMinusOffVoltage, EOvershootFactor * CMinusVoltage, 20, ERampUpTime);
+                    // impose the overshoot delay
+                    Thread.Sleep((int)(1000 * EOvershootHold));
+                    // ramp back to the control point
+                    RampVoltages(EOvershootFactor * CPlusVoltage, CPlusVoltage,
+                                    EOvershootFactor * CMinusVoltage, CMinusVoltage, 5, 0);
                     // set as enabled
                     EFieldEnabled = true;
                     Thread.Sleep((int)(1000 * ERampUpDelay));
@@ -1145,7 +1182,9 @@ namespace EDMHardwareControl
                 double newMinus = startMinus + (i * (diffMinus / numSteps));
                 SetAnalogOutput(cPlusOutputTask, newPlus);
                 SetAnalogOutput(cMinusOutputTask, newMinus);
-                Thread.Sleep((int)rampDelay);
+                // don't sleep if no ramp delay (as sleep imposes a delay even when called with
+                // sleep time = 0).
+                if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
                 // flash the ramp LED
                 window.SetLED(window.rampLED, (i % 2) == 0);
             }
@@ -1153,27 +1192,28 @@ namespace EDMHardwareControl
 
         }
 
+        // ** E-field asymmetry is currently disabled as not implemented consistently
         // calculate the asymmetric field values
-        private void CalculateVoltages()
-        {
-            cPlusToWrite = CPlusVoltage;
-            cMinusToWrite = CMinusVoltage;
-            if (EFieldEnabled && window.eFieldAsymmetryCheckBox.Checked)
-            {
-                if (EFieldPolarity == false)
-                {
-                    cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
-                    cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
-                }
-                else
-                {
-                    cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
-                }
-            }
-        }
+        //private void CalculateVoltages()
+        //{
+        //    cPlusToWrite = CPlusVoltage;
+        //    cMinusToWrite = CMinusVoltage;
+        //    if (EFieldEnabled && window.eFieldAsymmetryCheckBox.Checked)
+        //    {
+        //        if (EFieldPolarity == false)
+        //        {
+        //            cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+        //            cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
+        //        }
+        //        else
+        //        {
+        //            cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+        //        }
+        //    }
+        //}
 
-        private double cPlusToWrite;
-        private double cMinusToWrite;
+        //private double cPlusToWrite;
+        //private double cMinusToWrite;
 
         public void UpdateVoltages()
         {
@@ -1182,9 +1222,11 @@ namespace EDMHardwareControl
             double cMinusOff = CMinusOffVoltage;
             if (EFieldEnabled)
             {
-                CalculateVoltages();
-                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
-                SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                //CalculateVoltages();
+                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+                SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
             }
             else
             {
