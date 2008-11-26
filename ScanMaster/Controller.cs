@@ -254,6 +254,7 @@ namespace ScanMaster
 				profileManager.LoadProfileSetFromXml(fs);
 				fs.Close();
 				lastProfileSetPath = dialog.FileName;
+                UpdateWindowTitle(dialog.FileName);
 			}
 		}
 
@@ -263,7 +264,8 @@ namespace ScanMaster
 			profileManager.LoadProfileSetFromXml(fs);
 			fs.Close();
 			lastProfileSetPath = path;
-		}
+            UpdateWindowTitle(path);
+        }
 
 		public void SaveProfileSet()
 		{
@@ -278,8 +280,17 @@ namespace ScanMaster
 					(System.IO.FileStream)dialog.OpenFile();
 				profileManager.SaveProfileSetAsXml(fs);
 				fs.Close();
+                UpdateWindowTitle(dialog.FileName);
 			}
 		}
+
+        // puts the current profile's filename in the window title
+        private void UpdateWindowTitle(string path)
+        {
+            string[] pathBits = path.Split(new char[] { '\\' });
+            string profileName = pathBits[pathBits.Length - 1];
+            controllerWindow.SetWindowTitle("ScanMaster 2k8 - " + profileName);
+        }
 
 		#endregion
 

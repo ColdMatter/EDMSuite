@@ -414,9 +414,9 @@ namespace ScanMaster.GUI
             this.MaximizeBox = false;
             this.Menu = this.mainMenu1;
             this.Name = "ControllerWindow";
-            this.Text = "ScanMaster 2k5";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
+            this.Text = "ScanMaster 2k8";
             this.Load += new System.EventHandler(this.ControllerWindow_Load);
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -662,6 +662,17 @@ namespace ScanMaster.GUI
         private void ControllerWindow_Load(object sender, EventArgs e)
         {
             UpdateUI();
+        }
+
+        // thread-safe wrapper for setting window title.
+        public void SetWindowTitle(string text)
+        {
+            BeginInvoke(new SetTextDelegate(SetWindowTitleInternal), new object[] { text });
+        }
+        private delegate void SetTextDelegate(string text);
+        private void SetWindowTitleInternal(string text)
+        {
+            Text = text;
         }
 
 	}
