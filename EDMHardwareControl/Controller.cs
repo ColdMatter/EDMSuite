@@ -121,6 +121,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("notPIFlipEnable");
             CreateDigitalTask("pumpShutter");
             CreateDigitalTask("probeShutter");
+            CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
 
             // initialise the current leakage monitors
@@ -1728,6 +1729,11 @@ namespace EDMHardwareControl
         internal void SetProbeShutter(bool enable)
         {
             SetDigitalLine("probeShutter", enable);
+        }
+
+        internal void SetArgonShutter(bool enable)
+        {
+            SetDigitalLine("argonShutter", enable);
         }
 
         public void SetScanningBVoltage()

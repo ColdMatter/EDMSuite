@@ -285,6 +285,7 @@ namespace EDMHardwareControl
         public Button startIRecordButton;
         public Button stopIRecordButton;
         public Button saveToFile;
+        public CheckBox argonShutterCheckBox;
 
 
 		public Controller controller;
@@ -581,6 +582,7 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.argonShutterCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -969,7 +971,6 @@ namespace EDMHardwareControl
             this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
-            this.cPlusTextBox.TextChanged += new System.EventHandler(this.cPlusTextBox_TextChanged);
             // 
             // groupBox5
             // 
@@ -2903,7 +2904,6 @@ namespace EDMHardwareControl
             this.pumpMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.pumpMonitorTextBox.TabIndex = 51;
             this.pumpMonitorTextBox.Text = "0";
-            this.pumpMonitorTextBox.TextChanged += new System.EventHandler(this.pumpMonitorTextBox_TextChanged);
             // 
             // pump2MonitorTextBox
             // 
@@ -2915,7 +2915,6 @@ namespace EDMHardwareControl
             this.pump2MonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.pump2MonitorTextBox.TabIndex = 50;
             this.pump2MonitorTextBox.Text = "0";
-            this.pump2MonitorTextBox.TextChanged += new System.EventHandler(this.pump2MonitorTextBox_TextChanged);
             // 
             // probeMonitorTextBox
             // 
@@ -2927,7 +2926,6 @@ namespace EDMHardwareControl
             this.probeMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.probeMonitorTextBox.TabIndex = 49;
             this.probeMonitorTextBox.Text = "0";
-            this.probeMonitorTextBox.TextChanged += new System.EventHandler(this.probeMonitorTextBox_TextChanged);
             // 
             // label29
             // 
@@ -2955,6 +2953,7 @@ namespace EDMHardwareControl
             // 
             // groupBox10
             // 
+            this.groupBox10.Controls.Add(this.argonShutterCheckBox);
             this.groupBox10.Controls.Add(this.label32);
             this.groupBox10.Controls.Add(this.probeShutterCheck);
             this.groupBox10.Controls.Add(this.pumpShutterCheck);
@@ -3191,27 +3190,27 @@ namespace EDMHardwareControl
             this.saveParametersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -3246,6 +3245,15 @@ namespace EDMHardwareControl
             this.radioButton3.TabIndex = 32;
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
+            // 
+            // argonShutterCheckBox
+            // 
+            this.argonShutterCheckBox.Location = new System.Drawing.Point(98, 56);
+            this.argonShutterCheckBox.Name = "argonShutterCheckBox";
+            this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
+            this.argonShutterCheckBox.TabIndex = 25;
+            this.argonShutterCheckBox.Text = "Ar+";
+            this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
             // 
             // ControlWindow
             // 
@@ -3480,6 +3488,11 @@ namespace EDMHardwareControl
 			controller.SetProbeShutter(probeShutterCheck.Checked);
 		}
 
+        private void argonShutterCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetArgonShutter(argonShutterCheckBox.Checked);
+        }
+
 		private void updateLaserPhotodiodesButton_Click(object sender, EventArgs e)
 		{
 			controller.UpdateLaserPhotodiodes();
@@ -3647,28 +3660,7 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
-
-        private void probeMonitorTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cPlusTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pumpMonitorTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pump2MonitorTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        
+  
 
         
 
