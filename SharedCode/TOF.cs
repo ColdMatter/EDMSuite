@@ -22,20 +22,63 @@ namespace Data
             return (sum * clockPeriod);
         }
 
+        // Integrate returns the area under a part of the TOF curve. It interpolates linearly
+        // between sample points i.e. between each pair of sample times is a trapezium: this
+        // function returns the area of these trapeziums that are between the gates. A picture
+        // would really be better here!
         public double Integrate(double startTime, double endTime)
         {
-            int low = (int)Math.Ceiling((startTime - gateStartTime) / clockPeriod);
-            int high = (int)Math.Floor((endTime - gateStartTime) / clockPeriod);
+            // check for swapped gates
+            if (startTime > endTime) return 0;
+            // is the gate region null, or entirely outside the TOF?
+            int gateEndTime = gateStartTime + (length - 1) * clockPeriod;
+            if (startTime == endTime) return 0;
+            if (startTime > gateEndTime) return 0;
+            if (endTime < gateStartTime) return 0;
+            // trim the gates
+            if (endTime > gateEndTime) endTime = gateEndTime;
+            if (startTime < gateStartTime) startTime = gateStartTime;
+            // it's now possible for the trimmed gate region to be null (!) so check again
+            if (startTime == endTime) return 0;
+ 
+            // calculate the the points that are included in the range, plus the point above and below
+            double p = (startTime - (double)gateStartTime) / (double)clockPeriod;
+            double q = (endTime - (double)gateStartTime) / (double)clockPeriod;
+            int lowest = (int)Math.Floor(p);
+            int highest = (int)Math.Ceiling(q);
 
-            // check the range is sensible
-            if (low < 0) low = 0;
-            if (high > length - 1) high = length - 1;
-            if (low > high) return 0;
+            // this shouldn't happen
+            //if (lowest < 0) lowest = 0;
+            //if (highest > length - 1) highest = length - 1;
 
-            double sum = 0;
-            for (int i = low; i <= high; i++) sum += tofData[i];
-            return (sum * clockPeriod);
+            // sum over all trapeziums included in the gate range, even those partially included
+            double sum = 0.0;
+            for (int i = lowest; i < highest; i++) sum += ((double)clockPeriod * 0.5) * (tofData[i] + tofData[i + 1]);
+
+            // correct the first and last trapeziums which may not be fully included
+            sum -= ((2 * tofData[lowest]) + (tofData[lowest + 1] - tofData[lowest]) 
+                            * (p - Math.Floor(p))) * ((double)clockPeriod * 0.5 * (p - Math.Floor(p)));
+            sum -= ((2 * tofData[highest]) - (tofData[highest] - tofData[highest - 1])
+                            * (Math.Ceiling(q) - q)) * ((double)clockPeriod * 0.5 * (Math.Ceiling(q) - q));
+
+            return sum;
         }
+
+        // this is the old integrate method that did no interpolation.
+        //public double IntegrateOld(double startTime, double endTime)
+        //{
+        //    int low = (int)Math.Ceiling((startTime - gateStartTime) / clockPeriod);
+        //    int high = (int)Math.Floor((endTime - gateStartTime) / clockPeriod);
+
+        //    // check the range is sensible
+        //    if (low < 0) low = 0;
+        //    if (high > length - 1) high = length - 1;
+        //    if (low > high) return 0;
+
+        //    double sum = 0;
+        //    for (int i = low; i <= high; i++) sum += tofData[i];
+        //    return (sum * clockPeriod);
+        //}
 
         public double Mean
         {
@@ -55,9 +98,11 @@ namespace Data
             // check the range is sensible
             if (low < 0) low = 0;
             if (high > length - 1) high = length - 1;
-            if (low > high) return 0;
-  
-            double sum = 0;
+            // cheezy, temporary hack to kill off some infinity errors
+            if (low > high) return 0.000001;
+
+            // cheezy, temporary hack to kill off some infinity errors
+            double sum = 0.000001;
             for (int i = low; i <= high; i++) sum += tofData[i];
             return (sum / (high - low + 1));
         }
