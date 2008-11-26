@@ -207,19 +207,19 @@ def updateLocks(bState):
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
-#	hc.SetRF1FMCentre( newRF1F )
+	hc.SetRF1FMCentre( newRF1F )
 	#
 	deltaRF2F = - (1.0/5.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
-#	hc.SetRF2FMCentre( newRF2F )
+	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock
 	deltaLF1 = 1.25 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
-	hc.SetFLPZTVoltage( newLF1 )
+	#hc.SetFLPZTVoltage( newLF1 )
 
 
 def windowValue(value, minValue, maxValue):
@@ -231,7 +231,7 @@ def windowValue(value, minValue, maxValue):
 		else:
 			return maxValue
 
-kTargetRotationPeriod = 8
+kTargetRotationPeriod = 10
 kReZeroLeakageMonitorsPeriod = 10
 r = Random()
 
@@ -289,18 +289,18 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		hc.SetScramblerVoltage(2.3814 * r.NextDouble())
+		hc.SetScramblerVoltage(0.724774 * r.NextDouble())
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
 		# do things that need periodically doing
 		if ((blockIndex % kTargetRotationPeriod) == 0):
 			print("Rotating target.")
-			hc.StepTarget(3)
+			hc.StepTarget(15)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (dbValue > -10):
+		if (dbValue < 6):
 			print("Dodgy spot target rotation.")
-			hc.StepTarget(2)
+			hc.StepTarget(10)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			hc.EnableEField( False )
