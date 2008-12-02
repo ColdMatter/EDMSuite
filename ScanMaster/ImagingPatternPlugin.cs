@@ -33,8 +33,9 @@ namespace ScanMaster.Acquire.Plugins
 
             settings["probeStart"] = 0;
             settings["probeDuration"] = 100;
-            settings["shutterToProbeDelay"] = 50;
+            settings["shutterStart"] = 50;
             settings["shutterDuration"] = 200;
+
         }
 
         protected override void DoAcquisitionStarting()
@@ -60,7 +61,7 @@ namespace ScanMaster.Acquire.Plugins
                 - (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
                 (int)settings["probeStart"],
                 (int)settings["probeDuration"],
-                (int)settings["probeStart"]-(int)settings["shutterToProbeDelay"],
+                (int)settings["shutterStart"],
                 (int)settings["shutterDuration"],
                 GateStartTimePGUnits,
                 (int)settings["ttlSwitchPort"],

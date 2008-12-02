@@ -123,8 +123,9 @@ namespace CameraHardwareControl
             this.axCWIMAQViewer1.Location = new System.Drawing.Point(10, 30);
             this.axCWIMAQViewer1.Name = "axCWIMAQViewer1";
             this.axCWIMAQViewer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axCWIMAQViewer1.OcxState")));
-            this.axCWIMAQViewer1.Size = new System.Drawing.Size(1033, 726);
+            this.axCWIMAQViewer1.Size = new System.Drawing.Size(848, 671);
             this.axCWIMAQViewer1.TabIndex = 0;
+            this.axCWIMAQViewer1.ImageMouseMove += new NationalInstruments.CWIMAQControls._AxDCWIMAQViewerEvents_ImageMouseMoveEventHandler(this.axCWIMAQViewer1_ImageMouseMove);
             // 
             // InterfaceName
             // 
@@ -133,13 +134,14 @@ namespace CameraHardwareControl
             this.InterfaceName.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.InterfaceName.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.InterfaceName.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.InterfaceName.Location = new System.Drawing.Point(10, 637);
+            this.InterfaceName.Location = new System.Drawing.Point(10, 740);
             this.InterfaceName.MaxLength = 0;
             this.InterfaceName.Name = "InterfaceName";
             this.InterfaceName.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.InterfaceName.Size = new System.Drawing.Size(154, 23);
+            this.InterfaceName.Size = new System.Drawing.Size(117, 23);
             this.InterfaceName.TabIndex = 3;
             this.InterfaceName.Text = "cam0";
+            this.InterfaceName.TextChanged += new System.EventHandler(this.InterfaceName_TextChanged);
             // 
             // Label
             // 
@@ -147,12 +149,13 @@ namespace CameraHardwareControl
             this.Label.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label.Location = new System.Drawing.Point(10, 618);
+            this.Label.Location = new System.Drawing.Point(12, 715);
             this.Label.Name = "Label";
             this.Label.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label.Size = new System.Drawing.Size(97, 20);
             this.Label.TabIndex = 5;
             this.Label.Text = "Camera Name";
+            this.Label.Click += new System.EventHandler(this.Label_Click);
             // 
             // SnapButton
             // 
@@ -160,7 +163,7 @@ namespace CameraHardwareControl
             this.SnapButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.SnapButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SnapButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SnapButton.Location = new System.Drawing.Point(172, 615);
+            this.SnapButton.Location = new System.Drawing.Point(172, 718);
             this.SnapButton.Name = "SnapButton";
             this.SnapButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.SnapButton.Size = new System.Drawing.Size(54, 38);
@@ -175,7 +178,7 @@ namespace CameraHardwareControl
             this.QuitButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.QuitButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.QuitButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.QuitButton.Location = new System.Drawing.Point(763, 618);
+            this.QuitButton.Location = new System.Drawing.Point(763, 721);
             this.QuitButton.Name = "QuitButton";
             this.QuitButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.QuitButton.Size = new System.Drawing.Size(60, 39);
@@ -191,7 +194,7 @@ namespace CameraHardwareControl
             this.StopButton.Enabled = false;
             this.StopButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StopButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.StopButton.Location = new System.Drawing.Point(683, 618);
+            this.StopButton.Location = new System.Drawing.Point(683, 721);
             this.StopButton.Name = "StopButton";
             this.StopButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.StopButton.Size = new System.Drawing.Size(50, 39);
@@ -206,7 +209,7 @@ namespace CameraHardwareControl
             this.GrabButton.Cursor = System.Windows.Forms.Cursors.Default;
             this.GrabButton.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GrabButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.GrabButton.Location = new System.Drawing.Point(620, 618);
+            this.GrabButton.Location = new System.Drawing.Point(620, 721);
             this.GrabButton.Name = "GrabButton";
             this.GrabButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.GrabButton.Size = new System.Drawing.Size(56, 39);
@@ -223,7 +226,7 @@ namespace CameraHardwareControl
             // ImageList
             // 
             this.ImageList.LargeChange = 1;
-            this.ImageList.Location = new System.Drawing.Point(416, 663);
+            this.ImageList.Location = new System.Drawing.Point(416, 766);
             this.ImageList.Maximum = 5;
             this.ImageList.Name = "ImageList";
             this.ImageList.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -234,7 +237,7 @@ namespace CameraHardwareControl
             // 
             // AquireSequenceButton
             // 
-            this.AquireSequenceButton.Location = new System.Drawing.Point(272, 615);
+            this.AquireSequenceButton.Location = new System.Drawing.Point(272, 718);
             this.AquireSequenceButton.Name = "AquireSequenceButton";
             this.AquireSequenceButton.Size = new System.Drawing.Size(122, 31);
             this.AquireSequenceButton.TabIndex = 11;
@@ -245,7 +248,7 @@ namespace CameraHardwareControl
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(516, 667);
+            this.label1.Location = new System.Drawing.Point(516, 770);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 17);
             this.label1.TabIndex = 12;
@@ -258,7 +261,7 @@ namespace CameraHardwareControl
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(707, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(874, 26);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -296,7 +299,7 @@ namespace CameraHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(401, 618);
+            this.label2.Location = new System.Drawing.Point(413, 718);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 17);
             this.label2.TabIndex = 17;
@@ -304,7 +307,7 @@ namespace CameraHardwareControl
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(272, 653);
+            this.button2.Location = new System.Drawing.Point(272, 756);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(122, 29);
             this.button2.TabIndex = 19;
@@ -315,7 +318,7 @@ namespace CameraHardwareControl
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
-            this.ClientSize = new System.Drawing.Size(707, 646);
+            this.ClientSize = new System.Drawing.Size(874, 806);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -375,7 +378,22 @@ namespace CameraHardwareControl
             if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) // camera trigger polarity needs to be falling edge - see page 153 of Marlin  manual. Also for explanation of trigger mode 1
                 DisplayError(errorCode, out errorMessage);
 
+           // errorCode = CWIMAQ1394.SetAttribute(sid, CWIMAQ1394.Attribute.IMG1394_ATTR_VIDEO_MODE, 5);
+           // if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)//colour processing is bypassed, giving out just raw binary data
+            //    DisplayError(errorCode, out errorMessage);
+
+            errorCode = CWIMAQ1394.SetAttribute(sid, CWIMAQ1394.Attribute.IMG1394_ATTR_TRIGGER_DELAY, 0);
+            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) // sets internal delay between incoming external trigger and start of frame exposure to 0
+                DisplayError(errorCode, out errorMessage);
            
+            errorCode = CWIMAQ1394.SetAttribute(sid, CWIMAQ1394.Attribute.IMG1394_ATTR_AUTO_EXPOSURE, 0);
+            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) // turn off auto exposure
+                DisplayError(errorCode, out errorMessage);
+
+            errorCode = CWIMAQ1394.SetAttribute(sid, CWIMAQ1394.Attribute.IMG1394_ATTR_SHUTTER, 1);
+            if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) // we set the camera shutter attribute to 1 in order to minimise the exposure time.
+                DisplayError(errorCode, out errorMessage);
+
 
         }
 
@@ -511,7 +529,8 @@ namespace CameraHardwareControl
             errorCode = CWIMAQ1394.SetupSequenceCW(sid, ref imageArray, numFrames, 0);
             if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
                 DisplayError(errorCode, out errorMessage);
-         
+
+           
         }
         
 
@@ -532,6 +551,8 @@ namespace CameraHardwareControl
             errorCode = CWIMAQ1394.SnapCW(sid, currentImage);
             if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD)
                 DisplayError(errorCode, out errorMessage);
+
+         
 
              CWIMAQ1394.Close(sid);
 
@@ -559,7 +580,8 @@ namespace CameraHardwareControl
 			currentImage = new NationalInstruments.CWIMAQControls.CWIMAQImageClass();			
 			axCWIMAQViewer1.Attach(currentImage);
 
-			errorCode = CWIMAQ1394.CameraOpen2(InterfaceName.Text, CWIMAQ1394.CameraMode.IMG1394_CAMERA_MODE_CONTROLLER, out sid);
+
+            errorCode = CWIMAQ1394.CameraOpen2(InterfaceName.Text, CWIMAQ1394.CameraMode.IMG1394_CAMERA_MODE_CONTROLLER, out sid);
 			if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) 
 				DisplayError(errorCode, out errorMessage);
 						
@@ -576,8 +598,10 @@ namespace CameraHardwareControl
 
         private void grabTriggeredImages(){
 
-            currentImage = new NationalInstruments.CWIMAQControls.CWIMAQImageClass();			
-			
+            currentImage = new NationalInstruments.CWIMAQControls.CWIMAQImageClass();
+
+          
+
 			errorCode = CWIMAQ1394.CameraOpen2(InterfaceName.Text, CWIMAQ1394.CameraMode.IMG1394_CAMERA_MODE_CONTROLLER, out sid);
 			if (errorCode != CWIMAQ1394.ErrorCodes.IMG1394_ERR_GOOD) 
 				DisplayError(errorCode, out errorMessage);
@@ -821,6 +845,21 @@ namespace CameraHardwareControl
         private void button2_Click_1(object sender, EventArgs e)
         {
             DumpAndDisplay();
+        }
+
+        private void Label_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void InterfaceName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void axCWIMAQViewer1_ImageMouseMove(object sender, _DCWIMAQViewerEvents_ImageMouseMoveEvent e)
+        {
+
         }
     }
 }

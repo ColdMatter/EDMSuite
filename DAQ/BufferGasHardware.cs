@@ -20,16 +20,22 @@ namespace DAQ.HAL
             // map the digital channels
             string pgBoard = (string)Boards["pg"];
 
-            AddDigitalOutputChannel("q", pgBoard, 0, 0);//pin 10
-            AddDigitalOutputChannel("aom", pgBoard, 2, 1);
-            AddDigitalOutputChannel("flash", pgBoard, 0, 2);
+            AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
+            AddDigitalOutputChannel("aom", pgBoard, 2, 1);//not used 
+            AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
             //(0,3) pin 12 is unconnected
-            AddDigitalOutputChannel("shutter", pgBoard, 0, 4);//
-            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//pin 44
-            //(0,5) is reserved as the switch line
-            AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+            AddDigitalOutputChannel("shutterTrig1", pgBoard, 0, 4);// Pin 13, triggers camera for on-shots
+            AddDigitalOutputChannel("shutterTrig2", pgBoard, 0, 5);// Pin 47, triggers camera for off-shots
+            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 connected to aom 
+            
+            AddDigitalOutputChannel("valve", pgBoard, 0, 6);//not used
 
-            AddDigitalOutputChannel("detector", pgBoard, 2, 0); //Pin 16
+            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+            AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7); //Pin 15 (OffShot)from pg to daq
+
+            //digital output P 0.6 wired up, not used (Pin 48)
+            // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
+            AddDigitalOutputChannel("digitalSwitchChannel", (string)Boards["daq"], 0, 0);//enable for camera
 
             // add things to the info
             // the analog triggers
@@ -38,13 +44,14 @@ namespace DAQ.HAL
 
             // map the analog channels
             string daqBoard = (string)Boards["daq"];
-            AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 68
-            AddAnalogInputChannel("photodiode", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 33
-            AddAnalogInputChannel("bogus", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 65
+            AddAnalogInputChannel("detector1", daqBoard + "/ai0", AITerminalConfiguration.Nrse);//Pin 68
+            AddAnalogInputChannel("detector2", daqBoard + "/ai3", AITerminalConfiguration.Nrse);//Pin 30
+            AddAnalogInputChannel("pressure1", daqBoard + "/ai1", AITerminalConfiguration.Nrse);//Pin 33 pressure reading at the moment
+            AddAnalogInputChannel("cavity", daqBoard + "/ai2", AITerminalConfiguration.Nrse);//Pin 65
             AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
-
+            //analog inputs wired up, but not used:/ai4, /ai6, /ai8, (Pins: 28,25,34)
             //map the counter channels
-            AddCounterChannel("pmt", daqBoard + "/ctr0");
+          //AddCounterChannel("pmt", daqBoard + "/ctr0");
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
         }
 

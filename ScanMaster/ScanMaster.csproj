@@ -327,6 +327,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TofFitter.cs" />
+    <Compile Include="TTLSwitchPlugin.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -365,6 +366,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

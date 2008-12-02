@@ -21,9 +21,13 @@ namespace ScanMaster.Acquire.Plugins
     {
 
         [NonSerialized]
-        private Task inputTask;
+        private Task inputTask1;
         [NonSerialized]
-        private AnalogMultiChannelReader reader;
+        private Task inputTask2;
+        [NonSerialized]
+        private AnalogMultiChannelReader reader1;
+        [NonSerialized]
+        private AnalogMultiChannelReader reader2;
         [NonSerialized]
         private double[,] latestData;
 
@@ -39,7 +43,8 @@ namespace ScanMaster.Acquire.Plugins
 
            
             // configure the analog input
-            inputTask = new Task("analog gatherer " /*+ (string)settings["channel"]*/);
+            inputTask1 = new Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
+            inputTask2 = new Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
 
             // new analog channel, range -10 to 10 volts
             //			if (!Environs.Debug)
@@ -48,28 +53,48 @@ namespace ScanMaster.Acquire.Plugins
             string[] channels = channelList.Split(new char[] { ',' });
 
             foreach (string channel in channels)
+            {
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                    inputTask,
+                    inputTask1,
                     (double)settings["inputRangeLow"],
                     (double)settings["inputRangeHigh"]
                     );
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    inputTask2,
+                    (double)settings["inputRangeLow"],
+                    (double)settings["inputRangeHigh"]
+                    );
+            }
 
             // internal clock, finite acquisition
-            inputTask.Timing.ConfigureSampleClock(
+            inputTask1.Timing.ConfigureSampleClock(
+                "",
+                (int)settings["sampleRate"],
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples,
+                (int)settings["gateLength"]);
+            inputTask2.Timing.ConfigureSampleClock(
                 "",
                 (int)settings["sampleRate"],
                 SampleClockActiveEdge.Rising,
                 SampleQuantityMode.FiniteSamples,
                 (int)settings["gateLength"]);
 
-            // trigger off PFI0 (with the standard routing, that's the same as trig1)
-            inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+
+            // trigger off PFI0 (with the standard routing, that's the same as trig1, pin 11)
+            inputTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo("analogTrigger0"),
                 DigitalEdgeStartTriggerEdge.Rising);
+            // trigger off PFI1 (with the standard routing, that's the same as trig2, pin 10)
+            inputTask2.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("analogTrigger1"),
+                DigitalEdgeStartTriggerEdge.Rising);
 
-            inputTask.Control(TaskAction.Verify);
+            inputTask1.Control(TaskAction.Verify);
+            inputTask2.Control(TaskAction.Verify);
             //			}
-            reader = new AnalogMultiChannelReader(inputTask.Stream);
+            reader1 = new AnalogMultiChannelReader(inputTask1.Stream);
+            reader2 = new AnalogMultiChannelReader(inputTask2.Stream);
 
             cameraControl = new CameraHardwareControl.Controller();
 
@@ -82,8 +107,14 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ScanStarting()
         {
-
-         cameraControl.primeAquisition((int)config.outputPlugin.Settings["pointsPerScan"]);
+            if ((bool)config.switchPlugin.Settings["switchActive"])
+            {
+                cameraControl.primeAquisition(2 * (int)config.outputPlugin.Settings["pointsPerScan"]);
+            }
+            else
+            {
+                cameraControl.primeAquisition((int)config.outputPlugin.Settings["pointsPerScan"]);
+            }
            
         }
 
@@ -95,8 +126,9 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionFinished()
         {
-            // release the analog input
-            inputTask.Dispose();
+            // release the analog inputs
+            inputTask1.Dispose();
+            inputTask2.Dispose();
 
             cameraControl.CloseCamera();
 
@@ -108,14 +140,19 @@ namespace ScanMaster.Acquire.Plugins
             {
                 if (!Environs.Debug)
                 {
-
-                   // cameraControl.RecordScanParameter(ToString[config.outputPlugin.ScanParameter));
-
+                    if (config.switchPlugin.State == true)
+                    {
+                        inputTask1.Start();
+                        latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
+                        inputTask1.Stop();
+                    }
+                    else
+                    {
+                        inputTask2.Start();
+                        latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
+                        inputTask2.Stop();
+                    }
                     cameraControl.CameraArmAndWait(config.outputPlugin.ScanParameter);
-
-                    inputTask.Start();
-                    latestData = reader.ReadMultiSample((int)settings["gateLength"]);
-                    inputTask.Stop();
                 }
             }
         }
@@ -129,7 +166,7 @@ namespace ScanMaster.Acquire.Plugins
                     if (!Environs.Debug)
                     {
                         Shot s = new Shot();
-                        for (int i = 0; i < inputTask.AIChannels.Count; i++)
+                        for (int i = 0; i < inputTask1.AIChannels.Count; i++)
                         {
                             TOF t = new TOF();
                             t.ClockPeriod = (int)settings["clockPeriod"];

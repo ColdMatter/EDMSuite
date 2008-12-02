@@ -33,21 +33,20 @@ namespace ScanMaster.Acquire.Patterns
 
             for (int i = 0; i < numberOfOnOffShots; i++)
             {
-
-                int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
-                // first the pulse with the switch line high
-                Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
-                Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, probeStart, probeDuration, shutterStart,shutterDuration, delayToDetectorTrigger, "detector");
+                // first the pulse with the YAG
+                Shot(time, valvePulseLength, valveToQ, flashToQ, probeStart, probeDuration, 
+                    shutterStart, shutterDuration, delayToDetectorTrigger, "detector", "shutterTrig1", true);
                 time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
                 {
                     FlashlampPulse(time, valveToQ, flashToQ);
                     time += flashlampPulseInterval;
                 }
-                // now with the switch line low, if modulation is true (otherwise another with line high)
+                // now without the YAG, if modulation is true (otherwise another with the YAG)
                 if (modulation)
                 {
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2,  probeStart, probeDuration, shutterStart,shutterDuration, delayToDetectorTrigger, "detectorprime");
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, probeStart, probeDuration,
+                         shutterStart, shutterDuration, delayToDetectorTrigger, "detectorprime", "shutterTrig2", false);
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
                     {
@@ -57,8 +56,8 @@ namespace ScanMaster.Acquire.Patterns
                 }
                 else
                 {
-                    Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, probeStart, probeDuration, shutterStart, shutterDuration, delayToDetectorTrigger, "detector");
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, probeStart, probeDuration,
+                    shutterStart, shutterDuration, delayToDetectorTrigger, "detector", "shutterTrig1", true);
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
                     {
@@ -77,39 +76,35 @@ namespace ScanMaster.Acquire.Patterns
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
         }
 
-        public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
-            int aomStart2, int aomDuration2, int probeStart, int probeDuration, int shutterStart, int shutterDuration, int delayToDetectorTrigger, string detectorTriggerSource)
+        public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, 
+            int probeStart, int probeDuration, int shutterStart, int shutterDuration, 
+            int delayToDetectorTrigger, string detectorTriggerSource, string cameraTriggerSource, bool yag)
         {
             int time = 0;
             int tempTime = 0;
-
+            
             // valve pulse
             tempTime = Pulse(startTime, 0, valvePulseLength,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["valve"]).BitNumber);
             if (tempTime > time) time = tempTime;
-            // Flash pulse
-            tempTime = Pulse(startTime, valveToQ - flashToQ, FLASH_PULSE_LENGTH,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
-            if (tempTime > time) time = tempTime;
-            // Q pulse
-            tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
-            if (tempTime > time) time = tempTime;
-            // aom pulse 1
-            tempTime = Pulse(startTime, aomStart1 + valveToQ, aomDuration1,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom"]).BitNumber);
-            if (tempTime > time) time = tempTime;
-            // aom pulse 2
-            tempTime = Pulse(startTime, aomStart2 + valveToQ, aomDuration2,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom"]).BitNumber);
-            if (tempTime > time) time = tempTime;
+            if (yag)
+            {
+                // Flash pulse
+                tempTime = Pulse(startTime, valveToQ - flashToQ, FLASH_PULSE_LENGTH,
+                    ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
+                if (tempTime > time) time = tempTime;
+                // Q pulse
+                tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
+                    ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
+                if (tempTime > time) time = tempTime;
+            }
             // probe pulse
             tempTime = Pulse(startTime, probeStart + valveToQ, probeDuration,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["probe"]).BitNumber);
             if (tempTime > time) time = tempTime;
             // shutter pulse
             tempTime = Pulse(startTime, shutterStart + valveToQ, shutterDuration,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter"]).BitNumber);
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[cameraTriggerSource]).BitNumber);
             if (tempTime > time) time = tempTime;
             // Detector trigger
             tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
