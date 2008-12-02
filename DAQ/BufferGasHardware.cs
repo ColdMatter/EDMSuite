@@ -41,6 +41,7 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            Info.Add("phaseLockControlMethod", "analog");
 
             // map the analog channels
             string daqBoard = (string)Boards["daq"];
@@ -50,9 +51,15 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cavity", daqBoard + "/ai2", AITerminalConfiguration.Nrse);//Pin 65
             AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
             //analog inputs wired up, but not used:/ai4, /ai6, /ai8, (Pins: 28,25,34)
+            AddAnalogOutputChannel("phaseLockAnalogOutput", daqBoard + "/ao1");
+
             //map the counter channels
-          //AddCounterChannel("pmt", daqBoard + "/ctr0");
+            //AddCounterChannel("pmt", daqBoard + "/ctr0");
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
+
+           //These need to be activated for the phase lock
+          //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter
+          //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
         }
 
         public override void ConnectApplications()

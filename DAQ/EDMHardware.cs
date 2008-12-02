@@ -41,6 +41,7 @@ namespace DAQ.HAL
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193);
+            Info.Add("phaseLockControlMethod", "synth");
 
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");

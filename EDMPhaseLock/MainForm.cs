@@ -354,8 +354,14 @@ namespace EDMPhaseLock
 
 		#region DAQ
 
-		Task counterTask;
-		Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
+        enum ControlMethod { synth, analog };
+
+        ControlMethod cm;
+		
+        Task counterTask;
+		Synth redSynth;
+        Task analogOutputTask;
+        AnalogSingleChannelWriter analogWriter;
 		CounterReader counterReader;
 		bool running = false;
 		bool lockOscillator;
@@ -384,19 +390,46 @@ namespace EDMPhaseLock
 												// to the lock. It's important that this can never be reached
 												// under normal operating conditions or it will unlock and not
 												// relock.
+        const double VCO_CENTRAL = 1;          // when using a VCO to generate the clock signal, this is the
+                                                // input voltage to the VCO that generates the target frequency 
 
+        const double VCO_CAL = 100000;          // The calibration of the VCO, in Hz per V, around the central value
+        const double VCO_HIGH = 10;             // upper input range of the VCO
+        const double VCO_LOW = 0;               // lower input range of the VCO
 
 		private void StartAcquisition()
 		{
-			oscillatorFrequency = OSCILLATOR_TARGET_RATE;
+            if (Environs.Hardware.GetInfo("phaseLockControlMethod") == "analog") cm = ControlMethod.analog;
+            else cm = ControlMethod.synth; //synth is default
+
+            if (cm == ControlMethod.synth)
+            {
+                redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
+                redSynth.Connect();
+            }
+            else redSynth = null;
+
+            if (cm == ControlMethod.analog && !Environs.Debug) configureAnalogOutput();
+
+            oscillatorFrequency = OSCILLATOR_TARGET_RATE;
 			accumulatedPhaseDifference = 0;
 			sampleCounter = 0;
 			ClearGUI();
 			PrepareDataStores();
-			redSynth.Connect();
+			
 			if (!Environs.Debug) StartCounter();
 			else StartFakeCounter();
 		}
+
+        private void configureAnalogOutput()
+        {
+            analogOutputTask = new Task("phase lock analog output");
+			AnalogOutputChannel outputChannel = 
+					(AnalogOutputChannel) Environs.Hardware.AnalogOutputChannels["phaseLockAnalogOutput"];
+				outputChannel.AddToTask(analogOutputTask, VCO_LOW, VCO_HIGH);
+				analogWriter = new AnalogSingleChannelWriter(analogOutputTask.Stream);
+				analogWriter.WriteSingleSample(true, VCO_CENTRAL); // start out with the central value
+        }
 
 		ArrayList deviationPlotData;
 		ArrayList phasePlotData;
@@ -606,9 +639,13 @@ namespace EDMPhaseLock
 				if (oscillatorFrequency < OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT)
 					oscillatorFrequency = OSCILLATOR_TARGET_RATE - OSCILLATOR_DEVIATION_LIMIT;
 
-				// write to the synth
-				redSynth.Frequency = oscillatorFrequency / 1000000;
+				// write to the synth or VCO
+				if (cm == ControlMethod.synth) redSynth.Frequency = oscillatorFrequency / 1000000;
 
+                if (cm == ControlMethod.analog && !Environs.Debug)
+                    analogWriter.WriteSingleSample(true, 
+                        VCO_CENTRAL + (oscillatorFrequency - OSCILLATOR_TARGET_RATE) / VCO_CAL);
+                
 				// update the plot
 				phaseErrorInDegrees = (double)phasePlotData[phasePlotData.Count - 1];
 				oscillatorPlotData.Add(oscillatorFrequency / 1000);
@@ -621,9 +658,11 @@ namespace EDMPhaseLock
 			if (!Environs.Debug) 
 			{
 				if (counterTask != null) counterTask.Dispose();
+                if (cm == ControlMethod.analog) analogOutputTask.Dispose();
 			}
 			else lock(this) debugAbortFlag = true;
-			redSynth.Disconnect();
+			if (cm == ControlMethod.synth) redSynth.Disconnect();
+           
 		}
 
 		#endregion
