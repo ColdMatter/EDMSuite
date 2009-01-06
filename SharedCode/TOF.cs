@@ -22,25 +22,42 @@ namespace Data
             return (sum * clockPeriod);
         }
 
+        // This helper function takes a pair of gates and trims them to the width of the
+        // captured data. It returns null if the gates don't make sense.
+        private double[] TrimGates(double startTime, double endTime)
+        {
+            // check for swapped gates
+            if (startTime > endTime) return null;
+            // is the gate region null, or entirely outside the TOF?
+            int gateEndTime = gateStartTime + (length - 1) * clockPeriod;
+            if (startTime == endTime) return null;
+            if (startTime > gateEndTime) return null;
+            if (endTime < gateStartTime) return null;
+            // trim the gates
+            if (endTime > gateEndTime) endTime = gateEndTime;
+            if (startTime < gateStartTime) startTime = gateStartTime;
+            // it's now possible for the trimmed gate region to be null (!) so check again
+            if (startTime == endTime) return null;
+
+            return new double[] { startTime, endTime };
+        }
+
         // Integrate returns the area under a part of the TOF curve. It interpolates linearly
         // between sample points i.e. between each pair of sample times is a trapezium: this
         // function returns the area of these trapeziums that are between the gates. A picture
         // would really be better here!
         public double Integrate(double startTime, double endTime)
         {
-            // check for swapped gates
-            if (startTime > endTime) return 0;
-            // is the gate region null, or entirely outside the TOF?
-            int gateEndTime = gateStartTime + (length - 1) * clockPeriod;
-            if (startTime == endTime) return 0;
-            if (startTime > gateEndTime) return 0;
-            if (endTime < gateStartTime) return 0;
-            // trim the gates
-            if (endTime > gateEndTime) endTime = gateEndTime;
-            if (startTime < gateStartTime) startTime = gateStartTime;
-            // it's now possible for the trimmed gate region to be null (!) so check again
-            if (startTime == endTime) return 0;
- 
+            double[] trimmedGates = TrimGates(startTime, endTime);
+            if (trimmedGates == null) return 0;
+            startTime = trimmedGates[0];
+            endTime = trimmedGates[1];
+
+            return IntegrateInternal(startTime, endTime);
+        }
+        // This function actually does the integration. Broken out so that GatedMean can use it also.
+        private double IntegrateInternal(double startTime, double endTime)
+        {
             // calculate the the points that are included in the range, plus the point above and below
             double p = (startTime - (double)gateStartTime) / (double)clockPeriod;
             double q = (endTime - (double)gateStartTime) / (double)clockPeriod;
@@ -88,7 +105,12 @@ namespace Data
 
         public double GatedMean(double startTime, double endTime)
         {
-            return Integrate(startTime, endTime) / (endTime - startTime);
+            double[] trimmedGates = TrimGates(startTime, endTime);
+            if (trimmedGates == null) return 0;
+            startTime = trimmedGates[0];
+            endTime = trimmedGates[1];
+
+            return IntegrateInternal(startTime, endTime) / (endTime - startTime);
         }
 
         public static TOF operator +(TOF p1, TOF p2)

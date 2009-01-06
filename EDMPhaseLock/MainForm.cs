@@ -399,7 +399,8 @@ namespace EDMPhaseLock
 
 		private void StartAcquisition()
 		{
-            if (Environs.Hardware.GetInfo("phaseLockControlMethod") == "analog") cm = ControlMethod.analog;
+            if (((string)Environs.Hardware.GetInfo("phaseLockControlMethod")) == "analog") 
+                cm = ControlMethod.analog;
             else cm = ControlMethod.synth; //synth is default
 
             if (cm == ControlMethod.synth)
