@@ -91,7 +91,7 @@ namespace SirCachealot
                 "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState AND UID IN " +
                 MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?eState", eState);
-            mySqlComm.Parameters.AddWithValue("?eState", bState);
+            mySqlComm.Parameters.AddWithValue("?bState", bState);
             return GetUIDsFromCommand(mySqlComm);
         }
 
@@ -100,7 +100,7 @@ namespace SirCachealot
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState";
             mySqlComm.Parameters.AddWithValue("?eState", eState);
-            mySqlComm.Parameters.AddWithValue("?eState", bState);
+            mySqlComm.Parameters.AddWithValue("?bState", bState);
             return GetUIDsFromCommand(mySqlComm);
         }
 
