@@ -90,7 +90,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
-            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 6);
+            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
  
             // map the analog channels
             
