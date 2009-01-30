@@ -146,6 +146,12 @@
     <Compile Include="ESwitchChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LiveViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LiveViewer.Designer.cs">
+      <DependentUpon>LiveViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,8 +170,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="App.ico" />
-    <Content Include="scratch.txt" />
     <EmbeddedResource Include="licenses.licx" />
+    <EmbeddedResource Include="LiveViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LiveViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
       <SubType>Designer</SubType>

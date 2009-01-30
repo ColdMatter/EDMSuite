@@ -44,6 +44,8 @@ namespace EDMBlockHead.GUI
         private WaveformPlot tofPlot3;
         private XAxis xAxis3;
         private YAxis yAxis3;
+        private MenuItem menuItem8;
+        private MenuItem menuItem9;
 
 		private Controller controller;
 
@@ -104,6 +106,8 @@ namespace EDMBlockHead.GUI
             this.tofPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
+            this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.menuItem9 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -114,7 +118,8 @@ namespace EDMBlockHead.GUI
             // 
             this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.fileMenu,
-            this.acquireMenu});
+            this.acquireMenu,
+            this.menuItem8});
             // 
             // fileMenu
             // 
@@ -298,6 +303,19 @@ namespace EDMBlockHead.GUI
             // 
             this.yAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
+            // menuItem8
+            // 
+            this.menuItem8.Index = 2;
+            this.menuItem8.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem9});
+            this.menuItem8.Text = "Window";
+            // 
+            // menuItem9
+            // 
+            this.menuItem9.Index = 0;
+            this.menuItem9.Text = "Live viewer";
+            this.menuItem9.Click += new System.EventHandler(this.menuItem9_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -441,6 +459,11 @@ namespace EDMBlockHead.GUI
         private void tofGraph1_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
         {
 
+        }
+
+        private void menuItem9_Click(object sender, EventArgs e)
+        {
+            controller.ShowLiveViewer();
         }
 
 

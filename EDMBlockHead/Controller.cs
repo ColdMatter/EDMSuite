@@ -34,6 +34,7 @@ namespace EDMBlockHead
 		#region Class members
 
 		private MainWindow mainWindow;
+        private LiveViewer liveViewer;
 		private Acquisitor acquisitor;
 		public Block Block;
 		private BlockConfig config;
@@ -99,10 +100,13 @@ namespace EDMBlockHead
 				"tcp://localhost:1175/controller.rem"
 				);
 
-
 			mainWindow = new MainWindow(this);
 			acquisitor = new Acquisitor();
 			mainWindow.textArea.Text = "BlockHead!" + Environment.NewLine;
+
+            liveViewer = new LiveViewer(this);
+            liveViewer.Show();
+
 			Application.Run(mainWindow);
 		}
 
@@ -425,7 +429,12 @@ namespace EDMBlockHead
 			else Status = "Ready.";
 		}
 
+        internal void ShowLiveViewer()
+        {
+            liveViewer.Show();
+        }
+
 		#endregion
 
-	}
+    }
 }
