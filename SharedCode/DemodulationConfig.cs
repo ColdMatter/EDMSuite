@@ -109,7 +109,7 @@ namespace Analysis.EDM
                 dg0.BackgroundSubtract = true;
                 dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, offset, width);
                 dg1.Name = "norm";
-                dg0.BackgroundSubtract = true;
+                dg1.BackgroundSubtract = true;
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "mag1";
                 dg2.Integrate = false;
