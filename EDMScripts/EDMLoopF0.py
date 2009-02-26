@@ -46,7 +46,6 @@ def prompt(text):
 
 def measureParametersAndMakeBC(cluster, eState, bState):
 	fileSystem = Environs.FileSystem
-	print("New EDM SOFTWARE in use")
 	print("Measuring parameters ...")
 	bh.StopPattern()
 	hc.UpdateRFPowerMonitor()
@@ -220,7 +219,7 @@ def updateLocks(bState):
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
-	hc.SetFLPZTVoltage( newLF1 )
+	#hc.SetFLPZTVoltage( newLF1 )
 
 
 def windowValue(value, minValue, maxValue):
@@ -290,18 +289,18 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		hc.SetScramblerVoltage(2.3814 * r.NextDouble())
+		hc.SetScramblerVoltage(0.724774 * r.NextDouble())
 		bc = measureParametersAndMakeBC(cluster, eState, bState)
 		# do things that need periodically doing
 		if ((blockIndex % kTargetRotationPeriod) == 0):
 			print("Rotating target.")
-			hc.StepTarget(4)
+			hc.StepTarget(15)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (abs(dbValue) < 6):
+		if (dbValue < 6):
 			print("Dodgy spot target rotation.")
-			hc.StepTarget(3)
+			hc.StepTarget(10)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			hc.EnableEField( False )
