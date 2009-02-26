@@ -44,7 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState):
+def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
 	fileSystem = Environs.FileSystem
 	print("New EDM SOFTWARE in use")
 	print("Measuring parameters ...")
@@ -66,6 +66,8 @@ def measureParametersAndMakeBC(cluster, eState, bState):
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
+	bc.Settings["phaseScramblerV"] = scramblerV
+	bc.Settings["probePolarizationAngle"] = polAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
@@ -290,8 +292,12 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		hc.SetScramblerVoltage(2.3814 * r.NextDouble())
-		bc = measureParametersAndMakeBC(cluster, eState, bState)
+		scramblerV = 2.3814 * r.NextDouble()
+		hc.SetScramblerVoltage(scramblerV)
+		# randomise polarization
+		polAngle = 360.0 * r.NextDouble()
+		hc.SetPolarizationAngle(polAngle)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)
 		# do things that need periodically doing
 		if ((blockIndex % kTargetRotationPeriod) == 0):
 			print("Rotating target.")

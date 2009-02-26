@@ -290,6 +290,12 @@ namespace EDMHardwareControl
         public TextBox eOvershootHoldTextBox;
         private Label label79;
         public TextBox eOvershootFactorTextBox;
+        private TabPage tabPage6;
+        public AxMG17MotorLib.AxMG17Motor motorController1;
+        private Label label80;
+        private Button polarizerUpdateButton;
+        public TextBox polarizerAngleTextBox;
+        private AxMG17LoggerLib.AxMG17Logger axMG17Logger1;
 
 
 		public Controller controller;
@@ -322,6 +328,10 @@ namespace EDMHardwareControl
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.eOvershootFactorTextBox = new System.Windows.Forms.TextBox();
             this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label62 = new System.Windows.Forms.Label();
@@ -576,6 +586,11 @@ namespace EDMHardwareControl
             this.yagQDisableButton = new System.Windows.Forms.Button();
             this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
             this.yagQEnableButton = new System.Windows.Forms.Button();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label80 = new System.Windows.Forms.Label();
+            this.polarizerUpdateButton = new System.Windows.Forms.Button();
+            this.polarizerAngleTextBox = new System.Windows.Forms.TextBox();
+            this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -587,10 +602,7 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.label78 = new System.Windows.Forms.Label();
-            this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
-            this.label79 = new System.Windows.Forms.Label();
-            this.eOvershootFactorTextBox = new System.Windows.Forms.TextBox();
+            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -626,7 +638,10 @@ namespace EDMHardwareControl
             this.tabPage5.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -660,6 +675,38 @@ namespace EDMHardwareControl
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Switch";
+            // 
+            // label78
+            // 
+            this.label78.Location = new System.Drawing.Point(25, 215);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(115, 23);
+            this.label78.TabIndex = 52;
+            this.label78.Text = "Ramp up delay (s)";
+            // 
+            // eOvershootHoldTextBox
+            // 
+            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
+            this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
+            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootHoldTextBox.TabIndex = 50;
+            this.eOvershootHoldTextBox.Text = "1";
+            // 
+            // label79
+            // 
+            this.label79.Location = new System.Drawing.Point(25, 194);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(115, 23);
+            this.label79.TabIndex = 51;
+            this.label79.Text = "Overshoot factor";
+            // 
+            // eOvershootFactorTextBox
+            // 
+            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
+            this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
+            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootFactorTextBox.TabIndex = 49;
+            this.eOvershootFactorTextBox.Text = "2";
             // 
             // switchingLED
             // 
@@ -1020,6 +1067,7 @@ namespace EDMHardwareControl
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Location = new System.Drawing.Point(12, 25);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -3174,6 +3222,57 @@ namespace EDMHardwareControl
             this.yagQEnableButton.Text = "Q-switch Enable";
             this.yagQEnableButton.Click += new System.EventHandler(this.yagQEnableButton_Click);
             // 
+            // tabPage6
+            // 
+            this.tabPage6.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage6.Controls.Add(this.axMG17Logger1);
+            this.tabPage6.Controls.Add(this.label80);
+            this.tabPage6.Controls.Add(this.polarizerUpdateButton);
+            this.tabPage6.Controls.Add(this.polarizerAngleTextBox);
+            this.tabPage6.Controls.Add(this.motorController1);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(697, 581);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Polarizer";
+            // 
+            // label80
+            // 
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(466, 33);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(103, 13);
+            this.label80.TabIndex = 5;
+            this.label80.Text = "Polarizer angle (deg)";
+            // 
+            // polarizerUpdateButton
+            // 
+            this.polarizerUpdateButton.Location = new System.Drawing.Point(521, 68);
+            this.polarizerUpdateButton.Name = "polarizerUpdateButton";
+            this.polarizerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.polarizerUpdateButton.TabIndex = 4;
+            this.polarizerUpdateButton.Text = "Set";
+            this.polarizerUpdateButton.UseVisualStyleBackColor = true;
+            this.polarizerUpdateButton.Click += new System.EventHandler(this.polarizerUpdateButton_Click);
+            // 
+            // polarizerAngleTextBox
+            // 
+            this.polarizerAngleTextBox.Location = new System.Drawing.Point(574, 30);
+            this.polarizerAngleTextBox.Name = "polarizerAngleTextBox";
+            this.polarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
+            this.polarizerAngleTextBox.TabIndex = 3;
+            this.polarizerAngleTextBox.Text = "10";
+            // 
+            // motorController1
+            // 
+            this.motorController1.Enabled = true;
+            this.motorController1.Location = new System.Drawing.Point(14, 16);
+            this.motorController1.Name = "motorController1";
+            this.motorController1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController1.OcxState")));
+            this.motorController1.Size = new System.Drawing.Size(432, 282);
+            this.motorController1.TabIndex = 0;
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -3271,37 +3370,13 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
-            // label78
+            // axMG17Logger1
             // 
-            this.label78.Location = new System.Drawing.Point(25, 215);
-            this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(115, 23);
-            this.label78.TabIndex = 52;
-            this.label78.Text = "Ramp up delay (s)";
-            // 
-            // eOvershootHoldTextBox
-            // 
-            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
-            this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
-            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eOvershootHoldTextBox.TabIndex = 50;
-            this.eOvershootHoldTextBox.Text = "1";
-            // 
-            // label79
-            // 
-            this.label79.Location = new System.Drawing.Point(25, 194);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(115, 23);
-            this.label79.TabIndex = 51;
-            this.label79.Text = "Overshoot factor";
-            // 
-            // eOvershootFactorTextBox
-            // 
-            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
-            this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
-            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.eOvershootFactorTextBox.TabIndex = 49;
-            this.eOvershootFactorTextBox.Text = "2";
+            this.axMG17Logger1.Location = new System.Drawing.Point(20, 312);
+            this.axMG17Logger1.Name = "axMG17Logger1";
+            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
+            this.axMG17Logger1.Size = new System.Drawing.Size(425, 260);
+            this.axMG17Logger1.TabIndex = 6;
             // 
             // ControlWindow
             // 
@@ -3374,8 +3449,12 @@ namespace EDMHardwareControl
             this.groupBox17.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3627,6 +3706,11 @@ namespace EDMHardwareControl
             controller.UpdateI2AOMFreqMonitor();
         }
 
+        private void polarizerUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePolarizerAngle();
+        }
+
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.LoadParametersWithDialog();
@@ -3708,11 +3792,6 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
-  
-
-        
-
-        
-
+ 
     }
 }

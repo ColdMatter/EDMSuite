@@ -91,6 +91,9 @@ namespace EDMHardwareControl
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
 
+        AxMG17MotorLib.AxMG17Motor motorController1;
+
+
         ControlWindow window;
 
         // without this method, any remote connections to this object will time out after
@@ -154,6 +157,14 @@ namespace EDMHardwareControl
             // make the control window
             window = new ControlWindow();
             window.controller = this;
+            
+            // initialise the motor controller - this needs to be done
+            // after the window is made because the ActiveX object needs
+            // to live in the window.
+            motorController1 = window.motorController1;
+            motorController1.StartCtrl();
+
+            
             Application.Run(window);
         }
 
@@ -1650,10 +1661,17 @@ namespace EDMHardwareControl
             window.SetTextBox(window.I2AOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
         }
 
-        #endregion
+        internal void UpdatePolarizerAngle()
+        {
+            motorController1.MoveAbsoluteEx(0, 
+                (int)Double.Parse(window.polarizerAngleTextBox.Text), 0, true);
+        }
 
-        #region Hardware control methods - local use only
-
+        public void SetPolarizerAngle(double theta)
+        {
+            window.SetTextBox(window.polarizerAngleTextBox, theta.ToString());
+            UpdatePolarizerAngle();
+        }
 
         public void EnableGreenSynth(bool enable)
         {
@@ -1896,6 +1914,7 @@ namespace EDMHardwareControl
         }
 
         #endregion
+
 
     }
 }
