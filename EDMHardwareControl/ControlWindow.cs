@@ -587,6 +587,7 @@ namespace EDMHardwareControl
             this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
             this.yagQEnableButton = new System.Windows.Forms.Button();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.label80 = new System.Windows.Forms.Label();
             this.polarizerUpdateButton = new System.Windows.Forms.Button();
             this.polarizerAngleTextBox = new System.Windows.Forms.TextBox();
@@ -602,7 +603,6 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -639,9 +639,9 @@ namespace EDMHardwareControl
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -3237,6 +3237,14 @@ namespace EDMHardwareControl
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
             // 
+            // axMG17Logger1
+            // 
+            this.axMG17Logger1.Location = new System.Drawing.Point(20, 312);
+            this.axMG17Logger1.Name = "axMG17Logger1";
+            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
+            this.axMG17Logger1.Size = new System.Drawing.Size(425, 260);
+            this.axMG17Logger1.TabIndex = 6;
+            // 
             // label80
             // 
             this.label80.AutoSize = true;
@@ -3370,14 +3378,6 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
-            // axMG17Logger1
-            // 
-            this.axMG17Logger1.Location = new System.Drawing.Point(20, 312);
-            this.axMG17Logger1.Name = "axMG17Logger1";
-            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
-            this.axMG17Logger1.Size = new System.Drawing.Size(425, 260);
-            this.axMG17Logger1.TabIndex = 6;
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -3451,10 +3451,10 @@ namespace EDMHardwareControl
             this.groupBox15.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
