@@ -293,9 +293,13 @@ namespace EDMHardwareControl
         private TabPage tabPage6;
         public AxMG17MotorLib.AxMG17Motor motorController1;
         private Label label80;
-        private Button polarizerUpdateButton;
-        public TextBox polarizerAngleTextBox;
+        private Button probePolarizerUpdateButton;
+        public TextBox probePolarizerAngleTextBox;
         private AxMG17LoggerLib.AxMG17Logger axMG17Logger1;
+        private Label label81;
+        private Button pumpPolarizerUpdateButton;
+        public TextBox pumpPolarizerAngleTextBox;
+        public AxMG17MotorLib.AxMG17Motor motorController2;
 
 
 		public Controller controller;
@@ -589,8 +593,8 @@ namespace EDMHardwareControl
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.label80 = new System.Windows.Forms.Label();
-            this.polarizerUpdateButton = new System.Windows.Forms.Button();
-            this.polarizerAngleTextBox = new System.Windows.Forms.TextBox();
+            this.probePolarizerUpdateButton = new System.Windows.Forms.Button();
+            this.probePolarizerAngleTextBox = new System.Windows.Forms.TextBox();
             this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -603,6 +607,10 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.motorController2 = new AxMG17MotorLib.AxMG17Motor();
+            this.label81 = new System.Windows.Forms.Label();
+            this.pumpPolarizerUpdateButton = new System.Windows.Forms.Button();
+            this.pumpPolarizerAngleTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -642,6 +650,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -3225,10 +3234,14 @@ namespace EDMHardwareControl
             // tabPage6
             // 
             this.tabPage6.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage6.Controls.Add(this.label81);
+            this.tabPage6.Controls.Add(this.pumpPolarizerUpdateButton);
+            this.tabPage6.Controls.Add(this.pumpPolarizerAngleTextBox);
+            this.tabPage6.Controls.Add(this.motorController2);
             this.tabPage6.Controls.Add(this.axMG17Logger1);
             this.tabPage6.Controls.Add(this.label80);
-            this.tabPage6.Controls.Add(this.polarizerUpdateButton);
-            this.tabPage6.Controls.Add(this.polarizerAngleTextBox);
+            this.tabPage6.Controls.Add(this.probePolarizerUpdateButton);
+            this.tabPage6.Controls.Add(this.probePolarizerAngleTextBox);
             this.tabPage6.Controls.Add(this.motorController1);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
@@ -3239,46 +3252,46 @@ namespace EDMHardwareControl
             // 
             // axMG17Logger1
             // 
-            this.axMG17Logger1.Location = new System.Drawing.Point(20, 312);
+            this.axMG17Logger1.Location = new System.Drawing.Point(14, 280);
             this.axMG17Logger1.Name = "axMG17Logger1";
             this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
-            this.axMG17Logger1.Size = new System.Drawing.Size(425, 260);
+            this.axMG17Logger1.Size = new System.Drawing.Size(664, 260);
             this.axMG17Logger1.TabIndex = 6;
             // 
             // label80
             // 
             this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(466, 33);
+            this.label80.Location = new System.Drawing.Point(12, 30);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(103, 13);
+            this.label80.Size = new System.Drawing.Size(133, 13);
             this.label80.TabIndex = 5;
-            this.label80.Text = "Polarizer angle (deg)";
+            this.label80.Text = "Probe polarizer angle (deg)";
             // 
-            // polarizerUpdateButton
+            // probePolarizerUpdateButton
             // 
-            this.polarizerUpdateButton.Location = new System.Drawing.Point(521, 68);
-            this.polarizerUpdateButton.Name = "polarizerUpdateButton";
-            this.polarizerUpdateButton.Size = new System.Drawing.Size(75, 23);
-            this.polarizerUpdateButton.TabIndex = 4;
-            this.polarizerUpdateButton.Text = "Set";
-            this.polarizerUpdateButton.UseVisualStyleBackColor = true;
-            this.polarizerUpdateButton.Click += new System.EventHandler(this.polarizerUpdateButton_Click);
+            this.probePolarizerUpdateButton.Location = new System.Drawing.Point(234, 25);
+            this.probePolarizerUpdateButton.Name = "probePolarizerUpdateButton";
+            this.probePolarizerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.probePolarizerUpdateButton.TabIndex = 4;
+            this.probePolarizerUpdateButton.Text = "Set";
+            this.probePolarizerUpdateButton.UseVisualStyleBackColor = true;
+            this.probePolarizerUpdateButton.Click += new System.EventHandler(this.probePolarizerUpdateButton_Click);
             // 
-            // polarizerAngleTextBox
+            // probePolarizerAngleTextBox
             // 
-            this.polarizerAngleTextBox.Location = new System.Drawing.Point(574, 30);
-            this.polarizerAngleTextBox.Name = "polarizerAngleTextBox";
-            this.polarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
-            this.polarizerAngleTextBox.TabIndex = 3;
-            this.polarizerAngleTextBox.Text = "10";
+            this.probePolarizerAngleTextBox.Location = new System.Drawing.Point(162, 27);
+            this.probePolarizerAngleTextBox.Name = "probePolarizerAngleTextBox";
+            this.probePolarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
+            this.probePolarizerAngleTextBox.TabIndex = 3;
+            this.probePolarizerAngleTextBox.Text = "10";
             // 
             // motorController1
             // 
             this.motorController1.Enabled = true;
-            this.motorController1.Location = new System.Drawing.Point(14, 16);
+            this.motorController1.Location = new System.Drawing.Point(15, 69);
             this.motorController1.Name = "motorController1";
             this.motorController1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController1.OcxState")));
-            this.motorController1.Size = new System.Drawing.Size(432, 282);
+            this.motorController1.Size = new System.Drawing.Size(294, 205);
             this.motorController1.TabIndex = 0;
             // 
             // textBox1
@@ -3378,6 +3391,42 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
+            // motorController2
+            // 
+            this.motorController2.Enabled = true;
+            this.motorController2.Location = new System.Drawing.Point(373, 69);
+            this.motorController2.Name = "motorController2";
+            this.motorController2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController2.OcxState")));
+            this.motorController2.Size = new System.Drawing.Size(294, 205);
+            this.motorController2.TabIndex = 7;
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(370, 30);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(132, 13);
+            this.label81.TabIndex = 10;
+            this.label81.Text = "Pump polarizer angle (deg)";
+            // 
+            // pumpPolarizerUpdateButton
+            // 
+            this.pumpPolarizerUpdateButton.Location = new System.Drawing.Point(592, 25);
+            this.pumpPolarizerUpdateButton.Name = "pumpPolarizerUpdateButton";
+            this.pumpPolarizerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.pumpPolarizerUpdateButton.TabIndex = 9;
+            this.pumpPolarizerUpdateButton.Text = "Set";
+            this.pumpPolarizerUpdateButton.UseVisualStyleBackColor = true;
+            this.pumpPolarizerUpdateButton.Click += new System.EventHandler(this.pumpPolarizerUpdateButton_Click);
+            // 
+            // pumpPolarizerAngleTextBox
+            // 
+            this.pumpPolarizerAngleTextBox.Location = new System.Drawing.Point(520, 27);
+            this.pumpPolarizerAngleTextBox.Name = "pumpPolarizerAngleTextBox";
+            this.pumpPolarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
+            this.pumpPolarizerAngleTextBox.TabIndex = 8;
+            this.pumpPolarizerAngleTextBox.Text = "10";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -3455,6 +3504,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3706,10 +3756,16 @@ namespace EDMHardwareControl
             controller.UpdateI2AOMFreqMonitor();
         }
 
-        private void polarizerUpdateButton_Click(object sender, EventArgs e)
+        private void probePolarizerUpdateButton_Click(object sender, EventArgs e)
         {
-            controller.UpdatePolarizerAngle();
+            controller.UpdateProbePolarizerAngle();
         }
+
+        private void pumpPolarizerUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePumpPolarizerAngle();
+        }
+ 
 
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -3792,6 +3848,7 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
- 
+
+
     }
 }

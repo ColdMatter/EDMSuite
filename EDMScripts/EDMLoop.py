@@ -44,7 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
+def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
@@ -66,7 +66,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
 	bc.Settings["phaseScramblerV"] = scramblerV
-	bc.Settings["probePolarizerAngle"] = polAngle
+	bc.Settings["probePolarizerAngle"] = probePolAngle
+	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
@@ -261,10 +262,12 @@ def EDMGo():
 	# randomise Ramsey phase
 	scramblerV = 0.724774 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
-	# randomise polarization
-	polAngle = 360.0 * r.NextDouble()
-	hc.SetPolarizerAngle(polAngle)
-	bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)
+	# randomise polarizations
+	probePolAngle = 360.0 * r.NextDouble()
+	hc.SetProbePolarizerAngle(probePolAngle)
+	pumpPolAngle = 360.0 * r.NextDouble()
+	hc.SetPumpPolarizerAngle(pumpPolAngle)
+	bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle)	
 
 	# loop and take data
 	blockIndex = 0
@@ -299,10 +302,12 @@ def EDMGo():
 		# randomise Ramsey phase
 		scramblerV = 0.724774 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
-		# randomise polarization
-		polAngle = 360.0 * r.NextDouble()
-		hc.SetPolarizerAngle(polAngle)
-		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)	
+		# randomise polarizations
+		probePolAngle = 360.0 * r.NextDouble()
+		hc.SetProbePolarizerAngle(probePolAngle)
+		pumpPolAngle = 360.0 * r.NextDouble()
+		hc.SetPumpPolarizerAngle(pumpPolAngle)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle)	
 		# do things that need periodically doing
 	#	if ((blockIndex % kTargetRotationPeriod) == 0):
 		#	print("Rotating target.")

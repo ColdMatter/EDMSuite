@@ -92,7 +92,7 @@ namespace EDMHardwareControl
         Task miniFlux3MonitorInputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
-
+        AxMG17MotorLib.AxMG17Motor motorController2;
 
         ControlWindow window;
 
@@ -158,11 +158,13 @@ namespace EDMHardwareControl
             window = new ControlWindow();
             window.controller = this;
             
-            // initialise the motor controller - this needs to be done
+            // initialise the motor controllers - this needs to be done
             // after the window is made because the ActiveX object needs
             // to live in the window.
             motorController1 = window.motorController1;
             motorController1.StartCtrl();
+            motorController2 = window.motorController1;
+            motorController2.StartCtrl();
 
             
             Application.Run(window);
@@ -1661,16 +1663,22 @@ namespace EDMHardwareControl
             window.SetTextBox(window.I2AOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
         }
 
-        internal void UpdatePolarizerAngle()
+        internal void UpdateProbePolarizerAngle()
         {
             motorController1.MoveAbsoluteEx(0, 
-                (int)Double.Parse(window.polarizerAngleTextBox.Text), 0, true);
+                (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
         }
 
-        public void SetPolarizerAngle(double theta)
+        internal void UpdatePumpPolarizerAngle()
         {
-            window.SetTextBox(window.polarizerAngleTextBox, theta.ToString());
-            UpdatePolarizerAngle();
+            motorController2.MoveAbsoluteEx(0, 
+                (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
+        }
+
+        public void SetProbePolarizerAngle(double theta)
+        {
+            window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
+            UpdateProbePolarizerAngle();
         }
 
         public void EnableGreenSynth(bool enable)
@@ -1914,6 +1922,8 @@ namespace EDMHardwareControl
         }
 
         #endregion
+
+
 
 
     }
