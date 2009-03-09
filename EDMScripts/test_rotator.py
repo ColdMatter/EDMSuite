@@ -22,6 +22,7 @@ def EDMGo():
 		# randomise polarization
 		polAngle = 360.0 * r.NextDouble()
 		hc.SetPolarizerAngle(polAngle)
+		hc.SwitchEAndWait()
 		blockIndex = blockIndex + 1
 
 def run_script():

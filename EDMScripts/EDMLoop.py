@@ -46,7 +46,6 @@ def prompt(text):
 
 def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
 	fileSystem = Environs.FileSystem
-	print("New EDM SOFTWARE in use")
 	print("Measuring parameters ...")
 	bh.StopPattern()
 	hc.UpdateRFPowerMonitor()
@@ -67,7 +66,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
 	bc.Settings["phaseScramblerV"] = scramblerV
-	bc.Settings["probePolarizationAngle"] = polAngle
+	bc.Settings["probePolarizerAngle"] = polAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
@@ -160,16 +159,16 @@ def updateLocks(bState):
 	dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 	dbValue = pmtChannelValues.GetValue(dbIndex)
 	#dbError = pmtChannelValues.GetError(dbIndex)
-	rf1aIndex = pmtChannelValues.GetChannelIndex(("RF1A",))
+	rf1aIndex = pmtChannelValues.GetChannelIndex(("RF1A","DB"))
 	rf1aValue = pmtChannelValues.GetValue(rf1aIndex)
 	#rf1aError = pmtChannelValues.GetError(rf1aIndex)
-	rf2aIndex = pmtChannelValues.GetChannelIndex(("RF2A",))
+	rf2aIndex = pmtChannelValues.GetChannelIndex(("RF2A","DB"))
 	rf2aValue = pmtChannelValues.GetValue(rf2aIndex)
 	#rf2aError = pmtChannelValues.GetError(rf2aIndex)
-	rf1fIndex = pmtChannelValues.GetChannelIndex(("RF1F",))
+	rf1fIndex = pmtChannelValues.GetChannelIndex(("RF1F","DB"))
 	rf1fValue = pmtChannelValues.GetValue(rf1fIndex)
 	#rf1fError = pmtChannelValues.GetError(rf1fIndex)
-	rf2fIndex = pmtChannelValues.GetChannelIndex(("RF2F",))
+	rf2fIndex = pmtChannelValues.GetChannelIndex(("RF2F","DB"))
 	rf2fValue = pmtChannelValues.GetValue(rf2fIndex)
 	#rf2fError = pmtChannelValues.GetError(rf2fIndex)
 	lf1Index = pmtChannelValues.GetChannelIndex(("LF1",))
@@ -194,31 +193,31 @@ def updateLocks(bState):
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = - (1.0/4.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF1A = - (1.0/3.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
 	hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (1.0/4.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
+	deltaRF2A = - (1.0/3.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
 	# RFF  locks
-	deltaRF1F = - (1.0/5.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF1F = - (1.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (1.0/5.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF2F = - (1.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
-	# Laser frequency lock
-	deltaLF1 = 1.25 * (lf1Value / dbValue)
+	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
+	deltaLF1 = -1.25 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
@@ -259,7 +258,13 @@ def EDMGo():
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
-	bc = measureParametersAndMakeBC(cluster, eState, bState)
+	# randomise Ramsey phase
+	scramblerV = 0.724774 * r.NextDouble()
+	hc.SetScramblerVoltage(scramblerV)
+	# randomise polarization
+	polAngle = 360.0 * r.NextDouble()
+	hc.SetPolarizerAngle(polAngle)
+	bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)
 
 	# loop and take data
 	blockIndex = 0
@@ -292,22 +297,22 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		scramblerV = 2.3814 * r.NextDouble()
+		scramblerV = 0.724774 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarization
 		polAngle = 360.0 * r.NextDouble()
-		hc.SetPolarizationAngle(polAngle)
-		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)
+		hc.SetPolarizerAngle(polAngle)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)	
 		# do things that need periodically doing
-		if ((blockIndex % kTargetRotationPeriod) == 0):
-			print("Rotating target.")
-			hc.StepTarget(4)
+	#	if ((blockIndex % kTargetRotationPeriod) == 0):
+		#	print("Rotating target.")
+		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (abs(dbValue) < 6):
+		if (dbValue < 5.5):
 			print("Dodgy spot target rotation.")
-			hc.StepTarget(3)
+			hc.StepTarget(1)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			hc.EnableEField( False )
