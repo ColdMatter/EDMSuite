@@ -204,6 +204,7 @@ namespace EDMBlockHead
 
 			config.Settings["eState"] = true;
 			config.Settings["bState"] = true;
+            config.Settings["rfState"] = true;
 			config.Settings["ePlus"] = 8.0;
 			config.Settings["eMinus"] = -8.0;
 			config.Settings["gtPlus"] = 1.6;

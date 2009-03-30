@@ -44,7 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle):
+def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
@@ -65,6 +65,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngl
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
+	bc.Settings["rfState"] = rfState
 	bc.Settings["phaseScramblerV"] = scramblerV
 	bc.Settings["probePolarizerAngle"] = probePolAngle
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
@@ -256,6 +257,7 @@ def EDMGo():
 		print("Using cluster " + suggestedClusterName)
 	eState = Boolean.Parse(prompt("E-state: "))
 	bState = Boolean.Parse(prompt("B-state: "))
+	rfState = Boolean.Parse(prompt("rf-state: "))
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
@@ -267,7 +269,7 @@ def EDMGo():
 	hc.SetProbePolarizerAngle(probePolAngle)
 	pumpPolAngle = 360.0 * r.NextDouble()
 	hc.SetPumpPolarizerAngle(pumpPolAngle)
-	bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle)	
+	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
 
 	# loop and take data
 	blockIndex = 0
@@ -307,7 +309,7 @@ def EDMGo():
 		hc.SetProbePolarizerAngle(probePolAngle)
 		pumpPolAngle = 360.0 * r.NextDouble()
 		hc.SetPumpPolarizerAngle(pumpPolAngle)
-		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, probePolAngle, pumpPolAngle)	
+		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
 		# do things that need periodically doing
 	#	if ((blockIndex % kTargetRotationPeriod) == 0):
 		#	print("Rotating target.")
