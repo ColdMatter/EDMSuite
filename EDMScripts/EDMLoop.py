@@ -315,7 +315,7 @@ def EDMGo():
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (dbValue < 5.5):
+		if (dbValue < 8.5):
 			print("Dodgy spot target rotation.")
 			hc.StepTarget(1)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):

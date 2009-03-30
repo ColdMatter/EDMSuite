@@ -163,7 +163,7 @@ namespace EDMHardwareControl
             // to live in the window.
             motorController1 = window.motorController1;
             motorController1.StartCtrl();
-            motorController2 = window.motorController1;
+            motorController2 = window.motorController2;
             motorController2.StartCtrl();
 
             
@@ -1679,6 +1679,12 @@ namespace EDMHardwareControl
         {
             window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
             UpdateProbePolarizerAngle();
+        }
+
+        public void SetPumpPolarizerAngle(double theta)
+        {
+            window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
+            UpdatePumpPolarizerAngle();
         }
 
         public void EnableGreenSynth(bool enable)
