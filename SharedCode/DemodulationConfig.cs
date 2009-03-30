@@ -71,6 +71,8 @@ namespace Analysis.EDM
                 dc.PointDetectorChannels.Add("MiniFlux3");
                 dc.PointDetectorChannels.Add("NorthCurrent");
                 dc.PointDetectorChannels.Add("SouthCurrent");
+                dc.PointDetectorChannels.Add("PumpPD");
+                dc.PointDetectorChannels.Add("ProbePD");
 
                 return dc;
             };
@@ -84,6 +86,10 @@ namespace Analysis.EDM
             AddSliceConfig("fast", -0.5, 0.5);
             // the slow half of the fwhm
             AddSliceConfig("slow", 0.5, 0.5);
+
+            // for testing out different centred-gate widths
+            for (int i = 4; i < 15; i++)
+                AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
 
             // now some finer slices
             double d = -1.4;
@@ -130,6 +136,8 @@ namespace Analysis.EDM
                 dc.PointDetectorChannels.Add("MiniFlux3");
                 dc.PointDetectorChannels.Add("NorthCurrent");
                 dc.PointDetectorChannels.Add("SouthCurrent");
+                dc.PointDetectorChannels.Add("PumpPD");
+                dc.PointDetectorChannels.Add("ProbePD");
 
                 return dc;
             };
