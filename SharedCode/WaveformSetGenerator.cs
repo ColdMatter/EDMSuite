@@ -34,7 +34,7 @@ namespace EDMConfig
                 }
 
                 //* test the set *
-                Console.Out.WriteLine("Testing waveform set");
+                //Console.Out.WriteLine("Testing waveform set");
                 // first, test the E.B waveform
                 Waveform eWave = waves["E"];
                 Waveform bWave = waves["B"];
@@ -49,7 +49,7 @@ namespace EDMConfig
                 int totalSlowBits = 0;
                 for (int i = 0; i < codeLength - kFastBits; i++) totalSlowBits += ebCode[i] ? 1 : 0;
                 bool passedEBTest = (totalFastBits >= kFastBitThreshold) && (totalSlowBits >= kSlowBitThreshold);
-                Console.Out.WriteLine("Passed E.B test: " + passedEBTest);
+                //Console.Out.WriteLine("Passed E.B test: " + passedEBTest);
 
                 // now check that none of the codes are identical
                 bool[][] codes = new bool[waves.Count][];
@@ -72,7 +72,7 @@ namespace EDMConfig
                         tmpDic.Add(num, num);
                     }
                 }
-                Console.Out.WriteLine("Passed uniqueness test: " + passedUniqueTest);
+                //Console.Out.WriteLine("Passed uniqueness test: " + passedUniqueTest);
 
                 // check the codes for linear independence, modulo 2
                 // (what we sometimes erroneously call orthogonality).
@@ -98,7 +98,7 @@ namespace EDMConfig
                 bool passedIndependenceTest = true;
                 for (uint i = 0; i < (uint)Math.Pow(2, waves.Count); i++)
                     if (!switchStates.Contains(i)) passedIndependenceTest = false;
-                Console.Out.WriteLine("Passed independence test: " + passedIndependenceTest);
+                //Console.Out.WriteLine("Passed independence test: " + passedIndependenceTest);
 
                 // is the set is ok ?
                 gotGoodSet = passedEBTest && passedUniqueTest && passedIndependenceTest;
