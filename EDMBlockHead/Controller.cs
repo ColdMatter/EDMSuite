@@ -57,8 +57,6 @@ namespace EDMBlockHead
         double clusterVariance;
         double clusterVarianceNormed;
         double blocksPerDay = 240;
-        DetectorChannelValues topPMT;
-        DetectorChannelValues normedPMT;
         double plateSpacing = 1.2;
         double electronCharge = 1.6022 * Math.Pow(10, -19);
         double bohrMagneton = 9.274 * Math.Pow(10, -24);
@@ -338,53 +336,37 @@ namespace EDMBlockHead
             dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
             dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
             DBlock = blockDemodulator.DemodulateBlock(b, dc);
-
-            topPMT = DBlock.ChannelValues[0];
-
-            int SIGIndex = (int)topPMT.GetChannelIndex(new string[] { "SIG" });
-            int BIndex = (int)topPMT.GetChannelIndex(new string[] { "B" });
-            int DBIndex = (int)topPMT.GetChannelIndex(new string[] { "DB" });
-            int EIndex = (int)topPMT.GetChannelIndex(new string[] { "E" });
-            int EdotBIndex = (int)topPMT.GetChannelIndex(new string[] { "E", "B" });
+            
             //edm factor calculation
-            double dbStep2 = (double)Config.GetModulationByName("DB");
-            double dbStep = (double)Config.AnalogModulations[1];//needs to select db step from analog modulations */
+            double dbStep = ((AnalogModulation)Config.GetModulationByName("DB")).Step; 
             double magCal = (double)Config.Settings["magnetCalibration"];
-            double eField = cField((double)Config.Settings["ePlus"],(double) Config.Settings["eMinus"]);
+            double eField = cField((double)Config.Settings["ePlus"], (double)Config.Settings["eMinus"]);
             double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
                         (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
-            double SIGValueTop = topPMT.GetValue(new string[]{"SIG"});
-            double SIGErrTop = topPMT.GetError(SIGIndex);
-            double BValueTop = topPMT.GetValue(BIndex);
-            double BErrTop = topPMT.GetError(BIndex);
-            double dbValueTop = topPMT.GetValue(DBIndex);
-            double dbErrTop = topPMT.GetError(DBIndex);
-            double EValueTop = topPMT.GetValue(EIndex);
-            double EErrTop = topPMT.GetError(EIndex);
-            double EdotBValueTop = topPMT.GetValue(EdotBIndex);
-            double EdotBErrTop = topPMT.GetError(EdotBIndex);
 
+            //Get relevant channel values and errors
+            double[] sigValandErr = DBlock.GetChannelValueAndError(new string[] { "SIG" }, "top");
+            double[] BValandErr = DBlock.GetChannelValueAndError(new string[] { "B" }, "top");
+            double[] dbValandErr = DBlock.GetChannelValueAndError(new string[] { "DB" }, "top");
+            double[] EValandErr = DBlock.GetChannelValueAndError(new string[] { "E" }, "top");
+            double[] EdotBValandErr = DBlock.GetChannelValueAndError(new string[] { "E", "B" }, "top");
+           
             //edm error calculation
-            double rawEDM = edmFactor *(EdotBValueTop / dbValueTop);
-            double rawEDMErr = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBErrTop / EdotBValueTop, 2) + Math.Pow(dbErrTop / dbValueTop,2));
+            double rawEDM = edmFactor *(EdotBValandErr[0] / dbValandErr[0]);
+            double rawEDMErr = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBValandErr[1] / EdotBValandErr[0], 2)
+                               + Math.Pow(dbValandErr[1] /dbValandErr[0],2));
 
             //same again for normed data. Is ChannelValues[5] really going to apply the topNormed stuff?
-            normedPMT = DBlock.ChannelValues[5];
-
-            double SIGValueNormed = normedPMT.GetValue(SIGIndex);
-            double SIGErrNormed = normedPMT.GetError(SIGIndex);
-            double BValueNormed = normedPMT.GetValue(BIndex);
-            double BErrNormed = normedPMT.GetError(BIndex);
-            double dbValueNormed = normedPMT.GetValue(DBIndex);
-            double dbErrNormed = normedPMT.GetError(DBIndex);
-            double EValueNormed = normedPMT.GetValue(EIndex);
-            double EErrNormed = normedPMT.GetError(EIndex);
-            double EdotBValueNormed = normedPMT.GetValue(EdotBIndex);
-            double EdotBErrNormed = normedPMT.GetError(EdotBIndex);
+            double[] sigValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "SIG" }, "topNormed");
+            double[] BValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "B" }, "topNormed");
+            double[] dbValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "DB" }, "topNormed");
+            double[] EValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "E" }, "topNormed");
+            double[] EdotBValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "E", "B" }, "topNormed");
 
             //normed edm error
-            double rawEDMNormed = edmFactor*(EdotBValueNormed / dbValueNormed);
-            double rawEDMErrNormed = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBErrNormed / EdotBValueNormed,2) + Math.Pow(dbErrNormed / dbValueNormed,2));
+            double rawEDMNormed = edmFactor * (EdotBValandErrNormed[0] / dbValandErrNormed[0]);
+            double rawEDMErrNormed = Math.Abs(rawEDMNormed) * Math.Sqrt(Math.Pow(EdotBValandErrNormed[1] / EdotBValandErrNormed[0], 2)
+                                     + Math.Pow(dbValandErrNormed[1] / dbValandErrNormed[0], 2));
 
             //Append LiveViewer text
             liveViewer.AppendStatusText("{" + rawEDMErr + "," + rawEDMErrNormed + "}");
@@ -392,14 +374,12 @@ namespace EDMBlockHead
             // Rollings values of edm error
             clusterVariance = ((clusterVariance * clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
             double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
-            clusterVarianceNormed = ((clusterVarianceNormed * clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErr) / blockCount;
+            clusterVarianceNormed = ((clusterVarianceNormed * clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErrNormed) / blockCount;
             double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
             blockCount = blockCount + 1;
 
             liveViewer.UpdateClusterStatusText("errorPerDay = " + edmPerDay + " ,errorPerDayNormed = " + edmPerDayNormed);
        
-            
-
             //config.g
             haveBlock = true;
             appState = AppState.stopped;
