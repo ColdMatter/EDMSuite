@@ -28,39 +28,87 @@ namespace EDMBlockHead
         /// </summary>
         private void InitializeComponent()
         {
-            this.graphPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.statusText = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.clusterStatusText = new System.Windows.Forms.TextBox();
+            this.resetRunningMeans = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // graphPanel
+            // statusText
             // 
-            this.graphPanel.ColumnCount = 3;
-            this.graphPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.graphPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.graphPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.graphPanel.Location = new System.Drawing.Point(13, 13);
-            this.graphPanel.Name = "graphPanel";
-            this.graphPanel.RowCount = 3;
-            this.graphPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.graphPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.graphPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.graphPanel.Size = new System.Drawing.Size(861, 445);
-            this.graphPanel.TabIndex = 0;
+            this.statusText.BackColor = System.Drawing.Color.Honeydew;
+            this.statusText.ForeColor = System.Drawing.Color.PaleTurquoise;
+            this.statusText.Location = new System.Drawing.Point(12, 54);
+            this.statusText.Multiline = true;
+            this.statusText.Name = "statusText";
+            this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.statusText.Size = new System.Drawing.Size(457, 316);
+            this.statusText.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 26);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Block Analysis";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 394);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(94, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Cluster Information";
+            // 
+            // clusterStatusText
+            // 
+            this.clusterStatusText.BackColor = System.Drawing.Color.Honeydew;
+            this.clusterStatusText.ForeColor = System.Drawing.Color.PaleTurquoise;
+            this.clusterStatusText.Location = new System.Drawing.Point(12, 419);
+            this.clusterStatusText.Multiline = true;
+            this.clusterStatusText.Name = "clusterStatusText";
+            this.clusterStatusText.Size = new System.Drawing.Size(431, 43);
+            this.clusterStatusText.TabIndex = 3;
+            // 
+            // resetRunningMeans
+            // 
+            this.resetRunningMeans.Location = new System.Drawing.Point(522, 64);
+            this.resetRunningMeans.Name = "resetRunningMeans";
+            this.resetRunningMeans.Size = new System.Drawing.Size(134, 36);
+            this.resetRunningMeans.TabIndex = 4;
+            this.resetRunningMeans.Text = "Reset running means";
+            this.resetRunningMeans.UseVisualStyleBackColor = true;
+            this.resetRunningMeans.Click += new System.EventHandler(this.resetRunningMeans_Click);
             // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(886, 528);
-            this.Controls.Add(this.graphPanel);
+            this.Controls.Add(this.resetRunningMeans);
+            this.Controls.Add(this.clusterStatusText);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.statusText);
             this.MaximizeBox = false;
             this.Name = "LiveViewer";
             this.Text = "LiveViewer";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel graphPanel;
+        private System.Windows.Forms.TextBox statusText;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox clusterStatusText;
+        private System.Windows.Forms.Button resetRunningMeans;
+
     }
 }

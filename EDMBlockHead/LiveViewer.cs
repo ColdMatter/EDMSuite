@@ -53,5 +53,41 @@ namespace EDMBlockHead
         public void AddDBlock(DemodulatedBlock dblock)
         {
         }
+
+        public void AppendStatusText(string newText)
+        {
+            SetTextBox(statusText, statusText.Text + newText);
+        }
+
+        public void UpdateClusterStatusText(string newText)
+        {
+            SetTextBox(clusterStatusText, newText);
+        }
+
+        public void SetTextBox(TextBox textBox, string text)
+        {
+            textBox.Invoke(new SetTextDelegate(SetTextHelper), new object[] { textBox, text });
+        }
+
+        private delegate void SetTextDelegate(TextBox textBox, string text);
+
+        private void SetTextHelper(TextBox textBox, string text)
+        {
+            textBox.Text = text;
+        }
+     
+
+        #region Click Handler
+
+        private void resetRunningMeans_Click(object sender, EventArgs e)
+        {
+            controller.resetEdmErrRunningMeans();
+        }
+
+        #endregion
+
+
+
     }
+
 }

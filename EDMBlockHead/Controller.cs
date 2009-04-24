@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 using EDMBlockHead.Acquire;
 using EDMBlockHead.GUI;
@@ -22,113 +23,125 @@ using EDMConfig;
 
 namespace EDMBlockHead
 {
-	/// <summary>
-	/// This class is in control of BlockHead. It has a window to interact with the user
-	/// and an acquisitor to take the data.
-	/// </summary>
-	public class Controller : MarshalByRefObject
-	{
+    /// <summary>
+    /// This class is in control of BlockHead. It has a window to interact with the user
+    /// and an acquisitor to take the data.
+    /// </summary>
+    public class Controller : MarshalByRefObject
+    {
 
-		private const int UPDATE_EVERY = 5;
+        private const int UPDATE_EVERY = 5;
 
-		#region Class members
+        #region Class members
 
-		private MainWindow mainWindow;
+        private MainWindow mainWindow;
         private LiveViewer liveViewer;
-		private Acquisitor acquisitor;
-		public Block Block;
-		private BlockConfig config;
-		private XmlSerializer serializer = new XmlSerializer(typeof(BlockConfig));
-		BlockSerializer blockSerializer = new BlockSerializer();
+        private Acquisitor acquisitor;
+        public Block Block;
+        private BlockConfig config;
+        private XmlSerializer serializer = new XmlSerializer(typeof(BlockConfig));
+        BlockSerializer blockSerializer = new BlockSerializer();
         BlockDemodulator blockDemodulator = new BlockDemodulator();
         public DemodulatedBlock DBlock;
-		private bool haveBlock = false;
+        private bool haveBlock = false;
 
-		// State information
-		public enum AppState {stopped, running, remote};
-		public AppState appState = AppState.stopped;
+        // State information
+        public enum AppState { stopped, running, remote };
+        public AppState appState = AppState.stopped;
 
-		// it's a singleton
-		private static Controller controllerInstance;
+        // it's a singleton
+        private static Controller controllerInstance;
 
-		#endregion
+        //DK LiveViewer
+        int blockCount;
+        double clusterVariance;
+        double clusterVarianceNormed;
+        double blocksPerDay = 240;
+        DetectorChannelValues topPMT;
+        DetectorChannelValues normedPMT;
+        double plateSpacing = 1.2;
+        double electronCharge = 1.6022 * Math.Pow(10, -19);
+        double bohrMagneton = 9.274 * Math.Pow(10, -24);
+        double saturatedEffectiveField = 26 * Math.Pow(10, 9);
 
-		#region Initialisation and access
+        #endregion
 
-		// This is the right way to get a reference to the controller. You shouldn't create a
-		// controller yourself.
-		public static Controller GetController() 
-		{
-			if (controllerInstance == null) 
-			{
-				controllerInstance = new Controller();
-			}
-			return controllerInstance;
-		}
+        #region Initialisation and access
 
-		public Controller() {}
+        // This is the right way to get a reference to the controller. You shouldn't create a
+        // controller yourself.
+        public static Controller GetController()
+        {
+            if (controllerInstance == null)
+            {
+                controllerInstance = new Controller();
+            }
+            return controllerInstance;
+        }
 
-		// without this method, any remote connections to this object will time out after
-		// five minutes of inactivity.
-		// It just overrides the lifetime lease system completely.
-		public override Object InitializeLifetimeService()
-		{
-			return null;
-		}
+        public Controller() { }
 
-		public void StartApplication()
-		{
-			// stuff the config with a default config, makes it easy to save out
-			// a blank config.
-			MakeDefaultBlockConfig();
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
 
-			// ask the remoting system for access to the EDMHardwareController
-			RemotingConfiguration.RegisterWellKnownClientType(
-				Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
-				"tcp://localhost:1172/controller.rem"
-				);
+        public void StartApplication()
+        {
+            // stuff the config with a default config, makes it easy to save out
+            // a blank config.
+            MakeDefaultBlockConfig();
 
-			// ask the remoting system for access to ScanMaster 
-			RemotingConfiguration.RegisterWellKnownClientType(
-				Type.GetType("ScanMaster.Controller, ScanMaster"),
-				"tcp://localhost:1170/controller.rem"
-				);
+            // ask the remoting system for access to the EDMHardwareController
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
+                "tcp://localhost:1172/controller.rem"
+                );
 
-			// ask the remoting system for access to PhaseLock
-			RemotingConfiguration.RegisterWellKnownClientType(
-				Type.GetType("EDMPhaseLock.MainForm, EDMPhaseLock"),
-				"tcp://localhost:1175/controller.rem"
-				);
+            // ask the remoting system for access to ScanMaster 
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("ScanMaster.Controller, ScanMaster"),
+                "tcp://localhost:1170/controller.rem"
+                );
 
-			mainWindow = new MainWindow(this);
-			acquisitor = new Acquisitor();
-			mainWindow.textArea.Text = "BlockHead!" + Environment.NewLine;
+            // ask the remoting system for access to PhaseLock
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("EDMPhaseLock.MainForm, EDMPhaseLock"),
+                "tcp://localhost:1175/controller.rem"
+                );
+
+            mainWindow = new MainWindow(this);
+            acquisitor = new Acquisitor();
+            mainWindow.textArea.Text = "BlockHead!" + Environment.NewLine;
 
             liveViewer = new LiveViewer(this);
             liveViewer.Show();
 
-			Application.Run(mainWindow);
-		}
+            Application.Run(mainWindow);
+        }
 
-		// this function creates a default BlockConfig that is sufficient to
-		// get BlockHead running. The recommended way of making a new config
-		// is to use BlockHead to save this config and then modify it.
-		private void MakeDefaultBlockConfig()
-		{
-			const int CODE_LENGTH = 12;
-			config = new BlockConfig();
+        // this function creates a default BlockConfig that is sufficient to
+        // get BlockHead running. The recommended way of making a new config
+        // is to use BlockHead to save this config and then modify it.
+        private void MakeDefaultBlockConfig()
+        {
+            const int CODE_LENGTH = 12;
+            config = new BlockConfig();
 
-			DigitalModulation dm = new DigitalModulation();
-			dm.Name = "E";
-			dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
-			dm.Waveform.Code = new bool[] {true,true,false,false,false,false,false,false,false,false,false,false};
-			config.DigitalModulations.Add(dm);
+            DigitalModulation dm = new DigitalModulation();
+            dm.Name = "E";
+            dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
+            dm.Waveform.Code = new bool[] { true, true, false, false, false, false, false, false, false, false, false, false };
+            config.DigitalModulations.Add(dm);
 
-			DigitalModulation pi = new DigitalModulation();
-			pi.Name = "PI";
-			pi.Waveform = new Waveform("Pi Modulation", CODE_LENGTH);
-			pi.Waveform.Code = new bool[] {false,false,false,false,false,false,false,false,false,false,false,true};
-			config.DigitalModulations.Add(pi);
+            DigitalModulation pi = new DigitalModulation();
+            pi.Name = "PI";
+            pi.Waveform = new Waveform("Pi Modulation", CODE_LENGTH);
+            pi.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, false, true };
+            config.DigitalModulations.Add(pi);
 
             AnalogModulation b = new AnalogModulation();
             b.Name = "B";
@@ -192,15 +205,15 @@ namespace EDMBlockHead
             lf1.Centre = 2.5;
             lf1.Step = 0.05;
             config.AnalogModulations.Add(lf1);
-            
+
             config.Settings["codeLength"] = CODE_LENGTH;
-			config.Settings["numberOfPoints"] = 4096;
-			config.Settings["pgClockFrequency"] = 1000000;
-			config.Settings["eDischargeTime"] = 1000;
-			config.Settings["eBleedTime"] = 1000;
-			config.Settings["eSwitchTime"] = 500;
-			config.Settings["eChargeTime"] = 1000;
-			config.Settings["magnetCalibration"] = 16.5;
+            config.Settings["numberOfPoints"] = 4096;
+            config.Settings["pgClockFrequency"] = 1000000;
+            config.Settings["eDischargeTime"] = 1000;
+            config.Settings["eBleedTime"] = 1000;
+            config.Settings["eSwitchTime"] = 500;
+            config.Settings["eChargeTime"] = 1000;
+            config.Settings["magnetCalibration"] = 16.5;
 
 			config.Settings["eState"] = true;
 			config.Settings["bState"] = true;
@@ -212,106 +225,106 @@ namespace EDMBlockHead
 			config.Settings["gbPlus"] = 1.6;
 			config.Settings["gbMinus"] = -1.6;
 
-		}
+        }
 
-		public void StopApplication()
-		{
-			if (appState == AppState.running) StopAcquisition();
-		}
+        public void StopApplication()
+        {
+            if (appState == AppState.running) StopAcquisition();
+        }
 
-		#endregion
+        #endregion
 
-		#region Remote methods
+        #region Remote methods
 
-		public void CaptureRemote()
-		{
-			mainWindow.EnableMenus(false);
-		}
+        public void CaptureRemote()
+        {
+            mainWindow.EnableMenus(false);
+        }
 
-		public void ReleaseRemote()
-		{
-			mainWindow.EnableMenus(true);
-		}
+        public void ReleaseRemote()
+        {
+            mainWindow.EnableMenus(true);
+        }
 
-		public void StartAcquisition()
-		{
-			if (appState != AppState.running) 
-			{
-				Status = "Acquiring ...";
-				acquisitor.Start(config);
-				appState = AppState.running;
-				mainWindow.AppendToTextArea("Starting acquisition ...");
-			}
-		}
+        public void StartAcquisition()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.Start(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting acquisition ...");
+            }
+        }
 
-		public void StopAcquisition()
-		{
-			if (appState == AppState.running) 
-			{
-				acquisitor.Stop();
-				appState = AppState.stopped;
-				Status = "Ready.";
-				mainWindow.AppendToTextArea("Acquisition stopping ...");
-			}
-		}
+        public void StopAcquisition()
+        {
+            if (appState == AppState.running)
+            {
+                acquisitor.Stop();
+                appState = AppState.stopped;
+                Status = "Ready.";
+                mainWindow.AppendToTextArea("Acquisition stopping ...");
+            }
+        }
 
-		public void StartPattern()
-		{
-			ScanMaster.Controller scanMaster = new ScanMaster.Controller();
-			scanMaster.SelectProfile("Scan B");
-			scanMaster.OutputPattern();
-		}
+        public void StartPattern()
+        {
+            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            scanMaster.SelectProfile("Scan B");
+            scanMaster.OutputPattern();
+        }
 
-		public void StopPattern()
-		{
-			ScanMaster.Controller scanMaster = new ScanMaster.Controller();
-			scanMaster.StopPatternOutput();
-		}
+        public void StopPattern()
+        {
+            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            scanMaster.StopPatternOutput();
+        }
 
-		public void AcquireAndWait()
-		{
-			Monitor.Enter(acquisitor.MonitorLockObject);
-			StartAcquisition();
-			Monitor.Wait(acquisitor.MonitorLockObject);
-			Monitor.Exit(acquisitor.MonitorLockObject);
-		}
+        public void AcquireAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartAcquisition();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
 
-		public void LoadConfig(String path)
-		{
-			FileStream fs = File.Open(path, FileMode.Open);
-			LoadConfig(fs);
-			fs.Close();
-			mainWindow.AppendToTextArea("Loaded config " + path);
-		}
+        public void LoadConfig(String path)
+        {
+            FileStream fs = File.Open(path, FileMode.Open);
+            LoadConfig(fs);
+            fs.Close();
+            mainWindow.AppendToTextArea("Loaded config " + path);
+        }
 
-		public void SaveBlock(String path)
-		{
-			if (haveBlock)
-			{
-				SaveBlock(File.Create(path));
-				mainWindow.AppendToTextArea("Saved block to " + path);
-			}
-		}
+        public void SaveBlock(String path)
+        {
+            if (haveBlock)
+            {
+                SaveBlock(File.Create(path));
+                mainWindow.AppendToTextArea("Saved block to " + path);
+            }
+        }
 
-		public BlockConfig Config
-		{
-			set
-			{
-				config = value;
-			}
-			get
-			{
-				return config;
-			}
-		}
+        public BlockConfig Config
+        {
+            set
+            {
+                config = value;
+            }
+            get
+            {
+                return config;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Local methods
+        #region Local methods
 
-		public void AcquisitionFinished(Block b)
-		{
-			this.Block = b;
+        public void AcquisitionFinished(Block b)
+        {
+            this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
             DemodulationConfig dc = new DemodulationConfig();
             GatedDetectorExtractSpec dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
@@ -325,117 +338,207 @@ namespace EDMBlockHead
             dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
             dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
             DBlock = blockDemodulator.DemodulateBlock(b, dc);
+
+            topPMT = DBlock.ChannelValues[0];
+
+            int SIGIndex = (int)topPMT.GetChannelIndex(new string[] { "SIG" });
+            int BIndex = (int)topPMT.GetChannelIndex(new string[] { "B" });
+            int DBIndex = (int)topPMT.GetChannelIndex(new string[] { "DB" });
+            int EIndex = (int)topPMT.GetChannelIndex(new string[] { "E" });
+            int EdotBIndex = (int)topPMT.GetChannelIndex(new string[] { "E", "B" });
+            //edm factor calculation
+            double dbStep2 = (double)Config.GetModulationByName("DB");
+            double dbStep = (double)Config.AnalogModulations[1];//needs to select db step from analog modulations */
+            double magCal = (double)Config.Settings["magnetCalibration"];
+            double eField = cField((double)Config.Settings["ePlus"],(double) Config.Settings["eMinus"]);
+            double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
+                        (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
+            double SIGValueTop = topPMT.GetValue(new string[]{"SIG"});
+            double SIGErrTop = topPMT.GetError(SIGIndex);
+            double BValueTop = topPMT.GetValue(BIndex);
+            double BErrTop = topPMT.GetError(BIndex);
+            double dbValueTop = topPMT.GetValue(DBIndex);
+            double dbErrTop = topPMT.GetError(DBIndex);
+            double EValueTop = topPMT.GetValue(EIndex);
+            double EErrTop = topPMT.GetError(EIndex);
+            double EdotBValueTop = topPMT.GetValue(EdotBIndex);
+            double EdotBErrTop = topPMT.GetError(EdotBIndex);
+
+            //edm error calculation
+            double rawEDM = edmFactor *(EdotBValueTop / dbValueTop);
+            double rawEDMErr = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBErrTop / EdotBValueTop, 2) + Math.Pow(dbErrTop / dbValueTop,2));
+
+            //same again for normed data. Is ChannelValues[5] really going to apply the topNormed stuff?
+            normedPMT = DBlock.ChannelValues[5];
+
+            double SIGValueNormed = normedPMT.GetValue(SIGIndex);
+            double SIGErrNormed = normedPMT.GetError(SIGIndex);
+            double BValueNormed = normedPMT.GetValue(BIndex);
+            double BErrNormed = normedPMT.GetError(BIndex);
+            double dbValueNormed = normedPMT.GetValue(DBIndex);
+            double dbErrNormed = normedPMT.GetError(DBIndex);
+            double EValueNormed = normedPMT.GetValue(EIndex);
+            double EErrNormed = normedPMT.GetError(EIndex);
+            double EdotBValueNormed = normedPMT.GetValue(EdotBIndex);
+            double EdotBErrNormed = normedPMT.GetError(EdotBIndex);
+
+            //normed edm error
+            double rawEDMNormed = edmFactor*(EdotBValueNormed / dbValueNormed);
+            double rawEDMErrNormed = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBErrNormed / EdotBValueNormed,2) + Math.Pow(dbErrNormed / dbValueNormed,2));
+
+            //Append LiveViewer text
+            liveViewer.AppendStatusText("{" + rawEDMErr + "," + rawEDMErrNormed + "}");
+
+            // Rollings values of edm error
+            clusterVariance = ((clusterVariance * clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
+            double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
+            clusterVarianceNormed = ((clusterVarianceNormed * clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErr) / blockCount;
+            double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
+            blockCount = blockCount + 1;
+
+            liveViewer.UpdateClusterStatusText("errorPerDay = " + edmPerDay + " ,errorPerDayNormed = " + edmPerDayNormed);
+       
+            
+
+            //config.g
             haveBlock = true;
             appState = AppState.stopped;
-			mainWindow.AppendToTextArea("Acquisition finished");
-			SetStatusReady();
-		}
+            mainWindow.AppendToTextArea("Acquisition finished");
+            SetStatusReady();
+        }
+        
+        public double polarisationFactor(double electricField/*in kV/cm*/)
+        {
+            double polFactor = 0.00001386974812686904
+                + 0.09020507207607358 * electricField
+                + 0.0008134261949342792 * Math.Pow(electricField, 2)
+                - 0.001365930559363722 * Math.Pow(electricField, 3)
+                + 0.00016467328012807663 * Math.Pow(electricField, 4)
+                - 9.53482 * Math.Pow(10, -6) * Math.Pow(electricField, 5)
+                + 2.804041112473679 * Math.Pow(10, -7) * Math.Pow(electricField, 6)
+                - 3.352604355536456 * Math.Pow(10, -9) * Math.Pow(electricField, 7);
 
-		public void GotPoint(int point, Shot data)
-		{
-			if ((point % UPDATE_EVERY) == 0)
-			{
-				mainWindow.TankLevel = point;
+            return polFactor;
+        }
+        
+        public double cField(double ePlus,double eMinus)
+        {
+            double efield = (ePlus - eMinus) / plateSpacing;
+            return efield;
+        }
 
-				TOF tof = (TOF)data.TOFs[0];
-				mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+        public void resetEdmErrRunningMeans()
+        {
+            blockCount = 1;
+            clusterVariance = 0;
+            clusterVarianceNormed = 0;
+        }
+
+        public void GotPoint(int point, Shot data)
+        {
+            if ((point % UPDATE_EVERY) == 0)
+            {
+                mainWindow.TankLevel = point;
+
+                TOF tof = (TOF)data.TOFs[0];
+                mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
             }
-		}
+        }
 
-		public void LoadConfig()
-		{
-			mainWindow.StatusText = "Loading config ...";
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "xml block config|*.xml";
-			dialog.Title = "Open block config file";
-			dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "BlockHead";
-			dialog.ShowDialog();
-			if(dialog.FileName != "")
-			{
-				System.IO.FileStream fs = 
-					(System.IO.FileStream)dialog.OpenFile();
-				LoadConfig(fs);
-				fs.Close();
-				SetStatusReady();
-				mainWindow.AppendToTextArea("Loaded config.");
-//				mainWindow.progressTank.Range= new NationalInstruments.UI.Range(0, (int)config.Settings["NumberOfPoints"]);
-			}			
-		}
+        public void LoadConfig()
+        {
+            mainWindow.StatusText = "Loading config ...";
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "xml block config|*.xml";
+            dialog.Title = "Open block config file";
+            dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "BlockHead";
+            dialog.ShowDialog();
+            if (dialog.FileName != "")
+            {
+                System.IO.FileStream fs =
+                    (System.IO.FileStream)dialog.OpenFile();
+                LoadConfig(fs);
+                fs.Close();
+                SetStatusReady();
+                mainWindow.AppendToTextArea("Loaded config.");
+                //				mainWindow.progressTank.Range= new NationalInstruments.UI.Range(0, (int)config.Settings["NumberOfPoints"]);
+            }
+        }
 
-		private void LoadConfig( FileStream fs )
-		{
-			config = (BlockConfig)serializer.Deserialize(fs);
-		}
+        private void LoadConfig(FileStream fs)
+        {
+            config = (BlockConfig)serializer.Deserialize(fs);
+        }
 
-		public void SaveConfig()
-		{
-			mainWindow.StatusText = "Saving config ...";
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Filter = "xml block config|*.xml";
-			dialog.Title = "Save block config file";
-			dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "BlockHead";
-			dialog.ShowDialog();
-			if(dialog.FileName != "")
-			{
-				System.IO.FileStream fs = 
-					(System.IO.FileStream)dialog.OpenFile();
-				serializer.Serialize(fs, config);
-				fs.Close();
-			}
-			mainWindow.AppendToTextArea("Saved config.");
-			SetStatusReady();
-		}
+        public void SaveConfig()
+        {
+            mainWindow.StatusText = "Saving config ...";
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "xml block config|*.xml";
+            dialog.Title = "Save block config file";
+            dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "BlockHead";
+            dialog.ShowDialog();
+            if (dialog.FileName != "")
+            {
+                System.IO.FileStream fs =
+                    (System.IO.FileStream)dialog.OpenFile();
+                serializer.Serialize(fs, config);
+                fs.Close();
+            }
+            mainWindow.AppendToTextArea("Saved config.");
+            SetStatusReady();
+        }
 
-		public String Status
-		{
-			set
-			{
-				mainWindow.StatusText = value;
-			}
-		}
+        public String Status
+        {
+            set
+            {
+                mainWindow.StatusText = value;
+            }
+        }
 
-		public void SaveBlock()
-		{
-			if (haveBlock)
-			{
-				mainWindow.StatusText = "Saving block ...";
-				SaveFileDialog dialog = new SaveFileDialog();
-				dialog.Filter = "zipped xml block|*.zip";
-				dialog.Title = "Save block";
-				dialog.ShowDialog();
-				if(dialog.FileName != "")
-				{
-					System.IO.FileStream fs = 
-						(System.IO.FileStream)dialog.OpenFile();
-					SaveBlock(fs);
-					fs.Close();
-				}
-				mainWindow.AppendToTextArea("Saved block.");
-				SetStatusReady();
-			}
-		}
+        public void SaveBlock()
+        {
+            if (haveBlock)
+            {
+                mainWindow.StatusText = "Saving block ...";
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "zipped xml block|*.zip";
+                dialog.Title = "Save block";
+                dialog.ShowDialog();
+                if (dialog.FileName != "")
+                {
+                    System.IO.FileStream fs =
+                        (System.IO.FileStream)dialog.OpenFile();
+                    SaveBlock(fs);
+                    fs.Close();
+                }
+                mainWindow.AppendToTextArea("Saved block.");
+                SetStatusReady();
+            }
+        }
 
-		private void SaveBlock(FileStream fs)
-		{
-			blockSerializer.SerializeBlockAsZippedXML(fs, Block);
-		}
+        private void SaveBlock(FileStream fs)
+        {
+            blockSerializer.SerializeBlockAsZippedXML(fs, Block);
+        }
 
-		private void SetStatusReady()
-		{
-			if (haveBlock) Status = "Ready. Block in memory.";
-			else Status = "Ready.";
-		}
+        private void SetStatusReady()
+        {
+            if (haveBlock) Status = "Ready. Block in memory.";
+            else Status = "Ready.";
+        }
 
         internal void ShowLiveViewer()
         {
             liveViewer.Show();
         }
 
-		#endregion
+        #endregion
 
     }
 }
