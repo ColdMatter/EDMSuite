@@ -37,13 +37,14 @@ namespace EDMBlockHead
             // 
             // statusText
             // 
-            this.statusText.BackColor = System.Drawing.Color.Honeydew;
-            this.statusText.ForeColor = System.Drawing.Color.PaleTurquoise;
+            this.statusText.BackColor = System.Drawing.Color.Black;
+            this.statusText.ForeColor = System.Drawing.Color.Lime;
             this.statusText.Location = new System.Drawing.Point(12, 54);
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
+            this.statusText.ReadOnly = true;
             this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.statusText.Size = new System.Drawing.Size(457, 316);
+            this.statusText.Size = new System.Drawing.Size(431, 316);
             this.statusText.TabIndex = 0;
             // 
             // label1
@@ -66,21 +67,22 @@ namespace EDMBlockHead
             // 
             // clusterStatusText
             // 
-            this.clusterStatusText.BackColor = System.Drawing.Color.Honeydew;
-            this.clusterStatusText.ForeColor = System.Drawing.Color.PaleTurquoise;
+            this.clusterStatusText.BackColor = System.Drawing.Color.Black;
+            this.clusterStatusText.ForeColor = System.Drawing.Color.Lime;
             this.clusterStatusText.Location = new System.Drawing.Point(12, 419);
             this.clusterStatusText.Multiline = true;
             this.clusterStatusText.Name = "clusterStatusText";
-            this.clusterStatusText.Size = new System.Drawing.Size(431, 43);
+            this.clusterStatusText.ReadOnly = true;
+            this.clusterStatusText.Size = new System.Drawing.Size(340, 43);
             this.clusterStatusText.TabIndex = 3;
             // 
             // resetRunningMeans
             // 
-            this.resetRunningMeans.Location = new System.Drawing.Point(522, 64);
+            this.resetRunningMeans.Location = new System.Drawing.Point(359, 419);
             this.resetRunningMeans.Name = "resetRunningMeans";
-            this.resetRunningMeans.Size = new System.Drawing.Size(134, 36);
+            this.resetRunningMeans.Size = new System.Drawing.Size(84, 24);
             this.resetRunningMeans.TabIndex = 4;
-            this.resetRunningMeans.Text = "Reset running means";
+            this.resetRunningMeans.Text = "Reset means";
             this.resetRunningMeans.UseVisualStyleBackColor = true;
             this.resetRunningMeans.Click += new System.EventHandler(this.resetRunningMeans_Click);
             // 

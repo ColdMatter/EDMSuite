@@ -53,9 +53,9 @@ namespace EDMBlockHead
         private static Controller controllerInstance;
 
         //DK LiveViewer
-        int blockCount;
-        double clusterVariance;
-        double clusterVarianceNormed;
+        int blockCount=1;
+        double clusterVariance=0;
+        double clusterVarianceNormed=0;
         double blocksPerDay = 240;
         double plateSpacing = 1.2;
         double electronCharge = 1.6022 * Math.Pow(10, -19);
@@ -369,17 +369,17 @@ namespace EDMBlockHead
                                      + Math.Pow(dbValandErrNormed[1] / dbValandErrNormed[0], 2));
 
             //Append LiveViewer text
-            liveViewer.AppendStatusText("{" + rawEDMErr + "," + rawEDMErrNormed + "}");
-
+            liveViewer.AppendStatusText(rawEDMErr.ToString("E3") + "\t" + rawEDMErrNormed.ToString("E3") + Environment.NewLine);
+            rawEDM.ToString("E3");
             // Rollings values of edm error
-            clusterVariance = ((clusterVariance * clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
+            clusterVariance = ((clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
             double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
-            clusterVarianceNormed = ((clusterVarianceNormed * clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErrNormed) / blockCount;
+            clusterVarianceNormed = ((clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErrNormed) / blockCount;
             double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
             blockCount = blockCount + 1;
 
-            liveViewer.UpdateClusterStatusText("errorPerDay = " + edmPerDay + " ,errorPerDayNormed = " + edmPerDayNormed);
-       
+            liveViewer.UpdateClusterStatusText("errorPerDay = " + edmPerDay.ToString("E3") + "\terrorPerDayNormed = " + edmPerDayNormed.ToString("E3"));
+            
             //config.g
             haveBlock = true;
             appState = AppState.stopped;
@@ -404,7 +404,7 @@ namespace EDMBlockHead
         public double cField(double ePlus,double eMinus)
         {
             double efield = (ePlus - eMinus) / plateSpacing;
-            return efield;
+            return efield / 1000;
         }
 
         public void resetEdmErrRunningMeans()
