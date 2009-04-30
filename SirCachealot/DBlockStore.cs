@@ -21,11 +21,23 @@ namespace SirCachealot
         UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs);
         UInt32[] GetUIDsByAnalysisTag(string tag);
 
-        UInt32[] GetUIDsByMachineState(bool eState, bool bState, UInt32[] fromUIDs);
-        UInt32[] GetUIDsByMachineState(bool eState, bool bState);
+        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState);
 
+        UInt32[] GetUIDsByEState(bool eState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByEState(bool eState);
+
+        UInt32[] GetUIDsByBState(bool bState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByBState(bool bState);
+
+        UInt32[] GetUIDsByRFState(bool rfState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByRFState(bool rfState);
+        
         UInt32[] GetUIDsByDateRange(DateTime start, DateTime end, UInt32[] fromUIDs);
         UInt32[] GetUIDsByDateRange(DateTime start, DateTime end);
+
+        UInt32[] GetUIDsByVoltageRange(double low, double high, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByVoltageRange(double low, double high);
 
         UInt32[] GetUIDsByPredicate(PredicateFunction func, UInt32[] fromUIDs);
 

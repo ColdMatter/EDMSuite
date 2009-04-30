@@ -56,7 +56,7 @@ namespace SirCachealot
         {
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " + 
+                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " +
                 "TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
                 "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX AND UID IN " + MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?tag", tag);
@@ -67,7 +67,7 @@ namespace SirCachealot
         {
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " + 
+                "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " +
                 "TAGS.CLUSTER = DBLOCKS.CLUSTER AND " +
                 "TAGS.CLUSTERINDEX = DBLOCKS.CLUSTERINDEX";
             mySqlComm.Parameters.AddWithValue("?tag", tag);
@@ -84,30 +84,88 @@ namespace SirCachealot
             return GetByStringParameter("ATAG", tag);
         }
 
-        public UInt32[] GetUIDsByMachineState(bool eState, bool bState, uint[] fromUIDs)
+        public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, uint[] fromUIDs)
         {
             mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText = 
-                "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState AND UID IN " +
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState " +
+                "AND RFSTATE = ?rfState AND UID IN " +
                 MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?eState", eState);
+            mySqlComm.Parameters.AddWithValue("?bState", bState);
+            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public uint[] GetUIDsByMachineState(bool eState, bool bState, bool rfState)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND " +
+                "RFSTATE = ?rfState AND BSTATE = ?bState";
+            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            mySqlComm.Parameters.AddWithValue("?bState", bState);
+            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByEState(bool eState, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByEState(bool eState)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState";
+            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByBState(bool bState, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE BSTATE = ?bState AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?bState", bState);
             return GetUIDsFromCommand(mySqlComm);
         }
 
-        public uint[] GetUIDsByMachineState(bool eState, bool bState)
+        public UInt32[] GetUIDsByBState(bool bState)
         {
             mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState";
-            mySqlComm.Parameters.AddWithValue("?eState", eState);
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE BSTATE = ?bState";
             mySqlComm.Parameters.AddWithValue("?bState", bState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByRFState(bool rfState, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE RFSTATE = ?rfState AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByRFState(bool rfState)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE RFSTATE = ?rfState";
+            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
             return GetUIDsFromCommand(mySqlComm);
         }
 
         public uint[] GetUIDsByDateRange(DateTime start, DateTime end, uint[] fromUIDs)
         {
             mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText = 
+            mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end AND UID IN " +
                 MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?start", start);
@@ -121,6 +179,27 @@ namespace SirCachealot
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end";
             mySqlComm.Parameters.AddWithValue("?start", start);
             mySqlComm.Parameters.AddWithValue("?end", end);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByVoltageRange(double low, double high, UInt32[] fromUIDs)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE EPLUS >= ?low AND EPLUS < ?high AND UID IN " +
+                MakeSQLArrayString(fromUIDs);
+            mySqlComm.Parameters.AddWithValue("?low", low);
+            mySqlComm.Parameters.AddWithValue("?high", high);
+            return GetUIDsFromCommand(mySqlComm);
+        }
+
+        public UInt32[] GetUIDsByVoltageRange(double low, double high)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT UID FROM DBLOCKS WHERE EPLUS >= ?low AND EPLUS < ?high";
+            mySqlComm.Parameters.AddWithValue("?low", low);
+            mySqlComm.Parameters.AddWithValue("?high", high);
             return GetUIDsFromCommand(mySqlComm);
         }
 
@@ -141,7 +220,7 @@ namespace SirCachealot
         public DemodulatedBlock GetDBlock(uint uid)
         {
             byte[] dbb;
-  
+
             MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
             DemodulatedBlock db;
             if (rd.Read())
@@ -166,12 +245,33 @@ namespace SirCachealot
             string aTag = db.DemodulationConfig.AnalysisTag;
             bool eState = (bool)db.Config.Settings["eState"];
             bool bState = (bool)db.Config.Settings["bState"];
+            // the following is a workaround. We took a lot of data before we started recording
+            // the rfState. Luckily, almost all of this data was taken in the same rf state.
+            // Here, if no rfState is found in the block it is assigned the default, true.
+            bool rfState;
+            try
+            {
+                rfState = (bool)db.Config.Settings["rfState"];
+            }
+            catch (Exception)
+            {
+                // we set the rfState in the dblock, which will shortly be persisted to the
+                // database. This means that every dblock in the database will have an rfState
+                // even if the corresponding block does not.
+                db.Config.Settings["rfState"] = true;
+                rfState = true;
+            }
+
             DateTime timeStamp = db.TimeStamp;
+            double ePlus = (double)db.Config.Settings["ePlus"];
+            double eMinus = (double)db.Config.Settings["eMinus"];
             byte[] dBlockBytes = serializeDBlockAsByteArray(db);
 
             mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText = 
-                "INSERT INTO DBLOCKS VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?ts);";
+            mySqlComm.CommandText =
+                "INSERT INTO DBLOCKS " +
+                "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?ts, " +
+                "?ePlus, ?eMinus);";
             // the uid column is defined auto_increment
             mySqlComm.Parameters.AddWithValue("?uint", null);
             mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
@@ -179,8 +279,11 @@ namespace SirCachealot
             mySqlComm.Parameters.AddWithValue("?aTag", aTag);
             mySqlComm.Parameters.AddWithValue("?eState", eState);
             mySqlComm.Parameters.AddWithValue("?bState", bState);
+            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
             mySqlComm.Parameters.AddWithValue("?ts", timeStamp);
- 
+            mySqlComm.Parameters.AddWithValue("?ePlus", ePlus);
+            mySqlComm.Parameters.AddWithValue("?eMinus", eMinus);
+
             mySqlComm.ExecuteNonQuery();
             mySqlComm.Parameters.Clear();
             UInt32 uid = (UInt32)mySqlComm.LastInsertedId;
@@ -193,7 +296,7 @@ namespace SirCachealot
 
             mySqlComm.ExecuteNonQuery();
             mySqlComm.Parameters.Clear();
-           
+
             return uid;
         }
 
@@ -249,7 +352,7 @@ namespace SirCachealot
         {
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT UID FROM DBLOCKS WHERE " + parameter + 
+                "SELECT UID FROM DBLOCKS WHERE " + parameter +
                 " = ?val AND UID IN " + MakeSQLArrayString(fromUIDs);
             mySqlComm.Parameters.AddWithValue("?val", val);
             return GetUIDsFromCommand(mySqlComm);
@@ -270,7 +373,7 @@ namespace SirCachealot
             mySql = new MySqlConnection("Server=127.0.0.1;Uid=root;Pwd=atomic1;");
             mySql.Open();
             mySqlComm = mySql.CreateCommand();
-         }
+        }
 
         internal List<string> GetDatabaseList()
         {
@@ -291,10 +394,10 @@ namespace SirCachealot
             executeNonQuery("CREATE DATABASE " + dbName + ";");
             Connect(dbName);
             executeNonQuery(
-                "CREATE TABLE DBLOCKS (UID INT UNSIGNED NOT NULL AUTO_INCREMENT, " + 
+                "CREATE TABLE DBLOCKS (UID INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
                 "CLUSTER VARCHAR(30), CLUSTERINDEX INT, " +
-                "ATAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, BLOCKTIME DATETIME," +
-                "PRIMARY KEY (UID))"
+                "ATAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, BLOCKTIME DATETIME, " +
+                "EPLUS DOUBLE, EMINUS DOUBLE, PRIMARY KEY (UID))"
                 );
             executeNonQuery(
                 "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT, TAG VARCHAR(30))"
