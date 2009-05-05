@@ -57,7 +57,7 @@ namespace EDMBlockHead
         double clusterVariance=0;
         double clusterVarianceNormed=0;
         double blocksPerDay = 240;
-        double plateSpacing = 1.2;
+        double plateSpacing = 1.1;
         double electronCharge = 1.6022 * Math.Pow(10, -19);
         double bohrMagneton = 9.274 * Math.Pow(10, -24);
         double saturatedEffectiveField = 26 * Math.Pow(10, 9);
@@ -117,6 +117,7 @@ namespace EDMBlockHead
 
             liveViewer = new LiveViewer(this);
             liveViewer.Show();
+            liveViewer.UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
 
             Application.Run(mainWindow);
         }
@@ -340,7 +341,7 @@ namespace EDMBlockHead
             //edm factor calculation
             double dbStep = ((AnalogModulation)Config.GetModulationByName("DB")).Step; 
             double magCal = (double)Config.Settings["magnetCalibration"];
-            double eField = cField((double)Config.Settings["ePlus"], (double)Config.Settings["eMinus"]);
+            double eField = cField((double)Config.Settings["ePlus"], (double)Config.Settings["eMinus"]);//arguments are in volts not kV
             double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
                         (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
 
@@ -356,7 +357,7 @@ namespace EDMBlockHead
             double rawEDMErr = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBValandErr[1] / EdotBValandErr[0], 2)
                                + Math.Pow(dbValandErr[1] /dbValandErr[0],2));
 
-            //same again for normed data. Is ChannelValues[5] really going to apply the topNormed stuff?
+            //same again for normed data.
             double[] sigValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "SIG" }, "topNormed");
             double[] BValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "B" }, "topNormed");
             double[] dbValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "DB" }, "topNormed");
@@ -367,18 +368,36 @@ namespace EDMBlockHead
             double rawEDMNormed = edmFactor * (EdotBValandErrNormed[0] / dbValandErrNormed[0]);
             double rawEDMErrNormed = Math.Abs(rawEDMNormed) * Math.Sqrt(Math.Pow(EdotBValandErrNormed[1] / EdotBValandErrNormed[0], 2)
                                      + Math.Pow(dbValandErrNormed[1] / dbValandErrNormed[0], 2));
-
-            //Append LiveViewer text
-            liveViewer.AppendStatusText(rawEDMErr.ToString("E3") + "\t" + rawEDMErrNormed.ToString("E3") + Environment.NewLine);
-            rawEDM.ToString("E3");
+            
+            //Append LiveViewer text with edm errors, B, DB & DB/SIG
+            liveViewer.AppendStatusText((Math.Pow(10, 26) * rawEDMErr).ToString("G3") + "\t" + (Math.Pow(10, 26) * rawEDMErrNormed).ToString("G3")
+                + "\t\t" + (BValandErr[0]).ToString("N2") + "\t" + (dbValandErr[0]).ToString("N2")
+                + "\t" + (dbValandErr[0] / sigValandErr[0]).ToString("N3") + Environment.NewLine);
+        
             // Rollings values of edm error
             clusterVariance = ((clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
             double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
             clusterVarianceNormed = ((clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErrNormed) / blockCount;
             double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
-            blockCount = blockCount + 1;
 
-            liveViewer.UpdateClusterStatusText("errorPerDay = " + edmPerDay.ToString("E3") + "\terrorPerDayNormed = " + edmPerDayNormed.ToString("E3"));
+            liveViewer.UpdateClusterStatusText("errorPerDay: " + edmPerDay.ToString("E3") + "\terrorPerDayNormed: " + edmPerDayNormed.ToString("E3")
+                + Environment.NewLine + "block count: " + blockCount);
+
+            //Update Plots
+            liveViewer.AppendToSigScatter(new double[] { blockCount }, new double[] { sigValandErr[0] });
+            liveViewer.AppendTobScatter(new double[] { blockCount }, new double[] { BValandErr[0] });
+            liveViewer.AppendTodbScatter(new double[] { blockCount }, new double[] { dbValandErr[0] });
+            liveViewer.AppendToedmScatter(new double[] { blockCount }, new double[] { Math.Pow(10, 26) * rawEDMErr });
+            liveViewer.AppendToedmNormedScatter(new double[] { blockCount }, new double[] { Math.Pow(10, 26) * rawEDMErrNormed });
+            
+            liveViewer.AppendSigmaTosigScatter(new double[] { blockCount }, new double[] { sigValandErr[0] + sigValandErr[1] },
+                new double[] { sigValandErr[0] - sigValandErr[1] });
+            liveViewer.AppendSigmaTobScatter(new double[] { blockCount }, new double[] { BValandErr[0] + BValandErr[1] },
+                new double[] { BValandErr[0] - BValandErr[1] });
+            liveViewer.AppendSigmaTodbScatter(new double[] { blockCount }, new double[] { dbValandErr[0] + dbValandErr[1] },
+                new double[] { dbValandErr[0] - dbValandErr[1] });
+            
+            blockCount = blockCount + 1;
             
             //config.g
             haveBlock = true;
@@ -401,7 +420,7 @@ namespace EDMBlockHead
             return polFactor;
         }
         
-        public double cField(double ePlus,double eMinus)
+        public double cField(double ePlus,double eMinus)//voltage in volts returns kV/cm
         {
             double efield = (ePlus - eMinus) / plateSpacing;
             return efield / 1000;
@@ -412,6 +431,13 @@ namespace EDMBlockHead
             blockCount = 1;
             clusterVariance = 0;
             clusterVarianceNormed = 0;
+            liveViewer.UpdateClusterStatusText("errorPerDay: " + 0 + "\terrorPerDayNormed: " + 0
+                + Environment.NewLine + "block count: " + 0);
+            liveViewer.UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
+            liveViewer.ClearSigScatter();
+            liveViewer.ClearbScatter();
+            liveViewer.CleardbScatter();
+            liveViewer.ClearedmErrScatter();            
         }
 
         public void GotPoint(int point, Shot data)
@@ -520,5 +546,21 @@ namespace EDMBlockHead
 
         #endregion
 
+
+        internal void TestLiveAnalysis()
+        {
+            new Thread(new ThreadStart(ActuallyTestLiveAnalysis)).Start();
+        }
+
+        internal void ActuallyTestLiveAnalysis()
+        {
+            for (int i = 1; i <= 20; i++)
+            {
+                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2009\\April2009\\30apr0900_";
+                BlockSerializer bs = new BlockSerializer();
+                Block b = bs.DeserializeBlockFromZippedXML(fileRoot + (i.ToString()) + ".zip", "block.xml");
+                AcquisitionFinished(b);
+            }
+        }
     }
 }

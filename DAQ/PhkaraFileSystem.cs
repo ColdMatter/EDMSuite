@@ -9,13 +9,13 @@ namespace DAQ.Environment
 	{
 		public PhkaraFileSystem()
 		{
-			Paths.Add("settingsPath","d:\\experiment control\\");
-			Paths.Add("scanMasterDataPath", "d:\\data\\");
-			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/5.2/mathkernel.exe");
+            Paths.Add("settingsPath", "d:\\data\\settings\\");
+			Paths.Add("scanMasterDataPath", "d:\\data\\general\\");
+			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/7.0/mathkernel.exe");
 			Paths.Add("fakeData","d:\\data\\examples\\");
-
+            Paths.Add("edmDataPath", "d:\\data\\sedm\\v3\\");
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
-
+            DataSearchPaths.Add(Paths["edmDataPath"]);
 			SortDataByDate = false;
 		}
 	}

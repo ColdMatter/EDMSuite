@@ -17,7 +17,7 @@ namespace Analysis.EDM
         public double OffsetFWHM;
         public double WidthFWHM;
         public bool Integrate = true;
-        public bool BackgroundSubtract = false;
+        public bool BackgroundSubtract = true;
         public double Background;
 
         public void FitToTOF(TOF t)

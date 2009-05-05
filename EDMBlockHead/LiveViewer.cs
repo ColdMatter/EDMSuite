@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using NationalInstruments.UI;
+using NationalInstruments.UI.WindowsForms;
 
 using Analysis.EDM;
 
@@ -54,6 +56,11 @@ namespace EDMBlockHead
         {
         }
 
+        public void UpdateStatusText(string newText)
+        {
+            SetTextBox(statusText, newText);
+        }
+
         public void AppendStatusText(string newText)
         {
             SetTextBox(statusText, statusText.Text + newText);
@@ -75,7 +82,6 @@ namespace EDMBlockHead
         {
             textBox.Text = text;
         }
-     
 
         #region Click Handler
 
@@ -86,7 +92,89 @@ namespace EDMBlockHead
 
         #endregion
 
+        //Plotting
+        
+        private delegate void PlotXYDelegate(double[] x, double[] y);
 
+        private void PlotXYAppend(Graph graph, ScatterPlot plot, double[] x, double[] y)
+        {
+            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { x, y });
+        }
+
+        private void PlotXY(Graph graph, ScatterPlot plot, double[] x, double[] y)
+        {
+            graph.Invoke(new PlotXYDelegate(plot.PlotXY), new Object[] { x, y });
+        }
+
+        public void AppendToSigScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(sigScatterGraph, sigPlot, x, y);
+        }
+
+        public void AppendTobScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(bScatterGraph, bPlot, x, y);
+        }
+
+        public void AppendTodbScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(dbScatterGraph, dbPlot, x, y);
+        }
+
+        public void AppendToedmScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(edmErrorScatterGraph, edmErrorPlot, x, y);
+        }
+
+        public void AppendToedmNormedScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(edmErrorScatterGraph, edmNormedErrorPlot, x, y);
+        }
+
+        public void AppendSigmaTosigScatter(double[] x, double[] yPlusSigma, double[] yMinusSigma)
+        {
+            PlotXYAppend(sigScatterGraph, sigSigmaHi, x, yPlusSigma);
+            PlotXYAppend(sigScatterGraph, sigSigmaLo, x, yMinusSigma);
+        }
+
+        public void AppendSigmaTobScatter(double[] x, double[] yPlusSigma, double[] yMinusSigma)
+        {
+            PlotXYAppend(bScatterGraph, bSigmaHi, x, yPlusSigma);
+            PlotXYAppend(bScatterGraph, bSigmaLo, x, yMinusSigma);
+        }
+
+        public void AppendSigmaTodbScatter(double[] x, double[] yPlusSigma, double[] yMinusSigma)
+        {
+            PlotXYAppend(dbScatterGraph, dbSigmaHi, x, yPlusSigma);
+            PlotXYAppend(dbScatterGraph, dbSigmaLo, x, yMinusSigma);
+        }
+
+
+        private delegate void ClearDataDelegate();
+        private void ClearNIGraph(Graph graph)
+        {
+            graph.Invoke(new ClearDataDelegate(graph.ClearData));
+        }
+        
+        public void ClearSigScatter()
+        {
+            ClearNIGraph(sigScatterGraph);
+        }
+
+        public void ClearbScatter()
+        {
+            ClearNIGraph(bScatterGraph);
+        }
+
+        public void CleardbScatter()
+        {
+            ClearNIGraph(dbScatterGraph);
+        }
+       
+        public void ClearedmErrScatter()
+        {
+            ClearNIGraph(edmErrorScatterGraph);
+        }
 
     }
 

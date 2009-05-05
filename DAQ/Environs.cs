@@ -50,7 +50,7 @@ namespace DAQ.Environment
 			String computerName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
 			switch (computerName)
 			{
-                case "ph-kara":
+                case "PH-DK902":
                     Hardware = new EDMHardware();
                     FileSystem = new PhkaraFileSystem();
                     Debug = false;

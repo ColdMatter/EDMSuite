@@ -46,6 +46,8 @@ namespace EDMBlockHead.GUI
         private YAxis yAxis3;
         private MenuItem menuItem8;
         private MenuItem menuItem9;
+        private MenuItem menuItem10;
+        private MenuItem menuItem11;
 
 		private Controller controller;
 
@@ -91,6 +93,10 @@ namespace EDMBlockHead.GUI
             this.startMenuItem = new System.Windows.Forms.MenuItem();
             this.stopMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem7 = new System.Windows.Forms.MenuItem();
+            this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.menuItem9 = new System.Windows.Forms.MenuItem();
+            this.menuItem10 = new System.Windows.Forms.MenuItem();
+            this.menuItem11 = new System.Windows.Forms.MenuItem();
             this.statusBar = new System.Windows.Forms.StatusBar();
             this.tofGraph1 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.tofPlot1 = new NationalInstruments.UI.WaveformPlot();
@@ -106,8 +112,6 @@ namespace EDMBlockHead.GUI
             this.tofPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
-            this.menuItem8 = new System.Windows.Forms.MenuItem();
-            this.menuItem9 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -119,7 +123,8 @@ namespace EDMBlockHead.GUI
             this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.fileMenu,
             this.acquireMenu,
-            this.menuItem8});
+            this.menuItem8,
+            this.menuItem10});
             // 
             // fileMenu
             // 
@@ -200,6 +205,33 @@ namespace EDMBlockHead.GUI
             this.menuItem7.Index = 3;
             this.menuItem7.Text = "Stop pattern";
             this.menuItem7.Click += new System.EventHandler(this.menuItem7_Click);
+            // 
+            // menuItem8
+            // 
+            this.menuItem8.Index = 2;
+            this.menuItem8.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem9});
+            this.menuItem8.Text = "Window";
+            // 
+            // menuItem9
+            // 
+            this.menuItem9.Index = 0;
+            this.menuItem9.Text = "Live viewer";
+            this.menuItem9.Click += new System.EventHandler(this.menuItem9_Click);
+            // 
+            // menuItem10
+            // 
+            this.menuItem10.Enabled = false;
+            this.menuItem10.Index = 3;
+            this.menuItem10.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem11});
+            this.menuItem10.Text = "Debug";
+            // 
+            // menuItem11
+            // 
+            this.menuItem11.Index = 0;
+            this.menuItem11.Text = "Test live analysis";
+            this.menuItem11.Click += new System.EventHandler(this.menuItem11_Click);
             // 
             // statusBar
             // 
@@ -302,19 +334,6 @@ namespace EDMBlockHead.GUI
             // yAxis3
             // 
             this.yAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            // 
-            // menuItem8
-            // 
-            this.menuItem8.Index = 2;
-            this.menuItem8.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem9});
-            this.menuItem8.Text = "Window";
-            // 
-            // menuItem9
-            // 
-            this.menuItem9.Index = 0;
-            this.menuItem9.Text = "Live viewer";
-            this.menuItem9.Click += new System.EventHandler(this.menuItem9_Click);
             // 
             // MainWindow
             // 
@@ -464,6 +483,11 @@ namespace EDMBlockHead.GUI
         private void menuItem9_Click(object sender, EventArgs e)
         {
             controller.ShowLiveViewer();
+        }
+
+        private void menuItem11_Click(object sender, EventArgs e)
+        {
+            controller.TestLiveAnalysis();
         }
 
 
