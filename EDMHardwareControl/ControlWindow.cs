@@ -1103,7 +1103,6 @@ namespace EDMHardwareControl
             this.groupBox13.Controls.Add(this.label38);
             this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
-            this.groupBox13.Enabled = false;
             this.groupBox13.Location = new System.Drawing.Point(493, 179);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(184, 113);
@@ -1113,7 +1112,6 @@ namespace EDMHardwareControl
             // 
             // eFieldAsymmetryCheckBox
             // 
-            this.eFieldAsymmetryCheckBox.Enabled = false;
             this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
             this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
             this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
@@ -1138,7 +1136,6 @@ namespace EDMHardwareControl
             // 
             // zeroPlusOneMinusBoostTextBox
             // 
-            this.zeroPlusOneMinusBoostTextBox.Enabled = false;
             this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
             this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
@@ -1147,7 +1144,6 @@ namespace EDMHardwareControl
             // 
             // zeroPlusBoostTextBox
             // 
-            this.zeroPlusBoostTextBox.Enabled = false;
             this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
             this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);

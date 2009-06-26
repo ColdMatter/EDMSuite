@@ -1147,6 +1147,7 @@ namespace EDMHardwareControl
                 if (newEPolarity != EFieldPolarity)
                 {
                     window.SetLED(window.switchingLED, true);
+                    // Add any asymmetry
                     // ramp the field down
                     RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
                     // set as disabled
@@ -1157,14 +1158,15 @@ namespace EDMHardwareControl
                     EBleedEnabled = false;
                     EFieldPolarity = newEPolarity;
                     Thread.Sleep((int)(1000 * ESwitchTime));
+                    CalculateVoltages();
                     // ramp the field up to the overshoot voltage
-                    RampVoltages(CPlusOffVoltage, EOvershootFactor * CPlusVoltage, 
-                                    CMinusOffVoltage, EOvershootFactor * CMinusVoltage, 20, ERampUpTime);
+                    RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite, 
+                                    CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
                     // impose the overshoot delay
                     Thread.Sleep((int)(1000 * EOvershootHold));
                     // ramp back to the control point
-                    RampVoltages(EOvershootFactor * CPlusVoltage, CPlusVoltage,
-                                    EOvershootFactor * CMinusVoltage, CMinusVoltage, 5, 0);
+                    RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+                                    EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
                     // set as enabled
                     EFieldEnabled = true;
                     Thread.Sleep((int)(1000 * ERampUpDelay));
@@ -1207,26 +1209,26 @@ namespace EDMHardwareControl
 
         // ** E-field asymmetry is currently disabled as not implemented consistently
         // calculate the asymmetric field values
-        //private void CalculateVoltages()
-        //{
-        //    cPlusToWrite = CPlusVoltage;
-        //    cMinusToWrite = CMinusVoltage;
-        //    if (EFieldEnabled && window.eFieldAsymmetryCheckBox.Checked)
-        //    {
-        //        if (EFieldPolarity == false)
-        //        {
-        //            cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
-        //            cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
-        //        }
-        //        else
-        //        {
-        //            cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
-        //        }
-        //    }
-        //}
+        private void CalculateVoltages()
+        {
+            cPlusToWrite = CPlusVoltage;
+            cMinusToWrite = CMinusVoltage;
+            if (window.eFieldAsymmetryCheckBox.Checked)
+            {
+                if (EFieldPolarity == false)
+                {
+                    cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                    cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
+                }
+                else
+                {
+                    cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                }
+            }
+        }
 
-        //private double cPlusToWrite;
-        //private double cMinusToWrite;
+        private double cPlusToWrite;
+        private double cMinusToWrite;
 
         public void UpdateVoltages()
         {
@@ -1235,11 +1237,11 @@ namespace EDMHardwareControl
             double cMinusOff = CMinusOffVoltage;
             if (EFieldEnabled)
             {
-                //CalculateVoltages();
-                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
-                //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
-                SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
-                SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+                CalculateVoltages();
+                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+                //SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
             }
             else
             {

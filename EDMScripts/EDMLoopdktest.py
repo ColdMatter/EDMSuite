@@ -44,7 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle):
+def measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
@@ -65,10 +65,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
-	bc.Settings["rfState"] = rfState
 	bc.Settings["phaseScramblerV"] = scramblerV
-	bc.Settings["probePolarizerAngle"] = probePolAngle
-	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
+	bc.Settings["probePolarizerAngle"] = polAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
@@ -218,7 +216,7 @@ def updateLocks(bState):
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
-	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
+	# Laser frequency lock
 	deltaLF1 = -1.25 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
@@ -257,19 +255,16 @@ def EDMGo():
 		print("Using cluster " + suggestedClusterName)
 	eState = Boolean.Parse(prompt("E-state: "))
 	bState = Boolean.Parse(prompt("B-state: "))
-	rfState = Boolean.Parse(prompt("rf-state: "))
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase
 	scramblerV = 0.724774 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
-	# randomise polarizations
-	probePolAngle = 360.0 * r.NextDouble()
-	hc.SetProbePolarizerAngle(probePolAngle)
-	pumpPolAngle = 360.0 * r.NextDouble()
-	hc.SetPumpPolarizerAngle(pumpPolAngle)
-	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
+	# randomise polarization
+	polAngle = 360.0 * r.NextDouble()
+	hc.SetPolarizerAngle(polAngle)
+	bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)
 
 	# loop and take data
 	blockIndex = 0
@@ -304,20 +299,18 @@ def EDMGo():
 		# randomise Ramsey phase
 		scramblerV = 0.724774 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
-		# randomise polarizations
-		probePolAngle = 360.0 * r.NextDouble()
-		hc.SetProbePolarizerAngle(probePolAngle)
-		pumpPolAngle = 360.0 * r.NextDouble()
-		hc.SetPumpPolarizerAngle(pumpPolAngle)
-		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
+		# randomise polarization
+		polAngle = 360.0 * r.NextDouble()
+		hc.SetPolarizerAngle(polAngle)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, scramblerV, polAngle)	
 		# do things that need periodically doing
 	#	if ((blockIndex % kTargetRotationPeriod) == 0):
 		#	print("Rotating target.")
-		#	hc.StepTarget(10)
+		#	hc.StepTarget(15)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (dbValue < 7.5):
+		if (dbValue < 5.5):
 			print("Dodgy spot target rotation.")
 			hc.StepTarget(1)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
@@ -336,4 +329,5 @@ def EDMGo():
 
 def run_script():
 	EDMGo()
+
 
