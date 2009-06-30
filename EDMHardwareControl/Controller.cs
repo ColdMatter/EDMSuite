@@ -1254,6 +1254,7 @@ namespace EDMHardwareControl
         public void UpdateRFFrequencyMonitor()
         {
             // make sure rf switch is off (this routes power to the measurement devices)
+            window.SetCheckBox(window.rfSwitchEnableCheck, true);
             window.SetCheckBox(window.rfSwitchEnableCheck, false);
             // rf1 - switch box off and then on to make sure it fires the checkChanged event
             window.SetCheckBox(window.fmSelectCheck, false);
@@ -1286,13 +1287,13 @@ namespace EDMHardwareControl
             double rf2MinusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf2MinusFreqMon, String.Format("{0:F0}", rf2MinusFreq));
             window.SetTextBox(window.rf2CentreFreqMon, String.Format("{0:F0}", ((rf2MinusFreq + rf2PlusFreq) / 2)));
-            window.SetTextBox(window.rf2StepFreqMon, String.Format("{0:F0}", ((rf2PlusFreq - rf2MinusFreq) / 2)));
-
+            window.SetTextBox(window.rf2StepFreqMon, String.Format("{0:F0}", ((rf2PlusFreq - rf2MinusFreq) / 2)));            
         }
 
         public void UpdateRFPowerMonitor()
         {
             // make sure rf switch is off (this routes power to the measurement devices)
+            window.SetCheckBox(window.rfSwitchEnableCheck, true);
             window.SetCheckBox(window.rfSwitchEnableCheck, false);
             // rf1 - switch box off and then on to make sure it fires the checkChanged event
             window.SetCheckBox(window.attenuatorSelectCheck, false);
@@ -1324,6 +1325,7 @@ namespace EDMHardwareControl
             window.SetTextBox(window.rf2MinusPowerMon, String.Format("{0:F3}", rf2MinusPower));
             window.SetTextBox(window.rf2CentrePowerMon, String.Format("{0:F3}", ((rf2MinusPower + rf2PlusPower) / 2)));
             window.SetTextBox(window.rf2StepPowerMon, String.Format("{0:F3}", ((rf2PlusPower - rf2MinusPower) / 2)));
+
         }
 
         // This is a little cheezy - it probably should be in its own class.
