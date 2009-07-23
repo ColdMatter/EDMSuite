@@ -8,15 +8,20 @@ from BeIT.MemCached import *
 import time
 
 bs = BlockSerializer()
-block = bs.DeserializeBlockFromZippedXML("C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2008\\August2008\\07Aug0802_2.zip", "block.xml")
+blockFile="C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\June2009\\26Jun0902_2.zip"
+block = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml")
 
 dc = DemodulationConfig.GetStandardDemodulationConfig("fwhm", block)
+dcfast = DemodulationConfig.GetStandardDemodulationConfig("fast", block)
+dcslow = DemodulationConfig.GetStandardDemodulationConfig("slow", block)
+dcvfast = DemodulationConfig.GetStandardDemodulationConfig("vfast", block)
+dcvslow = DemodulationConfig.GetStandardDemodulationConfig("vslow", block)
 
 bd = BlockDemodulator()
 
-db = bd.DemodulateBlock(block, dc)
+#db = bd.DemodulateBlock(block, dc)
 
-
+#sc.AddBlock(blockFile,("fwhm","slow","fast"))
 
 
 def run_script():

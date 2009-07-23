@@ -115,7 +115,7 @@ namespace SirCachealot
         internal void Test1()
         {
             BlockSerializer bs = new BlockSerializer();
-            string blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2008\\June2008\\02Jun0805_8.zip";
+            string blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\June2009\\26Jun0802_0.zip";
             Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
 
             DemodulationConfig dc = new DemodulationConfig();

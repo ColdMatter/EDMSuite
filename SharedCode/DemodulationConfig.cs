@@ -82,22 +82,62 @@ namespace Analysis.EDM
             AddSliceConfig("fwhm", 0, 1);
             // narrower than fwhm, takes only the center hwhm
             AddSliceConfig("hwhm", 0, 0.5);
-            // only the fast half of the fwhm
+            // only the fast half of the fwhm (NOT TRUE - 01Jul08 JH)
             AddSliceConfig("fast", -0.5, 0.5);
-            // the slow half of the fwhm
+            // the slow half of the fwhm (NOT TRUE - 01Jul08 JH)
             AddSliceConfig("slow", 0.5, 0.5);
+            // the fastest and slowest molecules, used for estimating any tof related systematic.
+            // these gates don't overlap with the usual centred analysis gates (fwhm and cgate11).
+            AddSliceConfig("vfast", -0.85, 0.5);
+            AddSliceConfig("vslow", 0.85, 0.5);
 
             // for testing out different centred-gate widths
             for (int i = 4; i < 15; i++)
                 AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
 
+            // testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
+            // is centred and +0.7 fwhm.
+            for (int i = 0; i < 15; i++)
+                AddSliceConfig("slide" + i, (((double)i) / 10.0) - 0.7, 1);
+
             // now some finer slices
             double d = -1.4;
             for (int i = 0; i < 15; i++)
             {
-                AddSliceConfig("slice" + i , d, 0.2);
+                AddSliceConfig("slice" + i, d, 0.2);
                 d += 0.2;
             }
+            
+            // optimised gates for spring 2009 run
+            AddSliceConfig("optimum1", 0.3, 1.1);
+            AddSliceConfig("optimum2", 0.2, 1.1);
+
+            // "background" gate
+            DemodulationConfigBuilder background = delegate(Block b)
+            {
+
+                DemodulationConfig dc;
+                GatedDetectorExtractSpec dg0, dg1;
+
+                dc = new DemodulationConfig();
+                dc.AnalysisTag = "background";
+                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
+                dg0.GateLow = 2550;
+                dg0.GateHigh = 2600;
+                dg0.Name = "top";
+                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
+                dg1.Name = "norm";
+                dg1.GateLow = 750;
+                dg1.GateHigh = 800;
+
+                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+
+
+                return dc;
+            };
+            standardConfigs.Add("background", background);
+
         }
 
         private static void AddSliceConfig(string name, double offset, double width)

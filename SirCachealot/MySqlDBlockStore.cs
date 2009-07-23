@@ -370,7 +370,7 @@ namespace SirCachealot
         internal void Start()
         {
             //TODO: support multiple DBs
-            mySql = new MySqlConnection("Server=127.0.0.1;Uid=root;Pwd=atomic1;");
+            mySql = new MySqlConnection("Server=127.0.0.1;Uid=root;Pwd=atomic1;default command timeout=300;");
             mySql.Open();
             mySqlComm = mySql.CreateCommand();
         }

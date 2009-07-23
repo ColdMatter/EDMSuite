@@ -300,6 +300,16 @@ namespace EDMHardwareControl
         private Button pumpPolarizerUpdateButton;
         public TextBox pumpPolarizerAngleTextBox;
         public AxMG17MotorLib.AxMG17Motor motorController2;
+        private GroupBox groupBox21;
+        public CheckBox eManualStateCheckBox;
+        private GroupBox groupBox22;
+        public CheckBox rfManualStateCheckBox;
+        public CheckBox checkBox1;
+        private GroupBox groupBox23;
+        public CheckBox bManualStateCheckBox;
+        private TabPage tabPage7;
+        private TextBox alertTextBox;
+        private Button clearAlertButton;
 
 
 		public Controller controller;
@@ -378,6 +388,8 @@ namespace EDMHardwareControl
             this.bFlipCheck = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox21 = new System.Windows.Forms.GroupBox();
+            this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.eFieldAsymmetryCheckBox = new System.Windows.Forms.CheckBox();
             this.label37 = new System.Windows.Forms.Label();
@@ -425,6 +437,8 @@ namespace EDMHardwareControl
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox22 = new System.Windows.Forms.GroupBox();
+            this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.label74 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rf2StepPowerMon = new System.Windows.Forms.TextBox();
@@ -506,6 +520,8 @@ namespace EDMHardwareControl
             this.label39 = new System.Windows.Forms.Label();
             this.rf1AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.bManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
             this.miniFlux2TextBox = new System.Windows.Forms.TextBox();
             this.miniFlux3TextBox = new System.Windows.Forms.TextBox();
@@ -611,6 +627,10 @@ namespace EDMHardwareControl
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.alertTextBox = new System.Windows.Forms.TextBox();
+            this.clearAlertButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -619,12 +639,14 @@ namespace EDMHardwareControl
             this.groupBox5.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.legend1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.groupBox22.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -633,6 +655,7 @@ namespace EDMHardwareControl
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox23.SuspendLayout();
             this.groupBox20.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox12.SuspendLayout();
@@ -651,6 +674,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1046,7 +1070,7 @@ namespace EDMHardwareControl
             this.groupBox5.Controls.Add(this.bFlipCheck);
             this.groupBox5.Location = new System.Drawing.Point(8, 16);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(280, 56);
+            this.groupBox5.Size = new System.Drawing.Size(376, 56);
             this.groupBox5.TabIndex = 24;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Manual B-flip";
@@ -1077,6 +1101,7 @@ namespace EDMHardwareControl
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Location = new System.Drawing.Point(12, 25);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -1085,6 +1110,7 @@ namespace EDMHardwareControl
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox21);
             this.tabPage1.Controls.Add(this.groupBox13);
             this.tabPage1.Controls.Add(this.groupBox6);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -1095,6 +1121,24 @@ namespace EDMHardwareControl
             this.tabPage1.Size = new System.Drawing.Size(697, 581);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
+            // 
+            // groupBox21
+            // 
+            this.groupBox21.Controls.Add(this.eManualStateCheckBox);
+            this.groupBox21.Location = new System.Drawing.Point(17, 231);
+            this.groupBox21.Name = "groupBox21";
+            this.groupBox21.Size = new System.Drawing.Size(184, 61);
+            this.groupBox21.TabIndex = 27;
+            this.groupBox21.TabStop = false;
+            this.groupBox21.Text = "Manual state";
+            // 
+            // eManualStateCheckBox
+            // 
+            this.eManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.eManualStateCheckBox.Name = "eManualStateCheckBox";
+            this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
+            this.eManualStateCheckBox.TabIndex = 53;
+            this.eManualStateCheckBox.Text = "State (Checked is 0=>N+)";
             // 
             // groupBox13
             // 
@@ -1553,6 +1597,7 @@ namespace EDMHardwareControl
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.groupBox22);
             this.tabPage2.Controls.Add(this.label74);
             this.tabPage2.Controls.Add(this.groupBox4);
             this.tabPage2.Controls.Add(this.scramblerVoltageTextBox);
@@ -1564,6 +1609,24 @@ namespace EDMHardwareControl
             this.tabPage2.Size = new System.Drawing.Size(697, 581);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
+            // 
+            // groupBox22
+            // 
+            this.groupBox22.Controls.Add(this.rfManualStateCheckBox);
+            this.groupBox22.Location = new System.Drawing.Point(320, 311);
+            this.groupBox22.Name = "groupBox22";
+            this.groupBox22.Size = new System.Drawing.Size(363, 56);
+            this.groupBox22.TabIndex = 33;
+            this.groupBox22.TabStop = false;
+            this.groupBox22.Text = "Manual state";
+            // 
+            // rfManualStateCheckBox
+            // 
+            this.rfManualStateCheckBox.Location = new System.Drawing.Point(29, 19);
+            this.rfManualStateCheckBox.Name = "rfManualStateCheckBox";
+            this.rfManualStateCheckBox.Size = new System.Drawing.Size(257, 24);
+            this.rfManualStateCheckBox.TabIndex = 53;
+            this.rfManualStateCheckBox.Text = "State (Checked is rf in bottom)";
             // 
             // label74
             // 
@@ -2042,7 +2105,7 @@ namespace EDMHardwareControl
             this.groupBox14.Controls.Add(this.rf1AttenuatorVoltageTextBox);
             this.groupBox14.Location = new System.Drawing.Point(320, 16);
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(363, 304);
+            this.groupBox14.Size = new System.Drawing.Size(363, 289);
             this.groupBox14.TabIndex = 24;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "fast rf control";
@@ -2372,6 +2435,7 @@ namespace EDMHardwareControl
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox23);
             this.tabPage3.Controls.Add(this.groupBox20);
             this.tabPage3.Controls.Add(this.groupBox9);
             this.tabPage3.Controls.Add(this.groupBox12);
@@ -2382,6 +2446,24 @@ namespace EDMHardwareControl
             this.tabPage3.Size = new System.Drawing.Size(697, 581);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
+            // 
+            // groupBox23
+            // 
+            this.groupBox23.Controls.Add(this.bManualStateCheckBox);
+            this.groupBox23.Location = new System.Drawing.Point(390, 16);
+            this.groupBox23.Name = "groupBox23";
+            this.groupBox23.Size = new System.Drawing.Size(233, 61);
+            this.groupBox23.TabIndex = 49;
+            this.groupBox23.TabStop = false;
+            this.groupBox23.Text = "Manual state";
+            // 
+            // bManualStateCheckBox
+            // 
+            this.bManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.bManualStateCheckBox.Name = "bManualStateCheckBox";
+            this.bManualStateCheckBox.Size = new System.Drawing.Size(221, 24);
+            this.bManualStateCheckBox.TabIndex = 53;
+            this.bManualStateCheckBox.Text = "State (Checked is Red=>+Iz)";
             // 
             // groupBox20
             // 
@@ -3367,27 +3449,27 @@ namespace EDMHardwareControl
             this.saveParametersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -3423,6 +3505,45 @@ namespace EDMHardwareControl
             this.radioButton3.Text = "-";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Location = new System.Drawing.Point(6, 23);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(167, 24);
+            this.checkBox1.TabIndex = 53;
+            this.checkBox1.Text = "State (Checked is 0=>N+)";
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage7.Controls.Add(this.clearAlertButton);
+            this.tabPage7.Controls.Add(this.alertTextBox);
+            this.tabPage7.ImageKey = "(none)";
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(697, 581);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Alerts";
+            // 
+            // alertTextBox
+            // 
+            this.alertTextBox.Location = new System.Drawing.Point(18, 22);
+            this.alertTextBox.Multiline = true;
+            this.alertTextBox.Name = "alertTextBox";
+            this.alertTextBox.Size = new System.Drawing.Size(654, 512);
+            this.alertTextBox.TabIndex = 0;
+            // 
+            // clearAlertButton
+            // 
+            this.clearAlertButton.Location = new System.Drawing.Point(18, 540);
+            this.clearAlertButton.Name = "clearAlertButton";
+            this.clearAlertButton.Size = new System.Drawing.Size(140, 23);
+            this.clearAlertButton.TabIndex = 1;
+            this.clearAlertButton.Text = "Clear alert status";
+            this.clearAlertButton.UseVisualStyleBackColor = true;
+            this.clearAlertButton.Click += new System.EventHandler(this.clearAlertButton_Click);
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -3447,6 +3568,7 @@ namespace EDMHardwareControl
             this.groupBox5.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -3457,6 +3579,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox22.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox16.ResumeLayout(false);
@@ -3471,6 +3594,7 @@ namespace EDMHardwareControl
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.groupBox23.ResumeLayout(false);
             this.groupBox20.ResumeLayout(false);
             this.groupBox20.PerformLayout();
             this.groupBox9.ResumeLayout(false);
@@ -3501,6 +3625,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3778,7 +3904,12 @@ namespace EDMHardwareControl
             Close();
         }
 
-		#endregion
+        private void clearAlertButton_Click(object sender, EventArgs e)
+        {
+            BackColor = DefaultBackColor;
+        }
+
+        #endregion
 
 		#region ThreadSafe wrappers
 
@@ -3837,14 +3968,27 @@ namespace EDMHardwareControl
         {
             graph.Invoke(new PlotYDelegate(plot.PlotYAppend), new Object[] { y });
         }
- 
+
+        public void AddAlert(string alertText)
+        {
+            Invoke(new AddAlertDelegate(AddAlertHelper), new object[] { alertText });
+        }
+        private delegate void AddAlertDelegate(string alertText);
+        private void AddAlertHelper(string alertText)
+        {
+            BackColor = System.Drawing.Color.Red;
+            WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            alertTextBox.AppendText(DateTime.Now.ToString() + " " + alertText + "\n");
+        }
+
         #endregion
 
         private void WindowClosing(object sender, FormClosingEventArgs e)
         {
             controller.WindowClosing();
         }
-
 
     }
 }

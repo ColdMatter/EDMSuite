@@ -145,8 +145,8 @@ namespace EDMHardwareControl
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
 
             // analog inputs
-            probeMonitorInputTask = CreateAnalogInputTask("probePD",0,5);
-            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD",0,5);
+            probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
+            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
             //rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
@@ -157,7 +157,7 @@ namespace EDMHardwareControl
             // make the control window
             window = new ControlWindow();
             window.controller = this;
-            
+
             // initialise the motor controllers - this needs to be done
             // after the window is made because the ActiveX object needs
             // to live in the window.
@@ -166,7 +166,7 @@ namespace EDMHardwareControl
             motorController2 = window.motorController2;
             motorController2.StartCtrl();
 
-            
+
             Application.Run(window);
         }
 
@@ -423,7 +423,7 @@ namespace EDMHardwareControl
                 RF1FMStep = dataStore.rf1FMS;
                 RF2FMCentre = dataStore.rf2FMC;
                 RF2FMStep = dataStore.rf2FMS;
-                SetSteppingBBiasVoltage( dataStore.steppingBias );
+                SetSteppingBBiasVoltage(dataStore.steppingBias);
                 FLPZTVoltage = dataStore.flPZT;
                 FLPZTStep = dataStore.flPZTStep;
                 EOvershootFactor = dataStore.overshootFactor;
@@ -681,7 +681,7 @@ namespace EDMHardwareControl
                 return Double.Parse(window.I2AOMFreqStepTextBox.Text);
             }
         }
-        
+
         /* This is something of a cheesy hack. It lets the edm script check to see if the YAG
           * laser has failed.
           */
@@ -716,7 +716,7 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
             }
         }
-      
+
         public double EBleedTime
         {
             get
@@ -774,7 +774,7 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.eOvershootHoldTextBox, value.ToString());
             }
         }
-        
+
         public double ERampUpDelay
         {
             get
@@ -1010,7 +1010,7 @@ namespace EDMHardwareControl
             }
         }
 
-  
+
 
         public double RF1FrequencyCentre
         {
@@ -1092,6 +1092,30 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool EManualState
+        {
+            get
+            {
+                return window.eManualStateCheckBox.Checked;
+            }
+        }
+
+        public bool BManualState
+        {
+            get
+            {
+                return window.bManualStateCheckBox.Checked;
+            }
+        }
+
+        public bool RFManualState
+        {
+            get
+            {
+                return window.rfManualStateCheckBox.Checked;
+            }
+        }
+
         #endregion
 
         #region Hardware control methods - safe for remote
@@ -1138,43 +1162,75 @@ namespace EDMHardwareControl
             }
         }
 
+        double kPositiveChargeMin = 2;
+        double kPositiveChargeMax = 20;
+        double kNegativeChargeMin = -2;
+        double kNegativeChargeMax = -20;
+
         // this function switches the E field polarity with ramped turn on and off
         public void SwitchEWorker()
         {
             lock (switchingLock)
             {
-                // don't waste time if the field isn't really switching
-                if (newEPolarity != EFieldPolarity)
-                {
-                    window.SetLED(window.switchingLED, true);
-                    // Add any asymmetry
-                    // ramp the field down
-                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
-                    // set as disabled
-                    EFieldEnabled = false;
-                    Thread.Sleep((int)(1000 * ERampDownDelay));
-                    EBleedEnabled = true;
-                    Thread.Sleep((int)(1000 * EBleedTime));
-                    EBleedEnabled = false;
-                    EFieldPolarity = newEPolarity;
-                    Thread.Sleep((int)(1000 * ESwitchTime));
-                    CalculateVoltages();
-                    // ramp the field up to the overshoot voltage
-                    RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite, 
-                                    CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
-                    // impose the overshoot delay
-                    Thread.Sleep((int)(1000 * EOvershootHold));
-                    // ramp back to the control point
-                    RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
-                                    EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
-                    // set as enabled
-                    EFieldEnabled = true;
-                    Thread.Sleep((int)(1000 * ERampUpDelay));
-                    window.SetLED(window.switchingLED, false);
+                // we always switch, even if it's into the same state.
+                window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down
+                RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                 // ramp back to the control point
+                RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+                                EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                window.SetLED(window.switchingLED, false);
 
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>N+) then when switching into state 0
+                // (false) the North plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // North plate should see -ve current and the South +ve
+                    if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
+                        && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
+                    {}
+                    else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // North should be +ve, South -ve
+                    if ((lastSouthCurrent < kNegativeChargeMin) && (lastSouthCurrent > kNegativeChargeMax)
+                        && (lastNorthCurrent > kPositiveChargeMin) && (lastNorthCurrent < kPositiveChargeMax))
+                    { }
+                    else activateEAlarm(newEPolarity);
                 }
             }
             ESwitchDone();
+        }
+
+
+        private void activateEAlarm(bool newEPolarity)
+        {
+            window.AddAlert(" E-switch: switching to state " + newEPolarity + "; manual state " + EManualState + 
+                "; north current: " + lastNorthCurrent + "; south current: " + lastSouthCurrent + " .");
         }
 
         private void ESwitchDone()
@@ -1302,7 +1358,7 @@ namespace EDMHardwareControl
             SetAttenutatorVoltages();
             Thread.Sleep(100);
             double rf1PlusPower = rfPower.Power;
-            window.SetTextBox(window.rf1PlusPowerMon, String.Format("{0:F3}",rf1PlusPower));
+            window.SetTextBox(window.rf1PlusPowerMon, String.Format("{0:F3}", rf1PlusPower));
             window.SetRadioButton(window.rf1AttMinusRB, true);
             SetAttenutatorVoltages();
             Thread.Sleep(100);
@@ -1375,6 +1431,13 @@ namespace EDMHardwareControl
             window.SetTextBox(window.bCurrentCalStepTextBox, calStep.ToString());
             window.SetTextBox(window.bCurrentFlipStepTextBox, flipStep.ToString());
 
+            // check that the manual state is correct
+            if (BManualState)
+            {
+            }
+            else
+            {
+            }
         }
 
         public void UpdateVMonitor()
@@ -1408,7 +1471,7 @@ namespace EDMHardwareControl
                                     new double[] { lastSouthCurrent });
 
         }
-       
+
         List<double> northCList = new List<double>();
         List<double> southCList = new List<double>();
         public void UpdateIRecord()
@@ -1424,10 +1487,10 @@ namespace EDMHardwareControl
             window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
                                     new double[] { lastSouthCurrent });
             southCList.Add(lastSouthCurrent);
-           
+
         }
 
-       Thread updateIMonThread;
+        Thread updateIMonThread;
         public void UpdateIMonitorAsync()
         {
             updateIMonThread = new Thread(delegate()
@@ -1554,24 +1617,24 @@ namespace EDMHardwareControl
         internal void SaveToFile()
         {
             using (StreamWriter sw = new StreamWriter("Current.csv"))
+            {
+                sw.WriteLine(DateTime.Now);
+                sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
+                sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
+                sw.WriteLine("Slope =" + " " + northLeakageMonitor.Slope);
+                sw.WriteLine("North offset =" + " " + northLeakageMonitor.Offset);
+                sw.WriteLine("South offset =" + " " + southLeakageMonitor.Offset);
+                sw.WriteLine("northCurrent" + "," + "southCurrent");
+
+                for (int i = 0; i < northCList.ToArray().Length; i++)
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
-                    sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
-                    sw.WriteLine("Slope =" + " " +  northLeakageMonitor.Slope);
-                    sw.WriteLine("North offset =" + " " + northLeakageMonitor.Offset);
-                    sw.WriteLine("South offset =" + " " + southLeakageMonitor.Offset);
-                    sw.WriteLine("northCurrent" + ","+ "southCurrent");
-                
-                        for (int i = 0; i < northCList.ToArray().Length; i++)
-                            {
-                                sw.WriteLine(northCList[i]+","+ southCList[i]);
-                                //sw.WriteLine(southCList[i]);
-                            }
-                            northCList.Clear();
-                            southCList.Clear();
-                            window.EnableControl(window.saveToFile, false);
+                    sw.WriteLine(northCList[i] + "," + southCList[i]);
+                    //sw.WriteLine(southCList[i]);
                 }
+                northCList.Clear();
+                southCList.Clear();
+                window.EnableControl(window.saveToFile, false);
+            }
         }
         public void UpdateLaserPhotodiodes()
         {
@@ -1669,13 +1732,13 @@ namespace EDMHardwareControl
 
         internal void UpdateProbePolarizerAngle()
         {
-            motorController1.MoveAbsoluteEx(0, 
+            motorController1.MoveAbsoluteEx(0,
                 (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
         }
 
         internal void UpdatePumpPolarizerAngle()
         {
-            motorController2.MoveAbsoluteEx(0, 
+            motorController2.MoveAbsoluteEx(0,
                 (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
         }
 
@@ -1867,7 +1930,7 @@ namespace EDMHardwareControl
             window.SetTextBox(window.FLPZTVTextBox, v.ToString());
             SetAnalogOutput(flPZTVAnalogOutputTask, v);
         }
-        
+
         public void SetScanningBZero()
         {
             window.SetTextBox(window.scanningBVoltageBox, "0.0");

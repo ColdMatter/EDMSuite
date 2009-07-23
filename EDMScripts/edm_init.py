@@ -14,6 +14,8 @@ sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\Debug\\"))
 clr.AddReferenceToFile("EDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
+sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\Debug\\"))
+clr.AddReferenceToFile("SirCachealot.exe")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")
@@ -37,10 +39,12 @@ import System
 import ScanMaster
 import EDMBlockHead
 import EDMHardwareControl
+import SirCachealot
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
 bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1171/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
+sc = typedproxy(System.Activator.GetObject(SirCachealot.Controller, 'tcp://localhost:1180/controller.rem'), SirCachealot.Controller)
 
 # usage message
 print('EDM interactive scripting control')
