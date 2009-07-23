@@ -255,9 +255,12 @@ def EDMGo():
 	if cluster == "":
 		cluster = suggestedClusterName
 		print("Using cluster " + suggestedClusterName)
-	eState = Boolean.Parse(prompt("E-state: "))
-	bState = Boolean.Parse(prompt("B-state: "))
-	rfState = Boolean.Parse(prompt("rf-state: "))
+	eState = hc.EManualState
+	print("E-state: " + str(eState))
+	bState = hc.BManualState
+	print("B-state: " + str(bState))
+	rfState = hc.RFManualState
+	print("rf-state: " + str(rfState))
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
