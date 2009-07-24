@@ -1433,14 +1433,14 @@ namespace EDMHardwareControl
 
             // check that the manual state is correct
             if (BManualState)
-                if (calStep > 0) activateBAlarm(bias);
+                if (flipStep > 0) activateBAlarm(flipStep);
             else
-                if (calStep < 0) activateBAlarm(bias);
+                    if (flipStep < 0) activateBAlarm(flipStep);
         }
 
-        private void activateBAlarm(double bias)
+        private void activateBAlarm(double flipStep)
         {
-            window.AddAlert("B-field: manual state " + BManualState + "; bias: " + bias + " .");
+            window.AddAlert("B-field: manual state " + BManualState + "; DB: " + flipStep + " .");
         }
 
         public void UpdateVMonitor()
