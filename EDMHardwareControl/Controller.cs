@@ -1229,7 +1229,7 @@ namespace EDMHardwareControl
 
         private void activateEAlarm(bool newEPolarity)
         {
-            window.AddAlert(" E-switch: switching to state " + newEPolarity + "; manual state " + EManualState + 
+            window.AddAlert("E-switch: switching to state " + newEPolarity + "; manual state " + EManualState + 
                 "; north current: " + lastNorthCurrent + "; south current: " + lastSouthCurrent + " .");
         }
 
@@ -1433,11 +1433,14 @@ namespace EDMHardwareControl
 
             // check that the manual state is correct
             if (BManualState)
-            {
-            }
+                if (calStep > 0) activateBAlarm(bias);
             else
-            {
-            }
+                if (calStep < 0) activateBAlarm(bias);
+        }
+
+        private void activateBAlarm(double bias)
+        {
+            window.AddAlert("B-field: manual state " + BManualState + "; bias: " + bias + " .");
         }
 
         public void UpdateVMonitor()
