@@ -310,6 +310,11 @@ namespace EDMHardwareControl
         private TabPage tabPage7;
         private TextBox alertTextBox;
         private Button clearAlertButton;
+        private GroupBox groupBox24;
+        private Button updatePiMonitorButton;
+        private Label label82;
+        public TextBox piMonitor1TextBox;
+        public TextBox piMonitor2TextBox;
 
 
 		public Controller controller;
@@ -616,6 +621,9 @@ namespace EDMHardwareControl
             this.probePolarizerUpdateButton = new System.Windows.Forms.Button();
             this.probePolarizerAngleTextBox = new System.Windows.Forms.TextBox();
             this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.clearAlertButton = new System.Windows.Forms.Button();
+            this.alertTextBox = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -628,9 +636,11 @@ namespace EDMHardwareControl
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.alertTextBox = new System.Windows.Forms.TextBox();
-            this.clearAlertButton = new System.Windows.Forms.Button();
+            this.label82 = new System.Windows.Forms.Label();
+            this.updatePiMonitorButton = new System.Windows.Forms.Button();
+            this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
+            this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.piMonitor2TextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -673,8 +683,9 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
-            this.menuStrip1.SuspendLayout();
             this.tabPage7.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
+            this.groupBox24.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1597,6 +1608,7 @@ namespace EDMHardwareControl
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.groupBox24);
             this.tabPage2.Controls.Add(this.groupBox22);
             this.tabPage2.Controls.Add(this.label74);
             this.tabPage2.Controls.Add(this.groupBox4);
@@ -1674,7 +1686,7 @@ namespace EDMHardwareControl
             this.groupBox4.Controls.Add(this.label44);
             this.groupBox4.Location = new System.Drawing.Point(8, 373);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(675, 138);
+            this.groupBox4.Size = new System.Drawing.Size(675, 139);
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
@@ -3408,6 +3420,37 @@ namespace EDMHardwareControl
             this.motorController1.Size = new System.Drawing.Size(294, 205);
             this.motorController1.TabIndex = 0;
             // 
+            // tabPage7
+            // 
+            this.tabPage7.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage7.Controls.Add(this.clearAlertButton);
+            this.tabPage7.Controls.Add(this.alertTextBox);
+            this.tabPage7.ImageKey = "(none)";
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(697, 581);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Alerts";
+            // 
+            // clearAlertButton
+            // 
+            this.clearAlertButton.Location = new System.Drawing.Point(18, 540);
+            this.clearAlertButton.Name = "clearAlertButton";
+            this.clearAlertButton.Size = new System.Drawing.Size(140, 23);
+            this.clearAlertButton.TabIndex = 1;
+            this.clearAlertButton.Text = "Clear alert status";
+            this.clearAlertButton.UseVisualStyleBackColor = true;
+            this.clearAlertButton.Click += new System.EventHandler(this.clearAlertButton_Click);
+            // 
+            // alertTextBox
+            // 
+            this.alertTextBox.Location = new System.Drawing.Point(18, 22);
+            this.alertTextBox.Multiline = true;
+            this.alertTextBox.Name = "alertTextBox";
+            this.alertTextBox.Size = new System.Drawing.Size(654, 512);
+            this.alertTextBox.TabIndex = 0;
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -3513,36 +3556,57 @@ namespace EDMHardwareControl
             this.checkBox1.TabIndex = 53;
             this.checkBox1.Text = "State (Checked is 0=>N+)";
             // 
-            // tabPage7
+            // label82
             // 
-            this.tabPage7.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage7.Controls.Add(this.clearAlertButton);
-            this.tabPage7.Controls.Add(this.alertTextBox);
-            this.tabPage7.ImageKey = "(none)";
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(697, 581);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Alerts";
+            this.label82.Location = new System.Drawing.Point(17, 24);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(108, 23);
+            this.label82.TabIndex = 64;
+            this.label82.Text = "Monitor voltages (V)";
             // 
-            // alertTextBox
+            // updatePiMonitorButton
             // 
-            this.alertTextBox.Location = new System.Drawing.Point(18, 22);
-            this.alertTextBox.Multiline = true;
-            this.alertTextBox.Name = "alertTextBox";
-            this.alertTextBox.Size = new System.Drawing.Size(654, 512);
-            this.alertTextBox.TabIndex = 0;
+            this.updatePiMonitorButton.Location = new System.Drawing.Point(301, 20);
+            this.updatePiMonitorButton.Name = "updatePiMonitorButton";
+            this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updatePiMonitorButton.TabIndex = 63;
+            this.updatePiMonitorButton.Text = "Update";
+            this.updatePiMonitorButton.Click += new System.EventHandler(this.updatePiMonitorButton_Click);
             // 
-            // clearAlertButton
+            // piMonitor1TextBox
             // 
-            this.clearAlertButton.Location = new System.Drawing.Point(18, 540);
-            this.clearAlertButton.Name = "clearAlertButton";
-            this.clearAlertButton.Size = new System.Drawing.Size(140, 23);
-            this.clearAlertButton.TabIndex = 1;
-            this.clearAlertButton.Text = "Clear alert status";
-            this.clearAlertButton.UseVisualStyleBackColor = true;
-            this.clearAlertButton.Click += new System.EventHandler(this.clearAlertButton_Click);
+            this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
+            this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.piMonitor1TextBox.Location = new System.Drawing.Point(131, 22);
+            this.piMonitor1TextBox.Name = "piMonitor1TextBox";
+            this.piMonitor1TextBox.ReadOnly = true;
+            this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor1TextBox.TabIndex = 62;
+            this.piMonitor1TextBox.Text = "0";
+            // 
+            // groupBox24
+            // 
+            this.groupBox24.Controls.Add(this.piMonitor2TextBox);
+            this.groupBox24.Controls.Add(this.updatePiMonitorButton);
+            this.groupBox24.Controls.Add(this.label82);
+            this.groupBox24.Controls.Add(this.piMonitor1TextBox);
+            this.groupBox24.Location = new System.Drawing.Point(8, 518);
+            this.groupBox24.Name = "groupBox24";
+            this.groupBox24.Size = new System.Drawing.Size(382, 50);
+            this.groupBox24.TabIndex = 65;
+            this.groupBox24.TabStop = false;
+            this.groupBox24.Text = "pi monitor";
+            // 
+            // piMonitor2TextBox
+            // 
+            this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
+            this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.piMonitor2TextBox.Location = new System.Drawing.Point(214, 22);
+            this.piMonitor2TextBox.Name = "piMonitor2TextBox";
+            this.piMonitor2TextBox.ReadOnly = true;
+            this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor2TextBox.TabIndex = 65;
+            this.piMonitor2TextBox.Text = "0";
             // 
             // ControlWindow
             // 
@@ -3623,10 +3687,12 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.groupBox24.ResumeLayout(false);
+            this.groupBox24.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3909,6 +3975,11 @@ namespace EDMHardwareControl
             BackColor = DefaultBackColor;
         }
 
+        private void updatePiMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePiMonitor();
+        }
+
         #endregion
 
 		#region ThreadSafe wrappers
@@ -3989,6 +4060,7 @@ namespace EDMHardwareControl
         {
             controller.WindowClosing();
         }
+
 
     }
 }

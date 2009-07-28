@@ -112,8 +112,9 @@ namespace DAQ.HAL
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
-            
+            AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);  
           
+
             AddAnalogOutputChannel("phaseScramblerVoltage", daqBoard + "/ao0");
 			AddAnalogOutputChannel("b", daqBoard + "/ao1");
 

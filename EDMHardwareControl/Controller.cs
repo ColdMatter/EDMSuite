@@ -90,6 +90,7 @@ namespace EDMHardwareControl
         Task miniFlux1MonitorInputTask;
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
+        Task piMonitorTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -153,6 +154,7 @@ namespace EDMHardwareControl
             miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
             miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
             miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
+            piMonitorTask = CreateAnalogInputTask("piMonitor");
 
             // make the control window
             window = new ControlWindow();
@@ -1076,6 +1078,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double PiMonitorVoltage
+        {
+            get
+            {
+                return Double.Parse(window.piMonitor1TextBox.Text);
+            }
+        }
+
         public double NorthCurrent
         {
             get
@@ -1229,7 +1239,7 @@ namespace EDMHardwareControl
 
         private void activateEAlarm(bool newEPolarity)
         {
-            window.AddAlert("E-switch: switching to state " + newEPolarity + "; manual state " + EManualState + 
+            window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState + 
                 "; north current: " + lastNorthCurrent + "; south current: " + lastSouthCurrent + " .");
         }
 
@@ -1440,7 +1450,7 @@ namespace EDMHardwareControl
 
         private void activateBAlarm(double flipStep)
         {
-            window.AddAlert("B-field: manual state " + BManualState + "; DB: " + flipStep + " .");
+            window.AddAlert("B-field - manual state: " + BManualState + "; DB: " + flipStep + " .");
         }
 
         public void UpdateVMonitor()
@@ -1657,6 +1667,20 @@ namespace EDMHardwareControl
             window.SetTextBox(window.miniFlux3TextBox, miniFlux3Value.ToString());
         }
 
+        public void UpdatePiMonitor()
+        {
+            SetPhaseFlip1(true);
+            SetPhaseFlip2(false);
+            double piMonitorV1 = ReadAnalogInput(piMonitorTask);
+            window.SetTextBox(window.piMonitor1TextBox, piMonitorV1.ToString());
+            SetPhaseFlip2(true);
+            double piMonitorV2 = ReadAnalogInput(piMonitorTask);
+            window.SetTextBox(window.piMonitor2TextBox, piMonitorV2.ToString());
+            SetPhaseFlip1(false);
+            SetPhaseFlip2(false);
+            if (true) window.AddAlert("Pi-flip - V1: " + piMonitorV1 + "; V2: " + piMonitorV1 + " .");
+        }
+        
         // TODO: I'm not sure whether these button enabling properties are threadsafe.
         // Probably had better wrap them.
         public void StartYAGFlashlamps()
@@ -1998,9 +2022,6 @@ namespace EDMHardwareControl
         }
 
         #endregion
-
-
-
 
     }
 }
