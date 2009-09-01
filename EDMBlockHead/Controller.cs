@@ -440,10 +440,19 @@ namespace EDMBlockHead
             liveViewer.ClearedmErrScatter();            
         }
 
-        public void GotPoint(int point, Shot data)
+        double[] northLeakages = new double[UPDATE_EVERY];
+        double[] southLeakages = new double[UPDATE_EVERY];
+        int leakageIndex = 0;
+        public void GotPoint(int point, EDMPoint p)
         {
+            // store the leakage measurements ready for the graph update
+            northLeakages[leakageIndex] = (double)p.SinglePointData["NorthCurrent"];
+            southLeakages[leakageIndex] = (double)p.SinglePointData["SouthCurrent"];
+            leakageIndex++;
+
             if ((point % UPDATE_EVERY) == 0)
             {
+                Shot data = p.Shot;
                 mainWindow.TankLevel = point;
 
                 TOF tof = (TOF)data.TOFs[0];
@@ -452,6 +461,10 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+
+                // update the leakage graphs
+                mainWindow.AppendLeakageMeasurement(new double[]{northLeakages[0]}, new double[]{southLeakages[0]});
+                leakageIndex = 0;
             }
         }
 

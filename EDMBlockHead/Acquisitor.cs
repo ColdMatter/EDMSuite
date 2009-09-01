@@ -199,7 +199,7 @@ namespace EDMBlockHead.Acquire
 					b.Points.Add(p);
 
 					// update the front end
-					Controller.GetController().GotPoint(point, s);
+					Controller.GetController().GotPoint(point, p);
 
 					if (CheckIfStopping()) 
 					{

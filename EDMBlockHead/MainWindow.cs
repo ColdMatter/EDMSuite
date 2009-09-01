@@ -48,6 +48,11 @@ namespace EDMBlockHead.GUI
         private MenuItem menuItem9;
         private MenuItem menuItem10;
         private MenuItem menuItem11;
+        private WaveformGraph leakageGraph;
+        private WaveformPlot northPlot;
+        private XAxis xAxis4;
+        private YAxis yAxis4;
+        private WaveformPlot southPlot;
 
 		private Controller controller;
 
@@ -112,10 +117,16 @@ namespace EDMBlockHead.GUI
             this.tofPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
+            this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.xAxis4 = new NationalInstruments.UI.XAxis();
+            this.yAxis4 = new NationalInstruments.UI.YAxis();
+            this.northPlot = new NationalInstruments.UI.WaveformPlot();
+            this.southPlot = new NationalInstruments.UI.WaveformPlot();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -235,7 +246,7 @@ namespace EDMBlockHead.GUI
             // 
             // statusBar
             // 
-            this.statusBar.Location = new System.Drawing.Point(0, 437);
+            this.statusBar.Location = new System.Drawing.Point(0, 624);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(925, 22);
             this.statusBar.SizingGrip = false;
@@ -270,7 +281,7 @@ namespace EDMBlockHead.GUI
             // 
             this.progressTank.FillColor = System.Drawing.Color.DeepPink;
             this.progressTank.FillStyle = NationalInstruments.UI.FillStyle.ZigZag;
-            this.progressTank.Location = new System.Drawing.Point(0, 376);
+            this.progressTank.Location = new System.Drawing.Point(0, 563);
             this.progressTank.Name = "progressTank";
             this.progressTank.Range = new NationalInstruments.UI.Range(0, 4096);
             this.progressTank.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -335,10 +346,45 @@ namespace EDMBlockHead.GUI
             // 
             this.yAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
+            // leakageGraph
+            // 
+            this.leakageGraph.Location = new System.Drawing.Point(8, 388);
+            this.leakageGraph.Name = "leakageGraph";
+            this.leakageGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.northPlot,
+            this.southPlot});
+            this.leakageGraph.Size = new System.Drawing.Size(905, 169);
+            this.leakageGraph.TabIndex = 6;
+            this.leakageGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis4});
+            this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis4});
+            // 
+            // xAxis4
+            // 
+            this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 820);
+            this.xAxis4.Visible = false;
+            // 
+            // northPlot
+            // 
+            this.northPlot.HistoryCapacity = 5000;
+            this.northPlot.LineColor = System.Drawing.Color.Red;
+            this.northPlot.XAxis = this.xAxis4;
+            this.northPlot.YAxis = this.yAxis4;
+            // 
+            // southPlot
+            // 
+            this.southPlot.HistoryCapacity = 5000;
+            this.southPlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southPlot.XAxis = this.xAxis4;
+            this.southPlot.YAxis = this.yAxis4;
+            // 
             // MainWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(925, 459);
+            this.ClientSize = new System.Drawing.Size(925, 646);
+            this.Controls.Add(this.leakageGraph);
             this.Controls.Add(this.tofGraph3);
             this.Controls.Add(this.tofGraph2);
             this.Controls.Add(this.textArea);
@@ -356,6 +402,7 @@ namespace EDMBlockHead.GUI
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -385,6 +432,17 @@ namespace EDMBlockHead.GUI
             if (tofIndex == 0) PlotY(tofGraph1, tofPlot1, data, start, inc);
             if (tofIndex == 1) PlotY(tofGraph2, tofPlot2, data, start, inc);
             if (tofIndex == 2) PlotY(tofGraph3, tofPlot3, data, start, inc);
+        }
+
+        public void AppendLeakageMeasurement(double[] northValues, double[] southValues)
+        {
+            PlotYAppend(leakageGraph, northPlot, northValues);
+            PlotYAppend(leakageGraph, southPlot, southValues);
+        }
+
+        public void ClearLeakageMeasurements()
+        {
+            ClearNIGraph(leakageGraph);
         }
 		
 		public void EnableMenus(bool enabled)
@@ -416,6 +474,18 @@ namespace EDMBlockHead.GUI
 		{
 			graph.BeginInvoke(new PlotYDelegate(p.PlotY), new Object[] {ydata, start, inc});
 		}
+
+        private delegate void PlotYAppendDelegate(double[] data);
+        private void PlotYAppend(Graph graph, WaveformPlot p, double[] data)
+        {
+            graph.BeginInvoke(new PlotYAppendDelegate(p.PlotYAppend), new object[] { data });
+        }
+
+        private delegate void ClearDataDelegate();
+        private void ClearNIGraph(Graph graph)
+        {
+            graph.Invoke(new ClearDataDelegate(graph.ClearData));
+        }
 
 		private delegate void AppendTextDelegate(TextBox box, string text);
 		private void AppendTextHelper(TextBox box, string text)
@@ -473,13 +543,6 @@ namespace EDMBlockHead.GUI
 			controller.StopPattern();
 		}
 
-		#endregion
-
-        private void tofGraph1_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
-        {
-
-        }
-
         private void menuItem9_Click(object sender, EventArgs e)
         {
             controller.ShowLiveViewer();
@@ -490,6 +553,11 @@ namespace EDMBlockHead.GUI
             controller.TestLiveAnalysis();
         }
 
+		#endregion
 
+        private void tofGraph1_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
     }
 }
