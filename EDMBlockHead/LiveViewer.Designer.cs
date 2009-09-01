@@ -36,26 +36,26 @@ namespace EDMBlockHead
             this.sigPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.sigSigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.sigSigmaLo = new NationalInstruments.UI.ScatterPlot();
             this.bScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.bPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.bSigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.bSigmaLo = new NationalInstruments.UI.ScatterPlot();
             this.resetRunningMeans = new System.Windows.Forms.Button();
             this.dbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.dbPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
+            this.dbSigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.dbSigmaLo = new NationalInstruments.UI.ScatterPlot();
             this.edmErrorScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.edmErrorPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis4 = new NationalInstruments.UI.XAxis();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
             this.edmNormedErrorPlot = new NationalInstruments.UI.ScatterPlot();
-            this.sigSigmaHi = new NationalInstruments.UI.ScatterPlot();
-            this.sigSigmaLo = new NationalInstruments.UI.ScatterPlot();
-            this.bSigmaHi = new NationalInstruments.UI.ScatterPlot();
-            this.bSigmaLo = new NationalInstruments.UI.ScatterPlot();
-            this.dbSigmaHi = new NationalInstruments.UI.ScatterPlot();
-            this.dbSigmaLo = new NationalInstruments.UI.ScatterPlot();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).BeginInit();
@@ -145,6 +145,24 @@ namespace EDMBlockHead
             // 
             this.yAxis1.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
+            // sigSigmaHi
+            // 
+            this.sigSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.sigSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
+            this.sigSigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.sigSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.sigSigmaHi.XAxis = this.xAxis1;
+            this.sigSigmaHi.YAxis = this.yAxis1;
+            // 
+            // sigSigmaLo
+            // 
+            this.sigSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.sigSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
+            this.sigSigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.sigSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.sigSigmaLo.XAxis = this.xAxis1;
+            this.sigSigmaLo.YAxis = this.yAxis1;
+            // 
             // bScatterGraph
             // 
             this.bScatterGraph.Caption = "B";
@@ -187,6 +205,24 @@ namespace EDMBlockHead
             // 
             this.yAxis2.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.yAxis2.OriginLineVisible = true;
+            // 
+            // bSigmaHi
+            // 
+            this.bSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.bSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
+            this.bSigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.bSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.bSigmaHi.XAxis = this.xAxis2;
+            this.bSigmaHi.YAxis = this.yAxis2;
+            // 
+            // bSigmaLo
+            // 
+            this.bSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.bSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
+            this.bSigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.bSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.bSigmaLo.XAxis = this.xAxis2;
+            this.bSigmaLo.YAxis = this.yAxis2;
             // 
             // resetRunningMeans
             // 
@@ -239,6 +275,24 @@ namespace EDMBlockHead
             // 
             this.yAxis3.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
+            // dbSigmaHi
+            // 
+            this.dbSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.dbSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
+            this.dbSigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.dbSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.dbSigmaHi.XAxis = this.xAxis3;
+            this.dbSigmaHi.YAxis = this.yAxis3;
+            // 
+            // dbSigmaLo
+            // 
+            this.dbSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.dbSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
+            this.dbSigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.dbSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.dbSigmaLo.XAxis = this.xAxis3;
+            this.dbSigmaLo.YAxis = this.yAxis3;
+            // 
             // edmErrorScatterGraph
             // 
             this.edmErrorScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
@@ -287,65 +341,11 @@ namespace EDMBlockHead
             this.edmNormedErrorPlot.XAxis = this.xAxis4;
             this.edmNormedErrorPlot.YAxis = this.yAxis4;
             // 
-            // sigSigmaHi
-            // 
-            this.sigSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.sigSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
-            this.sigSigmaHi.PointSize = new System.Drawing.Size(5, 0);
-            this.sigSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.sigSigmaHi.XAxis = this.xAxis1;
-            this.sigSigmaHi.YAxis = this.yAxis1;
-            // 
-            // sigSigmaLo
-            // 
-            this.sigSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.sigSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
-            this.sigSigmaLo.PointSize = new System.Drawing.Size(5, 0);
-            this.sigSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.sigSigmaLo.XAxis = this.xAxis1;
-            this.sigSigmaLo.YAxis = this.yAxis1;
-            // 
-            // bSigmaHi
-            // 
-            this.bSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.bSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
-            this.bSigmaHi.PointSize = new System.Drawing.Size(5, 0);
-            this.bSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.bSigmaHi.XAxis = this.xAxis2;
-            this.bSigmaHi.YAxis = this.yAxis2;
-            // 
-            // bSigmaLo
-            // 
-            this.bSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.bSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
-            this.bSigmaLo.PointSize = new System.Drawing.Size(5, 0);
-            this.bSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.bSigmaLo.XAxis = this.xAxis2;
-            this.bSigmaLo.YAxis = this.yAxis2;
-            // 
-            // dbSigmaHi
-            // 
-            this.dbSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.dbSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
-            this.dbSigmaHi.PointSize = new System.Drawing.Size(5, 0);
-            this.dbSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.dbSigmaHi.XAxis = this.xAxis3;
-            this.dbSigmaHi.YAxis = this.yAxis3;
-            // 
-            // dbSigmaLo
-            // 
-            this.dbSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.dbSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
-            this.dbSigmaLo.PointSize = new System.Drawing.Size(5, 0);
-            this.dbSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.dbSigmaLo.XAxis = this.xAxis3;
-            this.dbSigmaLo.YAxis = this.yAxis3;
-            // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 528);
+            this.ClientSize = new System.Drawing.Size(988, 635);
             this.Controls.Add(this.edmErrorScatterGraph);
             this.Controls.Add(this.dbScatterGraph);
             this.Controls.Add(this.resetRunningMeans);

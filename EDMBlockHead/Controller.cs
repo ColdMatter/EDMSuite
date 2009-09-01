@@ -253,6 +253,7 @@ namespace EDMBlockHead
                 acquisitor.Start(config);
                 appState = AppState.running;
                 mainWindow.AppendToTextArea("Starting acquisition ...");
+                mainWindow.ClearLeakageMeasurements();
             }
         }
 
