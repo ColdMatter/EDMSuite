@@ -370,7 +370,7 @@ namespace EDMBlockHead.GUI
             // xAxis4
             // 
             this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 410);
+            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 820);
             this.xAxis4.Visible = false;
             // 
             // southPlot

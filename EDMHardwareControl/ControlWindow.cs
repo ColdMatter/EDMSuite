@@ -442,6 +442,11 @@ namespace EDMHardwareControl
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.piMonitor2TextBox = new System.Windows.Forms.TextBox();
+            this.updatePiMonitorButton = new System.Windows.Forms.Button();
+            this.label82 = new System.Windows.Forms.Label();
+            this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.label74 = new System.Windows.Forms.Label();
@@ -636,11 +641,6 @@ namespace EDMHardwareControl
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label82 = new System.Windows.Forms.Label();
-            this.updatePiMonitorButton = new System.Windows.Forms.Button();
-            this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
-            this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.piMonitor2TextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -656,6 +656,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.legend1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.groupBox24.SuspendLayout();
             this.groupBox22.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox16.SuspendLayout();
@@ -685,7 +686,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.groupBox24.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -868,6 +868,7 @@ namespace EDMHardwareControl
             // 
             // fieldsOffButton
             // 
+            this.fieldsOffButton.Enabled = false;
             this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
             this.fieldsOffButton.Name = "fieldsOffButton";
             this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
@@ -1621,6 +1622,58 @@ namespace EDMHardwareControl
             this.tabPage2.Size = new System.Drawing.Size(697, 581);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
+            // 
+            // groupBox24
+            // 
+            this.groupBox24.Controls.Add(this.piMonitor2TextBox);
+            this.groupBox24.Controls.Add(this.updatePiMonitorButton);
+            this.groupBox24.Controls.Add(this.label82);
+            this.groupBox24.Controls.Add(this.piMonitor1TextBox);
+            this.groupBox24.Location = new System.Drawing.Point(8, 518);
+            this.groupBox24.Name = "groupBox24";
+            this.groupBox24.Size = new System.Drawing.Size(382, 50);
+            this.groupBox24.TabIndex = 65;
+            this.groupBox24.TabStop = false;
+            this.groupBox24.Text = "pi monitor";
+            // 
+            // piMonitor2TextBox
+            // 
+            this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
+            this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.piMonitor2TextBox.Location = new System.Drawing.Point(214, 22);
+            this.piMonitor2TextBox.Name = "piMonitor2TextBox";
+            this.piMonitor2TextBox.ReadOnly = true;
+            this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor2TextBox.TabIndex = 65;
+            this.piMonitor2TextBox.Text = "0";
+            // 
+            // updatePiMonitorButton
+            // 
+            this.updatePiMonitorButton.Location = new System.Drawing.Point(301, 20);
+            this.updatePiMonitorButton.Name = "updatePiMonitorButton";
+            this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updatePiMonitorButton.TabIndex = 63;
+            this.updatePiMonitorButton.Text = "Update";
+            this.updatePiMonitorButton.Click += new System.EventHandler(this.updatePiMonitorButton_Click);
+            // 
+            // label82
+            // 
+            this.label82.Location = new System.Drawing.Point(17, 24);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(108, 23);
+            this.label82.TabIndex = 64;
+            this.label82.Text = "Monitor voltages (V)";
+            // 
+            // piMonitor1TextBox
+            // 
+            this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
+            this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.piMonitor1TextBox.Location = new System.Drawing.Point(131, 22);
+            this.piMonitor1TextBox.Name = "piMonitor1TextBox";
+            this.piMonitor1TextBox.ReadOnly = true;
+            this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor1TextBox.TabIndex = 62;
+            this.piMonitor1TextBox.Text = "0";
             // 
             // groupBox22
             // 
@@ -3556,58 +3609,6 @@ namespace EDMHardwareControl
             this.checkBox1.TabIndex = 53;
             this.checkBox1.Text = "State (Checked is 0=>N+)";
             // 
-            // label82
-            // 
-            this.label82.Location = new System.Drawing.Point(17, 24);
-            this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(108, 23);
-            this.label82.TabIndex = 64;
-            this.label82.Text = "Monitor voltages (V)";
-            // 
-            // updatePiMonitorButton
-            // 
-            this.updatePiMonitorButton.Location = new System.Drawing.Point(301, 20);
-            this.updatePiMonitorButton.Name = "updatePiMonitorButton";
-            this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
-            this.updatePiMonitorButton.TabIndex = 63;
-            this.updatePiMonitorButton.Text = "Update";
-            this.updatePiMonitorButton.Click += new System.EventHandler(this.updatePiMonitorButton_Click);
-            // 
-            // piMonitor1TextBox
-            // 
-            this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
-            this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor1TextBox.Location = new System.Drawing.Point(131, 22);
-            this.piMonitor1TextBox.Name = "piMonitor1TextBox";
-            this.piMonitor1TextBox.ReadOnly = true;
-            this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
-            this.piMonitor1TextBox.TabIndex = 62;
-            this.piMonitor1TextBox.Text = "0";
-            // 
-            // groupBox24
-            // 
-            this.groupBox24.Controls.Add(this.piMonitor2TextBox);
-            this.groupBox24.Controls.Add(this.updatePiMonitorButton);
-            this.groupBox24.Controls.Add(this.label82);
-            this.groupBox24.Controls.Add(this.piMonitor1TextBox);
-            this.groupBox24.Location = new System.Drawing.Point(8, 518);
-            this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(382, 50);
-            this.groupBox24.TabIndex = 65;
-            this.groupBox24.TabStop = false;
-            this.groupBox24.Text = "pi monitor";
-            // 
-            // piMonitor2TextBox
-            // 
-            this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
-            this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor2TextBox.Location = new System.Drawing.Point(214, 22);
-            this.piMonitor2TextBox.Name = "piMonitor2TextBox";
-            this.piMonitor2TextBox.ReadOnly = true;
-            this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
-            this.piMonitor2TextBox.TabIndex = 65;
-            this.piMonitor2TextBox.Text = "0";
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -3643,6 +3644,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox24.ResumeLayout(false);
+            this.groupBox24.PerformLayout();
             this.groupBox22.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -3691,8 +3694,6 @@ namespace EDMHardwareControl
             this.tabPage7.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox24.ResumeLayout(false);
-            this.groupBox24.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
