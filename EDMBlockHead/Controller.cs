@@ -52,16 +52,6 @@ namespace EDMBlockHead
         // it's a singleton
         private static Controller controllerInstance;
 
-        //DK LiveViewer
-        int blockCount=1;
-        double clusterVariance=0;
-        double clusterVarianceNormed=0;
-        double blocksPerDay = 240;
-        double plateSpacing = 1.1;
-        double electronCharge = 1.6022 * Math.Pow(10, -19);
-        double bohrMagneton = 9.274 * Math.Pow(10, -24);
-        double saturatedEffectiveField = 26 * Math.Pow(10, 9);
-
         #endregion
 
         #region Initialisation and access
@@ -117,7 +107,6 @@ namespace EDMBlockHead
 
             liveViewer = new LiveViewer(this);
             liveViewer.Show();
-            liveViewer.UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
 
             Application.Run(mainWindow);
         }
@@ -326,80 +315,10 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            DemodulationConfig dc = new DemodulationConfig();
-            GatedDetectorExtractSpec dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, 0, 1);
-            dg0.Name = "top";
-            GatedDetectorExtractSpec dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, 0, 1);
-            dg1.Name = "norm";
-            GatedDetectorExtractSpec dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-            dg2.Name = "mag1";
-            dg2.Integrate = false;
-            dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-            dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-            dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("fwhm", b);
             DBlock = blockDemodulator.DemodulateBlock(b, dc);
-            
-            //edm factor calculation
-            double dbStep = ((AnalogModulation)Config.GetModulationByName("DB")).Step; 
-            double magCal = (double)Config.Settings["magnetCalibration"];
-            double eField = cField((double)Config.Settings["ePlus"], (double)Config.Settings["eMinus"]);//arguments are in volts not kV
-            double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
-                        (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
-
-            //Get relevant channel values and errors
-            double[] sigValandErr = DBlock.GetChannelValueAndError(new string[] { "SIG" }, "top");
-            double[] BValandErr = DBlock.GetChannelValueAndError(new string[] { "B" }, "top");
-            double[] dbValandErr = DBlock.GetChannelValueAndError(new string[] { "DB" }, "top");
-            double[] EValandErr = DBlock.GetChannelValueAndError(new string[] { "E" }, "top");
-            double[] EdotBValandErr = DBlock.GetChannelValueAndError(new string[] { "E", "B" }, "top");
-           
-            //edm error calculation
-            double rawEDM = edmFactor *(EdotBValandErr[0] / dbValandErr[0]);
-            double rawEDMErr = Math.Abs(rawEDM) * Math.Sqrt(Math.Pow(EdotBValandErr[1] / EdotBValandErr[0], 2)
-                               + Math.Pow(dbValandErr[1] /dbValandErr[0],2));
-
-            //same again for normed data.
-            double[] sigValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "SIG" }, "topNormed");
-            double[] BValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "B" }, "topNormed");
-            double[] dbValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "DB" }, "topNormed");
-            double[] EValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "E" }, "topNormed");
-            double[] EdotBValandErrNormed = DBlock.GetChannelValueAndError(new string[] { "E", "B" }, "topNormed");
-
-            //normed edm error
-            double rawEDMNormed = edmFactor * (EdotBValandErrNormed[0] / dbValandErrNormed[0]);
-            double rawEDMErrNormed = Math.Abs(rawEDMNormed) * Math.Sqrt(Math.Pow(EdotBValandErrNormed[1] / EdotBValandErrNormed[0], 2)
-                                     + Math.Pow(dbValandErrNormed[1] / dbValandErrNormed[0], 2));
-            
-            //Append LiveViewer text with edm errors, B, DB & DB/SIG
-            liveViewer.AppendStatusText((Math.Pow(10, 26) * rawEDMErr).ToString("G3") + "\t" + (Math.Pow(10, 26) * rawEDMErrNormed).ToString("G3")
-                + "\t\t" + (BValandErr[0]).ToString("N2") + "\t" + (dbValandErr[0]).ToString("N2")
-                + "\t" + (dbValandErr[0] / sigValandErr[0]).ToString("N3") + Environment.NewLine);
-        
-            // Rollings values of edm error
-            clusterVariance = ((clusterVariance*(blockCount - 1)) + rawEDMErr*rawEDMErr) / blockCount;
-            double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
-            clusterVarianceNormed = ((clusterVarianceNormed * (blockCount - 1)) + rawEDMErrNormed * rawEDMErrNormed) / blockCount;
-            double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
-
-            liveViewer.UpdateClusterStatusText("errorPerDay: " + edmPerDay.ToString("E3") + "\terrorPerDayNormed: " + edmPerDayNormed.ToString("E3")
-                + Environment.NewLine + "block count: " + blockCount);
-
-            //Update Plots
-            liveViewer.AppendToSigScatter(new double[] { blockCount }, new double[] { sigValandErr[0] });
-            liveViewer.AppendTobScatter(new double[] { blockCount }, new double[] { BValandErr[0] });
-            liveViewer.AppendTodbScatter(new double[] { blockCount }, new double[] { dbValandErr[0] });
-            liveViewer.AppendToedmScatter(new double[] { blockCount }, new double[] { Math.Pow(10, 26) * rawEDMErr });
-            liveViewer.AppendToedmNormedScatter(new double[] { blockCount }, new double[] { Math.Pow(10, 26) * rawEDMErrNormed });
-            
-            liveViewer.AppendSigmaTosigScatter(new double[] { blockCount }, new double[] { sigValandErr[0] + sigValandErr[1] },
-                new double[] { sigValandErr[0] - sigValandErr[1] });
-            liveViewer.AppendSigmaTobScatter(new double[] { blockCount }, new double[] { BValandErr[0] + BValandErr[1] },
-                new double[] { BValandErr[0] - BValandErr[1] });
-            liveViewer.AppendSigmaTodbScatter(new double[] { blockCount }, new double[] { dbValandErr[0] + dbValandErr[1] },
-                new double[] { dbValandErr[0] - dbValandErr[1] });
-            
-            blockCount = blockCount + 1;
-            
+            liveViewer.AddDBlock(DBlock);
+                     
             //config.g
             haveBlock = true;
             appState = AppState.stopped;
@@ -407,40 +326,6 @@ namespace EDMBlockHead
             SetStatusReady();
         }
         
-        public double polarisationFactor(double electricField/*in kV/cm*/)
-        {
-            double polFactor = 0.00001386974812686904
-                + 0.09020507207607358 * electricField
-                + 0.0008134261949342792 * Math.Pow(electricField, 2)
-                - 0.001365930559363722 * Math.Pow(electricField, 3)
-                + 0.00016467328012807663 * Math.Pow(electricField, 4)
-                - 9.53482 * Math.Pow(10, -6) * Math.Pow(electricField, 5)
-                + 2.804041112473679 * Math.Pow(10, -7) * Math.Pow(electricField, 6)
-                - 3.352604355536456 * Math.Pow(10, -9) * Math.Pow(electricField, 7);
-
-            return polFactor;
-        }
-        
-        public double cField(double ePlus,double eMinus)//voltage in volts returns kV/cm
-        {
-            double efield = (ePlus - eMinus) / plateSpacing;
-            return efield / 1000;
-        }
-
-        public void resetEdmErrRunningMeans()
-        {
-            blockCount = 1;
-            clusterVariance = 0;
-            clusterVarianceNormed = 0;
-            liveViewer.UpdateClusterStatusText("errorPerDay: " + 0 + "\terrorPerDayNormed: " + 0
-                + Environment.NewLine + "block count: " + 0);
-            liveViewer.UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
-            liveViewer.ClearSigScatter();
-            liveViewer.ClearbScatter();
-            liveViewer.CleardbScatter();
-            liveViewer.ClearedmErrScatter();            
-        }
-
         double[] northLeakages = new double[UPDATE_EVERY];
         double[] southLeakages = new double[UPDATE_EVERY];
         int leakageIndex = 0;

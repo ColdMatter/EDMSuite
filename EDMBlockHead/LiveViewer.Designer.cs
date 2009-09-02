@@ -56,28 +56,40 @@ namespace EDMBlockHead
             this.xAxis4 = new NationalInstruments.UI.XAxis();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
             this.edmNormedErrorPlot = new NationalInstruments.UI.ScatterPlot();
+            this.leakageErrorGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.northLeakageVariancePlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis5 = new NationalInstruments.UI.XAxis();
+            this.yAxis5 = new NationalInstruments.UI.YAxis();
+            this.southLeakageVariancePlot = new NationalInstruments.UI.ScatterPlot();
+            this.leakageGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.northLeakagePlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis6 = new NationalInstruments.UI.XAxis();
+            this.yAxis6 = new NationalInstruments.UI.YAxis();
+            this.southLeakagePlot = new NationalInstruments.UI.ScatterPlot();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.edmErrorScatterGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageErrorGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // statusText
             // 
             this.statusText.BackColor = System.Drawing.Color.Black;
             this.statusText.ForeColor = System.Drawing.Color.Lime;
-            this.statusText.Location = new System.Drawing.Point(12, 54);
+            this.statusText.Location = new System.Drawing.Point(12, 39);
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
             this.statusText.ReadOnly = true;
             this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.statusText.Size = new System.Drawing.Size(328, 316);
+            this.statusText.Size = new System.Drawing.Size(328, 518);
             this.statusText.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 26);
+            this.label1.Location = new System.Drawing.Point(13, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 13);
             this.label1.TabIndex = 1;
@@ -86,7 +98,7 @@ namespace EDMBlockHead
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 394);
+            this.label2.Location = new System.Drawing.Point(12, 560);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(94, 13);
             this.label2.TabIndex = 2;
@@ -96,7 +108,7 @@ namespace EDMBlockHead
             // 
             this.clusterStatusText.BackColor = System.Drawing.Color.Black;
             this.clusterStatusText.ForeColor = System.Drawing.Color.Lime;
-            this.clusterStatusText.Location = new System.Drawing.Point(12, 419);
+            this.clusterStatusText.Location = new System.Drawing.Point(12, 585);
             this.clusterStatusText.Multiline = true;
             this.clusterStatusText.Name = "clusterStatusText";
             this.clusterStatusText.ReadOnly = true;
@@ -110,10 +122,9 @@ namespace EDMBlockHead
             this.sigScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sigScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
             this.sigScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sigScatterGraph.Location = new System.Drawing.Point(346, 54);
+            this.sigScatterGraph.Location = new System.Drawing.Point(346, 39);
             this.sigScatterGraph.Name = "sigScatterGraph";
             this.sigScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.sigScatterGraph.PlotAreaColor = System.Drawing.Color.White;
             this.sigScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.sigPlot,
             this.sigSigmaHi,
@@ -127,8 +138,8 @@ namespace EDMBlockHead
             // 
             // sigPlot
             // 
-            this.sigPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.sigPlot.PointColor = System.Drawing.Color.DodgerBlue;
+            this.sigPlot.LineColor = System.Drawing.Color.Red;
+            this.sigPlot.PointColor = System.Drawing.Color.Red;
             this.sigPlot.PointSize = new System.Drawing.Size(3, 3);
             this.sigPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
             this.sigPlot.XAxis = this.xAxis1;
@@ -148,7 +159,7 @@ namespace EDMBlockHead
             // sigSigmaHi
             // 
             this.sigSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.sigSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
+            this.sigSigmaHi.PointColor = System.Drawing.Color.Red;
             this.sigSigmaHi.PointSize = new System.Drawing.Size(5, 0);
             this.sigSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.sigSigmaHi.XAxis = this.xAxis1;
@@ -157,7 +168,7 @@ namespace EDMBlockHead
             // sigSigmaLo
             // 
             this.sigSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.sigSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
+            this.sigSigmaLo.PointColor = System.Drawing.Color.Red;
             this.sigSigmaLo.PointSize = new System.Drawing.Size(5, 0);
             this.sigSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.sigSigmaLo.XAxis = this.xAxis1;
@@ -170,10 +181,9 @@ namespace EDMBlockHead
             this.bScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
             this.bScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bScatterGraph.Location = new System.Drawing.Point(615, 54);
+            this.bScatterGraph.Location = new System.Drawing.Point(615, 39);
             this.bScatterGraph.Name = "bScatterGraph";
             this.bScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.bScatterGraph.PlotAreaColor = System.Drawing.Color.White;
             this.bScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.bPlot,
             this.bSigmaHi,
@@ -187,8 +197,7 @@ namespace EDMBlockHead
             // 
             // bPlot
             // 
-            this.bPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.bPlot.PointColor = System.Drawing.Color.DodgerBlue;
+            this.bPlot.PointColor = System.Drawing.Color.Lime;
             this.bPlot.PointSize = new System.Drawing.Size(3, 3);
             this.bPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
             this.bPlot.XAxis = this.xAxis2;
@@ -209,7 +218,7 @@ namespace EDMBlockHead
             // bSigmaHi
             // 
             this.bSigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.bSigmaHi.PointColor = System.Drawing.Color.DodgerBlue;
+            this.bSigmaHi.PointColor = System.Drawing.Color.Lime;
             this.bSigmaHi.PointSize = new System.Drawing.Size(5, 0);
             this.bSigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.bSigmaHi.XAxis = this.xAxis2;
@@ -218,7 +227,7 @@ namespace EDMBlockHead
             // bSigmaLo
             // 
             this.bSigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.bSigmaLo.PointColor = System.Drawing.Color.DodgerBlue;
+            this.bSigmaLo.PointColor = System.Drawing.Color.Lime;
             this.bSigmaLo.PointSize = new System.Drawing.Size(5, 0);
             this.bSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.bSigmaLo.XAxis = this.xAxis2;
@@ -226,7 +235,7 @@ namespace EDMBlockHead
             // 
             // resetRunningMeans
             // 
-            this.resetRunningMeans.Location = new System.Drawing.Point(12, 468);
+            this.resetRunningMeans.Location = new System.Drawing.Point(12, 634);
             this.resetRunningMeans.Name = "resetRunningMeans";
             this.resetRunningMeans.Size = new System.Drawing.Size(96, 23);
             this.resetRunningMeans.TabIndex = 24;
@@ -240,10 +249,9 @@ namespace EDMBlockHead
             this.dbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
             this.dbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dbScatterGraph.Location = new System.Drawing.Point(346, 282);
+            this.dbScatterGraph.Location = new System.Drawing.Point(346, 248);
             this.dbScatterGraph.Name = "dbScatterGraph";
             this.dbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.dbScatterGraph.PlotAreaColor = System.Drawing.Color.White;
             this.dbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.dbPlot,
             this.dbSigmaHi,
@@ -257,7 +265,7 @@ namespace EDMBlockHead
             // 
             // dbPlot
             // 
-            this.dbPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.dbPlot.LineColor = System.Drawing.Color.DodgerBlue;
             this.dbPlot.PointColor = System.Drawing.Color.DodgerBlue;
             this.dbPlot.PointSize = new System.Drawing.Size(3, 3);
             this.dbPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
@@ -301,10 +309,9 @@ namespace EDMBlockHead
             this.edmErrorScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.edmErrorScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
             this.edmErrorScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.edmErrorScatterGraph.Location = new System.Drawing.Point(615, 282);
+            this.edmErrorScatterGraph.Location = new System.Drawing.Point(615, 248);
             this.edmErrorScatterGraph.Name = "edmErrorScatterGraph";
             this.edmErrorScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.edmErrorScatterGraph.PlotAreaColor = System.Drawing.Color.White;
             this.edmErrorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.edmErrorPlot,
             this.edmNormedErrorPlot});
@@ -341,11 +348,102 @@ namespace EDMBlockHead
             this.edmNormedErrorPlot.XAxis = this.xAxis4;
             this.edmNormedErrorPlot.YAxis = this.yAxis4;
             // 
+            // leakageErrorGraph
+            // 
+            this.leakageErrorGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.leakageErrorGraph.Caption = "Leakage s.d.";
+            this.leakageErrorGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.leakageErrorGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.leakageErrorGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.leakageErrorGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.leakageErrorGraph.Location = new System.Drawing.Point(615, 457);
+            this.leakageErrorGraph.Name = "leakageErrorGraph";
+            this.leakageErrorGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.leakageErrorGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.northLeakageVariancePlot,
+            this.southLeakageVariancePlot});
+            this.leakageErrorGraph.Size = new System.Drawing.Size(259, 203);
+            this.leakageErrorGraph.TabIndex = 28;
+            this.leakageErrorGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis5});
+            this.leakageErrorGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis5});
+            // 
+            // northLeakageVariancePlot
+            // 
+            this.northLeakageVariancePlot.LineColor = System.Drawing.Color.Red;
+            this.northLeakageVariancePlot.XAxis = this.xAxis5;
+            this.northLeakageVariancePlot.YAxis = this.yAxis5;
+            // 
+            // xAxis5
+            // 
+            this.xAxis5.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis5.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis5.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis5.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis5
+            // 
+            this.yAxis5.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // southLeakageVariancePlot
+            // 
+            this.southLeakageVariancePlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southLeakageVariancePlot.XAxis = this.xAxis5;
+            this.southLeakageVariancePlot.YAxis = this.yAxis5;
+            // 
+            // leakageGraph
+            // 
+            this.leakageGraph.Caption = "Leakage";
+            this.leakageGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.leakageGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.leakageGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.leakageGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.leakageGraph.Location = new System.Drawing.Point(346, 457);
+            this.leakageGraph.Name = "leakageGraph";
+            this.leakageGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.leakageGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.northLeakagePlot,
+            this.southLeakagePlot});
+            this.leakageGraph.Size = new System.Drawing.Size(259, 203);
+            this.leakageGraph.TabIndex = 27;
+            this.leakageGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis6});
+            this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis6});
+            // 
+            // northLeakagePlot
+            // 
+            this.northLeakagePlot.LineColor = System.Drawing.Color.Red;
+            this.northLeakagePlot.PointColor = System.Drawing.Color.DodgerBlue;
+            this.northLeakagePlot.PointSize = new System.Drawing.Size(3, 3);
+            this.northLeakagePlot.XAxis = this.xAxis6;
+            this.northLeakagePlot.YAxis = this.yAxis6;
+            // 
+            // xAxis6
+            // 
+            this.xAxis6.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis6.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis6.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis6.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis6
+            // 
+            this.yAxis6.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // southLeakagePlot
+            // 
+            this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southLeakagePlot.XAxis = this.xAxis6;
+            this.southLeakagePlot.YAxis = this.yAxis6;
+            // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(988, 635);
+            this.ClientSize = new System.Drawing.Size(882, 670);
+            this.Controls.Add(this.leakageErrorGraph);
+            this.Controls.Add(this.leakageGraph);
             this.Controls.Add(this.edmErrorScatterGraph);
             this.Controls.Add(this.dbScatterGraph);
             this.Controls.Add(this.resetRunningMeans);
@@ -355,6 +453,7 @@ namespace EDMBlockHead
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusText);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "LiveViewer";
             this.Text = "LiveViewer";
@@ -362,6 +461,8 @@ namespace EDMBlockHead
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.edmErrorScatterGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageErrorGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -397,6 +498,16 @@ namespace EDMBlockHead
         private NationalInstruments.UI.ScatterPlot bSigmaLo;
         private NationalInstruments.UI.ScatterPlot dbSigmaHi;
         private NationalInstruments.UI.ScatterPlot dbSigmaLo;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph leakageErrorGraph;
+        private NationalInstruments.UI.XAxis xAxis5;
+        private NationalInstruments.UI.YAxis yAxis5;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph leakageGraph;
+        private NationalInstruments.UI.ScatterPlot northLeakagePlot;
+        private NationalInstruments.UI.XAxis xAxis6;
+        private NationalInstruments.UI.YAxis yAxis6;
+        private NationalInstruments.UI.ScatterPlot southLeakagePlot;
+        private NationalInstruments.UI.ScatterPlot northLeakageVariancePlot;
+        private NationalInstruments.UI.ScatterPlot southLeakageVariancePlot;
 
     }
 }

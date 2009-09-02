@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="DetectorData.cs" />
     <Compile Include="PointDetectorData.cs" />
+    <Compile Include="QuickEDMAnalysis.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />
