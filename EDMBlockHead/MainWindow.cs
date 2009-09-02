@@ -118,9 +118,9 @@ namespace EDMBlockHead.GUI
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
             this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.northPlot = new NationalInstruments.UI.WaveformPlot();
             this.xAxis4 = new NationalInstruments.UI.XAxis();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
-            this.northPlot = new NationalInstruments.UI.WaveformPlot();
             this.southPlot = new NationalInstruments.UI.WaveformPlot();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
@@ -360,18 +360,18 @@ namespace EDMBlockHead.GUI
             this.leakageGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis4});
             // 
-            // xAxis4
-            // 
-            this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 820);
-            this.xAxis4.Visible = false;
-            // 
             // northPlot
             // 
             this.northPlot.HistoryCapacity = 5000;
             this.northPlot.LineColor = System.Drawing.Color.Red;
             this.northPlot.XAxis = this.xAxis4;
             this.northPlot.YAxis = this.yAxis4;
+            // 
+            // xAxis4
+            // 
+            this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 410);
+            this.xAxis4.Visible = false;
             // 
             // southPlot
             // 

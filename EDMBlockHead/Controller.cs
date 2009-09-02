@@ -30,7 +30,7 @@ namespace EDMBlockHead
     public class Controller : MarshalByRefObject
     {
 
-        private const int UPDATE_EVERY = 5;
+        private const int UPDATE_EVERY = 10;
 
         #region Class members
 
