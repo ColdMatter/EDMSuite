@@ -113,6 +113,7 @@ namespace EDMBlockHead
             ClearBScatter();
             ClearDBScatter();
             ClearEDMErrScatter();
+            ClearLeakageScatters();
         }
 
         #region UI methods

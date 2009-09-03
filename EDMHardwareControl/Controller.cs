@@ -1222,7 +1222,7 @@ namespace EDMHardwareControl
                     if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
                         && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
                     {}
-                    else activateEAlarm(newEPolarity);
+                    //else activateEAlarm(newEPolarity);
                 }
                 else
                 {
@@ -1230,7 +1230,7 @@ namespace EDMHardwareControl
                     if ((lastSouthCurrent < kNegativeChargeMin) && (lastSouthCurrent > kNegativeChargeMax)
                         && (lastNorthCurrent > kPositiveChargeMin) && (lastNorthCurrent < kPositiveChargeMax))
                     { }
-                    else activateEAlarm(newEPolarity);
+                    //else activateEAlarm(newEPolarity);
                 }
             }
             ESwitchDone();
@@ -1443,9 +1443,13 @@ namespace EDMHardwareControl
 
             // check that the manual state is correct
             if (BManualState)
-                if (flipStep > 0) activateBAlarm(flipStep);
+            {
+                if (flipStep < 0) activateBAlarm(flipStep);
+            }
             else
-                    if (flipStep < 0) activateBAlarm(flipStep);
+            {
+                if (flipStep > 0) activateBAlarm(flipStep);
+            }
         }
 
         private void activateBAlarm(double flipStep)
