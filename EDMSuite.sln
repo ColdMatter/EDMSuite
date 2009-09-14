@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SympatheticHardwareControl"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SirCachealot", "SirCachealot\SirCachealot.csproj", "{548E9AAE-FE20-42BE-B66F-84C41B510610}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferCavityLock", "TransferCavityLock\TransferCavityLock.csproj", "{F91026E7-ED05-403E-923B-686806A0DF4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F91026E7-ED05-403E-923B-686806A0DF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F91026E7-ED05-403E-923B-686806A0DF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F91026E7-ED05-403E-923B-686806A0DF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F91026E7-ED05-403E-923B-686806A0DF4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -32,7 +32,9 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
 			// switchOutputPlugins
-			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
+            switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
+            switchOutputPlugins.Add("Synth amplitude switch", typeof(SynthAmplitudeSwitchPlugin));
+            switchOutputPlugins.Add("Synth frequency switch", typeof(SynthFrequencySwitchPlugin));
 			// patternPlugins
 			patternPlugins.Add("No pattern", typeof(NullPGPlugin));
 			patternPlugins.Add("Pulsed rf scan", typeof(PulsedRFScanPatternPlugin));
