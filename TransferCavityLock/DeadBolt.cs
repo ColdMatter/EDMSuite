@@ -63,6 +63,10 @@ namespace TransferCavityLock
         private double[] latestData;
         private double[] latestrefData;
 
+        public string RampChannel;
+        public string RampTriggerMethod;
+        public bool Ramping = false;
+
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
@@ -189,17 +193,68 @@ namespace TransferCavityLock
 
         #endregion
 
+        #region Public methods
+
+        /// <summary>
+        /// A function to repeatedly scan the voltage. It's meant to be triggered by pressing the
+        /// "start ramping" button, and only stop when "stop ramping" is pressed.
+        /// </summary>
+
+        public void ScanVoltage(int delayAtEachStep, string aoChannel)
+        {
+            AnalogSingleChannelWriter writeChannel;
+            double readChannel;
+            Task taskChannel;
+            double[] r;
+                        
+            if (aoChannel == "laser")
+            {
+                r = new double[2];
+                r[0] = LOWER_LC_VOLTAGE_LIMIT;
+                r[1] = UPPER_LC_VOLTAGE_LIMIT;
+                writeChannel = laserWriter;
+                readChannel = hardwareControl.LaserFrequencyControlVoltage;
+                taskChannel = outputLaserTask;
+                ui.AddToTextBox("Starting ramps");
+                while (this.Ramping == true)
+                {
+                    scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep);
+                }
+            }
+            if (aoChannel == "cavity")
+            {
+                r = new double[2];
+                r[0] = LOWER_CC_VOLTAGE_LIMIT;
+                r[1] = UPPER_CC_VOLTAGE_LIMIT;
+                writeChannel = cavityWriter;
+                readChannel = hardwareControl.CavityControlVoltage;
+                taskChannel = outputCavityTask;
+                ui.AddToTextBox("Starting ramps");
+                while (this.Ramping == true)
+                {
+                    scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep);
+                }
+            }
+            else
+            {
+                //Do nothing
+            }
+            
+        }
+
+        #endregion
+
         #region Private methods
 
         /// <summary>
-        /// A generic ramping function. Can be used to ramp either the cavity or the laser. Need to tell it the final voltage "v"
-        /// and which channels to do the ramp on.
+        /// A generic ramping function. Can be used to ramp either the cavity or the laser. 
+        /// Need to tell it the final voltage "v" and which channels to do the ramp on.
         /// </summary>
 
-        private void RampToVoltage(double v, AnalogSingleChannelWriter writeChannel, double readChannel, Task taskChannel)
+        private void rampToVoltage(double v, AnalogSingleChannelWriter writeChannel, 
+            double readChannel, Task taskChannel, int delayAtEachStep)
         {
             int steps = 20;
-            int delayAtEachStep = 50;
             double voltage = readChannel;
             double stepsize = (v - voltage) / steps;
 
@@ -212,6 +267,21 @@ namespace TransferCavityLock
             }
             taskChannel.Control(TaskAction.Unreserve);
         }
+
+        /// <summary>
+        /// A function to scan across the voltage range set by the limits high and low.
+        /// </summary>
+
+        private void scanVoltageRange(double low, double high, AnalogSingleChannelWriter writeChannel, 
+            double readChannel, Task taskChannel, int delayAtEachStep)
+        {
+            double voltage = low;
+            writeChannel.WriteSingleSample(true, low);  //Set initial voltage to low
+            readChannel = voltage;          //Tell hardware control about it
+
+            rampToVoltage(high, writeChannel, readChannel, taskChannel, delayAtEachStep);
+        }
+
 
         #endregion
     }
