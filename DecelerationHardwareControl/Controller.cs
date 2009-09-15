@@ -18,6 +18,7 @@ namespace DecelerationHardwareControl
         private DateTime cavityTimestamp;
         private DateTime refcavityTimestamp;
         private double laserFrequencyControlVoltage;
+        private double cavityControlVoltage;
 
         private double aomControlVoltage;
         private Task outputTask = new Task("AomControllerOutput");
@@ -62,6 +63,12 @@ namespace DecelerationHardwareControl
         {
             get { return laserFrequencyControlVoltage; }
             set { laserFrequencyControlVoltage = value; }
+        }
+
+        public double CavityControlVoltage
+        {
+            get { return cavityControlVoltage; }
+            set { cavityControlVoltage = value; }
         }
 
         public double AOMControlVoltage

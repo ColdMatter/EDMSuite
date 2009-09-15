@@ -87,15 +87,15 @@ namespace DAQ.HAL
 
 			// map the analog input channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
-            AddAnalogInputChannel("lockcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
-            AddAnalogInputChannel("refcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
+            AddAnalogInputChannel("p1", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
+            AddAnalogInputChannel("p2", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
             AddAnalogInputChannel("atomSourcePressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
             AddAnalogInputChannel("atomSourcePressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
 
             //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-            AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1",-5,5); // Pin 21
+            AddAnalogOutputChannel("cavity", daqBoard + "/ao1",-5,5); // Pin 21
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
 
             // map the counter channels

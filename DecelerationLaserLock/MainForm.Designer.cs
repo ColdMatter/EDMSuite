@@ -94,21 +94,21 @@ namespace DecelerationLaserLock
             // parkToolStripMenuItem
             // 
             this.parkToolStripMenuItem.Name = "parkToolStripMenuItem";
-            this.parkToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.parkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.parkToolStripMenuItem.Text = "Park";
             this.parkToolStripMenuItem.Click += new System.EventHandler(this.parkToolStripMenuItem_Click);
             // 
             // lockToolStripMenuItem
             // 
             this.lockToolStripMenuItem.Name = "lockToolStripMenuItem";
-            this.lockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.lockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.lockToolStripMenuItem.Text = "Lock";
             this.lockToolStripMenuItem.Click += new System.EventHandler(this.lockToolStripMenuItem_Click);
             // 
             // unlockToolStripMenuItem
             // 
             this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
-            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.unlockToolStripMenuItem.Text = "Unlock";
             this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
             // 
@@ -385,6 +385,7 @@ namespace DecelerationLaserLock
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Laser Lock";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.controlVoltageNumericEditor)).EndInit();
