@@ -42,6 +42,34 @@ namespace TransferCavityLock
             textBox.Invoke(new AppendToTextBoxDelegate(textBox.AppendText), text);
         }
 
+        private delegate void PlotOnP1Delegate(double[,] data);
+        public void PlotOnP1(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[100];
+            double[] dy = new double[100];
+            for(i=0; i<100 ; i++)
+            {
+                dx[i]=data[0,i];
+                dy[i]=data[1,i];
+            }
+            p1Intensity.PlotXY(dx,dy);
+        }
+
+        private delegate void PlotOnP2Delegate(double[,] data);
+        public void PlotOnP2(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[100];
+            double[] dy = new double[100];
+            for (i = 0; i < 100; i++)
+            {
+                dx[i] = data[0, i];
+                dy[i] = data[2, i];
+            }
+            p1Intensity.PlotXY(dx, dy);
+        }
+
         #endregion
 
         #region controls
@@ -114,7 +142,19 @@ namespace TransferCavityLock
 
         }
 
+        private void p1Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void p2Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
         #endregion
+
+        
 
     }
     

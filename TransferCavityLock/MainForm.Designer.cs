@@ -35,8 +35,18 @@
             this.rampChannelMenu = new System.Windows.Forms.ComboBox();
             this.rampStartButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
+            this.p1Intensity = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.xAxis1 = new NationalInstruments.UI.XAxis();
+            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
+            this.p2Intensity = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).BeginInit();
             this.SuspendLayout();
             // 
             // voltageRampControl
@@ -119,11 +129,51 @@
             this.textBox.TabIndex = 3;
             this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
+            // p1Intensity
+            // 
+            this.p1Intensity.Location = new System.Drawing.Point(0, 3);
+            this.p1Intensity.Name = "p1Intensity";
+            this.p1Intensity.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.scatterPlot1});
+            this.p1Intensity.Size = new System.Drawing.Size(548, 112);
+            this.p1Intensity.TabIndex = 4;
+            this.p1Intensity.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis1});
+            this.p1Intensity.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis1});
+            this.p1Intensity.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.p1Intensity_PlotDataChanged);
+            // 
+            // scatterPlot1
+            // 
+            this.scatterPlot1.XAxis = this.xAxis1;
+            this.scatterPlot1.YAxis = this.yAxis1;
+            // 
+            // p2Intensity
+            // 
+            this.p2Intensity.Location = new System.Drawing.Point(0, 121);
+            this.p2Intensity.Name = "p2Intensity";
+            this.p2Intensity.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.scatterPlot2});
+            this.p2Intensity.Size = new System.Drawing.Size(548, 112);
+            this.p2Intensity.TabIndex = 5;
+            this.p2Intensity.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.p2Intensity.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            this.p2Intensity.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.p2Intensity_PlotDataChanged);
+            // 
+            // scatterPlot2
+            // 
+            this.scatterPlot2.XAxis = this.xAxis2;
+            this.scatterPlot2.YAxis = this.yAxis2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 271);
+            this.Controls.Add(this.p2Intensity);
+            this.Controls.Add(this.p1Intensity);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.voltageRampControl);
             this.Name = "MainForm";
@@ -131,6 +181,8 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.voltageRampControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -145,6 +197,14 @@
         private NationalInstruments.UI.WindowsForms.Led rampLED;
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.ComboBox triggerMenu;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph p1Intensity;
+        private NationalInstruments.UI.ScatterPlot scatterPlot1;
+        private NationalInstruments.UI.XAxis xAxis1;
+        private NationalInstruments.UI.YAxis yAxis1;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph p2Intensity;
+        private NationalInstruments.UI.ScatterPlot scatterPlot2;
+        private NationalInstruments.UI.XAxis xAxis2;
+        private NationalInstruments.UI.YAxis yAxis2;
     }
 }
 

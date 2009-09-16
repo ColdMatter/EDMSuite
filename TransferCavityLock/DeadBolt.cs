@@ -58,6 +58,7 @@ namespace TransferCavityLock
         private string rampTriggerMethod = "int";
         private volatile bool ramping = false;
         public object rampStopLock = new object();
+
         
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -221,15 +222,16 @@ namespace TransferCavityLock
         #region Private methods
 
         /// <summary>
-        /// A function to scan across the voltage range set by the limits high and low.
+        /// A function to scan across the voltage range set by the limits high and low. Reads from the two photodiodes and spits out an array.
         /// </summary>
 
-        private void scanVoltageRange(double low, double high, AnalogSingleChannelWriter writeChannel, 
-            double readChannel, Task taskChannel, int delayAtEachStep)
+        private double[,] scanVoltageRange(double low, double high, AnalogSingleChannelWriter writeChannel, 
+            double readChannel, Task taskChannel, int delayAtEachStep, int steps)
         {
-            int steps = 100;
             double stepsize = (high - low) / steps;
             double voltage = low;
+            double[,] data;
+            data = new double[3,steps];
 
             writeChannel.WriteSingleSample(true, low);  //Set initial voltage to low
 
@@ -237,16 +239,22 @@ namespace TransferCavityLock
             {
                 voltage += stepsize;
                 writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
+                data[0,i-1] = voltage;
+                data[1,i-1] = p1Reader.ReadSingleSample();
+                data[2,i-1] = p2Reader.ReadSingleSample();
                 Thread.Sleep(delayAtEachStep);
             }
+            return(data);
         }
 
-        private void scanFullVoltageRange(int delayAtEachStep, string aoChannel)
+        private double[,] scanFullVoltageRange(int delayAtEachStep, int steps, string aoChannel)
         {
             AnalogSingleChannelWriter writeChannel;
             double readChannel = 0;
             Task taskChannel;
             double[] r;
+            double[,] data;
+            data = new double[3, steps];
                         
             if (aoChannel == "laser")
             {
@@ -256,14 +264,7 @@ namespace TransferCavityLock
                 writeChannel = laserWriter;
            //     readChannel = hardwareControl.LaserFrequencyControlVoltage;
                 taskChannel = outputLaserTask;
-                ui.AddToTextBox("Starting ramps");
-                while (ramping == true)
-                {
-                    scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep);
-                    if(ramping == false)
-                    { break; }
-                    else{};
-                }
+                data = scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep, steps);
             }
             if (aoChannel == "cavity")
             {
@@ -273,29 +274,25 @@ namespace TransferCavityLock
                 writeChannel = cavityWriter;
             //    readChannel = hardwareControl.CavityControlVoltage;
                 taskChannel = outputCavityTask;
-                ui.AddToTextBox("Starting ramps");
-                
-                while (ramping == true)
-                {
-                    scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep);
-                    if (ramping == false)
-                    { break; }
-                    else { };
-                }
+                data = scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep, steps);
             }
             else
             {
                 //Do nothing
             }
-            
+            return (data);
         }
 
         private void rampLoop()
         {
+            double[,] data;
+            data = new double[3, 100];
+
             for(; ; )
             {
-                ui.AddToTextBox("Starting to ramp");
-                scanFullVoltageRange(1, rampChannel);
+                data = scanFullVoltageRange(1, 100, rampChannel);
+                ui.PlotOnP1(data);
+                ui.PlotOnP2(data);
                 lock (rampStopLock)
                 {
                     if (ramping == false)

@@ -87,7 +87,7 @@ namespace DAQ.HAL
 
 			// map the analog input channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
-            AddAnalogInputChannel("p1", daqBoard + "/ai1", AITerminalConfiguration.Rse); //Pin 33
+            AddAnalogInputChannel("p1", daqBoard + "/ai3", AITerminalConfiguration.Rse); //Pin 30
             AddAnalogInputChannel("p2", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
             AddAnalogInputChannel("atomSourcePressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
