@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             this.voltageRampControl = new System.Windows.Forms.GroupBox();
+            this.triggerMenu = new System.Windows.Forms.ComboBox();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.rampStopButton = new System.Windows.Forms.Button();
-            this.vRampExtButton = new System.Windows.Forms.RadioButton();
-            this.vRampIntButton = new System.Windows.Forms.RadioButton();
             this.rampChannelMenu = new System.Windows.Forms.ComboBox();
             this.rampStartButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
@@ -42,24 +41,37 @@
             // 
             // voltageRampControl
             // 
+            this.voltageRampControl.Controls.Add(this.triggerMenu);
             this.voltageRampControl.Controls.Add(this.rampLED);
             this.voltageRampControl.Controls.Add(this.rampStopButton);
-            this.voltageRampControl.Controls.Add(this.vRampExtButton);
-            this.voltageRampControl.Controls.Add(this.vRampIntButton);
             this.voltageRampControl.Controls.Add(this.rampChannelMenu);
             this.voltageRampControl.Controls.Add(this.rampStartButton);
-            this.voltageRampControl.Location = new System.Drawing.Point(517, 12);
+            this.voltageRampControl.Location = new System.Drawing.Point(592, 12);
             this.voltageRampControl.Name = "voltageRampControl";
-            this.voltageRampControl.Size = new System.Drawing.Size(234, 247);
+            this.voltageRampControl.Size = new System.Drawing.Size(159, 136);
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Voltage Ramp";
             this.voltageRampControl.Enter += new System.EventHandler(this.voltageRampControl_Enter);
             // 
+            // triggerMenu
+            // 
+            this.triggerMenu.FormattingEnabled = true;
+            this.triggerMenu.Items.AddRange(new object[] {
+            "int",
+            "ext"});
+            this.triggerMenu.Location = new System.Drawing.Point(6, 106);
+            this.triggerMenu.MaxDropDownItems = 2;
+            this.triggerMenu.Name = "triggerMenu";
+            this.triggerMenu.Size = new System.Drawing.Size(121, 21);
+            this.triggerMenu.TabIndex = 8;
+            this.triggerMenu.Text = "Select Trigger";
+            this.triggerMenu.SelectedIndexChanged += new System.EventHandler(this.triggerMenu_SelectedIndexChanged);
+            // 
             // rampLED
             // 
             this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(197, 212);
+            this.rampLED.Location = new System.Drawing.Point(123, 19);
             this.rampLED.Name = "rampLED";
             this.rampLED.OffColor = System.Drawing.Color.Red;
             this.rampLED.Size = new System.Drawing.Size(31, 29);
@@ -74,30 +86,6 @@
             this.rampStopButton.Text = "Stop ramping";
             this.rampStopButton.UseVisualStyleBackColor = true;
             this.rampStopButton.Click += new System.EventHandler(this.rampStopButton_Click);
-            // 
-            // vRampExtButton
-            // 
-            this.vRampExtButton.AutoSize = true;
-            this.vRampExtButton.Location = new System.Drawing.Point(136, 49);
-            this.vRampExtButton.Name = "vRampExtButton";
-            this.vRampExtButton.Size = new System.Drawing.Size(75, 17);
-            this.vRampExtButton.TabIndex = 5;
-            this.vRampExtButton.TabStop = true;
-            this.vRampExtButton.Text = "Ext. trigger";
-            this.vRampExtButton.UseVisualStyleBackColor = true;
-            this.vRampExtButton.CheckedChanged += new System.EventHandler(this.vRampExtButton_CheckedChanged);
-            // 
-            // vRampIntButton
-            // 
-            this.vRampIntButton.AutoSize = true;
-            this.vRampIntButton.Location = new System.Drawing.Point(136, 19);
-            this.vRampIntButton.Name = "vRampIntButton";
-            this.vRampIntButton.Size = new System.Drawing.Size(93, 17);
-            this.vRampIntButton.TabIndex = 4;
-            this.vRampIntButton.TabStop = true;
-            this.vRampIntButton.Text = "60Hz (internal)";
-            this.vRampIntButton.UseVisualStyleBackColor = true;
-            this.vRampIntButton.CheckedChanged += new System.EventHandler(this.vRampIntButton_CheckedChanged);
             // 
             // rampChannelMenu
             // 
@@ -142,7 +130,6 @@
             this.Text = "Transfer Cavity Lock";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.voltageRampControl.ResumeLayout(false);
-            this.voltageRampControl.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -154,11 +141,10 @@
         private System.Windows.Forms.GroupBox voltageRampControl;
         private System.Windows.Forms.Button rampStartButton;
         private System.Windows.Forms.ComboBox rampChannelMenu;
-        private System.Windows.Forms.RadioButton vRampExtButton;
-        private System.Windows.Forms.RadioButton vRampIntButton;
         private System.Windows.Forms.Button rampStopButton;
         private NationalInstruments.UI.WindowsForms.Led rampLED;
         private System.Windows.Forms.TextBox textBox;
+        private System.Windows.Forms.ComboBox triggerMenu;
     }
 }
 

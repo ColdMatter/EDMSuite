@@ -19,16 +19,16 @@ namespace TransferCavityLock
             DeadBolt controller = new DeadBolt();
 
             // publish the controller to the remoting system
-            TcpChannel channel = new TcpChannel(1176);
-            ChannelServices.RegisterChannel(channel, false);
-            RemotingServices.Marshal(controller, "controller.rem");
+           // TcpChannel channel = new TcpChannel(1179);
+           // ChannelServices.RegisterChannel(channel, false);
+           // RemotingServices.Marshal(controller, "controller.rem");
 
             // hand over to the controller
             controller.Start();
 
             // the application is finishing - close down the remoting channel
-            RemotingServices.Disconnect(controller);
-            ChannelServices.UnregisterChannel(channel);
+           // RemotingServices.Disconnect(controller);
+           // ChannelServices.UnregisterChannel(channel);
         }
     }
 }

@@ -94,6 +94,10 @@
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SympatheticHardwareControl\SympatheticHardwareControl.csproj">
+      <Project>{B223A45D-2F25-437F-B7DF-CE6C8DF97451}</Project>
+      <Name>SympatheticHardwareControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -17,3 +17,5 @@ D:\Experiment Control\EDMSuite\TransferCavityLock\bin\Debug\ScanMaster.pdb
 D:\Experiment Control\EDMSuite\TransferCavityLock\obj\Debug\TransferCavityLock.exe
 D:\Experiment Control\EDMSuite\TransferCavityLock\obj\Debug\TransferCavityLock.pdb
 D:\Experiment Control\EDMSuite\TransferCavityLock\obj\Debug\TransferCavityLock.exe.licenses
+D:\Experiment Control\EDMSuite\TransferCavityLock\bin\Debug\SympatheticHardwareControl.exe
+D:\Experiment Control\EDMSuite\TransferCavityLock\bin\Debug\SympatheticHardwareControl.pdb

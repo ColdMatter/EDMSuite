@@ -16,46 +16,26 @@ namespace TransferCavityLock
     {
         public DeadBolt controller;
         
+        
         #region load Mainform
 
         public MainForm()
         {
             InitializeComponent();
-            this.vRampIntButton.Checked = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            controller.RampChannel = "laser";
+            controller.Ramping = false;
+            controller.RampTriggerMethod = "int";
+            rampStartButton.Enabled = true;
+            rampStopButton.Enabled = false;
         }
         #endregion
 
         #region passing values set by UI into program
 
-        public void SetRampChannel()
-        {
-            controller.RampChannel = rampChannelMenu.SelectedText;
-            this.AddToTextBox("Ramp channel selected.");
-        }
-        public void SetTriggerMethod()
-        {
-            if (this.vRampIntButton.Checked == true)
-            {
-                controller.RampTriggerMethod = "int";
-                this.AddToTextBox("RampTriggerMethod set to int.");
-            }
-            if (this.vRampExtButton.Checked == true)
-            {
-                controller.RampTriggerMethod = "ext";
-                this.AddToTextBox("RampTriggerMethod set to ext.");
-
-            }
-            else
-            {
-                //Do nothing
-            }
-        }
-        
         private delegate void AppendToTextBoxDelegate(string text);
         public void AddToTextBox(String text)
         {
@@ -70,43 +50,58 @@ namespace TransferCavityLock
         {
 
         }
-
+        
         private void rampStartButton_Click(object sender, EventArgs e)
         {
             this.AddToTextBox("Start button pressed.");
-            if (controller.Status == DeadBolt.ControllerState.free & controller.RampTriggerMethod == "int")
+            if (controller.RampTriggerMethod == "int")
             {
                 controller.Ramping = true;
                 this.rampLED.Value = true;
-                controller.ScanVoltage(50, controller.RampChannel);
+                controller.startRamp();
+                rampStartButton.Enabled = false;
+                rampStopButton.Enabled = true;
+                triggerMenu.Enabled = false;
+                rampChannelMenu.Enabled = false;
             }
             else
             {
-                // do nothing
+                controller.Ramping = true;
+                this.rampLED.Value = true;
+                this.AddToTextBox("Trigger is set to external.");
+                rampStartButton.Enabled = false;
+                rampStopButton.Enabled = true;
+                triggerMenu.Enabled = false;
+                rampChannelMenu.Enabled = false;
             }
         }
 
         private void rampStopButton_Click(object sender, EventArgs e)
         {
-            this.AddToTextBox("Stop button pressed.");
-            controller.Ramping = false;
+            lock (controller.rampStopLock)
+            {
+                this.AddToTextBox("Stop button pressed.");
+                controller.Ramping = false;
+            }
+            rampStartButton.Enabled = true;
+            rampStopButton.Enabled = false;
+            triggerMenu.Enabled = true;
+            rampChannelMenu.Enabled = true;
             this.rampLED.Value = false;
-            controller.Status = DeadBolt.ControllerState.free;
         }
 
-        private void vRampIntButton_CheckedChanged(object sender, EventArgs e)
+        private void triggerMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            vRampExtButton.Checked = false;
-        }
-
-        private void vRampExtButton_CheckedChanged(object sender, EventArgs e)
-        {   
-            vRampIntButton.Checked = false;
+            string menuSelection = triggerMenu.Text;
+            controller.RampTriggerMethod = menuSelection;
+            this.AddToTextBox("Trigger method selected: " + menuSelection + ". ");
         }
 
         private void rampChannelMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            string menuSelection = rampChannelMenu.Text;
+            controller.RampChannel = menuSelection;
+            this.AddToTextBox("Ramp channel selected: " + menuSelection + ". ");
         }
 
         private void rampLED_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
@@ -121,10 +116,6 @@ namespace TransferCavityLock
 
         #endregion
 
-        
-
-       
-
-        
     }
+    
 }
