@@ -11,6 +11,7 @@ using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Remoting;
 using System.Windows.Forms;
+using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {
@@ -24,12 +25,11 @@ namespace TransferCavityLock
 
         private const double UPPER_LC_VOLTAGE_LIMIT = 10.0; //volts LC: Laser control
         private const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
-        private const double UPPER_CC_VOLTAGE_LIMIT = 10.0; //volts CC: Cavity control
-        private const double LOWER_CC_VOLTAGE_LIMIT = 0; //volts CC: Cavity control
-        private const double UPPER_SETPOINT_LIMIT = 100.0; //volts
-        private const double LOWER_SETPOINT_LIMIT = -100.0; //volts
+        private const double UPPER_CC_VOLTAGE_LIMIT = 3.5; //volts CC: Cavity control
+        private const double LOWER_CC_VOLTAGE_LIMIT = 2.0; //volts CC: Cavity control
+        private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
+        private const int STEPS = 1000;
 
-        private const int HARDWARE_CONTROL_TALK_PERIOD = 2000; //milliseconds
 
         //private ScanMaster.Controller scanMaster;
         //private ScanMaster.Analyze.GaussianFitter fitter;
@@ -54,10 +54,10 @@ namespace TransferCavityLock
         private AnalogInputChannel p2Channel; //p2 is the signal from the reference He-Ne lock
         private AnalogSingleChannelReader p2Reader;
 
-        private string rampChannel = "laser";
         private string rampTriggerMethod = "int";
         private volatile bool ramping = false;
         public object rampStopLock = new object();
+    //    public object dataReadLock = new object();
 
         
         // without this method, any remote connections to this object will time out after
@@ -96,6 +96,7 @@ namespace TransferCavityLock
                 inputLaserTask = new Task("CavityPeaksFromLaser");
                 p1Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["p1"];
                 p1Channel.AddToTask(inputLaserTask, 0, 10);
+                //inputLaserTask.Timing.
                 p1Reader = new AnalogSingleChannelReader(inputLaserTask.Stream);
 
                 inputRefLaserTask = new Task("CavityPeaksFromRefLaser");
@@ -200,14 +201,7 @@ namespace TransferCavityLock
             }
             get { return rampTriggerMethod; }
         }
-        public string RampChannel
-        {
-            set
-            {
-                rampChannel = value;
-            }
-            get { return rampChannel; }
-        }
+        
         public bool Ramping
         {
             set
@@ -216,8 +210,52 @@ namespace TransferCavityLock
             }
             get { return ramping; }
         }
-        
-        #endregion
+        public int RampSteps
+        {
+            get { return STEPS; }
+        }
+
+
+        public void FitAndDisplay(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[STEPS];
+            double[] dy1 = new double[STEPS];
+            double[] dy2 = new double[STEPS];
+            string[] laserFitResults = new string[] {"0","0","0", "0","0"};
+            string[] refLaserFitResults = new string[] { "0", "0", "0","0","0" };
+
+            for (i = 0; i < STEPS; i++)
+            {
+                dx[i] = data[0, i];
+                dy1[i] = data[1, i];
+                dy2[i] = data[2, i];
+            }
+           laserFitResults = convertFitResultsToString(fitCavityScan(dx, dy1));
+           refLaserFitResults = convertFitResultsToString(fitCavityScan(dx, dy2));
+
+           ui.WriteToAmplitude1Box(laserFitResults[3]);
+           ui.WriteToAmplitude2Box(refLaserFitResults[3]);
+           ui.WriteToBackground1Box(laserFitResults[4]);
+           ui.WriteToBackground2Box(refLaserFitResults[4]);
+           ui.WriteToGlobalPhase1Box(laserFitResults[0]);
+           ui.WriteToGlobalPhase2Box(refLaserFitResults[0]);
+           ui.WriteToFreq1Box(laserFitResults[1]);
+           ui.WriteToFreq2Box(refLaserFitResults[1]);
+           ui.WriteToFinesse1Box(laserFitResults[2]);
+           ui.WriteToFinesse2Box(refLaserFitResults[2]);
+        }
+    
+        public class cavityFitResults
+        {
+        public double GlobalPhase;      //The offset which I will want to keep constant in the lock
+        public double Freqency;             //Something (in ang. freq. units) which maps voltage to wavelength(?)
+        public double Finesse;
+        public double Amplitude;
+        public double Background;
+        }
+
+       #endregion
 
         #region Private methods
 
@@ -226,7 +264,7 @@ namespace TransferCavityLock
         /// </summary>
 
         private double[,] scanVoltageRange(double low, double high, AnalogSingleChannelWriter writeChannel, 
-            double readChannel, Task taskChannel, int delayAtEachStep, int steps)
+            Task taskChannel, int delayAtEachStep, int steps)
         {
             double stepsize = (high - low) / steps;
             double voltage = low;
@@ -235,85 +273,112 @@ namespace TransferCavityLock
 
             writeChannel.WriteSingleSample(true, low);  //Set initial voltage to low
 
-            for (int i = 1; i <= steps; i++)
+            for (int i = 0; i < steps; i++)
             {
-                voltage += stepsize;
-                writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
-                data[0,i-1] = voltage;
-                data[1,i-1] = p1Reader.ReadSingleSample();
-                data[2,i-1] = p2Reader.ReadSingleSample();
+                //lock (dataReadLock)
+                //{
+                    data[0, i] = voltage;
+                //     inputLaserTask.Start();
+                    data[1, i] = p1Reader.ReadSingleSample();
+                //     inputLaserTask.Stop();
+                //     inputRefLaserTask.Start();
+                    data[2, i] = p2Reader.ReadSingleSample();
+                //     inputRefLaserTask.Stop();
+                //}
+                    voltage += stepsize;
+                    writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
                 Thread.Sleep(delayAtEachStep);
             }
             return(data);
         }
-
-        private double[,] scanFullVoltageRange(int delayAtEachStep, int steps, string aoChannel)
-        {
-            AnalogSingleChannelWriter writeChannel;
-            double readChannel = 0;
-            Task taskChannel;
-            double[] r;
-            double[,] data;
-            data = new double[3, steps];
-                        
-            if (aoChannel == "laser")
-            {
-                r = new double[2];
-                r[0] = LOWER_LC_VOLTAGE_LIMIT;
-                r[1] = UPPER_LC_VOLTAGE_LIMIT;
-                writeChannel = laserWriter;
-           //     readChannel = hardwareControl.LaserFrequencyControlVoltage;
-                taskChannel = outputLaserTask;
-                data = scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep, steps);
-            }
-            if (aoChannel == "cavity")
-            {
-                r = new double[2];
-                r[0] = LOWER_CC_VOLTAGE_LIMIT;
-                r[1] = UPPER_CC_VOLTAGE_LIMIT;
-                writeChannel = cavityWriter;
-            //    readChannel = hardwareControl.CavityControlVoltage;
-                taskChannel = outputCavityTask;
-                data = scanVoltageRange(r[0], r[1], writeChannel, readChannel, taskChannel, delayAtEachStep, steps);
-            }
-            else
-            {
-                //Do nothing
-            }
-            return (data);
-        }
-
+ 
         private void rampLoop()
         {
+            AnalogSingleChannelWriter writeChannel;
+            Task taskChannel;
+
             double[,] data;
-            data = new double[3, 100];
+            data = new double[3, STEPS];
+
+            writeChannel = cavityWriter;
+            taskChannel = outputCavityTask;
 
             for(; ; )
             {
-                data = scanFullVoltageRange(1, 100, rampChannel);
+                data = scanVoltageRange(LOWER_CC_VOLTAGE_LIMIT, UPPER_CC_VOLTAGE_LIMIT, cavityWriter, 
+                    outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
                 ui.PlotOnP1(data);
                 ui.PlotOnP2(data);
+                FitAndDisplay(data);
                 lock (rampStopLock)
                 {
                     if (ramping == false)
                     {
-                        if (rampChannel == "laser")
-                        {
-                            laserWriter.WriteSingleSample(true, 0);
-                        }
-                        if (rampChannel == "cavity")
-                        {
-                            cavityWriter.WriteSingleSample(true, 0);
-                        }
-                        return;
+                       cavityWriter.WriteSingleSample(true, 0);
+                       return;
                     }
                 }
             }
         }
 
+        private cavityFitResults fitCavityScan(double[] dataX, double[] dataY)
+        {
+            cavityFitResults results = new cavityFitResults();
+            double[] coefficients = new double[] {0,0,0,0,0};
+            int i=0;
+            double bgEstimate = 0;
+            for (i=0; i<STEPS; i++)
+            {
+                bgEstimate += dataY[i];
+            }
+            bgEstimate = bgEstimate / STEPS;
+            //Some initial guesses for the parameters
+            coefficients[0] = 0;
+            coefficients[1] = 12;
+            coefficients[2] = 60;
+        //    coefficients[3] = ArrayOperation.GetMax(dataY)-bgEstimate;
+        //    coefficients[4] = bgEstimate;
+            double mse = 0;
+
+            CurveFit.NonLinearFit(dataX, dataY, new ModelFunctionCallback(airy),
+                coefficients, out mse, 100000);
+            results.GlobalPhase = coefficients[0];
+            results.Freqency = coefficients[1];
+            results.Finesse = coefficients[2];
+           // results.Amplitude = coefficients[3];
+           // results.Background = coefficients[4];
+
+            return results;
+        }
+
+        private double airy(double x, double[] parameters)
+        {
+            double gp = parameters[0];
+            double freq = parameters[1];
+            double F = parameters[2];
+        //    double a = parameters[3];
+        //    double b = parameters[4];
+
+            return  6 / (1 + F * Math.Pow(Math.Cos(freq * x +gp), 2))+0.5;
+        }
+        
+        private string[] convertFitResultsToString(cavityFitResults results)
+        {
+            int i = 0;
+            string[] textList = new string[] { "0", "0", "0" ,"0","0"};
+            double[] resultList = new double[] { results.GlobalPhase,
+                results.Freqency, results.Finesse, results.Amplitude,results.Background};
+            for (i = 0; i < 3; i++)
+            {
+                textList[i] = Convert.ToString(resultList[i]);
+            }
+            return textList;
+        }
+
         #endregion
     }
     
+   
 
 
 }
