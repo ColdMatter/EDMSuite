@@ -25,10 +25,15 @@ namespace TransferCavityLock
 
         private const double UPPER_LC_VOLTAGE_LIMIT = 10.0; //volts LC: Laser control
         private const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
-        private const double UPPER_CC_VOLTAGE_LIMIT = 3.5; //volts CC: Cavity control
-        private const double LOWER_CC_VOLTAGE_LIMIT = 2.0; //volts CC: Cavity control
+        private const double UPPER_CC_VOLTAGE_LIMIT = 3.1; //volts CC: Cavity control
+        private const double LOWER_CC_VOLTAGE_LIMIT = 2.9; //volts CC: Cavity control
+        private const double FINESSE_COEFFICIENT_LASER = 200;
+        private const double FINESSE_COEFFICIENT_REF_LASER = 100;
         private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
-        private const int STEPS = 1000;
+        private const int STEPS = 100;
+
+        private double upper_cc_voltage_limit_fast = 3.1; //volts CC: Cavity control
+        private double lower_cc_voltage_limit_fast = 2.9; //volts CC: Cavity control
 
 
         //private ScanMaster.Controller scanMaster;
@@ -56,8 +61,9 @@ namespace TransferCavityLock
 
         private string rampTriggerMethod = "int";
         private volatile bool ramping = false;
+        private bool fitting = false;
         public object rampStopLock = new object();
-    //    public object dataReadLock = new object();
+        private double finesse = 1;
 
         
         // without this method, any remote connections to this object will time out after
@@ -182,9 +188,14 @@ namespace TransferCavityLock
 
         public void startRamp()
         {
-            Thread rampThread = new Thread(new ThreadStart(rampLoop));
+            //slow rampLoop()
+            //Thread rampThread = new Thread(new ThreadStart(rampLoop));
+            //rampThread.Start();
+            //faster rampLoop();
+            cavityWriter.WriteSingleSample(true, 3);
+            Thread.Sleep(2000);
+            Thread rampThread = new Thread(new ThreadStart(rampLoopFast));
             rampThread.Start();
-            //rampLoop();
         }
         
 
@@ -210,6 +221,14 @@ namespace TransferCavityLock
             }
             get { return ramping; }
         }
+        public bool Fitting
+        {
+            set
+            {
+                fitting = value;
+            }
+            get { return fitting; }
+        }
         public int RampSteps
         {
             get { return STEPS; }
@@ -222,8 +241,10 @@ namespace TransferCavityLock
             double[] dx = new double[STEPS];
             double[] dy1 = new double[STEPS];
             double[] dy2 = new double[STEPS];
-            string[] laserFitResults = new string[] {"0","0","0", "0","0"};
-            string[] refLaserFitResults = new string[] { "0", "0", "0","0","0" };
+            string[] laserFitResults = new string[] {"0","0"};
+            string[] refLaserFitResults = new string[] { "0", "0"};
+            cavityFitResults p1Res;
+            cavityFitResults p2Res;
 
             for (i = 0; i < STEPS; i++)
             {
@@ -231,28 +252,62 @@ namespace TransferCavityLock
                 dy1[i] = data[1, i];
                 dy2[i] = data[2, i];
             }
-           laserFitResults = convertFitResultsToString(fitCavityScan(dx, dy1));
-           refLaserFitResults = convertFitResultsToString(fitCavityScan(dx, dy2));
+            finesse = FINESSE_COEFFICIENT_LASER;
+            p1Res = fitCavityScan(dx, dy1);
+            laserFitResults = convertFitResultsToString(p1Res);
+            ui.fitsPlot(makeFitPlot(data, p1Res));
 
-           ui.WriteToAmplitude1Box(laserFitResults[3]);
-           ui.WriteToAmplitude2Box(refLaserFitResults[3]);
-           ui.WriteToBackground1Box(laserFitResults[4]);
-           ui.WriteToBackground2Box(refLaserFitResults[4]);
+            finesse = FINESSE_COEFFICIENT_REF_LASER;
+            p2Res = fitCavityScan(dx, dy2);
+            refLaserFitResults = convertFitResultsToString(p2Res);
+            ui.fitsPlot2(makeFitPlot(data, p2Res));
+
            ui.WriteToGlobalPhase1Box(laserFitResults[0]);
            ui.WriteToGlobalPhase2Box(refLaserFitResults[0]);
-           ui.WriteToFreq1Box(laserFitResults[1]);
-           ui.WriteToFreq2Box(refLaserFitResults[1]);
-           ui.WriteToFinesse1Box(laserFitResults[2]);
-           ui.WriteToFinesse2Box(refLaserFitResults[2]);
+           ui.WriteToInterval1Box(laserFitResults[1]);
+           ui.WriteToInterval2Box(refLaserFitResults[1]);
+          
         }
-    
+
+        public void FitAndDisplayFast(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[STEPS];
+            double[] dy1 = new double[STEPS];
+            double[] dy2 = new double[STEPS];
+            double[] results1 = new double[4];
+            double[] results2 = new double[4];
+
+
+            for (i = 0; i < STEPS; i++)
+            {
+                dx[i] = data[0, i];
+                dy1[i] = data[1, i];
+                dy2[i] = data[2, i];
+            }
+
+            //results1 = CurveFit.GaussianFit(dx, dy1);
+            CurveFit.GaussianFitInPlace(dx, dy1, FitMethod.LeastSquare, 6, 3, 0.2,
+                out results1[0], out results1[1], out results1[2], out results1[3]);
+            CurveFit.GaussianFitInPlace(dx, dy2, FitMethod.LeastSquare, 6, 3, 0.5, 
+                out results2[0], out results2[1], out results2[2], out results2[3]);
+           // results2 = CurveFit.GaussianFit(dx, dy2);
+            ui.AddToTextBox(Convert.ToString(results2[1]));
+            //Console.Write(Convert.ToString(results2));
+            if (results2[1] < 5)
+            {
+                if (results2[1] > 2)
+                {
+                    upper_cc_voltage_limit_fast = results2[1] + 0.2;
+                    lower_cc_voltage_limit_fast = results2[1] - 0.2;
+                }
+            }
+        }
+
         public class cavityFitResults
         {
         public double GlobalPhase;      //The offset which I will want to keep constant in the lock
-        public double Freqency;             //Something (in ang. freq. units) which maps voltage to wavelength(?)
-        public double Finesse;
-        public double Amplitude;
-        public double Background;
+        public double PeakInterval;             //Peak interval
         }
 
        #endregion
@@ -275,23 +330,19 @@ namespace TransferCavityLock
 
             for (int i = 0; i < steps; i++)
             {
-                //lock (dataReadLock)
-                //{
-                    data[0, i] = voltage;
-                //     inputLaserTask.Start();
-                    data[1, i] = p1Reader.ReadSingleSample();
-                //     inputLaserTask.Stop();
-                //     inputRefLaserTask.Start();
-                    data[2, i] = p2Reader.ReadSingleSample();
-                //     inputRefLaserTask.Stop();
-                //}
-                    voltage += stepsize;
-                    writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
+              
+                data[0, i] = voltage;
+                data[1, i] = p1Reader.ReadSingleSample();
+                data[2, i] = p2Reader.ReadSingleSample();
+                voltage += stepsize;
+                writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
                 Thread.Sleep(delayAtEachStep);
             }
             return(data);
         }
  
+
+
         private void rampLoop()
         {
             AnalogSingleChannelWriter writeChannel;
@@ -309,7 +360,10 @@ namespace TransferCavityLock
                     outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
                 ui.PlotOnP1(data);
                 ui.PlotOnP2(data);
-                FitAndDisplay(data);
+                if (fitting)
+                {
+                    FitAndDisplay(data);
+                }
                 lock (rampStopLock)
                 {
                     if (ramping == false)
@@ -321,60 +375,98 @@ namespace TransferCavityLock
             }
         }
 
+        private void rampLoopFast()
+        {
+            AnalogSingleChannelWriter writeChannel;
+            Task taskChannel;
+
+            double[,] data;
+            data = new double[3, STEPS];
+
+            writeChannel = cavityWriter;
+            taskChannel = outputCavityTask;
+
+            for (; ; )
+            {
+                data = scanVoltageRange(lower_cc_voltage_limit_fast, upper_cc_voltage_limit_fast, cavityWriter,
+                    outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
+                ui.PlotOnP1(data);
+                ui.PlotOnP2(data);
+                if (fitting)
+                {
+                    FitAndDisplayFast(data);
+                }
+                lock (rampStopLock)
+                {
+                    if (ramping == false)
+                    {
+                        cavityWriter.WriteSingleSample(true, 0);
+                        return;
+                    }
+                }
+            }
+        }
+
         private cavityFitResults fitCavityScan(double[] dataX, double[] dataY)
         {
             cavityFitResults results = new cavityFitResults();
-            double[] coefficients = new double[] {0,0,0,0,0};
+            double[] normDataY = new double[STEPS];
+            double[] coefficients = new double[] {0,0};
             int i=0;
-            double bgEstimate = 0;
-            for (i=0; i<STEPS; i++)
+            double maxY = ArrayOperation.GetMax(dataY);
+            
+            for (i = 0; i < STEPS; i++)
             {
-                bgEstimate += dataY[i];
+                normDataY[i] = dataX[i] + dataY[i] / maxY
+                    - (UPPER_CC_VOLTAGE_LIMIT - LOWER_CC_VOLTAGE_LIMIT) / 2;
             }
-            bgEstimate = bgEstimate / STEPS;
             //Some initial guesses for the parameters
             coefficients[0] = 0;
-            coefficients[1] = 12;
-            coefficients[2] = 60;
-        //    coefficients[3] = ArrayOperation.GetMax(dataY)-bgEstimate;
-        //    coefficients[4] = bgEstimate;
+            coefficients[1] = ui.getIntervalGuess();
+         
             double mse = 0;
-
-            CurveFit.NonLinearFit(dataX, dataY, new ModelFunctionCallback(airy),
-                coefficients, out mse, 100000);
+            CurveFit.NonLinearFit(dataX, normDataY, new ModelFunctionCallback(tiltedAiry),
+                coefficients, out mse, 1000);
             results.GlobalPhase = coefficients[0];
-            results.Freqency = coefficients[1];
-            results.Finesse = coefficients[2];
-           // results.Amplitude = coefficients[3];
-           // results.Background = coefficients[4];
+            results.PeakInterval = coefficients[1];
 
             return results;
         }
 
-        private double airy(double x, double[] parameters)
+        private double tiltedAiry(double x, double[] parameters)
         {
             double gp = parameters[0];
-            double freq = parameters[1];
-            double F = parameters[2];
-        //    double a = parameters[3];
-        //    double b = parameters[4];
-
-            return  6 / (1 + F * Math.Pow(Math.Cos(freq * x +gp), 2))+0.5;
+            double inter = parameters[1];
+            
+            return x + 1 / (1 + finesse * Math.Pow(Math.Cos(inter * x + gp), 2))
+                -(UPPER_CC_VOLTAGE_LIMIT-LOWER_CC_VOLTAGE_LIMIT)/2;
         }
-        
+
         private string[] convertFitResultsToString(cavityFitResults results)
         {
             int i = 0;
-            string[] textList = new string[] { "0", "0", "0" ,"0","0"};
+            string[] textList = new string[2] {"didnt work","crap"};
             double[] resultList = new double[] { results.GlobalPhase,
-                results.Freqency, results.Finesse, results.Amplitude,results.Background};
-            for (i = 0; i < 3; i++)
+                results.PeakInterval};
+            
+            for (i = 0; i < 2; i++)
             {
                 textList[i] = Convert.ToString(resultList[i]);
             }
             return textList;
         }
 
+        private double[,] makeFitPlot(double[,] data, cavityFitResults results)
+        {
+            int i = 0;
+            double[,] fitData = new double[2,STEPS];
+            for(i=0; i<STEPS; i++)
+            {
+                fitData[0, i] = data[0, i];
+                fitData[1, i] = 1 / (1 + finesse * Math.Pow(Math.Cos(results.PeakInterval * data[0, i] + results.GlobalPhase), 2));
+            }
+            return fitData;
+        }
         #endregion
     }
     

@@ -57,64 +57,19 @@ namespace TransferCavityLock
             gp2.Invoke(new WriteToGlobalPhase2BoxDelegate(gp2.AppendText), text);
         }
 
-        private delegate void WriteToFreq1BoxDelegate(string text);
-        private delegate void ClearFreq1BoxDelegate();
-        public void WriteToFreq1Box(String text)
+        private delegate void WriteToInterval1BoxDelegate(string text);
+        private delegate void ClearInterval1BoxDelegate();
+        public void WriteToInterval1Box(String text)
         {
-            freq1.Invoke(new ClearFreq1BoxDelegate(freq1.Clear));
-            freq1.Invoke(new WriteToFreq1BoxDelegate(freq1.AppendText), text);
+            interval1.Invoke(new ClearInterval1BoxDelegate(interval1.Clear));
+            interval1.Invoke(new WriteToInterval1BoxDelegate(interval1.AppendText), text);
         }
-        private delegate void WriteToFreq2BoxDelegate(string text);
-        private delegate void ClearFreq2BoxDelegate();
-        public void WriteToFreq2Box(String text)
+        private delegate void WriteToInterval2BoxDelegate(string text);
+        private delegate void ClearInterval2BoxDelegate();
+        public void WriteToInterval2Box(String text)
         {
-            freq2.Invoke(new ClearFreq2BoxDelegate(freq2.Clear));
-            freq2.Invoke(new WriteToFreq2BoxDelegate(freq2.AppendText), text);
-        }
-
-        private delegate void WriteToFinesse1BoxDelegate(string text);
-        private delegate void ClearFinesse1BoxDelegate();
-        public void WriteToFinesse1Box(String text)
-        {
-            finesse1.Invoke(new ClearFinesse1BoxDelegate(finesse1.Clear));
-            finesse1.Invoke(new WriteToFinesse1BoxDelegate(finesse1.AppendText), text);
-        }
-        private delegate void WriteToFinesse2BoxDelegate(string text);
-        private delegate void ClearFinesse2BoxDelegate();
-        public void WriteToFinesse2Box(String text)
-        {
-            finesse2.Invoke(new ClearFinesse2BoxDelegate(finesse2.Clear));
-            finesse2.Invoke(new WriteToFinesse2BoxDelegate(finesse2.AppendText), text);
-        }
-
-        private delegate void WriteToAmplitude1BoxDelegate(string text);
-        private delegate void ClearAmplitude1BoxDelegate();
-        public void WriteToAmplitude1Box(String text)
-        {
-            amplitude1.Invoke(new ClearAmplitude1BoxDelegate(amplitude1.Clear));
-            amplitude1.Invoke(new WriteToAmplitude1BoxDelegate(amplitude1.AppendText), text);
-        }
-        private delegate void WriteToAmplitude2BoxDelegate(string text);
-        private delegate void ClearAmplitude2BoxDelegate();
-        public void WriteToAmplitude2Box(String text)
-        {
-            amplitude2.Invoke(new ClearAmplitude2BoxDelegate(amplitude2.Clear));
-            amplitude2.Invoke(new WriteToAmplitude2BoxDelegate(amplitude2.AppendText), text);
-        }
-
-        private delegate void WriteToBackground1BoxDelegate(string text);
-        private delegate void ClearBackground1BoxDelegate();
-        public void WriteToBackground1Box(String text)
-        {
-            background1.Invoke(new ClearBackground1BoxDelegate(background1.Clear));
-            background1.Invoke(new WriteToBackground1BoxDelegate(background1.AppendText), text);
-        }
-        private delegate void WriteToBackground2BoxDelegate(string text);
-        private delegate void ClearBackground2BoxDelegate();
-        public void WriteToBackground2Box(String text)
-        {
-            background2.Invoke(new ClearBackground2BoxDelegate(background2.Clear));
-            background2.Invoke(new WriteToBackground2BoxDelegate(background2.AppendText), text);
+            interval2.Invoke(new ClearInterval2BoxDelegate(interval2.Clear));
+            interval2.Invoke(new WriteToInterval2BoxDelegate(interval2.AppendText), text);
         }
 
         private delegate void PlotOnP1Delegate(double[,] data);
@@ -145,6 +100,40 @@ namespace TransferCavityLock
             p2Intensity.PlotXY(dx, dy);
         }
 
+        private delegate void fitsPlotDelegate(double[,] data);
+        public void fitsPlot(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[controller.RampSteps];
+            double[] dy = new double[controller.RampSteps];
+            for (i = 0; i < controller.RampSteps; i++)
+            {
+                dx[i] = data[0, i];
+                dy[i] = data[1, i];
+            }
+            plotFitsWindow.PlotXY(dx, dy);
+        }
+
+        private delegate void fitsPlot2Delegate(double[,] data);
+        public void fitsPlot2(double[,] data)
+        {
+            int i = 0;
+            double[] dx = new double[controller.RampSteps];
+            double[] dy = new double[controller.RampSteps];
+            for (i = 0; i < controller.RampSteps; i++)
+            {
+                dx[i] = data[0, i];
+                dy[i] = data[1, i];
+            }
+            plotFitsWindow2.PlotXY(dx, dy);
+        }
+
+        public double getIntervalGuess()
+        {
+            double num = Convert.ToDouble(interGuessBox.Text);
+            return num;
+        }
+
         #endregion
 
         #region controls
@@ -165,6 +154,7 @@ namespace TransferCavityLock
                 rampStartButton.Enabled = false;
                 rampStopButton.Enabled = true;
                 triggerMenu.Enabled = false;
+                fitEnableCheck.Enabled = false;
             }
             else
             {
@@ -174,6 +164,7 @@ namespace TransferCavityLock
                 rampStartButton.Enabled = false;
                 rampStopButton.Enabled = true;
                 triggerMenu.Enabled = false;
+                fitEnableCheck.Enabled = false;
             }
         }
 
@@ -184,6 +175,7 @@ namespace TransferCavityLock
                 this.AddToTextBox("Stop button pressed.");
                 controller.Ramping = false;
             }
+            fitEnableCheck.Enabled = true;
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
             triggerMenu.Enabled = true;
@@ -217,27 +209,33 @@ namespace TransferCavityLock
 
         }
 
+        
+
+        private void fitResultsP1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fitResultsP2_Enter(object sender, EventArgs e)
+        {
+            
+        }
+        private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (controller.Fitting == true)
+            {
+                controller.Fitting = false;
+            }
+            if (controller.Fitting == false)
+            {
+                controller.Fitting = true;
+            }
+            else
+            {
+            }
+        }
+
         private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
         {
 
         }
@@ -247,22 +245,12 @@ namespace TransferCavityLock
 
         }
 
-        private void freq1_TextChanged(object sender, EventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void finesse1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void amplitude1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void background1_TextChanged(object sender, EventArgs e)
+        private void interval1_TextChanged(object sender, EventArgs e)
         {
 
         }
@@ -272,61 +260,51 @@ namespace TransferCavityLock
 
         }
 
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void gp2_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void freq2_TextChanged(object sender, EventArgs e)
+        private void label9_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void finesse2_TextChanged(object sender, EventArgs e)
+        private void interval2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void plotFitsWindow_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }
 
-        private void amplitude2_TextChanged(object sender, EventArgs e)
+        private void interGuessBox_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void background2_TextChanged(object sender, EventArgs e)
+        private void label3_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void fitResultsP1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void fitResultsP2_Enter(object sender, EventArgs e)
+        private void plotFitsWindow2_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }
         #endregion
+
+
+
+       
+
+
+  
+
+     
+     
+
 
         
 
