@@ -25,20 +25,18 @@ namespace TransferCavityLock
 
         private const double UPPER_LC_VOLTAGE_LIMIT = 10.0; //volts LC: Laser control
         private const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
-        private const double UPPER_CC_VOLTAGE_LIMIT = 3.1; //volts CC: Cavity control
-        private const double LOWER_CC_VOLTAGE_LIMIT = 2.9; //volts CC: Cavity control
+        private const double UPPER_CC_VOLTAGE_LIMIT = 0.0; //volts CC: Cavity control
+        private const double LOWER_CC_VOLTAGE_LIMIT = 10.0; //volts CC: Cavity control
         private const double FINESSE_COEFFICIENT_LASER = 200;
         private const double FINESSE_COEFFICIENT_REF_LASER = 100;
         private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
         private const int STEPS = 100;
 
-        private double upper_cc_voltage_limit_fast = 3.1; //volts CC: Cavity control
-        private double lower_cc_voltage_limit_fast = 2.9; //volts CC: Cavity control
-
-
-        //private ScanMaster.Controller scanMaster;
-        //private ScanMaster.Analyze.GaussianFitter fitter;
-        //private SympatheticHardwareControl.Controller hardwareControl;
+        private double upper_cc_voltage_limit = 3.05; //volts CC: Cavity control
+        private double lower_cc_voltage_limit = 2.95; //volts CC: Cavity control
+        private double laser_voltage = 0.0;
+        private double gain = 1;
+        private double laser_Offset_Voltage = 0;
 
         private MainForm ui;
 
@@ -61,9 +59,8 @@ namespace TransferCavityLock
 
         private string rampTriggerMethod = "int";
         private volatile bool ramping = false;
-        private bool fitting = false;
+        private bool first_Lock = true;
         public object rampStopLock = new object();
-        private double finesse = 1;
 
         
         // without this method, any remote connections to this object will time out after
@@ -116,70 +113,7 @@ namespace TransferCavityLock
 
         #endregion
 
-        #region Public properties
-
-        // the getter asks the hardware controller for the laser frequency control voltage
-        // the setter sets the value and tells the hardware controller about it
-       // public double LaserVoltage
-       // {
-       //     get
-       //     {
-       //         return hardwareControl.LaserFrequencyControlVoltage;
-       //     }
-       //     set
-       //     {
-       //         if (value >= LOWER_LC_VOLTAGE_LIMIT && value <= UPPER_LC_VOLTAGE_LIMIT)
-       //         {
-       //             if (!Environs.Debug)
-       //             {
-       //                 laserWriter.WriteSingleSample(true, value);
-       //                 outputLaserTask.Control(TaskAction.Unreserve);
-       //             }
-       //             else
-       //             {
-       //                // Debug mode, do nothing
-       //             }
-                    //hardwareControl.LaserFrequencyControlVoltage = value;
-       //         }
-       //         else
-       //         {
-       //            // Out of range, do nothing
-       //         }
-       //    }
-       // }
-        // the getter asks the hardware controller for the cavity control voltage
-        // the setter sets the value and tells the hardware controller about it
-       // public double CavityVoltage
-       // {
-       //     get
-       //     {
-       //         return hardwareControl.CavityControlVoltage;
-       //     }
-       //     set
-       //     {
-       //         if (value >= LOWER_CC_VOLTAGE_LIMIT && value <= UPPER_CC_VOLTAGE_LIMIT)
-       //         {
-       //             if (!Environs.Debug)
-       //             {
-       //                 cavityWriter.WriteSingleSample(true, value);
-       //                 outputCavityTask.Control(TaskAction.Unreserve);
-       //             }
-       //             else
-       //             {
-       //                 // Debug mode, do nothing
-       //             }
-       //             //hardwareControl.CavityControlVoltage = value;
-       //         }
-       //         else
-       //         {
-       //             // Out of range, do nothing
-       //         }
-       //     }
-       // }
-
-        #endregion
-
-        #region Public methods
+       #region Public methods
 
         /// <summary>
         /// A function to repeatedly scan the voltage. It's meant to be triggered by pressing the
@@ -194,7 +128,7 @@ namespace TransferCavityLock
             //faster rampLoop();
             cavityWriter.WriteSingleSample(true, 3);
             Thread.Sleep(2000);
-            Thread rampThread = new Thread(new ThreadStart(rampLoopFast));
+            Thread rampThread = new Thread(new ThreadStart(rampLoop));
             rampThread.Start();
         }
         
@@ -211,8 +145,7 @@ namespace TransferCavityLock
                 rampTriggerMethod = value;
             }
             get { return rampTriggerMethod; }
-        }
-        
+        }     
         public bool Ramping
         {
             set
@@ -221,96 +154,41 @@ namespace TransferCavityLock
             }
             get { return ramping; }
         }
-        public bool Fitting
+        public bool FirstLock
         {
             set
             {
-                fitting = value;
+                first_Lock = value;
             }
-            get { return fitting; }
+            get { return first_Lock; }
         }
         public int RampSteps
         {
             get { return STEPS; }
         }
-
-
-        public void FitAndDisplay(double[,] data)
+        public double LowRampLimit
         {
-            int i = 0;
-            double[] dx = new double[STEPS];
-            double[] dy1 = new double[STEPS];
-            double[] dy2 = new double[STEPS];
-            string[] laserFitResults = new string[] {"0","0"};
-            string[] refLaserFitResults = new string[] { "0", "0"};
-            cavityFitResults p1Res;
-            cavityFitResults p2Res;
-
-            for (i = 0; i < STEPS; i++)
-            {
-                dx[i] = data[0, i];
-                dy1[i] = data[1, i];
-                dy2[i] = data[2, i];
-            }
-            finesse = FINESSE_COEFFICIENT_LASER;
-            p1Res = fitCavityScan(dx, dy1);
-            laserFitResults = convertFitResultsToString(p1Res);
-            ui.fitsPlot(makeFitPlot(data, p1Res));
-
-            finesse = FINESSE_COEFFICIENT_REF_LASER;
-            p2Res = fitCavityScan(dx, dy2);
-            refLaserFitResults = convertFitResultsToString(p2Res);
-            ui.fitsPlot2(makeFitPlot(data, p2Res));
-
-           ui.WriteToGlobalPhase1Box(laserFitResults[0]);
-           ui.WriteToGlobalPhase2Box(refLaserFitResults[0]);
-           ui.WriteToInterval1Box(laserFitResults[1]);
-           ui.WriteToInterval2Box(refLaserFitResults[1]);
-          
+            set { lower_cc_voltage_limit = value; }
+            get { return lower_cc_voltage_limit; }
+        }
+        public double UpperRampLimit
+        {
+            set { upper_cc_voltage_limit = value;}
+            get { return upper_cc_voltage_limit; }
+        }
+        public double LaserVoltage
+        {
+            set { laser_voltage = value; }
+            get { return laser_voltage; }
+        }
+        public double LaserSetPoint
+        {
+            set { laser_Offset_Voltage = value; }
+            get { return laser_Offset_Voltage; }
         }
 
-        public void FitAndDisplayFast(double[,] data)
-        {
-            int i = 0;
-            double[] dx = new double[STEPS];
-            double[] dy1 = new double[STEPS];
-            double[] dy2 = new double[STEPS];
-            double[] results1 = new double[4];
-            double[] results2 = new double[4];
 
-
-            for (i = 0; i < STEPS; i++)
-            {
-                dx[i] = data[0, i];
-                dy1[i] = data[1, i];
-                dy2[i] = data[2, i];
-            }
-
-            //results1 = CurveFit.GaussianFit(dx, dy1);
-            CurveFit.GaussianFitInPlace(dx, dy1, FitMethod.LeastSquare, 6, 3, 0.2,
-                out results1[0], out results1[1], out results1[2], out results1[3]);
-            CurveFit.GaussianFitInPlace(dx, dy2, FitMethod.LeastSquare, 6, 3, 0.5, 
-                out results2[0], out results2[1], out results2[2], out results2[3]);
-           // results2 = CurveFit.GaussianFit(dx, dy2);
-            ui.AddToTextBox(Convert.ToString(results2[1]));
-            //Console.Write(Convert.ToString(results2));
-            if (results2[1] < 5)
-            {
-                if (results2[1] > 2)
-                {
-                    upper_cc_voltage_limit_fast = results2[1] + 0.2;
-                    lower_cc_voltage_limit_fast = results2[1] - 0.2;
-                }
-            }
-        }
-
-        public class cavityFitResults
-        {
-        public double GlobalPhase;      //The offset which I will want to keep constant in the lock
-        public double PeakInterval;             //Peak interval
-        }
-
-       #endregion
+        #endregion
 
         #region Private methods
 
@@ -340,65 +218,38 @@ namespace TransferCavityLock
             }
             return(data);
         }
- 
-
 
         private void rampLoop()
         {
-            AnalogSingleChannelWriter writeChannel;
-            Task taskChannel;
-
+            
             double[,] data;
             data = new double[3, STEPS];
-
-            writeChannel = cavityWriter;
-            taskChannel = outputCavityTask;
-
-            for(; ; )
-            {
-                data = scanVoltageRange(LOWER_CC_VOLTAGE_LIMIT, UPPER_CC_VOLTAGE_LIMIT, cavityWriter, 
-                    outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
-                ui.PlotOnP1(data);
-                ui.PlotOnP2(data);
-                if (fitting)
-                {
-                    FitAndDisplay(data);
-                }
-                lock (rampStopLock)
-                {
-                    if (ramping == false)
-                    {
-                       cavityWriter.WriteSingleSample(true, 0);
-                       return;
-                    }
-                }
-            }
-        }
-
-        private void rampLoopFast()
-        {
-            AnalogSingleChannelWriter writeChannel;
-            Task taskChannel;
-
-            double[,] data;
-            data = new double[3, STEPS];
-
-            writeChannel = cavityWriter;
-            taskChannel = outputCavityTask;
+            double[] refCavParams = new double[3];
+            bool fitBool;
+            bool lockBool;
 
             for (; ; )
             {
-                data = scanVoltageRange(lower_cc_voltage_limit_fast, upper_cc_voltage_limit_fast, cavityWriter,
-                    outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
+                data = scanVoltageRange(LowRampLimit, UpperRampLimit, cavityWriter,
+                outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
                 ui.PlotOnP1(data);
                 ui.PlotOnP2(data);
-                if (fitting)
+                fitBool = ui.checkFitEnableCheck();
+                lockBool = ui.checkLockEnableCheck();
+                if (lockBool == false)
                 {
-                    FitAndDisplayFast(data);
+                    LaserVoltage = ui.getLaserVoltage();
+                    laserWriter.WriteSingleSample(true, LaserVoltage);
+                }
+                if (fitBool == true)
+                {
+                    refCavParams = fitDisplayAndModifyScanLimits(data);
+                    LaserSetPoint = ui.getSetPoint();
+                    fitLaserAndLockToReference(data, refCavParams, laserWriter);
                 }
                 lock (rampStopLock)
                 {
-                    if (ramping == false)
+                    if (Ramping == false)
                     {
                         cavityWriter.WriteSingleSample(true, 0);
                         return;
@@ -407,65 +258,116 @@ namespace TransferCavityLock
             }
         }
 
-        private cavityFitResults fitCavityScan(double[] dataX, double[] dataY)
-        {
-            cavityFitResults results = new cavityFitResults();
-            double[] normDataY = new double[STEPS];
-            double[] coefficients = new double[] {0,0};
-            int i=0;
-            double maxY = ArrayOperation.GetMax(dataY);
-            
-            for (i = 0; i < STEPS; i++)
-            {
-                normDataY[i] = dataX[i] + dataY[i] / maxY
-                    - (UPPER_CC_VOLTAGE_LIMIT - LOWER_CC_VOLTAGE_LIMIT) / 2;
-            }
-            //Some initial guesses for the parameters
-            coefficients[0] = 0;
-            coefficients[1] = ui.getIntervalGuess();
-         
-            double mse = 0;
-            CurveFit.NonLinearFit(dataX, normDataY, new ModelFunctionCallback(tiltedAiry),
-                coefficients, out mse, 1000);
-            results.GlobalPhase = coefficients[0];
-            results.PeakInterval = coefficients[1];
-
-            return results;
-        }
-
-        private double tiltedAiry(double x, double[] parameters)
-        {
-            double gp = parameters[0];
-            double inter = parameters[1];
-            
-            return x + 1 / (1 + finesse * Math.Pow(Math.Cos(inter * x + gp), 2))
-                -(UPPER_CC_VOLTAGE_LIMIT-LOWER_CC_VOLTAGE_LIMIT)/2;
-        }
-
-        private string[] convertFitResultsToString(cavityFitResults results)
+        private double[] fitDisplayAndModifyScanLimits(double[,] data)
         {
             int i = 0;
-            string[] textList = new string[2] {"didnt work","crap"};
-            double[] resultList = new double[] { results.GlobalPhase,
-                results.PeakInterval};
-            
-            for (i = 0; i < 2; i++)
+            double[] dx = new double[STEPS];
+            double[] dy2 = new double[STEPS];
+            for (i = 0; i < STEPS; i++)
             {
-                textList[i] = Convert.ToString(resultList[i]);
+                dx[i] = data[0, i];
+                dy2[i] = data[2, i];
             }
-            return textList;
+            double mse = 0;
+            double[] coefficients = new double[] { 0.01, dx[ArrayOperation.GetIndexOfMax(dy2)],
+                ArrayOperation.GetMax(dy2) - ArrayOperation.GetMin(dy2)};
+            CurveFit.NonLinearFit(dx, dy2, new ModelFunctionCallback(lorentzian),
+                 coefficients, out mse, 1000);
+            ui.fitsPlot(makeFitPlotData(data, coefficients));
+            if (coefficients[1] > 0.0 && coefficients[1] < 10.0 
+                && coefficients[1] < UpperRampLimit && coefficients[1] > LowRampLimit) //Only change limits if fits are reasonnable.
+            {
+                UpperRampLimit = coefficients[1] + 0.15;
+                LowRampLimit = coefficients[1] - 0.15;
+            }
+            return coefficients;
+
         }
 
-        private double[,] makeFitPlot(double[,] data, cavityFitResults results)
+
+        private void fitLaserAndLockToReference(double[,] data, double[] parameters, 
+            AnalogSingleChannelWriter writeChannel)
+        {
+            bool lockBool;
+            int i = 0;
+            double oldLaserVoltage = LaserVoltage;
+            double[] dx = new double[STEPS];
+            double[] dy1 = new double[STEPS];
+            for (i = 0; i < STEPS; i++)
+            {
+                dx[i] = data[0, i];
+                dy1[i] = data[1, i];
+            }
+            double mse = 0;
+            double[] coefficients = new double[] { 0.002, dx[ArrayOperation.GetIndexOfMax(dy1)],
+                ArrayOperation.GetMax(dy1) - ArrayOperation.GetMin(dy1)};
+            CurveFit.NonLinearFit(dx, dy1, new ModelFunctionCallback(lorentzianNarrow),
+                 coefficients, out mse, 1000);
+            ui.fitsPlot2(makeFitPlotData(data, coefficients));
+            
+            if (coefficients[1] > 0.0 && coefficients[1] < 10.0 
+                && coefficients[1] < UpperRampLimit && coefficients[1] > LowRampLimit
+                && LaserVoltage < 10.0 && LaserVoltage > -10.0)//make sure we're not sending stupid voltages to the laser
+            {
+                lockBool = ui.checkLockEnableCheck();
+                if (lockBool == true)
+                {
+                    if (FirstLock == true)
+                    {
+                        LaserSetPoint = coefficients[1] - parameters[1];
+                        ui.setSetPoint(LaserSetPoint);
+                        FirstLock = false;
+                    }
+                    if (FirstLock == false)
+                    {
+                        LaserSetPoint = ui.getSetPoint();
+                    }
+                    LaserVoltage = oldLaserVoltage + gain * (parameters[1] - coefficients[1] + LaserSetPoint);
+                    laserWriter.WriteSingleSample(true, LaserVoltage);
+                }
+                if (lockBool == false) 
+                { 
+                    FirstLock = true;  
+                }
+                ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3)));
+            }
+
+
+                  
+        }
+
+
+        private double lorentzian(double x, double[] parameters)
+        {
+            double width = parameters[0];
+            double centroid = parameters[1];
+            double amplitude = parameters[2];
+            if (width < 0) width = Math.Abs(width); // watch out for divide by zero
+            return amplitude / (1 + Math.Pow((1 / 0.01), 2) * Math.Pow(x - centroid, 2));
+        }
+        private double lorentzianNarrow(double x, double[] parameters)
+        {
+            double width = parameters[0];
+            double centroid = parameters[1];
+            double amplitude = parameters[2];
+            if (width < 0) width = Math.Abs(width); // watch out for divide by zero
+            return amplitude / (1 + Math.Pow((1 / 0.002), 2) * Math.Pow(x - centroid, 2));
+        }
+
+        private double[,] makeFitPlotData(double[,] data, double[] parameters)
         {
             int i = 0;
             double[,] fitData = new double[2,STEPS];
+            double width = parameters[0];
+            double centroid = parameters[1];
+            double amplitude = parameters[2];
             for(i=0; i<STEPS; i++)
             {
                 fitData[0, i] = data[0, i];
-                fitData[1, i] = 1 / (1 + finesse * Math.Pow(Math.Cos(results.PeakInterval * data[0, i] + results.GlobalPhase), 2));
+                fitData[1, i] = amplitude / (1 + Math.Pow((1/width),2) * Math.Pow(data[0, i] - centroid, 2));
             }
             return fitData;
+
         }
         #endregion
     }

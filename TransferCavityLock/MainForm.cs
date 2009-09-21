@@ -16,7 +16,6 @@ namespace TransferCavityLock
     {
         public DeadBolt controller;
         
-        
         #region load Mainform
 
         public MainForm()
@@ -30,6 +29,17 @@ namespace TransferCavityLock
             controller.RampTriggerMethod = "int";
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
+            lockEnableCheck.Enabled = true;
+            setPointUpDownBox.Value = Convert.ToDecimal(0.0);
+            setPointUpDownBox.Maximum = Convert.ToDecimal(9.5);
+            setPointUpDownBox.Minimum = Convert.ToDecimal(-9.5);
+            setPointUpDownBox.Increment = Convert.ToDecimal(0.01);
+            setPointUpDownBox.DecimalPlaces = 2;
+            initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
+            initLaserVoltageUpDownBox.Maximum = Convert.ToDecimal(9.5);
+            initLaserVoltageUpDownBox.Minimum = Convert.ToDecimal(-9.5);
+            initLaserVoltageUpDownBox.Increment = Convert.ToDecimal(0.1);
+            initLaserVoltageUpDownBox.DecimalPlaces = 1;
         }
         #endregion
 
@@ -42,35 +52,15 @@ namespace TransferCavityLock
             textBox.Invoke(new ClearTextBoxDelegate(textBox.Clear));
             textBox.Invoke(new AppendToTextBoxDelegate(textBox.AppendText), text);
         }
-        private delegate void WriteToGlobalPhase1BoxDelegate(string text);
-        private delegate void ClearGlobalPhase1BoxDelegate();
-        public void WriteToGlobalPhase1Box(String text)
+
+        private delegate void WriteToVoltageToLaserBoxDelegate(string text);
+        private delegate void ClearVoltageToLaserBoxDelegate();
+        public void WriteToVoltageToLaserBox(String text)
         {
-            gp1.Invoke(new ClearGlobalPhase1BoxDelegate(gp1.Clear));
-            gp1.Invoke(new WriteToGlobalPhase1BoxDelegate(gp1.AppendText), text);
-        }
-        private delegate void WriteToGlobalPhase2BoxDelegate(string text);
-        private delegate void ClearGlobalPhase2BoxDelegate();
-        public void WriteToGlobalPhase2Box(String text)
-        {
-            gp2.Invoke(new ClearGlobalPhase2BoxDelegate(gp2.Clear));
-            gp2.Invoke(new WriteToGlobalPhase2BoxDelegate(gp2.AppendText), text);
+            voltageToLaserBox.Invoke(new ClearVoltageToLaserBoxDelegate(voltageToLaserBox.Clear));
+            voltageToLaserBox.Invoke(new WriteToVoltageToLaserBoxDelegate(voltageToLaserBox.AppendText), text);
         }
 
-        private delegate void WriteToInterval1BoxDelegate(string text);
-        private delegate void ClearInterval1BoxDelegate();
-        public void WriteToInterval1Box(String text)
-        {
-            interval1.Invoke(new ClearInterval1BoxDelegate(interval1.Clear));
-            interval1.Invoke(new WriteToInterval1BoxDelegate(interval1.AppendText), text);
-        }
-        private delegate void WriteToInterval2BoxDelegate(string text);
-        private delegate void ClearInterval2BoxDelegate();
-        public void WriteToInterval2Box(String text)
-        {
-            interval2.Invoke(new ClearInterval2BoxDelegate(interval2.Clear));
-            interval2.Invoke(new WriteToInterval2BoxDelegate(interval2.AppendText), text);
-        }
 
         private delegate void PlotOnP1Delegate(double[,] data);
         public void PlotOnP1(double[,] data)
@@ -83,6 +73,7 @@ namespace TransferCavityLock
                 dx[i]=data[0,i];
                 dy[i]=data[1,i];
             }
+            p1Intensity.ClearData();
             p1Intensity.PlotXY(dx,dy);
         }
 
@@ -97,6 +88,7 @@ namespace TransferCavityLock
                 dx[i] = data[0, i];
                 dy[i] = data[2, i];
             }
+            p2Intensity.ClearData();
             p2Intensity.PlotXY(dx, dy);
         }
 
@@ -111,6 +103,7 @@ namespace TransferCavityLock
                 dx[i] = data[0, i];
                 dy[i] = data[1, i];
             }
+            plotFitsWindow.ClearData();
             plotFitsWindow.PlotXY(dx, dy);
         }
 
@@ -125,15 +118,54 @@ namespace TransferCavityLock
                 dx[i] = data[0, i];
                 dy[i] = data[1, i];
             }
+            plotFitsWindow2.ClearData();
             plotFitsWindow2.PlotXY(dx, dy);
         }
-
-        public double getIntervalGuess()
+        public double getLaserVoltage()
         {
-            double num = Convert.ToDouble(interGuessBox.Text);
-            return num;
+            decimal dec = initLaserVoltageUpDownBox.Value;
+            return Convert.ToDouble(dec);
+        }
+        public double getSetPoint()
+        {
+            decimal dec = setPointUpDownBox.Value;
+            return Convert.ToDouble(dec);
+        }
+        public void setSetPoint(double point)
+        {
+            setPointUpDownBox.Value = Convert.ToDecimal(point);
         }
 
+        public bool checkLockEnableCheck()
+        {
+            bool lockEnabled = false;
+            if (lockEnableCheck.CheckState == CheckState.Checked)
+            {
+                lockEnabled = true;
+            }
+            if (lockEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                lockEnabled = false;
+            }
+            else { }
+            return lockEnabled;
+        }
+
+        public bool checkFitEnableCheck()
+        {
+            bool fitEnabled = false;
+            if (fitEnableCheck.CheckState == CheckState.Checked)
+            {
+                fitEnabled = true;
+            }
+            if (fitEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                fitEnabled = false;
+            }
+            else { }
+            return fitEnabled;
+        }
+        
         #endregion
 
         #region controls
@@ -154,7 +186,6 @@ namespace TransferCavityLock
                 rampStartButton.Enabled = false;
                 rampStopButton.Enabled = true;
                 triggerMenu.Enabled = false;
-                fitEnableCheck.Enabled = false;
             }
             else
             {
@@ -164,7 +195,6 @@ namespace TransferCavityLock
                 rampStartButton.Enabled = false;
                 rampStopButton.Enabled = true;
                 triggerMenu.Enabled = false;
-                fitEnableCheck.Enabled = false;
             }
         }
 
@@ -175,7 +205,6 @@ namespace TransferCavityLock
                 this.AddToTextBox("Stop button pressed.");
                 controller.Ramping = false;
             }
-            fitEnableCheck.Enabled = true;
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
             triggerMenu.Enabled = true;
@@ -209,77 +238,18 @@ namespace TransferCavityLock
 
         }
 
-        
 
-        private void fitResultsP1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void fitResultsP2_Enter(object sender, EventArgs e)
-        {
-            
-        }
-        private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (controller.Fitting == true)
-            {
-                controller.Fitting = false;
-            }
-            if (controller.Fitting == false)
-            {
-                controller.Fitting = true;
-            }
-            else
-            {
-            }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void gp1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void interval1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void gp2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void interval2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
         private void plotFitsWindow_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }
+        private void plotFitsWindow2_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        {
 
-        private void interGuessBox_TextChanged(object sender, EventArgs e)
+        }
+
+
+        private void lockParams_Enter(object sender, EventArgs e)
         {
 
         }
@@ -289,11 +259,57 @@ namespace TransferCavityLock
 
         }
 
-        private void plotFitsWindow2_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }
+
+        private void voltageToLaserBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+        private void lockEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void initLaserVoltageUpDownBox_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
+
+ 
+     
+
+
+
+  
+        
+
+
+     
+
+       
+
+     
+
+    
 
 
 

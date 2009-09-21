@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.voltageRampControl = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.interGuessBox = new System.Windows.Forms.TextBox();
             this.fitEnableCheck = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.triggerMenu = new System.Windows.Forms.ComboBox();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.rampStopButton = new System.Windows.Forms.Button();
-            this.rampStartButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
+            this.rampStartButton = new System.Windows.Forms.Button();
+            this.lockEnableCheck = new System.Windows.Forms.CheckBox();
             this.p1Intensity = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
@@ -45,16 +45,6 @@
             this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
-            this.fitResultsP1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.interval1 = new System.Windows.Forms.TextBox();
-            this.gp1 = new System.Windows.Forms.TextBox();
-            this.fitResultsP2 = new System.Windows.Forms.GroupBox();
-            this.gp2 = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.interval2 = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.plotFitsWindow = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
@@ -63,61 +53,60 @@
             this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis4 = new NationalInstruments.UI.XAxis();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
+            this.lockParams = new System.Windows.Forms.GroupBox();
+            this.initLaserVoltageUpDownBox = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.setPointUpDownBox = new System.Windows.Forms.NumericUpDown();
+            this.voltageToLaserBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).BeginInit();
-            this.fitResultsP1.SuspendLayout();
-            this.fitResultsP2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow2)).BeginInit();
+            this.lockParams.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).BeginInit();
             this.SuspendLayout();
             // 
             // voltageRampControl
             // 
-            this.voltageRampControl.Controls.Add(this.label3);
-            this.voltageRampControl.Controls.Add(this.interGuessBox);
             this.voltageRampControl.Controls.Add(this.fitEnableCheck);
+            this.voltageRampControl.Controls.Add(this.label1);
             this.voltageRampControl.Controls.Add(this.triggerMenu);
             this.voltageRampControl.Controls.Add(this.rampLED);
             this.voltageRampControl.Controls.Add(this.rampStopButton);
+            this.voltageRampControl.Controls.Add(this.textBox);
             this.voltageRampControl.Controls.Add(this.rampStartButton);
             this.voltageRampControl.Location = new System.Drawing.Point(554, 3);
             this.voltageRampControl.Name = "voltageRampControl";
-            this.voltageRampControl.Size = new System.Drawing.Size(174, 130);
+            this.voltageRampControl.Size = new System.Drawing.Size(179, 130);
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Voltage Ramp";
             this.voltageRampControl.Enter += new System.EventHandler(this.voltageRampControl_Enter);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 107);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(58, 13);
-            this.label3.TabIndex = 18;
-            this.label3.Text = "inter guess";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
-            // 
-            // interGuessBox
-            // 
-            this.interGuessBox.Location = new System.Drawing.Point(68, 104);
-            this.interGuessBox.Name = "interGuessBox";
-            this.interGuessBox.Size = new System.Drawing.Size(100, 20);
-            this.interGuessBox.TabIndex = 10;
-            this.interGuessBox.TextChanged += new System.EventHandler(this.interGuessBox_TextChanged);
-            // 
             // fitEnableCheck
             // 
             this.fitEnableCheck.AutoSize = true;
-            this.fitEnableCheck.Location = new System.Drawing.Point(134, 77);
+            this.fitEnableCheck.Location = new System.Drawing.Point(102, 50);
             this.fitEnableCheck.Name = "fitEnableCheck";
-            this.fitEnableCheck.Size = new System.Drawing.Size(34, 17);
-            this.fitEnableCheck.TabIndex = 9;
-            this.fitEnableCheck.Text = "fit";
+            this.fitEnableCheck.Size = new System.Drawing.Size(37, 17);
+            this.fitEnableCheck.TabIndex = 17;
+            this.fitEnableCheck.Text = "Fit";
             this.fitEnableCheck.UseVisualStyleBackColor = true;
             this.fitEnableCheck.CheckedChanged += new System.EventHandler(this.fitEnableCheck_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(99, 21);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Ramping:";
             // 
             // triggerMenu
             // 
@@ -136,7 +125,7 @@
             // rampLED
             // 
             this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(123, 19);
+            this.rampLED.Location = new System.Drawing.Point(145, 13);
             this.rampLED.Name = "rampLED";
             this.rampLED.OffColor = System.Drawing.Color.Red;
             this.rampLED.Size = new System.Drawing.Size(31, 29);
@@ -146,29 +135,40 @@
             // 
             this.rampStopButton.Location = new System.Drawing.Point(6, 46);
             this.rampStopButton.Name = "rampStopButton";
-            this.rampStopButton.Size = new System.Drawing.Size(111, 23);
+            this.rampStopButton.Size = new System.Drawing.Size(87, 23);
             this.rampStopButton.TabIndex = 6;
             this.rampStopButton.Text = "Stop ramping";
             this.rampStopButton.UseVisualStyleBackColor = true;
             this.rampStopButton.Click += new System.EventHandler(this.rampStopButton_Click);
             // 
+            // textBox
+            // 
+            this.textBox.Location = new System.Drawing.Point(6, 102);
+            this.textBox.Name = "textBox";
+            this.textBox.Size = new System.Drawing.Size(162, 20);
+            this.textBox.TabIndex = 3;
+            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            // 
             // rampStartButton
             // 
             this.rampStartButton.Location = new System.Drawing.Point(6, 19);
             this.rampStartButton.Name = "rampStartButton";
-            this.rampStartButton.Size = new System.Drawing.Size(111, 23);
+            this.rampStartButton.Size = new System.Drawing.Size(87, 23);
             this.rampStartButton.TabIndex = 2;
             this.rampStartButton.Text = "Start ramping";
             this.rampStartButton.UseVisualStyleBackColor = true;
             this.rampStartButton.Click += new System.EventHandler(this.rampStartButton_Click);
             // 
-            // textBox
+            // lockEnableCheck
             // 
-            this.textBox.Location = new System.Drawing.Point(554, 139);
-            this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(174, 20);
-            this.textBox.TabIndex = 3;
-            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.lockEnableCheck.AutoSize = true;
+            this.lockEnableCheck.Location = new System.Drawing.Point(6, 20);
+            this.lockEnableCheck.Name = "lockEnableCheck";
+            this.lockEnableCheck.Size = new System.Drawing.Size(50, 17);
+            this.lockEnableCheck.TabIndex = 9;
+            this.lockEnableCheck.Text = "Lock";
+            this.lockEnableCheck.UseVisualStyleBackColor = true;
+            this.lockEnableCheck.CheckedChanged += new System.EventHandler(this.lockEnableCheck_CheckedChanged);
             // 
             // p1Intensity
             // 
@@ -208,106 +208,6 @@
             this.scatterPlot2.XAxis = this.xAxis2;
             this.scatterPlot2.YAxis = this.yAxis2;
             // 
-            // fitResultsP1
-            // 
-            this.fitResultsP1.Controls.Add(this.label2);
-            this.fitResultsP1.Controls.Add(this.label1);
-            this.fitResultsP1.Controls.Add(this.interval1);
-            this.fitResultsP1.Controls.Add(this.gp1);
-            this.fitResultsP1.Location = new System.Drawing.Point(734, 3);
-            this.fitResultsP1.Name = "fitResultsP1";
-            this.fitResultsP1.Size = new System.Drawing.Size(174, 75);
-            this.fitResultsP1.TabIndex = 9;
-            this.fitResultsP1.TabStop = false;
-            this.fitResultsP1.Text = "Fit Results for Laser";
-            this.fitResultsP1.Enter += new System.EventHandler(this.fitResultsP1_Enter);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 13);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "P. Interval";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "G. Phase";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // interval1
-            // 
-            this.interval1.Location = new System.Drawing.Point(68, 45);
-            this.interval1.Name = "interval1";
-            this.interval1.Size = new System.Drawing.Size(100, 20);
-            this.interval1.TabIndex = 12;
-            this.interval1.TextChanged += new System.EventHandler(this.interval1_TextChanged);
-            // 
-            // gp1
-            // 
-            this.gp1.Location = new System.Drawing.Point(68, 19);
-            this.gp1.Name = "gp1";
-            this.gp1.Size = new System.Drawing.Size(100, 20);
-            this.gp1.TabIndex = 11;
-            this.gp1.TextChanged += new System.EventHandler(this.gp1_TextChanged);
-            // 
-            // fitResultsP2
-            // 
-            this.fitResultsP2.Controls.Add(this.gp2);
-            this.fitResultsP2.Controls.Add(this.label9);
-            this.fitResultsP2.Controls.Add(this.interval2);
-            this.fitResultsP2.Controls.Add(this.label10);
-            this.fitResultsP2.Location = new System.Drawing.Point(734, 84);
-            this.fitResultsP2.Name = "fitResultsP2";
-            this.fitResultsP2.Size = new System.Drawing.Size(174, 75);
-            this.fitResultsP2.TabIndex = 10;
-            this.fitResultsP2.TabStop = false;
-            this.fitResultsP2.Text = "Fit Results for Reference Laser";
-            this.fitResultsP2.Enter += new System.EventHandler(this.fitResultsP2_Enter);
-            // 
-            // gp2
-            // 
-            this.gp2.Location = new System.Drawing.Point(67, 21);
-            this.gp2.Name = "gp2";
-            this.gp2.Size = new System.Drawing.Size(100, 20);
-            this.gp2.TabIndex = 16;
-            this.gp2.TextChanged += new System.EventHandler(this.gp2_TextChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(10, 52);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(55, 13);
-            this.label9.TabIndex = 22;
-            this.label9.Text = "P. Interval";
-            this.label9.Click += new System.EventHandler(this.label9_Click);
-            // 
-            // interval2
-            // 
-            this.interval2.Location = new System.Drawing.Point(67, 47);
-            this.interval2.Name = "interval2";
-            this.interval2.Size = new System.Drawing.Size(100, 20);
-            this.interval2.TabIndex = 17;
-            this.interval2.TextChanged += new System.EventHandler(this.interval2_TextChanged);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 28);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(51, 13);
-            this.label10.TabIndex = 21;
-            this.label10.Text = "G. Phase";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
-            // 
             // plotFitsWindow
             // 
             this.plotFitsWindow.Location = new System.Drawing.Point(0, 119);
@@ -346,18 +246,87 @@
             this.scatterPlot4.XAxis = this.xAxis4;
             this.scatterPlot4.YAxis = this.yAxis4;
             // 
+            // lockParams
+            // 
+            this.lockParams.Controls.Add(this.initLaserVoltageUpDownBox);
+            this.lockParams.Controls.Add(this.label2);
+            this.lockParams.Controls.Add(this.setPointUpDownBox);
+            this.lockParams.Controls.Add(this.voltageToLaserBox);
+            this.lockParams.Controls.Add(this.label4);
+            this.lockParams.Controls.Add(this.label3);
+            this.lockParams.Controls.Add(this.lockEnableCheck);
+            this.lockParams.Location = new System.Drawing.Point(739, 3);
+            this.lockParams.Name = "lockParams";
+            this.lockParams.Size = new System.Drawing.Size(144, 180);
+            this.lockParams.TabIndex = 10;
+            this.lockParams.TabStop = false;
+            this.lockParams.Text = "Lock Parameters";
+            this.lockParams.Enter += new System.EventHandler(this.lockParams_Enter);
+            // 
+            // initLaserVoltageUpDownBox
+            // 
+            this.initLaserVoltageUpDownBox.Location = new System.Drawing.Point(6, 99);
+            this.initLaserVoltageUpDownBox.Name = "initLaserVoltageUpDownBox";
+            this.initLaserVoltageUpDownBox.Size = new System.Drawing.Size(78, 20);
+            this.initLaserVoltageUpDownBox.TabIndex = 18;
+            this.initLaserVoltageUpDownBox.ValueChanged += new System.EventHandler(this.initLaserVoltageUpDownBox_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(139, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Approx. Voltage to Laser (V)";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // setPointUpDownBox
+            // 
+            this.setPointUpDownBox.Location = new System.Drawing.Point(6, 56);
+            this.setPointUpDownBox.Name = "setPointUpDownBox";
+            this.setPointUpDownBox.Size = new System.Drawing.Size(78, 20);
+            this.setPointUpDownBox.TabIndex = 16;
+            this.setPointUpDownBox.ValueChanged += new System.EventHandler(this.setPointUpDownBox_ValueChanged);
+            // 
+            // voltageToLaserBox
+            // 
+            this.voltageToLaserBox.Location = new System.Drawing.Point(6, 144);
+            this.voltageToLaserBox.Name = "voltageToLaserBox";
+            this.voltageToLaserBox.Size = new System.Drawing.Size(57, 20);
+            this.voltageToLaserBox.TabIndex = 14;
+            this.voltageToLaserBox.TextChanged += new System.EventHandler(this.voltageToLaserBox_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 128);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Voltage to Laser";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 40);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(66, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Set Point (V)";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 476);
+            this.ClientSize = new System.Drawing.Size(887, 476);
+            this.Controls.Add(this.lockParams);
             this.Controls.Add(this.plotFitsWindow2);
             this.Controls.Add(this.plotFitsWindow);
-            this.Controls.Add(this.fitResultsP2);
-            this.Controls.Add(this.fitResultsP1);
             this.Controls.Add(this.p2Intensity);
             this.Controls.Add(this.p1Intensity);
-            this.Controls.Add(this.textBox);
             this.Controls.Add(this.voltageRampControl);
             this.Name = "MainForm";
             this.Text = "Transfer Cavity Lock";
@@ -367,14 +336,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).EndInit();
-            this.fitResultsP1.ResumeLayout(false);
-            this.fitResultsP1.PerformLayout();
-            this.fitResultsP2.ResumeLayout(false);
-            this.fitResultsP2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow2)).EndInit();
+            this.lockParams.ResumeLayout(false);
+            this.lockParams.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -394,27 +362,24 @@
         private NationalInstruments.UI.ScatterPlot scatterPlot2;
         private NationalInstruments.UI.XAxis xAxis2;
         private NationalInstruments.UI.YAxis yAxis2;
-        private System.Windows.Forms.GroupBox fitResultsP1;
-        private System.Windows.Forms.TextBox gp1;
-        private System.Windows.Forms.GroupBox fitResultsP2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox interval1;
-        private System.Windows.Forms.TextBox gp2;
-        private System.Windows.Forms.TextBox interval2;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox fitEnableCheck;
+        private System.Windows.Forms.CheckBox lockEnableCheck;
         private NationalInstruments.UI.WindowsForms.ScatterGraph plotFitsWindow;
         private NationalInstruments.UI.ScatterPlot scatterPlot3;
         private NationalInstruments.UI.XAxis xAxis3;
         private NationalInstruments.UI.YAxis yAxis3;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox interGuessBox;
         private NationalInstruments.UI.WindowsForms.ScatterGraph plotFitsWindow2;
         private NationalInstruments.UI.ScatterPlot scatterPlot4;
         private NationalInstruments.UI.XAxis xAxis4;
         private NationalInstruments.UI.YAxis yAxis4;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox lockParams;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox voltageToLaserBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown setPointUpDownBox;
+        private System.Windows.Forms.CheckBox fitEnableCheck;
+        private System.Windows.Forms.NumericUpDown initLaserVoltageUpDownBox;
+        private System.Windows.Forms.Label label2;
     }
 }
 
