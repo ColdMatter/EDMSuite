@@ -210,7 +210,7 @@
             // 
             // plotFitsWindow
             // 
-            this.plotFitsWindow.Location = new System.Drawing.Point(0, 119);
+            this.plotFitsWindow.Location = new System.Drawing.Point(0, 352);
             this.plotFitsWindow.Name = "plotFitsWindow";
             this.plotFitsWindow.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot3});
@@ -229,7 +229,7 @@
             // 
             // plotFitsWindow2
             // 
-            this.plotFitsWindow2.Location = new System.Drawing.Point(0, 355);
+            this.plotFitsWindow2.Location = new System.Drawing.Point(0, 121);
             this.plotFitsWindow2.Name = "plotFitsWindow2";
             this.plotFitsWindow2.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot4});
@@ -255,9 +255,9 @@
             this.lockParams.Controls.Add(this.label4);
             this.lockParams.Controls.Add(this.label3);
             this.lockParams.Controls.Add(this.lockEnableCheck);
-            this.lockParams.Location = new System.Drawing.Point(739, 3);
+            this.lockParams.Location = new System.Drawing.Point(554, 139);
             this.lockParams.Name = "lockParams";
-            this.lockParams.Size = new System.Drawing.Size(144, 180);
+            this.lockParams.Size = new System.Drawing.Size(179, 180);
             this.lockParams.TabIndex = 10;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
@@ -321,7 +321,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(887, 476);
+            this.ClientSize = new System.Drawing.Size(739, 476);
             this.Controls.Add(this.lockParams);
             this.Controls.Add(this.plotFitsWindow2);
             this.Controls.Add(this.plotFitsWindow);

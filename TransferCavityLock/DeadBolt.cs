@@ -65,7 +65,7 @@ namespace TransferCavityLock
         
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
-        // It just overrides the lifetime lease system completely.
+        // It just overrides the lifetime lease system completely. Inherited from Mike. No idea.
         public override Object InitializeLifetimeService()
         {
             return null;
@@ -80,6 +80,10 @@ namespace TransferCavityLock
             ui = new MainForm();
             ui.controller = this;
 
+
+            /// <summary>
+            /// This is the part where I define all the input and output channels.
+            /// </summary>
             if (!Environs.Debug)
             {
                 outputLaserTask = new Task("FeedbackToLaser");
@@ -116,16 +120,12 @@ namespace TransferCavityLock
        #region Public methods
 
         /// <summary>
-        /// A function to repeatedly scan the voltage. It's meant to be triggered by pressing the
-        /// "start ramping" button, and only stop when "stop ramping" is pressed.
+        /// Let's get this party started. This starts ramping the cavity. If "fit" and "lock" are enabled,
+        /// it does them too.
         /// </summary>
 
         public void startRamp()
         {
-            //slow rampLoop()
-            //Thread rampThread = new Thread(new ThreadStart(rampLoop));
-            //rampThread.Start();
-            //faster rampLoop();
             cavityWriter.WriteSingleSample(true, 3);
             Thread.Sleep(2000);
             Thread rampThread = new Thread(new ThreadStart(rampLoop));
@@ -136,7 +136,9 @@ namespace TransferCavityLock
         
 
         /// <summary>
-        /// A few functions for setting and getting the values rampTriggerMethod, rampChannel and ramping.
+        /// A few functions for setting and getting the values rampTriggerMethod.  If we ever want to trigger the
+        /// ramp from an external trigger, write into this part of the code.
+        /// Set to "int" (internal) by default.
         /// </summary>
         public string RampTriggerMethod
         {
@@ -145,7 +147,12 @@ namespace TransferCavityLock
                 rampTriggerMethod = value;
             }
             get { return rampTriggerMethod; }
-        }     
+        }
+
+        /// <summary>
+        /// A flag for when the cavity is ramping
+        /// </summary>
+
         public bool Ramping
         {
             set
@@ -154,6 +161,10 @@ namespace TransferCavityLock
             }
             get { return ramping; }
         }
+
+        /// <summary>
+        /// A flag for whether this is the first run with the lock engaged. (To read back the set point)
+        /// </summary>
         public bool FirstLock
         {
             set
@@ -162,25 +173,49 @@ namespace TransferCavityLock
             }
             get { return first_Lock; }
         }
+       
+        /// <summary>
+        /// Some way of accessing the number of steps if you're outside DeadBolt
+        /// </summary>
+
         public int RampSteps
         {
             get { return STEPS; }
         }
+
+        /// <summary>
+        /// A way of accessing the lower voltage limit of the scan. This is used to adjust the scan range
+        /// to compensate for any temperature drifts in the cavity
+        /// </summary>
         public double LowRampLimit
         {
             set { lower_cc_voltage_limit = value; }
             get { return lower_cc_voltage_limit; }
         }
+
+        /// <summary>
+        /// A way of accessing the upper voltage limit of the scan. This is used to adjust the scan range
+        /// to compensate for any temperature drifts in the cavity
+        /// </summary>
         public double UpperRampLimit
         {
             set { upper_cc_voltage_limit = value;}
             get { return upper_cc_voltage_limit; }
         }
+
+        /// <summary>
+        /// The voltage fed to the laser.
+        /// </summary>
         public double LaserVoltage
         {
             set { laser_voltage = value; }
             get { return laser_voltage; }
         }
+
+        /// <summary>
+        /// The set point of the laser lock. This corresponds to the difference in voltage applied to the cavity
+        /// in order to get from the He-Ne peak to the laser peak.
+        /// </summary>
         public double LaserSetPoint
         {
             set { laser_Offset_Voltage = value; }
@@ -219,6 +254,10 @@ namespace TransferCavityLock
             return(data);
         }
 
+        /// <summary>
+        /// The main loop of the program. Scans the cavity, looks at photodiodes, corrects the range for the next
+        /// scan and locks the laser.
+        /// </summary>
         private void rampLoop()
         {
             
@@ -232,22 +271,22 @@ namespace TransferCavityLock
             {
                 data = scanVoltageRange(LowRampLimit, UpperRampLimit, cavityWriter,
                 outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
-                ui.PlotOnP1(data);
-                ui.PlotOnP2(data);
-                fitBool = ui.checkFitEnableCheck();
-                lockBool = ui.checkLockEnableCheck();
-                if (lockBool == false)
+                ui.PlotOnP1(data); //Plot laser peaks
+                ui.PlotOnP2(data); //Plot He-Ne peaks
+                fitBool = ui.checkFitEnableCheck(); //Check to see if fitting is enabled
+                lockBool = ui.checkLockEnableCheck(); //Check to see if locking is enabled
+                if (lockBool == false) //if not locking
                 {
-                    LaserVoltage = ui.getLaserVoltage();
-                    laserWriter.WriteSingleSample(true, LaserVoltage);
+                    LaserVoltage = ui.getLaserVoltage(); //set the laser voltage to the voltage indicated in the "updown" box
+                    laserWriter.WriteSingleSample(true, LaserVoltage); //write that voltage to the laser
                 }
-                if (fitBool == true)
+                if (fitBool == true) //if fitting
                 {
-                    refCavParams = fitDisplayAndModifyScanLimits(data);
-                    LaserSetPoint = ui.getSetPoint();
-                    fitLaserAndLockToReference(data, refCavParams, laserWriter);
+                    refCavParams = fitDisplayAndModifyScanLimits(data); //Fit to cavity peaks and stabilize laser
+                    LaserSetPoint = ui.getSetPoint(); //reads in the setPoint from "updown" box. (only useful when locking)
+                    fitLaserAndLockToReference(data, refCavParams, laserWriter); //lock the laser!
                 }
-                lock (rampStopLock)
+                lock (rampStopLock) //This is to break out of the ramping to stop the program.
                 {
                     if (Ramping == false)
                     {
@@ -258,9 +297,14 @@ namespace TransferCavityLock
             }
         }
 
-        private double[] fitDisplayAndModifyScanLimits(double[,] data)
+        /// <summary>
+        /// A program which fits to the reference cavity peaks and adjusts the scan range to keep a peak
+        /// in the middle of the scan. Need to feed it the data from the photodiodes.
+        /// Data should be d[0,i]=voltage, d[1,i]= p1voltage, d[2, i] = p2voltage
+        /// </summary>
+        private double[] fitDisplayAndModifyScanLimits(double[,] data) 
         {
-            int i = 0;
+            int i = 0;      //Some rearranging of data
             double[] dx = new double[STEPS];
             double[] dy2 = new double[STEPS];
             for (i = 0; i < STEPS; i++)
@@ -268,28 +312,31 @@ namespace TransferCavityLock
                 dx[i] = data[0, i];
                 dy2[i] = data[2, i];
             }
-            double mse = 0;
+            double mse = 0; //Mean standard error (I think). Something needed for fit function
             double[] coefficients = new double[] { 0.01, dx[ArrayOperation.GetIndexOfMax(dy2)],
-                ArrayOperation.GetMax(dy2) - ArrayOperation.GetMin(dy2)};
+                ArrayOperation.GetMax(dy2) - ArrayOperation.GetMin(dy2)}; //parameters to fit. {width, centroid, amplitude}. Actually not fitting to width at all.
             CurveFit.NonLinearFit(dx, dy2, new ModelFunctionCallback(lorentzian),
-                 coefficients, out mse, 1000);
-            ui.fitsPlot(makeFitPlotData(data, coefficients));
+                 coefficients, out mse, 1000); //Fit a lorentzian.
+            ui.fitsPlot(makeFitPlotData(data, coefficients)); //Plot out the fit (should figure out how to do that on same graph when I get a chance)
             if (coefficients[1] > 0.0 && coefficients[1] < 10.0 
                 && coefficients[1] < UpperRampLimit && coefficients[1] > LowRampLimit) //Only change limits if fits are reasonnable.
             {
-                UpperRampLimit = coefficients[1] + 0.15;
-                LowRampLimit = coefficients[1] - 0.15;
+                UpperRampLimit = coefficients[1] + 0.17;//Adjust scan range!
+                LowRampLimit = coefficients[1] - 0.17;
             }
-            return coefficients;
+            return coefficients; //return the fit parameters for later use.
 
         }
 
-
+        /// <summary>
+        /// Laser lock! Fits to the laser peaks and operates the lock. It needs the data from the scan,
+        /// the parameters from the cavity fit and some info on where to write to.
+        /// </summary>
         private void fitLaserAndLockToReference(double[,] data, double[] parameters, 
             AnalogSingleChannelWriter writeChannel)
         {
-            bool lockBool;
-            int i = 0;
+            bool lockBool;                          //whether to actually lock the laser
+            int i = 0;                              //some data manipulation
             double oldLaserVoltage = LaserVoltage;
             double[] dx = new double[STEPS];
             double[] dy1 = new double[STEPS];
@@ -302,34 +349,34 @@ namespace TransferCavityLock
             double[] coefficients = new double[] { 0.002, dx[ArrayOperation.GetIndexOfMax(dy1)],
                 ArrayOperation.GetMax(dy1) - ArrayOperation.GetMin(dy1)};
             CurveFit.NonLinearFit(dx, dy1, new ModelFunctionCallback(lorentzianNarrow),
-                 coefficients, out mse, 1000);
+                 coefficients, out mse, 1000);          //Fitting a lorentzian
             ui.fitsPlot2(makeFitPlotData(data, coefficients));
             
             if (coefficients[1] > 0.0 && coefficients[1] < 10.0 
                 && coefficients[1] < UpperRampLimit && coefficients[1] > LowRampLimit
                 && LaserVoltage < 10.0 && LaserVoltage > -10.0)//make sure we're not sending stupid voltages to the laser
             {
-                lockBool = ui.checkLockEnableCheck();
-                if (lockBool == true)
+                lockBool = ui.checkLockEnableCheck();   //check whether lock is engaged
+                if (lockBool == true)                   //if locking
                 {
-                    if (FirstLock == true)
+                    if (FirstLock == true)              //if this is the first time we're trying to lock
                     {
-                        LaserSetPoint = coefficients[1] - parameters[1];
-                        ui.setSetPoint(LaserSetPoint);
-                        FirstLock = false;
+                        LaserSetPoint = coefficients[1] - parameters[1];    //SetPoint is difference between peaks
+                        ui.setSetPoint(LaserSetPoint);                      //Set this value to the box
+                        FirstLock = false;                                  //Lock for real next time
                     }
-                    if (FirstLock == false)
+                    if (FirstLock == false)                                 //We've been here before
                     {
-                        LaserSetPoint = ui.getSetPoint();
+                        LaserSetPoint = ui.getSetPoint();                   //get the set point
                     }
-                    LaserVoltage = oldLaserVoltage + gain * (parameters[1] - coefficients[1] + LaserSetPoint);
-                    laserWriter.WriteSingleSample(true, LaserVoltage);
+                    LaserVoltage = oldLaserVoltage + gain * (parameters[1] - coefficients[1] + LaserSetPoint); //Feedback
+                    writeChannel.WriteSingleSample(true, LaserVoltage);     //Write the new value of the laser control voltage
                 }
-                if (lockBool == false) 
+                if (lockBool == false)                  //If we're not really locking, make sure the firstlock bool is true (for when we activate the lock)
                 { 
                     FirstLock = true;  
                 }
-                ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3)));
+                ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3))); //Write out the voltage actually being sent to the laser
             }
 
 
@@ -337,7 +384,7 @@ namespace TransferCavityLock
         }
 
 
-        private double lorentzian(double x, double[] parameters)
+        private double lorentzian(double x, double[] parameters) //A Lorentzian
         {
             double width = parameters[0];
             double centroid = parameters[1];
@@ -345,7 +392,7 @@ namespace TransferCavityLock
             if (width < 0) width = Math.Abs(width); // watch out for divide by zero
             return amplitude / (1 + Math.Pow((1 / 0.01), 2) * Math.Pow(x - centroid, 2));
         }
-        private double lorentzianNarrow(double x, double[] parameters)
+        private double lorentzianNarrow(double x, double[] parameters) //A Narrow Lorentzian (Kind of silly to have to have this...)
         {
             double width = parameters[0];
             double centroid = parameters[1];
@@ -354,7 +401,7 @@ namespace TransferCavityLock
             return amplitude / (1 + Math.Pow((1 / 0.002), 2) * Math.Pow(x - centroid, 2));
         }
 
-        private double[,] makeFitPlotData(double[,] data, double[] parameters)
+        private double[,] makeFitPlotData(double[,] data, double[] parameters) //from a fit, make the data to plot
         {
             int i = 0;
             double[,] fitData = new double[2,STEPS];

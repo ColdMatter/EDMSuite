@@ -18,6 +18,9 @@ namespace TransferCavityLock
         
         #region load Mainform
 
+        /// <summary>
+        /// Get everything warmed up
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -29,12 +32,14 @@ namespace TransferCavityLock
             controller.RampTriggerMethod = "int";
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
-            lockEnableCheck.Enabled = true;
+            lockEnableCheck.Enabled = false;
+            setPointUpDownBox.Enabled = false;
             setPointUpDownBox.Value = Convert.ToDecimal(0.0);
             setPointUpDownBox.Maximum = Convert.ToDecimal(9.5);
             setPointUpDownBox.Minimum = Convert.ToDecimal(-9.5);
             setPointUpDownBox.Increment = Convert.ToDecimal(0.01);
             setPointUpDownBox.DecimalPlaces = 2;
+            initLaserVoltageUpDownBox.Enabled = false;
             initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
             initLaserVoltageUpDownBox.Maximum = Convert.ToDecimal(9.5);
             initLaserVoltageUpDownBox.Minimum = Convert.ToDecimal(-9.5);
@@ -44,7 +49,13 @@ namespace TransferCavityLock
         #endregion
 
         #region passing values set by UI into program
+        /// <summary>
+        /// Various things you need to communicate from the front panel to the program.
+        /// </summary>
 
+        /// <summary>
+        /// Write to a text box (for messages)
+        /// </summary>
         private delegate void AppendToTextBoxDelegate(string text);
         private delegate void ClearTextBoxDelegate();
         public void AddToTextBox(String text)
@@ -53,6 +64,9 @@ namespace TransferCavityLock
             textBox.Invoke(new AppendToTextBoxDelegate(textBox.AppendText), text);
         }
 
+        /// <summary>
+        /// Displays the voltage applied to the laser
+        /// </summary>
         private delegate void WriteToVoltageToLaserBoxDelegate(string text);
         private delegate void ClearVoltageToLaserBoxDelegate();
         public void WriteToVoltageToLaserBox(String text)
@@ -61,7 +75,9 @@ namespace TransferCavityLock
             voltageToLaserBox.Invoke(new WriteToVoltageToLaserBoxDelegate(voltageToLaserBox.AppendText), text);
         }
 
-
+        /// <summary>
+        /// Plots the cavity peaks from the laser 
+        /// </summary>
         private delegate void PlotOnP1Delegate(double[,] data);
         public void PlotOnP1(double[,] data)
         {
@@ -77,6 +93,9 @@ namespace TransferCavityLock
             p1Intensity.PlotXY(dx,dy);
         }
 
+        /// <summary>
+        /// Plots the cavity peaks from the He Ne
+        /// </summary>
         private delegate void PlotOnP2Delegate(double[,] data);
         public void PlotOnP2(double[,] data)
         {
@@ -92,6 +111,9 @@ namespace TransferCavityLock
             p2Intensity.PlotXY(dx, dy);
         }
 
+        /// <summary>
+        /// Plots the fit for the He Ne peak
+        /// </summary>
         private delegate void fitsPlotDelegate(double[,] data);
         public void fitsPlot(double[,] data)
         {
@@ -107,6 +129,9 @@ namespace TransferCavityLock
             plotFitsWindow.PlotXY(dx, dy);
         }
 
+        /// <summary>
+        /// Plots the fit for the peak from the laser 
+        /// </summary>
         private delegate void fitsPlot2Delegate(double[,] data);
         public void fitsPlot2(double[,] data)
         {
@@ -121,42 +146,66 @@ namespace TransferCavityLock
             plotFitsWindow2.ClearData();
             plotFitsWindow2.PlotXY(dx, dy);
         }
+
+        /// <summary>
+        /// reads the value in the box and returns it
+        /// </summary>
         public double getLaserVoltage()
         {
             decimal dec = initLaserVoltageUpDownBox.Value;
             return Convert.ToDouble(dec);
         }
+
+        /// <summary>
+        /// reads the value in the box and returns it
+        /// </summary>
         public double getSetPoint()
         {
             decimal dec = setPointUpDownBox.Value;
             return Convert.ToDouble(dec);
         }
+
+        /// <summary>
+        /// set the setPoint (I think, only used during the first run of the lock)
+        /// </summary>
         public void setSetPoint(double point)
         {
             setPointUpDownBox.Value = Convert.ToDecimal(point);
         }
 
+        /// <summary>
+        /// checks to see if the lock tick is engaged.
+        /// </summary>
         public bool checkLockEnableCheck()
         {
             bool lockEnabled = false;
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
                 lockEnabled = true;
+                initLaserVoltageUpDownBox.Enabled = false;
+                setPointUpDownBox.Enabled = true;
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
                 lockEnabled = false;
+                initLaserVoltageUpDownBox.Enabled = true;
+                setPointUpDownBox.Enabled = false;
             }
             else { }
             return lockEnabled;
         }
 
+        /// <summary>
+        /// checks to see if the fit tick is engaged.
+        /// </summary>
         public bool checkFitEnableCheck()
         {
             bool fitEnabled = false;
             if (fitEnableCheck.CheckState == CheckState.Checked)
             {
                 fitEnabled = true;
+                initLaserVoltageUpDownBox.Enabled = true;
+                lockEnableCheck.Enabled = true;
             }
             if (fitEnableCheck.CheckState == CheckState.Unchecked)
             {
