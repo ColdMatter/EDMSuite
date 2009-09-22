@@ -232,7 +232,7 @@ namespace TransferCavityLock
         /// </summary>
 
         private double[,] scanVoltageRange(double low, double high, AnalogSingleChannelWriter writeChannel, 
-            Task taskChannel, int delayAtEachStep, int steps)
+            Task taskChannel, int delayAtEachStep, int steps, bool takeData)
         {
             double stepsize = (high - low) / steps;
             double voltage = low;
@@ -243,10 +243,13 @@ namespace TransferCavityLock
 
             for (int i = 0; i < steps; i++)
             {
-              
-                data[0, i] = voltage;
-                data[1, i] = p1Reader.ReadSingleSample();
-                data[2, i] = p2Reader.ReadSingleSample();
+                if (takeData == true)
+                {
+                    data[0, i] = voltage;
+                    data[1, i] = p1Reader.ReadSingleSample();
+                    data[2, i] = p2Reader.ReadSingleSample();
+
+                }
                 voltage += stepsize;
                 writeChannel.WriteSingleSample(true, voltage);  //Write new value to channel
                 Thread.Sleep(delayAtEachStep);
@@ -266,24 +269,32 @@ namespace TransferCavityLock
             double[] refCavParams = new double[3];
             bool fitBool;
             bool lockBool;
+            double rampVoltageStart = 0; //For use when not locked. In order to change the voltage smoothly, need to keep track of starting point of voltage. This is for that purpose.
 
             for (; ; )
             {
                 data = scanVoltageRange(LowRampLimit, UpperRampLimit, cavityWriter,
-                outputCavityTask, DELAY_BETWEEN_STEPS, STEPS);
+                outputCavityTask, DELAY_BETWEEN_STEPS, STEPS, true);
                 ui.PlotOnP1(data); //Plot laser peaks
                 ui.PlotOnP2(data); //Plot He-Ne peaks
                 fitBool = ui.checkFitEnableCheck(); //Check to see if fitting is enabled
                 lockBool = ui.checkLockEnableCheck(); //Check to see if locking is enabled
                 if (lockBool == false) //if not locking
                 {
+                    rampVoltageStart = LaserVoltage;
                     LaserVoltage = ui.getLaserVoltage(); //set the laser voltage to the voltage indicated in the "updown" box
-                    laserWriter.WriteSingleSample(true, LaserVoltage); //write that voltage to the laser
+                    if (rampVoltageStart != LaserVoltage)
+                    {
+                        ui.AddToTextBox("Ramping laser!");
+                        scanVoltageRange(rampVoltageStart,LaserVoltage, laserWriter, outputLaserTask, 50, 50, false);
+                        ui.AddToTextBox("Ramping finished!");
+                    }
+                    //laserWriter.WriteSingleSample(true, LaserVoltage); //write that voltage to the laser
                 }
                 if (fitBool == true) //if fitting
                 {
                     refCavParams = fitDisplayAndModifyScanLimits(data); //Fit to cavity peaks and stabilize laser
-                    LaserSetPoint = ui.getSetPoint(); //reads in the setPoint from "updown" box. (only useful when locking)
+                    LaserSetPoint = ui.GetSetPoint(); //reads in the setPoint from "updown" box. (only useful when locking)
                     fitLaserAndLockToReference(data, refCavParams, laserWriter); //lock the laser!
                 }
                 lock (rampStopLock) //This is to break out of the ramping to stop the program.
@@ -294,6 +305,7 @@ namespace TransferCavityLock
                         return;
                     }
                 }
+                Thread.Sleep(100);
             }
         }
 
@@ -362,12 +374,12 @@ namespace TransferCavityLock
                     if (FirstLock == true)              //if this is the first time we're trying to lock
                     {
                         LaserSetPoint = coefficients[1] - parameters[1];    //SetPoint is difference between peaks
-                        ui.setSetPoint(LaserSetPoint);                      //Set this value to the box
+                        ui.SetSetPoint(LaserSetPoint);                      //Set this value to the box
                         FirstLock = false;                                  //Lock for real next time
                     }
                     if (FirstLock == false)                                 //We've been here before
                     {
-                        LaserSetPoint = ui.getSetPoint();                   //get the set point
+                        LaserSetPoint = ui.GetSetPoint();                   //get the set point
                     }
                     LaserVoltage = oldLaserVoltage + gain * (parameters[1] - coefficients[1] + LaserSetPoint); //Feedback
                     writeChannel.WriteSingleSample(true, LaserVoltage);     //Write the new value of the laser control voltage

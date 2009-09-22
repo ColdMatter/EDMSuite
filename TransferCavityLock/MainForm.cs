@@ -38,7 +38,7 @@ namespace TransferCavityLock
             setPointUpDownBox.Maximum = Convert.ToDecimal(9.5);
             setPointUpDownBox.Minimum = Convert.ToDecimal(-9.5);
             setPointUpDownBox.Increment = Convert.ToDecimal(0.01);
-            setPointUpDownBox.DecimalPlaces = 2;
+            setPointUpDownBox.DecimalPlaces = 3;
             initLaserVoltageUpDownBox.Enabled = false;
             initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
             initLaserVoltageUpDownBox.Maximum = Convert.ToDecimal(9.5);
@@ -52,6 +52,7 @@ namespace TransferCavityLock
         /// <summary>
         /// Various things you need to communicate from the front panel to the program.
         /// </summary>
+
 
         /// <summary>
         /// Write to a text box (for messages)
@@ -150,6 +151,7 @@ namespace TransferCavityLock
         /// <summary>
         /// reads the value in the box and returns it
         /// </summary>
+        private delegate double getLaserVoltageDelegate();
         public double getLaserVoltage()
         {
             decimal dec = initLaserVoltageUpDownBox.Value;
@@ -159,18 +161,31 @@ namespace TransferCavityLock
         /// <summary>
         /// reads the value in the box and returns it
         /// </summary>
-        public double getSetPoint()
+        private delegate double getSetPointDelegate();
+        private double getSetPoint()
         {
-            decimal dec = setPointUpDownBox.Value;
-            return Convert.ToDouble(dec);
+            return setPoint;
         }
-
+        public double GetSetPoint()
+        {
+            return Convert.ToDouble(Invoke(new getSetPointDelegate(getSetPoint)));
+        }
         /// <summary>
         /// set the setPoint (I think, only used during the first run of the lock)
         /// </summary>
-        public void setSetPoint(double point)
+        private delegate void setSetPointDelegate(double point);
+        private void setSetPoint(double point)
         {
-            setPointUpDownBox.Value = Convert.ToDecimal(point);
+            setPoint = point;    
+        }
+        public void SetSetPoint(double point)
+        {
+            Invoke(new setSetPointDelegate(setSetPoint), point);
+        }
+        private double setPoint
+        {
+            get { return Convert.ToDouble(setPointUpDownBox.Value); }
+            set { setPointUpDownBox.Value = Convert.ToDecimal(value); }
         }
 
         /// <summary>
@@ -182,14 +197,14 @@ namespace TransferCavityLock
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
                 lockEnabled = true;
-                initLaserVoltageUpDownBox.Enabled = false;
-                setPointUpDownBox.Enabled = true;
+//                this.initLaserVoltageUpDownBox.Enabled = false;
+//                this.setPointUpDownBox.Enabled = true;
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
                 lockEnabled = false;
-                initLaserVoltageUpDownBox.Enabled = true;
-                setPointUpDownBox.Enabled = false;
+ //               this.initLaserVoltageUpDownBox.Enabled = true;
+ //               this.setPointUpDownBox.Enabled = false;
             }
             else { }
             return lockEnabled;
@@ -204,12 +219,12 @@ namespace TransferCavityLock
             if (fitEnableCheck.CheckState == CheckState.Checked)
             {
                 fitEnabled = true;
-                initLaserVoltageUpDownBox.Enabled = true;
-                lockEnableCheck.Enabled = true;
+   //             this.initLaserVoltageUpDownBox.Enabled = true;
+   //             this.lockEnableCheck.Enabled = true;
             }
             if (fitEnableCheck.CheckState == CheckState.Unchecked)
             {
-                fitEnabled = false;
+    //            fitEnabled = false;
             }
             else { }
             return fitEnabled;
@@ -232,18 +247,18 @@ namespace TransferCavityLock
                 controller.Ramping = true;
                 this.rampLED.Value = true;
                 controller.startRamp();
-                rampStartButton.Enabled = false;
-                rampStopButton.Enabled = true;
-                triggerMenu.Enabled = false;
+                this.rampStartButton.Enabled = false;
+                this.rampStopButton.Enabled = true;
+                this.triggerMenu.Enabled = false;
             }
             else
             {
                 controller.Ramping = true;
                 this.rampLED.Value = true;
                 this.AddToTextBox("Trigger is set to external.");
-                rampStartButton.Enabled = false;
-                rampStopButton.Enabled = true;
-                triggerMenu.Enabled = false;
+                this.rampStartButton.Enabled = false;
+                this.rampStopButton.Enabled = true;
+                this.triggerMenu.Enabled = false;
             }
         }
 
@@ -320,16 +335,34 @@ namespace TransferCavityLock
 
         private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
-            
+            if (fitEnableCheck.CheckState == CheckState.Checked)
+            {
+                this.initLaserVoltageUpDownBox.Enabled = true;
+                this.lockEnableCheck.Enabled = true;
+            }
+            if (fitEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                this.initLaserVoltageUpDownBox.Enabled = false;
+                this.lockEnableCheck.Enabled = false;
+            }
         }
         private void lockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
-            
+            if (lockEnableCheck.CheckState == CheckState.Checked)
+            {
+                this.initLaserVoltageUpDownBox.Enabled = false;
+                this.setPointUpDownBox.Enabled = true;
+            }
+            if (lockEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                this.initLaserVoltageUpDownBox.Enabled = true;
+                this.setPointUpDownBox.Enabled = false;
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -338,7 +371,7 @@ namespace TransferCavityLock
         }
         private void initLaserVoltageUpDownBox_ValueChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         #endregion
