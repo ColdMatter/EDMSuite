@@ -37,14 +37,14 @@ namespace TransferCavityLock
             setPointUpDownBox.Value = Convert.ToDecimal(0.0);
             setPointUpDownBox.Maximum = Convert.ToDecimal(9.5);
             setPointUpDownBox.Minimum = Convert.ToDecimal(-9.5);
-            setPointUpDownBox.Increment = Convert.ToDecimal(0.01);
+            setPointUpDownBox.Increment = Convert.ToDecimal(0.001);
             setPointUpDownBox.DecimalPlaces = 3;
             initLaserVoltageUpDownBox.Enabled = false;
             initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
             initLaserVoltageUpDownBox.Maximum = Convert.ToDecimal(9.5);
             initLaserVoltageUpDownBox.Minimum = Convert.ToDecimal(-9.5);
-            initLaserVoltageUpDownBox.Increment = Convert.ToDecimal(0.1);
-            initLaserVoltageUpDownBox.DecimalPlaces = 1;
+            initLaserVoltageUpDownBox.Increment = Convert.ToDecimal(0.001);
+            initLaserVoltageUpDownBox.DecimalPlaces = 3;
         }
         #endregion
 

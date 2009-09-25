@@ -35,7 +35,7 @@ namespace TransferCavityLock
         private double upper_cc_voltage_limit = 3.05; //volts CC: Cavity control
         private double lower_cc_voltage_limit = 2.95; //volts CC: Cavity control
         private double laser_voltage = 0.0;
-        private double gain = 1;
+        private double gain = 2;
         private double laser_Offset_Voltage = 0;
 
         private MainForm ui;
@@ -96,7 +96,7 @@ namespace TransferCavityLock
                 outputCavityTask = new Task("CavityPiezoVoltage");
                 cavityChannel =
                         (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["cavity"];
-                cavityChannel.AddToTask(outputCavityTask, 0, 10);
+                cavityChannel.AddToTask(outputCavityTask, 0, 5);
                 outputCavityTask.Control(TaskAction.Verify);
                 cavityWriter = new AnalogSingleChannelWriter(outputCavityTask.Stream);
 
@@ -305,7 +305,7 @@ namespace TransferCavityLock
                         return;
                     }
                 }
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
             }
         }
 
@@ -330,7 +330,7 @@ namespace TransferCavityLock
             CurveFit.NonLinearFit(dx, dy2, new ModelFunctionCallback(lorentzian),
                  coefficients, out mse, 1000); //Fit a lorentzian.
             ui.fitsPlot(makeFitPlotData(data, coefficients)); //Plot out the fit (should figure out how to do that on same graph when I get a chance)
-            if (coefficients[1] > 0.0 && coefficients[1] < 10.0 
+            if (coefficients[1] > 0.0 && coefficients[1] < 5.0 
                 && coefficients[1] < UpperRampLimit && coefficients[1] > LowRampLimit) //Only change limits if fits are reasonnable.
             {
                 UpperRampLimit = coefficients[1] + 0.17;//Adjust scan range!

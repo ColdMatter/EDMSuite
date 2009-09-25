@@ -26,9 +26,11 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
             Boards.Add("usbDAQ1", "/dev3");
+            Boards.Add("usbDAQ2", "/dev4");
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
+            string usbDAQ2 = (string)Boards["usbDAQ2"];
 
             // add things to the info
 
@@ -87,16 +89,21 @@ namespace DAQ.HAL
 
 			// map the analog input channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
-            AddAnalogInputChannel("p1", daqBoard + "/ai9", AITerminalConfiguration.Rse); //Pin 66
-            AddAnalogInputChannel("p2", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
+            AddAnalogInputChannel("photo1", daqBoard + "/ai9", AITerminalConfiguration.Rse); //Pin 66
+            AddAnalogInputChannel("photo2", daqBoard + "/ai2", AITerminalConfiguration.Rse); //Pin 65
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
             AddAnalogInputChannel("atomSourcePressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
             AddAnalogInputChannel("atomSourcePressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
+            AddAnalogInputChannel("p1", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);//Pin 2
+            AddAnalogInputChannel("p2", usbDAQ2 + "/ai1", AITerminalConfiguration.Rse);//Pin 5
+
 
             //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-            AddAnalogOutputChannel("cavity", daqBoard + "/ao1",-5,5); // Pin 21
+            //AddAnalogOutputChannel("cavity", daqBoard + "/ao1",-5,5); // Pin 21
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
+            AddAnalogOutputChannel("laserLock", usbDAQ2 + "/ao0");//Pin 14
+            AddAnalogOutputChannel("cavity", usbDAQ2 + "/ao1");//Pin15
 
             // map the counter channels
             AddCounterChannel("pmt", daqBoard + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
