@@ -28,8 +28,7 @@ namespace TransferCavityLock
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            controller.Ramping = false;
-            controller.RampTriggerMethod = "int";
+            controller.RAMPING = false;
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
             lockEnableCheck.Enabled = false;
@@ -45,6 +44,9 @@ namespace TransferCavityLock
             initLaserVoltageUpDownBox.Minimum = Convert.ToDecimal(-9.5);
             initLaserVoltageUpDownBox.Increment = Convert.ToDecimal(0.001);
             initLaserVoltageUpDownBox.DecimalPlaces = 3;
+            GainTrackBar.Minimum = 0;
+            GainTrackBar.Maximum = 30;
+            GainTrackBar.Value = 0;
         }
         #endregion
 
@@ -83,14 +85,14 @@ namespace TransferCavityLock
         public void PlotOnP1(double[,] data)
         {
             int i = 0;
-            double[] dx = new double[controller.RampSteps];
-            double[] dy = new double[controller.RampSteps];
-            for (i = 0; i < controller.RampSteps; i++)
+            double[] dx = new double[controller.CavityScanParameters.Steps/2];
+            double[] dy = new double[controller.CavityScanParameters.Steps/2];
+            for (i = controller.CavityScanParameters.Steps / 4; i < 3 * controller.CavityScanParameters.Steps / 4; i++)
             {
-                dx[i]=data[0,i];
-                dy[i]=data[1,i];
+                dx[i - controller.CavityScanParameters.Steps / 4] = data[0, i];
+                dy[i - controller.CavityScanParameters.Steps / 4] = data[1, i];
             }
-            p1Intensity.ClearData();
+           p1Intensity.ClearData();
             p1Intensity.PlotXY(dx,dy);
         }
 
@@ -101,63 +103,39 @@ namespace TransferCavityLock
         public void PlotOnP2(double[,] data)
         {
             int i = 0;
-            double[] dx = new double[controller.RampSteps];
-            double[] dy = new double[controller.RampSteps];
-            for (i = 0; i < controller.RampSteps; i++)
+            double[] dx = new double[controller.CavityScanParameters.Steps/2];
+            double[] dy = new double[controller.CavityScanParameters.Steps/2];
+            for (i = controller.CavityScanParameters.Steps / 4; i < 3 * controller.CavityScanParameters.Steps / 4; i++)
             {
-                dx[i] = data[0, i];
-                dy[i] = data[2, i];
+                dx[i - controller.CavityScanParameters.Steps / 4] = data[0, i];
+                dy[i - controller.CavityScanParameters.Steps / 4] = data[2, i];
             }
             p2Intensity.ClearData();
             p2Intensity.PlotXY(dx, dy);
         }
 
         /// <summary>
-        /// Plots the fit for the He Ne peak
-        /// </summary>
-        private delegate void fitsPlotDelegate(double[,] data);
-        public void fitsPlot(double[,] data)
-        {
-            int i = 0;
-            double[] dx = new double[controller.RampSteps];
-            double[] dy = new double[controller.RampSteps];
-            for (i = 0; i < controller.RampSteps; i++)
-            {
-                dx[i] = data[0, i];
-                dy[i] = data[1, i];
-            }
-            plotFitsWindow.ClearData();
-            plotFitsWindow.PlotXY(dx, dy);
-        }
-
-        /// <summary>
-        /// Plots the fit for the peak from the laser 
-        /// </summary>
-        private delegate void fitsPlot2Delegate(double[,] data);
-        public void fitsPlot2(double[,] data)
-        {
-            int i = 0;
-            double[] dx = new double[controller.RampSteps];
-            double[] dy = new double[controller.RampSteps];
-            for (i = 0; i < controller.RampSteps; i++)
-            {
-                dx[i] = data[0, i];
-                dy[i] = data[1, i];
-            }
-            plotFitsWindow2.ClearData();
-            plotFitsWindow2.PlotXY(dx, dy);
-        }
-
-        /// <summary>
-        /// reads the value in the box and returns it
+        /// threading for the laser voltage. GetLaserVoltage returns the value stored in the updown box, while SetLaserVoltage sets it.
         /// </summary>
         private delegate double getLaserVoltageDelegate();
-        public double getLaserVoltage()
+        private double getLaserVoltage()
         {
-            decimal dec = initLaserVoltageUpDownBox.Value;
-            return Convert.ToDouble(dec);
+            return laserVoltage;
+        }
+        public double GetLaserVoltage()
+        {
+            return Convert.ToDouble(Invoke(new getLaserVoltageDelegate(getLaserVoltage)));
         }
 
+        private delegate void setLaserVoltageDelegate(double laserVoltage);
+        private void setLaserVoltage(double lV)
+        {
+            laserVoltage = lV;
+        }
+        public void SetLaserVoltage(double lV)
+        {
+            Invoke(new setLaserVoltageDelegate(setLaserVoltage), lV);
+        }
         /// <summary>
         /// reads the value in the box and returns it
         /// </summary>
@@ -182,10 +160,42 @@ namespace TransferCavityLock
         {
             Invoke(new setSetPointDelegate(setSetPoint), point);
         }
+        
         private double setPoint
         {
             get { return Convert.ToDouble(setPointUpDownBox.Value); }
             set { setPointUpDownBox.Value = Convert.ToDecimal(value); }
+        }
+        private int gain
+        {
+            get { return GainTrackBar.Value; }
+            set { GainTrackBar.Value = value; }
+        }
+        private double laserVoltage
+        {
+            get { return Convert.ToDouble(initLaserVoltageUpDownBox.Value); }
+            set { initLaserVoltageUpDownBox.Value = Convert.ToDecimal(value); }
+        }
+        /// <summary>
+        /// Get and set the Gain on the laser lock
+        /// </summary>
+        private delegate void setGainDelegate(int point);
+        private void setGain(int point)
+        {
+            gain = point;
+        }
+        public void SetGain(int point)
+        {
+            Invoke(new setGainDelegate(setGain), point);
+        }
+        private delegate int getGainDelegate();
+        private int getGain()
+        {
+            return gain;
+        }
+        public int GetGain()
+        {
+            return Convert.ToInt16(Invoke(new getGainDelegate(getGain)));
         }
 
         /// <summary>
@@ -197,14 +207,10 @@ namespace TransferCavityLock
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
                 lockEnabled = true;
-//                this.initLaserVoltageUpDownBox.Enabled = false;
-//                this.setPointUpDownBox.Enabled = true;
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
                 lockEnabled = false;
- //               this.initLaserVoltageUpDownBox.Enabled = true;
- //               this.setPointUpDownBox.Enabled = false;
             }
             else { }
             return lockEnabled;
@@ -219,12 +225,10 @@ namespace TransferCavityLock
             if (fitEnableCheck.CheckState == CheckState.Checked)
             {
                 fitEnabled = true;
-   //             this.initLaserVoltageUpDownBox.Enabled = true;
-   //             this.lockEnableCheck.Enabled = true;
             }
             if (fitEnableCheck.CheckState == CheckState.Unchecked)
             {
-    //            fitEnabled = false;
+
             }
             else { }
             return fitEnabled;
@@ -242,24 +246,11 @@ namespace TransferCavityLock
         private void rampStartButton_Click(object sender, EventArgs e)
         {
             this.AddToTextBox("Start button pressed.");
-            if (controller.RampTriggerMethod == "int")
-            {
-                controller.Ramping = true;
-                this.rampLED.Value = true;
-                controller.startRamp();
-                this.rampStartButton.Enabled = false;
-                this.rampStopButton.Enabled = true;
-                this.triggerMenu.Enabled = false;
-            }
-            else
-            {
-                controller.Ramping = true;
-                this.rampLED.Value = true;
-                this.AddToTextBox("Trigger is set to external.");
-                this.rampStartButton.Enabled = false;
-                this.rampStopButton.Enabled = true;
-                this.triggerMenu.Enabled = false;
-            }
+            controller.RAMPING = true;
+            this.rampLED.Value = true;
+            controller.startRamp();
+            this.rampStartButton.Enabled = false;
+            this.rampStopButton.Enabled = true;
         }
 
         private void rampStopButton_Click(object sender, EventArgs e)
@@ -267,19 +258,11 @@ namespace TransferCavityLock
             lock (controller.rampStopLock)
             {
                 this.AddToTextBox("Stop button pressed.");
-                controller.Ramping = false;
+                controller.RAMPING = false;
             }
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
-            triggerMenu.Enabled = true;
             this.rampLED.Value = false;
-        }
-
-        private void triggerMenu_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string menuSelection = triggerMenu.Text;
-            controller.RampTriggerMethod = menuSelection;
-            this.AddToTextBox("Trigger method selected: " + menuSelection + ". ");
         }
 
         private void rampLED_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
@@ -294,24 +277,13 @@ namespace TransferCavityLock
 
         private void p1Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
-
+           
         }
 
         private void p2Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
-
+            
         }
-
-
-        private void plotFitsWindow_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-
-        }
-        private void plotFitsWindow2_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-
-        }
-
 
         private void lockParams_Enter(object sender, EventArgs e)
         {
@@ -319,11 +291,6 @@ namespace TransferCavityLock
         }
 
         private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
         {
 
         }
@@ -362,6 +329,10 @@ namespace TransferCavityLock
             {
                 this.initLaserVoltageUpDownBox.Enabled = true;
                 this.setPointUpDownBox.Enabled = false;
+                controller.FirstLock = true;
+                controller.StepToNewSetPoint(controller.LaserScanParameters, GetLaserVoltage());
+                WriteToVoltageToLaserBox(Convert.ToString(GetLaserVoltage()));
+                
             }
         }
 
@@ -374,7 +345,21 @@ namespace TransferCavityLock
             
         }
 
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GainTrackBar_Scroll(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
+
+        
+
+    
 
  
      

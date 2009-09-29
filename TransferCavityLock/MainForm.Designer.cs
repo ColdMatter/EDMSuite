@@ -31,7 +31,6 @@
             this.voltageRampControl = new System.Windows.Forms.GroupBox();
             this.fitEnableCheck = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.triggerMenu = new System.Windows.Forms.ComboBox();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.rampStopButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
@@ -45,44 +44,35 @@
             this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
-            this.plotFitsWindow = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis3 = new NationalInstruments.UI.XAxis();
-            this.yAxis3 = new NationalInstruments.UI.YAxis();
-            this.plotFitsWindow2 = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis4 = new NationalInstruments.UI.XAxis();
-            this.yAxis4 = new NationalInstruments.UI.YAxis();
             this.lockParams = new System.Windows.Forms.GroupBox();
             this.initLaserVoltageUpDownBox = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.setPointUpDownBox = new System.Windows.Forms.NumericUpDown();
             this.voltageToLaserBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.GainTrackBar = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow2)).BeginInit();
             this.lockParams.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // voltageRampControl
             // 
             this.voltageRampControl.Controls.Add(this.fitEnableCheck);
             this.voltageRampControl.Controls.Add(this.label1);
-            this.voltageRampControl.Controls.Add(this.triggerMenu);
             this.voltageRampControl.Controls.Add(this.rampLED);
             this.voltageRampControl.Controls.Add(this.rampStopButton);
             this.voltageRampControl.Controls.Add(this.textBox);
             this.voltageRampControl.Controls.Add(this.rampStartButton);
             this.voltageRampControl.Location = new System.Drawing.Point(554, 3);
             this.voltageRampControl.Name = "voltageRampControl";
-            this.voltageRampControl.Size = new System.Drawing.Size(179, 130);
+            this.voltageRampControl.Size = new System.Drawing.Size(244, 103);
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Voltage Ramp";
@@ -108,20 +98,6 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Ramping:";
             // 
-            // triggerMenu
-            // 
-            this.triggerMenu.FormattingEnabled = true;
-            this.triggerMenu.Items.AddRange(new object[] {
-            "int",
-            "ext"});
-            this.triggerMenu.Location = new System.Drawing.Point(6, 75);
-            this.triggerMenu.MaxDropDownItems = 2;
-            this.triggerMenu.Name = "triggerMenu";
-            this.triggerMenu.Size = new System.Drawing.Size(121, 21);
-            this.triggerMenu.TabIndex = 8;
-            this.triggerMenu.Text = "Select Trigger";
-            this.triggerMenu.SelectedIndexChanged += new System.EventHandler(this.triggerMenu_SelectedIndexChanged);
-            // 
             // rampLED
             // 
             this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
@@ -143,7 +119,7 @@
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(6, 102);
+            this.textBox.Location = new System.Drawing.Point(6, 75);
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size(162, 20);
             this.textBox.TabIndex = 3;
@@ -162,7 +138,7 @@
             // lockEnableCheck
             // 
             this.lockEnableCheck.AutoSize = true;
-            this.lockEnableCheck.Location = new System.Drawing.Point(6, 20);
+            this.lockEnableCheck.Location = new System.Drawing.Point(6, 18);
             this.lockEnableCheck.Name = "lockEnableCheck";
             this.lockEnableCheck.Size = new System.Drawing.Size(50, 17);
             this.lockEnableCheck.TabIndex = 9;
@@ -172,11 +148,11 @@
             // 
             // p1Intensity
             // 
-            this.p1Intensity.Location = new System.Drawing.Point(0, 3);
+            this.p1Intensity.Location = new System.Drawing.Point(0, 4);
             this.p1Intensity.Name = "p1Intensity";
             this.p1Intensity.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot1});
-            this.p1Intensity.Size = new System.Drawing.Size(548, 112);
+            this.p1Intensity.Size = new System.Drawing.Size(548, 132);
             this.p1Intensity.TabIndex = 4;
             this.p1Intensity.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis1});
@@ -191,7 +167,7 @@
             // 
             // p2Intensity
             // 
-            this.p2Intensity.Location = new System.Drawing.Point(0, 237);
+            this.p2Intensity.Location = new System.Drawing.Point(0, 140);
             this.p2Intensity.Name = "p2Intensity";
             this.p2Intensity.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot2});
@@ -208,56 +184,19 @@
             this.scatterPlot2.XAxis = this.xAxis2;
             this.scatterPlot2.YAxis = this.yAxis2;
             // 
-            // plotFitsWindow
-            // 
-            this.plotFitsWindow.Location = new System.Drawing.Point(0, 352);
-            this.plotFitsWindow.Name = "plotFitsWindow";
-            this.plotFitsWindow.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot3});
-            this.plotFitsWindow.Size = new System.Drawing.Size(548, 112);
-            this.plotFitsWindow.TabIndex = 11;
-            this.plotFitsWindow.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis3});
-            this.plotFitsWindow.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis3});
-            this.plotFitsWindow.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.plotFitsWindow_PlotDataChanged);
-            // 
-            // scatterPlot3
-            // 
-            this.scatterPlot3.XAxis = this.xAxis3;
-            this.scatterPlot3.YAxis = this.yAxis3;
-            // 
-            // plotFitsWindow2
-            // 
-            this.plotFitsWindow2.Location = new System.Drawing.Point(0, 121);
-            this.plotFitsWindow2.Name = "plotFitsWindow2";
-            this.plotFitsWindow2.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot4});
-            this.plotFitsWindow2.Size = new System.Drawing.Size(548, 112);
-            this.plotFitsWindow2.TabIndex = 12;
-            this.plotFitsWindow2.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis4});
-            this.plotFitsWindow2.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis4});
-            this.plotFitsWindow2.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.plotFitsWindow2_PlotDataChanged);
-            // 
-            // scatterPlot4
-            // 
-            this.scatterPlot4.XAxis = this.xAxis4;
-            this.scatterPlot4.YAxis = this.yAxis4;
-            // 
             // lockParams
             // 
+            this.lockParams.Controls.Add(this.label4);
+            this.lockParams.Controls.Add(this.GainTrackBar);
             this.lockParams.Controls.Add(this.initLaserVoltageUpDownBox);
             this.lockParams.Controls.Add(this.label2);
             this.lockParams.Controls.Add(this.setPointUpDownBox);
             this.lockParams.Controls.Add(this.voltageToLaserBox);
-            this.lockParams.Controls.Add(this.label4);
             this.lockParams.Controls.Add(this.label3);
             this.lockParams.Controls.Add(this.lockEnableCheck);
-            this.lockParams.Location = new System.Drawing.Point(554, 139);
+            this.lockParams.Location = new System.Drawing.Point(554, 112);
             this.lockParams.Name = "lockParams";
-            this.lockParams.Size = new System.Drawing.Size(179, 180);
+            this.lockParams.Size = new System.Drawing.Size(244, 140);
             this.lockParams.TabIndex = 10;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
@@ -265,7 +204,7 @@
             // 
             // initLaserVoltageUpDownBox
             // 
-            this.initLaserVoltageUpDownBox.Location = new System.Drawing.Point(6, 99);
+            this.initLaserVoltageUpDownBox.Location = new System.Drawing.Point(151, 38);
             this.initLaserVoltageUpDownBox.Name = "initLaserVoltageUpDownBox";
             this.initLaserVoltageUpDownBox.Size = new System.Drawing.Size(78, 20);
             this.initLaserVoltageUpDownBox.TabIndex = 18;
@@ -274,16 +213,16 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 83);
+            this.label2.Location = new System.Drawing.Point(3, 40);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(139, 13);
+            this.label2.Size = new System.Drawing.Size(142, 13);
             this.label2.TabIndex = 17;
-            this.label2.Text = "Approx. Voltage to Laser (V)";
+            this.label2.Text = "Approx. Voltage to Laser (V):";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // setPointUpDownBox
             // 
-            this.setPointUpDownBox.Location = new System.Drawing.Point(6, 56);
+            this.setPointUpDownBox.Location = new System.Drawing.Point(151, 15);
             this.setPointUpDownBox.Name = "setPointUpDownBox";
             this.setPointUpDownBox.Size = new System.Drawing.Size(78, 20);
             this.setPointUpDownBox.TabIndex = 16;
@@ -291,40 +230,46 @@
             // 
             // voltageToLaserBox
             // 
-            this.voltageToLaserBox.Location = new System.Drawing.Point(6, 144);
+            this.voltageToLaserBox.Location = new System.Drawing.Point(151, 64);
             this.voltageToLaserBox.Name = "voltageToLaserBox";
             this.voltageToLaserBox.Size = new System.Drawing.Size(57, 20);
             this.voltageToLaserBox.TabIndex = 14;
             this.voltageToLaserBox.TextChanged += new System.EventHandler(this.voltageToLaserBox_TextChanged);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 128);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 13);
-            this.label4.TabIndex = 15;
-            this.label4.Text = "Voltage to Laser";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 40);
+            this.label3.Location = new System.Drawing.Point(62, 19);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 13);
+            this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Set Point (V)";
+            this.label3.Text = "Set Point (V):";
             this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // GainTrackBar
+            // 
+            this.GainTrackBar.Location = new System.Drawing.Point(6, 89);
+            this.GainTrackBar.Name = "GainTrackBar";
+            this.GainTrackBar.Size = new System.Drawing.Size(232, 45);
+            this.GainTrackBar.TabIndex = 19;
+            this.GainTrackBar.Scroll += new System.EventHandler(this.GainTrackBar_Scroll);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 71);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Gain";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 476);
+            this.ClientSize = new System.Drawing.Size(807, 260);
             this.Controls.Add(this.lockParams);
-            this.Controls.Add(this.plotFitsWindow2);
-            this.Controls.Add(this.plotFitsWindow);
             this.Controls.Add(this.p2Intensity);
             this.Controls.Add(this.p1Intensity);
             this.Controls.Add(this.voltageRampControl);
@@ -336,12 +281,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.plotFitsWindow2)).EndInit();
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -353,7 +297,6 @@
         private System.Windows.Forms.Button rampStopButton;
         private NationalInstruments.UI.WindowsForms.Led rampLED;
         private System.Windows.Forms.TextBox textBox;
-        private System.Windows.Forms.ComboBox triggerMenu;
         private NationalInstruments.UI.WindowsForms.ScatterGraph p1Intensity;
         private NationalInstruments.UI.ScatterPlot scatterPlot1;
         private NationalInstruments.UI.XAxis xAxis1;
@@ -363,23 +306,16 @@
         private NationalInstruments.UI.XAxis xAxis2;
         private NationalInstruments.UI.YAxis yAxis2;
         private System.Windows.Forms.CheckBox lockEnableCheck;
-        private NationalInstruments.UI.WindowsForms.ScatterGraph plotFitsWindow;
-        private NationalInstruments.UI.ScatterPlot scatterPlot3;
-        private NationalInstruments.UI.XAxis xAxis3;
-        private NationalInstruments.UI.YAxis yAxis3;
-        private NationalInstruments.UI.WindowsForms.ScatterGraph plotFitsWindow2;
-        private NationalInstruments.UI.ScatterPlot scatterPlot4;
-        private NationalInstruments.UI.XAxis xAxis4;
-        private NationalInstruments.UI.YAxis yAxis4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox lockParams;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox voltageToLaserBox;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown setPointUpDownBox;
         private System.Windows.Forms.CheckBox fitEnableCheck;
         private System.Windows.Forms.NumericUpDown initLaserVoltageUpDownBox;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TrackBar GainTrackBar;
+        private System.Windows.Forms.Label label4;
     }
 }
 

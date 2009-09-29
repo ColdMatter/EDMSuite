@@ -37,6 +37,8 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0"); //DAQ Pin 11
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
+            Info.Add("analogTrigger3", (string)Boards["daq"] + "/PFI5"); //DAQ Pin 6
+            Info.Add("analogTrigger2", (string)Boards["usbDAQ2"] + "/PFI0"); 
             //distance information
             Info.Add("sourceToDetect", 0.787);
             Info.Add("sourceToSoftwareDecelerator", 0.123);
@@ -68,6 +70,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
             AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
             AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
+            AddDigitalOutputChannel("cavityTriggerOut", usbDAQ2, 0, 1); //Pin 17
             // the following are the decelerator channels for the burst
 			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
 	        AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
@@ -100,15 +103,14 @@ namespace DAQ.HAL
 
             //map the analog output channels
 			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-            //AddAnalogOutputChannel("cavity", daqBoard + "/ao1",-5,5); // Pin 21
-            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
+            AddAnalogOutputChannel("cavity", daqBoard + "/ao1"); // Pin 21
+           // AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
             AddAnalogOutputChannel("laserLock", usbDAQ2 + "/ao0");//Pin 14
-            AddAnalogOutputChannel("cavity", usbDAQ2 + "/ao1");//Pin15
+            //AddAnalogOutputChannel("cavity", usbDAQ2 + "/ao1");//Pin15
 
             // map the counter channels
             AddCounterChannel("pmt", daqBoard + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", daqBoard + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
-
 		}
 
         public override void ConnectApplications()
