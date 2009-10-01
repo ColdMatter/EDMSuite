@@ -47,6 +47,7 @@ namespace TransferCavityLock
             GainTrackBar.Minimum = 0;
             GainTrackBar.Maximum = 30;
             GainTrackBar.Value = 0;
+            this.SetLaserVoltage(0.0);
         }
         #endregion
 
@@ -161,6 +162,7 @@ namespace TransferCavityLock
             Invoke(new setSetPointDelegate(setSetPoint), point);
         }
         
+
         private double setPoint
         {
             get { return Convert.ToDouble(setPointUpDownBox.Value); }
@@ -171,10 +173,11 @@ namespace TransferCavityLock
             get { return GainTrackBar.Value; }
             set { GainTrackBar.Value = value; }
         }
+        private double lv;
         private double laserVoltage
         {
-            get { return Convert.ToDouble(initLaserVoltageUpDownBox.Value); }
-            set { initLaserVoltageUpDownBox.Value = Convert.ToDecimal(value); }
+            get { return /*Convert.ToDouble(initLaserVoltageUpDownBox.Value)*/ lv; }
+            set { /*initLaserVoltageUpDownBox.Value = Convert.ToDecimal(value)*/ lv = value; }
         }
         /// <summary>
         /// Get and set the Gain on the laser lock
@@ -342,7 +345,7 @@ namespace TransferCavityLock
         }
         private void initLaserVoltageUpDownBox_ValueChanged(object sender, EventArgs e)
         {
-            
+            lv = Convert.ToDouble(initLaserVoltageUpDownBox.Value);
         }
 
         private void label4_Click(object sender, EventArgs e)

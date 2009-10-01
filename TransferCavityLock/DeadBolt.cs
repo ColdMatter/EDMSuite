@@ -96,10 +96,10 @@ namespace TransferCavityLock
                         (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["cavity"];
                 cavityChannel.AddToTask(outputCavityTask, 0, 5);
 
-                outputCavityTask.Timing.ConfigureSampleClock("", 5000 , 
+                outputCavityTask.Timing.ConfigureSampleClock("", 1000 , 
                     SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples, STEPS);
                 outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Interrupts;
-
+                
                 outputCavityTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("analogTrigger3"), DigitalEdgeStartTriggerEdge.Rising);
                 outputCavityTask.Control(TaskAction.Verify);
@@ -113,7 +113,7 @@ namespace TransferCavityLock
                 
                 sampleTask.Timing.ConfigureSampleClock(
                     "",
-                    5000,
+                    1000,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples, 2*STEPS);
                 sampleTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
@@ -212,6 +212,7 @@ namespace TransferCavityLock
             {
                 voltage = scanParameters.Low + i * scanParameters.StepSize;
                 scanParameters.Writer.WriteSingleSample(true, voltage);
+                Thread.Sleep(scanParameters.SleepTime);
             }
         }
 
@@ -243,77 +244,39 @@ namespace TransferCavityLock
             
         }
 
-       private bool j = false;
-       public bool J
-       {
-           set { j = value; }
-           get { return j; }
-       }
-
         private void scanFast(ScanParameters scanParameters, CavityScanData data)
         {
-
-          //  for (int i = 0; i < scanParameters.Steps; i++)
-           // {
             double[,] tempData = new double[2, cavityScanParameters.Steps];
-            byte[] triggers = new byte[cavityScanParameters.Steps * 2];
-            foreach (int i in triggers)
-            {
-                if (J == true)
-                {
-                    triggers[i] = 2;
-                    J = false;
-                }
-                else
-                {
-                    triggers[i] = 0;
-                    J = true;
-                }
-            }
-                 triggerWriter.WriteSingleSampleSingleLine(true, false);
-                 scanParameters.Writer.WriteMultiSample(false, data.Voltages);
-                 sampleTask.Start();
-                 outputCavityTask.Start();              
+            
+            triggerWriter.WriteSingleSampleSingleLine(true, false);
+        //    Thread.Sleep(50);
+            scanParameters.Writer.WriteMultiSample(false, data.Voltages);
+        //    Thread.Sleep(50);
+            sampleTask.Start();
+            outputCavityTask.Start();              
                 
                  
-                 Thread.Sleep(10);
-                 triggerWriter.WriteSingleSampleSingleLine(true, true);
-                 outputCavityTask.WaitUntilDone();
-                 /*
-                 for (int i = 0; i < cavityScanParameters.Steps; i++)
-                 {
-                     scanParameters.Writer.WriteSingleSample(false, data.Voltages[i]);
-                     Thread.Sleep(1);
-
-                     triggerWriter.WriteMultiSamplePort(true, triggers);
-              
+            Thread.Sleep(10);
+            triggerWriter.WriteSingleSampleSingleLine(true, true);
+            outputCavityTask.WaitUntilDone();
+                
+            tempData = scanParameters.Reader.ReadMultiSample(cavityScanParameters.Steps);
+            outputCavityTask.Stop();
+            sampleTask.Stop();
+               
+            triggerWriter.WriteSingleSampleSingleLine(true, false);
+            if (scanParameters.Record.Equals(true))
+            {
+                for (int i = 0; i < cavityScanParameters.Steps; i++)
+                {
+                    data.P1Data[i] = tempData[0, i];
+                    data.P2Data[i] = tempData[1, i];
                 }
-                  */
-                 tempData = scanParameters.Reader.ReadMultiSample(cavityScanParameters.Steps);
-                outputCavityTask.Stop();
-                
-               
-               
-               sampleTask.Stop();
-               
-               triggerWriter.WriteSingleSampleSingleLine(true, false);
-               for (int i = 0; i < cavityScanParameters.Steps; i++)
-               {
-                   data.P1Data[i] = tempData[0, i];
-                   data.P2Data[i] = tempData[1, i];
-               }
-                
+            }   
         }
 
                 
-     //           if (scanParameters.Record.Equals(true))
-       //         {
-       //             double[] tempData = new double[] { 0, 0 };
-       //             tempData = scanParameters.Reader.ReadSingleSample();
-       //             data.P1Data[i] = tempData[0];
-       //             data.P2Data[i] = tempData[1];
-       //         }
-       //     }
+    
 
        
         /// <summary>
@@ -331,6 +294,8 @@ namespace TransferCavityLock
             laserScanParameters.ArmScan(LOWER_LC_VOLTAGE_LIMIT, UPPER_LC_VOLTAGE_LIMIT, 20, 50, false);
             CavityScanData data = new CavityScanData(cavityScanParameters.Steps);
             
+        //    cavityScanParameters.Writer.WriteSingleSample(true, cavityScanParameters.SetPoint);
+            Thread.Sleep(2000);
             for (; ; )
             {
                 
@@ -345,11 +310,11 @@ namespace TransferCavityLock
                 LOCK_BOOL = ui.checkLockEnableCheck(); //Check to see if locking is enabled
                 if (LOCK_BOOL == false) //if not locking
                 {
-                    if (LaserVoltage != ui.GetLaserVoltage())
+                    if (this.LaserVoltage != ui.GetLaserVoltage())
                     {
                         ui.AddToTextBox("Ramping laser!");
                         StepToNewSetPoint(laserScanParameters, ui.GetLaserVoltage());
-                        LaserVoltage = ui.GetLaserVoltage(); //set the laser voltage to the voltage indicated in the "updown" box
+                        this.LaserVoltage = ui.GetLaserVoltage(); //set the laser voltage to the voltage indicated in the "updown" box
                         ui.AddToTextBox("Ramping finished!");
                         ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3))); 
                     }
@@ -370,8 +335,9 @@ namespace TransferCavityLock
                 {
                     if (RAMPING == false)
                     {
-                        cavityScanParameters.Writer.WriteSingleSample(true, 0);
-                        laserScanParameters.Writer.WriteSingleSample(true, 0);
+                 //       cavityScanParameters.Writer.WriteSingleSample(true, 0);
+                        StepToNewSetPoint(laserScanParameters, 0);
+                 //       laserScanParameters.Writer.WriteSingleSample(true, 0);
                  //       triggerWriter.WriteSingleSampleSingleLine(true, false);
                         return;
                     }
@@ -522,10 +488,6 @@ namespace TransferCavityLock
         }
 
 
-        private void launchTrigger(bool state)
-        {
-            triggerWriter.WriteSingleSampleSingleLine(true, state);
-        }
 
         #endregion
     }
