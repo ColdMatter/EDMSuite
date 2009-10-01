@@ -130,8 +130,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0");
-            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1");
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -5, 0);
+            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 5);
 
             // B field control
             AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);

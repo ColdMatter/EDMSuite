@@ -189,7 +189,7 @@ def updateLocks(bState):
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = - (1.0/3.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = - (1.0/8.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
@@ -312,7 +312,8 @@ def EDMGo():
 		hc.SetProbePolarizerAngle(probePolAngle)
 		pumpPolAngle = 360.0 * r.NextDouble()
 		hc.SetPumpPolarizerAngle(pumpPolAngle)
-		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
+		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
+		hc.StepTarget(1)
 		# do things that need periodically doing
 	#	if ((blockIndex % kTargetRotationPeriod) == 0):
 		#	print("Rotating target.")
@@ -320,9 +321,9 @@ def EDMGo():
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
 		dbValue = pmtChannelValues.GetValue(dbIndex)
-		if (dbValue < 7.5):
+		if (dbValue < 8.5):
 			print("Dodgy spot target rotation.")
-			hc.StepTarget(1)
+			hc.StepTarget(10)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			hc.EnableEField( False )
