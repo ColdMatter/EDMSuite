@@ -1126,6 +1126,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double E0PlusBoost
+        {
+            get
+            {
+                return Double.Parse(window.zeroPlusBoostTextBox.Text);
+            }
+        }
+
         #endregion
 
         #region Hardware control methods - safe for remote

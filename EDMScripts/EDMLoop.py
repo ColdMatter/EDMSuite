@@ -136,6 +136,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	# this is for legacy analysis compatibility
 	bc.Settings["eDischargeTime"] = hc.ERampDownTime + hc.ERampDownDelay
 	bc.Settings["eChargeTime"] = hc.ERampUpTime + hc.ERampUpDelay
+	# store the E switch asymmetry in the block
+	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	return bc
 
 # lock gains
