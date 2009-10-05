@@ -31,10 +31,8 @@ namespace TransferCavityLock
         private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
         private ScanParameters laserScanParameters;
         private ScanParameters cavityScanParameters;
-        private int STEPS = 200;
+        private int STEPS = 400;
 
-        private double upper_cc_voltage_limit = 3.3; //volts CC: Cavity control
-        private double lower_cc_voltage_limit = 2.7; //volts CC: Cavity control
         private double laser_voltage = 0.0;
 
         private MainForm ui;
@@ -97,13 +95,14 @@ namespace TransferCavityLock
                 cavityChannel.AddToTask(outputCavityTask, 0, 5);
 
                 outputCavityTask.Timing.ConfigureSampleClock("", 1000 , 
-                    SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples, STEPS);
+                    SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples, 2*STEPS);
                 outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Interrupts;
                 
                 outputCavityTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("analogTrigger3"), DigitalEdgeStartTriggerEdge.Rising);
                 outputCavityTask.Control(TaskAction.Verify);
                 cavityWriter = new AnalogSingleChannelWriter(outputCavityTask.Stream);
+
 
                 sampleTask = new Task("ReadPhotodiodes");
                 p1Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["p1"];
@@ -228,29 +227,20 @@ namespace TransferCavityLock
 
         private void scan(ScanParameters scanParameters, CavityScanData data)
         {
-   
+            double[,] tempData = new double[2, scanParameters.Steps];
+            double[] ramp = new double[2 * scanParameters.Steps];
             for (int i = 0; i < scanParameters.Steps; i++)
             {
-                
-                scanParameters.Writer.WriteSingleSample(true, data.Voltages[i]);
-                if (scanParameters.Record.Equals(true))
-                {
-                    double[] tempData = new double[] { 0, 0 };
-                    tempData = scanParameters.Reader.ReadSingleSample();
-                    data.P1Data[i] = tempData[0];
-                    data.P2Data[i] = tempData[1];
-                }
+                ramp[i] = data.Voltages[i];
             }
-            
-        }
+            for(int i = scanParameters.Steps; i < 2 * scanParameters.Steps; i++)
+            {
+                ramp[i] = data.Voltages[2 * scanParameters.Steps - i-1];
+            }
 
-        private void scanFast(ScanParameters scanParameters, CavityScanData data)
-        {
-            double[,] tempData = new double[2, cavityScanParameters.Steps];
-            
             triggerWriter.WriteSingleSampleSingleLine(true, false);
         //    Thread.Sleep(50);
-            scanParameters.Writer.WriteMultiSample(false, data.Voltages);
+            scanParameters.Writer.WriteMultiSample(false, ramp);
         //    Thread.Sleep(50);
             sampleTask.Start();
             outputCavityTask.Start();              
@@ -259,20 +249,22 @@ namespace TransferCavityLock
             Thread.Sleep(10);
             triggerWriter.WriteSingleSampleSingleLine(true, true);
             outputCavityTask.WaitUntilDone();
-                
-            tempData = scanParameters.Reader.ReadMultiSample(cavityScanParameters.Steps);
+
+            tempData = scanParameters.Reader.ReadMultiSample(scanParameters.Steps);
             outputCavityTask.Stop();
             sampleTask.Stop();
                
             triggerWriter.WriteSingleSampleSingleLine(true, false);
             if (scanParameters.Record.Equals(true))
             {
-                for (int i = 0; i < cavityScanParameters.Steps; i++)
+                for (int i = 0; i < scanParameters.Steps; i++)
                 {
                     data.P1Data[i] = tempData[0, i];
                     data.P2Data[i] = tempData[1, i];
                 }
-            }   
+            }
+            
+      
         }
 
                 
@@ -288,23 +280,30 @@ namespace TransferCavityLock
             
             bool FIT_BOOL;
             bool LOCK_BOOL;
-            
-            
-            cavityScanParameters.ArmScan(lower_cc_voltage_limit,upper_cc_voltage_limit,0, STEPS, true);
+
+            if (ui.NewStepNumber != cavityScanParameters.Steps)
+            {
+                cavityScanParameters.Steps = ui.NewStepNumber;
+                cavityScanParameters.AdjustStepSize();
+            }
+            cavityScanParameters.ArmScan(ui.ScanOffset - ui.ScanWidth, ui.ScanOffset + ui.ScanWidth, 0, /*2*cavityScanParameters.Steps*/ STEPS, true);
             laserScanParameters.ArmScan(LOWER_LC_VOLTAGE_LIMIT, UPPER_LC_VOLTAGE_LIMIT, 20, 50, false);
-            CavityScanData data = new CavityScanData(cavityScanParameters.Steps);
             
         //    cavityScanParameters.Writer.WriteSingleSample(true, cavityScanParameters.SetPoint);
             Thread.Sleep(2000);
             for (; ; )
             {
-                
+                CavityScanData data = new CavityScanData(cavityScanParameters.Steps);
                 data.PrepareData(cavityScanParameters);
-                scanFast(cavityScanParameters, data);
+                scan(cavityScanParameters, data);
 
                // triggerWriter.WriteSingleSampleSingleLine(true, false);
-                ui.PlotOnP1(data.ConvertCavityDataToDoublesArray()); //Plot laser peaks
-                ui.PlotOnP2(data.ConvertCavityDataToDoublesArray()); //Plot He-Ne peaks
+                //ui.PlotOnP1(data.ConvertCavityDataToDoublesArray()); //Plot laser peaks
+                //ui.PlotOnP2(data.ConvertCavityDataToDoublesArray()); //Plot He-Ne peaks
+                ui.clearP1();
+                ui.clearP2();
+                ui.plotXYOnP1(data.Voltages, data.P1Data);
+                ui.plotXYOnP2(data.Voltages, data.P2Data);
 
                 FIT_BOOL = ui.checkFitEnableCheck(); //Check to see if fitting is enabled
                 LOCK_BOOL = ui.checkLockEnableCheck(); //Check to see if locking is enabled
@@ -336,12 +335,15 @@ namespace TransferCavityLock
                     if (RAMPING == false)
                     {
                  //       cavityScanParameters.Writer.WriteSingleSample(true, 0);
-                        StepToNewSetPoint(laserScanParameters, 0);
+                        this.LaserVoltage = 0;
+                        StepToNewSetPoint(laserScanParameters, LaserVoltage);
+                        ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage,3))); 
                  //       laserScanParameters.Writer.WriteSingleSample(true, 0);
                  //       triggerWriter.WriteSingleSampleSingleLine(true, false);
                         return;
                     }
                 }
+                
                 Thread.Sleep(100);
             }
         }
@@ -378,8 +380,8 @@ namespace TransferCavityLock
                 && coefficients[1] < parameters.High + 1.0 && coefficients[1] > parameters.Low - 1.0) //Only change limits if fits are reasonnable.
             {
                 parameters.SetPoint = coefficients[1];  //The set point for the cavity.
-                parameters.High = coefficients[1] + 0.3;//Adjust scan range!
-                parameters.Low = coefficients[1] - 0.3;
+                parameters.High = coefficients[1] + ui.ScanWidth;//Adjust scan range!
+                parameters.Low = coefficients[1] - ui.ScanWidth;
               //  parameters.AdjustStepSize();
             }
             //return coefficients; //return the fit parameters for later use.
@@ -420,16 +422,8 @@ namespace TransferCavityLock
             double[] reducedData1 = new double[cavityScanParameters.Steps];
             for (int i = 0; i < cavityScanParameters.Steps; i++)
             {
-                if (i > cavityScanParameters.Steps / 4 && i < 3 * cavityScanParameters.Steps / 4)
-                {
                     voltages[i] = data.Voltages[i];
-                    reducedData1[i] = data.P1Data[i];
-                }
-                else
-                {
-                    voltages[i] = 0;
-                    reducedData1[i] = 0;
-                }
+                    reducedData1[i] = data.P1Data[i];  
             }
             double[] coefficients = new double[] { 0.002, voltages[ArrayOperation.GetIndexOfMax(reducedData1)],
                 ArrayOperation.GetMax(reducedData1) - ArrayOperation.GetMin(reducedData1)};
@@ -449,7 +443,9 @@ namespace TransferCavityLock
                     if (FirstLock == false)                                 //We've been here before
                     {
                         laserScanParameters.SetPoint = ui.GetSetPoint();                   //get the set point
+                        ui.AddToMeasuredPeakDistanceTextBox(Convert.ToString(Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3)));
                     }
+                    
                     LaserVoltage = oldLaserVoltage + ui.GetGain() * (cavityScanParameters.SetPoint - coefficients[1] + laserScanParameters.SetPoint); //Feedback
                     if (LaserVoltage > UPPER_LC_VOLTAGE_LIMIT || LaserVoltage < LOWER_LC_VOLTAGE_LIMIT)
                     {

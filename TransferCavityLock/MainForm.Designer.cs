@@ -45,21 +45,28 @@
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.lockParams = new System.Windows.Forms.GroupBox();
+            this.measuredPeakDistanceTextBox = new System.Windows.Forms.TextBox();
+            this.cavityScanOffsetTextBox = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cavityScanWidthTextBox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numberOfPointsTextBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.GainTrackBar = new System.Windows.Forms.TrackBar();
             this.initLaserVoltageUpDownBox = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.setPointUpDownBox = new System.Windows.Forms.NumericUpDown();
             this.voltageToLaserBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.GainTrackBar = new System.Windows.Forms.TrackBar();
-            this.label4 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).BeginInit();
             this.lockParams.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // voltageRampControl
@@ -72,7 +79,7 @@
             this.voltageRampControl.Controls.Add(this.rampStartButton);
             this.voltageRampControl.Location = new System.Drawing.Point(554, 3);
             this.voltageRampControl.Name = "voltageRampControl";
-            this.voltageRampControl.Size = new System.Drawing.Size(244, 103);
+            this.voltageRampControl.Size = new System.Drawing.Size(316, 103);
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Voltage Ramp";
@@ -167,11 +174,11 @@
             // 
             // p2Intensity
             // 
-            this.p2Intensity.Location = new System.Drawing.Point(0, 140);
+            this.p2Intensity.Location = new System.Drawing.Point(0, 156);
             this.p2Intensity.Name = "p2Intensity";
             this.p2Intensity.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot2});
-            this.p2Intensity.Size = new System.Drawing.Size(548, 112);
+            this.p2Intensity.Size = new System.Drawing.Size(548, 130);
             this.p2Intensity.TabIndex = 5;
             this.p2Intensity.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis2});
@@ -186,6 +193,13 @@
             // 
             // lockParams
             // 
+            this.lockParams.Controls.Add(this.measuredPeakDistanceTextBox);
+            this.lockParams.Controls.Add(this.cavityScanOffsetTextBox);
+            this.lockParams.Controls.Add(this.label7);
+            this.lockParams.Controls.Add(this.cavityScanWidthTextBox);
+            this.lockParams.Controls.Add(this.label6);
+            this.lockParams.Controls.Add(this.numberOfPointsTextBox);
+            this.lockParams.Controls.Add(this.label5);
             this.lockParams.Controls.Add(this.label4);
             this.lockParams.Controls.Add(this.GainTrackBar);
             this.lockParams.Controls.Add(this.initLaserVoltageUpDownBox);
@@ -196,11 +210,91 @@
             this.lockParams.Controls.Add(this.lockEnableCheck);
             this.lockParams.Location = new System.Drawing.Point(554, 112);
             this.lockParams.Name = "lockParams";
-            this.lockParams.Size = new System.Drawing.Size(244, 140);
+            this.lockParams.Size = new System.Drawing.Size(316, 174);
             this.lockParams.TabIndex = 10;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
             this.lockParams.Enter += new System.EventHandler(this.lockParams_Enter);
+            // 
+            // measuredPeakDistanceTextBox
+            // 
+            this.measuredPeakDistanceTextBox.Location = new System.Drawing.Point(235, 14);
+            this.measuredPeakDistanceTextBox.Name = "measuredPeakDistanceTextBox";
+            this.measuredPeakDistanceTextBox.Size = new System.Drawing.Size(57, 20);
+            this.measuredPeakDistanceTextBox.TabIndex = 27;
+            this.measuredPeakDistanceTextBox.TextChanged += new System.EventHandler(this.measuredPeakDistanceTextBox_TextChanged);
+            // 
+            // cavityScanOffsetTextBox
+            // 
+            this.cavityScanOffsetTextBox.Location = new System.Drawing.Point(175, 141);
+            this.cavityScanOffsetTextBox.Name = "cavityScanOffsetTextBox";
+            this.cavityScanOffsetTextBox.Size = new System.Drawing.Size(57, 20);
+            this.cavityScanOffsetTextBox.TabIndex = 26;
+            this.cavityScanOffsetTextBox.TextChanged += new System.EventHandler(this.cavityScanOffsetTextBox_TextChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(172, 122);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(98, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Cavity Scan Offset:";
+            this.label7.Click += new System.EventHandler(this.label7_Click);
+            // 
+            // cavityScanWidthTextBox
+            // 
+            this.cavityScanWidthTextBox.Location = new System.Drawing.Point(96, 141);
+            this.cavityScanWidthTextBox.Name = "cavityScanWidthTextBox";
+            this.cavityScanWidthTextBox.Size = new System.Drawing.Size(57, 20);
+            this.cavityScanWidthTextBox.TabIndex = 24;
+            this.cavityScanWidthTextBox.TextChanged += new System.EventHandler(this.cavityScanWidthTextBox_TextChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 147);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(66, 13);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "Scan Width:";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // numberOfPointsTextBox
+            // 
+            this.numberOfPointsTextBox.Location = new System.Drawing.Point(96, 115);
+            this.numberOfPointsTextBox.Name = "numberOfPointsTextBox";
+            this.numberOfPointsTextBox.Size = new System.Drawing.Size(57, 20);
+            this.numberOfPointsTextBox.TabIndex = 22;
+            this.numberOfPointsTextBox.TextChanged += new System.EventHandler(this.numberOfPointsTextBox_TextChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 122);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(90, 13);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Number of points:";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 58);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Gain";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // GainTrackBar
+            // 
+            this.GainTrackBar.Location = new System.Drawing.Point(6, 76);
+            this.GainTrackBar.Name = "GainTrackBar";
+            this.GainTrackBar.Size = new System.Drawing.Size(293, 45);
+            this.GainTrackBar.TabIndex = 19;
+            this.GainTrackBar.Scroll += new System.EventHandler(this.GainTrackBar_Scroll);
             // 
             // initLaserVoltageUpDownBox
             // 
@@ -230,7 +324,7 @@
             // 
             // voltageToLaserBox
             // 
-            this.voltageToLaserBox.Location = new System.Drawing.Point(151, 64);
+            this.voltageToLaserBox.Location = new System.Drawing.Point(235, 38);
             this.voltageToLaserBox.Name = "voltageToLaserBox";
             this.voltageToLaserBox.Size = new System.Drawing.Size(57, 20);
             this.voltageToLaserBox.TabIndex = 14;
@@ -246,29 +340,11 @@
             this.label3.Text = "Set Point (V):";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
-            // GainTrackBar
-            // 
-            this.GainTrackBar.Location = new System.Drawing.Point(6, 89);
-            this.GainTrackBar.Name = "GainTrackBar";
-            this.GainTrackBar.Size = new System.Drawing.Size(232, 45);
-            this.GainTrackBar.TabIndex = 19;
-            this.GainTrackBar.Scroll += new System.EventHandler(this.GainTrackBar_Scroll);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 71);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "Gain";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(807, 260);
+            this.ClientSize = new System.Drawing.Size(914, 298);
             this.Controls.Add(this.lockParams);
             this.Controls.Add(this.p2Intensity);
             this.Controls.Add(this.p1Intensity);
@@ -283,9 +359,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.p2Intensity)).EndInit();
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GainTrackBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -316,6 +392,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TrackBar GainTrackBar;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox numberOfPointsTextBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox cavityScanWidthTextBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox cavityScanOffsetTextBox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox measuredPeakDistanceTextBox;
     }
 }
 

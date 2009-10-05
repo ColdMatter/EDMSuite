@@ -15,7 +15,13 @@ namespace TransferCavityLock
     public partial class MainForm : Form
     {
         public DeadBolt controller;
-        
+
+        public object plotLock = new object();
+        private double lv;
+        public int NewStepNumber = 100;
+        public double ScanWidth = 0.3;
+        public double ScanOffset = 3;
+
         #region load Mainform
 
         /// <summary>
@@ -48,6 +54,12 @@ namespace TransferCavityLock
             GainTrackBar.Maximum = 30;
             GainTrackBar.Value = 0;
             this.SetLaserVoltage(0.0);
+            numberOfPointsTextBox.Text = Convert.ToString(NewStepNumber);
+            numberOfPointsTextBox.Enabled = true;
+            cavityScanWidthTextBox.Text = Convert.ToString(ScanWidth);
+            cavityScanWidthTextBox.Enabled = true;
+            cavityScanOffsetTextBox.Text = Convert.ToString(ScanOffset);
+            cavityScanOffsetTextBox.Enabled = true;
         }
         #endregion
 
@@ -67,7 +79,13 @@ namespace TransferCavityLock
             textBox.Invoke(new ClearTextBoxDelegate(textBox.Clear));
             textBox.Invoke(new AppendToTextBoxDelegate(textBox.AppendText), text);
         }
-
+        private delegate void AppendToMeasuredPeakDistanceTextBoxDelegate(string text);
+        private delegate void ClearMeasuredPeakDistanceTextBoxDelegate();
+        public void AddToMeasuredPeakDistanceTextBox(String text)
+        {
+            measuredPeakDistanceTextBox.Invoke(new ClearMeasuredPeakDistanceTextBoxDelegate(measuredPeakDistanceTextBox.Clear));
+            measuredPeakDistanceTextBox.Invoke(new AppendToMeasuredPeakDistanceTextBoxDelegate(measuredPeakDistanceTextBox.AppendText), text);
+        }
         /// <summary>
         /// Displays the voltage applied to the laser
         /// </summary>
@@ -78,41 +96,59 @@ namespace TransferCavityLock
             voltageToLaserBox.Invoke(new ClearVoltageToLaserBoxDelegate(voltageToLaserBox.Clear));
             voltageToLaserBox.Invoke(new WriteToVoltageToLaserBoxDelegate(voltageToLaserBox.AppendText), text);
         }
-
+        
         /// <summary>
         /// Plots the cavity peaks from the laser 
         /// </summary>
-        private delegate void PlotOnP1Delegate(double[,] data);
+        private delegate void clearP1Delegate();
+        public void clearP1()
+        {
+            p1Intensity.Invoke(new clearP1Delegate(p1Intensity.ClearData));
+        }
+        private delegate void PlotXYOnP1Delegate(double[] x, double[] y);
+        public void plotXYOnP1(double[] x, double[] y)
+        {
+            p1Intensity.Invoke(new PlotXYOnP1Delegate(p1Intensity.PlotXY), x,y);
+        }
         public void PlotOnP1(double[,] data)
         {
             int i = 0;
-            double[] dx = new double[controller.CavityScanParameters.Steps/2];
-            double[] dy = new double[controller.CavityScanParameters.Steps/2];
-            for (i = controller.CavityScanParameters.Steps / 4; i < 3 * controller.CavityScanParameters.Steps / 4; i++)
+            double[] dx = new double[controller.CavityScanParameters.Steps];
+            double[] dy = new double[controller.CavityScanParameters.Steps];
+            for (i = controller.CavityScanParameters.Steps ; i <  controller.CavityScanParameters.Steps ; i++)
             {
-                dx[i - controller.CavityScanParameters.Steps / 4] = data[0, i];
-                dy[i - controller.CavityScanParameters.Steps / 4] = data[1, i];
+                dx[i] = data[0, i];
+                dy[i] = data[1, i];
             }
-           p1Intensity.ClearData();
-            p1Intensity.PlotXY(dx,dy);
+            clearP1();
+            plotXYOnP1(dx, dy);
         }
 
         /// <summary>
         /// Plots the cavity peaks from the He Ne
         /// </summary>
-        private delegate void PlotOnP2Delegate(double[,] data);
+        private delegate void clearP2Delegate();
+        public void clearP2()
+        {
+            p2Intensity.Invoke(new clearP2Delegate(p2Intensity.ClearData));
+        }
+        private delegate void PlotXYOnP2Delegate(double[] x, double[] y);
+        public void plotXYOnP2(double[] x, double[] y)
+        {
+            p2Intensity.Invoke(new PlotXYOnP2Delegate(p2Intensity.PlotXY), x,y);
+        }
         public void PlotOnP2(double[,] data)
         {
             int i = 0;
-            double[] dx = new double[controller.CavityScanParameters.Steps/2];
-            double[] dy = new double[controller.CavityScanParameters.Steps/2];
-            for (i = controller.CavityScanParameters.Steps / 4; i < 3 * controller.CavityScanParameters.Steps / 4; i++)
+            double[] dx = new double[controller.CavityScanParameters.Steps];
+            double[] dy = new double[controller.CavityScanParameters.Steps];
+            for (i = controller.CavityScanParameters.Steps; i < controller.CavityScanParameters.Steps; i++)
             {
-                dx[i - controller.CavityScanParameters.Steps / 4] = data[0, i];
-                dy[i - controller.CavityScanParameters.Steps / 4] = data[2, i];
+                dx[i] = data[0, i];
+                dy[i] = data[1, i];
             }
-            p2Intensity.ClearData();
-            p2Intensity.PlotXY(dx, dy);
+            clearP2();
+            plotXYOnP2(dx, dy);
         }
 
         /// <summary>
@@ -173,7 +209,7 @@ namespace TransferCavityLock
             get { return GainTrackBar.Value; }
             set { GainTrackBar.Value = value; }
         }
-        private double lv;
+
         private double laserVoltage
         {
             get { return /*Convert.ToDouble(initLaserVoltageUpDownBox.Value)*/ lv; }
@@ -254,6 +290,10 @@ namespace TransferCavityLock
             controller.startRamp();
             this.rampStartButton.Enabled = false;
             this.rampStopButton.Enabled = true;
+            this.numberOfPointsTextBox.Enabled = false;
+            this.cavityScanWidthTextBox.Enabled = false;
+            this.cavityScanOffsetTextBox.Enabled = false;
+            this.initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
         }
 
         private void rampStopButton_Click(object sender, EventArgs e)
@@ -263,9 +303,13 @@ namespace TransferCavityLock
                 this.AddToTextBox("Stop button pressed.");
                 controller.RAMPING = false;
             }
+            this.numberOfPointsTextBox.Enabled = true;
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
             this.rampLED.Value = false;
+            this.cavityScanWidthTextBox.Enabled = true;
+            this.cavityScanOffsetTextBox.Enabled = true;
+            this.initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
         }
 
         private void rampLED_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
@@ -305,7 +349,7 @@ namespace TransferCavityLock
 
         private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
         {
-            
+            controller.CavityScanParameters.SetPoint = Convert.ToDouble(setPointUpDownBox.Value);
         }
 
         private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
@@ -358,38 +402,61 @@ namespace TransferCavityLock
 
         }
 
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numberOfPointsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                NewStepNumber = Convert.ToInt32(numberOfPointsTextBox.Text);
+            }
+            catch (FormatException f)
+            { }
+        }
+
+        private void cavityScanWidthTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ScanWidth = Convert.ToDouble(cavityScanWidthTextBox.Text);
+            }
+            catch (FormatException f)
+            { }
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cavityScanOffsetTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ScanOffset = Convert.ToDouble(cavityScanOffsetTextBox.Text);
+            }
+            catch (FormatException f)
+            { }
+        }
+        private void measuredPeakDistanceTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
+     
+
         
-
-    
-
- 
-     
-
-
-
-  
-        
-
-
-     
-
-       
-
-     
-
-    
-
-
-
-       
-
-
-  
-
-     
-     
 
 
         
