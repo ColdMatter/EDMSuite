@@ -29,6 +29,8 @@ namespace Analysis.EDM
         private static Dictionary<string, DemodulationConfigBuilder> standardConfigs =
             new Dictionary<string, DemodulationConfigBuilder>();
 
+        private static double kDetectorDistanceRatio = 3.842;
+
         public static DemodulationConfig GetStandardDemodulationConfig(string name, Block b)
         {
             return (standardConfigs[name])(b);
@@ -138,6 +140,14 @@ namespace Analysis.EDM
             };
             standardConfigs.Add("background", background);
 
+            // add some fixed gate slices - the first three are the 1.1 sigma centre portion and two
+            // non-overlapping portions either side.
+            AddFixedSliceConfig("cgate11Fixed", 2156, 90);
+            AddFixedSliceConfig("vfastFixed", 2025, 41);
+            AddFixedSliceConfig("vslowFixed", 2286, 41);
+            // these two are the fast and slow halves of the 1.1 sigma central gate.
+            AddFixedSliceConfig("fastFixed", 2110, 45);
+            AddFixedSliceConfig("slowFixed", 2201, 45);
         }
 
         private static void AddSliceConfig(string name, double offset, double width)
@@ -183,6 +193,57 @@ namespace Analysis.EDM
             };
             standardConfigs.Add(name, dcb);
         }
+
+        private static void AddFixedSliceConfig(string name, double centre, double width)
+        {
+            // the slow half of the fwhm
+            DemodulationConfigBuilder dcb = delegate(Block b)
+            {
+                DemodulationConfig dc;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
+
+                dc = new DemodulationConfig();
+                dc.AnalysisTag = name;
+                dg0 = new GatedDetectorExtractSpec();
+                dg0.Index = 0;
+                dg0.Name = "top";
+                dg0.BackgroundSubtract = false;
+                dg0.GateLow = (int)(centre - width);
+                dg0.GateHigh = (int)(centre + width);
+                dg1 = new GatedDetectorExtractSpec();
+                dg1.Index = 1;
+                dg1.Name = "norm";
+                dg1.BackgroundSubtract = false;
+                dg1.GateLow = (int)((centre - width) / kDetectorDistanceRatio);
+                dg1.GateHigh = (int)((centre + width) / kDetectorDistanceRatio);
+                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
+                dg2.Name = "mag1";
+                dg2.Integrate = false;
+                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
+                dg3.Name = "short";
+                dg3.Integrate = false;
+                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
+                dg4.Name = "battery";
+
+                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
+                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
+                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+
+                dc.PointDetectorChannels.Add("MiniFlux1");
+                dc.PointDetectorChannels.Add("MiniFlux2");
+                dc.PointDetectorChannels.Add("MiniFlux3");
+                dc.PointDetectorChannels.Add("NorthCurrent");
+                dc.PointDetectorChannels.Add("SouthCurrent");
+                dc.PointDetectorChannels.Add("PumpPD");
+                dc.PointDetectorChannels.Add("ProbePD");
+
+                return dc;
+            };
+            standardConfigs.Add(name, dcb);
+        }
+
 
      }
 
