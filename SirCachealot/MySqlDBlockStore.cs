@@ -17,9 +17,9 @@ namespace SirCachealot
 {
     class MySqlDBlockStore : MarshalByRefObject, DBlockStore
     {
-        public Cache cache;
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
+        private string kConnectionString = "Server=127.0.0.1;Uid=root;Pwd=atomic1;default command timeout=300;";
 
         public UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs)
         {
@@ -237,67 +237,80 @@ namespace SirCachealot
             return db;
         }
 
+        // this method temporarily is locked so that only one thread at a time can execute.
+        // I need to fix a db problem concerning the UIDs before unlocking it.
+        // Hopefully it won't hurt the performance too badly.
+        private object dbAddLock = new object();
         public UInt32 AddDBlock(DemodulatedBlock db)
         {
-            // extract the data that we're going to put in the sql database
-            string clusterName = db.Config.Settings["cluster"] as string;
-            int clusterIndex = (int)db.Config.Settings["clusterIndex"];
-            string aTag = db.DemodulationConfig.AnalysisTag;
-            bool eState = (bool)db.Config.Settings["eState"];
-            bool bState = (bool)db.Config.Settings["bState"];
-            // the following is a workaround. We took a lot of data before we started recording
-            // the rfState. Luckily, almost all of this data was taken in the same rf state.
-            // Here, if no rfState is found in the block it is assigned the default, true.
-            bool rfState;
-            try
+            lock (dbAddLock)
             {
-                rfState = (bool)db.Config.Settings["rfState"];
+                // create our own private connection - this method should be safe to call concurrently
+                // from multiple threads.
+                MySqlConnection mySqlLocal = new MySqlConnection(kConnectionString);
+                mySqlLocal.Open();
+                MySqlCommand mySqlCommLocal = mySqlLocal.CreateCommand();
+                // extract the data that we're going to put in the sql database
+                string clusterName = db.Config.Settings["cluster"] as string;
+                int clusterIndex = (int)db.Config.Settings["clusterIndex"];
+                string aTag = db.DemodulationConfig.AnalysisTag;
+                bool eState = (bool)db.Config.Settings["eState"];
+                bool bState = (bool)db.Config.Settings["bState"];
+                // the following is a workaround. We took a lot of data before we started recording
+                // the rfState. Luckily, almost all of this data was taken in the same rf state.
+                // Here, if no rfState is found in the block it is assigned the default, true.
+                bool rfState;
+                try
+                {
+                    rfState = (bool)db.Config.Settings["rfState"];
+                }
+                catch (Exception)
+                {
+                    // we set the rfState in the dblock, which will shortly be persisted to the
+                    // database. This means that every dblock in the database will have an rfState
+                    // even if the corresponding block does not.
+                    db.Config.Settings["rfState"] = true;
+                    rfState = true;
+                }
+
+                DateTime timeStamp = db.TimeStamp;
+                double ePlus = (double)db.Config.Settings["ePlus"];
+                double eMinus = (double)db.Config.Settings["eMinus"];
+                byte[] dBlockBytes = serializeDBlockAsByteArray(db);
+
+                mySqlCommLocal = mySql.CreateCommand();
+                mySqlCommLocal.CommandText =
+                    "INSERT INTO DBLOCKS " +
+                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?ts, " +
+                    "?ePlus, ?eMinus);";
+                // the uid column is defined auto_increment
+                mySqlCommLocal.Parameters.AddWithValue("?uint", null);
+                mySqlCommLocal.Parameters.AddWithValue("?cluster", clusterName);
+                mySqlCommLocal.Parameters.AddWithValue("?clusterIndex", clusterIndex);
+                mySqlCommLocal.Parameters.AddWithValue("?aTag", aTag);
+                mySqlCommLocal.Parameters.AddWithValue("?eState", eState);
+                mySqlCommLocal.Parameters.AddWithValue("?bState", bState);
+                mySqlCommLocal.Parameters.AddWithValue("?rfState", rfState);
+                mySqlCommLocal.Parameters.AddWithValue("?ts", timeStamp);
+                mySqlCommLocal.Parameters.AddWithValue("?ePlus", ePlus);
+                mySqlCommLocal.Parameters.AddWithValue("?eMinus", eMinus);
+
+                mySqlCommLocal.ExecuteNonQuery();
+                mySqlCommLocal.Parameters.Clear();
+                UInt32 uid = (UInt32)mySqlCommLocal.LastInsertedId;
+
+                mySqlCommLocal = mySql.CreateCommand();
+                mySqlCommLocal.CommandText =
+                  "INSERT INTO DBLOCKDATA VALUES(?uint, ?dblock);";
+                mySqlCommLocal.Parameters.AddWithValue("?uint", uid);
+                mySqlCommLocal.Parameters.AddWithValue("?dblock", dBlockBytes);
+
+                mySqlCommLocal.ExecuteNonQuery();
+                mySqlCommLocal.Parameters.Clear();
+
+                mySqlLocal.Close();
+                return uid;
             }
-            catch (Exception)
-            {
-                // we set the rfState in the dblock, which will shortly be persisted to the
-                // database. This means that every dblock in the database will have an rfState
-                // even if the corresponding block does not.
-                db.Config.Settings["rfState"] = true;
-                rfState = true;
-            }
-
-            DateTime timeStamp = db.TimeStamp;
-            double ePlus = (double)db.Config.Settings["ePlus"];
-            double eMinus = (double)db.Config.Settings["eMinus"];
-            byte[] dBlockBytes = serializeDBlockAsByteArray(db);
-
-            mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText =
-                "INSERT INTO DBLOCKS " +
-                "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?ts, " +
-                "?ePlus, ?eMinus);";
-            // the uid column is defined auto_increment
-            mySqlComm.Parameters.AddWithValue("?uint", null);
-            mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
-            mySqlComm.Parameters.AddWithValue("?clusterIndex", clusterIndex);
-            mySqlComm.Parameters.AddWithValue("?aTag", aTag);
-            mySqlComm.Parameters.AddWithValue("?eState", eState);
-            mySqlComm.Parameters.AddWithValue("?bState", bState);
-            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
-            mySqlComm.Parameters.AddWithValue("?ts", timeStamp);
-            mySqlComm.Parameters.AddWithValue("?ePlus", ePlus);
-            mySqlComm.Parameters.AddWithValue("?eMinus", eMinus);
-
-            mySqlComm.ExecuteNonQuery();
-            mySqlComm.Parameters.Clear();
-            UInt32 uid = (UInt32)mySqlComm.LastInsertedId;
-
-            mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText =
-              "INSERT INTO DBLOCKDATA VALUES(?uint, ?dblock);";
-            mySqlComm.Parameters.AddWithValue("?uint", uid);
-            mySqlComm.Parameters.AddWithValue("?dblock", dBlockBytes);
-
-            mySqlComm.ExecuteNonQuery();
-            mySqlComm.Parameters.Clear();
-
-            return uid;
         }
 
         public void RemoveDBlock(UInt32 uid)
@@ -370,7 +383,9 @@ namespace SirCachealot
         internal void Start()
         {
             //TODO: support multiple DBs
-            mySql = new MySqlConnection("Server=127.0.0.1;Uid=root;Pwd=atomic1;default command timeout=300;");
+            // This creates a shared connection that is used for all query methods. As a result, the query
+            // methods are probably not currently thread-safe (maybe, need to check).
+            mySql = new MySqlConnection(kConnectionString);
             mySql.Open();
             mySqlComm = mySql.CreateCommand();
         }

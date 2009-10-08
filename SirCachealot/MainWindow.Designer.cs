@@ -28,7 +28,6 @@ namespace SirCachealot
         /// </summary>
         private void InitializeComponent()
         {
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,18 +37,9 @@ namespace SirCachealot
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
-            this.memcachedStatsTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.statsTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Enabled = false;
-            this.progressBar1.Location = new System.Drawing.Point(12, 46);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(256, 23);
-            this.progressBar1.TabIndex = 0;
             // 
             // menuStrip1
             // 
@@ -119,42 +109,30 @@ namespace SirCachealot
             // logTextBox
             // 
             this.logTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.logTextBox.Location = new System.Drawing.Point(274, 46);
+            this.logTextBox.Location = new System.Drawing.Point(274, 27);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(195, 180);
+            this.logTextBox.Size = new System.Drawing.Size(195, 199);
             this.logTextBox.TabIndex = 2;
             // 
-            // memcachedStatsTextBox
+            // statsTextBox
             // 
-            this.memcachedStatsTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.memcachedStatsTextBox.Enabled = false;
-            this.memcachedStatsTextBox.Location = new System.Drawing.Point(12, 75);
-            this.memcachedStatsTextBox.Multiline = true;
-            this.memcachedStatsTextBox.Name = "memcachedStatsTextBox";
-            this.memcachedStatsTextBox.ReadOnly = true;
-            this.memcachedStatsTextBox.Size = new System.Drawing.Size(256, 151);
-            this.memcachedStatsTextBox.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Cache fill:";
+            this.statsTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.statsTextBox.Location = new System.Drawing.Point(12, 27);
+            this.statsTextBox.Multiline = true;
+            this.statsTextBox.Name = "statsTextBox";
+            this.statsTextBox.ReadOnly = true;
+            this.statsTextBox.Size = new System.Drawing.Size(256, 199);
+            this.statsTextBox.TabIndex = 3;
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(485, 240);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.memcachedStatsTextBox);
+            this.Controls.Add(this.statsTextBox);
             this.Controls.Add(this.logTextBox);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainWindow";
@@ -170,15 +148,13 @@ namespace SirCachealot
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
         private System.Windows.Forms.TextBox logTextBox;
-        private System.Windows.Forms.TextBox memcachedStatsTextBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox statsTextBox;
         private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem test1ToolStripMenuItem;

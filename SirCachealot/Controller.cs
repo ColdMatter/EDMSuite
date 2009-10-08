@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 using Analysis.EDM;
 using Data.EDM;
@@ -13,7 +14,12 @@ namespace SirCachealot
 
         internal MainWindow mainWindow;
         private MySqlDBlockStore blockStore;
-        private Cache cache;
+        System.Threading.Timer threadMonitorTimer;
+        int totalAnalysed;
+        int queueLength;
+        object queueLengthLock = new object();
+        int currentAnalysisTotal;
+        DateTime currentAnalysisStart = DateTime.Now;
 
 
         /* This is the interface that SirCachealot provides to the d-block store. The actual d-block
@@ -30,7 +36,7 @@ namespace SirCachealot
         }
 
         /* This is a convenient way to add a block, if you're using standard demodulation
-         * configurations.
+         * configurations. This method is thread-safe.
          */
         public void AddBlock(Block b, string[] demodulationConfigs)
         {
@@ -44,25 +50,56 @@ namespace SirCachealot
             }
         }
 
+        // This method is thread-safe.
         public void AddBlock(string path, string[] demodulationConfigs)
         {
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
-
             AddBlock(b, demodulationConfigs);
+        }
+
+        // this method and the following struct are wrappers so that we can add a block
+        // with a single parameter, as required by the threadpool.
+        private void AddBlockThreadWrapper(object parametersIn)
+        {
+            lock (queueLengthLock) queueLength--;
+            blockAddParams parameters = (blockAddParams)parametersIn;
+            AddBlock(parameters.path, parameters.demodulationConfigs);
+            lock (queueLengthLock)
+            {
+                totalAnalysed++;
+                currentAnalysisTotal++;
+            }
+        }
+        private struct blockAddParams
+        {
+            public string path;
+            public string[] demodulationConfigs;
+        }
+
+        // Use this to add blocks to SirCachealot's analysis queue.
+        public void AddBlockToQueue(string path, string[] demodulationConfigs)
+        {
+            blockAddParams bap = new blockAddParams();
+            bap.path = path;
+            bap.demodulationConfigs = demodulationConfigs;
+            ThreadPool.QueueUserWorkItem(new WaitCallback(AddBlockThreadWrapper), bap);
+            lock (queueLengthLock) queueLength++;
+        }
+
+        // This method resets SirCachealot's analysis stats. Call it before an analysis run.
+        public void ClearAnalysisRunStats()
+        {
+            currentAnalysisTotal = 0;
+            currentAnalysisStart = DateTime.Now;
         }
 
         // This method is called before the main form is created.
         // Don't do any UI stuff here!
         internal void Initialise()
         {
-            //set up memcached
-            cache = new Cache();
-//            cache.Start();
-
             //set up sql database
             blockStore = new MySqlDBlockStore();
-            blockStore.cache = cache;
             blockStore.Start();
         }
 
@@ -70,6 +107,8 @@ namespace SirCachealot
         // loaded and the UI is ready.
         internal void UIInitialise()
         {
+            //start the thread pool monitor
+            threadMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateThreadMonitor), null, 500, 250);
         }
 
         // this method gets called by the main window menu exit item, and when
@@ -77,7 +116,41 @@ namespace SirCachealot
         internal void Exit()
         {
             blockStore.Stop();
-//            cache.Stop();
+            // not sure whether this is needed, or even helpful.
+            threadMonitorTimer.Dispose();
+        }
+
+        internal void UpdateThreadMonitor(object unused)
+        {
+            StringBuilder b = new StringBuilder();
+            int maxWorkers, maxIO;
+            ThreadPool.GetMaxThreads(out maxWorkers, out maxIO);
+            int availableWorkers, availableIO;
+            ThreadPool.GetAvailableThreads(out availableWorkers, out availableIO);
+            b.AppendLine("Max threads: " + maxWorkers);
+            b.AppendLine("Available threads: " + availableWorkers);
+            b.AppendLine("Analysis threads (estimate): " + (maxWorkers - availableWorkers - 1));
+            b.AppendLine("Queued: " + queueLength);
+            b.AppendLine("Analysed this run: " + currentAnalysisTotal);
+            b.AppendLine("Run time: " + (DateTime.Now.Subtract(currentAnalysisStart)));
+            b.AppendLine("Estimated time to go: " + EstimateFinishTime() );
+            b.AppendLine("Total analysed: " + totalAnalysed);
+            mainWindow.SetStatsText(b.ToString());
+        }
+
+        internal TimeSpan EstimateFinishTime()
+        {
+            if (queueLength == 0) return TimeSpan.FromSeconds(0);
+            else
+            {
+                if (currentAnalysisTotal == 0) return TimeSpan.FromSeconds(0);
+                else
+                {
+                    long ticksGone = DateTime.Now.Ticks - currentAnalysisStart.Ticks;
+                    long ticksPerBlock = ticksGone / currentAnalysisTotal;
+                    return TimeSpan.FromTicks(ticksPerBlock * queueLength);
+                }
+            }
         }
 
         internal void CreateDB()

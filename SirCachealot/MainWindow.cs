@@ -42,7 +42,7 @@ namespace SirCachealot
 
         internal void SetMemcachedStatsText(string p)
         {
-            memcachedStatsTextBox.Text = p;
+            statsTextBox.Text = p;
         }
 
         private void selectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -55,6 +55,19 @@ namespace SirCachealot
             logTextBox.BeginInvoke(new AppendTextDelegate(logTextBox.AppendText),
 				new object[] {txt + Environment.NewLine});
         }
+
+        public void SetStatsText(string txt)
+        {
+            logTextBox.BeginInvoke(new AppendTextDelegate(SetStatsTextInternal),
+                new object[] { txt + Environment.NewLine });
+        }
+
+        private void SetStatsTextInternal(string txt)
+        {
+            statsTextBox.Clear();
+            statsTextBox.Text = txt;
+        }
+
  		private delegate void AppendTextDelegate(String text);
 
         private void test1ToolStripMenuItem_Click(object sender, EventArgs e)
