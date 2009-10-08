@@ -234,7 +234,7 @@ namespace TransferCavityLock
         }
         public int GetGain()
         {
-            return Convert.ToInt16(Invoke(new getGainDelegate(getGain)));
+            return Convert.ToInt32(Invoke(new getGainDelegate(getGain)));
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace TransferCavityLock
 
         private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
         {
-            controller.CavityScanParameters.SetPoint = Convert.ToDouble(setPointUpDownBox.Value);
+            this.setPoint = Convert.ToDouble(setPointUpDownBox.Value);
         }
 
         private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
@@ -369,16 +369,22 @@ namespace TransferCavityLock
         {
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
+                this.setPointUpDownBox.Value = Convert.ToDecimal(0.0);
+                this.measuredPeakDistanceTextBox.Text = "0.0";
                 this.initLaserVoltageUpDownBox.Enabled = false;
                 this.setPointUpDownBox.Enabled = true;
+                this.GainTrackBar.Enabled = false;
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
+                this.setPointUpDownBox.Value = Convert.ToDecimal(0.0);
+                this.measuredPeakDistanceTextBox.Text = "0.0";
                 this.initLaserVoltageUpDownBox.Enabled = true;
                 this.setPointUpDownBox.Enabled = false;
                 controller.FirstLock = true;
-                controller.StepToNewSetPoint(controller.LaserScanParameters, GetLaserVoltage());
+               // controller.StepToNewSetPoint(controller.LaserScanParameters, 0);
                 WriteToVoltageToLaserBox(Convert.ToString(GetLaserVoltage()));
+                this.GainTrackBar.Enabled = true;
                 
             }
         }

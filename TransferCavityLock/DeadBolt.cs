@@ -27,7 +27,7 @@ namespace TransferCavityLock
         private const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
         private const double UPPER_CC_VOLTAGE_LIMIT = 5.0; //volts CC: Cavity control
         private const double LOWER_CC_VOLTAGE_LIMIT = 0.0; //volts CC: Cavity control
-
+        private double voltageDifference = 0;
         private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
         private ScanParameters laserScanParameters;
         private ScanParameters cavityScanParameters;
@@ -96,7 +96,7 @@ namespace TransferCavityLock
 
                 outputCavityTask.Timing.ConfigureSampleClock("", 1000 , 
                     SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples, 2*STEPS);
-                outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Interrupts;
+                outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Dma;
                 
                 outputCavityTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("analogTrigger3"), DigitalEdgeStartTriggerEdge.Rising);
@@ -213,6 +213,7 @@ namespace TransferCavityLock
                 scanParameters.Writer.WriteSingleSample(true, voltage);
                 Thread.Sleep(scanParameters.SleepTime);
             }
+            scanParameters.SetPoint = newSetPoint;
         }
 
         
@@ -231,11 +232,27 @@ namespace TransferCavityLock
             double[] ramp = new double[2 * scanParameters.Steps];
             for (int i = 0; i < scanParameters.Steps; i++)
             {
-                ramp[i] = data.Voltages[i];
+                if (data.Voltages[i] < UPPER_CC_VOLTAGE_LIMIT)
+                {
+                    ramp[i] = data.Voltages[i];
+                }
+                else
+                {
+                    ui.AddToTextBox("Cavity is out of range!");
+                    ramp[i] = UPPER_CC_VOLTAGE_LIMIT - 0.01;
+                }
             }
             for(int i = scanParameters.Steps; i < 2 * scanParameters.Steps; i++)
             {
-                ramp[i] = data.Voltages[2 * scanParameters.Steps - i-1];
+                if (data.Voltages[2 * scanParameters.Steps - i - 1] < UPPER_CC_VOLTAGE_LIMIT)
+                {
+                    ramp[i] = data.Voltages[2 * scanParameters.Steps - i - 1];
+                }
+                else
+                {
+                    ui.AddToTextBox("Cavity is out of range!");
+                    ramp[i] = UPPER_CC_VOLTAGE_LIMIT - 0.01;
+                }
             }
 
             triggerWriter.WriteSingleSampleSingleLine(true, false);
@@ -286,8 +303,8 @@ namespace TransferCavityLock
                 cavityScanParameters.Steps = ui.NewStepNumber;
                 cavityScanParameters.AdjustStepSize();
             }
-            cavityScanParameters.ArmScan(ui.ScanOffset - ui.ScanWidth, ui.ScanOffset + ui.ScanWidth, 0, /*2*cavityScanParameters.Steps*/ STEPS, true);
-            laserScanParameters.ArmScan(LOWER_LC_VOLTAGE_LIMIT, UPPER_LC_VOLTAGE_LIMIT, 20, 50, false);
+            cavityScanParameters.ArmScan(ui.ScanOffset - ui.ScanWidth, ui.ScanOffset + ui.ScanWidth, 0, /*2*cavityScanParameters.Steps*/ STEPS, true, ui.ScanOffset);
+            laserScanParameters.ArmScan(LOWER_LC_VOLTAGE_LIMIT, UPPER_LC_VOLTAGE_LIMIT, 20, 50, false, 0);
             
         //    cavityScanParameters.Writer.WriteSingleSample(true, cavityScanParameters.SetPoint);
             Thread.Sleep(2000);
@@ -313,6 +330,7 @@ namespace TransferCavityLock
                     {
                         ui.AddToTextBox("Ramping laser!");
                         StepToNewSetPoint(laserScanParameters, ui.GetLaserVoltage());
+                        
                         this.LaserVoltage = ui.GetLaserVoltage(); //set the laser voltage to the voltage indicated in the "updown" box
                         ui.AddToTextBox("Ramping finished!");
                         ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3))); 
@@ -414,8 +432,10 @@ namespace TransferCavityLock
         private void lockLaser(CavityScanData data)
         {
 
-            
+            //LaserVoltage = ui.GetLaserVoltage();
+
             double oldLaserVoltage = LaserVoltage;
+            
             
             double mse = 0;
             double[] voltages = new double[cavityScanParameters.Steps];
@@ -436,26 +456,34 @@ namespace TransferCavityLock
                 {
                     if (FirstLock == true)              //if this is the first time we're trying to lock
                     {
-                        laserScanParameters.SetPoint = coefficients[1] - cavityScanParameters.SetPoint;    //SetPoint is difference between peaks
-                        ui.SetSetPoint(laserScanParameters.SetPoint);                      //Set this value to the box
+                        voltageDifference = Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3);
+                        ui.SetSetPoint(voltageDifference);
+                        ui.AddToMeasuredPeakDistanceTextBox(Convert.ToString(voltageDifference));
+                        //laserScanParameters.SetPoint = coefficients[1] - cavityScanParameters.SetPoint;    //SetPoint is difference between peaks
+                        //LaserVoltage = laserScanParameters.SetPoint;
+                       // ui.SetSetPoint(laserScanParameters.SetPoint);                      //Set this value to the box
+                        LaserVoltage = ui.GetLaserVoltage();
                         FirstLock = false;                                  //Lock for real next time
                     }
-                    if (FirstLock == false)                                 //We've been here before
+                    else                                 //We've been here before
                     {
-                        laserScanParameters.SetPoint = ui.GetSetPoint();                   //get the set point
+                        voltageDifference = ui.GetSetPoint();                   //get the set point
                         ui.AddToMeasuredPeakDistanceTextBox(Convert.ToString(Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3)));
+                        LaserVoltage = oldLaserVoltage - ui.GetGain() * (Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3) - voltageDifference); //Feedback
+
+                        if (LaserVoltage > UPPER_LC_VOLTAGE_LIMIT || LaserVoltage < LOWER_LC_VOLTAGE_LIMIT)
+                        {
+                            ui.AddToTextBox("Cannot lock: set point exceeds range which can be sent to laser");
+                        }
+                        else
+                        {
+                            ui.AddToTextBox(Convert.ToString(ui.GetGain()));
+                            laserScanParameters.Writer.WriteSingleSample(true, LaserVoltage);     //Write the new value of the laser control voltage
+                        }
                     }
+
                     
-                    LaserVoltage = oldLaserVoltage + ui.GetGain() * (cavityScanParameters.SetPoint - coefficients[1] + laserScanParameters.SetPoint); //Feedback
-                    if (LaserVoltage > UPPER_LC_VOLTAGE_LIMIT || LaserVoltage < LOWER_LC_VOLTAGE_LIMIT)
-                    {
-                        ui.AddToTextBox("Cannot lock: set point exceeds range which can be sent to laser");
-                    }
-                    else
-                    {
-                        ui.AddToTextBox(Convert.ToString(ui.GetGain()));
-                        laserScanParameters.Writer.WriteSingleSample(true, LaserVoltage);     //Write the new value of the laser control voltage
-                    }
+                    
                 }
 
                 ui.WriteToVoltageToLaserBox(Convert.ToString(Math.Round(LaserVoltage, 3))); //Write out the voltage actually being sent to the laser
