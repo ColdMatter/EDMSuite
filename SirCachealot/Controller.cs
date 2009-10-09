@@ -110,7 +110,7 @@ namespace SirCachealot
         internal void UIInitialise()
         {
             //start the thread pool monitor
-            threadMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateThreadMonitor), null, 500, 250);
+            threadMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateThreadMonitor), null, 500, 500);
         }
 
         // this method gets called by the main window menu exit item, and when

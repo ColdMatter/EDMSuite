@@ -52,6 +52,8 @@ namespace SirCachealot
         void AddTagToBlock(string clusterName, int blockIndex, string tag);
         
         void RemoveTagFromBlock(string clusterName, int blockIndex, string tag);
+
+        UInt32[] GetTaggedIndicesForCluster(string clusterName, string tag);
     }
 
     public delegate bool PredicateFunction(DemodulatedBlock dblock);

@@ -334,6 +334,16 @@ namespace SirCachealot
                 );
         }
 
+        public UInt32[] GetTaggedIndicesForCluster(string clusterName, string tag)
+        {
+            mySqlComm = mySql.CreateCommand();
+            mySqlComm.CommandText =
+                "SELECT CLUSTERINDEX FROM TAGS WHERE CLUSTER = ?cluster AND TAG = ?tag";
+            mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
+            mySqlComm.Parameters.AddWithValue("?tag", tag);
+            return GetUIntsFromCommand(mySqlComm, "CLUSTERINDEX");
+        }
+
         private string MakeSQLArrayString(UInt32[] uids)
         {
             StringBuilder sqlArray = new StringBuilder("(");
@@ -368,9 +378,14 @@ namespace SirCachealot
 
         private UInt32[] GetUIDsFromCommand(MySqlCommand cm)
         {
+            return GetUIntsFromCommand(cm, "UID");
+        }
+
+        private UInt32[] GetUIntsFromCommand(MySqlCommand cm, string column)
+        {
             MySqlDataReader rd = cm.ExecuteReader();
             List<UInt32> uids = new List<UInt32>();
-            while (rd.Read()) uids.Add((UInt32)rd["UID"]);
+            while (rd.Read()) uids.Add((UInt32)rd[column]);
             rd.Close();
             return uids.ToArray();
         }
@@ -405,12 +420,12 @@ namespace SirCachealot
             Connect(dbName);
             executeNonQuery(
                 "CREATE TABLE DBLOCKS (UID INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
-                "CLUSTER VARCHAR(30), CLUSTERINDEX INT, " +
+                "CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, " +
                 "ATAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, BLOCKTIME DATETIME, " +
                 "EPLUS DOUBLE, EMINUS DOUBLE, PRIMARY KEY (UID))"
                 );
             executeNonQuery(
-                "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT, TAG VARCHAR(30))"
+                "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, TAG VARCHAR(30))"
                 );
             executeNonQuery(
                 "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT MEDIUMBLOB, PRIMARY KEY (UID))"
