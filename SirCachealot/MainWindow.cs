@@ -64,7 +64,6 @@ namespace SirCachealot
 
         private void SetStatsTextInternal(string txt)
         {
-            statsTextBox.Clear();
             statsTextBox.Text = txt;
         }
 

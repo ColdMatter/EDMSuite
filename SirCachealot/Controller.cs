@@ -53,6 +53,8 @@ namespace SirCachealot
         // This method is thread-safe.
         public void AddBlock(string path, string[] demodulationConfigs)
         {
+            string[] splitPath = path.Split('\\');
+            log("Loading block " + splitPath[splitPath.Length - 1]);
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
             AddBlock(b, demodulationConfigs);

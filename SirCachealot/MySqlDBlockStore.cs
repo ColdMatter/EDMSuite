@@ -245,11 +245,7 @@ namespace SirCachealot
         {
             lock (dbAddLock)
             {
-                // create our own private connection - this method should be safe to call concurrently
-                // from multiple threads.
-                MySqlConnection mySqlLocal = new MySqlConnection(kConnectionString);
-                mySqlLocal.Open();
-                MySqlCommand mySqlCommLocal = mySqlLocal.CreateCommand();
+                mySqlComm = mySql.CreateCommand();
                 // extract the data that we're going to put in the sql database
                 string clusterName = db.Config.Settings["cluster"] as string;
                 int clusterIndex = (int)db.Config.Settings["clusterIndex"];
@@ -278,37 +274,36 @@ namespace SirCachealot
                 double eMinus = (double)db.Config.Settings["eMinus"];
                 byte[] dBlockBytes = serializeDBlockAsByteArray(db);
 
-                mySqlCommLocal = mySql.CreateCommand();
-                mySqlCommLocal.CommandText =
+                mySqlComm = mySql.CreateCommand();
+                mySqlComm.CommandText =
                     "INSERT INTO DBLOCKS " +
                     "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?ts, " +
                     "?ePlus, ?eMinus);";
                 // the uid column is defined auto_increment
-                mySqlCommLocal.Parameters.AddWithValue("?uint", null);
-                mySqlCommLocal.Parameters.AddWithValue("?cluster", clusterName);
-                mySqlCommLocal.Parameters.AddWithValue("?clusterIndex", clusterIndex);
-                mySqlCommLocal.Parameters.AddWithValue("?aTag", aTag);
-                mySqlCommLocal.Parameters.AddWithValue("?eState", eState);
-                mySqlCommLocal.Parameters.AddWithValue("?bState", bState);
-                mySqlCommLocal.Parameters.AddWithValue("?rfState", rfState);
-                mySqlCommLocal.Parameters.AddWithValue("?ts", timeStamp);
-                mySqlCommLocal.Parameters.AddWithValue("?ePlus", ePlus);
-                mySqlCommLocal.Parameters.AddWithValue("?eMinus", eMinus);
+                mySqlComm.Parameters.AddWithValue("?uint", null);
+                mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
+                mySqlComm.Parameters.AddWithValue("?clusterIndex", clusterIndex);
+                mySqlComm.Parameters.AddWithValue("?aTag", aTag);
+                mySqlComm.Parameters.AddWithValue("?eState", eState);
+                mySqlComm.Parameters.AddWithValue("?bState", bState);
+                mySqlComm.Parameters.AddWithValue("?rfState", rfState);
+                mySqlComm.Parameters.AddWithValue("?ts", timeStamp);
+                mySqlComm.Parameters.AddWithValue("?ePlus", ePlus);
+                mySqlComm.Parameters.AddWithValue("?eMinus", eMinus);
 
-                mySqlCommLocal.ExecuteNonQuery();
-                mySqlCommLocal.Parameters.Clear();
-                UInt32 uid = (UInt32)mySqlCommLocal.LastInsertedId;
+                mySqlComm.ExecuteNonQuery();
+                mySqlComm.Parameters.Clear();
+                UInt32 uid = (UInt32)mySqlComm.LastInsertedId;
 
-                mySqlCommLocal = mySql.CreateCommand();
-                mySqlCommLocal.CommandText =
+                mySqlComm = mySql.CreateCommand();
+                mySqlComm.CommandText =
                   "INSERT INTO DBLOCKDATA VALUES(?uint, ?dblock);";
-                mySqlCommLocal.Parameters.AddWithValue("?uint", uid);
-                mySqlCommLocal.Parameters.AddWithValue("?dblock", dBlockBytes);
+                mySqlComm.Parameters.AddWithValue("?uint", uid);
+                mySqlComm.Parameters.AddWithValue("?dblock", dBlockBytes);
 
-                mySqlCommLocal.ExecuteNonQuery();
-                mySqlCommLocal.Parameters.Clear();
+                mySqlComm.ExecuteNonQuery();
+                mySqlComm.Parameters.Clear();
 
-                mySqlLocal.Close();
                 return uid;
             }
         }
