@@ -4,9 +4,12 @@ using System.Text;
 
 using Data.EDM;
 
-//** Ok
+
 namespace Analysis.EDM
 {
+    // Note that all FWHM based gates have been disabled to remove SharedCode's dependence on the
+    // NI analysis libraries.
+
     /// <summary>
     /// This is a bit confusing looking, but it's pretty simple to use. Instances of this class
     /// tell the BlockDemodulator how to extract the data. The class also provides a standard
@@ -80,39 +83,39 @@ namespace Analysis.EDM
             };
             standardConfigs.Add("wide", wide);
 
-            // fwhm of the tof pulse for top and norm, wide gates for everything else.
-            AddSliceConfig("fwhm", 0, 1);
-            // narrower than fwhm, takes only the center hwhm
-            AddSliceConfig("hwhm", 0, 0.5);
-            // only the fast half of the fwhm (NOT TRUE - 01Jul08 JH)
-            AddSliceConfig("fast", -0.5, 0.5);
-            // the slow half of the fwhm (NOT TRUE - 01Jul08 JH)
-            AddSliceConfig("slow", 0.5, 0.5);
-            // the fastest and slowest molecules, used for estimating any tof related systematic.
-            // these gates don't overlap with the usual centred analysis gates (fwhm and cgate11).
-            AddSliceConfig("vfast", -0.85, 0.5);
-            AddSliceConfig("vslow", 0.85, 0.5);
+            //// fwhm of the tof pulse for top and norm, wide gates for everything else.
+            //AddSliceConfig("fwhm", 0, 1);
+            //// narrower than fwhm, takes only the center hwhm
+            //AddSliceConfig("hwhm", 0, 0.5);
+            //// only the fast half of the fwhm (NOT TRUE - 01Jul08 JH)
+            //AddSliceConfig("fast", -0.5, 0.5);
+            //// the slow half of the fwhm (NOT TRUE - 01Jul08 JH)
+            //AddSliceConfig("slow", 0.5, 0.5);
+            //// the fastest and slowest molecules, used for estimating any tof related systematic.
+            //// these gates don't overlap with the usual centred analysis gates (fwhm and cgate11).
+            //AddSliceConfig("vfast", -0.85, 0.5);
+            //AddSliceConfig("vslow", 0.85, 0.5);
 
-            // for testing out different centred-gate widths
-            for (int i = 4; i < 15; i++)
-                AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
+            //// for testing out different centred-gate widths
+            //for (int i = 4; i < 15; i++)
+            //    AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
 
-            // testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
-            // is centred and +0.7 fwhm.
-            for (int i = 0; i < 15; i++)
-                AddSliceConfig("slide" + i, (((double)i) / 10.0) - 0.7, 1);
+            //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
+            //// is centred and +0.7 fwhm.
+            //for (int i = 0; i < 15; i++)
+            //    AddSliceConfig("slide" + i, (((double)i) / 10.0) - 0.7, 1);
 
-            // now some finer slices
-            double d = -1.4;
-            for (int i = 0; i < 15; i++)
-            {
-                AddSliceConfig("slice" + i, d, 0.2);
-                d += 0.2;
-            }
+            //// now some finer slices
+            //double d = -1.4;
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    AddSliceConfig("slice" + i, d, 0.2);
+            //    d += 0.2;
+            //}
             
-            // optimised gates for spring 2009 run
-            AddSliceConfig("optimum1", 0.3, 1.1);
-            AddSliceConfig("optimum2", 0.2, 1.1);
+            //// optimised gates for spring 2009 run
+            //AddSliceConfig("optimum1", 0.3, 1.1);
+            //AddSliceConfig("optimum2", 0.2, 1.1);
 
             // "background" gate
             DemodulationConfigBuilder background = delegate(Block b)
@@ -150,49 +153,49 @@ namespace Analysis.EDM
             AddFixedSliceConfig("slowFixed", 2201, 45);
         }
 
-        private static void AddSliceConfig(string name, double offset, double width)
-        {
-            // the slow half of the fwhm
-            DemodulationConfigBuilder dcb = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
+        //private static void AddSliceConfig(string name, double offset, double width)
+        //{
+        //    // the slow half of the fwhm
+        //    DemodulationConfigBuilder dcb = delegate(Block b)
+        //    {
+        //        DemodulationConfig dc;
+        //        GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
 
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = name;
-                dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, offset, width);
-                dg0.Name = "top";
-                dg0.BackgroundSubtract = true;
-                dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, offset, width);
-                dg1.Name = "norm";
-                dg1.BackgroundSubtract = true;
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
-                dg2.Integrate = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
-                dg3.Integrate = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
+        //        dc = new DemodulationConfig();
+        //        dc.AnalysisTag = name;
+        //        dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, offset, width);
+        //        dg0.Name = "top";
+        //        dg0.BackgroundSubtract = true;
+        //        dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, offset, width);
+        //        dg1.Name = "norm";
+        //        dg1.BackgroundSubtract = true;
+        //        dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
+        //        dg2.Name = "mag1";
+        //        dg2.Integrate = false;
+        //        dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
+        //        dg3.Name = "short";
+        //        dg3.Integrate = false;
+        //        dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
+        //        dg4.Name = "battery";
 
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+        //        dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+        //        dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+        //        dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
+        //        dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
+        //        dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
 
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-                dc.PointDetectorChannels.Add("PumpPD");
-                dc.PointDetectorChannels.Add("ProbePD");
+        //        dc.PointDetectorChannels.Add("MiniFlux1");
+        //        dc.PointDetectorChannels.Add("MiniFlux2");
+        //        dc.PointDetectorChannels.Add("MiniFlux3");
+        //        dc.PointDetectorChannels.Add("NorthCurrent");
+        //        dc.PointDetectorChannels.Add("SouthCurrent");
+        //        dc.PointDetectorChannels.Add("PumpPD");
+        //        dc.PointDetectorChannels.Add("ProbePD");
 
-                return dc;
-            };
-            standardConfigs.Add(name, dcb);
-        }
+        //        return dc;
+        //    };
+        //    standardConfigs.Add(name, dcb);
+        //}
 
         private static void AddFixedSliceConfig(string name, double centre, double width)
         {
