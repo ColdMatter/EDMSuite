@@ -137,6 +137,9 @@ namespace SirCachealot
             b.AppendLine("Run time: " + (DateTime.Now.Subtract(currentAnalysisStart)));
             b.AppendLine("Estimated time to go: " + EstimateFinishTime() );
             b.AppendLine("Total analysed: " + totalAnalysed);
+            b.AppendLine("");
+            b.AppendLine("Database queries: " + blockStore.QueryCount);
+            b.AppendLine("DBlocks served: " + blockStore.DBlockCount);
             mainWindow.SetStatsText(b.ToString());
         }
 

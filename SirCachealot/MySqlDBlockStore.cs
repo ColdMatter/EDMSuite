@@ -20,19 +20,24 @@ namespace SirCachealot
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
         private string kConnectionString = "Server=127.0.0.1;Uid=root;Pwd=atomic1;default command timeout=300;";
+        public long QueryCount;
+        public long DBlockCount;
 
         public UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs)
         {
+            QueryCount++;
             return GetByStringParameter("CLUSTER", clusterName, fromUIDs);
         }
 
         public UInt32[] GetUIDsByCluster(string clusterName)
         {
+            QueryCount++;
             return GetByStringParameter("CLUSTER", clusterName);
         }
 
         public UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE CLUSTER = ?cluster AND CLUSTERINDEX = ?index AND UID IN " +
@@ -44,6 +49,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByBlock(string clusterName, int clusterIndex)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE CLUSTER = ?cluster AND CLUSTERINDEX = ?index";
@@ -54,6 +60,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByTag(string tag, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " +
@@ -65,6 +72,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByTag(string tag)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT DISTINCT UID FROM DBLOCKS, TAGS WHERE TAGS.TAG = ?tag AND " +
@@ -76,16 +84,19 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs)
         {
+            QueryCount++;
             return GetByStringParameter("ATAG", tag, fromUIDs);
         }
 
         public UInt32[] GetUIDsByAnalysisTag(string tag)
         {
+            QueryCount++;
             return GetByStringParameter("ATAG", tag);
         }
 
         public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, uint[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState " +
@@ -99,6 +110,7 @@ namespace SirCachealot
 
         public uint[] GetUIDsByMachineState(bool eState, bool bState, bool rfState)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND " +
                 "RFSTATE = ?rfState AND BSTATE = ?bState";
@@ -110,6 +122,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByEState(bool eState, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND UID IN " +
@@ -120,6 +133,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByEState(bool eState)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState";
             mySqlComm.Parameters.AddWithValue("?eState", eState);
@@ -128,6 +142,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByBState(bool bState, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE BSTATE = ?bState AND UID IN " +
@@ -138,6 +153,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByBState(bool bState)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE BSTATE = ?bState";
             mySqlComm.Parameters.AddWithValue("?bState", bState);
@@ -146,6 +162,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByRFState(bool rfState, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE RFSTATE = ?rfState AND UID IN " +
@@ -156,6 +173,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByRFState(bool rfState)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE RFSTATE = ?rfState";
             mySqlComm.Parameters.AddWithValue("?rfState", rfState);
@@ -164,6 +182,7 @@ namespace SirCachealot
 
         public uint[] GetUIDsByDateRange(DateTime start, DateTime end, uint[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end AND UID IN " +
@@ -175,6 +194,7 @@ namespace SirCachealot
 
         public uint[] GetUIDsByDateRange(DateTime start, DateTime end)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE BLOCKTIME >= ?start AND BLOCKTIME < ?end";
             mySqlComm.Parameters.AddWithValue("?start", start);
@@ -184,6 +204,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByVoltageRange(double low, double high, UInt32[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE EPLUS >= ?low AND EPLUS < ?high AND UID IN " +
@@ -195,6 +216,7 @@ namespace SirCachealot
 
         public UInt32[] GetUIDsByVoltageRange(double low, double high)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
                 "SELECT UID FROM DBLOCKS WHERE EPLUS >= ?low AND EPLUS < ?high";
@@ -205,6 +227,7 @@ namespace SirCachealot
 
         public uint[] GetUIDsByPredicate(PredicateFunction func, uint[] fromUIDs)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE UID IN " + MakeSQLArrayString(fromUIDs);
             UInt32[] uids = GetUIDsFromCommand(mySqlComm);
@@ -219,6 +242,7 @@ namespace SirCachealot
 
         public DemodulatedBlock GetDBlock(uint uid)
         {
+            DBlockCount++;
             byte[] dbb;
 
             MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
@@ -316,6 +340,7 @@ namespace SirCachealot
 
         public UInt32[] GetAllUIDs()
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = "SELECT UID FROM DBLOCKS";
             return GetUIDsFromCommand(mySqlComm);
@@ -323,11 +348,13 @@ namespace SirCachealot
 
         public void AddTagToBlock(string clusterName, int blockIndex, string tag)
         {
+            QueryCount++;
             executeNonQuery("INSERT INTO TAGS VALUES('" + clusterName + "', " + blockIndex + ", '" + tag + "')");
         }
 
         public void RemoveTagFromBlock(string clusterName, int blockIndex, string tag)
         {
+            QueryCount++;
             executeNonQuery(
                 "DELETE FROM TAGS WHERE CLUSTER = '" + clusterName + "' AND CLUSTERINDEX = " + blockIndex +
                 " AND TAG = '" + tag + "'"
@@ -336,9 +363,12 @@ namespace SirCachealot
 
         public UInt32[] GetTaggedIndicesForCluster(string clusterName, string tag)
         {
+            QueryCount++;
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText =
-                "SELECT CLUSTERINDEX FROM TAGS WHERE CLUSTER = ?cluster AND TAG = ?tag";
+                "SELECT DISTINCT TAGS.CLUSTERINDEX FROM TAGS, DBLOCKS WHERE TAGS.CLUSTER = ?cluster AND " + 
+                "TAGS.TAG = ?tag AND TAGS.CLUSTER = DBLOCKS.CLUSTER AND TAGS.CLUSTERINDEX = " +
+                "DBLOCKS.CLUSTERINDEX";
             mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
             mySqlComm.Parameters.AddWithValue("?tag", tag);
             return GetUIntsFromCommand(mySqlComm, "CLUSTERINDEX");
