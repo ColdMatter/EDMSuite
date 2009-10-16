@@ -66,7 +66,18 @@ namespace SirCachealot
         {
             lock (queueLengthLock) queueLength--;
             blockAddParams parameters = (blockAddParams)parametersIn;
-            AddBlock(parameters.path, parameters.demodulationConfigs);
+            try
+            {
+                AddBlock(parameters.path, parameters.demodulationConfigs);
+            }
+            catch (Exception)
+            {
+                // if there's an exception thrown while adding a block then we're
+                // pretty much stuck. The best we can do is log it and eat it to
+                // stop it killing the rest of the program.
+                log("Exception thrown analysing " + parameters.path);
+                return;
+            }
             lock (queueLengthLock)
             {
                 totalAnalysed++;
@@ -105,7 +116,7 @@ namespace SirCachealot
             blockStore.Start();
         }
 
-        // This method is called by the GUI thread, once the form has
+        // This method is called by the GUI thread once the form has
         // loaded and the UI is ready.
         internal void UIInitialise()
         {
