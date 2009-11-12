@@ -59,6 +59,26 @@ namespace Data.EDM
 			return block;
 		}
 
+        //public Block DeserializeBlockFromZippedXML2(String zipFilePath, String blockFileName)
+        //{
+        //    Ionic.Zip.ZipFile file = Ionic.Zip.ZipFile.Read(zipFilePath);
+        //    Ionic.Zip.ZipEntry zipEntry = file.Entries[0];
+        //    MemoryStream s = new MemoryStream();
+        //    zipEntry.Extract(s);
+        //    Block block;
+        //    block = (Block)xmls.Deserialize(s);
+        //    return block;
+        //}
+
+        public Block DeserializeBlockFromXML(String filePath)
+        {
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            Block block = null;
+            block = (Block)xmls.Deserialize(fileStream);
+            fileStream.Close();
+            return block;
+        }
+
 		public void SerializeBlockAsBinary(String filePath, Block block)
 		{
 			Stream blockStream = new FileStream(filePath, FileMode.Create);

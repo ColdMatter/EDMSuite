@@ -73,5 +73,44 @@ namespace Data.EDM
             return d;
         }
 
+        // This function takes a list of switches, defining an analysis channel, and gives the 
+        // average TOF for that analysis channel's positively contributing TOFs and the same for
+        // the negative contributors. Note that this definition may or may not line up with how 
+        // the analysis channels are defined (they may differ by a sign, which might depend on
+        // the number of switches in the channel).
+        public TOF[] GetSwitchTOFs(string[] switches, int index)
+        {
+            TOF[] tofs = new TOF[2];
+            // calculate the state of the channel for each point in the block
+            int numSwitches = switches.Length;
+            int waveformLength = config.GetModulationByName(switches[0]).Waveform.Length;
+            List<bool[]> switchBits = new List<bool[]>();
+            foreach (string s in switches)
+                switchBits.Add(config.GetModulationByName(s).Waveform.Bits);
+            List<bool> channelStates = new List<bool>();
+            for (int point = 0; point < waveformLength; point++)
+            {
+                bool channelState = false;
+                for (int i = 0; i < numSwitches; i++)
+                {
+                    channelState = channelState ^ switchBits[i][point];
+                }
+                channelStates.Add(channelState);
+            }
+            // build the "on" and "off" average TOFs
+            TOF tOn = new TOF();
+            TOF tOff = new TOF();
+            for (int i = 0; i < waveformLength; i++)
+            {
+                if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
+                else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
+            }
+            tOn /= (waveformLength / 2);
+            tOff /= (waveformLength / 2);
+            tofs[0] = tOn;
+            tofs[1] = tOff;
+            return tofs;
+        }
+
 	}
 }

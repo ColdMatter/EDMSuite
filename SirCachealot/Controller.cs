@@ -114,6 +114,7 @@ namespace SirCachealot
             //set up sql database
             blockStore = new MySqlDBlockStore();
             blockStore.Start();
+            ThreadPool.SetMaxThreads(64,64);
         }
 
         // This method is called by the GUI thread once the form has
