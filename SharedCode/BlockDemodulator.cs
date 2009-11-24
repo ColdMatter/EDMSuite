@@ -186,7 +186,7 @@ namespace Analysis.EDM
                 //    total = Math.Sqrt(total);
                 //    channelBSErrors[channel] = total;
                 //}
-                dcv.BSErrors = channelBSErrors;
+                //dcv.BSErrors = channelBSErrors;
 
                 db.ChannelValues.Add(dcv);
             }

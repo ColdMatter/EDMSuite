@@ -11,15 +11,15 @@ bs = BlockSerializer()
 blockFile="C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\June2009\\26Jun0902_2.zip"
 block = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml")
 
-dc = DemodulationConfig.GetStandardDemodulationConfig("fwhm", block)
-dcfast = DemodulationConfig.GetStandardDemodulationConfig("fast", block)
-dcslow = DemodulationConfig.GetStandardDemodulationConfig("slow", block)
-dcvfast = DemodulationConfig.GetStandardDemodulationConfig("vfast", block)
-dcvslow = DemodulationConfig.GetStandardDemodulationConfig("vslow", block)
+dc = DemodulationConfig.GetStandardDemodulationConfig("cgate11Fixed", block)
+#dcfast = DemodulationConfig.GetStandardDemodulationConfig("fast", block)
+#dcslow = DemodulationConfig.GetStandardDemodulationConfig("slow", block)
+#dcvfast = DemodulationConfig.GetStandardDemodulationConfig("vfast", block)
+#dcvslow = DemodulationConfig.GetStandardDemodulationConfig("vslow", block)
 
 bd = BlockDemodulator()
 
-#db = bd.DemodulateBlock(block, dc)
+db = bd.DemodulateBlock(block, dc)
 
 #sc.AddBlock(blockFile,("fwhm","slow","fast"))
 
