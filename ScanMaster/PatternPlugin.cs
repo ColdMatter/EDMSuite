@@ -16,7 +16,7 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(CommonRamanPatternPlugin)),
 	 XmlInclude(typeof(PulsedRFScanPatternPlugin)),
 	 XmlInclude(typeof(PumpProbePatternPlugin)),
-	 XmlInclude(typeof(DualAblationPatternPlugin))]
+     XmlInclude(typeof(DualAblationPatternPlugin)), XmlInclude(typeof(DualValvePatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{
 

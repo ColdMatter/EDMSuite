@@ -58,6 +58,8 @@ namespace DAQ.HAL
             // these channels are to be part of the "pattern" and shoud all be on the low half of the board
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
+            AddDigitalOutputChannel("valve2", pgBoard, 0, 2);
+            AddDigitalOutputChannel("discharge", pgBoard, 0, 3);
 			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
 			AddDigitalOutputChannel("detector", pgBoard, 0,7); //Pin 15
             AddDigitalOutputChannel("detectorprime", pgBoard, 1, 7); //Pin 22
