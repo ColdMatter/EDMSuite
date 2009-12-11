@@ -10,7 +10,7 @@ namespace Data
     public class TOF : MarshalByRefObject
     {
         private double[] tofData;
-        private int length;
+        //private int length;
         private int gateStartTime;
         private int clockPeriod;
         public double calibration;
@@ -29,7 +29,7 @@ namespace Data
             // check for swapped gates
             if (startTime > endTime) return null;
             // is the gate region null, or entirely outside the TOF?
-            int gateEndTime = gateStartTime + (length - 1) * clockPeriod;
+            int gateEndTime = gateStartTime + (Length - 1) * clockPeriod;
             if (startTime == endTime) return null;
             if (startTime > gateEndTime) return null;
             if (endTime < gateStartTime) return null;
@@ -137,6 +137,20 @@ namespace Data
             }
         }
 
+        public static TOF operator -(TOF p1, TOF p2)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[p2.Data.Length];
+            temp.GateStartTime = p1.GateStartTime;
+            temp.ClockPeriod = p1.ClockPeriod;
+
+            for (int i = 0; i < p2.Data.Length; i++)
+            {
+                temp.Data[i] = -p2.Data[i];
+            }
+            return p1 + temp;
+        }
+
         public static TOF operator /(TOF p, int n)
         {
             double[] tempData = new double[p.Length];
@@ -159,13 +173,17 @@ namespace Data
             set
             {
                 tofData = value;
-                length = value.Length;
+//                length = value.Length;
             }
         }
 
         public int Length
         {
-            get { return length; }
+            get
+            {
+                if (tofData != null) return tofData.Length;
+                else return 0;
+            }
         }
 
         public int GateStartTime
@@ -176,7 +194,7 @@ namespace Data
 
         public int GateLength
         {
-            get { return length * clockPeriod; }
+            get { return Length * clockPeriod; }
         }
 
         public int ClockPeriod
@@ -195,8 +213,8 @@ namespace Data
         {
             get
             {
-                int[] times = new int[length];
-                for (int i = 0; i < length; i++) times[i] = gateStartTime + (i * clockPeriod);
+                int[] times = new int[Length];
+                for (int i = 0; i < Length; i++) times[i] = gateStartTime + (i * clockPeriod);
                 return times;
             }
         }

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using NationalInstruments;
-using NationalInstruments.Analysis.Math;
-using NationalInstruments.Analysis.Dsp;
+//using NationalInstruments;
+//using NationalInstruments.Analysis.Math;
+//using NationalInstruments.Analysis.Dsp;
 
 using Data;
 using Data.EDM;

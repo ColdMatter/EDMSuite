@@ -73,6 +73,7 @@ namespace Data.EDM
             return d;
         }
 
+        // NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
         // This function takes a list of switches, defining an analysis channel, and gives the 
         // average TOF for that analysis channel's positively contributing TOFs and the same for
         // the negative contributors. Note that this definition may or may not line up with how 

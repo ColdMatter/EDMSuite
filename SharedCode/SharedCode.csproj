@@ -79,10 +79,6 @@
       <Name>ICSharpCode.SharpZipLib</Name>
       <HintPath>C:\Program Files\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.6.35.189, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.Common, Version=8.6.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -95,6 +91,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAccumulator.cs" />
+    <Compile Include="TOFChannel.cs" />
+    <Compile Include="TOFChannelAccumulator.cs" />
+    <Compile Include="TOFChannelSetAccumulator.cs" />
+    <Compile Include="TOFWithError.cs" />
     <Compile Include="AnalogModulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,9 +112,14 @@
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BlockTOFDemodulator.cs" />
     <Compile Include="DetectorData.cs" />
     <Compile Include="PointDetectorData.cs" />
     <Compile Include="QuickEDMAnalysis.cs" />
+    <Compile Include="RunningStatistics.cs" />
+    <Compile Include="TOFAccumulator.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="ChannelSet.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />
