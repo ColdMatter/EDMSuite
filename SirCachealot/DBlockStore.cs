@@ -4,7 +4,7 @@ using System.Text;
 
 using Analysis.EDM;
 
-namespace SirCachealot
+namespace SirCachealot.Database
 {
     
     public interface DBlockStore

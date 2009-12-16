@@ -91,10 +91,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelSetGroup.cs" />
     <Compile Include="IAccumulator.cs" />
+    <Compile Include="IField.cs" />
+    <Compile Include="IVectorSpace.cs" />
     <Compile Include="TOFChannel.cs" />
     <Compile Include="TOFChannelAccumulator.cs" />
+    <Compile Include="TOFChannelSet.cs" />
     <Compile Include="TOFChannelSetAccumulator.cs" />
+    <Compile Include="TOFChannelSetGroup.cs" />
+    <Compile Include="TOFChannelSetGroupAccumulator.cs" />
     <Compile Include="TOFWithError.cs" />
     <Compile Include="AnalogModulation.cs">
       <SubType>Code</SubType>

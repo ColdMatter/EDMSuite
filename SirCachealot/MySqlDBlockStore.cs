@@ -13,7 +13,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using MySql.Data.MySqlClient;
 using Analysis.EDM;
 
-namespace SirCachealot
+namespace SirCachealot.Database
 {
     class MySqlDBlockStore : MarshalByRefObject, DBlockStore
     {

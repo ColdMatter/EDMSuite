@@ -74,7 +74,7 @@ namespace Analysis
             get
             {
                 double[] temp = new double[Length];
-                for (int i = 0; i < Length; i++) temp[i] = stats[i].StandardDeviation;
+                for (int i = 0; i < Length; i++) temp[i] = stats[i].StandardErrorOfSampleMean;
                 return temp;
             }
         }

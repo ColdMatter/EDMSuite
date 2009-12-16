@@ -12,12 +12,14 @@ namespace Analysis.EDM
         {
             On = new TOFAccumulator();
             Off = new TOFAccumulator();
+            Difference = new TOFAccumulator();
         }
 
         public void Add(TOFChannel val)
         {
             On.Add(val.On);
             Off.Add(val.Off);
+            Difference.Add(val.Difference);
         }
 
         public TOFChannel GetResult()
@@ -25,6 +27,7 @@ namespace Analysis.EDM
             TOFChannel tc = new TOFChannel();
             tc.On = On.GetResult();
             tc.Off = Off.GetResult();
+            tc.Difference = Difference.GetResult();
             return tc;
         }
     }

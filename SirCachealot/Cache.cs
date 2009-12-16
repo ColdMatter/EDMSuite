@@ -7,7 +7,7 @@ using BeIT.MemCached;
 
 using Analysis.EDM;
 
-namespace SirCachealot
+namespace SirCachealot.Database
 {
 
     class Cache

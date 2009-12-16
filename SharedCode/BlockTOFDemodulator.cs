@@ -14,7 +14,7 @@ namespace Analysis.EDM
     /// </summary>
     public class BlockTOFDemodulator
     {
-        public ChannelSet<TOFWithError> TOFDemodulateBlock(Block b)
+        public TOFChannelSet TOFDemodulateBlock(Block b)
         {
             // *** demodulate channels ***
             // ** build the list of modulations **
@@ -63,7 +63,8 @@ namespace Analysis.EDM
                 }
             }
 
-            ChannelSet<TOFWithError> tcs = new ChannelSet<TOFWithError>();
+            TOFChannelSet tcs = new TOFChannelSet();
+            tcs.Config = b.Config;
             TOFChannel[] tcValues = new TOFChannel[numStates];
             for (int i = 0; i < modNames.Count; i++) tcs.SwitchMasks.Add(modNames[i], (uint)(1 << i));
             for (int channel = 0; channel < numStates; channel++)
@@ -80,6 +81,10 @@ namespace Analysis.EDM
                 tOff /= (blockLength / 2);
                 tc.On = new TOFWithError(tOn);
                 tc.Off = new TOFWithError(tOff);
+                // This "if" is to take care of the case of the "SIG" channel, for which there
+                // is no off TOF.
+                if (tc.Off.Length != 0) tc.Difference = tc.On - tc.Off;
+                else tc.Difference = tc.On;
                 tcValues[channel] = tc;
             }
             tcs.Channels = tcValues;

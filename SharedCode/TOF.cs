@@ -151,12 +151,12 @@ namespace Data
             return p1 + temp;
         }
 
-        public static TOF operator /(TOF p, int n)
+        public static TOF operator /(TOF p, double d)
         {
             double[] tempData = new double[p.Length];
             for (int i = 0; i < p.Length; i++)
             {
-                tempData[i] = p.Data[i] / n;
+                tempData[i] = p.Data[i] / d;
             }
             TOF temp = new TOF();
             temp.Data = tempData;
@@ -218,7 +218,6 @@ namespace Data
                 return times;
             }
         }
-
 
     }
 }

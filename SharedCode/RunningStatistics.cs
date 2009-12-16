@@ -74,5 +74,13 @@ namespace Analysis
                 return Math.Sqrt(Variance);
             }
         }
+
+        public double StandardErrorOfSampleMean
+        {
+            get
+            {
+                return StandardDeviation / Math.Sqrt(Count);
+            }
+        }
     }
 }

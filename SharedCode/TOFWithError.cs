@@ -66,5 +66,20 @@ namespace Data
             return t1 + temp;
         }
 
+        static public TOFWithError operator /(TOFWithError t, double d)
+        {
+            TOFWithError temp = new TOFWithError();
+            temp.Data = new double[t.Data.Length];
+            temp.Errors = new double[t.Errors.Length];
+            temp.GateStartTime = t.GateStartTime;
+            temp.ClockPeriod = t.ClockPeriod;
+
+            for (int i = 0; i < t.Data.Length; i++)
+            {
+                temp.Data[i] = d * t.Data[i];
+                temp.Errors[i] = d * t.Errors[i];
+            }
+            return temp;
+        }
     }
 }
