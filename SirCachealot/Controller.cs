@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
-using System.Threading;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 using Analysis;
 using Analysis.EDM;
@@ -12,6 +12,7 @@ using Data;
 using Data.EDM;
 
 using SirCachealot.Database;
+using SirCachealot.Parallel;
 
 namespace SirCachealot
 {
@@ -24,15 +25,12 @@ namespace SirCachealot
         // Database
         private MySqlDBlockStore blockStore;
 
-        // Demodulation
+        // TOF Demodulation
+        private TOFChannelSetGroupAccumulator tcsga;
+        private object accumulatorLock = new object();
 
         // Threading
-        int totalAnalysed;
-        int queueLength;
-        int analysisThreadCount;
-        int currentAnalysisTotal;
-        object counterLock = new object();
-        DateTime currentAnalysisStart = DateTime.Now;
+        private ThreadManager threadManager = new ThreadManager();
 
         #region Setup and UI
 
@@ -43,14 +41,14 @@ namespace SirCachealot
             //set up sql database
             blockStore = new MySqlDBlockStore();
             blockStore.Start();
-            InitialiseThreading();
+            threadManager.InitialiseThreading(this);
         }
 
         // This method is called by the GUI thread once the form has
         // loaded and the UI is ready.
         internal void UIInitialise()
         {
-            //start the thread pool monitor
+            //start the status monitor
             statusMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateStatusMonitor), null, 500, 500);
         }
 
@@ -66,13 +64,13 @@ namespace SirCachealot
         internal void UpdateStatusMonitor(object unused)
         {
             StringBuilder b = new StringBuilder();
-            b.AppendLine(GetThreadStats());
+            b.AppendLine(threadManager.GetThreadStats());
             b.AppendLine("");
             b.AppendLine(GetDatabaseStats());
             mainWindow.SetStatsText(b.ToString());
         }
 
-        private void log(string txt)
+        internal void log(string txt)
         {
             mainWindow.AppendToLog(txt);
         }
@@ -83,6 +81,15 @@ namespace SirCachealot
         public override Object InitializeLifetimeService()
         {
             return null;
+        }
+
+        #endregion
+
+        #region Threading methods
+
+        public void ClearAnalysisRunStats()
+        {
+            threadManager.ClearAnalysisRunStats();
         }
 
         #endregion
@@ -133,14 +140,14 @@ namespace SirCachealot
             blockAddParams bap = new blockAddParams();
             bap.path = path;
             bap.demodulationConfigs = demodulationConfigs;
-            AddToQueue(AddBlockThreadWrapper, bap);
+            threadManager.AddToQueue(AddBlockThreadWrapper, bap);
         }
 
         // this method and the following struct are wrappers so that we can add a block
         // with a single parameter, as required by the threadpool.
         private void AddBlockThreadWrapper(object parametersIn)
         {
-            QueueItemWrapper(delegate(object parms)
+            threadManager.QueueItemWrapper(delegate(object parms)
             {
                 blockAddParams parameters = (blockAddParams)parms;
                 AddBlock(parameters.path, parameters.demodulationConfigs);
@@ -200,82 +207,73 @@ namespace SirCachealot
 
         #endregion
 
-        #region Parallel analysis methods
+        #region TOFDemodulation
 
-        private void InitialiseThreading()
+        public void TOFDemodulateBlocks(string[] blockFiles, string savePath)
         {
-            ThreadPool.SetMaxThreads(64, 64);
-        }
+            // first of all test that the save location exists to avoid later disappointment.
 
-        // this function adds an item to the queue, and takes care of updating the counters.
-        // All functions added to the queue should be wrapped in this wrapper.
-        private void QueueItemWrapper(WaitCallback workFunction, object parametersIn)
-        {
-            lock (counterLock)
+            if (!Directory.Exists(Path.GetDirectoryName(savePath)))
             {
-                queueLength--;
-                analysisThreadCount++;
-            }
-            try
-            {
-                workFunction(parametersIn);
-            }
-            catch (Exception)
-            {
-                // if there's an exception thrown while adding a block then we're
-                // pretty much stuck. The best we can do is log it and eat it to
-                // stop it killing the rest of the program.
-                log("Exception thrown analysing " + parametersIn.ToString());
+                log("Save path does not exist!!");
                 return;
             }
-            finally
+
+            // initialise the accumulator
+            tcsga = new TOFChannelSetGroupAccumulator();
+            // queue the blocks - the last block analysed will take care of saving the results.
+            foreach (string blockFile in blockFiles)
             {
-                lock (counterLock) analysisThreadCount--;
+                tofDemodulateParams tdp = new tofDemodulateParams();
+                tdp.blockPath = blockFile;
+                tdp.savePath = savePath;
+                threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
             }
-            lock (counterLock)
+        }
+
+        private void TOFDemodulateBlock(string blockPath, string savePath)
+        {
+            BlockSerializer bs = new BlockSerializer();
+            string[] splitPath = blockPath.Split('\\');
+            log("Loading block " + splitPath[splitPath.Length - 1]); 
+            Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
+            log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+            BlockTOFDemodulator btd = new BlockTOFDemodulator();
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b);
+            log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+            lock (accumulatorLock) tcsga.Add(tcs);
+            // are we the last block to be added? If so, it's our job to save the results
+            if (threadManager.RemainingJobs == 1)
             {
-                totalAnalysed++;
-                currentAnalysisTotal++;
-            }
-        }
-
-        private void AddToQueue(WaitCallback func, object parameters)
-        {
-            ThreadPool.QueueUserWorkItem(func, parameters);
-            lock (counterLock) queueLength++;
-        }
-
-        // This method resets SirCachealot's analysis stats. Call it before an analysis run.
-        public void ClearAnalysisRunStats()
-        {
-            currentAnalysisTotal = 0;
-            currentAnalysisStart = DateTime.Now;
-        }
-
-        private string GetThreadStats()
-        {
-            StringBuilder b = new StringBuilder();
-            b.AppendLine("Analysis threads: " + analysisThreadCount);
-            b.AppendLine("Queued: " + queueLength);
-            b.AppendLine("Analysed this run: " + currentAnalysisTotal);
-            b.AppendLine("Run time: " + (DateTime.Now.Subtract(currentAnalysisStart)));
-            b.AppendLine("Estimated time to go: " + EstimateFinishTime());
-            b.AppendLine("Total analysed: " + totalAnalysed);
-            return b.ToString();
-        }
-
-        internal TimeSpan EstimateFinishTime()
-        {
-            if (queueLength == 0) return TimeSpan.FromSeconds(0);
-            else
-            {
-                if (currentAnalysisTotal == 0) return TimeSpan.FromSeconds(0);
-                else
+                // this lock should not be needed
+                lock(accumulatorLock)
                 {
-                    long ticksGone = DateTime.Now.Ticks - currentAnalysisStart.Ticks;
-                    long ticksPerBlock = ticksGone / currentAnalysisTotal;
-                    return TimeSpan.FromTicks(ticksPerBlock * queueLength);
+                    TOFChannelSetGroup tcsg = tcsga.GetResult();
+                    Stream fileStream = new FileStream(savePath, FileMode.Create);
+                    (new BinaryFormatter()).Serialize(fileStream, tcsg);
+                    fileStream.Close();
                 }
+            }
+        }
+
+        private void TOFDemodulateThreadWrapper(object parametersIn)
+        {
+            threadManager.QueueItemWrapper(delegate(object parms)
+            {
+                tofDemodulateParams parameters = (tofDemodulateParams)parms;
+                TOFDemodulateBlock(parameters.blockPath, parameters.savePath);
+            },
+            parametersIn
+            );
+        }
+        private struct tofDemodulateParams
+        {
+            public string blockPath;
+            public string savePath;
+            // this struct has a ToString method defined for error reporting porpoises.
+            public override string ToString()
+            {
+                return blockPath;
             }
         }
 

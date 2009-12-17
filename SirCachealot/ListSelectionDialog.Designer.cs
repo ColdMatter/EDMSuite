@@ -1,4 +1,4 @@
-namespace SirCachealot
+namespace SirCachealot.Database
 {
     partial class ListSelectionDialog
     {

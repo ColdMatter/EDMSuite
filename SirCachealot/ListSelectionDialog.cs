@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SirCachealot
+namespace SirCachealot.Database
 {
     public partial class ListSelectionDialog : Form
     {
