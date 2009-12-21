@@ -56,5 +56,23 @@ namespace Analysis.EDM
             temp.Difference = t.Difference * d;
             return temp;
         }
+
+        static public TOFChannel operator /(TOFChannel t1, TOFChannel t2)
+        {
+            TOFChannel temp = new TOFChannel();
+            temp.On = t1.On / t2.On;
+            temp.Off = t1.Off / t2.Off;
+            temp.Difference = t1.Difference / t2.Difference;
+            return temp;
+        }
+
+        static public TOFChannel operator *(TOFChannel t1, TOFChannel t2)
+        {
+            TOFChannel temp = new TOFChannel();
+            temp.On = t1.On * t2.On;
+            temp.Off = t1.Off * t2.Off;
+            temp.Difference = t1.Difference * t2.Difference;
+            return temp;
+        }
     }
 }

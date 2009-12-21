@@ -96,6 +96,15 @@ namespace Analysis.EDM
                 tcs.AddChannel(channelName, tc);
             }
             // add the special channels
+            TOFChannel eCal = (TOFChannel)tcs.GetChannel(new string[] {"E", "DB"});
+            TOFChannel bShift = (TOFChannel)tcs.GetChannel(new string[] { "B" });
+            TOFChannel cal = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
+            TOFChannel correction = (eCal * bShift) / cal;
+            tcs.AddChannel(new string[] { "CORR" }, correction);
+
+            TOFChannel eb = (TOFChannel)tcs.GetChannel(new string[] {"E", "B"});
+            TOFChannel correctedEDM = eb - correction;
+            tcs.AddChannel(new string[] { "EDMCORR" }, correctedEDM);
 
             return tcs;
         }
