@@ -13,29 +13,81 @@ namespace Analysis.EDM
     /// 
     /// It is used to carry the results of demodulating a Block into its channels. It carries
     /// with it the Block's BlockConfig.
+    /// 
+    /// ChannelSets are often the results of accumulation, so they carry with them a Count
+    /// parameter that counts the number of ChannelSets that were accumulated to make this
+    /// channelSet. This can be used to appropriately weight averages.
     /// </summary>
     [Serializable]
     public class ChannelSet<T>
     {
-        public Channel<T>[] Channels;
-
+        // The custom comparer fixes the hashtable so that it works with string 
+        // arrays in the way we'd expect (see below)
+        private Dictionary<string[], Channel<T>> ChannelDictionary 
+            = new Dictionary<string[],Channel<T>>(new ChannelComparer());
         public BlockConfig Config;
+
+        public int Count = 1; //default of 1: makes sense when the channelSet was not accumulated.
 
         public Channel<T> GetChannel(string[] switches)
         {
-            return Channels[GetChannelIndex(switches)];
+            Array.Sort(switches);
+            return ChannelDictionary[switches];
         }
 
-        public Dictionary<string, uint> SwitchMasks = new Dictionary<string, uint>();
-        public uint GetChannelIndex(string[] switches)
+        public void AddChannel(string[] switches, Channel<T> channel)
         {
-            if (switches[0] == "SIG") return 0;
-            else
-            {
-                uint index = 0;
-                foreach (string s in switches) index += SwitchMasks[s];
-                return index;
-            } 
+            Array.Sort(switches);
+            ChannelDictionary.Add(switches, channel);
         }
+
+        public List<string[]> Channels
+        {
+            get
+            {
+                Dictionary<string[], Channel<T>>.KeyCollection keys = ChannelDictionary.Keys;
+                List<string[]> keyArray = new List<string[]>();
+                foreach (string[] key in keys) keyArray.Add(key);
+                return keyArray;
+            }
+        }
+
+        // Improbable as it seems, .NET doesn't give a way to get the same hashcode for two
+        // seemingly identical arrays i.e. for
+        // string[] s1 = new string[] {"SIG"}
+        // string[] s2 = new string[] {"SIG"}
+        // s1.GetHashCode() will not be the same as s2.GetHashCode().
+        // To work around this we have to provide our own equality comparer to the dictionary.
+        [Serializable]
+        private class ChannelComparer : IEqualityComparer<string[]>
+        {
+            #region IEqualityComparer<string[]> Members
+
+            public bool Equals(string[] x, string[] y)
+            {
+                return HashStringArray(x) == HashStringArray(y);
+            }
+
+            public int GetHashCode(string[] obj)
+            {
+                return HashStringArray(obj);
+            }
+
+            #endregion
+
+            // This method hashes an array of strings in a way that only depends on the contents.
+            private int HashStringArray(string[] channel)
+            {
+                int hash = 0x76BC45AD;
+                foreach (var sw in channel)
+                {
+                    int swHash = sw.GetHashCode();
+                    hash = swHash ^ ((hash << 5) + hash);
+                }
+                return hash;
+            }
+        }
+
+
     }
 }

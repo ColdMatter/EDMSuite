@@ -52,18 +52,8 @@ namespace Data
         // this gives the difference of two TOFWithErrors, respecting the errors.
         static public TOFWithError operator -(TOFWithError t1, TOFWithError t2)
         {
-            TOFWithError temp = new TOFWithError();
-            temp.Data = new double[t2.Data.Length];
-            temp.Errors = new double[t2.Errors.Length];
-            temp.GateStartTime = t1.GateStartTime;
-            temp.ClockPeriod = t1.ClockPeriod;
-
-            for (int i = 0; i < t2.Data.Length; i++)
-            {
-                temp.Data[i] = -t2.Data[i];
-                temp.Errors[i] = t2.Errors[i];
-            }
-            return t1 + temp;
+            // this funny construction lets us use the multiplication code to subtract
+            return t1 + (t2 * -1.0);
         }
 
         static public TOFWithError operator /(TOFWithError t, double d)
@@ -76,8 +66,24 @@ namespace Data
 
             for (int i = 0; i < t.Data.Length; i++)
             {
+                temp.Data[i] = t.Data[i] / d;
+                temp.Errors[i] = t.Errors[i] / Math.Abs(d);
+            }
+            return temp;
+        }
+
+        static public TOFWithError operator *(TOFWithError t, double d)
+        {
+            TOFWithError temp = new TOFWithError();
+            temp.Data = new double[t.Data.Length];
+            temp.Errors = new double[t.Errors.Length];
+            temp.GateStartTime = t.GateStartTime;
+            temp.ClockPeriod = t.ClockPeriod;
+
+            for (int i = 0; i < t.Data.Length; i++)
+            {
                 temp.Data[i] = d * t.Data[i];
-                temp.Errors[i] = d * t.Errors[i];
+                temp.Errors[i] = Math.Abs(d) * t.Errors[i];
             }
             return temp;
         }

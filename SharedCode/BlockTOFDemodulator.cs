@@ -54,6 +54,7 @@ namespace Analysis.EDM
             int numStates = (int)Math.Pow(2, modWaveforms.Count);
             bool[,] stateSigns = new bool[numStates, numStates];
             // make a BlockDemodulator just to use its stateSign code
+            // They should probably share a base class.
             BlockDemodulator bd = new BlockDemodulator();
             for (uint i = 0; i < numStates; i++)
             {
@@ -65,10 +66,9 @@ namespace Analysis.EDM
 
             TOFChannelSet tcs = new TOFChannelSet();
             tcs.Config = b.Config;
-            TOFChannel[] tcValues = new TOFChannel[numStates];
-            for (int i = 0; i < modNames.Count; i++) tcs.SwitchMasks.Add(modNames[i], (uint)(1 << i));
             for (int channel = 0; channel < numStates; channel++)
             {
+                // generate the Channel
                 TOFChannel tc = new TOFChannel();
                 TOF tOn = new TOF();
                 TOF tOff = new TOF();
@@ -85,9 +85,17 @@ namespace Analysis.EDM
                 // is no off TOF.
                 if (tc.Off.Length != 0) tc.Difference = tc.On - tc.Off;
                 else tc.Difference = tc.On;
-                tcValues[channel] = tc;
+
+                // add the Channel to the ChannelSet
+                List<string> usedSwitches = new List<string>();
+                for (int i = 0; i < modNames.Count; i++)
+                    if ((channel & (1 << i)) != 0) usedSwitches.Add(modNames[i]);
+                string[] channelName = usedSwitches.ToArray();
+                // the SIG channel has a special name
+                if (channel == 0) channelName = new string[] {"SIG"};
+                tcs.AddChannel(channelName, tc);
             }
-            tcs.Channels = tcValues;
+            // add the special channels
 
             return tcs;
         }

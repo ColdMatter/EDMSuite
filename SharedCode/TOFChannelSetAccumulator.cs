@@ -16,25 +16,26 @@ namespace Analysis.EDM
     {
         public void Add(TOFChannelSet val)
         {
-            if (Channels == null)
+            if (Channels.Count == 0)
             {
-                Channels = new TOFChannelAccumulator[val.Channels.Length];
-                for (int i = 0; i < Channels.Length; i++) Channels[i] = new TOFChannelAccumulator();
-                SwitchMasks = val.SwitchMasks;
+                foreach (string[] channel in val.Channels) AddChannel(channel, new TOFChannelAccumulator());
                 // The accumulator gets the BlockConfig of the first block added to it. This is about the
                 // best that we can do.
                 Config = val.Config;
+                Count = 0;
             }
-            for (int i = 0; i < Channels.Length; i++) ((TOFChannelAccumulator)Channels[i]).Add((TOFChannel)val.Channels[i]);
+            foreach (string[] channel in val.Channels) 
+                ((TOFChannelAccumulator)GetChannel(channel)).Add((TOFChannel)val.GetChannel(channel));
+            Count++;
         }
 
         public TOFChannelSet GetResult()
         {
             TOFChannelSet cs = new TOFChannelSet();
-            cs.Channels = new TOFChannel[Channels.Length];
-            for (int i = 0; i < Channels.Length; i++) cs.Channels[i] = ((TOFChannelAccumulator)Channels[i]).GetResult();
-            cs.SwitchMasks = SwitchMasks;
+            foreach (string[] channel in Channels)
+                cs.AddChannel(channel, ((TOFChannelAccumulator)GetChannel(channel)).GetResult());
             cs.Config = Config;
+            cs.Count = Count;
             return cs;
         }
     }

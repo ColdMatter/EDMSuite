@@ -281,6 +281,10 @@ namespace SirCachealot
 
         #region Testing
 
+        // Somewhere for SirCachealot to store test results that's accessible by Mathematica.
+        // Makes debugging easier.
+        public TOFChannelSetGroup ChanSetGroup;
+
         public TOFChannelSetGroup Test1()
         {
             BlockSerializer bs = new BlockSerializer();
@@ -314,6 +318,8 @@ namespace SirCachealot
             fileStream.Close();
 
             TOFChannelSet tcs2 = tcsg.AverageChannelSetSignedByMachineState(true, false, false);
+
+            ChanSetGroup = tcsg;
             return tcsg;
         }
 

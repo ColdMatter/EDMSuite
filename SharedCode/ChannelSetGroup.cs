@@ -5,7 +5,9 @@ using System.Text;
 namespace Analysis.EDM
 {
     /// <summary>
-    /// This class holds a number of ChannelSets, one for each manual state.
+    /// This class holds a number of ChannelSets, one for each manual state. Instances of this
+    /// class are usually assembled by accumulation. It has slots for reporting how many
+    /// channel sets were accumulated for each machine state.
     /// </summary>
     [Serializable]
     public class ChannelSetGroup<T>

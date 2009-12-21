@@ -127,6 +127,7 @@ namespace Data
                 temp.Data = tempData;
                 temp.GateStartTime = p1.GateStartTime;
                 temp.ClockPeriod = p1.ClockPeriod;
+                temp.Calibration = p1.Calibration;
                 return temp;
             }
             else
@@ -143,6 +144,7 @@ namespace Data
             temp.Data = new double[p2.Data.Length];
             temp.GateStartTime = p1.GateStartTime;
             temp.ClockPeriod = p1.ClockPeriod;
+            temp.Calibration = p1.Calibration;
 
             for (int i = 0; i < p2.Data.Length; i++)
             {
@@ -162,6 +164,7 @@ namespace Data
             temp.Data = tempData;
             temp.GateStartTime = p.GateStartTime;
             temp.ClockPeriod = p.ClockPeriod;
+            temp.Calibration = p.Calibration;
             return temp;
         }
 

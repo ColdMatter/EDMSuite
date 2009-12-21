@@ -13,10 +13,9 @@ namespace Analysis.EDM
         {
             TOFChannelSet t = new TOFChannelSet();
             t.Config = t1.Config;
-            t.SwitchMasks = t1.SwitchMasks;
-            t.Channels = new Channel<TOFWithError>[t1.Channels.Length];
-            for (int i = 0; i < t.Channels.Length; i++)
-                t.Channels[i] = (TOFChannel)t1.Channels[i] + (TOFChannel)t2.Channels[i];
+            t.Count = t1.Count + t2.Count;
+            foreach (string[] channel in t1.Channels)
+                t.AddChannel(channel, (TOFChannel)t1.GetChannel(channel) + (TOFChannel)t2.GetChannel(channel));
             return t;
         }
 
@@ -24,21 +23,33 @@ namespace Analysis.EDM
         {
             TOFChannelSet t = new TOFChannelSet();
             t.Config = t1.Config;
-            t.SwitchMasks = t1.SwitchMasks;
-            t.Channels = new Channel<TOFWithError>[t1.Channels.Length];
-            for (int i = 0; i < t.Channels.Length; i++)
-                t.Channels[i] = (TOFChannel)t1.Channels[i] - (TOFChannel)t2.Channels[i];
+            t.Count = t1.Count + t2.Count;
+            //t.SwitchMasks = t1.SwitchMasks;
+            //t.Channels = new Channel<TOFWithError>[t1.Channels.Length];
+            foreach (string[] channel in t1.Channels)
+                t.AddChannel(channel, (TOFChannel)t1.GetChannel(channel) - (TOFChannel)t2.GetChannel(channel));
             return t;
         }
 
         static public TOFChannelSet operator /(TOFChannelSet t, double d)
         {
             TOFChannelSet temp = new TOFChannelSet();
-            temp.SwitchMasks = t.SwitchMasks;
+            //temp.SwitchMasks = t.SwitchMasks;
             temp.Config = t.Config;
-            temp.Channels = new Channel<TOFWithError>[t.Channels.Length];
-            for (int i = 0; i < temp.Channels.Length; i++)
-                temp.Channels[i] = (TOFChannel)t.Channels[i] / d;
+            temp.Count = t.Count;
+            foreach (string[] channel in t.Channels) 
+                temp.AddChannel(channel, (TOFChannel)t.GetChannel(channel) / d); 
+            return temp;
+        }
+
+        static public TOFChannelSet operator *(TOFChannelSet t, double d)
+        {
+            TOFChannelSet temp = new TOFChannelSet();
+            //temp.SwitchMasks = t.SwitchMasks;
+            temp.Config = t.Config;
+            temp.Count = t.Count;
+            foreach (string[] channel in t.Channels)
+                temp.AddChannel(channel, (TOFChannel)t.GetChannel(channel) * d); 
             return temp;
         }
     }

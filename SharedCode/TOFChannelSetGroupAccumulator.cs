@@ -30,7 +30,7 @@ namespace Analysis.EDM
             for (int i = 0; i < Length; i++)
                 // watch out for ChannelSets that have not had any items added
                 // would be better if there was a cleaner way to see if a ChannelSet was initialised
-                if (ChannelSets[i].Channels == null) tcsa[i] = null;
+                if (ChannelSets[i].Channels.Count == 0) tcsa[i] = null;
                 else
                     tcsa[i] = (TOFChannelSet)(((TOFChannelSetAccumulator)ChannelSets[i]).GetResult());
             tcsg.ChannelSets = tcsa;
