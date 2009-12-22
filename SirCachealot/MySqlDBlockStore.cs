@@ -276,23 +276,8 @@ namespace SirCachealot.Database
                 string aTag = db.DemodulationConfig.AnalysisTag;
                 bool eState = (bool)db.Config.Settings["eState"];
                 bool bState = (bool)db.Config.Settings["bState"];
-                // the following is a workaround. We took a lot of data before we started recording
-                // the rfState. Luckily, almost all of this data was taken in the same rf state.
-                // Here, if no rfState is found in the block it is assigned the default, true.
-                bool rfState;
-                try
-                {
-                    rfState = (bool)db.Config.Settings["rfState"];
-                }
-                catch (Exception)
-                {
-                    // we set the rfState in the dblock, which will shortly be persisted to the
-                    // database. This means that every dblock in the database will have an rfState
-                    // even if the corresponding block does not.
-                    db.Config.Settings["rfState"] = true;
-                    rfState = true;
-                }
-
+                bool rfState = (bool)db.Config.Settings["rfState"];
+                
                 DateTime timeStamp = db.TimeStamp;
                 double ePlus = (double)db.Config.Settings["ePlus"];
                 double eMinus = (double)db.Config.Settings["eMinus"];

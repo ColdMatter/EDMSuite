@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 using System.Threading;
 
 using Analysis;
@@ -48,7 +49,15 @@ namespace SirCachealot
         // loaded and the UI is ready.
         internal void UIInitialise()
         {
-            //start the status monitor
+            // put the version number in the title bar to avoid confusion!
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            mainWindow.Text += "  " + version.ToString();
+            // This will load the shared code assembly so that we can get its
+            // version number and display that as well.
+            TOF t = new TOF();
+            Version sharedCodeVersion = Assembly.GetAssembly(t.GetType()).GetName().Version;
+            mainWindow.Text += " (" + sharedCodeVersion.ToString() + ")";
+            // start the status monitor
             statusMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateStatusMonitor), null, 500, 500);
         }
 

@@ -56,6 +56,17 @@ namespace Data.EDM
 				}
 			}
 			zippedStream.Close();
+            // the following is a workaround. We took a lot of data before we started recording
+            // the rfState. Luckily, almost all of this data was taken in the same rf state.
+            // Here, if no rfState is found in the block it is assigned the default, true.
+            try
+            {
+                bool rfState = (bool)block.Config.Settings["rfState"];
+            }
+            catch (Exception)
+            {
+                block.Config.Settings.Add("rfState", true);
+            }
 			return block;
 		}
 
