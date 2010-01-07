@@ -52,6 +52,11 @@ namespace DecelerationHardwareControl
             //diodeSaturationError();
         }
 
+        private void laserBlockCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetAnalogOutputBlockedStatus("laser", laserBlockCheckBox.Checked);
+        }
+
        
 
         

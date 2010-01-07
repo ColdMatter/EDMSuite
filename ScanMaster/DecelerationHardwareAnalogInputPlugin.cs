@@ -153,7 +153,7 @@ namespace ScanMaster.Acquire.Plugins
                     ArrayList a = new ArrayList();
                     if (!Environs.Debug)
                     {
-                        a.Add(latestData[lockCavityChannel]/latestData[refCavityChannel]);
+                    //    a.Add(latestData[lockCavityChannel]/latestData[refCavityChannel]);
                         foreach (double d in latestData) a.Add(d);
                     }
                     //if (!Environs.Debug) foreach (double d in latestData) a.Add(d);

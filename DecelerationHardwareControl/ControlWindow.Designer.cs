@@ -36,6 +36,7 @@ namespace DecelerationHardwareControl
             this.LaserLockCheckBox = new System.Windows.Forms.CheckBox();
             this.EFieldTab = new System.Windows.Forms.TabPage();
             this.DeceleratorTab = new System.Windows.Forms.TabPage();
+            this.laserBlockCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.LaserTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeSaturation)).BeginInit();
@@ -55,6 +56,7 @@ namespace DecelerationHardwareControl
             // 
             // LaserTab
             // 
+            this.LaserTab.Controls.Add(this.laserBlockCheckBox);
             this.LaserTab.Controls.Add(this.diodeSaturation);
             this.LaserTab.Controls.Add(this.aomfrequency_label);
             this.LaserTab.Controls.Add(this.AomVoltageBox);
@@ -139,6 +141,17 @@ namespace DecelerationHardwareControl
             this.DeceleratorTab.Text = "Decelerator";
             this.DeceleratorTab.UseVisualStyleBackColor = true;
             // 
+            // laserBlockCheckBox
+            // 
+            this.laserBlockCheckBox.AutoSize = true;
+            this.laserBlockCheckBox.Location = new System.Drawing.Point(17, 44);
+            this.laserBlockCheckBox.Name = "laserBlockCheckBox";
+            this.laserBlockCheckBox.Size = new System.Drawing.Size(65, 17);
+            this.laserBlockCheckBox.TabIndex = 1;
+            this.laserBlockCheckBox.Text = "Blocked";
+            this.laserBlockCheckBox.UseVisualStyleBackColor = true;
+            this.laserBlockCheckBox.CheckedChanged += new System.EventHandler(this.laserBlockCheckBox_CheckedChanged);
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -167,6 +180,7 @@ namespace DecelerationHardwareControl
         public System.Windows.Forms.NumericUpDown AomVoltageBox;
         private System.Windows.Forms.Label aomfrequency_label;
         public NationalInstruments.UI.WindowsForms.Led diodeSaturation;
+        private System.Windows.Forms.CheckBox laserBlockCheckBox;
     }
 }
 
