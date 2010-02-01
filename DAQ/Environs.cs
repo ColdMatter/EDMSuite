@@ -87,6 +87,13 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
+                case "PIXIE":
+                    Hardware = new PXIEDMHardware();
+                    FileSystem = new PixieFileSystem();
+                    Debug = false;
+                    //ExperimentType = "edm";
+                    break;
+
 				case "PH-JKITE":
 					Hardware = new EDMHardware();
 					FileSystem = new PHJKiteFileSystem();

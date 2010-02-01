@@ -77,8 +77,8 @@ namespace DAQ.HAL
 				);
 
 			String clockSource;
-			if (!internalClock) clockSource = device + "/PFI2";
-			else clockSource = "";
+            if (!internalClock) clockSource = (string)Environment.Environs.Info["PGClockLine"];
+            else clockSource = "";
 
 			SampleQuantityMode sqm;
 			if (loop)

@@ -88,7 +88,7 @@ namespace DAQ.HAL
                 100,
                 CIFrequencyUnits.Hertz
                 );
-            counterTask.Stream.Timeout = (int)(1.1 * 1000 * measurementTime);
+            counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime);
             leakageReader = new CounterReader(counterTask.Stream);
         }
 

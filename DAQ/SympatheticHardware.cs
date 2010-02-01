@@ -31,6 +31,7 @@ namespace DAQ.HAL
             string usbDAQ1 = (string)Boards["usbDAQ1"];
 
             // add things to the info
+            Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
 
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0"); //DAQ Pin 11

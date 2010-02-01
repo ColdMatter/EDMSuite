@@ -49,6 +49,7 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -74,13 +75,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=8.6.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=8.9.35.8, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.Common, Version=8.7.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=8.9.35.210, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=8.5.35.310, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="NationalInstruments.VisaNS, Version=8.9.35.108, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -138,6 +137,8 @@
     <Compile Include="HP438A.cs" />
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
+    <Compile Include="PixieFileSystem.cs" />
+    <Compile Include="PXIEDMHardware.cs" />
     <Compile Include="RFPower.cs" />
     <Compile Include="SealClubberFileSystem.cs" />
     <Compile Include="Agilent53131A.cs" />
