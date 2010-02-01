@@ -134,7 +134,7 @@ namespace EDMHardwareControl
 
 
             // analog outputs
-//            bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
+            bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
@@ -143,18 +143,18 @@ namespace EDMHardwareControl
             rf2FMOutputTask = CreateAnalogOutputTask("rf2FM");
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
-//            phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
+            phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
 
             // analog inputs
-            //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            //pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
+            probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
+            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
             //rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
-            //miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
-            //miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
-            //miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
-            //piMonitorTask = CreateAnalogInputTask("piMonitor");
+            miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
+            miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
+            miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
+            piMonitorTask = CreateAnalogInputTask("piMonitor");
 
             // make the control window
             window = new ControlWindow();

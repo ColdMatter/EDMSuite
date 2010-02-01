@@ -18,9 +18,10 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("daq", "/dev100");
+            Boards.Add("daq", "/PXI1Slot15");
             Boards.Add("pg", "/PXI1Slot10");
             Boards.Add("counter", "/PXI1Slot3");
+            Boards.Add("aoBoard", "/PXI1Slot4");
             // this drives the rf attenuators
             Boards.Add("usbDAQ1", "/Dev2");
             Boards.Add("analogIn", "/PXI1Slot2");
@@ -30,6 +31,7 @@ namespace DAQ.HAL
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string counterBoard = (string)Boards["counter"];
+            string aoBoard = (string)Boards["aoBoard"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
             string analogIn = (string)Boards["analogIn"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
@@ -43,7 +45,7 @@ namespace DAQ.HAL
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("phaseLockControlMethod", "synth");
-            Info.Add("PGClockLine", "/PFI5");
+            Info.Add("PGClockLine", pgBoard + "/PFI4");
 
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
@@ -117,8 +119,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
 
 
-            AddAnalogOutputChannel("phaseScramblerVoltage", daqBoard + "/ao0");
-            AddAnalogOutputChannel("b", daqBoard + "/ao1");
+            AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
+            AddAnalogOutputChannel("b", aoBoard + "/ao1");
 
             // rf rack control
             //AddAnalogInputChannel("rfPower", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);

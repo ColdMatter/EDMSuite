@@ -77,7 +77,7 @@ namespace DAQ.HAL
 				);
 
 			String clockSource;
-            if (!internalClock) clockSource = (string)Environment.Environs.Info["PGClockLine"];
+            if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
             else clockSource = "";
 
 			SampleQuantityMode sqm;
