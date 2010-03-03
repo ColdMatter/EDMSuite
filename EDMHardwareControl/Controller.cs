@@ -167,7 +167,9 @@ namespace EDMHardwareControl
             motorController1.StartCtrl();
             motorController2 = window.motorController2;
             motorController2.StartCtrl();
-
+            // set the velocity and acceleration to maximum.
+            motorController1.SetVelParams(0, 0, 10, 14);
+            motorController2.SetVelParams(0, 0, 10, 14);
 
             Application.Run(window);
         }
