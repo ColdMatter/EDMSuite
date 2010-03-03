@@ -224,7 +224,7 @@ def updateLocks(bState):
 	deltaLF1 = -1.25 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, 0, 5 )
+	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
 
 
