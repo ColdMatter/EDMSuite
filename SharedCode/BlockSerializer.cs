@@ -6,6 +6,8 @@ using System.Xml.Serialization;
 
 using ICSharpCode.SharpZipLib.Zip;
 
+using Newtonsoft.Json;
+
 namespace Data.EDM
 {
 	/// <summary>
@@ -104,5 +106,13 @@ namespace Data.EDM
 			blockStream.Close();
 			return block;
 		}
+
+        public void SerializeBlockAsJSON(String filePath, Block block)
+        {
+            Stream blockStream = new FileStream(filePath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(blockStream);
+            sw.Write(JsonConvert.SerializeObject(block));
+            blockStream.Close();
+        }
 	}
 }

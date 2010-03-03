@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using EDMConfig;
 
@@ -19,6 +20,7 @@ namespace Analysis.EDM
     /// channelSet. This can be used to appropriately weight averages.
     /// </summary>
     [Serializable]
+    [XmlInclude(typeof(TOFChannelSet))]
     public class ChannelSet<T>
     {
         // The custom comparer fixes the hashtable so that it works with string 

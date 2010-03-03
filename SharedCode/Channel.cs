@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using Data;
 
@@ -12,6 +13,7 @@ namespace Analysis.EDM
     /// of TOF values, or simply a channel of numbers.
     /// </summary>
     [Serializable]
+    [XmlInclude(typeof(TOFChannel))]
     public class Channel<T>
     {
         public T On;

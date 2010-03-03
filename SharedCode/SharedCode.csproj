@@ -80,6 +80,10 @@
       <Name>ICSharpCode.SharpZipLib</Name>
       <HintPath>C:\Program Files\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.Net20.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>

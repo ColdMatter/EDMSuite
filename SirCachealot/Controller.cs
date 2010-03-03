@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using System.Reflection;
 using System.Threading;
 
@@ -291,45 +292,37 @@ namespace SirCachealot
         #region Testing
 
         // Somewhere for SirCachealot to store test results that's accessible by Mathematica.
-        // Makes debugging easier.
+        // Makes debugging easier and is needed as a workaround for the constant Mathematica
+        // NET/Link errors.
         public TOFChannelSetGroup ChanSetGroup;
-
-        public TOFChannelSetGroup Test1()
+        // workarounds for NET/Link bugs
+        public TOFChannelSet GetAveragedChannelSet(bool eSign, bool bSign, bool rfSign)
         {
+            return ChanSetGroup.AverageChannelSetSignedByMachineState(eSign, bSign, rfSign);
+        }
+
+        public void LoadChannelSetGroup(string path)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream(path, FileMode.Open);
+            ChanSetGroup = (TOFChannelSetGroup)bf.Deserialize(fs);
+            fs.Close();
+        }
+
+        public void Test1()
+        {
+            //LoadChannelSetGroup(
+            //    "C:\\Users\\jony\\Files\\Work files\\CCM\\Notes\\"+
+            //    "Summer 2009 measurement\\summer2009_normal_tcsg.bin");
+            //XmlSerializer xs = new XmlSerializer(ChanSetGroup.GetType());
+            //FileStream fs = new FileStream("c:\\Users\\jony\\Desktop\\tcsg.xml", FileMode.Create);
+            //xs.Serialize(fs, ChanSetGroup);
+            //fs.Close();
+
             BlockSerializer bs = new BlockSerializer();
-            BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSetGroupAccumulator tcsga = new TOFChannelSetGroupAccumulator();
-            Block b;
-            string blockFile;
-            TOFChannelSet tcs;
-
-            blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\03Oct0900_1.zip";
-            b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-            tcs = btd.TOFDemodulateBlock(b);
-            tcsga.Add(tcs);
-            blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\03Oct0900_2.zip";
-            b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-            tcs = btd.TOFDemodulateBlock(b);
-            tcsga.Add(tcs);
-            blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\02Oct0900_1.zip";
-            b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-            tcs = btd.TOFDemodulateBlock(b);
-            tcsga.Add(tcs);
-            blockFile = "c:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\02Oct0900_2.zip";
-            b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-            tcs = btd.TOFDemodulateBlock(b);
-            tcsga.Add(tcs);
-
-            TOFChannelSetGroup tcsg = tcsga.GetResult();
-
-            Stream fileStream = new FileStream("c:\\Users\\jony\\Desktop\\tcsg.bin", FileMode.Create);
-            (new BinaryFormatter()).Serialize(fileStream, tcsg);
-            fileStream.Close();
-
-            TOFChannelSet tcs2 = tcsg.AverageChannelSetSignedByMachineState(true, false, false);
-
-            ChanSetGroup = tcsg;
-            return tcsg;
+            Block b = bs.DeserializeBlockFromZippedXML(
+                "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip", "block.xml");
+            bs.SerializeBlockAsJSON("c:\\Users\\jony\\Desktop\\test.json", b);
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Analysis.EDM
 {
@@ -10,6 +11,7 @@ namespace Analysis.EDM
     /// channel sets were accumulated for each machine state.
     /// </summary>
     [Serializable]
+    [XmlInclude(typeof(TOFChannelSetGroup))]
     public class ChannelSetGroup<T>
     {
         public const int Length = 8;
