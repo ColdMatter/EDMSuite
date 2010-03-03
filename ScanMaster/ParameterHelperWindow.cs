@@ -40,6 +40,17 @@ namespace ScanMaster.GUI
 			}
 			base.Dispose( disposing );
 		}
+        
+        private const int CP_NOCLOSE_BUTTON = 0x200;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams myCp = base.CreateParams;
+                myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
+                return myCp;
+            }
+        } 
 
 		#region Windows Form Designer generated code
 		/// <summary>
@@ -48,30 +59,30 @@ namespace ScanMaster.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.dataGrid1 = new System.Windows.Forms.DataGrid();
-			((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// dataGrid1
-			// 
-			this.dataGrid1.DataMember = "";
-			this.dataGrid1.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-			this.dataGrid1.Location = new System.Drawing.Point(16, 8);
-			this.dataGrid1.Name = "dataGrid1";
-			this.dataGrid1.Size = new System.Drawing.Size(360, 384);
-			this.dataGrid1.TabIndex = 0;
-			// 
-			// ParameterHelperWindow
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(394, 403);
-			this.ControlBox = false;
-			this.Controls.Add(this.dataGrid1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Name = "ParameterHelperWindow";
-			this.Text = "ParameterHelperWindow";
-			((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).EndInit();
-			this.ResumeLayout(false);
+            this.dataGrid1 = new System.Windows.Forms.DataGrid();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // dataGrid1
+            // 
+            this.dataGrid1.DataMember = "";
+            this.dataGrid1.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+            this.dataGrid1.Location = new System.Drawing.Point(16, 8);
+            this.dataGrid1.Name = "dataGrid1";
+            this.dataGrid1.Size = new System.Drawing.Size(360, 384);
+            this.dataGrid1.TabIndex = 0;
+            // 
+            // ParameterHelperWindow
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.ClientSize = new System.Drawing.Size(394, 403);
+            this.Controls.Add(this.dataGrid1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
+            this.Name = "ParameterHelperWindow";
+            this.Text = "ParameterHelperWindow";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).EndInit();
+            this.ResumeLayout(false);
 
 		}
 		#endregion
