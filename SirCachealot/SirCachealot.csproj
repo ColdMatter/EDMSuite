@@ -15,6 +15,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -107,6 +108,7 @@
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App.ico" />
     <Content Include="memcached.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

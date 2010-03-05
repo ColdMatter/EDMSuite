@@ -50,11 +50,8 @@ namespace EDMPhaseLock
 		private NationalInstruments.UI.WaveformPlot waveformPlot3;
 		private NationalInstruments.UI.XAxis xAxis3;
 		private NationalInstruments.UI.YAxis yAxis3;
-		private System.Windows.Forms.MenuItem menuItem6;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+        private System.Windows.Forms.MenuItem menuItem6;
+        private IContainer components;
 
 		public MainForm()
 		{
@@ -93,176 +90,177 @@ namespace EDMPhaseLock
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MainForm));
-			this.deviationGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
-			this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
-			this.xAxis1 = new NationalInstruments.UI.XAxis();
-			this.yAxis1 = new NationalInstruments.UI.YAxis();
-			this.outputGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
-			this.waveformPlot2 = new NationalInstruments.UI.WaveformPlot();
-			this.xAxis2 = new NationalInstruments.UI.XAxis();
-			this.yAxis2 = new NationalInstruments.UI.YAxis();
-			this.mainMenu1 = new System.Windows.Forms.MainMenu();
-			this.menuItem1 = new System.Windows.Forms.MenuItem();
-			this.menuItem5 = new System.Windows.Forms.MenuItem();
-			this.menuItem2 = new System.Windows.Forms.MenuItem();
-			this.menuItem6 = new System.Windows.Forms.MenuItem();
-			this.menuItem3 = new System.Windows.Forms.MenuItem();
-			this.menuItem4 = new System.Windows.Forms.MenuItem();
-			this.phaseGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
-			this.waveformPlot3 = new NationalInstruments.UI.WaveformPlot();
-			this.xAxis3 = new NationalInstruments.UI.XAxis();
-			this.yAxis3 = new NationalInstruments.UI.YAxis();
-			((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.outputGraph)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// deviationGraph
-			// 
-			this.deviationGraph.Caption = "Deviation from target frequency (Hz, reference-clock based)";
-			this.deviationGraph.Location = new System.Drawing.Point(16, 8);
-			this.deviationGraph.Name = "deviationGraph";
-			this.deviationGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-																							 this.waveformPlot1});
-			this.deviationGraph.Size = new System.Drawing.Size(704, 176);
-			this.deviationGraph.TabIndex = 0;
-			this.deviationGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-																					  this.xAxis1});
-			this.deviationGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-																					  this.yAxis1});
-			// 
-			// waveformPlot1
-			// 
-			this.waveformPlot1.LineStyle = NationalInstruments.UI.LineStyle.None;
-			this.waveformPlot1.PointColor = System.Drawing.Color.Lime;
-			this.waveformPlot1.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-			this.waveformPlot1.XAxis = this.xAxis1;
-			this.waveformPlot1.YAxis = this.yAxis1;
-			// 
-			// xAxis1
-			// 
-			this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-			this.xAxis1.Range = new NationalInstruments.UI.Range(0, 1000);
-			// 
-			// outputGraph
-			// 
-			this.outputGraph.Caption = "Output frequency (kHz, wall-clock based)";
-			this.outputGraph.Location = new System.Drawing.Point(16, 192);
-			this.outputGraph.Name = "outputGraph";
-			this.outputGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-																						  this.waveformPlot2});
-			this.outputGraph.Size = new System.Drawing.Size(704, 176);
-			this.outputGraph.TabIndex = 1;
-			this.outputGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-																				   this.xAxis2});
-			this.outputGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-																				   this.yAxis2});
-			// 
-			// waveformPlot2
-			// 
-			this.waveformPlot2.LineColor = System.Drawing.Color.Red;
-			this.waveformPlot2.XAxis = this.xAxis2;
-			this.waveformPlot2.YAxis = this.yAxis2;
-			// 
-			// xAxis2
-			// 
-			this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
-			this.xAxis2.Range = new NationalInstruments.UI.Range(0, 1000);
-			// 
-			// mainMenu1
-			// 
-			this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.menuItem1,
-																					  this.menuItem2});
-			// 
-			// menuItem1
-			// 
-			this.menuItem1.Index = 0;
-			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.menuItem5});
-			this.menuItem1.Text = "File";
-			// 
-			// menuItem5
-			// 
-			this.menuItem5.Index = 0;
-			this.menuItem5.Text = "Exit";
-			this.menuItem5.Click += new System.EventHandler(this.menuItem5_Click);
-			// 
-			// menuItem2
-			// 
-			this.menuItem2.Index = 1;
-			this.menuItem2.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.menuItem6,
-																					  this.menuItem3,
-																					  this.menuItem4});
-			this.menuItem2.Text = "Lock";
-			// 
-			// menuItem6
-			// 
-			this.menuItem6.Index = 0;
-			this.menuItem6.Text = "Monitor";
-			this.menuItem6.Click += new System.EventHandler(this.menuItem6_Click);
-			// 
-			// menuItem3
-			// 
-			this.menuItem3.Index = 1;
-			this.menuItem3.Text = "Lock";
-			this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
-			// 
-			// menuItem4
-			// 
-			this.menuItem4.Index = 2;
-			this.menuItem4.Text = "Stop";
-			this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
-			// 
-			// phaseGraph
-			// 
-			this.phaseGraph.Caption = "Accumulated phase error (degrees)";
-			this.phaseGraph.Location = new System.Drawing.Point(16, 376);
-			this.phaseGraph.Name = "phaseGraph";
-			this.phaseGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-																						 this.waveformPlot3});
-			this.phaseGraph.Size = new System.Drawing.Size(704, 176);
-			this.phaseGraph.TabIndex = 2;
-			this.phaseGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-																				  this.xAxis3});
-			this.phaseGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-																				  this.yAxis3});
-			// 
-			// waveformPlot3
-			// 
-			this.waveformPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
-			this.waveformPlot3.PointColor = System.Drawing.Color.Lime;
-			this.waveformPlot3.PointStyle = NationalInstruments.UI.PointStyle.EmptyCircle;
-			this.waveformPlot3.XAxis = this.xAxis3;
-			this.waveformPlot3.YAxis = this.yAxis3;
-			// 
-			// xAxis3
-			// 
-			this.xAxis3.Mode = NationalInstruments.UI.AxisMode.StripChart;
-			this.xAxis3.Range = new NationalInstruments.UI.Range(0, 1000);
-			// 
-			// yAxis3
-			// 
-			this.yAxis3.Range = new NationalInstruments.UI.Range(-5, 5);
-			// 
-			// MainForm
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(736, 561);
-			this.Controls.Add(this.phaseGraph);
-			this.Controls.Add(this.outputGraph);
-			this.Controls.Add(this.deviationGraph);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Menu = this.mainMenu1;
-			this.Name = "MainForm";
-			this.Text = "Phase Lock";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_Closing);
-			((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.outputGraph)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).EndInit();
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.deviationGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis1 = new NationalInstruments.UI.XAxis();
+            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.outputGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.waveformPlot2 = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem5 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.menuItem6 = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
+            this.phaseGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.waveformPlot3 = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis3 = new NationalInstruments.UI.XAxis();
+            this.yAxis3 = new NationalInstruments.UI.YAxis();
+            ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outputGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // deviationGraph
+            // 
+            this.deviationGraph.Caption = "Deviation from target frequency (Hz, reference-clock based)";
+            this.deviationGraph.Location = new System.Drawing.Point(16, 8);
+            this.deviationGraph.Name = "deviationGraph";
+            this.deviationGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.waveformPlot1});
+            this.deviationGraph.Size = new System.Drawing.Size(704, 176);
+            this.deviationGraph.TabIndex = 0;
+            this.deviationGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis1});
+            this.deviationGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis1});
+            // 
+            // waveformPlot1
+            // 
+            this.waveformPlot1.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.waveformPlot1.PointColor = System.Drawing.Color.Lime;
+            this.waveformPlot1.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.waveformPlot1.XAxis = this.xAxis1;
+            this.waveformPlot1.YAxis = this.yAxis1;
+            // 
+            // xAxis1
+            // 
+            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 1000);
+            // 
+            // outputGraph
+            // 
+            this.outputGraph.Caption = "Output frequency (kHz, wall-clock based)";
+            this.outputGraph.Location = new System.Drawing.Point(16, 192);
+            this.outputGraph.Name = "outputGraph";
+            this.outputGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.waveformPlot2});
+            this.outputGraph.Size = new System.Drawing.Size(704, 176);
+            this.outputGraph.TabIndex = 1;
+            this.outputGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.outputGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // waveformPlot2
+            // 
+            this.waveformPlot2.LineColor = System.Drawing.Color.Red;
+            this.waveformPlot2.XAxis = this.xAxis2;
+            this.waveformPlot2.YAxis = this.yAxis2;
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0, 1000);
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem1,
+            this.menuItem2});
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 0;
+            this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem5});
+            this.menuItem1.Text = "File";
+            // 
+            // menuItem5
+            // 
+            this.menuItem5.Index = 0;
+            this.menuItem5.Text = "Exit";
+            this.menuItem5.Click += new System.EventHandler(this.menuItem5_Click);
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 1;
+            this.menuItem2.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem6,
+            this.menuItem3,
+            this.menuItem4});
+            this.menuItem2.Text = "Lock";
+            // 
+            // menuItem6
+            // 
+            this.menuItem6.Index = 0;
+            this.menuItem6.Text = "Monitor";
+            this.menuItem6.Click += new System.EventHandler(this.menuItem6_Click);
+            // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 1;
+            this.menuItem3.Text = "Lock";
+            this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
+            // 
+            // menuItem4
+            // 
+            this.menuItem4.Index = 2;
+            this.menuItem4.Text = "Stop";
+            this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
+            // 
+            // phaseGraph
+            // 
+            this.phaseGraph.Caption = "Accumulated phase error (degrees)";
+            this.phaseGraph.Location = new System.Drawing.Point(16, 376);
+            this.phaseGraph.Name = "phaseGraph";
+            this.phaseGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.waveformPlot3});
+            this.phaseGraph.Size = new System.Drawing.Size(704, 176);
+            this.phaseGraph.TabIndex = 2;
+            this.phaseGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis3});
+            this.phaseGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis3});
+            // 
+            // waveformPlot3
+            // 
+            this.waveformPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.waveformPlot3.PointColor = System.Drawing.Color.Lime;
+            this.waveformPlot3.PointStyle = NationalInstruments.UI.PointStyle.EmptyCircle;
+            this.waveformPlot3.XAxis = this.xAxis3;
+            this.waveformPlot3.YAxis = this.yAxis3;
+            // 
+            // xAxis3
+            // 
+            this.xAxis3.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis3.Range = new NationalInstruments.UI.Range(0, 1000);
+            // 
+            // yAxis3
+            // 
+            this.yAxis3.Range = new NationalInstruments.UI.Range(-5, 5);
+            // 
+            // MainForm
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.ClientSize = new System.Drawing.Size(736, 561);
+            this.Controls.Add(this.phaseGraph);
+            this.Controls.Add(this.outputGraph);
+            this.Controls.Add(this.deviationGraph);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Menu = this.mainMenu1;
+            this.Name = "MainForm";
+            this.Text = "Phase Lock";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_Closing);
+            ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outputGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).EndInit();
+            this.ResumeLayout(false);
 
 		}
 		#endregion

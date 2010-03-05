@@ -59,6 +59,7 @@ namespace ScanMaster.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ParameterHelperWindow));
             this.dataGrid1 = new System.Windows.Forms.DataGrid();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
             this.SuspendLayout();
@@ -78,6 +79,7 @@ namespace ScanMaster.GUI
             this.ClientSize = new System.Drawing.Size(394, 403);
             this.Controls.Add(this.dataGrid1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "ParameterHelperWindow";
             this.Text = "ParameterHelperWindow";
