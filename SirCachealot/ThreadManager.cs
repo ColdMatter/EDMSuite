@@ -36,12 +36,13 @@ namespace SirCachealot.Parallel
             {
                 workFunction(parametersIn);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // if there's an exception thrown while adding a block then we're
                 // pretty much stuck. The best we can do is log it and eat it to
                 // stop it killing the rest of the program.
                 controller.log("Exception thrown analysing " + parametersIn.ToString());
+                controller.errorLog(e.ToString());
                 return;
             }
             finally

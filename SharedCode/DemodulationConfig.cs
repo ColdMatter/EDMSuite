@@ -151,6 +151,12 @@ namespace Analysis.EDM
             // these two are the fast and slow halves of the 1.1 sigma central gate.
             AddFixedSliceConfig("fastFixed", 2110, 45);
             AddFixedSliceConfig("slowFixed", 2201, 45);
+            // two fairly wide gates that take in most of the slow and fast molecules.
+            // They've been chosed to try and capture the wiggliness of our fast-slow
+            // wiggles.
+            AddFixedSliceConfig("widefastFixed", 1950, 150);
+            AddFixedSliceConfig("wideslowFixed", 2330, 150);
+
         }
 
         //private static void AddSliceConfig(string name, double offset, double width)

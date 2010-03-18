@@ -55,6 +55,12 @@ namespace SirCachealot
             logTextBox.BeginInvoke(new AppendTextDelegate(logTextBox.AppendText),
 				new object[] {txt + Environment.NewLine});
         }
+        
+        public void AppendToErrorLog(string txt)
+        {
+            errorLogTextBox.BeginInvoke(new AppendTextDelegate(errorLogTextBox.AppendText),
+                new object[] { txt + Environment.NewLine });
+        }
 
         public void SetStatsText(string txt)
         {

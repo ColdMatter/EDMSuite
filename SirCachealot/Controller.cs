@@ -85,6 +85,11 @@ namespace SirCachealot
             mainWindow.AppendToLog(txt);
         }
 
+        internal void errorLog(string txt)
+        {
+            mainWindow.AppendToErrorLog(txt);
+        }
+
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.

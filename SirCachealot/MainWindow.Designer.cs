@@ -39,6 +39,7 @@ namespace SirCachealot
             this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.statsTextBox = new System.Windows.Forms.TextBox();
+            this.errorLogTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,14 +128,28 @@ namespace SirCachealot
             this.statsTextBox.Size = new System.Drawing.Size(256, 199);
             this.statsTextBox.TabIndex = 3;
             // 
+            // errorLogTextBox
+            // 
+            this.errorLogTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.errorLogTextBox.ForeColor = System.Drawing.Color.Red;
+            this.errorLogTextBox.Location = new System.Drawing.Point(12, 232);
+            this.errorLogTextBox.Multiline = true;
+            this.errorLogTextBox.Name = "errorLogTextBox";
+            this.errorLogTextBox.ReadOnly = true;
+            this.errorLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.errorLogTextBox.Size = new System.Drawing.Size(457, 238);
+            this.errorLogTextBox.TabIndex = 4;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 240);
+            this.ClientSize = new System.Drawing.Size(485, 482);
+            this.Controls.Add(this.errorLogTextBox);
             this.Controls.Add(this.statsTextBox);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainWindow";
@@ -160,6 +175,7 @@ namespace SirCachealot
         private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem test1ToolStripMenuItem;
+        private System.Windows.Forms.TextBox errorLogTextBox;
     }
 }
 
