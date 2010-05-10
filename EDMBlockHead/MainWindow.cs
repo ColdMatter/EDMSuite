@@ -266,7 +266,6 @@ namespace EDMBlockHead.GUI
             this.xAxis1});
             this.tofGraph1.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
-            this.tofGraph1.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph1_PlotDataChanged);
             // 
             // tofPlot1
             // 
@@ -276,7 +275,7 @@ namespace EDMBlockHead.GUI
             // yAxis1
             // 
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(0, 5);
+            this.yAxis1.Range = new NationalInstruments.UI.Range(0, 1.5);
             // 
             // progressTank
             // 
@@ -323,6 +322,7 @@ namespace EDMBlockHead.GUI
             // yAxis2
             // 
             this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.Range = new NationalInstruments.UI.Range(0, 3);
             // 
             // tofGraph3
             // 
@@ -557,9 +557,5 @@ namespace EDMBlockHead.GUI
 
 		#endregion
 
-        private void tofGraph1_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
-        {
-
-        }
     }
 }

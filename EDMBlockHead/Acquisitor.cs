@@ -308,59 +308,61 @@ namespace EDMBlockHead.Acquire
 
 		}
 
-		// this sets up the scanned analog inputs. It's complicated a bit by the fact that
-		// each input would ideally have a different clock rate and gateLength. The board
-		// doesn't support that though.
-		public void MapAnalogInputs()
-		{
-			inputs = new ScannedAnalogInputCollection();
-			inputs.RawSampleRate = 100000;
-			inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-			inputs.GateLength = 220;
-			// NOTE: this long version is for null runs, don't set it so long that the shots overlap!
-			// Comment the following line out if you're not null running.
-			//inputs.GateLength = 3000;
 
-			
-			// this code should be used for normal running
-			ScannedAnalogInput pmt = new ScannedAnalogInput();
-			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
-			pmt.ReductionMode = DataReductionMode.Chop;
+        /* THIS VERSION FOR AR */
+        // this sets up the scanned analog inputs. It's complicated a bit by the fact that
+        // each input would ideally have a different clock rate and gateLength. The board
+        // doesn't support that though.
+        public void MapAnalogInputs()
+        {
+            inputs = new ScannedAnalogInputCollection();
+            inputs.RawSampleRate = 100000;
+            inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
+            inputs.GateLength = 220;
+            // NOTE: this long version is for null runs, don't set it so long that the shots overlap!
+            // Comment the following line out if you're not null running.
+            //inputs.GateLength = 3000;
+
+
+            // this code should be used for normal running
+            ScannedAnalogInput pmt = new ScannedAnalogInput();
+            pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
+            pmt.ReductionMode = DataReductionMode.Chop;
             pmt.ChopStart = 140;
             pmt.ChopLength = 80;
             pmt.LowLimit = 0;
-			pmt.HighLimit = 10;
+            pmt.HighLimit = 10;
             pmt.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
-			inputs.Channels.Add(pmt);
+            inputs.Channels.Add(pmt);
 
-//			// this code can be enabled for faster null runs
-//			ScannedAnalogInput pmt = new ScannedAnalogInput();
-//			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
-//			pmt.ReductionMode = DataReductionMode.Average;
-//			pmt.AverageEvery = 40;
-//			pmt.LowLimit = 0;
-//			pmt.HighLimit = 10;
-//			pmt.Calibration = 0.14;
-//			inputs.Channels.Add(pmt);
+            //			// this code can be enabled for faster null runs
+            //			ScannedAnalogInput pmt = new ScannedAnalogInput();
+            //			pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
+            //			pmt.ReductionMode = DataReductionMode.Average;
+            //			pmt.AverageEvery = 40;
+            //			pmt.LowLimit = 0;
+            //			pmt.HighLimit = 10;
+            //			pmt.Calibration = 0.14;
+            //			inputs.Channels.Add(pmt);
 
-			ScannedAnalogInput normPMT = new ScannedAnalogInput();
-			normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
-			normPMT.ReductionMode = DataReductionMode.Chop;
+            ScannedAnalogInput normPMT = new ScannedAnalogInput();
+            normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
+            normPMT.ReductionMode = DataReductionMode.Chop;
             normPMT.ChopStart = 0;
-			normPMT.ChopLength = 40;
-			normPMT.LowLimit = 0;
-			normPMT.HighLimit = 10;
+            normPMT.ChopLength = 40;
+            normPMT.LowLimit = 0;
+            normPMT.HighLimit = 10;
             normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
-			inputs.Channels.Add(normPMT);
+            inputs.Channels.Add(normPMT);
 
-			ScannedAnalogInput mag = new ScannedAnalogInput();
-			mag.ReductionMode = DataReductionMode.Average;
-			mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
-			mag.AverageEvery = 20;
-			mag.LowLimit = -10;
-			mag.HighLimit = 10;
-			mag.Calibration = 0.00001;
-			inputs.Channels.Add(mag);
+            ScannedAnalogInput mag = new ScannedAnalogInput();
+            mag.ReductionMode = DataReductionMode.Average;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
+            mag.AverageEvery = 20;
+            mag.LowLimit = -10;
+            mag.HighLimit = 10;
+            mag.Calibration = 0.00001;
+            inputs.Channels.Add(mag);
 
             ScannedAnalogInput gnd = new ScannedAnalogInput();
             gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
@@ -381,6 +383,67 @@ namespace EDMBlockHead.Acquire
             battery.Calibration = 1;
             inputs.Channels.Add(battery);
         }
+
+        ///* THIS VERSION FOR He/Kr */
+        //// this sets up the scanned analog inputs. It's complicated a bit by the fact that
+        //// each input would ideally have a different clock rate and gateLength. The board
+        //// doesn't support that though.
+        //public void MapAnalogInputs()
+        //{
+        //    inputs = new ScannedAnalogInputCollection();
+        //    inputs.RawSampleRate = 100000;
+        //    inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
+        //    inputs.GateLength = 300;
+
+        //    // this code should be used for normal running
+        //    ScannedAnalogInput pmt = new ScannedAnalogInput();
+        //    pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
+        //    pmt.ReductionMode = DataReductionMode.Chop;
+        //    pmt.ChopStart = 180;
+        //    pmt.ChopLength = 120;
+        //    pmt.LowLimit = 0;
+        //    pmt.HighLimit = 10;
+        //    pmt.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
+        //    inputs.Channels.Add(pmt);
+
+        //    ScannedAnalogInput normPMT = new ScannedAnalogInput();
+        //    normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
+        //    normPMT.ReductionMode = DataReductionMode.Chop;
+        //    normPMT.ChopStart = 0;
+        //    normPMT.ChopLength = 40;
+        //    normPMT.LowLimit = 0;
+        //    normPMT.HighLimit = 10;
+        //    normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
+        //    inputs.Channels.Add(normPMT);
+
+        //    ScannedAnalogInput mag = new ScannedAnalogInput();
+        //    mag.ReductionMode = DataReductionMode.Average;
+        //    mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
+        //    mag.AverageEvery = 20;
+        //    mag.LowLimit = -10;
+        //    mag.HighLimit = 10;
+        //    mag.Calibration = 0.00001;
+        //    inputs.Channels.Add(mag);
+
+        //    ScannedAnalogInput gnd = new ScannedAnalogInput();
+        //    gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
+        //    gnd.ReductionMode = DataReductionMode.Average;
+        //    gnd.AverageEvery = 20;
+        //    gnd.LowLimit = -1;
+        //    gnd.HighLimit = 1;
+        //    gnd.Calibration = 1;
+        //    inputs.Channels.Add(gnd);
+
+        //    ScannedAnalogInput battery = new ScannedAnalogInput();
+        //    battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
+        //    battery.ReductionMode = DataReductionMode.Chop;
+        //    battery.ChopStart = 180;
+        //    battery.ChopLength = 120;
+        //    battery.LowLimit = 0;
+        //    battery.HighLimit = 10;
+        //    battery.Calibration = 1;
+        //    inputs.Channels.Add(battery);
+        //}
 
         private void ConfigureSinglePointAnalogInputs()
         {

@@ -28,7 +28,7 @@ namespace ScanMaster.Analyze
 			double q = parameters[1];
 			double c = parameters[2];
 			double w = parameters[3];
-			return n + q * Math.Pow(Math.Sin((x - c) / w), 2);
+			return n - q * Math.Pow(Math.Sin((x - c) / w), 2);
 		}
 
 		public override double[] SuggestParameters(double[] xDat, double[] yDat, double scanStart, double scanEnd)

@@ -157,6 +157,10 @@ namespace Analysis.EDM
             AddFixedSliceConfig("widefastFixed", 1950, 150);
             AddFixedSliceConfig("wideslowFixed", 2330, 150);
 
+            // A demodulation config for He/Kr
+            AddFixedSliceConfig("centreFixedHe", 2950, 90);
+
+
         }
 
         //private static void AddSliceConfig(string name, double offset, double width)
