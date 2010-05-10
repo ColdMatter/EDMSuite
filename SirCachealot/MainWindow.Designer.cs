@@ -51,7 +51,7 @@ namespace SirCachealot
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(485, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(519, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -115,7 +115,8 @@ namespace SirCachealot
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(195, 199);
+            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTextBox.Size = new System.Drawing.Size(233, 199);
             this.logTextBox.TabIndex = 2;
             // 
             // statsTextBox
@@ -131,20 +132,22 @@ namespace SirCachealot
             // errorLogTextBox
             // 
             this.errorLogTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.errorLogTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorLogTextBox.ForeColor = System.Drawing.Color.Red;
             this.errorLogTextBox.Location = new System.Drawing.Point(12, 232);
             this.errorLogTextBox.Multiline = true;
             this.errorLogTextBox.Name = "errorLogTextBox";
             this.errorLogTextBox.ReadOnly = true;
             this.errorLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.errorLogTextBox.Size = new System.Drawing.Size(457, 238);
+            this.errorLogTextBox.Size = new System.Drawing.Size(495, 238);
             this.errorLogTextBox.TabIndex = 4;
+            this.errorLogTextBox.Text = "Error log";
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 482);
+            this.ClientSize = new System.Drawing.Size(519, 481);
             this.Controls.Add(this.errorLogTextBox);
             this.Controls.Add(this.statsTextBox);
             this.Controls.Add(this.logTextBox);

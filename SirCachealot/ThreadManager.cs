@@ -20,7 +20,7 @@ namespace SirCachealot.Parallel
         public void InitialiseThreading(Controller c)
         {
             this.controller = c;
-            ThreadPool.SetMaxThreads(64, 64);
+            ThreadPool.SetMaxThreads(16, 16);
         }
 
         // this function adds an item to the queue, and takes care of updating the counters.
@@ -42,7 +42,10 @@ namespace SirCachealot.Parallel
                 // pretty much stuck. The best we can do is log it and eat it to
                 // stop it killing the rest of the program.
                 controller.log("Exception thrown analysing " + parametersIn.ToString());
+                controller.errorLog("Exception thrown analysing " + parametersIn.ToString());
                 controller.errorLog(e.ToString());
+                controller.errorLog("======================");
+                controller.errorLog("");
                 return;
             }
             finally
