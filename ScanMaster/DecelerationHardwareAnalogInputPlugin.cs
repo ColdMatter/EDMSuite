@@ -1,3 +1,5 @@
+#if DECELERATOR
+
 using System;
 using System.Collections;
 using System.Text;
@@ -167,3 +169,5 @@ namespace ScanMaster.Acquire.Plugins
 }
 
 
+
+#endif

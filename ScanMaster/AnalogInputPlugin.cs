@@ -11,8 +11,13 @@ namespace ScanMaster.Acquire.Plugin
 	/// this plugin to capture analog channels for each point in the scan.
 	/// </summary>
 	[Serializable]
-	[XmlInclude(typeof(DAQMxAnalogInputPlugin)), XmlInclude(typeof(NullAnalogInputPlugin)), 
-    XmlInclude(typeof(DecelerationHardwareAnalogInputPlugin))]
+	[
+    XmlInclude(typeof(DAQMxAnalogInputPlugin)),
+    XmlInclude(typeof(NullAnalogInputPlugin)),
+#if DECELERATOR
+    XmlInclude(typeof(DecelerationHardwareAnalogInputPlugin))
+#endif
+    ]
 	public abstract class AnalogInputPlugin : AcquisitorPlugin
 	{
 	

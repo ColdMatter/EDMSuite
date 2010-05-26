@@ -9,10 +9,16 @@ namespace ScanMaster.Acquire.Plugin
 	/// A plugin representing something that can be scanned.
 	/// </summary>
 	[Serializable]
-	[XmlInclude(typeof(DAQMxAnalogOutputPlugin)), XmlInclude(typeof(NullOutputPlugin)), 
-	 XmlInclude(typeof(SynthAmplitudeOutputPlugin)),
-	 XmlInclude(typeof(SynthFrequencyOutputPlugin)), XmlInclude(typeof(PGOutputPlugin)), 
-     XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))]
+	[
+    XmlInclude(typeof(DAQMxAnalogOutputPlugin)),
+    XmlInclude(typeof(NullOutputPlugin)), 
+	XmlInclude(typeof(SynthAmplitudeOutputPlugin)),
+	XmlInclude(typeof(SynthFrequencyOutputPlugin)),
+    XmlInclude(typeof(PGOutputPlugin)), 
+#if DECELERATOR
+    XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
+#endif
+    ]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin
 	{
 		protected override void InitialiseBaseSettings()

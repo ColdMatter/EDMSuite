@@ -30,8 +30,10 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
+#if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
-			// switchOutputPlugins
+#endif
+            // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
 			// patternPlugins
 			patternPlugins.Add("No pattern", typeof(NullPGPlugin));
@@ -55,8 +57,10 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
+#if DECELERATOR
             analogInputPlugins.Add("Deceleration hardware analog input", typeof(DecelerationHardwareAnalogInputPlugin));
-		}
+#endif
+        }
 
 		public static PluginRegistry GetRegistry()
 		{

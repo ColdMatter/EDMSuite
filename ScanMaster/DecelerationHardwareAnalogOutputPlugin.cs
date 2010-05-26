@@ -1,3 +1,5 @@
+#if DECELERATOR
+
 using System;
 using System.Threading;
 using System.Xml.Serialization;
@@ -110,3 +112,5 @@ namespace ScanMaster.Acquire.Plugins
         }
     }
 }
+
+#endif
