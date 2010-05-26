@@ -16,7 +16,6 @@ namespace ScanMaster.Acquire.Plugins
     [Serializable]
     public class DecelerationHardwareAnalogOutputPlugin : ScanOutputPlugin
     {
-
         [NonSerialized]
         private double scanParameter = 0;
 
