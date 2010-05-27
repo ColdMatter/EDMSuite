@@ -1,1 +1,1 @@
-start ..\SirCachealot\bin\Debug\SirCachealot.exe
+start ..\SirCachealot\bin\EDM\SirCachealot.exe

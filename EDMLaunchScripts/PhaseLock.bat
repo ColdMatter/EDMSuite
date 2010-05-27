@@ -1,1 +1,1 @@
-start ..\EDMPhaseLock\bin\Debug\EDMPhaseLock.exe
+start ..\EDMPhaseLock\bin\EDM\EDMPhaseLock.exe

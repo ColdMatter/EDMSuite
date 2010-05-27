@@ -1,1 +1,1 @@
-start ..\DecelerationLaserLock\bin\Debug\DecelerationLaserLock.exe
+start ..\DecelerationLaserLock\bin\Decelerator\DecelerationLaserLock.exe

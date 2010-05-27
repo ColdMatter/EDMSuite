@@ -1,1 +1,1 @@
-start ..\DecelerationHardwareControl\bin\Debug\DecelerationHardwareControl.exe
+start ..\DecelerationHardwareControl\bin\Decelerator\DecelerationHardwareControl.exe

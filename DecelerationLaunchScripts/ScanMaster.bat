@@ -1,1 +1,1 @@
-start ..\ScanMaster\bin\Debug\ScanMaster.exe
+start ..\ScanMaster\bin\Decelerator\ScanMaster.exe
