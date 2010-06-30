@@ -29,35 +29,6 @@ namespace EDMConfig
 		private ArrayList timingModulations = new ArrayList();
 		public XmlSerializableHashtable Settings = new XmlSerializableHashtable();
 
-//		// "edm" parameters
-//		public bool EState;
-//		public bool BState;
-//		public double MagnetCalibration;
-//		public double CurrentOffset;
-//		public double EPlus;
-//		public double EMinus;
-//		public double GTPlus;
-//		public double GTMinus;
-//		public double GBPlus;
-//		public double GBMinus;
-//		public String Cluster;
-//		public int CodeLength;
-//		public int NumberOfPoints;
-//		public int EDischargeTime;
-//		public int EBleedTime;
-//		public int ESwitchTime;
-//		public int EChargeTime;
-//		public int ClusterIndex;
-//
-//		// source/pg parameters		
-//		public int FlashlampPulseInterval;
-//		public int DelayValveToQ;
-//		public int DelayFlashToQ;
-//		public int ValvePulseLength;
-//		public int SequenceLength;
-//		public int PGClockFrequency;
-//		public int PadShots;
-
 		[XmlArray]
 		[XmlArrayItem(Type = typeof(DigitalModulation))]
 		public ArrayList DigitalModulations

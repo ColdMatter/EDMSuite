@@ -156,7 +156,8 @@ namespace Analysis.EDM
             // wiggles.
             AddFixedSliceConfig("widefastFixed", 1950, 150);
             AddFixedSliceConfig("wideslowFixed", 2330, 150);
-
+            // A narrow centre gate for correlation analysis
+            AddFixedSliceConfig("cgateNarrowFixed", 2175, 25);
             // A demodulation config for Kr
             AddFixedSliceConfig("centreFixedKr", 2950, 90);
 

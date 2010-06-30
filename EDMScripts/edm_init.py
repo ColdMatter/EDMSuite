@@ -6,16 +6,17 @@ import sys
 from System.IO import Path
 
 # Import the edm control software assemblies into IronPython
-sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\Debug\\"))
+sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\EDM\\"))
 clr.AddReferenceToFile("ScanMaster.exe")
-sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\Debug\\"))
+sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\EDM\\"))
 clr.AddReferenceToFile("EDMBlockHead.exe")
-sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\Debug\\"))
+sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\EDM\\"))
 clr.AddReferenceToFile("EDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
-sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\Debug\\"))
+sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\EDM\\"))
 clr.AddReferenceToFile("SirCachealot.exe")
+clr.AddReferenceToFile("Newtonsoft.Json.Net20.dll")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")

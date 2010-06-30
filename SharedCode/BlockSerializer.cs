@@ -109,10 +109,12 @@ namespace Data.EDM
 
         public void SerializeBlockAsJSON(String filePath, Block block)
         {
-            Stream blockStream = new FileStream(filePath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(blockStream);
-            sw.Write(JsonConvert.SerializeObject(block));
-            blockStream.Close();
+            JsonSerializer serializer = new JsonSerializer();
+            using (StreamWriter sw = new StreamWriter(filePath))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, block);
+            }
         }
 	}
 }

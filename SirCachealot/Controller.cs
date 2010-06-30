@@ -158,6 +158,18 @@ namespace SirCachealot
             threadManager.AddToQueue(AddBlockThreadWrapper, bap);
         }
 
+        // Use this to add blocks to SirCachealot's analysis queue.
+        public void AddBlocksToQueue(string[] paths, string[] demodulationConfigs)
+        {
+            foreach (string path in paths)
+            {
+                blockAddParams bap = new blockAddParams();
+                bap.path = path;
+                bap.demodulationConfigs = demodulationConfigs;
+                threadManager.AddToQueue(AddBlockThreadWrapper, bap);
+            }
+        }
+
         // this method and the following struct are wrappers so that we can add a block
         // with a single parameter, as required by the threadpool.
         private void AddBlockThreadWrapper(object parametersIn)
@@ -314,20 +326,22 @@ namespace SirCachealot
             fs.Close();
         }
 
+
         public void Test1()
         {
-            //LoadChannelSetGroup(
-            //    "C:\\Users\\jony\\Files\\Work files\\CCM\\Notes\\"+
-            //    "Summer 2009 measurement\\summer2009_normal_tcsg.bin");
-            //XmlSerializer xs = new XmlSerializer(ChanSetGroup.GetType());
-            //FileStream fs = new FileStream("c:\\Users\\jony\\Desktop\\tcsg.xml", FileMode.Create);
-            //xs.Serialize(fs, ChanSetGroup);
-            //fs.Close();
-
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(
                 "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip", "block.xml");
-            bs.SerializeBlockAsJSON("c:\\Users\\jony\\Desktop\\test.json", b);
+
+            //JsonSerializer serializer = new JsonSerializer();
+            //using (StreamWriter sw = new StreamWriter("c:\\Users\\jony\\Desktop\\test.json"))
+            //using (JsonWriter writer = new JsonTextWriter(sw))
+            //{
+            //    serializer.Serialize(writer, b.Config);
+            //}
+
+
+            //bs.SerializeBlockAsJSON("c:\\Users\\jony\\Desktop\\test.json", b);
         }
 
         #endregion
