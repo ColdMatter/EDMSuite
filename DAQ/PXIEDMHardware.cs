@@ -18,7 +18,7 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("daq", "/PXI1Slot15");
+            Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");
             Boards.Add("counter", "/PXI1Slot3");
             Boards.Add("aoBoard", "/PXI1Slot4");

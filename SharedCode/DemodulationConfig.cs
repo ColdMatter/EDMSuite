@@ -145,7 +145,7 @@ namespace Analysis.EDM
 
             // add some fixed gate slices - the first three are the 1.1 sigma centre portion and two
             // non-overlapping portions either side.
-            AddFixedSliceConfig("cgate11Fixed", 2156, 90);
+            AddFixedSliceConfig("cgate11Fixed", 2156, 90); // This is normally ("cgate11Fixed", 2156, 90)
             AddFixedSliceConfig("vfastFixed", 2025, 41);
             AddFixedSliceConfig("vslowFixed", 2286, 41);
             // these two are the fast and slow halves of the 1.1 sigma central gate.
