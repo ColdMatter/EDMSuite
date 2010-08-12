@@ -28,5 +28,13 @@ namespace Analysis.EDM
             uint channelIndex = dcv.GetChannelIndex(switches);
             return new double[] { dcv.Values[channelIndex], dcv.Errors[channelIndex] };
         }
+
+        public double[] GetSpecialChannelValueAndError(string name, string detector)
+        {
+            int detectorIndex = DetectorIndices[detector];
+            DetectorChannelValues dcv = ChannelValues[detectorIndex];
+            return dcv.SpecialValues[name];
+         }
+
     }
 }

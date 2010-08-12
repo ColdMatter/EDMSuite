@@ -18,6 +18,10 @@ namespace Analysis.EDM
         private const int kNumReplicates = 50;
         private Random r = new Random();
 
+        // This function gates the detector data first, and then demodulates the channels.
+        // This means that it can give innacurate results for non-linear combinations
+        // of channels that vary appreciably over the TOF. There's another, slower, function
+        // DemodulateBlockNL that takes care of this.
         public DemodulatedBlock DemodulateBlock(Block b, DemodulationConfig config)
         {
             // *** copy across the metadata ***
@@ -35,7 +39,7 @@ namespace Analysis.EDM
                 gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
                 db.DetectorIndices.Add(gate.Name, ind);
                 ind++;
-                db.DetectorCalibrations.Add(gate.Name, 
+                db.DetectorCalibrations.Add(gate.Name,
                     ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
 
             }
@@ -110,7 +114,7 @@ namespace Analysis.EDM
                     stateSigns[i, j] = stateSign(j, i);
                 }
             }
-             
+
             // ** the following needs to be done for each detector **
             for (int detector = 0; detector < detectorData.Count; detector++)
             {
@@ -162,36 +166,55 @@ namespace Analysis.EDM
                 }
                 dcv.Errors = channelErrors;
 
-                //* bootstrap the channel errors *
-                double[] channelBSErrors = new double[numStates];
-                //for (int channel = 0; channel < numStates; channel++)
-                //{
-                //    // pull out the channel sub-values for convenience
-                //    double[] subValues = new double[subLength];
-                //    for (int i = 0; i < subLength; i++) subValues[i] = channelValues[channel, i];
-                //    // generate the means of a number of replicates
-                //    double[] bsMeans = new double[kNumReplicates];
-                //    for (int i = 0; i < kNumReplicates; i++) bsMeans[i] = bootstrapMean(subValues);
-                //    // find the standard deviation of the replicate means
-                //    // calculate mean of the means
-                //    double meanOfMeans = 0;
-                //    for (int i = 0; i < kNumReplicates; i++) meanOfMeans += bsMeans[i];
-                //    meanOfMeans /= kNumReplicates;
-                //    // now the variance
-                //    double total = 0;
-                //    for (int i = 0; i < kNumReplicates; i++)
-                //        total += Math.Pow(bsMeans[i] - meanOfMeans, 2);
-                //    total /= kNumReplicates;
-                //    // finally the s.d.
-                //    total = Math.Sqrt(total);
-                //    channelBSErrors[channel] = total;
-                //}
-                //dcv.BSErrors = channelBSErrors;
-
                 db.ChannelValues.Add(dcv);
             }
 
             return db;
+        }
+
+        // DemodulateBlockNL augments the channel values returned by DemodulateBlock
+        // with several non-linear combinations of channels (E.B/DB, the correction, etc).
+        // These non-linear channels are calculated point-by-point for the TOF and then
+        // integrated according to the Demodulation config. For reasons of speed they are
+        // only calculated for the "topNormed" detector.
+        public DemodulatedBlock DemodulateBlockNL(Block b, DemodulationConfig config)
+        {
+            // we start with the standard demodulated block
+            DemodulatedBlock dblock = DemodulateBlock(b, config);
+            // normalise the PMT signal
+            b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
+            // TOF demodulate the block to get the channel wiggles
+            // the BlockTOFDemodulator only demodulates the PMT detector
+            BlockTOFDemodulator btd = new BlockTOFDemodulator();
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5);
+            // get hold of the gating data
+            GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
+
+            // calculate the special channels
+            TOFChannel corrDB = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB" });
+            double corrDBG = corrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel edmDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMDB" });
+            double edmDBG = edmDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel edmCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB" });
+            double edmCorrDBG = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+
+            // we bodge the errors, which aren't really used for much anyway
+            // by just using the error from the normal dblock. I ignore the error in DB.
+            int tndi = dblock.DetectorIndices["topNormed"];
+            DetectorChannelValues dcv = dblock.ChannelValues[tndi];
+            double corrDBE = Math.Sqrt(
+                Math.Pow(dcv.GetValue(new string[] { "E", "DB" }) * dcv.GetError(new string[] { "B" }), 2) +
+                Math.Pow(dcv.GetValue(new string[] { "B" }) * dcv.GetError(new string[] { "E", "DB" }), 2) )
+                / Math.Pow(dcv.GetValue(new string[] { "DB" }), 2);
+             double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
+            double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
+
+            // stuff the data into the dblock
+            dblock.ChannelValues[tndi].SpecialValues["CORRDB"] = new double[] { corrDBG, corrDBE };
+            dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
+            dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB"] = new double[] { edmCorrDBG, edmCorrDBE };
+
+            return dblock;
         }
 
         // calculate, for a given analysis channel, whether a given state contributes
@@ -211,7 +234,7 @@ namespace Analysis.EDM
             p = p ^ (p >> 4);
             p = p ^ (p >> 2);
             p = p ^ (p >> 1);
-            return p & 1; 
+            return p & 1;
         }
 
         public double bootstrapMean(double[] values)
@@ -225,78 +248,5 @@ namespace Analysis.EDM
             total /= replicate.Length;
             return total;
         }
-
-        //// this function assumes that the lists have zero mean!
-        //// the lists need to be the same size, but this is not checked.
-        //// This is an "unbiased" covariance - note the -1 in the denominator.
-        //public double covariance(List<double> offsetList1, List<double> offsetList2)
-        //{
-        //    double cov = 0;
-        //    for (int i = 0; i < offsetList1.Count; i++) cov += offsetList1[i] * offsetList2[i];
-        //    return cov / (double)(offsetList1.Count - 1);
-        //}
     }
 }
-
-                //// * work out the state means *
-                //List<double> stateMeans = new List<double>(numStates);
-                //foreach (List<double> state in statePoints) stateMeans.Add(Statistics.Mean(state.ToArray()));
-                //// * calculate the channel values *
-                //double[] channelValues = new double[numStates];
-                //for (int channel = 0; channel < numStates; channel++)
-                //{
-                //    double chanVal = 0;
-                //    for (int i = 0; i < numStates; i++) chanVal += stateSigns[channel, i] * stateMeans[i];
-                //    chanVal /= (double)numStates;
-                //    channelValues[channel] = chanVal;
-                //}
-                //dcv.Values = channelValues;
-                //// * calculate the channel errors *
-                //// build the covariance matrix
-                //// zero the means of the states
-                //List<List<double>> offsetStatePoints = new List<List<double>>(numStates);
-                //for (int i = 0; i < numStates; i++)
-                //{
-                //    offsetStatePoints.Add(new List<double>(blockLength / numStates));
-                //    foreach (double d in statePoints[i]) offsetStatePoints[i].Add(d - stateMeans[i]);
-                //}
-                //// calculate the covariance matrix elements
-                //double[,] covarianceMatrix = new double[numStates, numStates];
-                //// somewhat non-obvious order is to take advantage of symmetry of
-                //// covariance matrix
-                //for (int i = 0; i < numStates; i++)
-                //    covarianceMatrix[i, i] = covariance(offsetStatePoints[i], offsetStatePoints[i]);
-                //for (int i = 0; i < numStates - 1; i++)
-                //{
-                //    for (int j = i + 1; j < numStates; j++)
-                //    {
-                //        double cov = covariance(offsetStatePoints[i], offsetStatePoints[j]);
-                //        covarianceMatrix[i, j] = cov;
-                //        covarianceMatrix[j, i] = cov;
-                //    }
-                //}
-                //// calculate diagonal elements of transformed covariance matrix.
-                //// The transformed matrix is sign.cov.sign^T where sign is the
-                //// matrix of signs for states calculated above and cov is the
-                //// covariance matrix, ^T is the transpose.
-                //// There's some normalisation to take of as well - see the last line
-                //// of the loop.
-                //// This could be optimised if need be, again using the symmetry properties
-                //// of the covariance matrix for a factor 2 or so speed up.
-                //// A more sophisticated matrix multiplication algorithm could perhaps speed it up
-                //// by a further factor 4-10 (depending on the number of channels).
-                //double[] channelErrors = new double[numStates];
-                ////for (int channel = 0; channel < numStates; channel++)
-                ////{
-                ////    double sum = 0;
-                ////    for (int k = 0; k < numStates; k++)
-                ////    {
-                ////        for (int l = 0; l < numStates; l++)
-                ////        {
-                ////            sum += stateSigns[channel, l] * covarianceMatrix[l, k] * stateSigns[channel, k];
-                ////        }
-                ////    }
-                ////    channelErrors[channel] = Math.Sqrt(sum / (blockLength * numStates));
-                ////}
-                ////dcv.Errors = channelErrors;
-

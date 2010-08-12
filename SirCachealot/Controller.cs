@@ -134,7 +134,7 @@ namespace SirCachealot
             foreach (string dcName in demodulationConfigs)
             {
                 DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig(dcName, b);
-                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
+                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlockNL(b, dc);
                 blockStore.AddDBlock(dBlock);
             }
         }
@@ -266,7 +266,7 @@ namespace SirCachealot
             Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
             log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0);
             log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             lock (accumulatorLock) tcsga.Add(tcs);
             // are we the last block to be added? If so, it's our job to save the results
@@ -332,6 +332,11 @@ namespace SirCachealot
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(
                 "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip", "block.xml");
+
+            BlockDemodulator bd = new BlockDemodulator();
+
+            DemodulatedBlock db = bd.DemodulateBlockNL(b,
+                DemodulationConfig.GetStandardDemodulationConfig("cgate11Fixed", b));
 
             //JsonSerializer serializer = new JsonSerializer();
             //using (StreamWriter sw = new StreamWriter("c:\\Users\\jony\\Desktop\\test.json"))

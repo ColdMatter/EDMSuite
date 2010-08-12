@@ -4,12 +4,19 @@ using System.Text;
 
 namespace Analysis.EDM
 {
+    /// <summary>
+    /// This class is a bit funny looking. It's because it's started as a simple, efficient
+    /// way to store channels corresponding to switch combinations. But because of the need
+    /// to deal with non-linearities in the analysis it also stores some values that are not
+    /// directly associated to switches. These are the SpecialValues and are stored and accessed
+    /// differently to the normal values. Cheezy, I know.
+    /// </summary>
     [Serializable]
     public class DetectorChannelValues
     {
         public double[] Values;
         public double[] Errors;
-       // public double[] BSErrors;
+        public Dictionary<string, double[]> SpecialValues = new Dictionary<string,double[]>();
 
         public Dictionary<string, uint> SwitchMasks = new Dictionary<string, uint>();
         public uint GetChannelIndex(string[] switches)
@@ -23,19 +30,9 @@ namespace Analysis.EDM
             }
         }
 
-        public double GetValue(int channelIndex)
-        {
-            return Values[channelIndex];
-        }
-
         public double GetValue(string[] switches)
         {
             return Values[GetChannelIndex(switches)];
-        }
-
-        public double GetError(int channelIndex)
-        {
-            return Errors[channelIndex];
         }
 
         public double GetError(string[] switches)
@@ -43,15 +40,15 @@ namespace Analysis.EDM
             return Errors[GetChannelIndex(switches)];
         }
 
-        //public double GetBSError(int channelIndex)
-        //{
-        //    return BSErrors[channelIndex];
-        //}
+        public double GetSpecialValue(string name)
+        {
+            return SpecialValues[name][0];
+        }
 
-        //public double GetBSError(string[] switches)
-        //{
-        //    return BSErrors[GetChannelIndex(switches)];
-        //}
- 
+        public double GetSpecialError(string name)
+        {
+            return SpecialValues[name][1];
+        }
+
     }
 }

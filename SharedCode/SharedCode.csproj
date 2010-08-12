@@ -50,6 +50,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EDMAnalysis|AnyCPU' ">
     <OutputPath>bin\EDMAnalysis\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Buffer|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

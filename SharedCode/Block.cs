@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
+using Analysis.EDM;
 using EDMConfig;
 
 namespace Data.EDM
@@ -172,5 +173,25 @@ namespace Data.EDM
             tofs[1] = tOff;
             return tofs;
         }
-	}
+
+        // this function adds a new set of detector data to the block, constructed
+        // by normalising the PMT data to the norm data. The normalisation is done
+        // by dividing the PMT tofs through by the integrated norm data. The integration
+        // is done according to the provided GatedDetectorExtractSpec.
+        public void Normalise(GatedDetectorExtractSpec normGate)
+        {
+            GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
+            double averageNorm = 0;
+            foreach (double val in normData.PointValues) averageNorm += val;
+            averageNorm /= normData.PointValues.Count;
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                Shot shot = ((EDMPoint)points[i]).Shot;
+                TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
+                shot.TOFs.Add(normedTOF);
+            }
+
+        }
+    }
 }

@@ -14,8 +14,9 @@ namespace Analysis.EDM
     /// </summary>
     public class BlockTOFDemodulator
     {
-        public TOFChannelSet TOFDemodulateBlock(Block b)
+        public TOFChannelSet TOFDemodulateBlock(Block b, int detectorIndex)
         {
+
             // *** demodulate channels ***
             // ** build the list of modulations **
             List<string> modNames = new List<string>();
@@ -74,8 +75,8 @@ namespace Analysis.EDM
                 TOF tOff = new TOF();
                 for (int i = 0; i < blockLength; i++)
                 {
-                    if (stateSigns[channel, switchStates[i]]) tOn += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[0]);
-                    else tOff += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[0]);
+                    if (stateSigns[channel, switchStates[i]]) tOn += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]);
+                    else tOff += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]);
                 }
                 tOn /= (blockLength / 2);
                 tOff /= (blockLength / 2);
@@ -96,15 +97,26 @@ namespace Analysis.EDM
                 tcs.AddChannel(channelName, tc);
             }
             // add the special channels
+            TOFChannel eb = (TOFChannel)tcs.GetChannel(new string[] { "E", "B" });
             TOFChannel eCal = (TOFChannel)tcs.GetChannel(new string[] {"E", "DB"});
             TOFChannel bShift = (TOFChannel)tcs.GetChannel(new string[] { "B" });
             TOFChannel cal = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
-            TOFChannel correction = (eCal * bShift) / cal;
-            tcs.AddChannel(new string[] { "CORR" }, correction);
 
-            TOFChannel eb = (TOFChannel)tcs.GetChannel(new string[] {"E", "B"});
-            TOFChannel correctedEDM = eb - correction;
-            tcs.AddChannel(new string[] { "EDMCORR" }, correctedEDM);
+            // it's important when working out the non-linear channel
+            // combinations to always keep them dimensionless. If you
+            // don't you'll run into trouble with integral vs. average
+            // signal. For that reason the correction is calculated here
+            // with DB^2 on the bottom, which is not the way I'd usually
+            // do it. It means that this correction is to be subtracted
+            // from B.E/DB.
+            TOFChannel correctionDB = (eCal * bShift) / (cal * cal);
+            tcs.AddChannel(new string[] { "CORRDB" }, correctionDB);
+
+            TOFChannel edmDB = eb / cal;
+            tcs.AddChannel(new string[] { "EDMDB" }, edmDB);
+
+            TOFChannel edmCorrDB = edmDB - correctionDB;
+            tcs.AddChannel(new string[] { "EDMCORRDB" }, edmCorrDB);
 
             return tcs;
         }
