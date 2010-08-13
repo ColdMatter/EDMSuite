@@ -30,6 +30,8 @@ namespace DAQ.HAL
 
             // add things to the info
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
+            Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("PGType", "dedicated");
 
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
@@ -51,9 +53,8 @@ namespace DAQ.HAL
 			Info.Add("mapPoints", 121);
 			Info.Add("mapStartPoint", 0.0);
 			Info.Add("mapResolution", 0.0001);
-            Info.Add("PatternGeneratorBoard", pgBoard);
 
-			// These settings for AG
+            // These settings for AG
 		//	Info.Add("deceleratorStructure", DecelerationConfig.DecelerationExperiment.SwitchStructure.H_V); //Horizontal first
         //  Info.Add("deceleratorLensSpacing", 0.024);
         //  Info.Add("deceleratorFieldMap", "Section1v1_onAxisFieldTemplate.dat");

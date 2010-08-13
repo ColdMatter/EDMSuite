@@ -57,7 +57,6 @@ namespace ScanMaster.Acquire.Plugins
 					SampleQuantityMode.FiniteSamples,
 					(int)settings["gateLength"]);
 
-				// trigger off PFI0 (with the standard routing, that's the same as trig1)
 				inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("analogTrigger0"),
 					DigitalEdgeStartTriggerEdge.Rising);

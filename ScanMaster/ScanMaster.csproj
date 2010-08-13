@@ -186,6 +186,8 @@
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="BasicBeamPatternBuilder.cs" />
+    <Compile Include="BasicBeamPatternPlugin.cs" />
     <Compile Include="DAQMxAnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -37,6 +37,7 @@ namespace DAQ.HAL
             Info.Add("phaseLockControlMethod", "analog");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("PGType", "dedicated");
 
             // map the analog channels
             string daqBoard = (string)Boards["daq"];

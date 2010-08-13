@@ -3,6 +3,8 @@ using System.Threading;
 
 using NationalInstruments.DAQmx;
 
+using DAQ.Environment;
+
 namespace DAQ.HAL
 {
 	/// <summary>
@@ -60,15 +62,25 @@ namespace DAQ.HAL
 
 			pgTask = new Task("pgTask");
 
+            /**** Configure the output lines ****/
+
 			// The underscore notation is the way to address more than 8 of the pattern generator
 			// lines at once. This is really buried in the NI-DAQ documentation !
 			String chanString = "";
-			if (fullWidth) chanString = device + "/port0_32";
-			else
-			{
-				if (lowGroup) chanString = device + "/port0_16";
-				else chanString = device + "/port3_16";
-			}
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            {
+                if (fullWidth) chanString = device + "/port0_32";
+                else
+                {
+                    if (lowGroup) chanString = device + "/port0_16";
+                    else chanString = device + "/port3_16";
+                }
+            }
+            // as far as I know you can only address the whole 32-bit port on the 6229 type integrated pattern generators
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
+            {
+                chanString = device + "/port0";
+            }
 
 			DOChannel doChan = pgTask.DOChannels.CreateChannel(
 				chanString,
@@ -76,11 +88,33 @@ namespace DAQ.HAL
 				ChannelLineGrouping.OneChannelForAllLines
 				);
 
-			String clockSource;
-            if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
-            else clockSource = "";
+            /**** Configure the clock ****/
 
-			SampleQuantityMode sqm;
+            String clockSource = "";
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            {
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                else clockSource = "";
+            }
+
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
+            {
+                // clocking is more complicated for the 6229 style PG boards as they don't have their own internal clock.
+
+                // if external clocking is required it's easy:
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                else
+                {
+                    // if an internal clock is requested we generate it using the card's timer/counters.
+                    //TODO
+                }
+            }
+
+
+
+            /**** Configure regeneration ****/
+            
+            SampleQuantityMode sqm;
 			if (loop)
 			{
 				sqm = SampleQuantityMode.ContinuousSamples;
@@ -99,18 +133,26 @@ namespace DAQ.HAL
 				sqm,
 				length
 				);
-			
-			// these lines are critical - without them DAQMx copies the data you provide
-			// as many times as it can into the on board FIFO (the cited reason being stability).
-			// This has the annoying side effect that you have to wait for the on board buffer
-			// to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
-			// These lines tell the board and the software to use buffers as close to the size of
-			// the pattern as possible (on board buffer size is coerced to be related to a power of
-			// two, so you don't quite get what you ask for).
-			pgTask.Stream.Buffer.OutputBufferSize = length;
-			pgTask.Stream.Buffer.OutputOnBoardBufferSize = length;
-			pgTask.Control(TaskAction.Commit);
 
+            /**** Configure buffering ****/
+
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            {
+                // these lines are critical - without them DAQMx copies the data you provide
+                // as many times as it can into the on board FIFO (the cited reason being stability).
+                // This has the annoying side effect that you have to wait for the on board buffer
+                // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
+                // These lines tell the board and the software to use buffers as close to the size of
+                // the pattern as possible (on board buffer size is coerced to be related to a power of
+                // two, so you don't quite get what you ask for).
+                // note that 6229 type integrated PGs only have 2kB buffer, so this isn't needed for them (or allowed, in fact)
+                pgTask.Stream.Buffer.OutputBufferSize = length;
+                pgTask.Stream.Buffer.OutputOnBoardBufferSize = length;
+            }
+
+            /**** Write configuration to board ****/
+
+			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
 		}
 		

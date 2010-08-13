@@ -13,9 +13,6 @@ namespace ScanMaster.Acquire.Patterns
 	{
 		public PumpProbePatternBuilder()
 		{
-			// 
-			// TODO: Add constructor logic here
-			//
 		}
 
 		private const int FLASH_PULSE_LENGTH = 100;

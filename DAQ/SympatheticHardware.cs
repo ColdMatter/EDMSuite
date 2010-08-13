@@ -32,6 +32,8 @@ namespace DAQ.HAL
 
             // add things to the info
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
+            Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("PGType", "dedicated");
 
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0"); //DAQ Pin 11
@@ -50,7 +52,6 @@ namespace DAQ.HAL
             Info.Add("mapPoints", 121);
             Info.Add("mapStartPoint", 0.0);
             Info.Add("mapResolution", 0.0001);
-            Info.Add("PatternGeneratorBoard", pgBoard);
 
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));

@@ -47,6 +47,7 @@ namespace DAQ.HAL
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("PGType", "dedicated");
 
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
