@@ -43,6 +43,7 @@ namespace DAQ.HAL
             Info.Add("moleculeMass", 193.0);
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
+            Info.Add("PatternGeneratorBoard", pgBoard);
 
 			// YAG laser
 			yag = new BrilliantLaser("ASRL1::INSTR");

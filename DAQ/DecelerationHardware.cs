@@ -25,6 +25,7 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev1");
 			Boards.Add("pg", "/dev2");
+            string pgBoard = (string)Boards["pg"];
 
 
             // add things to the info
@@ -50,6 +51,7 @@ namespace DAQ.HAL
 			Info.Add("mapPoints", 121);
 			Info.Add("mapStartPoint", 0.0);
 			Info.Add("mapResolution", 0.0001);
+            Info.Add("PatternGeneratorBoard", pgBoard);
 
 			// These settings for AG
 		//	Info.Add("deceleratorStructure", DecelerationConfig.DecelerationExperiment.SwitchStructure.H_V); //Horizontal first
@@ -66,8 +68,7 @@ namespace DAQ.HAL
             //Info.Add("moleculeDipoleMoment", 19700.0); //in Hz/(V/m)
                         			
 			// map the digital channels
-			string pgBoard = (string)Boards["pg"];
-			AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+            AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 			AddDigitalOutputChannel("flash", pgBoard, 0, 0);//Changed from pg board P.0.5 because that appears to have died mysteriously (line dead in ribbon cable?) TEW 06/04/09
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);

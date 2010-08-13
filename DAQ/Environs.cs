@@ -144,6 +144,12 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
+                case "RAINBOW":
+                    Hardware = new RainbowHardware();
+                    FileSystem = new RainbowFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

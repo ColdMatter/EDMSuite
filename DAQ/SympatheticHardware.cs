@@ -50,6 +50,7 @@ namespace DAQ.HAL
             Info.Add("mapPoints", 121);
             Info.Add("mapStartPoint", 0.0);
             Info.Add("mapResolution", 0.0001);
+            Info.Add("PatternGeneratorBoard", pgBoard);
 
             // map the GPIB instruments
             GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));

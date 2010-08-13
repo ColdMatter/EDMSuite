@@ -36,4 +36,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Sympathetic|AnyCPU' ">
     <StartWithIE>true</StartWithIE>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SrF|AnyCPU' ">
+    <StartWithIE>true</StartWithIE>
+  </PropertyGroup>
 </Project>

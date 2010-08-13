@@ -54,7 +54,7 @@ namespace ScanMaster.Acquire.Plugins
 			DoAcquisitionStarting();
 
 			// get hold of the pattern generator
-			pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["pg"]);
+			pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
 	
 			// build a flashlamp pattern
 			flashlampPatternBuilder = new FlashlampPatternBuilder();
