@@ -18,6 +18,8 @@ namespace DAQ.HAL
 		private DigitalSingleChannelWriter writer;
 		private double clockFrequency;
 		private int length;
+        // this task is used to generate the sample clock on the "integrated" 6229-type PGs
+        private Task counterTask;
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -106,7 +108,19 @@ namespace DAQ.HAL
                 else
                 {
                     // if an internal clock is requested we generate it using the card's timer/counters.
-                    //TODO
+                    counterTask = new Task();
+                    counterTask.COChannels.CreatePulseChannelFrequency(
+                        device + (string)Environs.Hardware.GetInfo("PGClockCounter"),
+                        "PG Clock",
+                        COPulseFrequencyUnits.Hertz,
+                        COPulseIdleState.Low,
+                        0,
+                        clockFrequency,
+                        0.5
+                        );
+
+                    clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";
+                    counterTask.Start();
                 }
             }
 
@@ -159,6 +173,7 @@ namespace DAQ.HAL
 		public void StopPattern()
 		{
 			pgTask.Dispose();
-		}
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
+        }
 	}
 }

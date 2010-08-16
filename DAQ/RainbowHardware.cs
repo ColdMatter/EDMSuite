@@ -31,6 +31,7 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", daqBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", daqBoard);
             Info.Add("PGType", "integrated");
+            Info.Add("PGClockCounter", "/ctr0");
 
             // YAG laser
 //            yag = new BrilliantLaser("ASRL3::INSTR");
