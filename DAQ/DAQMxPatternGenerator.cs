@@ -114,13 +114,14 @@ namespace DAQ.HAL
                         "PG Clock",
                         COPulseFrequencyUnits.Hertz,
                         COPulseIdleState.Low,
-                        0,
+                        0.0,
                         clockFrequency,
                         0.5
                         );
+                    counterTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
+                    counterTask.Start();
 
                     clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";
-                    counterTask.Start();
                 }
             }
 
