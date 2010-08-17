@@ -186,7 +186,7 @@ namespace Analysis.EDM
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, false);
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 

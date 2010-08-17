@@ -14,9 +14,8 @@ namespace Analysis.EDM
     /// </summary>
     public class BlockTOFDemodulator
     {
-        public TOFChannelSet TOFDemodulateBlock(Block b, int detectorIndex)
+        public TOFChannelSet TOFDemodulateBlock(Block b, int detectorIndex, bool allChannels)
         {
-
             // *** demodulate channels ***
             // ** build the list of modulations **
             List<string> modNames = new List<string>();
@@ -67,7 +66,34 @@ namespace Analysis.EDM
 
             TOFChannelSet tcs = new TOFChannelSet();
             tcs.Config = b.Config;
-            for (int channel = 0; channel < numStates; channel++)
+            // By setting all channels to false only a limited number of channels are analysed,
+            // namely those required to extract the edm (and the correction term). This speeds
+            // up the execution enormously when the BlockTOFDemodulator is used by the
+            // BlockDemodulator for calculating the non-linear channel combinations.
+            int[] channelsToAnalyse;
+            if (allChannels)
+            {
+                channelsToAnalyse = new int[numStates];
+                for (int i = 0; i < numStates; i++) channelsToAnalyse[i] = i;
+            }
+            else
+            {
+                // just the essential channels - this code is a little awkward because, like
+                // so many bits of the analysis code, it was added long after the original
+                // code was written, and goes against some assumptions that were made back then!
+                int bIndex = modNames.IndexOf("B");
+                int dbIndex = modNames.IndexOf("DB");
+                int eIndex = modNames.IndexOf("E");
+
+                int bChannel = (1 << bIndex);
+                int dbChannel = (1 << dbIndex);
+                int ebChannel = (1 << eIndex) + (1 << bIndex);
+                int edbChannel = (1 << eIndex) + (1 << dbIndex);
+
+                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel };
+            }
+
+            foreach (int channel in channelsToAnalyse)
             {
                 // generate the Channel
                 TOFChannel tc = new TOFChannel();

@@ -266,7 +266,7 @@ namespace SirCachealot
             Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
             log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0, true);
             log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             lock (accumulatorLock) tcsga.Add(tcs);
             // are we the last block to be added? If so, it's our job to save the results
