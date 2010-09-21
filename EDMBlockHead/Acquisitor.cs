@@ -163,12 +163,14 @@ namespace EDMBlockHead.Acquire
                     // fake some data if we're in debug mode
                     if (Environs.Debug)
                     {
-                        spd = new double[5];
+                        spd = new double[7];
                         spd[0] = 1;
                         spd[1] = 2;
                         spd[2] = 3;
                         spd[3] = 4;
                         spd[4] = 5;
+                        spd[5] = 6;
+                        spd[6] = 7;
                     }
                     else
                     {
@@ -181,14 +183,18 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("MiniFlux1", spd[2]);
                     p.SinglePointData.Add("MiniFlux2", spd[3]);
                     p.SinglePointData.Add("MiniFlux3", spd[4]);
+                    hardwareController.ReadIMonitor();
+                    p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
+                    p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+
                     // Hopefully the leakage monitors will have finished reading by now.
                     // We join them, read out the data, and then launch another asynchronous
                     // acquisition. [If this is the first shot of the block, the leakage monitor
                     // measurement will have been launched in AcquisitionStarting() ].
-                    hardwareController.WaitForIMonitorAsync();
-                    p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
-                    p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
-                    hardwareController.UpdateIMonitorAsync();
+                    //hardwareController.WaitForIMonitorAsync();
+                    //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent); 
+                    //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                    //hardwareController.UpdateIMonitorAsync();
 
                     // randomise the Ramsey phase
                     // TODO: check whether the .NET rng is good enough
@@ -306,9 +312,9 @@ namespace EDMBlockHead.Acquire
             lf1Channel.Modulation = config.GetModulationByName("LF1");
             switchedChannels.Add(lf1Channel);
 
-		}
+        }
 
-
+        #region Map Inputs
         /* THIS VERSION FOR AR */
         // this sets up the scanned analog inputs. It's complicated a bit by the fact that
         // each input would ideally have a different clock rate and gateLength. The board
@@ -444,6 +450,7 @@ namespace EDMBlockHead.Acquire
         //    battery.Calibration = 1;
         //    inputs.Channels.Add(battery);
         //}
+        #endregion
 
         private void ConfigureSinglePointAnalogInputs()
         {
@@ -455,6 +462,8 @@ namespace EDMBlockHead.Acquire
             AddChannelToSinglePointTask("miniFlux1");
             AddChannelToSinglePointTask("miniFlux2");
             AddChannelToSinglePointTask("miniFlux3");
+            AddChannelToSinglePointTask("northLeakage");
+            AddChannelToSinglePointTask("southLeakage");
 
             //singlePointInputTask.Timing.ConfigureSampleClock(
             //        "",
@@ -516,10 +525,10 @@ namespace EDMBlockHead.Acquire
 
             // set the leakage monitor measurement time to 5ms.
             // With this setting it actually takes 26ms total to acquire two channels.
-            hardwareController.LeakageMonitorMeasurementTime = 0.005;
+            //hardwareController.LeakageMonitorMeasurementTime = 0.005;
             hardwareController.ReconfigureIMonitors();
             // Start the first asynchronous acquisition
-            hardwareController.UpdateIMonitorAsync();
+            //hardwareController.UpdateIMonitorAsync();
 		}
 
 		// If you want to store any information in the BlockConfig this is the place to do it.

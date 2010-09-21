@@ -75,7 +75,7 @@ namespace Analysis.EDM
 
             //leakage currents
             analysis.NorthCurrentValAndError = 
-                dblock.GetChannelValueAndError(new string[] {"SIG"}, "NorthCurrent");
+                dblock.GetChannelValueAndError(new string[] { "SIG" }, "NorthCurrent");
             analysis.SouthCurrentValAndError =
                 dblock.GetChannelValueAndError(new string[] { "SIG" }, "SouthCurrent");
 

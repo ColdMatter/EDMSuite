@@ -106,6 +106,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("northLeakage", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("southLeakage", daqBoard + "/ai7", AITerminalConfiguration.Nrse);
             // Used ai10,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
@@ -148,8 +150,8 @@ namespace DAQ.HAL
             // map the counter channels
             AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
             AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
-            AddCounterChannel("northLeakage", counterBoard + "/ctr0");
-            AddCounterChannel("southLeakage", counterBoard + "/ctr1");
+            //AddCounterChannel("northLeakage", counterBoard + "/ctr0");
+            //AddCounterChannel("southLeakage", counterBoard + "/ctr1");
 
         }
 

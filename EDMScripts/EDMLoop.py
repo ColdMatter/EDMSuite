@@ -274,7 +274,16 @@ def EDMGo():
 	hc.SetProbePolarizerAngle(probePolAngle)
 	pumpPolAngle = 360.0 * r.NextDouble()
 	hc.SetPumpPolarizerAngle(pumpPolAngle)
-	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)	
+	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
+	# calibrate leakage monitors
+	hc.EnableEField( False )
+	System.Threading.Thread.Sleep(10000)
+	hc.EnableBleed( True )
+	System.Threading.Thread.Sleep(1000)
+	hc.EnableBleed( False )
+	System.Threading.Thread.Sleep(5000)
+	hc.CalibrateIMonitors()
+	hc.EnableEField( True )
 
 	# loop and take data
 	blockIndex = 0

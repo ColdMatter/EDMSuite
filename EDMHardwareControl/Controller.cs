@@ -47,14 +47,15 @@ namespace EDMHardwareControl
         //Convention for monitor to plate mapping:
         //north -> monitor1
         //south -> monitor2
-        private static double northSlope = 200;
-        private static double southSlope = 200;
+        private static double northVolt2FreqSlope = 0.025425;
+        private static double southVolt2FreqSlope = 0.0255023;
+        private static double northFreq2AmpSlope = 0.2;
+        private static double southFreq2AmpSlope = 0.2;
         private static double northOffset = 0;
         private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = 0.01;
 
-
-
+        
         #endregion
 
         #region Setup
@@ -67,10 +68,12 @@ namespace EDMHardwareControl
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
         HP438A rfPower = (HP438A)Environs.Hardware.GPIBInstruments["rfPower"];
         Hashtable digitalTasks = new Hashtable();
-        LeakageMonitor northLeakageMonitor =
-            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
-        LeakageMonitor southLeakageMonitor =
-            new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southLeakage"], southSlope, southOffset, currentMonitorMeasurementTime);
+        //LeakageMonitor northLeakageMonitor =
+        //   new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
+        //LeakageMonitor southLeakageMonitor =
+        //    new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southLeakage"], southSlope, southOffset, currentMonitorMeasurementTime);
+        LeakageMonitor northLeakageMonitor = new LeakageMonitor("northLeakage", northVolt2FreqSlope, northFreq2AmpSlope, northOffset);
+        LeakageMonitor southLeakageMonitor = new LeakageMonitor("southLeakage", southVolt2FreqSlope, southFreq2AmpSlope, southOffset);
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
@@ -91,6 +94,8 @@ namespace EDMHardwareControl
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
         Task piMonitorTask;
+        //Task northLeakageInputTask;
+        //Task southLeakageInputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -155,6 +160,8 @@ namespace EDMHardwareControl
             miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
             miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
             piMonitorTask = CreateAnalogInputTask("piMonitor");
+            //northLeakageInputTask = CreateAnalogInputTask("northLeakage");
+            //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
 
             // make the control window
             window = new ControlWindow();
@@ -1151,6 +1158,12 @@ namespace EDMHardwareControl
 
         }
 
+        private bool switchingEfield = false;
+        public bool SwitchingEfields
+        {
+            get { return switchingEfield; }
+        }
+
         public void SwitchE()
         {
             SwitchE(!EFieldPolarity);
@@ -1192,6 +1205,8 @@ namespace EDMHardwareControl
         {
             lock (switchingLock)
             {
+                // raise flag for switching E-fields
+                switchingEfield = true;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
@@ -1255,6 +1270,7 @@ namespace EDMHardwareControl
 
         private void ESwitchDone()
         {
+            switchingEfield = false;
             window.EnableControl(window.switchEButton, true);
         }
 
@@ -1517,25 +1533,32 @@ namespace EDMHardwareControl
 
         }
 
-        Thread updateIMonThread;
-        public void UpdateIMonitorAsync()
+        public void ReadIMonitor()
         {
-            updateIMonThread = new Thread(delegate()
-                {
-                    lastNorthCurrent = northLeakageMonitor.GetCurrent();
-                    lastSouthCurrent = southLeakageMonitor.GetCurrent();
-                });
-            updateIMonThread.Start();
+            lastNorthCurrent = northLeakageMonitor.GetCurrent();
+            lastSouthCurrent = southLeakageMonitor.GetCurrent();
         }
 
-        public void WaitForIMonitorAsync()
-        {
-            updateIMonThread.Join();
-        }
+        //Thread updateIMonThread;
+        //public void UpdateIMonitorAsync()
+        //{
+        //    updateIMonThread = new Thread(delegate()
+        //        {
+        //            lastNorthCurrent = northLeakageMonitor.GetCurrent();
+        //           lastSouthCurrent = southLeakageMonitor.GetCurrent();
+        //        });
+        //    updateIMonThread.Start();
+        //}
+
+        //public void WaitForIMonitorAsync()
+        //{
+        //    updateIMonThread.Join();
+        //}
 
         public void CalibrateIMonitors()
         {
             ReconfigureIMonitors();
+            
             southLeakageMonitor.SetZero();
             northLeakageMonitor.SetZero();
 
@@ -1550,13 +1573,17 @@ namespace EDMHardwareControl
         public void ReconfigureIMonitors()
         {
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
-            northSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
-            southSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            northFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            southFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            northVolt2FreqSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
+            southVolt2FreqSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
 
-            southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
-            northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
-            northLeakageMonitor.Slope = northSlope;
-            southLeakageMonitor.Slope = southSlope;
+            //southLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            //northLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            northLeakageMonitor.F2ISlope = northFreq2AmpSlope;
+            southLeakageMonitor.F2ISlope = southFreq2AmpSlope;
+            northLeakageMonitor.V2FSlope = northVolt2FreqSlope;
+            southLeakageMonitor.V2FSlope = southVolt2FreqSlope;
         }
 
         private Thread iMonitorPollThread;
@@ -1643,12 +1670,14 @@ namespace EDMHardwareControl
         }
         internal void SaveToFile()
         {
-            using (StreamWriter sw = new StreamWriter("Current.csv"))
+            using (StreamWriter sw = new StreamWriter("F://Data//general//LeakageCurrent.csv"))
             {
                 sw.WriteLine(DateTime.Now);
                 sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
-                sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
-                sw.WriteLine("Slope =" + " " + northLeakageMonitor.Slope);
+                //sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
+                sw.WriteLine("North voltage to frequency slope =" + " " + northVolt2FreqSlope);
+                sw.WriteLine("South voltage to frequency slope =" + " " + southVolt2FreqSlope);
+                sw.WriteLine("Frequency to current slope =" + " " + northLeakageMonitor.F2ISlope);
                 sw.WriteLine("North offset =" + " " + northLeakageMonitor.Offset);
                 sw.WriteLine("South offset =" + " " + southLeakageMonitor.Offset);
                 sw.WriteLine("northCurrent" + "," + "southCurrent");
@@ -1656,7 +1685,6 @@ namespace EDMHardwareControl
                 for (int i = 0; i < northCList.ToArray().Length; i++)
                 {
                     sw.WriteLine(northCList[i] + "," + southCList[i]);
-                    //sw.WriteLine(southCList[i]);
                 }
                 northCList.Clear();
                 southCList.Clear();
