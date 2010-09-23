@@ -319,6 +319,10 @@ namespace EDMHardwareControl
         public TextBox northV2FSlopeTextBox;
         private Label label85;
         private Label label84;
+        private GroupBox groupBox25;
+        private Label label83;
+        public TextBox PumpAOMFreqTextBox;
+        private Button PumpAOMFreqUpdateButton;
 
 
 		public Controller controller;
@@ -416,6 +420,13 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label85 = new System.Windows.Forms.Label();
+            this.label84 = new System.Windows.Forms.Label();
+            this.southV2FSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.northV2FSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.stopIMonitorPollButton = new System.Windows.Forms.Button();
             this.saveToFile = new System.Windows.Forms.Button();
             this.stopIRecordButton = new System.Windows.Forms.Button();
             this.startIRecordButton = new System.Windows.Forms.Button();
@@ -426,10 +437,7 @@ namespace EDMHardwareControl
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.SouthLegendItem = new NationalInstruments.UI.LegendItem();
             this.southLeakagePlot = new NationalInstruments.UI.WaveformPlot();
-            this.label64 = new System.Windows.Forms.Label();
-            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
             this.label63 = new System.Windows.Forms.Label();
-            this.stopIMonitorPollButton = new System.Windows.Forms.Button();
             this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.startIMonitorPollButton = new System.Windows.Forms.Button();
             this.leakageGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
@@ -645,10 +653,10 @@ namespace EDMHardwareControl
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.northV2FSlopeTextBox = new System.Windows.Forms.TextBox();
-            this.southV2FSlopeTextBox = new System.Windows.Forms.TextBox();
-            this.label84 = new System.Windows.Forms.Label();
-            this.label85 = new System.Windows.Forms.Label();
+            this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.PumpAOMFreqTextBox = new System.Windows.Forms.TextBox();
+            this.label83 = new System.Windows.Forms.Label();
+            this.PumpAOMFreqUpdateButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -694,6 +702,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox25.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1353,6 +1362,67 @@ namespace EDMHardwareControl
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
+            // label85
+            // 
+            this.label85.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label85.Location = new System.Drawing.Point(317, 41);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(82, 28);
+            this.label85.TabIndex = 66;
+            this.label85.Text = "South monitor (V/kHz)";
+            // 
+            // label84
+            // 
+            this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label84.Location = new System.Drawing.Point(317, 13);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(82, 28);
+            this.label84.TabIndex = 65;
+            this.label84.Text = "North monitor (V/kHz)";
+            // 
+            // southV2FSlopeTextBox
+            // 
+            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
+            this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
+            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.southV2FSlopeTextBox.TabIndex = 64;
+            this.southV2FSlopeTextBox.Text = "0.0255023";
+            // 
+            // northV2FSlopeTextBox
+            // 
+            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
+            this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
+            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.northV2FSlopeTextBox.TabIndex = 63;
+            this.northV2FSlopeTextBox.Text = "0.025425";
+            // 
+            // leakageMonitorSlopeTextBox
+            // 
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
+            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.leakageMonitorSlopeTextBox.TabIndex = 2;
+            this.leakageMonitorSlopeTextBox.Text = "0.200";
+            // 
+            // label64
+            // 
+            this.label64.Location = new System.Drawing.Point(317, 68);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(149, 43);
+            this.label64.TabIndex = 58;
+            this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
+            // 
+            // stopIMonitorPollButton
+            // 
+            this.stopIMonitorPollButton.Enabled = false;
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 76);
+            this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
+            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopIMonitorPollButton.TabIndex = 55;
+            this.stopIMonitorPollButton.Text = "Stop poll";
+            this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
+            // 
             // saveToFile
             // 
             this.saveToFile.Enabled = false;
@@ -1434,22 +1504,6 @@ namespace EDMHardwareControl
             this.southLeakagePlot.XAxis = this.xAxis1;
             this.southLeakagePlot.YAxis = this.yAxis1;
             // 
-            // label64
-            // 
-            this.label64.Location = new System.Drawing.Point(317, 68);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(149, 43);
-            this.label64.TabIndex = 58;
-            this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
-            // 
-            // leakageMonitorSlopeTextBox
-            // 
-            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
-            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
-            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.leakageMonitorSlopeTextBox.TabIndex = 2;
-            this.leakageMonitorSlopeTextBox.Text = "0.200";
-            // 
             // label63
             // 
             this.label63.Location = new System.Drawing.Point(479, 15);
@@ -1457,17 +1511,6 @@ namespace EDMHardwareControl
             this.label63.Size = new System.Drawing.Size(108, 23);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
-            // 
-            // stopIMonitorPollButton
-            // 
-            this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 76);
-            this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
-            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
-            this.stopIMonitorPollButton.TabIndex = 55;
-            this.stopIMonitorPollButton.Text = "Stop poll";
-            this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
-            this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
             // 
             // iMonitorPollPeriod
             // 
@@ -1631,7 +1674,7 @@ namespace EDMHardwareControl
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(697, 581);
+            this.tabPage2.Size = new System.Drawing.Size(697, 575);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
             // 
@@ -2520,7 +2563,7 @@ namespace EDMHardwareControl
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(697, 581);
+            this.tabPage3.Size = new System.Drawing.Size(697, 575);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
             // 
@@ -2886,13 +2929,14 @@ namespace EDMHardwareControl
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.groupBox25);
             this.tabPage4.Controls.Add(this.groupBox19);
             this.tabPage4.Controls.Add(this.groupBox18);
             this.tabPage4.Controls.Add(this.groupBox11);
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(697, 581);
+            this.tabPage4.Size = new System.Drawing.Size(697, 575);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Laser";
             // 
@@ -2909,7 +2953,7 @@ namespace EDMHardwareControl
             this.groupBox19.Controls.Add(this.label69);
             this.groupBox19.Location = new System.Drawing.Point(238, 136);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(277, 176);
+            this.groupBox19.Size = new System.Drawing.Size(299, 176);
             this.groupBox19.TabIndex = 55;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Iodine lock";
@@ -3233,7 +3277,7 @@ namespace EDMHardwareControl
             this.tabPage5.Controls.Add(this.groupBox15);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(697, 581);
+            this.tabPage5.Size = new System.Drawing.Size(697, 575);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
             // 
@@ -3401,7 +3445,7 @@ namespace EDMHardwareControl
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(697, 581);
+            this.tabPage6.Size = new System.Drawing.Size(697, 575);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
             // 
@@ -3494,7 +3538,7 @@ namespace EDMHardwareControl
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(697, 581);
+            this.tabPage7.Size = new System.Drawing.Size(697, 575);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Alerts";
             // 
@@ -3621,39 +3665,45 @@ namespace EDMHardwareControl
             this.checkBox1.TabIndex = 53;
             this.checkBox1.Text = "State (Checked is 0=>N+)";
             // 
-            // northV2FSlopeTextBox
+            // groupBox25
             // 
-            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
-            this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
-            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.northV2FSlopeTextBox.TabIndex = 63;
-            this.northV2FSlopeTextBox.Text = "0.025425";
+            this.groupBox25.Controls.Add(this.PumpAOMFreqUpdateButton);
+            this.groupBox25.Controls.Add(this.label83);
+            this.groupBox25.Controls.Add(this.PumpAOMFreqTextBox);
+            this.groupBox25.Location = new System.Drawing.Point(8, 318);
+            this.groupBox25.Name = "groupBox25";
+            this.groupBox25.Size = new System.Drawing.Size(529, 61);
+            this.groupBox25.TabIndex = 56;
+            this.groupBox25.TabStop = false;
+            this.groupBox25.Text = "Pump AOM";
             // 
-            // southV2FSlopeTextBox
+            // PumpAOMFreqTextBox
             // 
-            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
-            this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
-            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.southV2FSlopeTextBox.TabIndex = 64;
-            this.southV2FSlopeTextBox.Text = "0.0255023";
+            this.PumpAOMFreqTextBox.BackColor = System.Drawing.Color.Black;
+            this.PumpAOMFreqTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.PumpAOMFreqTextBox.Location = new System.Drawing.Point(212, 19);
+            this.PumpAOMFreqTextBox.Name = "PumpAOMFreqTextBox";
+            this.PumpAOMFreqTextBox.ReadOnly = true;
+            this.PumpAOMFreqTextBox.Size = new System.Drawing.Size(178, 20);
+            this.PumpAOMFreqTextBox.TabIndex = 55;
+            this.PumpAOMFreqTextBox.Text = "0";
             // 
-            // label84
+            // label83
             // 
-            this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label84.Location = new System.Drawing.Point(317, 13);
-            this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(82, 28);
-            this.label84.TabIndex = 65;
-            this.label84.Text = "North monitor (V/kHz)";
+            this.label83.Location = new System.Drawing.Point(95, 22);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(111, 23);
+            this.label83.TabIndex = 57;
+            this.label83.Text = "AOM frequency (Hz)";
             // 
-            // label85
+            // PumpAOMFreqUpdateButton
             // 
-            this.label85.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label85.Location = new System.Drawing.Point(317, 41);
-            this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(82, 28);
-            this.label85.TabIndex = 66;
-            this.label85.Text = "South monitor (V/kHz)";
+            this.PumpAOMFreqUpdateButton.Location = new System.Drawing.Point(426, 17);
+            this.PumpAOMFreqUpdateButton.Name = "PumpAOMFreqUpdateButton";
+            this.PumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.PumpAOMFreqUpdateButton.TabIndex = 57;
+            this.PumpAOMFreqUpdateButton.Text = "Update";
+            this.PumpAOMFreqUpdateButton.Click += new System.EventHandler(this.PumpAOMFreqUpdateButton_Click);
             // 
             // ControlWindow
             // 
@@ -3740,6 +3790,8 @@ namespace EDMHardwareControl
             this.tabPage7.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox25.ResumeLayout(false);
+            this.groupBox25.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4111,6 +4163,11 @@ namespace EDMHardwareControl
         private void label83_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void PumpAOMFreqUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOMFreqMonitor();
         }
 
 
