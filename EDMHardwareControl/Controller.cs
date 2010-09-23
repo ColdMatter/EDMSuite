@@ -132,6 +132,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
+            CreateDigitalTask("pumpAOMFreqMon");
 
             // initialise the current leakage monitors
             northLeakageMonitor.Initialize();
@@ -1021,6 +1022,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public double PumpAOMFreq
+        {
+            get
+            {
+                return Double.Parse(window.PumpAOMFreqTextBox.Text);
+            }
+        }
+
 
 
         public double RF1FrequencyCentre
@@ -1797,6 +1806,22 @@ namespace EDMHardwareControl
             window.SetTextBox(window.I2AOMFreqMinusTextBox, String.Format("{0:F0}", I2MinusFreq));
             window.SetTextBox(window.I2AOMFreqCentreTextBox, String.Format("{0:F0}", ((I2PlusFreq + I2MinusFreq) / 2)));
             window.SetTextBox(window.I2AOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
+        }
+
+        public void UpdatePumpAOMFreqMonitor()
+        {
+            // The Pump AOM VCO is also connected to channel 2 on the counter
+            // A relay is connected to a digital channel which switches
+            // the rf counter input between the I2 VCO and the Pump VCO
+
+            // Energise the relay
+            SetDigitalLine("pumpAOMFreqMon", true);
+            Thread.Sleep(10);
+            rfCounter.Channel = 2;
+            double PumpAOMFreq = rfCounter.Frequency;
+            window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
+            // De-energise relay
+            SetDigitalLine("pumpAOMFreqMon", false);
         }
 
         internal void UpdateProbePolarizerAngle()
