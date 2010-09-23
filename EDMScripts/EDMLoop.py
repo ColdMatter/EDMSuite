@@ -54,6 +54,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
+	hc.UpdatePumpAOMFreqMonitor()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -71,6 +72,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
+	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -155,31 +157,15 @@ kRFFMaxChange = 0.1
 def updateLocks(bState):
 	pmtChannelValues = bh.DBlock.ChannelValues[0]
 	# note the weird python syntax for a one element list
-	sigIndex = pmtChannelValues.GetChannelIndex(("SIG",))
-	sigValue = pmtChannelValues.GetValue(sigIndex)
-	bIndex = pmtChannelValues.GetChannelIndex(("B",))
-	bValue = pmtChannelValues.GetValue(bIndex)
-	#bError = pmtChannelValues.GetError(bIndex)
-	dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
-	dbValue = pmtChannelValues.GetValue(dbIndex)
-	#dbError = pmtChannelValues.GetError(dbIndex)
-	rf1aIndex = pmtChannelValues.GetChannelIndex(("RF1A","DB"))
-	rf1aValue = pmtChannelValues.GetValue(rf1aIndex)
-	#rf1aError = pmtChannelValues.GetError(rf1aIndex)
-	rf2aIndex = pmtChannelValues.GetChannelIndex(("RF2A","DB"))
-	rf2aValue = pmtChannelValues.GetValue(rf2aIndex)
-	#rf2aError = pmtChannelValues.GetError(rf2aIndex)
-	rf1fIndex = pmtChannelValues.GetChannelIndex(("RF1F","DB"))
-	rf1fValue = pmtChannelValues.GetValue(rf1fIndex)
-	#rf1fError = pmtChannelValues.GetError(rf1fIndex)
-	rf2fIndex = pmtChannelValues.GetChannelIndex(("RF2F","DB"))
-	rf2fValue = pmtChannelValues.GetValue(rf2fIndex)
-	#rf2fError = pmtChannelValues.GetError(rf2fIndex)
-	lf1Index = pmtChannelValues.GetChannelIndex(("LF1",))
-	lf1Value = pmtChannelValues.GetValue(lf1Index)
-	#lf1Error = pmtChannelValues.GetError(lf1Index)
-	lf1dbIndex = pmtChannelValues.GetChannelIndex(("LF1","DB"))
-	lf1dbValue = pmtChannelValues.GetValue(lf1dbIndex)
+	sigValue = pmtChannelValues.GetValue(("SIG",))
+	bValue = pmtChannelValues.GetValue(("B",))
+	dbValue = pmtChannelValues.GetValue(("DB",))
+	rf1aValue = pmtChannelValues.GetValue(("RF1A","DB"))
+	rf2aValue = pmtChannelValues.GetValue(("RF2A","DB"))
+	rf1fValue = pmtChannelValues.GetValue(("RF1F","DB"))
+	rf2fValue = pmtChannelValues.GetValue(("RF2F","DB"))
+	lf1Value = pmtChannelValues.GetValue(("LF1",))
+	lf1dbValue = pmtChannelValues.GetValue(("LF1","DB"))
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
@@ -330,8 +316,7 @@ def EDMGo():
 		#	print("Rotating target.")
 		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
-		dbIndex = pmtChannelValues.GetChannelIndex(("DB",))
-		dbValue = pmtChannelValues.GetValue(dbIndex)
+		dbValue = pmtChannelValues.GetValue(("DB",))
 		if (dbValue < 8.4):
 			print("Dodgy spot target rotation.")
 			hc.StepTarget(10)
