@@ -97,6 +97,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
+            AddDigitalOutputChannel("pumpAOMFreqMon", pgBoard, 2, 4);
 
             // map the analog channels
 
