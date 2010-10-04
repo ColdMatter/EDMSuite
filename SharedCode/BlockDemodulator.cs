@@ -197,6 +197,8 @@ namespace Analysis.EDM
             double edmDBG = edmDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel edmCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB" });
             double edmCorrDBG = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF1FDB" });
+            double rf1fDBG = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
@@ -206,13 +208,15 @@ namespace Analysis.EDM
                 Math.Pow(dcv.GetValue(new string[] { "E", "DB" }) * dcv.GetError(new string[] { "B" }), 2) +
                 Math.Pow(dcv.GetValue(new string[] { "B" }) * dcv.GetError(new string[] { "E", "DB" }), 2) )
                 / Math.Pow(dcv.GetValue(new string[] { "DB" }), 2);
-             double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
+            double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
             double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
+            double rf1fDBE = dcv.GetError(new string[] { "RF1F" }) / dcv.GetValue(new string[] { "DB" });
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["CORRDB"] = new double[] { corrDBG, corrDBE };
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
             dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB"] = new double[] { edmCorrDBG, edmCorrDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF1FDB"] = new double[] { rf1fDBG, rf1fDBE };
 
             return dblock;
         }

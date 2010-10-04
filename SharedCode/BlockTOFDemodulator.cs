@@ -84,13 +84,15 @@ namespace Analysis.EDM
                 int bIndex = modNames.IndexOf("B");
                 int dbIndex = modNames.IndexOf("DB");
                 int eIndex = modNames.IndexOf("E");
+                int rf1fIndex = modNames.IndexOf("RF1F");
 
                 int bChannel = (1 << bIndex);
                 int dbChannel = (1 << dbIndex);
                 int ebChannel = (1 << eIndex) + (1 << bIndex);
                 int edbChannel = (1 << eIndex) + (1 << dbIndex);
+                int rf1fChannel = (1 << rf1fIndex);
 
-                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel };
+                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, rf1fChannel };
             }
 
             foreach (int channel in channelsToAnalyse)
@@ -127,6 +129,7 @@ namespace Analysis.EDM
             TOFChannel eCal = (TOFChannel)tcs.GetChannel(new string[] {"E", "DB"});
             TOFChannel bShift = (TOFChannel)tcs.GetChannel(new string[] { "B" });
             TOFChannel cal = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
+            TOFChannel rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
 
             // it's important when working out the non-linear channel
             // combinations to always keep them dimensionless. If you
@@ -143,6 +146,9 @@ namespace Analysis.EDM
 
             TOFChannel edmCorrDB = edmDB - correctionDB;
             tcs.AddChannel(new string[] { "EDMCORRDB" }, edmCorrDB);
+
+            TOFChannel rf1fDB = rf1f / cal;
+            tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
 
             return tcs;
         }
