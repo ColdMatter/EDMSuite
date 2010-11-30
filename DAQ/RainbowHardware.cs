@@ -34,7 +34,7 @@ namespace DAQ.HAL
             Info.Add("PGClockCounter", "/ctr0");
 
             // YAG laser
-//            yag = new BrilliantLaser("ASRL3::INSTR");
+            yag = new BrilliantLaser("ASRL3::INSTR");
 
             // add the GPIB instruments
  
@@ -53,7 +53,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
 
             // map the analog output channels
-            AddAnalogOutputChannel("b", daqBoard + "/ao1");
+            AddAnalogOutputChannel("laser", daqBoard + "/ao0");
 
              // map the counter channels
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr7");
