@@ -72,6 +72,14 @@ namespace DAQ.Environment
 					Debug = false;
                     break;
 
+                case "SUNSHINE":
+                    Hardware = new DecelerationHardware();
+                    FileSystem = new SunshineFileSystem();
+                    //ExperimentType = "decelerator";
+                    Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
+                    Debug = false;
+                    break;
+
 				case "CLAM":
 					Hardware = new SympatheticHardware();
 					FileSystem = new ClamFileSystem();

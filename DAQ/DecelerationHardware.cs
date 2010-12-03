@@ -23,8 +23,8 @@ namespace DAQ.HAL
 			yag = new MiniliteLaser();
 
 			// add the boards
-			Boards.Add("daq", "/dev1");
-			Boards.Add("pg", "/dev2");
+			Boards.Add("daq", "/dev2");
+			Boards.Add("pg", "/dev1");
             string pgBoard = (string)Boards["pg"];
 
 
@@ -83,6 +83,7 @@ namespace DAQ.HAL
 			// map the analog channels
 			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pmt2", daqBoard + "/ai8", AITerminalConfiguration.Rse);
 			AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
