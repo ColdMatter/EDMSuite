@@ -124,30 +124,68 @@ namespace Analysis.EDM
                 if (channel == 0) channelName = new string[] {"SIG"};
                 tcs.AddChannel(channelName, tc);
             }
-            // add the special channels
-            TOFChannel eb = (TOFChannel)tcs.GetChannel(new string[] { "E", "B" });
-            TOFChannel eCal = (TOFChannel)tcs.GetChannel(new string[] {"E", "DB"});
-            TOFChannel bShift = (TOFChannel)tcs.GetChannel(new string[] { "B" });
-            TOFChannel cal = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
-            TOFChannel rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
+            // ** add the special channels **
+
+            // extract the TOFChannels that we need.
+            TOFChannel c_eb = (TOFChannel)tcs.GetChannel(new string[] { "E", "B" });
+            TOFChannel c_edb = (TOFChannel)tcs.GetChannel(new string[] {"E", "DB"});
+            TOFChannel c_dbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF1F" });
+            TOFChannel c_dbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2F" });
+            TOFChannel c_b = (TOFChannel)tcs.GetChannel(new string[] { "B" });
+            TOFChannel c_db = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
+            TOFChannel c_brf1f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF1F" });
+            TOFChannel c_brf2f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF2F" });
+            TOFChannel c_edbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
+            TOFChannel c_edbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB", "RF2F" });
+            TOFChannel c_ebdb= (TOFChannel)tcs.GetChannel(new string[] { "E", "B", "DB" });
+
+            TOFChannel c_rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
+
+            // work out some intermediate terms for the full, corrected edm. The names
+            // refer to the joint power of c_db and c_b in the term.
+            TOFChannel squaredTerms = (((c_db * c_db) - (c_dbrf1f * c_dbrf1f) - (c_dbrf2f * c_dbrf2f)) * c_eb)
+                                        - (c_b * c_db * c_edb);
+
+            // this is missing the term /beta c_db c_ebdb at the moment, mainly because
+            // I've no idea what beta should be.
+            TOFChannel linearTerms = (c_b * c_dbrf1f * c_edbrf1f) + (c_b * c_dbrf2f * c_edbrf2f)
+                - (c_db * c_brf1f * c_edbrf1f) - (c_db * c_brf2f * c_edbrf2f);
+
+            TOFChannel preDenominator = (c_db * c_db * c_db)
+                + (c_dbrf1f * c_edb * c_edbrf1f) + (c_dbrf1f * c_edb * c_edbrf1f)
+                + (c_dbrf2f * c_edb * c_edbrf2f) + (c_dbrf2f * c_edb * c_edbrf2f)
+                - c_db * (
+                    (c_dbrf1f * c_dbrf1f) + (c_dbrf2f * c_dbrf2f) + (c_edb * c_edb)
+                        + (c_edbrf1f * c_edbrf1f) + (c_edbrf1f * c_edbrf1f)
+                    );
 
             // it's important when working out the non-linear channel
             // combinations to always keep them dimensionless. If you
             // don't you'll run into trouble with integral vs. average
-            // signal. For that reason the correction is calculated here
-            // with DB^2 on the bottom, which is not the way I'd usually
-            // do it. It means that this correction is to be subtracted
-            // from B.E/DB.
-            TOFChannel correctionDB = (eCal * bShift) / (cal * cal);
-            tcs.AddChannel(new string[] { "CORRDB" }, correctionDB);
-
-            TOFChannel edmDB = eb / cal;
+            // signal.
+            TOFChannel edmDB = c_eb / c_db;
             tcs.AddChannel(new string[] { "EDMDB" }, edmDB);
 
-            TOFChannel edmCorrDB = edmDB - correctionDB;
+            // The corrected edm channel. This should be proportional to the edm phase.
+            TOFChannel edmCorrDB = (squaredTerms + linearTerms) / preDenominator;
             tcs.AddChannel(new string[] { "EDMCORRDB" }, edmCorrDB);
 
-            TOFChannel rf1fDB = rf1f / cal;
+            // It's useful to have an estimate of the size of the correction. Here
+            // we return the difference between the corrected edm channel and the
+            // naive guess, edmDB.
+            TOFChannel correctionDB = edmCorrDB - edmDB;
+            tcs.AddChannel(new string[] { "CORRDB" }, correctionDB);
+
+            // The "old" correction that just corrects for the E-correlated amplitude change.
+            // This is included in the dblocks for debugging purposes.
+            TOFChannel correctionDB_old = (c_edb * c_b) / (c_db * c_db);
+            tcs.AddChannel(new string[] { "CORRDB_OLD" }, correctionDB_old);
+
+            TOFChannel edmCorrDB_old = edmDB - correctionDB_old;
+            tcs.AddChannel(new string[] { "EDMCORRDB_OLD" }, edmCorrDB_old);
+
+            // Normalised RF1F channel. Not really sure why this is in here!
+            TOFChannel rf1fDB = c_rf1f / c_db;
             tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
 
             return tcs;

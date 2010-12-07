@@ -186,36 +186,43 @@ namespace Analysis.EDM
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, false);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, true);
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
-            // calculate the special channels
-            TOFChannel corrDB = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB" });
-            double corrDBG = corrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            // gate the special channels
             TOFChannel edmDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMDB" });
             double edmDBG = edmDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel corrDB = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB" });
+            double corrDBG = corrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel edmCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB" });
             double edmCorrDBG = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel corrDB_old = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB_OLD" });
+            double corrDBG_old = corrDB_old.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel edmCorrDB_old = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB_OLD" });
+            double edmCorrDBG_old = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF1FDB" });
             double rf1fDBG = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
+            // I use the simple correction error for the full correction. Doesn't much matter.
             int tndi = dblock.DetectorIndices["topNormed"];
             DetectorChannelValues dcv = dblock.ChannelValues[tndi];
+            double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
             double corrDBE = Math.Sqrt(
                 Math.Pow(dcv.GetValue(new string[] { "E", "DB" }) * dcv.GetError(new string[] { "B" }), 2) +
                 Math.Pow(dcv.GetValue(new string[] { "B" }) * dcv.GetError(new string[] { "E", "DB" }), 2) )
                 / Math.Pow(dcv.GetValue(new string[] { "DB" }), 2);
-            double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
             double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
             double rf1fDBE = dcv.GetError(new string[] { "RF1F" }) / dcv.GetValue(new string[] { "DB" });
 
             // stuff the data into the dblock
-            dblock.ChannelValues[tndi].SpecialValues["CORRDB"] = new double[] { corrDBG, corrDBE };
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
+            dblock.ChannelValues[tndi].SpecialValues["CORRDB"] = new double[] { corrDBG, corrDBE };
             dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB"] = new double[] { edmCorrDBG, edmCorrDBE };
+            dblock.ChannelValues[tndi].SpecialValues["CORRDB_OLD"] = new double[] { corrDBG_old, corrDBE };
+            dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB_OLD"] = new double[] { edmCorrDBG_old, edmCorrDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF1FDB"] = new double[] { rf1fDBG, rf1fDBE };
 
             return dblock;
