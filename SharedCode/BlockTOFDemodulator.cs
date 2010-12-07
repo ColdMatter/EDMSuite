@@ -85,14 +85,26 @@ namespace Analysis.EDM
                 int dbIndex = modNames.IndexOf("DB");
                 int eIndex = modNames.IndexOf("E");
                 int rf1fIndex = modNames.IndexOf("RF1F");
+                int rf2fIndex = modNames.IndexOf("RF2F");
 
                 int bChannel = (1 << bIndex);
                 int dbChannel = (1 << dbIndex);
                 int ebChannel = (1 << eIndex) + (1 << bIndex);
                 int edbChannel = (1 << eIndex) + (1 << dbIndex);
+                int dbrf1fChannel = (1 << dbIndex) + (1 << rf1fIndex);
+                int dbrf2fChannel = (1 << dbIndex) + (1 << rf2fIndex);
+                int brf1fChannel = (1 << bIndex) + (1 << rf1fIndex);
+                int brf2fChannel = (1 << bIndex) + (1 << rf2fIndex);
+                int edbrf1fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+                int edbrf2fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf2fIndex);
+                int ebdbChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex);
                 int rf1fChannel = (1 << rf1fIndex);
+                int rf2fChannel = (1 << rf2fIndex);
 
-                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, rf1fChannel };
+                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
+                    dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
+                    rf1fChannel, rf2fChannel
+                };
             }
 
             foreach (int channel in channelsToAnalyse)
@@ -140,6 +152,7 @@ namespace Analysis.EDM
             TOFChannel c_ebdb= (TOFChannel)tcs.GetChannel(new string[] { "E", "B", "DB" });
 
             TOFChannel c_rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
+            TOFChannel c_rf2f = (TOFChannel)tcs.GetChannel(new string[] { "RF2F" });
 
             // work out some intermediate terms for the full, corrected edm. The names
             // refer to the joint power of c_db and c_b in the term.
@@ -184,9 +197,12 @@ namespace Analysis.EDM
             TOFChannel edmCorrDB_old = edmDB - correctionDB_old;
             tcs.AddChannel(new string[] { "EDMCORRDB_OLD" }, edmCorrDB_old);
 
-            // Normalised RF1F channel. Not really sure why this is in here!
+            // Normalised RFxF channels.
             TOFChannel rf1fDB = c_rf1f / c_db;
             tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
+
+            TOFChannel rf2fDB = c_rf2f / c_db;
+            tcs.AddChannel(new string[] { "RF2FDB" }, rf2fDB);
 
             return tcs;
         }

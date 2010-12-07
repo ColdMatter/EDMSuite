@@ -186,7 +186,7 @@ namespace Analysis.EDM
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, true);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, false);
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
@@ -203,6 +203,8 @@ namespace Analysis.EDM
             double edmCorrDBG_old = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF1FDB" });
             double rf1fDBG = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF2FDB" });
+            double rf2fDBG = rf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
@@ -216,6 +218,7 @@ namespace Analysis.EDM
                 / Math.Pow(dcv.GetValue(new string[] { "DB" }), 2);
             double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
             double rf1fDBE = dcv.GetError(new string[] { "RF1F" }) / dcv.GetValue(new string[] { "DB" });
+            double rf2fDBE = dcv.GetError(new string[] { "RF2F" }) / dcv.GetValue(new string[] { "DB" });
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -224,6 +227,7 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["CORRDB_OLD"] = new double[] { corrDBG_old, corrDBE };
             dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB_OLD"] = new double[] { edmCorrDBG_old, edmCorrDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF1FDB"] = new double[] { rf1fDBG, rf1fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF2FDB"] = new double[] { rf2fDBG, rf2fDBE };
 
             return dblock;
         }
