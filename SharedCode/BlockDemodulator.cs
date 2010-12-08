@@ -205,6 +205,10 @@ namespace Analysis.EDM
             double rf1fDBG = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF2FDB" });
             double rf2fDBG = rf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel brf1fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF1FCORRDB" });
+            double brf1fCorrDBG = brf1fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF2FCORRDB" });
+            double brf2fCorrDBG = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
@@ -219,6 +223,8 @@ namespace Analysis.EDM
             double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
             double rf1fDBE = dcv.GetError(new string[] { "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double rf2fDBE = dcv.GetError(new string[] { "RF2F" }) / dcv.GetValue(new string[] { "DB" });
+            double brf1fDBE = dcv.GetError(new string[] { "B", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
+            double brf2fDBE = dcv.GetError(new string[] { "B", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -228,6 +234,8 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["EDMCORRDB_OLD"] = new double[] { edmCorrDBG_old, edmCorrDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF1FDB"] = new double[] { rf1fDBG, rf1fDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF2FDB"] = new double[] { rf2fDBG, rf2fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["BRF1FCORRDB"] = new double[] { brf1fCorrDBG, brf1fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["BRF2FCORRDB"] = new double[] { brf2fCorrDBG, brf2fDBE };
 
             return dblock;
         }
