@@ -169,7 +169,7 @@ namespace Analysis.EDM
                 + (c_dbrf2f * c_edb * c_edbrf2f) + (c_dbrf2f * c_edb * c_edbrf2f)
                 - c_db * (
                     (c_dbrf1f * c_dbrf1f) + (c_dbrf2f * c_dbrf2f) + (c_edb * c_edb)
-                        + (c_edbrf1f * c_edbrf1f) + (c_edbrf1f * c_edbrf1f)
+                        + (c_edbrf1f * c_edbrf1f) + (c_edbrf2f * c_edbrf2f)
                     );
 
             // it's important when working out the non-linear channel
