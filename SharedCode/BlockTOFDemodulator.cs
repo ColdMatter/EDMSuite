@@ -204,6 +204,15 @@ namespace Analysis.EDM
             TOFChannel rf2fDB = c_rf2f / c_db;
             tcs.AddChannel(new string[] { "RF2FDB" }, rf2fDB);
 
+            // And RFxF.DB channels, again normalised to DB. The naming of these channels is quite
+            // unfortunate, but it's just tough.
+            TOFChannel rf1fDBDB = c_dbrf1f / c_db;
+            tcs.AddChannel(new string[] { "RF1FDBDB" }, rf1fDBDB);
+
+            TOFChannel rf2fDBDB = c_dbrf2f / c_db;
+            tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
+
+
             // we also need to extract the rf-step induced phase shifts. These come out in the
             // B.RFxF channels, but like the edm, need to be corrected. I'm going to use just the
             // simplest level of correction for these.
