@@ -224,6 +224,7 @@
     <Compile Include="LeakageMonitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SunshineFileSystem.cs" />
     <Compile Include="SympatheticHardware.cs">
       <SubType>Code</SubType>
     </Compile>
