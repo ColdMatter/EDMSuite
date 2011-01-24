@@ -148,6 +148,16 @@ namespace Analysis.EDM
             AddFixedSliceConfig("cgate11Fixed", 2156, 90); // This is normally ("cgate11Fixed", 2156, 90)
             AddFixedSliceConfig("vfastFixed", 2025, 41);
             AddFixedSliceConfig("vslowFixed", 2286, 41);
+            // these "nudge" gates are chosen to, hopefully, tweak the 09_10 dataset so that the
+            // RF1F channel, DB-normed in the non-linear way, is reduced to near zero
+            AddFixedSliceConfig("nudgeGate1", 2161, 90);
+            AddFixedSliceConfig("nudgeGate2", 2169, 90);
+            AddFixedSliceConfig("nudgeGate3", 2176, 90);
+            AddFixedSliceConfig("nudgeGate4", 2174, 90);
+            AddFixedSliceConfig("nudgeGate5", 2188, 90);
+            AddFixedSliceConfig("nudgeGate6", 2198, 90);
+            AddFixedSliceConfig("nudgeGate7", 2208, 90);
+            AddFixedSliceConfig("nudgeGate8", 2228, 90);
             // these two are the fast and slow halves of the 1.1 sigma central gate.
             AddFixedSliceConfig("fastFixed", 2110, 45);
             AddFixedSliceConfig("slowFixed", 2201, 45);

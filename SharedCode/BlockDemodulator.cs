@@ -209,6 +209,14 @@ namespace Analysis.EDM
             double rf1fDBDBG = rf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "RF2FDBDB" });
             double rf2fDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF1FDB" });
+            double erf1fDBG = erf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf2fDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF2FDB" });
+            double erf2fDBG = erf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf1fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF1FDBDB" });
+            double erf1fDBDBG = erf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf2fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF2FDBDB" });
+            double erf2fDBDBG = erf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel brf1fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF1FCORRDB" });
             double brf1fCorrDBG = brf1fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF2FCORRDB" });
@@ -231,6 +239,10 @@ namespace Analysis.EDM
             double rf2fDBDBE = dcv.GetError(new string[] { "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double brf1fDBE = dcv.GetError(new string[] { "B", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double brf2fDBE = dcv.GetError(new string[] { "B", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
+            double erf1fDBE = dcv.GetError(new string[] { "E", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
+            double erf2fDBE = dcv.GetError(new string[] { "E", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
+            double erf1fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
+            double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -244,6 +256,10 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["RF2FDBDB"] = new double[] { rf2fDBDBG, rf2fDBDBE };
             dblock.ChannelValues[tndi].SpecialValues["BRF1FCORRDB"] = new double[] { brf1fCorrDBG, brf1fDBE };
             dblock.ChannelValues[tndi].SpecialValues["BRF2FCORRDB"] = new double[] { brf2fCorrDBG, brf2fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["ERF1FDB"] = new double[] { erf1fDBG, erf1fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["ERF2FDB"] = new double[] { erf2fDBG, erf2fDBE };
+            dblock.ChannelValues[tndi].SpecialValues["ERF1FDBDB"] = new double[] { erf1fDBDBG, erf1fDBDBE };
+            dblock.ChannelValues[tndi].SpecialValues["ERF2FDBDB"] = new double[] { erf2fDBDBG, erf2fDBDBE };
 
             return dblock;
         }

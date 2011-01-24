@@ -100,10 +100,12 @@ namespace Analysis.EDM
                 int ebdbChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex);
                 int rf1fChannel = (1 << rf1fIndex);
                 int rf2fChannel = (1 << rf2fIndex);
+                int erf1fChannel = (1 << eIndex) + (1 << rf1fIndex);
+                int erf2fChannel = (1 << eIndex) + (1 << rf2fIndex);
 
                 channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
                     dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
-                    rf1fChannel, rf2fChannel
+                    rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel
                 };
             }
 
@@ -153,6 +155,9 @@ namespace Analysis.EDM
 
             TOFChannel c_rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
             TOFChannel c_rf2f = (TOFChannel)tcs.GetChannel(new string[] { "RF2F" });
+
+            TOFChannel c_erf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF1F" });
+            TOFChannel c_erf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF2F" });
 
             // work out some intermediate terms for the full, corrected edm. The names
             // refer to the joint power of c_db and c_b in the term.
@@ -212,6 +217,20 @@ namespace Analysis.EDM
             TOFChannel rf2fDBDB = c_dbrf2f / c_db;
             tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
 
+            // the E.RFxF channels, normalized to DB
+            TOFChannel erf1fDB = c_erf1f / c_db;
+            tcs.AddChannel(new string[] { "ERF1FDB" }, erf1fDB);
+
+            TOFChannel erf2fDB = c_erf2f / c_db;
+            tcs.AddChannel(new string[] { "ERF2FDB" }, erf2fDB);
+            
+            // the E.RFxF.DB channels, normalized to DB, again dodgy naming convention.
+            TOFChannel erf1fDBDB = c_edbrf1f / c_db;
+            tcs.AddChannel(new string[] { "ERF1FDBDB" }, erf1fDBDB);
+
+            TOFChannel erf2fDBDB = c_edbrf2f / c_db;
+            tcs.AddChannel(new string[] { "ERF2FDBDB" }, erf2fDBDB);
+           
 
             // we also need to extract the rf-step induced phase shifts. These come out in the
             // B.RFxF channels, but like the edm, need to be corrected. I'm going to use just the
