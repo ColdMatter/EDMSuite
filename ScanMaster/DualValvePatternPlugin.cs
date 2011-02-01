@@ -78,7 +78,7 @@ namespace ScanMaster.Acquire.Plugins
                 GateStartTimePGUnits
                 );
 
-            scanPatternBuilder.BuildPattern(2 * (int)settings["sequenceLength"]
+            scanPatternBuilder.BuildPattern( (int)settings["sequenceLength"]
                 * (int)settings["sequenceInterval"]);
 
             return scanPatternBuilder;

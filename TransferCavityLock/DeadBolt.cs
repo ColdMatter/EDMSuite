@@ -25,8 +25,8 @@ namespace TransferCavityLock
 
         private const double UPPER_LC_VOLTAGE_LIMIT = 10.0; //volts LC: Laser control
         private const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
-        private const double UPPER_CC_VOLTAGE_LIMIT = 5.0; //volts CC: Cavity control
-        private const double LOWER_CC_VOLTAGE_LIMIT = 0.0; //volts CC: Cavity control
+        private const double UPPER_CC_VOLTAGE_LIMIT = 10.0; //volts CC: Cavity control
+        private const double LOWER_CC_VOLTAGE_LIMIT = -10.0; //volts CC: Cavity control
         private double voltageDifference = 0;
         private const int DELAY_BETWEEN_STEPS = 0; //milliseconds?
         private ScanParameters laserScanParameters;
@@ -92,7 +92,7 @@ namespace TransferCavityLock
                 outputCavityTask = new Task("CavityPiezoVoltage");
                 cavityChannel =
                         (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["cavity"];
-                cavityChannel.AddToTask(outputCavityTask, 0, 5);
+                cavityChannel.AddToTask(outputCavityTask, -10, 10);
 
                 outputCavityTask.Timing.ConfigureSampleClock("", 1000 , 
                     SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples, 2*STEPS);
@@ -378,16 +378,8 @@ namespace TransferCavityLock
             double[] reducedData2 = new double[parameters.Steps];
             for (int i = 0; i < parameters.Steps; i++)
             {
-                if (i > parameters.Steps / 4 && i < 3 * parameters.Steps / 4)
-                {
-                    voltages[i] = data.Voltages[i];
-                    reducedData2[i] = data.P2Data[i];
-                }
-                else
-                {
-                    voltages[i] = 0;
-                    reducedData2[i] = 0;
-                }
+                voltages[i] = data.Voltages[i];
+                reducedData2[i] = data.P2Data[i];
             }
             double mse = 0; //Mean standard error (I think). Something needed for fit function
             double[] coefficients = new double[] {0.01, voltages[ArrayOperation.GetIndexOfMax(reducedData2)],
@@ -445,7 +437,7 @@ namespace TransferCavityLock
                     voltages[i] = data.Voltages[i];
                     reducedData1[i] = data.P1Data[i];  
             }
-            double[] coefficients = new double[] { 0.002, voltages[ArrayOperation.GetIndexOfMax(reducedData1)],
+            double[] coefficients = new double[] {0.05, voltages[ArrayOperation.GetIndexOfMax(reducedData1)],
                 ArrayOperation.GetMax(reducedData1) - ArrayOperation.GetMin(reducedData1)};
             CurveFit.NonLinearFit(voltages, reducedData1, new ModelFunctionCallback(lorentzianNarrow),
                  coefficients, out mse, 1000);          //Fitting a lorentzian
@@ -469,7 +461,7 @@ namespace TransferCavityLock
                     {
                         voltageDifference = ui.GetSetPoint();                   //get the set point
                         ui.AddToMeasuredPeakDistanceTextBox(Convert.ToString(Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3)));
-                        LaserVoltage = oldLaserVoltage - ui.GetGain() * (Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3) - voltageDifference); //Feedback
+                        LaserVoltage = oldLaserVoltage - ui.GetGain() * (voltageDifference - Math.Round(coefficients[1] - cavityScanParameters.SetPoint, 3)); //Feedback
 
                         if (LaserVoltage > UPPER_LC_VOLTAGE_LIMIT || LaserVoltage < LOWER_LC_VOLTAGE_LIMIT)
                         {

@@ -59,6 +59,8 @@
             this.setPointUpDownBox = new System.Windows.Forms.NumericUpDown();
             this.voltageToLaserBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.p1Intensity)).BeginInit();
@@ -340,11 +342,31 @@
             this.label3.Text = "Set Point (V):";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(26, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(61, 13);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "Ti:Sapphire";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(26, 152);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "He-Ne";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(914, 298);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.lockParams);
             this.Controls.Add(this.p2Intensity);
             this.Controls.Add(this.p1Intensity);
@@ -363,6 +385,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.initLaserVoltageUpDownBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointUpDownBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -399,6 +422,8 @@
         private System.Windows.Forms.TextBox cavityScanOffsetTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox measuredPeakDistanceTextBox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 
