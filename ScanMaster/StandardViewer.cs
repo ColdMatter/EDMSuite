@@ -106,7 +106,7 @@ namespace ScanMaster.GUI
 				(double)outputSettings["start"], (double)outputSettings["end"]);
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
             startTOFGate = (int)shotSettings["gateStartTime"];
-            endTOFGate = startTOFGate + (int)shotSettings["gateLength"];
+            endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
             window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
 
 			// disable the fit function selectors
