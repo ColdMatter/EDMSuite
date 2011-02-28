@@ -158,6 +158,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-REQUIEM":
+                    Hardware = new PXISympatheticHardware();
+                    FileSystem = new RequiemFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
