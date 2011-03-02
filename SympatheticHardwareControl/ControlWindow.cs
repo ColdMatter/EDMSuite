@@ -7,6 +7,9 @@ using System.Data;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.UI;
 
+using NationalInstruments.Vision;
+using NationalInstruments.CWIMAQControls;
+
 
 namespace SympatheticHardwareControl
 {
@@ -50,8 +53,11 @@ namespace SympatheticHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabOverview = new System.Windows.Forms.TabPage();
+            this.snapshotButton = new System.Windows.Forms.Button();
+            this.MOTCameraAxCWIMAQViewer = new NationalInstruments.CWIMAQControls.AxCWIMAQViewer();
             this.tabLasers = new System.Windows.Forms.TabPage();
             this.aom3ControlBox = new System.Windows.Forms.GroupBox();
             this.aom3UpdateButton = new System.Windows.Forms.Button();
@@ -115,6 +121,8 @@ namespace SympatheticHardwareControl
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.shcTabs.SuspendLayout();
+            this.tabOverview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MOTCameraAxCWIMAQViewer)).BeginInit();
             this.tabLasers.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aom3LED)).BeginInit();
@@ -145,6 +153,8 @@ namespace SympatheticHardwareControl
             // 
             // tabOverview
             // 
+            this.tabOverview.Controls.Add(this.snapshotButton);
+            this.tabOverview.Controls.Add(this.MOTCameraAxCWIMAQViewer);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
             this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
@@ -152,6 +162,25 @@ namespace SympatheticHardwareControl
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
+            // 
+            // snapshotButton
+            // 
+            this.snapshotButton.Location = new System.Drawing.Point(6, 373);
+            this.snapshotButton.Name = "snapshotButton";
+            this.snapshotButton.Size = new System.Drawing.Size(75, 23);
+            this.snapshotButton.TabIndex = 15;
+            this.snapshotButton.Text = "Snapshot";
+            this.snapshotButton.UseVisualStyleBackColor = true;
+            this.snapshotButton.Click += new System.EventHandler(this.snapshotButton_Click);
+            // 
+            // MOTCameraAxCWIMAQViewer
+            // 
+            this.MOTCameraAxCWIMAQViewer.Enabled = true;
+            this.MOTCameraAxCWIMAQViewer.Location = new System.Drawing.Point(6, 6);
+            this.MOTCameraAxCWIMAQViewer.Name = "MOTCameraAxCWIMAQViewer";
+            this.MOTCameraAxCWIMAQViewer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("MOTCameraAxCWIMAQViewer.OcxState")));
+            this.MOTCameraAxCWIMAQViewer.Size = new System.Drawing.Size(522, 361);
+            this.MOTCameraAxCWIMAQViewer.TabIndex = 0;
             // 
             // tabLasers
             // 
@@ -774,6 +803,8 @@ namespace SympatheticHardwareControl
             this.Load += new System.EventHandler(this.WindowLoaded);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.shcTabs.ResumeLayout(false);
+            this.tabOverview.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MOTCameraAxCWIMAQViewer)).EndInit();
             this.tabLasers.ResumeLayout(false);
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
@@ -1047,6 +1078,24 @@ namespace SympatheticHardwareControl
         {
             controller.WindowLoaded();
         }
+        private NationalInstruments.CWIMAQControls.AxCWIMAQViewer MOTCameraAxCWIMAQViewer;
+        private Button snapshotButton;
+
+        private void snapshotButton_Click(object sender, EventArgs e)
+        {
+            VisionImage image;
+            image = controller.Snapshot("cam0");
+            //image.WriteJpegFile("temp.jpg");
+            CWIMAQImage newImage = new CWIMAQImage();
+            Array array = image.ImageToArray();
+            array.GetLength(2);
+            newImage.ArrayToImage();
+            MOTCameraAxCWIMAQViewer.Attach(newImage);
+        }
+
+
+
+        
         
         
      

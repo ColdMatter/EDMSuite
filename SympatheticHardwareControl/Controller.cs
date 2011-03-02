@@ -16,6 +16,11 @@ using NationalInstruments.VisaNS;
 using DAQ.HAL;
 using DAQ.Environment;
 
+using NationalInstruments.Vision;
+using NationalInstruments.Vision.Acquisition.Imaqdx;
+using NationalInstruments.Vision.Internal;
+using NationalInstruments.Vision.WindowsForms.Internal;
+
 namespace SympatheticHardwareControl
 {
     /// <summary>
@@ -44,6 +49,13 @@ namespace SympatheticHardwareControl
         // table of all digital tasks
         Hashtable digitalTasks = new Hashtable();
 
+
+
+        
+        
+        //Cameras
+
+        
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
@@ -647,11 +659,32 @@ namespace SympatheticHardwareControl
             UpdateCoil1(Coil1Current);
             window.SetLED(window.manualControlLED, true);
             this.SHCUIControl = true;
+            
+
         }
+    
+        //camera stuff
+
+        public VisionImage Snapshot(string cameraName)
+        {
+            VisionImage image = new VisionImage();
+            ImaqdxSession sessionName = new ImaqdxSession(cameraName);
+            sessionName.ConfigureGrab();
+            sessionName.Grab(image, true);
+            sessionName.Dispose();
+            return image;
+        }
+        
+        
+        
 
         
         
         #endregion
+
+        
+
+
 
     }
 }
