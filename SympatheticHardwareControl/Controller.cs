@@ -20,7 +20,6 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
-using NationalInstruments.CWIMAQControls;
 
 namespace SympatheticHardwareControl
 {
@@ -55,7 +54,7 @@ namespace SympatheticHardwareControl
         
         
         //Cameras
-
+        const string motCamera = "cam0";
         
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
@@ -578,7 +577,19 @@ namespace SympatheticHardwareControl
                 window.SetTextBox(window.coil1CurrentTextBox, Convert.ToString(value));
             }
         }
-
+        //streaming video bool
+        private bool streaming;
+        public bool Streaming
+        {
+            get
+            {
+                return this.streaming;
+            }
+            set
+            {
+                this.streaming = value;
+            }
+        }
 
         #endregion
 
@@ -666,30 +677,65 @@ namespace SympatheticHardwareControl
     
         //camera stuff
 
-        //single shot commands
+        //untriggered single shot commands
 
-        public void Snapshot(string cameraName)
+        public void cameraSnapshot()
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession sessionName = new ImaqdxSession(cameraName);
-            sessionName.ConfigureGrab();
-            sessionName.Grab(image, true);
-            sessionName.Dispose();
-            window.motViewer.Attach(image);
+            ImaqdxSession session = new ImaqdxSession(motCamera);
+            session.ConfigureGrab();
+            session.Grab(image, true);
+            session.Dispose();
+            window.AttachToViewer(window.motViewer, image);
+            //window.motViewer.Attach(image);
         }
 
-        public void Snapshot(string cameraName, string fileName)
+        public void cameraSnapshot(string fileName)
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession sessionName = new ImaqdxSession(cameraName);
-            sessionName.ConfigureGrab();
-            sessionName.Grab(image, true);
-            sessionName.Dispose();
+            ImaqdxSession session = new ImaqdxSession(motCamera);
+            session.ConfigureGrab();
+            session.Grab(image, true);
+            session.Dispose();
             image.WriteJpegFile(fileName);
-            window.motViewer.Attach(image);
+            window.AttachToViewer(window.motViewer, image);
+            //window.motViewer.Attach(image);
         }
         
-
+        //streaming video
+        public object streamStopLock = new object();
+        public void CameraStream()
+        {
+            Thread streamThread = new Thread(new ThreadStart(cameraStream));
+            streamThread.Start();
+        }
+        private void cameraStream()
+        {
+            this.Streaming = true;
+            VisionImage image = new VisionImage();
+            ImaqdxSession session = new ImaqdxSession(motCamera);
+            session.ConfigureGrab();
+            window.AttachToViewer(window.motViewer, image);
+            //window.motViewer.Attach(image);
+            for(;;)
+            {
+                session.Grab(image, true);
+                window.UpdateViewer(window.motViewer);
+                //window.motViewer.Update();
+                lock(streamStopLock)
+                {
+                if(Streaming == false)
+                    {
+                        //window.motViewer.Dispose();
+                        //window.DisposeViewer(window.motViewer);
+                        session.Dispose();
+                        return;
+                    }
+                }
+                
+            }
+            
+        }
         
         
         #endregion

@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
+
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.UI;
 
 using NationalInstruments.Vision;
-using NationalInstruments.CWIMAQControls;
 
 
 namespace SympatheticHardwareControl
@@ -55,6 +55,7 @@ namespace SympatheticHardwareControl
         {
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabOverview = new System.Windows.Forms.TabPage();
+            this.motViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
             this.snapshotButton = new System.Windows.Forms.Button();
             this.tabLasers = new System.Windows.Forms.TabPage();
             this.aom3ControlBox = new System.Windows.Forms.GroupBox();
@@ -118,7 +119,8 @@ namespace SympatheticHardwareControl
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.motViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
+            this.streamButton = new System.Windows.Forms.Button();
+            this.stopStreamButton = new System.Windows.Forms.Button();
             this.shcTabs.SuspendLayout();
             this.tabOverview.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -151,6 +153,8 @@ namespace SympatheticHardwareControl
             // 
             // tabOverview
             // 
+            this.tabOverview.Controls.Add(this.stopStreamButton);
+            this.tabOverview.Controls.Add(this.streamButton);
             this.tabOverview.Controls.Add(this.motViewer);
             this.tabOverview.Controls.Add(this.snapshotButton);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
@@ -160,6 +164,14 @@ namespace SympatheticHardwareControl
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
+            // 
+            // motViewer
+            // 
+            this.motViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.motViewer.Location = new System.Drawing.Point(0, 0);
+            this.motViewer.Name = "motViewer";
+            this.motViewer.Size = new System.Drawing.Size(513, 367);
+            this.motViewer.TabIndex = 16;
             // 
             // snapshotButton
             // 
@@ -781,13 +793,25 @@ namespace SympatheticHardwareControl
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 0;
             // 
-            // motViewer
+            // streamButton
             // 
-            this.motViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.motViewer.Location = new System.Drawing.Point(0, 0);
-            this.motViewer.Name = "motViewer";
-            this.motViewer.Size = new System.Drawing.Size(513, 367);
-            this.motViewer.TabIndex = 16;
+            this.streamButton.Location = new System.Drawing.Point(87, 373);
+            this.streamButton.Name = "streamButton";
+            this.streamButton.Size = new System.Drawing.Size(75, 23);
+            this.streamButton.TabIndex = 17;
+            this.streamButton.Text = "Stream";
+            this.streamButton.UseVisualStyleBackColor = true;
+            this.streamButton.Click += new System.EventHandler(this.streamButton_Click);
+            // 
+            // stopStreamButton
+            // 
+            this.stopStreamButton.Location = new System.Drawing.Point(168, 373);
+            this.stopStreamButton.Name = "stopStreamButton";
+            this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
+            this.stopStreamButton.TabIndex = 18;
+            this.stopStreamButton.Text = "Stop";
+            this.stopStreamButton.UseVisualStyleBackColor = true;
+            this.stopStreamButton.Click += new System.EventHandler(this.stopStreamButton_Click);
             // 
             // ControlWindow
             // 
@@ -888,7 +912,40 @@ namespace SympatheticHardwareControl
             graph.Invoke(new PlotYDelegate(plot.PlotYAppend), new Object[] { y });
         }
 
+        //An irritating number of threadsafe delegates for the viewer window.
+        public void AttachToViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
+        {
+            viewer.Invoke(new AttachImageToViewerDelegate(AttachImageHelper), new object[] {viewer, image});
+        }
 
+        private delegate void AttachImageToViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image);
+        private void AttachImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
+        {
+            viewer.Attach(image);
+        }
+
+        public void UpdateViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
+        {
+            viewer.Invoke(new UpdateViewerDelegate(UpdateImageHelper), new object[] { viewer } );
+        }
+
+        private delegate void UpdateViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer);
+        private void UpdateImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
+        {
+            viewer.Update();
+        }
+        /*
+        public void DisposeViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
+        {
+            viewer.Invoke(new DisposeViewerDelegate(DisposeImageHelper), new object[] { viewer });
+        }
+
+        private delegate void DisposeViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer);
+        private void DisposeImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
+        {
+            viewer.Dispose();
+        }
+        */
         #endregion
 
 
@@ -1079,7 +1136,21 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            controller.Snapshot("cam0");
+            controller.cameraSnapshot();
+        }
+
+        private Button streamButton;
+        private Button stopStreamButton;
+
+        private void streamButton_Click(object sender, EventArgs e)
+        {
+            controller.Streaming = true;
+            controller.CameraStream();
+        }
+
+        private void stopStreamButton_Click(object sender, EventArgs e)
+        {
+            controller.Streaming = false;
         }
 
         
