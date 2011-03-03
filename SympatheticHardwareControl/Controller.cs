@@ -20,6 +20,7 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
+using NationalInstruments.CWIMAQControls;
 
 namespace SympatheticHardwareControl
 {
@@ -665,17 +666,28 @@ namespace SympatheticHardwareControl
     
         //camera stuff
 
-        public VisionImage Snapshot(string cameraName)
+        //single shot commands
+
+        public void Snapshot(string cameraName)
         {
             VisionImage image = new VisionImage();
             ImaqdxSession sessionName = new ImaqdxSession(cameraName);
             sessionName.ConfigureGrab();
             sessionName.Grab(image, true);
             sessionName.Dispose();
-            return image;
+            window.motViewer.Attach(image);
         }
-        
-        
+
+        public void Snapshot(string cameraName, string fileName)
+        {
+            VisionImage image = new VisionImage();
+            ImaqdxSession sessionName = new ImaqdxSession(cameraName);
+            sessionName.ConfigureGrab();
+            sessionName.Grab(image, true);
+            sessionName.Dispose();
+            image.WriteJpegFile(fileName);
+            window.motViewer.Attach(image);
+        }
         
 
         
