@@ -55,6 +55,10 @@ namespace SympatheticHardwareControl
         {
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabOverview = new System.Windows.Forms.TabPage();
+            this.saveImageCheckBox = new System.Windows.Forms.CheckBox();
+            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.stopStreamButton = new System.Windows.Forms.Button();
+            this.streamButton = new System.Windows.Forms.Button();
             this.motViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
             this.snapshotButton = new System.Windows.Forms.Button();
             this.tabLasers = new System.Windows.Forms.TabPage();
@@ -109,20 +113,25 @@ namespace SympatheticHardwareControl
             this.coil0Label1 = new System.Windows.Forms.Label();
             this.coil0CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil0Label0 = new System.Windows.Forms.Label();
-            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
-            this.menuGroupBox = new System.Windows.Forms.GroupBox();
-            this.manualControlDisableButton = new System.Windows.Forms.Button();
-            this.manualControlEnableButton = new System.Windows.Forms.Button();
-            this.saveParametersButton = new System.Windows.Forms.Button();
-            this.loadParametersButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.streamButton = new System.Windows.Forms.Button();
-            this.stopStreamButton = new System.Windows.Forms.Button();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.loadImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manualControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabOverview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
             this.tabLasers.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aom3LED)).BeginInit();
@@ -135,8 +144,7 @@ namespace SympatheticHardwareControl
             this.tabCoils.SuspendLayout();
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
-            this.menuGroupBox.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -145,14 +153,16 @@ namespace SympatheticHardwareControl
             this.shcTabs.Controls.Add(this.tabOverview);
             this.shcTabs.Controls.Add(this.tabLasers);
             this.shcTabs.Controls.Add(this.tabCoils);
-            this.shcTabs.Location = new System.Drawing.Point(118, 2);
+            this.shcTabs.Location = new System.Drawing.Point(1, 27);
             this.shcTabs.Name = "shcTabs";
             this.shcTabs.SelectedIndex = 0;
-            this.shcTabs.Size = new System.Drawing.Size(625, 476);
+            this.shcTabs.Size = new System.Drawing.Size(637, 429);
             this.shcTabs.TabIndex = 0;
             // 
             // tabOverview
             // 
+            this.tabOverview.Controls.Add(this.saveImageCheckBox);
+            this.tabOverview.Controls.Add(this.manualControlLED);
             this.tabOverview.Controls.Add(this.stopStreamButton);
             this.tabOverview.Controls.Add(this.streamButton);
             this.tabOverview.Controls.Add(this.motViewer);
@@ -160,10 +170,51 @@ namespace SympatheticHardwareControl
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
             this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOverview.Size = new System.Drawing.Size(617, 450);
+            this.tabOverview.Size = new System.Drawing.Size(629, 403);
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
+            // 
+            // saveImageCheckBox
+            // 
+            this.saveImageCheckBox.AutoSize = true;
+            this.saveImageCheckBox.Location = new System.Drawing.Point(6, 377);
+            this.saveImageCheckBox.Name = "saveImageCheckBox";
+            this.saveImageCheckBox.Size = new System.Drawing.Size(51, 17);
+            this.saveImageCheckBox.TabIndex = 19;
+            this.saveImageCheckBox.Text = "Save";
+            this.saveImageCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // manualControlLED
+            // 
+            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.manualControlLED.Location = new System.Drawing.Point(516, 6);
+            this.manualControlLED.Name = "manualControlLED";
+            this.manualControlLED.OffColor = System.Drawing.Color.DarkRed;
+            this.manualControlLED.OnColor = System.Drawing.Color.Red;
+            this.manualControlLED.Size = new System.Drawing.Size(110, 110);
+            this.manualControlLED.TabIndex = 14;
+            // 
+            // stopStreamButton
+            // 
+            this.stopStreamButton.Enabled = false;
+            this.stopStreamButton.Location = new System.Drawing.Point(218, 373);
+            this.stopStreamButton.Name = "stopStreamButton";
+            this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
+            this.stopStreamButton.TabIndex = 18;
+            this.stopStreamButton.Text = "Stop";
+            this.stopStreamButton.UseVisualStyleBackColor = true;
+            this.stopStreamButton.Click += new System.EventHandler(this.stopStreamButton_Click);
+            // 
+            // streamButton
+            // 
+            this.streamButton.Location = new System.Drawing.Point(137, 373);
+            this.streamButton.Name = "streamButton";
+            this.streamButton.Size = new System.Drawing.Size(75, 23);
+            this.streamButton.TabIndex = 17;
+            this.streamButton.Text = "Stream";
+            this.streamButton.UseVisualStyleBackColor = true;
+            this.streamButton.Click += new System.EventHandler(this.streamButton_Click);
             // 
             // motViewer
             // 
@@ -175,7 +226,7 @@ namespace SympatheticHardwareControl
             // 
             // snapshotButton
             // 
-            this.snapshotButton.Location = new System.Drawing.Point(6, 373);
+            this.snapshotButton.Location = new System.Drawing.Point(56, 373);
             this.snapshotButton.Name = "snapshotButton";
             this.snapshotButton.Size = new System.Drawing.Size(75, 23);
             this.snapshotButton.TabIndex = 15;
@@ -193,7 +244,7 @@ namespace SympatheticHardwareControl
             this.tabLasers.Location = new System.Drawing.Point(4, 22);
             this.tabLasers.Name = "tabLasers";
             this.tabLasers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLasers.Size = new System.Drawing.Size(617, 450);
+            this.tabLasers.Size = new System.Drawing.Size(629, 403);
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
@@ -597,7 +648,7 @@ namespace SympatheticHardwareControl
             this.tabCoils.Controls.Add(this.coil0GroupBox);
             this.tabCoils.Location = new System.Drawing.Point(4, 22);
             this.tabCoils.Name = "tabCoils";
-            this.tabCoils.Size = new System.Drawing.Size(617, 450);
+            this.tabCoils.Size = new System.Drawing.Size(629, 403);
             this.tabCoils.TabIndex = 2;
             this.tabCoils.Text = "Magnetic Field Control";
             this.tabCoils.UseVisualStyleBackColor = true;
@@ -702,69 +753,6 @@ namespace SympatheticHardwareControl
             this.coil0Label0.TabIndex = 7;
             this.coil0Label0.Text = "Current";
             // 
-            // manualControlLED
-            // 
-            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(8, 2);
-            this.manualControlLED.Name = "manualControlLED";
-            this.manualControlLED.OffColor = System.Drawing.Color.DarkRed;
-            this.manualControlLED.OnColor = System.Drawing.Color.Red;
-            this.manualControlLED.Size = new System.Drawing.Size(110, 110);
-            this.manualControlLED.TabIndex = 14;
-            // 
-            // menuGroupBox
-            // 
-            this.menuGroupBox.Controls.Add(this.manualControlDisableButton);
-            this.menuGroupBox.Controls.Add(this.manualControlEnableButton);
-            this.menuGroupBox.Controls.Add(this.saveParametersButton);
-            this.menuGroupBox.Controls.Add(this.loadParametersButton);
-            this.menuGroupBox.Location = new System.Drawing.Point(2, 118);
-            this.menuGroupBox.Name = "menuGroupBox";
-            this.menuGroupBox.Size = new System.Drawing.Size(113, 178);
-            this.menuGroupBox.TabIndex = 13;
-            this.menuGroupBox.TabStop = false;
-            this.menuGroupBox.Text = "Menu";
-            // 
-            // manualControlDisableButton
-            // 
-            this.manualControlDisableButton.Location = new System.Drawing.Point(6, 132);
-            this.manualControlDisableButton.Name = "manualControlDisableButton";
-            this.manualControlDisableButton.Size = new System.Drawing.Size(101, 37);
-            this.manualControlDisableButton.TabIndex = 16;
-            this.manualControlDisableButton.Text = "Stop Manual Control";
-            this.manualControlDisableButton.UseVisualStyleBackColor = true;
-            this.manualControlDisableButton.Click += new System.EventHandler(this.laserControlDisableButton_Click);
-            // 
-            // manualControlEnableButton
-            // 
-            this.manualControlEnableButton.Location = new System.Drawing.Point(6, 89);
-            this.manualControlEnableButton.Name = "manualControlEnableButton";
-            this.manualControlEnableButton.Size = new System.Drawing.Size(101, 37);
-            this.manualControlEnableButton.TabIndex = 15;
-            this.manualControlEnableButton.Text = "Start Manual Control";
-            this.manualControlEnableButton.UseVisualStyleBackColor = true;
-            this.manualControlEnableButton.Click += new System.EventHandler(this.laserControlEnableButton_Click);
-            // 
-            // saveParametersButton
-            // 
-            this.saveParametersButton.Location = new System.Drawing.Point(6, 46);
-            this.saveParametersButton.Name = "saveParametersButton";
-            this.saveParametersButton.Size = new System.Drawing.Size(101, 23);
-            this.saveParametersButton.TabIndex = 14;
-            this.saveParametersButton.Text = "Save Parameters";
-            this.saveParametersButton.UseVisualStyleBackColor = true;
-            this.saveParametersButton.Click += new System.EventHandler(this.saveParametersButton_Click);
-            // 
-            // loadParametersButton
-            // 
-            this.loadParametersButton.Location = new System.Drawing.Point(6, 17);
-            this.loadParametersButton.Name = "loadParametersButton";
-            this.loadParametersButton.Size = new System.Drawing.Size(101, 23);
-            this.loadParametersButton.TabIndex = 0;
-            this.loadParametersButton.Text = "Load Parameters";
-            this.loadParametersButton.UseVisualStyleBackColor = true;
-            this.loadParametersButton.Click += new System.EventHandler(this.loadParametersButton_Click);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(0, 0);
@@ -793,38 +781,113 @@ namespace SympatheticHardwareControl
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 0;
             // 
-            // streamButton
+            // menuStrip
             // 
-            this.streamButton.Location = new System.Drawing.Point(87, 373);
-            this.streamButton.Name = "streamButton";
-            this.streamButton.Size = new System.Drawing.Size(75, 23);
-            this.streamButton.TabIndex = 17;
-            this.streamButton.Text = "Stream";
-            this.streamButton.UseVisualStyleBackColor = true;
-            this.streamButton.Click += new System.EventHandler(this.streamButton_Click);
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.manualControlToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(637, 24);
+            this.menuStrip.TabIndex = 15;
+            this.menuStrip.Text = "menuStrip";
             // 
-            // stopStreamButton
+            // fileToolStripMenuItem
             // 
-            this.stopStreamButton.Location = new System.Drawing.Point(168, 373);
-            this.stopStreamButton.Name = "stopStreamButton";
-            this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
-            this.stopStreamButton.TabIndex = 18;
-            this.stopStreamButton.Text = "Stop";
-            this.stopStreamButton.UseVisualStyleBackColor = true;
-            this.stopStreamButton.Click += new System.EventHandler(this.stopStreamButton_Click);
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadParametersToolStripMenuItem,
+            this.saveParametersToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.loadImageToolStripMenuItem,
+            this.saveImageToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // loadParametersToolStripMenuItem
+            // 
+            this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.loadParametersToolStripMenuItem.Text = "Load Parameters";
+            this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
+            // 
+            // saveParametersToolStripMenuItem
+            // 
+            this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.saveParametersToolStripMenuItem.Text = "Save Parameters";
+            this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.saveParametersToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
+            // 
+            // loadImageToolStripMenuItem
+            // 
+            this.loadImageToolStripMenuItem.Name = "loadImageToolStripMenuItem";
+            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.loadImageToolStripMenuItem.Text = "Load Image";
+            this.loadImageToolStripMenuItem.Click += new System.EventHandler(this.loadImageToolStripMenuItem_Click);
+            // 
+            // saveImageToolStripMenuItem
+            // 
+            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.saveImageToolStripMenuItem.Text = "Save Image";
+            this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(159, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // manualControlToolStripMenuItem
+            // 
+            this.manualControlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onToolStripMenuItem,
+            this.stopToolStripMenuItem});
+            this.manualControlToolStripMenuItem.Name = "manualControlToolStripMenuItem";
+            this.manualControlToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
+            this.manualControlToolStripMenuItem.Text = "Manual Control";
+            // 
+            // onToolStripMenuItem
+            // 
+            this.onToolStripMenuItem.Name = "onToolStripMenuItem";
+            this.onToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.onToolStripMenuItem.Text = "Start";
+            this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(745, 479);
+            this.ClientSize = new System.Drawing.Size(637, 466);
             this.Controls.Add(this.shcTabs);
-            this.Controls.Add(this.menuGroupBox);
-            this.Controls.Add(this.manualControlLED);
+            this.Controls.Add(this.menuStrip);
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "ControlWindow";
             this.Text = "Sympathetic Hardware Control";
             this.Load += new System.EventHandler(this.WindowLoaded);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.shcTabs.ResumeLayout(false);
             this.tabOverview.ResumeLayout(false);
+            this.tabOverview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
             this.tabLasers.ResumeLayout(false);
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
@@ -843,9 +906,10 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.PerformLayout();
             this.coil0GroupBox.ResumeLayout(false);
             this.coil0GroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
-            this.menuGroupBox.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
         #endregion
@@ -964,13 +1028,8 @@ namespace SympatheticHardwareControl
         private Label aom0Label0;
         private Label aom0Label1;
         private Label aom0Label3;
-        private GroupBox menuGroupBox;
-        private Button loadParametersButton;
-        private Button saveParametersButton;
         private Button aom0UpdateButton;
         public Led manualControlLED;
-        private Button manualControlEnableButton;
-        private Button manualControlDisableButton;
         private GroupBox aom3ControlBox;
         private Button aom3UpdateButton;
         private Label aom3Label3;
@@ -1001,6 +1060,34 @@ namespace SympatheticHardwareControl
         public Led aom1LED;
         private Label aom1Label2;
         private Label aom1Label0;
+        private GroupBox coil1GroupBox;
+        private Button coil1UpdateButton;
+        private Label coil1Label1;
+        public TextBox coil1CurrentTextBox;
+        private Label coil1Label0;
+        private GroupBox coil0GroupBox;
+        private Button coil0UpdateButton;
+        private Label coil0Label1;
+        public TextBox coil0CurrentTextBox;
+        private Label coil0Label0;
+        private Button button1;
+        public CheckBox checkBox1;
+        public TextBox textBox1;
+        public TextBox textBox2;
+        public NationalInstruments.Vision.WindowsForms.ImageViewer motViewer;
+        public CheckBox saveImageCheckBox;
+        private MenuStrip menuStrip;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem loadParametersToolStripMenuItem;
+        private ToolStripMenuItem saveParametersToolStripMenuItem;
+        private ToolStripMenuItem loadImageToolStripMenuItem;
+        private ToolStripMenuItem saveImageToolStripMenuItem;
+        private ToolStripMenuItem manualControlToolStripMenuItem;
+        private ToolStripMenuItem onToolStripMenuItem;
+        private ToolStripMenuItem stopToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripSeparator toolStripSeparator2;
 
         private void aom0CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -1019,44 +1106,7 @@ namespace SympatheticHardwareControl
             controller.Aom3Enabled = this.aom3CheckBox.Checked;
         }
 
-        private void loadParametersButton_Click(object sender, EventArgs e)
-        {
-            if (controller.SHCUIControl == false) 
-            {
-                controller.LoadParametersWithDialog();
-            }
-        }
 
-        private void saveParametersButton_Click(object sender, EventArgs e)
-        {
-            controller.SaveParametersWithDialog();
-        }
-
-        private void laserControlEnableButton_Click(object sender, EventArgs e)
-        {
-            controller.StartManualControl();
-            controller.SHCUIControl = true;
-            this.aom0UpdateButton.Enabled = true;
-            this.aom1UpdateButton.Enabled = true;
-            this.aom2UpdateButton.Enabled = true;
-            this.aom3UpdateButton.Enabled = true;
-            this.coil0UpdateButton.Enabled = true;
-            this.coil1UpdateButton.Enabled = true;
-        }
-
-        private void laserControlDisableButton_Click(object sender, EventArgs e)
-        {
-            controller.StopManualControl();
-            controller.SHCUIControl = false;
-            this.aom0UpdateButton.Enabled = false;
-            this.aom1UpdateButton.Enabled = false;
-            this.aom2UpdateButton.Enabled = false;
-            this.aom3UpdateButton.Enabled = false;
-            this.coil0UpdateButton.Enabled = false;
-            this.coil1UpdateButton.Enabled = false;
-        }
-
-        
 
         private void aom0UpdateButton_Click(object sender, EventArgs e)
         {
@@ -1106,23 +1156,6 @@ namespace SympatheticHardwareControl
             }
         }
         
-        private GroupBox coil1GroupBox;
-        private Button coil1UpdateButton;
-        private Label coil1Label1;
-        public TextBox coil1CurrentTextBox;
-        private Label coil1Label0;
-        private GroupBox coil0GroupBox;
-        private Button coil0UpdateButton;
-        private Label coil0Label1;
-        public TextBox coil0CurrentTextBox;
-        private Label coil0Label0;
-        private Button button1;
-        public CheckBox checkBox1;
-        public TextBox textBox1;
-        public TextBox textBox2;
-        public NationalInstruments.Vision.WindowsForms.ImageViewer motViewer;
-        
-
         private void WindowClosing(object sender, FormClosingEventArgs e)
         {
             controller.WindowClosing();
@@ -1136,7 +1169,8 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            controller.cameraSnapshot();
+            //controller.cameraSnapshot();
+            controller.manualCameraSnapshot();
         }
 
         private Button streamButton;
@@ -1144,6 +1178,10 @@ namespace SympatheticHardwareControl
 
         private void streamButton_Click(object sender, EventArgs e)
         {
+            this.snapshotButton.Enabled = false;
+            this.streamButton.Enabled = false;
+            this.stopStreamButton.Enabled = true;
+
             controller.Streaming = true;
             controller.CameraStream();
         }
@@ -1151,7 +1189,70 @@ namespace SympatheticHardwareControl
         private void stopStreamButton_Click(object sender, EventArgs e)
         {
             controller.Streaming = false;
+
+            this.snapshotButton.Enabled = true;
+            this.streamButton.Enabled = true;
+            this.stopStreamButton.Enabled = false;
         }
+
+        
+
+        private void onToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StartManualControl();
+            controller.SHCUIControl = true;
+            this.loadParametersToolStripMenuItem.Enabled = false;
+            this.aom0UpdateButton.Enabled = true;
+            this.aom1UpdateButton.Enabled = true;
+            this.aom2UpdateButton.Enabled = true;
+            this.aom3UpdateButton.Enabled = true;
+            this.coil0UpdateButton.Enabled = true;
+            this.coil1UpdateButton.Enabled = true;
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StopManualControl();
+            controller.SHCUIControl = false;
+            this.loadParametersToolStripMenuItem.Enabled = true;
+            this.aom0UpdateButton.Enabled = false;
+            this.aom1UpdateButton.Enabled = false;
+            this.aom2UpdateButton.Enabled = false;
+            this.aom3UpdateButton.Enabled = false;
+            this.coil0UpdateButton.Enabled = false;
+            this.coil1UpdateButton.Enabled = false;
+        }
+
+        private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (controller.SHCUIControl == false)
+            {
+                controller.LoadParametersWithDialog();
+            }
+        }
+
+        private void saveParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SaveParametersWithDialog();
+        }
+
+        private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SaveImageWithDialog(this.motViewer.Image);
+        }
+
+        private void loadImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadImagesWithDialog();
+        }
+
+       
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
 
         
 

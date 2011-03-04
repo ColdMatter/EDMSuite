@@ -48,13 +48,10 @@ namespace SympatheticHardwareControl
 
         // table of all digital tasks
         Hashtable digitalTasks = new Hashtable();
-
-
-
-        
-        
+  
         //Cameras
-        const string motCamera = "cam0";
+        public const string motCamera = "cam0";
+        private string cameraAttributesFile = "cameraAttributes.txt";
         
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
@@ -292,6 +289,8 @@ namespace SympatheticHardwareControl
             StoreParameters(dataStoreFilePath);
         }
 
+
+
         public void StoreParameters(String dataStoreFilePath)
         {
             DataStore dataStore = new DataStore();
@@ -380,24 +379,73 @@ namespace SympatheticHardwareControl
             }
         }
 
+        // Saving the image
+        public void SaveImageWithDialog(VisionImage image)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "shc images|*.jpg";
+            saveFileDialog1.Title = "Save Image";
+            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
+            String dataStoreDir = dataPath + "SHC Single Images";
+            saveFileDialog1.InitialDirectory = dataStoreDir;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if (saveFileDialog1.FileName != "")
+                {
+                    StoreImage(saveFileDialog1.FileName, image);
+                }
+            }
+        }
+
+        // Quietly.
+        public void StoreImage(VisionImage image)
+        {
+            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
+            String dataStoreFilePath = dataPath + "\\SHC Single Images\\tempImage.jpg";
+            StoreImage(dataStoreFilePath, image);
+        }
+
+
+
+        public void StoreImage(String dataStoreFilePath, VisionImage image)
+        {
+            image.WriteJpegFile(dataStoreFilePath);
+        }
+
+        //Load image when opening the controller
+        public void LoadImagesWithDialog()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "shc images|*.jpg";
+            dialog.Title = "Load Image";
+            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
+            String dataStoreDir = dataPath + "SHC Single Images";
+            dialog.InitialDirectory = dataStoreDir;
+            dialog.ShowDialog();
+            if (dialog.FileName != "") LoadImage(dialog.FileName);
+        }
+
+        private void LoadImage()
+        {
+            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
+            String dataStoreFilePath = dataPath + "\\SHC Single Images\\tempImage.jpg";
+            LoadImage(dataStoreFilePath);
+        }
+
+        private void LoadImage(String dataStoreFilePath)
+        {
+            VisionImage image = new VisionImage();
+            image.ReadFile(dataStoreFilePath);
+            window.AttachToViewer(window.motViewer, image);
+        }
+
+
+
         #endregion
 
         #region Public properties for controlling the panel. 
         //This gets/sets the values on the GUI panel
-        //here's an example. 
-      
-        /*public double CMinusVoltage
-        {
-            get
-            {
-                return Double.Parse(window.cMinusTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.cMinusTextBox, value.ToString());
-            }
-        }
-        */
+        
        
         //This is a set of properties for controlling an aom
 
@@ -590,7 +638,9 @@ namespace SympatheticHardwareControl
                 this.streaming = value;
             }
         }
+        
 
+        
         #endregion
 
         #region Public properties for monitoring the hardware
@@ -683,25 +733,71 @@ namespace SympatheticHardwareControl
         {
             VisionImage image = new VisionImage();
             ImaqdxSession session = new ImaqdxSession(motCamera);
-            session.ConfigureGrab();
-            session.Grab(image, true);
-            session.Dispose();
+            session.Snap(image);
+            session.Close();
+            
+            if (window.saveImageCheckBox.Checked == true)
+            {
+                StoreImage(image);
+            }
             window.AttachToViewer(window.motViewer, image);
-            //window.motViewer.Attach(image);
+
         }
 
-        public void cameraSnapshot(string fileName)
+        public void cameraSnapshot(string dataStoreFilePath)
         {
             VisionImage image = new VisionImage();
             ImaqdxSession session = new ImaqdxSession(motCamera);
-            session.ConfigureGrab();
-            session.Grab(image, true);
-            session.Dispose();
-            image.WriteJpegFile(fileName);
+            session.Snap(image);
+            session.Close();
+            
+            if (window.saveImageCheckBox.Checked == true)
+            {
+                StoreImage(dataStoreFilePath, image);
+            }
+            
             window.AttachToViewer(window.motViewer, image);
-            //window.motViewer.Attach(image);
         }
         
+        //triggered snapshot
+        public void manualCameraSnapshot()
+        {
+            VisionImage image = new VisionImage();
+            ImaqdxSession session = new ImaqdxSession(motCamera);
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            session.Attributes.ReadAttributesFromFile(settingsPath + "SympatheticHardwareController\\" + cameraAttributesFile);
+            session.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
+            session.Acquisition.Start();
+            session.Acquisition.GetLastImage(image);
+            session.Acquisition.Stop();
+            session.Acquisition.Unconfigure();
+            session.Close();
+            if (window.saveImageCheckBox.Checked == true)
+            {
+                StoreImage(image);
+            }
+            window.AttachToViewer(window.motViewer, image);
+        }
+
+        public void manualCameraSnapshot(string dataStoreFilePath)
+        {
+            VisionImage image = new VisionImage();
+            ImaqdxSession session = new ImaqdxSession(motCamera);
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            session.Attributes.ReadAttributesFromFile(settingsPath + "SympatheticHardwareController\\" + cameraAttributesFile); 
+            session.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
+            session.Acquisition.Start();
+            session.Acquisition.GetLastImage(image);
+            session.Acquisition.Stop();
+            session.Acquisition.Unconfigure();
+            session.Close();
+            if (window.saveImageCheckBox.Checked == true)
+            {
+                StoreImage(dataStoreFilePath, image);
+            }
+            window.AttachToViewer(window.motViewer, image);
+        }
+
         //streaming video
         public object streamStopLock = new object();
         public void CameraStream()
@@ -716,19 +812,16 @@ namespace SympatheticHardwareControl
             ImaqdxSession session = new ImaqdxSession(motCamera);
             session.ConfigureGrab();
             window.AttachToViewer(window.motViewer, image);
-            //window.motViewer.Attach(image);
             for(;;)
             {
                 session.Grab(image, true);
                 window.UpdateViewer(window.motViewer);
-                //window.motViewer.Update();
+
                 lock(streamStopLock)
                 {
                 if(Streaming == false)
                     {
-                        //window.motViewer.Dispose();
-                        //window.DisposeViewer(window.motViewer);
-                        session.Dispose();
+                        session.Close();
                         return;
                     }
                 }
