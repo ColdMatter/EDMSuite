@@ -180,9 +180,9 @@ namespace SympatheticHardwareControl
             this.saveImageCheckBox.AutoSize = true;
             this.saveImageCheckBox.Location = new System.Drawing.Point(6, 377);
             this.saveImageCheckBox.Name = "saveImageCheckBox";
-            this.saveImageCheckBox.Size = new System.Drawing.Size(51, 17);
+            this.saveImageCheckBox.Size = new System.Drawing.Size(99, 17);
             this.saveImageCheckBox.TabIndex = 19;
-            this.saveImageCheckBox.Text = "Save";
+            this.saveImageCheckBox.Text = "Save Snapshot";
             this.saveImageCheckBox.UseVisualStyleBackColor = true;
             // 
             // manualControlLED
@@ -198,7 +198,7 @@ namespace SympatheticHardwareControl
             // stopStreamButton
             // 
             this.stopStreamButton.Enabled = false;
-            this.stopStreamButton.Location = new System.Drawing.Point(218, 373);
+            this.stopStreamButton.Location = new System.Drawing.Point(271, 373);
             this.stopStreamButton.Name = "stopStreamButton";
             this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
             this.stopStreamButton.TabIndex = 18;
@@ -208,7 +208,7 @@ namespace SympatheticHardwareControl
             // 
             // streamButton
             // 
-            this.streamButton.Location = new System.Drawing.Point(137, 373);
+            this.streamButton.Location = new System.Drawing.Point(190, 373);
             this.streamButton.Name = "streamButton";
             this.streamButton.Size = new System.Drawing.Size(75, 23);
             this.streamButton.TabIndex = 17;
@@ -226,7 +226,7 @@ namespace SympatheticHardwareControl
             // 
             // snapshotButton
             // 
-            this.snapshotButton.Location = new System.Drawing.Point(56, 373);
+            this.snapshotButton.Location = new System.Drawing.Point(109, 373);
             this.snapshotButton.Name = "snapshotButton";
             this.snapshotButton.Size = new System.Drawing.Size(75, 23);
             this.snapshotButton.TabIndex = 15;
@@ -1169,8 +1169,8 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            //controller.cameraSnapshot();
-            controller.manualCameraSnapshot();
+            //controller.CameraSnapshot();
+            controller.ManualCameraSnapshot();
         }
 
         private Button streamButton;
@@ -1252,6 +1252,8 @@ namespace SympatheticHardwareControl
         {
             Close();
         }
+
+        
 
 
         

@@ -52,6 +52,7 @@ namespace SympatheticHardwareControl
         //Cameras
         public const string motCamera = "cam0";
         private string cameraAttributesFile = "cameraAttributes.txt";
+        private bool cameraBusy = false;
         
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
@@ -239,7 +240,9 @@ namespace SympatheticHardwareControl
             writer.WriteSingleSampleSingleLine(true, value);
             digitalTask.Control(TaskAction.Unreserve);
         }
+        #endregion
 
+        #region Saving and loading experimental parameters
         // this isn't really very classy, but it works (says Jony)
         // declare all parameters which SHC controls here
         [Serializable]
@@ -378,7 +381,9 @@ namespace SympatheticHardwareControl
                 fs.Close();
             }
         }
+        #endregion
 
+        #region Saving and loading images
         // Saving the image
         public void SaveImageWithDialog(VisionImage image)
         {
@@ -460,6 +465,19 @@ namespace SympatheticHardwareControl
                 sHCUIControl = value;
             }
         }
+
+        public bool CameraBusy
+        {
+            get
+            {
+                return cameraBusy;
+            }
+            set
+            {
+                cameraBusy = value;
+            }
+        }
+
 
         public bool Aom0Enabled
         {
@@ -639,7 +657,19 @@ namespace SympatheticHardwareControl
             }
         }
         
-
+        //camera session
+        private ImaqdxSession cameraSession;
+        public ImaqdxSession CameraSession
+        {
+            get
+            {
+                return cameraSession;
+            }
+            set
+            {
+                cameraSession = value;
+            }
+        }
         
         #endregion
 
@@ -721,15 +751,17 @@ namespace SympatheticHardwareControl
             UpdateCoil1(Coil1Current);
             window.SetLED(window.manualControlLED, true);
             this.SHCUIControl = true;
-            
+
 
         }
-    
+        #endregion
+
+        #region Camera Control
         //camera stuff
 
         //untriggered single shot commands
 
-        public void cameraSnapshot()
+        public void CameraSnapshot()
         {
             VisionImage image = new VisionImage();
             ImaqdxSession session = new ImaqdxSession(motCamera);
@@ -744,7 +776,7 @@ namespace SympatheticHardwareControl
 
         }
 
-        public void cameraSnapshot(string dataStoreFilePath)
+        public void CameraSnapshot(string dataStoreFilePath)
         {
             VisionImage image = new VisionImage();
             ImaqdxSession session = new ImaqdxSession(motCamera);
@@ -760,44 +792,61 @@ namespace SympatheticHardwareControl
         }
         
         //triggered snapshot
-        public void manualCameraSnapshot()
+       
+        public void ManualCameraSnapshot()
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            session.Attributes.ReadAttributesFromFile(settingsPath + "SympatheticHardwareController\\" + cameraAttributesFile);
-            session.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
-            session.Acquisition.Start();
-            session.Acquisition.GetLastImage(image);
-            session.Acquisition.Stop();
-            session.Acquisition.Unconfigure();
-            session.Close();
+            SetupCameraSession(cameraAttributesFile);
+            CameraSession.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
+            CameraSession.Acquisition.Start();
+            CameraSession.Acquisition.GetLastImage(image);
+            CameraSession.Acquisition.Stop();
+            CloseCameraSession(CameraSession);
             if (window.saveImageCheckBox.Checked == true)
             {
                 StoreImage(image);
             }
             window.AttachToViewer(window.motViewer, image);
         }
-
-        public void manualCameraSnapshot(string dataStoreFilePath)
+        public void ManualCameraSnapshot(string dataStoreFilePath)
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            session.Attributes.ReadAttributesFromFile(settingsPath + "SympatheticHardwareController\\" + cameraAttributesFile); 
-            session.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
-            session.Acquisition.Start();
-            session.Acquisition.GetLastImage(image);
-            session.Acquisition.Stop();
-            session.Acquisition.Unconfigure();
-            session.Close();
+            SetupCameraSession(cameraAttributesFile);
+            CameraSession.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, 1);
+            CameraSession.Acquisition.Start();
+            CameraSession.Acquisition.GetLastImage(image);
+            CameraSession.Acquisition.Stop();
+            CloseCameraSession(CameraSession);
             if (window.saveImageCheckBox.Checked == true)
             {
-                StoreImage(dataStoreFilePath, image);
+                StoreImage(dataStoreFilePath,image);
             }
             window.AttachToViewer(window.motViewer, image);
         }
 
+        //If there is no camera session, it sets one up using the attributes file.
+        public void SetupCameraSession(string attributesFile)
+        {
+            if (CameraBusy == false)
+            {
+                CameraBusy = true;
+                ImaqdxSession session = new ImaqdxSession(motCamera);
+                String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+                session.Attributes.ReadAttributesFromFile(settingsPath + "SympatheticHardwareController\\" + cameraAttributesFile);
+                CameraSession = session;
+            }
+        }
+        //Shutdown
+        public void CloseCameraSession(ImaqdxSession session)
+        {
+            session.Acquisition.Unconfigure();
+            session.Close();
+           // CameraSession = session;
+            CameraBusy = false;
+
+        }
+
+        
         //streaming video
         public object streamStopLock = new object();
         public void CameraStream()
@@ -809,7 +858,7 @@ namespace SympatheticHardwareControl
         {
             this.Streaming = true;
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
+            /*ImaqdxSession session = new ImaqdxSession(motCamera);
             session.ConfigureGrab();
             window.AttachToViewer(window.motViewer, image);
             for(;;)
@@ -826,6 +875,27 @@ namespace SympatheticHardwareControl
                     }
                 }
                 
+            }*/
+            if (CameraBusy == false)
+            {
+                SetupCameraSession(cameraAttributesFile);
+                CameraSession.ConfigureGrab();
+                window.AttachToViewer(window.motViewer, image);
+                for (; ; )
+                {
+                    CameraSession.Grab(image, true);
+                    window.UpdateViewer(window.motViewer);
+
+                    lock (streamStopLock)
+                    {
+                        if (Streaming == false)
+                        {
+                            CloseCameraSession(CameraSession);
+                            return;
+                        }
+                    }
+
+                }
             }
             
         }
