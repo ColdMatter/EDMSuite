@@ -55,6 +55,7 @@ namespace SympatheticHardwareControl
         {
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabOverview = new System.Windows.Forms.TabPage();
+            this.updateAttributesButton = new System.Windows.Forms.Button();
             this.saveImageCheckBox = new System.Windows.Forms.CheckBox();
             this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.stopStreamButton = new System.Windows.Forms.Button();
@@ -161,6 +162,7 @@ namespace SympatheticHardwareControl
             // 
             // tabOverview
             // 
+            this.tabOverview.Controls.Add(this.updateAttributesButton);
             this.tabOverview.Controls.Add(this.saveImageCheckBox);
             this.tabOverview.Controls.Add(this.manualControlLED);
             this.tabOverview.Controls.Add(this.stopStreamButton);
@@ -174,6 +176,16 @@ namespace SympatheticHardwareControl
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
+            // 
+            // updateAttributesButton
+            // 
+            this.updateAttributesButton.Location = new System.Drawing.Point(406, 373);
+            this.updateAttributesButton.Name = "updateAttributesButton";
+            this.updateAttributesButton.Size = new System.Drawing.Size(107, 23);
+            this.updateAttributesButton.TabIndex = 20;
+            this.updateAttributesButton.Text = "Update Attributes";
+            this.updateAttributesButton.UseVisualStyleBackColor = true;
+            this.updateAttributesButton.Click += new System.EventHandler(this.updateAttributesButton_Click);
             // 
             // saveImageCheckBox
             // 
@@ -1169,8 +1181,8 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            //controller.CameraSnapshot();
-            controller.ManualCameraSnapshot();
+            controller.CameraSnapshot();
+            //controller.ManualCameraSnapshot();
         }
 
         private Button streamButton;
@@ -1253,6 +1265,14 @@ namespace SympatheticHardwareControl
             Close();
         }
 
+        private Button updateAttributesButton;
+
+        private void updateAttributesButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateCameraAttributes();
+        }
+
+       
         
 
 
