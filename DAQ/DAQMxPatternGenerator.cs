@@ -27,7 +27,7 @@ namespace DAQ.HAL
 		}
 
 		// use this method to output a pattern to the whole pattern generator
-		public void OutputPattern(UInt32[] pattern)
+		public void SetPattern(UInt32[] pattern)
 		{
 			
             writer.WriteMultiSamplePort(true, pattern);
@@ -170,6 +170,11 @@ namespace DAQ.HAL
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
 		}
+
+        public void SetPatternLow(UInt16[] pattern) { }
+        public void SetPatternHigh(UInt16[] pattern) { }
+        public void SetOutputMode(PatternOutputMode mode) { }
+        public void StartPattern() { }
 		
 		public void StopPattern()
 		{

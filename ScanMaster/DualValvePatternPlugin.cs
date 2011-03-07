@@ -109,7 +109,7 @@ namespace ScanMaster.Acquire.Plugins
         {
             if ((bool)settings["fullWidth"])
             {
-                pg.OutputPattern(pattern.Pattern);
+                pg.SetPattern(pattern.Pattern);
             }
             else
             {

@@ -17,9 +17,15 @@ namespace DAQ.HAL
                             int length, bool internalClock );
 		// It's important that this call blocks until the pattern is being output. Without this,
 		// tweak and pg scans won't work correctly.
-		void OutputPattern(UInt32[] pattern);
+		void SetPattern(UInt32[] pattern);
+        void SetPatternLow(UInt16[] pattern);
+        void SetPatternHigh(UInt16[] pattern);
+        void SetOutputMode(PatternOutputMode mode);
+        void StartPattern();
 		void StopPattern();
 	}
+
+    public enum PatternOutputMode { LOW, HIGH, ALL };
 
 //	public delegate void DisruptivePatternChangeStartingEventHandler(object sender, EventArgs e);
 //	public delegate void DisruptivePatternChangeEndedEventHandler(object sender, EventArgs e);
