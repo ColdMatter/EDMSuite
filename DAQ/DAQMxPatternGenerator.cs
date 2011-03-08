@@ -106,7 +106,7 @@ namespace DAQ.HAL
             if ((string)Environs.Hardware.GetInfo("PGType") == "split")
             {
                 String chanStringLow = device + "/port0_0";
-                String chanStringHigh = "/port0_16";
+                String chanStringHigh = device + "/port0_16";
 
                 DOChannel doChanLow = pgTask.DOChannels.CreateChannel(
                     chanStringLow,
