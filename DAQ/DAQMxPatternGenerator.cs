@@ -16,6 +16,8 @@ namespace DAQ.HAL
 		private Task pgTask;
 		private String device;
 		private DigitalSingleChannelWriter writer;
+        private DigitalSingleChannelWriter writerHigh;
+        private DigitalSingleChannelWriter writerLow;
 		private double clockFrequency;
 		private int length;
         // this task is used to generate the sample clock on the "integrated" 6229-type PGs
@@ -30,7 +32,7 @@ namespace DAQ.HAL
 		public void SetPattern(UInt32[] pattern)
 		{
 			
-            writer.WriteMultiSamplePort(true, pattern);
+            writer.WriteMultiSamplePort(false, pattern);
 			// This Sleep is important (or at least it may be). It's here to guarantee that the correct pattern is
 			// being output by the time this call returns. This is needed to make the tweak
 			// and pg scans work correctly. It has the side effect that you have to wait for
@@ -41,6 +43,23 @@ namespace DAQ.HAL
 			// - when does it return ?
 			SleepOnePattern();
 		}
+
+        public void SetPatternLow(UInt16[] pattern) 
+        {
+            
+            writerLow.WriteMultiSamplePort(false, pattern);
+            //Sleep. See Jony's comments above.
+            SleepOnePattern();
+        }
+
+        public void SetPatternHigh(UInt16[] pattern)
+        {
+
+            writerHigh.WriteMultiSamplePort(false, pattern);
+            //Sleep. See Jony's comments.
+            SleepOnePattern();
+        }
+
 
 		// use this method to output a pattern to half of the pattern generator
 		public void OutputPattern(Int16[] pattern)
@@ -83,17 +102,35 @@ namespace DAQ.HAL
             {
                 chanString = device + "/port0";
             }
+            // add a new possibility of a "split" pattern generator.
+            if ((string)Environs.Hardware.GetInfo("PGType") == "split")
+            {
+                String chanStringLow = device + "/port0_0";
+                String chanStringHigh = "/port0_16";
 
-			DOChannel doChan = pgTask.DOChannels.CreateChannel(
-				chanString,
-				"pg",
-				ChannelLineGrouping.OneChannelForAllLines
-				);
+                DOChannel doChanLow = pgTask.DOChannels.CreateChannel(
+                    chanStringLow,
+                    "pgLow",
+                    ChannelLineGrouping.OneChannelForAllLines);
+                DOChannel doChannelHigh = pgTask.DOChannels.CreateChannel(
+                    chanStringHigh,
+                    "pgHigh",
+                    ChannelLineGrouping.OneChannelForAllLines);
+            }
+            else
+            {
+                DOChannel doChan = pgTask.DOChannels.CreateChannel(
+                    chanString,
+                    "pg",
+                    ChannelLineGrouping.OneChannelForAllLines
+                    );
+            }
 
             /**** Configure the clock ****/
 
             String clockSource = "";
-            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated" |
+                (string)Environs.Hardware.GetInfo("PGType") == "split")
             {
                 if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
                 else clockSource = "";
@@ -151,7 +188,8 @@ namespace DAQ.HAL
 
             /**** Configure buffering ****/
 
-            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated"|
+                (string)Environs.Hardware.GetInfo("PGType") == "split")
             {
                 // these lines are critical - without them DAQMx copies the data you provide
                 // as many times as it can into the on board FIFO (the cited reason being stability).
@@ -166,16 +204,27 @@ namespace DAQ.HAL
             }
 
             /**** Write configuration to board ****/
-
-			pgTask.Control(TaskAction.Commit);
-			writer = new DigitalSingleChannelWriter(pgTask.Stream);
+            if ((string)Environs.Hardware.GetInfo("PGType") == "split")
+            {
+                pgTask.Control(TaskAction.Commit);
+                writerLow = new DigitalSingleChannelWriter(pgTask.Stream);
+                writerHigh = new DigitalSingleChannelWriter(pgTask.Stream);
+            }
+            else
+            {
+                pgTask.Control(TaskAction.Commit);
+                writer = new DigitalSingleChannelWriter(pgTask.Stream);
+            }
 		}
 
-        public void SetPatternLow(UInt16[] pattern) { }
-        public void SetPatternHigh(UInt16[] pattern) { }
+        
         public void SetOutputMode(PatternOutputMode mode) { }
-        public void StartPattern() { }
-		
+        public void StartPattern() 
+        {
+            pgTask.Start();
+            if((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Start();
+        }
+        		
 		public void StopPattern()
 		{
 			pgTask.Dispose();

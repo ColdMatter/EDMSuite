@@ -25,6 +25,7 @@ namespace DAQ.HAL
             string aoBoard = (string)Boards["aoBoard"];
             
             // add things to the info
+            Info.Add("PGType", "split");
 
             // the analog triggers
             //Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");

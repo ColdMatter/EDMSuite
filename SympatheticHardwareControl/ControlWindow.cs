@@ -154,17 +154,16 @@ namespace SympatheticHardwareControl
             this.shcTabs.Controls.Add(this.tabOverview);
             this.shcTabs.Controls.Add(this.tabLasers);
             this.shcTabs.Controls.Add(this.tabCoils);
-            this.shcTabs.Location = new System.Drawing.Point(1, 27);
+            this.shcTabs.Location = new System.Drawing.Point(3, 27);
             this.shcTabs.Name = "shcTabs";
             this.shcTabs.SelectedIndex = 0;
-            this.shcTabs.Size = new System.Drawing.Size(637, 429);
+            this.shcTabs.Size = new System.Drawing.Size(666, 568);
             this.shcTabs.TabIndex = 0;
             // 
             // tabOverview
             // 
             this.tabOverview.Controls.Add(this.updateAttributesButton);
             this.tabOverview.Controls.Add(this.saveImageCheckBox);
-            this.tabOverview.Controls.Add(this.manualControlLED);
             this.tabOverview.Controls.Add(this.stopStreamButton);
             this.tabOverview.Controls.Add(this.streamButton);
             this.tabOverview.Controls.Add(this.motViewer);
@@ -172,14 +171,14 @@ namespace SympatheticHardwareControl
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
             this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOverview.Size = new System.Drawing.Size(629, 403);
+            this.tabOverview.Size = new System.Drawing.Size(658, 542);
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
             // 
             // updateAttributesButton
             // 
-            this.updateAttributesButton.Location = new System.Drawing.Point(406, 373);
+            this.updateAttributesButton.Location = new System.Drawing.Point(395, 505);
             this.updateAttributesButton.Name = "updateAttributesButton";
             this.updateAttributesButton.Size = new System.Drawing.Size(107, 23);
             this.updateAttributesButton.TabIndex = 20;
@@ -190,7 +189,7 @@ namespace SympatheticHardwareControl
             // saveImageCheckBox
             // 
             this.saveImageCheckBox.AutoSize = true;
-            this.saveImageCheckBox.Location = new System.Drawing.Point(6, 377);
+            this.saveImageCheckBox.Location = new System.Drawing.Point(7, 509);
             this.saveImageCheckBox.Name = "saveImageCheckBox";
             this.saveImageCheckBox.Size = new System.Drawing.Size(99, 17);
             this.saveImageCheckBox.TabIndex = 19;
@@ -200,7 +199,7 @@ namespace SympatheticHardwareControl
             // manualControlLED
             // 
             this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(516, 6);
+            this.manualControlLED.Location = new System.Drawing.Point(675, 49);
             this.manualControlLED.Name = "manualControlLED";
             this.manualControlLED.OffColor = System.Drawing.Color.DarkRed;
             this.manualControlLED.OnColor = System.Drawing.Color.Red;
@@ -210,7 +209,7 @@ namespace SympatheticHardwareControl
             // stopStreamButton
             // 
             this.stopStreamButton.Enabled = false;
-            this.stopStreamButton.Location = new System.Drawing.Point(271, 373);
+            this.stopStreamButton.Location = new System.Drawing.Point(278, 505);
             this.stopStreamButton.Name = "stopStreamButton";
             this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
             this.stopStreamButton.TabIndex = 18;
@@ -220,7 +219,7 @@ namespace SympatheticHardwareControl
             // 
             // streamButton
             // 
-            this.streamButton.Location = new System.Drawing.Point(190, 373);
+            this.streamButton.Location = new System.Drawing.Point(197, 505);
             this.streamButton.Name = "streamButton";
             this.streamButton.Size = new System.Drawing.Size(75, 23);
             this.streamButton.TabIndex = 17;
@@ -231,14 +230,14 @@ namespace SympatheticHardwareControl
             // motViewer
             // 
             this.motViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.motViewer.Location = new System.Drawing.Point(0, 0);
+            this.motViewer.Location = new System.Drawing.Point(2, 0);
             this.motViewer.Name = "motViewer";
-            this.motViewer.Size = new System.Drawing.Size(513, 367);
+            this.motViewer.Size = new System.Drawing.Size(656, 494);
             this.motViewer.TabIndex = 16;
             // 
             // snapshotButton
             // 
-            this.snapshotButton.Location = new System.Drawing.Point(109, 373);
+            this.snapshotButton.Location = new System.Drawing.Point(116, 505);
             this.snapshotButton.Name = "snapshotButton";
             this.snapshotButton.Size = new System.Drawing.Size(75, 23);
             this.snapshotButton.TabIndex = 15;
@@ -256,7 +255,7 @@ namespace SympatheticHardwareControl
             this.tabLasers.Location = new System.Drawing.Point(4, 22);
             this.tabLasers.Name = "tabLasers";
             this.tabLasers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLasers.Size = new System.Drawing.Size(629, 403);
+            this.tabLasers.Size = new System.Drawing.Size(788, 542);
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
@@ -660,7 +659,7 @@ namespace SympatheticHardwareControl
             this.tabCoils.Controls.Add(this.coil0GroupBox);
             this.tabCoils.Location = new System.Drawing.Point(4, 22);
             this.tabCoils.Name = "tabCoils";
-            this.tabCoils.Size = new System.Drawing.Size(629, 403);
+            this.tabCoils.Size = new System.Drawing.Size(788, 542);
             this.tabCoils.TabIndex = 2;
             this.tabCoils.Text = "Magnetic Field Control";
             this.tabCoils.UseVisualStyleBackColor = true;
@@ -800,7 +799,7 @@ namespace SympatheticHardwareControl
             this.manualControlToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(637, 24);
+            this.menuStrip.Size = new System.Drawing.Size(797, 24);
             this.menuStrip.TabIndex = 15;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -888,11 +887,13 @@ namespace SympatheticHardwareControl
             // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(637, 466);
+            this.ClientSize = new System.Drawing.Size(797, 596);
             this.Controls.Add(this.shcTabs);
             this.Controls.Add(this.menuStrip);
+            this.Controls.Add(this.manualControlLED);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "ControlWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sympathetic Hardware Control";
             this.Load += new System.EventHandler(this.WindowLoaded);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
@@ -1271,6 +1272,7 @@ namespace SympatheticHardwareControl
         {
             controller.UpdateCameraAttributes();
         }
+
 
        
         
