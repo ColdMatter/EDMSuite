@@ -74,17 +74,26 @@ namespace ScanMaster.Acquire.Plugins
 			
 						
 			 loadFlashlampPattern();
+             pg.StartPattern();
 		}
 
 		public override void ScanStarting()
 		{
+            //Stop anything that was happening before.
+            pg.StopPattern();
+            //Prepare
 			OutputPattern(GetScanPattern());
+            //Start
+            pg.StartPattern();
 		}
 
 		public override void ScanFinished()
 		{
+            pg.StopPattern();
 			// switch back to the flashlamp only pattern
 			loadFlashlampPattern();
+
+            pg.StartPattern();
 		}
 
 		public override void AcquisitionFinished()
@@ -92,12 +101,14 @@ namespace ScanMaster.Acquire.Plugins
 			// check whether to stop flashlamp pattern
 			if ((bool)settings["stopFlashlamps"]) 
 			{
-				pg.StopPattern();
+				pg.DisposePattern();
 			}
 			else
 			{
+                pg.StopPattern();
 				// reload the flashlamp pattern
 				loadFlashlampPattern();
+                pg.StartPattern();
 			}
 		}
 
@@ -128,16 +139,19 @@ namespace ScanMaster.Acquire.Plugins
 			if ( (bool)settings["fullWidth"] )
 			{
 				pg.SetPattern(pattern.Pattern);
+                
 			}
 			else
 			{
 				if ( (bool)settings["lowGroup"] )
 				{
 					pg.OutputPattern(pattern.LowHalfPatternAsInt16);
+                    
 				}
 				else
 				{
 					pg.OutputPattern(pattern.HighHalfPatternAsInt16);
+                    
 				}
 			}
 		}
