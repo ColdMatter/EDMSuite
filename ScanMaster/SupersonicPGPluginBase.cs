@@ -69,31 +69,31 @@ namespace ScanMaster.Acquire.Plugins
 				(bool)settings["fullWidth"],
 				(bool)settings["lowGroup"],
 				patternLength,
-                (bool)settings["internalClock"]
+                (bool)settings["internalClock"], "ScanMaster"
 				);
 			
 						
 			 loadFlashlampPattern();
-             pg.StartPattern();
+             pg.StartPattern("ScanMaster");
 		}
 
 		public override void ScanStarting()
 		{
             //Stop anything that was happening before.
-            pg.StopPattern();
+            pg.StopPattern("ScanMaster");
             //Prepare
 			OutputPattern(GetScanPattern());
             //Start
-            pg.StartPattern();
+            pg.StartPattern("ScanMaster");
 		}
 
 		public override void ScanFinished()
 		{
-            pg.StopPattern();
+            pg.StopPattern("ScanMaster");
 			// switch back to the flashlamp only pattern
 			loadFlashlampPattern();
 
-            pg.StartPattern();
+            pg.StartPattern("ScanMaster");
 		}
 
 		public override void AcquisitionFinished()
@@ -101,21 +101,23 @@ namespace ScanMaster.Acquire.Plugins
 			// check whether to stop flashlamp pattern
 			if ((bool)settings["stopFlashlamps"]) 
 			{
-				pg.DisposePattern();
+                pg.DisposePattern("ScanMaster");
 			}
 			else
 			{
-                pg.StopPattern();
+                pg.StopPattern("ScanMaster");
 				// reload the flashlamp pattern
 				loadFlashlampPattern();
-                pg.StartPattern();
+                pg.StartPattern("ScanMaster");
 			}
 		}
 
 		public override void ReloadPattern()
 		{
+            pg.StopPattern("ScanMaster");
 			OutputPattern(GetScanPattern());
 			System.GC.Collect();
+            pg.StartPattern("ScanMaster");
 		}
 
 		private void loadFlashlampPattern()

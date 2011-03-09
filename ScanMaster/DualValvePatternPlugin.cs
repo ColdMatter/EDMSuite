@@ -47,7 +47,7 @@ namespace ScanMaster.Acquire.Plugins
             scanPatternBuilder = new DualValvePatternBuilder();
 
             // get hold of the pattern generator
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["pg"]);
+            pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
 
             // configure the pattern generator
             patternLength = (int)settings["sequenceInterval"] * (int)settings["sequenceLength"]
@@ -60,7 +60,8 @@ namespace ScanMaster.Acquire.Plugins
                 (bool)settings["lowGroup"],
                 patternLength,
                 (bool)settings["internalClock"]
-                );
+                , "ScanMaster");
+ 
         }
 
         protected IPatternSource GetScanPattern()
@@ -87,22 +88,25 @@ namespace ScanMaster.Acquire.Plugins
         public override void ScanStarting()
         {
             OutputPattern(GetScanPattern());
+            pg.StartPattern("ScanMaster");
         }
 
         public override void ScanFinished()
         {
-           
+            pg.StopPattern("ScanMaster");
         }
 
         public override void AcquisitionFinished()
         {
-            pg.StopPattern();           
+            pg.DisposePattern("ScanMaster");           
         }
 
         public override void ReloadPattern()
         {
+            pg.StopPattern("ScanMaster");
             OutputPattern(GetScanPattern());
             System.GC.Collect();
+            pg.StartPattern("ScanMaster");
         }
 
         private void OutputPattern(IPatternSource pattern)

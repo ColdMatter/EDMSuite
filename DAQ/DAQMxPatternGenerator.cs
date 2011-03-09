@@ -82,50 +82,53 @@ namespace DAQ.HAL
 			Thread.Sleep(sleepTime);
 		}
 
-        //If I've understood correctly, 6229 style ones can't be split. So I've taken out all the
-        //if statements about how to configure them.
-        public void ConfigureSplit(double clockFrequencyLow, double clockFrequencyHigh,
-            bool loopLow, bool loopHigh, int lengthLow,
-            int lengthHigh, bool internalClockLow, bool internalClockHigh)
+        public void Configure(double clockFrequency, bool loop, bool fullWidth,
+                                    bool lowGroup, int length, bool internalClock, string program)
+        {
+            if ((string)Environs.Hardware.GetInfo("PGType") != "split")
+            {
+                configure(clockFrequency, loop, fullWidth,
+                                     lowGroup, length, internalClock);
+            }
+            else
+            {
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
+                {
+                    configureLowerHalf(clockFrequency, loop, length, internalClock);
+                }
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
+                {
+                    configureUpperHalf(clockFrequency, loop, length, internalClock);
+                }
+            }
+        }
+        //If I've understood correctly, 6229 style pgs can't be split. So I've taken out all the
+        //if statements about how to configure them out.
+        private void configureLowerHalf(double clockFrequencyLow, 
+            bool loopLow, int lengthLow, bool internalClockLow)
         {
             this.clockFrequencyLow = clockFrequencyLow;
             this.lengthLow = lengthLow;
-            this.clockFrequencyHigh = clockFrequencyHigh;
-            this.lengthHigh = lengthHigh;
 
             pgLowTask = new Task("pgLowTask");
-            pgHighTask = new Task("pgHighTask");
-            
-           
+
             String chanStringLow = device + "/port0_0:15";
-            String chanStringHigh = device + "/port0_16:32";
 
             DOChannel doChanLow = pgLowTask.DOChannels.CreateChannel(
                 chanStringLow,
                 "pgLow",
                 ChannelLineGrouping.OneChannelForAllLines);
-            DOChannel doChannelHigh = pgHighTask.DOChannels.CreateChannel(
-                chanStringHigh,
-                "pgHigh",
-                ChannelLineGrouping.OneChannelForAllLines);
-
-            
 
             /**** Configure the clock ****/
 
             String clockSourceLow = "";
-            String clockSourceHigh = "";
            
             if (!internalClockLow) clockSourceLow = (string)Environment.Environs.Hardware.GetInfo("PGClockLineLow");
             else clockSourceLow = "";
 
-            if (!internalClockHigh) clockSourceHigh = (string)Environment.Environs.Hardware.GetInfo("PGClockLineHigh");
-            else clockSourceHigh = "";
-
             /**** Configure regeneration ****/
 
             SampleQuantityMode sqmLow;
-            SampleQuantityMode sqmHigh;
             if (loopLow)
             {
                 sqmLow = SampleQuantityMode.ContinuousSamples;
@@ -137,30 +140,12 @@ namespace DAQ.HAL
                 pgLowTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
             }
 
-            if (loopHigh)
-            {
-                sqmHigh = SampleQuantityMode.ContinuousSamples;
-                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-            }
-            else
-            {
-                sqmHigh = SampleQuantityMode.FiniteSamples;
-                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
-            }
-
             pgLowTask.Timing.ConfigureSampleClock(
                 clockSourceLow,
                 clockFrequencyLow,
                 SampleClockActiveEdge.Rising,
                 sqmLow,
                 lengthLow
-                );
-            pgHighTask.Timing.ConfigureSampleClock(
-                clockSourceHigh,
-                clockFrequencyHigh,
-                SampleClockActiveEdge.Rising,
-                sqmHigh,
-                lengthHigh
                 );
 
             /**** Configure buffering ****/
@@ -175,24 +160,90 @@ namespace DAQ.HAL
             // two, so you don't quite get what you ask for).
             pgLowTask.Stream.Buffer.OutputBufferSize = lengthLow;
             pgLowTask.Stream.Buffer.OutputOnBoardBufferSize = lengthLow;
+
+
+            /**** Write configuration to board ****/
+
+            pgLowTask.Control(TaskAction.Commit);
+            writerLow = new DigitalSingleChannelWriter(pgLowTask.Stream);
+       
+           
+        }
+
+
+        private void configureUpperHalf(double clockFrequencyHigh, 
+           bool loopHigh, int lengthHigh, bool internalClockHigh)
+        {
+            this.clockFrequencyHigh = clockFrequencyHigh;
+            this.lengthHigh = lengthHigh;
+
+            pgHighTask = new Task("pgHighTask");
+
+            String chanStringHigh = device + "/port0_16:32";
+
+            DOChannel doChannelHigh = pgHighTask.DOChannels.CreateChannel(
+                chanStringHigh,
+                "pgHigh",
+                ChannelLineGrouping.OneChannelForAllLines);
+
+
+
+            /**** Configure the clock ****/
+
+            String clockSourceHigh = "";
+
+            if (!internalClockHigh) clockSourceHigh = (string)Environment.Environs.Hardware.GetInfo("PGClockLineHigh");
+            else clockSourceHigh = "";
+
+            /**** Configure regeneration ****/
+
+            SampleQuantityMode sqmHigh;
+            if (loopHigh)
+            {
+                sqmHigh = SampleQuantityMode.ContinuousSamples;
+                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
+            }
+            else
+            {
+                sqmHigh = SampleQuantityMode.FiniteSamples;
+                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
+            }
+
+            pgHighTask.Timing.ConfigureSampleClock(
+                clockSourceHigh,
+                clockFrequencyHigh,
+                SampleClockActiveEdge.Rising,
+                sqmHigh,
+                lengthHigh
+                );
+
+            /**** Configure buffering ****/
+
+
+            // these lines are critical - without them DAQMx copies the data you provide
+            // as many times as it can into the on board FIFO (the cited reason being stability).
+            // This has the annoying side effect that you have to wait for the on board buffer
+            // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
+            // These lines tell the board and the software to use buffers as close to the size of
+            // the pattern as possible (on board buffer size is coerced to be related to a power of
+            // two, so you don't quite get what you ask for).
+
+
             pgHighTask.Stream.Buffer.OutputBufferSize = lengthHigh;
             pgHighTask.Stream.Buffer.OutputOnBoardBufferSize = lengthHigh;
 
 
             /**** Write configuration to board ****/
 
-            pgLowTask.Control(TaskAction.Commit);
             pgHighTask.Control(TaskAction.Commit);
-            writerLow = new DigitalSingleChannelWriter(pgLowTask.Stream);
             writerHigh = new DigitalSingleChannelWriter(pgHighTask.Stream);
-       
-           
+
+
         }
 
 
-
         
-		public void Configure( double clockFrequency, bool loop, bool fullWidth,
+		private void configure( double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock)
 		{
             if ((string)Environs.Hardware.GetInfo("PGType") != "split")
@@ -315,7 +366,7 @@ namespace DAQ.HAL
 
         
         public void SetOutputMode(PatternOutputMode mode) { }
-        public void StartPattern() 
+        public void StartPattern(string program) 
         {
             if((string)Environs.Hardware.GetInfo("PGType") != "split")
             {
@@ -324,15 +375,21 @@ namespace DAQ.HAL
             }
             else 
             {
-                pgLowTask.Start();
-                SleepOnePattern();
-                pgHighTask.Start();
-                SleepOnePattern();
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
+                {
+                    pgLowTask.Start();
+                    SleepOnePattern();
+                }
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
+                {
+                    pgHighTask.Start();
+                    SleepOnePattern();
+                }
             }
             if((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Start();
         }
         		
-		public void DisposePattern()
+		public void DisposePattern(string program)
 		{
             if ((string)Environs.Hardware.GetInfo("PGType") != "split")
             {
@@ -341,15 +398,21 @@ namespace DAQ.HAL
             }
             else
             {
-                pgLowTask.Dispose();
-                pgHighTask.Dispose();
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
+                {
+                    pgLowTask.Dispose();
+                }
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
+                {
+                    pgHighTask.Dispose();
+                }
             }
 			
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
         }
 
 
-        public void StopPattern()
+        public void StopPattern(string program)
         {
             if ((string)Environs.Hardware.GetInfo("PGType") != "split")
             {
@@ -358,8 +421,14 @@ namespace DAQ.HAL
             }
             else
             {
-                pgLowTask.Stop();
-                pgHighTask.Stop();
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
+                {
+                    pgLowTask.Stop();
+                }
+                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
+                {
+                    pgHighTask.Stop();
+                }
             }
 
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Stop();
