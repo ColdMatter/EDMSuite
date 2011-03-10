@@ -25,7 +25,6 @@ namespace SympatheticHardwareControl
 {
     class CameraControl
     {
-
         public CameraControl(string CN, string CAFP)
         {
             CameraAttributesFilePath = CAFP;
