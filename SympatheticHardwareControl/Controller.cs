@@ -50,10 +50,10 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
   
         //Cameras
-        //public const string motCamera = "cam0";
         CameraControl cam0Control = new CameraControl("cam0", (string)Environs.FileSystem.Paths["settingsPath"] + "SympatheticHardwareController\\cameraAttributes.txt");
-        
-        
+
+        //declare the pattern generators
+        DAQMxPatternGenerator motPG;
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
@@ -91,6 +91,7 @@ namespace SympatheticHardwareControl
 
         public void Start()
         {
+            
             // make the digital tasks. The function "CreateDigitalTask" is defined later
             //e.g   CreateDigitalTask("notEOnOff");
             //      CreateDigitalTask("eOnOff");

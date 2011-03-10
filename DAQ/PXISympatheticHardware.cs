@@ -25,14 +25,9 @@ namespace DAQ.HAL
             string aoBoard = (string)Boards["aoBoard"];
             
             // add things to the info
-            //Info.Add("PGType", "split");
-            //Info.Add("ScanMaster-PGAllocation", "lower");
-            //Info.Add("SHC-PGAllocation", "upper");
-            Info.Add("analogTrigger0", multiDAQ + "/PFI0"); //DAQ Pin 11
-            Info.Add("PGClockLineLow", multiDAQ + "/PFI1");
-            Info.Add("PGClockLineHigh", multiDAQ + "/PFI2");
+            Info.Add("PGClockLine", multiDAQ + "/PFI14");
             Info.Add("PatternGeneratorBoard", multiDAQ);
-            Info.Add("PGClockCounter", "/ctr0");
+            Info.Add("PGType", "integrated");
 
             //Test this
             //Info.Add("PGType", "dedicated");
