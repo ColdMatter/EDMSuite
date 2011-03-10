@@ -149,6 +149,7 @@
     <Compile Include="ESwitchChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ESwitchRFChannel.cs" />
     <Compile Include="LiveViewer.cs">
       <SubType>Form</SubType>
     </Compile>
