@@ -13,6 +13,11 @@ import time
 
 #db = BlockDemodulator()
 
+<<<<<<< .mine
+#serializer = JsonSerializer()
+#sw = StreamWriter("C:\\Users\\jony\\Desktop\\test.json")
+#writer = JsonTextWriter(sw)
+=======
 bf = BinaryFormatter()
 fs=FileStream("C:\\Users\\jony\\Desktop\\tcsg.bin", FileMode.Open)
 tcsg = bf.Deserialize(fs)
@@ -20,6 +25,12 @@ tcsg = bf.Deserialize(fs)
 serializer = JsonSerializer()
 sw = StreamWriter("C:\\Users\\jony\\Desktop\\test.json")
 writer = JsonTextWriter(sw)
+>>>>>>> .r562
+
+eWave = (True,True,False,False)
+bWave = (True,False,True,False)
+db.
+
 
 def run_script():
 	print "Done!"

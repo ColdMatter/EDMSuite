@@ -62,7 +62,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default.xml")
+	bc = loadBlockConfig(settingsPath + "preLockConfig.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -239,10 +239,11 @@ def EDMGo():
 	sm.SelectProfile("Scan B")
 
 	# User inputs data
-	cluster = prompt("Cluster name [" + suggestedClusterName +"]: ")
-	if cluster == "":
-		cluster = suggestedClusterName
-		print("Using cluster " + suggestedClusterName)
+	#cluster = prompt("Cluster name [" + suggestedClusterName +"]: ")
+	cluster = "PreLock" + suggestedClusterName
+	#if cluster == "":
+	#	cluster = suggestedClusterName
+	#	print("Using cluster " + suggestedClusterName)
 	eState = hc.EManualState
 	print("E-state: " + str(eState))
 	bState = hc.BManualState
@@ -252,23 +253,28 @@ def EDMGo():
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
+
 	# randomise Ramsey phase
 	scramblerV = 0.724774 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
+
 	# randomise polarizations
-	probePolAngle = 360.0 * r.NextDouble()
-	hc.SetProbePolarizerAngle(probePolAngle)
-	pumpPolAngle = 360.0 * r.NextDouble()
-	hc.SetPumpPolarizerAngle(pumpPolAngle)
+	#probePolAngle = 360.0 * r.NextDouble()
+	#hc.SetProbePolarizerAngle(probePolAngle)
+	#pumpPolAngle = 360.0 * r.NextDouble()
+	#hc.SetPumpPolarizerAngle(pumpPolAngle)
+
 	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
+	
 	# calibrate leakage monitors
-	hc.EnableEField( False )
-	System.Threading.Thread.Sleep(10000)
-	hc.EnableBleed( True )
-	System.Threading.Thread.Sleep(1000)
-	hc.EnableBleed( False )
-	System.Threading.Thread.Sleep(5000)
-	hc.CalibrateIMonitors()
+	#hc.EnableEField( False )
+	#System.Threading.Thread.Sleep(10000)
+	#hc.EnableBleed( True )
+	#System.Threading.Thread.Sleep(1000)
+	#hc.EnableBleed( False )
+	#System.Threading.Thread.Sleep(5000)
+	#hc.CalibrateIMonitors()
+
 	hc.EnableEField( True )
 
 	# loop and take data
@@ -305,10 +311,10 @@ def EDMGo():
 		scramblerV = 0.724774 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
-		probePolAngle = 360.0 * r.NextDouble()
-		hc.SetProbePolarizerAngle(probePolAngle)
-		pumpPolAngle = 360.0 * r.NextDouble()
-		hc.SetPumpPolarizerAngle(pumpPolAngle)
+		#probePolAngle = 360.0 * r.NextDouble()
+		#hc.SetProbePolarizerAngle(probePolAngle)
+		#pumpPolAngle = 360.0 * r.NextDouble()
+		#hc.SetPumpPolarizerAngle(pumpPolAngle)
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 		hc.StepTarget(1)
 		# do things that need periodically doing
@@ -320,16 +326,16 @@ def EDMGo():
 		if (dbValue < 8.4):
 			print("Dodgy spot target rotation.")
 			hc.StepTarget(10)
-		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
-			print("Recalibrating leakage monitors.")
-			hc.EnableEField( False )
-			System.Threading.Thread.Sleep(10000)
-			hc.EnableBleed( True )
-			System.Threading.Thread.Sleep(1000)
-			hc.EnableBleed( False )
-			System.Threading.Thread.Sleep(5000)
-			hc.CalibrateIMonitors()
-			hc.EnableEField( True )
+		#if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
+		#	print("Recalibrating leakage monitors.")
+		#	hc.EnableEField( False )
+		#	System.Threading.Thread.Sleep(10000)
+		#	hc.EnableBleed( True )
+		#	System.Threading.Thread.Sleep(1000)
+		#	hc.EnableBleed( False )
+		#	System.Threading.Thread.Sleep(5000)
+		#	hc.CalibrateIMonitors()
+		#	hc.EnableEField( True )
 
 	bh.StopPattern()
 
