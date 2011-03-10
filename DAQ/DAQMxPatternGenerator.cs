@@ -14,18 +14,10 @@ namespace DAQ.HAL
 	public class DAQMxPatternGenerator : PatternGenerator
 	{
 		private Task pgTask;
-        private Task pgHighTask;
-        private Task pgLowTask;
 		private String device;
 		private DigitalSingleChannelWriter writer;
-        private DigitalSingleChannelWriter writerHigh;
-        private DigitalSingleChannelWriter writerLow;
 		private double clockFrequency;
-        private double clockFrequencyLow;
-        private double clockFrequencyHigh;
 		private int length;
-        private int lengthLow;
-        private int lengthHigh;
         // this task is used to generate the sample clock on the "integrated" 6229-type PGs
         private Task counterTask;
 
@@ -35,10 +27,10 @@ namespace DAQ.HAL
 		}
 
 		// use this method to output a pattern to the whole pattern generator
-		public void SetPattern(UInt32[] pattern)
+		public void OutputPattern(UInt32[] pattern)
 		{
 			
-            writer.WriteMultiSamplePort(false, pattern);
+            writer.WriteMultiSamplePort(true, pattern);
 			// This Sleep is important (or at least it may be). It's here to guarantee that the correct pattern is
 			// being output by the time this call returns. This is needed to make the tweak
 			// and pg scans work correctly. It has the side effect that you have to wait for
@@ -50,388 +42,139 @@ namespace DAQ.HAL
 			SleepOnePattern();
 		}
 
-        public void SetPatternLow(UInt16[] pattern) 
-        {
-            
-            writerLow.WriteMultiSamplePort(false, pattern);
-            //Sleep. See Jony's comments above.
-            //SleepOnePattern();
-        }
-
-        public void SetPatternHigh(UInt16[] pattern)
-        {
-
-            writerHigh.WriteMultiSamplePort(false, pattern);
-            //Sleep. See Jony's comments.
-            //SleepOnePattern();
-        }
-
-
 		// use this method to output a pattern to half of the pattern generator
 		public void OutputPattern(Int16[] pattern)
 		{
-			writer.WriteMultiSamplePort(false, pattern);
+			writer.WriteMultiSamplePort(true, pattern);
 			// see above
-			//SleepOnePattern();
+			SleepOnePattern();
 		}
 		
-
 		private void SleepOnePattern()
 		{
 			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
 			Thread.Sleep(sleepTime);
 		}
 
-        public void Configure(double clockFrequency, bool loop, bool fullWidth,
-                                    bool lowGroup, int length, bool internalClock, string program)
-        {
-            if ((string)Environs.Hardware.GetInfo("PGType") != "split")
-            {
-                configure(clockFrequency, loop, fullWidth,
-                                     lowGroup, length, internalClock);
-            }
-            else
-            {
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
-                {
-                    configureLowerHalf(clockFrequency, loop, length, internalClock);
-                }
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
-                {
-                    configureUpperHalf(clockFrequency, loop, length, internalClock);
-                }
-            }
-        }
-        //If I've understood correctly, 6229 style pgs can't be split. So I've taken out all the
-        //if statements about how to configure them out.
-        private void configureLowerHalf(double clockFrequencyLow, 
-            bool loopLow, int lengthLow, bool internalClockLow)
-        {
-            this.clockFrequencyLow = clockFrequencyLow;
-            this.lengthLow = lengthLow;
-
-            pgLowTask = new Task("pgLowTask");
-
-            String chanStringLow = device + "/port0_0:15";
-
-            DOChannel doChanLow = pgLowTask.DOChannels.CreateChannel(
-                chanStringLow,
-                "pgLow",
-                ChannelLineGrouping.OneChannelForAllLines);
-
-            /**** Configure the clock ****/
-
-            String clockSourceLow = "";
-           
-            if (!internalClockLow) clockSourceLow = (string)Environment.Environs.Hardware.GetInfo("PGClockLineLow");
-            else clockSourceLow = "";
-
-            /**** Configure regeneration ****/
-
-            SampleQuantityMode sqmLow;
-            if (loopLow)
-            {
-                sqmLow = SampleQuantityMode.ContinuousSamples;
-                pgLowTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-            }
-            else
-            {
-                sqmLow = SampleQuantityMode.FiniteSamples;
-                pgLowTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
-            }
-
-            pgLowTask.Timing.ConfigureSampleClock(
-                clockSourceLow,
-                clockFrequencyLow,
-                SampleClockActiveEdge.Rising,
-                sqmLow,
-                lengthLow
-                );
-
-            /**** Configure buffering ****/
-
-            
-            // these lines are critical - without them DAQMx copies the data you provide
-            // as many times as it can into the on board FIFO (the cited reason being stability).
-            // This has the annoying side effect that you have to wait for the on board buffer
-            // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
-            // These lines tell the board and the software to use buffers as close to the size of
-            // the pattern as possible (on board buffer size is coerced to be related to a power of
-            // two, so you don't quite get what you ask for).
-            pgLowTask.Stream.Buffer.OutputBufferSize = lengthLow;
-            pgLowTask.Stream.Buffer.OutputOnBoardBufferSize = lengthLow;
-
-
-            /**** Write configuration to board ****/
-
-            pgLowTask.Control(TaskAction.Commit);
-            writerLow = new DigitalSingleChannelWriter(pgLowTask.Stream);
-       
-           
-        }
-
-
-        private void configureUpperHalf(double clockFrequencyHigh, 
-           bool loopHigh, int lengthHigh, bool internalClockHigh)
-        {
-            this.clockFrequencyHigh = clockFrequencyHigh;
-            this.lengthHigh = lengthHigh;
-
-            pgHighTask = new Task("pgHighTask");
-
-            String chanStringHigh = device + "/port0_16:32";
-
-            DOChannel doChannelHigh = pgHighTask.DOChannels.CreateChannel(
-                chanStringHigh,
-                "pgHigh",
-                ChannelLineGrouping.OneChannelForAllLines);
-
-
-
-            /**** Configure the clock ****/
-
-            String clockSourceHigh = "";
-
-            if (!internalClockHigh) clockSourceHigh = (string)Environment.Environs.Hardware.GetInfo("PGClockLineHigh");
-            else clockSourceHigh = "";
-
-            /**** Configure regeneration ****/
-
-            SampleQuantityMode sqmHigh;
-            if (loopHigh)
-            {
-                sqmHigh = SampleQuantityMode.ContinuousSamples;
-                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-            }
-            else
-            {
-                sqmHigh = SampleQuantityMode.FiniteSamples;
-                pgHighTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
-            }
-
-            pgHighTask.Timing.ConfigureSampleClock(
-                clockSourceHigh,
-                clockFrequencyHigh,
-                SampleClockActiveEdge.Rising,
-                sqmHigh,
-                lengthHigh
-                );
-
-            /**** Configure buffering ****/
-
-
-            // these lines are critical - without them DAQMx copies the data you provide
-            // as many times as it can into the on board FIFO (the cited reason being stability).
-            // This has the annoying side effect that you have to wait for the on board buffer
-            // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
-            // These lines tell the board and the software to use buffers as close to the size of
-            // the pattern as possible (on board buffer size is coerced to be related to a power of
-            // two, so you don't quite get what you ask for).
-
-
-            pgHighTask.Stream.Buffer.OutputBufferSize = lengthHigh;
-            pgHighTask.Stream.Buffer.OutputOnBoardBufferSize = lengthHigh;
-
-
-            /**** Write configuration to board ****/
-
-            pgHighTask.Control(TaskAction.Commit);
-            writerHigh = new DigitalSingleChannelWriter(pgHighTask.Stream);
-
-
-        }
-
-
-        
-		private void configure( double clockFrequency, bool loop, bool fullWidth,
+		public void Configure( double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock)
-		{
-            if ((string)Environs.Hardware.GetInfo("PGType") != "split")
+		{	
+			this.clockFrequency = clockFrequency;
+			this.length = length;
+
+			pgTask = new Task("pgTask");
+
+            /**** Configure the output lines ****/
+
+			// The underscore notation is the way to address more than 8 of the pattern generator
+			// lines at once. This is really buried in the NI-DAQ documentation !
+			String chanString = "";
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
             {
-
-                this.clockFrequency = clockFrequency;
-                this.length = length;
-
-                pgTask = new Task("pgTask");
-
-                /**** Configure the output lines ****/
-
-                // The underscore notation is the way to address more than 8 of the pattern generator
-                // lines at once. This is really buried in the NI-DAQ documentation !
-                String chanString = "";
-                if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
-                {
-                    if (fullWidth) chanString = device + "/port0_32";
-                    else
-                    {
-                        if (lowGroup) chanString = device + "/port0_16";
-                        else chanString = device + "/port3_16";
-                    }
-                }
-                // as far as I know you can only address the whole 32-bit port on the 6229 type integrated pattern generators
-                if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
-                {
-                    chanString = device + "/port0";
-                }
-
-
-                DOChannel doChan = pgTask.DOChannels.CreateChannel(
-                    chanString,
-                    "pg",
-                    ChannelLineGrouping.OneChannelForAllLines
-                    );
-
-
-                /**** Configure the clock ****/
-
-                String clockSource = "";
-                if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
-                {
-                    if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
-                    else clockSource = "";
-                }
-
-                if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
-                {
-                    // clocking is more complicated for the 6229 style PG boards as they don't have their own internal clock.
-
-                    // if external clocking is required it's easy:
-                    if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
-                    else
-                    {
-                        // if an internal clock is requested we generate it using the card's timer/counters.
-                        counterTask = new Task("counterTask");
-                        counterTask.COChannels.CreatePulseChannelFrequency(
-                            device + (string)Environs.Hardware.GetInfo("PGClockCounter"),
-                            "PG Clock",
-                            COPulseFrequencyUnits.Hertz,
-                            COPulseIdleState.Low,
-                            0.0,
-                            clockFrequency,
-                            0.5
-                            );
-                        counterTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
-                        //counterTask.Start();
-
-                        clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";
-                    }
-                }
-
-
-
-                /**** Configure regeneration ****/
-
-                SampleQuantityMode sqm;
-                if (loop)
-                {
-                    sqm = SampleQuantityMode.ContinuousSamples;
-                    pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-                }
+                if (fullWidth) chanString = device + "/port0_32";
                 else
                 {
-                    sqm = SampleQuantityMode.FiniteSamples;
-                    pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
+                    if (lowGroup) chanString = device + "/port0_16";
+                    else chanString = device + "/port3_16";
                 }
-
-                pgTask.Timing.ConfigureSampleClock(
-                    clockSource,
-                    clockFrequency,
-                    SampleClockActiveEdge.Rising,
-                    sqm,
-                    length
-                    );
-
-                /**** Configure buffering ****/
-
-                if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
-                {
-                    // these lines are critical - without them DAQMx copies the data you provide
-                    // as many times as it can into the on board FIFO (the cited reason being stability).
-                    // This has the annoying side effect that you have to wait for the on board buffer
-                    // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
-                    // These lines tell the board and the software to use buffers as close to the size of
-                    // the pattern as possible (on board buffer size is coerced to be related to a power of
-                    // two, so you don't quite get what you ask for).
-                    // note that 6229 type integrated PGs only have 2kB buffer, so this isn't needed for them (or allowed, in fact)
-                    pgTask.Stream.Buffer.OutputBufferSize = length;
-                    pgTask.Stream.Buffer.OutputOnBoardBufferSize = length;
-                }
-
-                /**** Write configuration to board ****/
-
-                pgTask.Control(TaskAction.Commit);
-                writer = new DigitalSingleChannelWriter(pgTask.Stream);
             }
+            // as far as I know you can only address the whole 32-bit port on the 6229 type integrated pattern generators
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
+            {
+                chanString = device + "/port0";
+            }
+
+			DOChannel doChan = pgTask.DOChannels.CreateChannel(
+				chanString,
+				"pg",
+				ChannelLineGrouping.OneChannelForAllLines
+				);
+
+            /**** Configure the clock ****/
+
+            String clockSource = "";
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            {
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                else clockSource = "";
+            }
+
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated")
+            {
+                // clocking is more complicated for the 6229 style PG boards as they don't have their own internal clock.
+
+                // if external clocking is required it's easy:
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                else
+                {
+                    // if an internal clock is requested we generate it using the card's timer/counters.
+                    counterTask = new Task();
+                    counterTask.COChannels.CreatePulseChannelFrequency(
+                        device + (string)Environs.Hardware.GetInfo("PGClockCounter"),
+                        "PG Clock",
+                        COPulseFrequencyUnits.Hertz,
+                        COPulseIdleState.Low,
+                        0.0,
+                        clockFrequency,
+                        0.5
+                        );
+                    counterTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
+                    counterTask.Start();
+
+                    clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";
+                }
+            }
+
+
+
+            /**** Configure regeneration ****/
+            
+            SampleQuantityMode sqm;
+			if (loop)
+			{
+				sqm = SampleQuantityMode.ContinuousSamples;
+				pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
+			}
+			else
+			{
+				sqm = SampleQuantityMode.FiniteSamples;
+				pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
+			}
+
+			pgTask.Timing.ConfigureSampleClock(
+				clockSource,
+				clockFrequency,
+				SampleClockActiveEdge.Rising,
+				sqm,
+				length
+				);
+
+            /**** Configure buffering ****/
+
+            if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
+            {
+                // these lines are critical - without them DAQMx copies the data you provide
+                // as many times as it can into the on board FIFO (the cited reason being stability).
+                // This has the annoying side effect that you have to wait for the on board buffer
+                // to stream out before you can update the patterns - this takes ~6 seconds at 1MHz.
+                // These lines tell the board and the software to use buffers as close to the size of
+                // the pattern as possible (on board buffer size is coerced to be related to a power of
+                // two, so you don't quite get what you ask for).
+                // note that 6229 type integrated PGs only have 2kB buffer, so this isn't needed for them (or allowed, in fact)
+                pgTask.Stream.Buffer.OutputBufferSize = length;
+                pgTask.Stream.Buffer.OutputOnBoardBufferSize = length;
+            }
+
+            /**** Write configuration to board ****/
+
+			pgTask.Control(TaskAction.Commit);
+			writer = new DigitalSingleChannelWriter(pgTask.Stream);
 		}
-
-        
-        public void SetOutputMode(PatternOutputMode mode) { }
-        public void StartPattern(string program) 
-        {
-            if((string)Environs.Hardware.GetInfo("PGType") != "split")
-            {
-                pgTask.Start();
-                SleepOnePattern();
-            }
-            else 
-            {
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
-                {
-                    pgLowTask.Start();
-                    SleepOnePattern();
-                }
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
-                {
-                    pgHighTask.Start();
-                    SleepOnePattern();
-                }
-            }
-            if((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Start();
-        }
-        		
-		public void DisposePattern(string program)
+		
+		public void StopPattern()
 		{
-            if ((string)Environs.Hardware.GetInfo("PGType") != "split")
-            {
-                
-                pgTask.Dispose();
-            }
-            else
-            {
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
-                {
-                    pgLowTask.Dispose();
-                }
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
-                {
-                    pgHighTask.Dispose();
-                }
-            }
-			
+			pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
-        }
-
-
-        public void StopPattern(string program)
-        {
-            if ((string)Environs.Hardware.GetInfo("PGType") != "split")
-            {
-
-                pgTask.Stop();
-            }
-            else
-            {
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "lower")
-                {
-                    pgLowTask.Stop();
-                }
-                if ((string)Environs.Hardware.GetInfo(program + "-PGAllocation") == "upper")
-                {
-                    pgHighTask.Stop();
-                }
-            }
-
-            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Stop();
         }
 	}
 }
