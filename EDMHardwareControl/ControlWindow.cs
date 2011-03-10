@@ -323,6 +323,49 @@ namespace EDMHardwareControl
         private Label label83;
         public TextBox PumpAOMFreqTextBox;
         private Button PumpAOMFreqUpdateButton;
+        private TabPage tabPage8;
+        private GroupBox groupBox27;
+        private GroupBox groupBox26;
+        public TextBox diodeCurrentPollTextBox;
+        private Label label86;
+        public WaveformGraph diodeCurrentGraph;
+        public WaveformPlot diodeCurrentPlot;
+        private XAxis xAxis2;
+        private YAxis yAxis2;
+        private GroupBox groupBox28;
+        public TextBox diodeCurrentTextBox;
+        public Button stopDiodeCurrentPollButton;
+        public Button startDiodeCurrentPollButton;
+        public TextBox diodeRefCavMonTextBox;
+        private Label label88;
+        public TextBox diodeRefCavTextBox;
+        private Label label87;
+        private GroupBox groupBox29;
+        private Label label93;
+        private Label label92;
+        private Label label91;
+        private Label label90;
+        private Label label89;
+        public Button updateFibreAmpPwrButton;
+        private GroupBox groupBox31;
+        public TextBox fibreAmpPwrTextBox;
+        public Button updateDiodeRefCavButton;
+        public Button updateDiodeRefCavMonitorButton;
+        public Button updateDiodeCurrentMonButton;
+        public TextBox scanRateTextBox;
+        private Label label94;
+        public Button scanButton;
+        private Label label95;
+        private GroupBox groupBox30;
+        public Led fibreAmpEnableLED;
+        public Switch fibreAmpEnableSwitch;
+        public Button faultCheckButton;
+        public Led fibreAmpPowerFaultLED;
+        public Led fibreAmpTempFaultLED;
+        public Led fibreAmpBackReflectFaultLED;
+        public Led fibreAmpSeedFaultLED;
+        public Led fibreAmpMasterFaultLED;
+        public TrackBar FLPZTVtrackBar;
 
 
 		public Controller controller;
@@ -461,7 +504,6 @@ namespace EDMHardwareControl
             this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
-            this.label74 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rf2StepPowerMon = new System.Windows.Forms.TextBox();
             this.rf2StepFreqMon = new System.Windows.Forms.TextBox();
@@ -497,7 +539,6 @@ namespace EDMHardwareControl
             this.label49 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
-            this.scramblerVoltageTextBox = new System.Windows.Forms.TextBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.scramblerCheckBox = new System.Windows.Forms.CheckBox();
             this.attenuatorSelectCheck = new System.Windows.Forms.CheckBox();
@@ -511,6 +552,8 @@ namespace EDMHardwareControl
             this.rf2FMZeroRB = new System.Windows.Forms.RadioButton();
             this.rf2FMPlusRB = new System.Windows.Forms.RadioButton();
             this.rf2FMMinusRB = new System.Windows.Forms.RadioButton();
+            this.label74 = new System.Windows.Forms.Label();
+            this.scramblerVoltageTextBox = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rf1FMZeroRB = new System.Windows.Forms.RadioButton();
             this.rf1FMPlusRB = new System.Windows.Forms.RadioButton();
@@ -579,6 +622,10 @@ namespace EDMHardwareControl
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.PumpAOMFreqUpdateButton = new System.Windows.Forms.Button();
+            this.label83 = new System.Windows.Forms.Label();
+            this.PumpAOMFreqTextBox = new System.Windows.Forms.TextBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.I2AOMFreqStepTextBox = new System.Windows.Forms.TextBox();
             this.label73 = new System.Windows.Forms.Label();
@@ -590,6 +637,7 @@ namespace EDMHardwareControl
             this.I2AOMFreqUpdateButton = new System.Windows.Forms.Button();
             this.label69 = new System.Windows.Forms.Label();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.FLPZTVtrackBar = new System.Windows.Forms.TrackBar();
             this.panel5 = new System.Windows.Forms.Panel();
             this.FLPZTStepZeroButton = new System.Windows.Forms.RadioButton();
             this.FLPZTStepPlusButton = new System.Windows.Forms.RadioButton();
@@ -612,6 +660,48 @@ namespace EDMHardwareControl
             this.label32 = new System.Windows.Forms.Label();
             this.probeShutterCheck = new System.Windows.Forms.CheckBox();
             this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.fibreAmpEnableLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.fibreAmpEnableSwitch = new NationalInstruments.UI.WindowsForms.Switch();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.updateFibreAmpPwrButton = new System.Windows.Forms.Button();
+            this.fibreAmpPwrTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.fibreAmpPowerFaultLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.fibreAmpTempFaultLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.fibreAmpBackReflectFaultLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.fibreAmpSeedFaultLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.fibreAmpMasterFaultLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.faultCheckButton = new System.Windows.Forms.Button();
+            this.label93 = new System.Windows.Forms.Label();
+            this.label92 = new System.Windows.Forms.Label();
+            this.label91 = new System.Windows.Forms.Label();
+            this.label90 = new System.Windows.Forms.Label();
+            this.label89 = new System.Windows.Forms.Label();
+            this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.label95 = new System.Windows.Forms.Label();
+            this.scanButton = new System.Windows.Forms.Button();
+            this.scanRateTextBox = new System.Windows.Forms.TextBox();
+            this.label94 = new System.Windows.Forms.Label();
+            this.updateDiodeRefCavButton = new System.Windows.Forms.Button();
+            this.updateDiodeRefCavMonitorButton = new System.Windows.Forms.Button();
+            this.diodeRefCavMonTextBox = new System.Windows.Forms.TextBox();
+            this.label88 = new System.Windows.Forms.Label();
+            this.diodeRefCavTextBox = new System.Windows.Forms.TextBox();
+            this.label87 = new System.Windows.Forms.Label();
+            this.groupBox26 = new System.Windows.Forms.GroupBox();
+            this.updateDiodeCurrentMonButton = new System.Windows.Forms.Button();
+            this.diodeCurrentTextBox = new System.Windows.Forms.TextBox();
+            this.stopDiodeCurrentPollButton = new System.Windows.Forms.Button();
+            this.startDiodeCurrentPollButton = new System.Windows.Forms.Button();
+            this.diodeCurrentPollTextBox = new System.Windows.Forms.TextBox();
+            this.label86 = new System.Windows.Forms.Label();
+            this.diodeCurrentGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.diodeCurrentPlot = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.TargetStepButton = new System.Windows.Forms.Button();
@@ -653,10 +743,6 @@ namespace EDMHardwareControl
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox25 = new System.Windows.Forms.GroupBox();
-            this.PumpAOMFreqTextBox = new System.Windows.Forms.TextBox();
-            this.label83 = new System.Windows.Forms.Label();
-            this.PumpAOMFreqUpdateButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -688,11 +774,28 @@ namespace EDMHardwareControl
             this.groupBox12.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.groupBox25.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox18.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.FLPZTVtrackBar)).BeginInit();
             this.panel5.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            this.groupBox28.SuspendLayout();
+            this.groupBox30.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpEnableLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpEnableSwitch)).BeginInit();
+            this.groupBox31.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpPowerFaultLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpTempFaultLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpBackReflectFaultLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpSeedFaultLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).BeginInit();
+            this.groupBox27.SuspendLayout();
+            this.groupBox26.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).BeginInit();
             this.tabPage5.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -702,7 +805,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.groupBox25.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1128,10 +1230,11 @@ namespace EDMHardwareControl
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Location = new System.Drawing.Point(12, 25);
+            this.tabControl1.Location = new System.Drawing.Point(12, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(705, 601);
@@ -1139,6 +1242,7 @@ namespace EDMHardwareControl
             // 
             // tabPage1
             // 
+            this.tabPage1.BackColor = System.Drawing.Color.Transparent;
             this.tabPage1.Controls.Add(this.groupBox21);
             this.tabPage1.Controls.Add(this.groupBox13);
             this.tabPage1.Controls.Add(this.groupBox6);
@@ -1150,6 +1254,7 @@ namespace EDMHardwareControl
             this.tabPage1.Size = new System.Drawing.Size(697, 575);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // groupBox21
             // 
@@ -1489,7 +1594,7 @@ namespace EDMHardwareControl
             // 
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis1.OriginLineVisible = true;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(-500, 500);
+            this.yAxis1.Range = new NationalInstruments.UI.Range(-20, 20);
             // 
             // SouthLegendItem
             // 
@@ -1666,9 +1771,7 @@ namespace EDMHardwareControl
             // 
             this.tabPage2.Controls.Add(this.groupBox24);
             this.tabPage2.Controls.Add(this.groupBox22);
-            this.tabPage2.Controls.Add(this.label74);
             this.tabPage2.Controls.Add(this.groupBox4);
-            this.tabPage2.Controls.Add(this.scramblerVoltageTextBox);
             this.tabPage2.Controls.Add(this.groupBox16);
             this.tabPage2.Controls.Add(this.groupBox14);
             this.tabPage2.Controls.Add(this.groupBox3);
@@ -1677,6 +1780,7 @@ namespace EDMHardwareControl
             this.tabPage2.Size = new System.Drawing.Size(697, 575);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // groupBox24
             // 
@@ -1733,9 +1837,9 @@ namespace EDMHardwareControl
             // groupBox22
             // 
             this.groupBox22.Controls.Add(this.rfManualStateCheckBox);
-            this.groupBox22.Location = new System.Drawing.Point(320, 311);
+            this.groupBox22.Location = new System.Drawing.Point(320, 263);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(363, 56);
+            this.groupBox22.Size = new System.Drawing.Size(363, 52);
             this.groupBox22.TabIndex = 33;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "Manual state";
@@ -1747,14 +1851,6 @@ namespace EDMHardwareControl
             this.rfManualStateCheckBox.Size = new System.Drawing.Size(257, 24);
             this.rfManualStateCheckBox.TabIndex = 53;
             this.rfManualStateCheckBox.Text = "State (Checked is rf in bottom)";
-            // 
-            // label74
-            // 
-            this.label74.Location = new System.Drawing.Point(326, 253);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(114, 23);
-            this.label74.TabIndex = 32;
-            this.label74.Text = "scrambler voltage (V)";
             // 
             // groupBox4
             // 
@@ -2121,14 +2217,6 @@ namespace EDMHardwareControl
             this.label44.TabIndex = 46;
             this.label44.Text = "rf1 fr + (Hz)";
             // 
-            // scramblerVoltageTextBox
-            // 
-            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(448, 249);
-            this.scramblerVoltageTextBox.Name = "scramblerVoltageTextBox";
-            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(34, 20);
-            this.scramblerVoltageTextBox.TabIndex = 31;
-            this.scramblerVoltageTextBox.Text = "0";
-            // 
             // groupBox16
             // 
             this.groupBox16.Controls.Add(this.scramblerCheckBox);
@@ -2202,6 +2290,8 @@ namespace EDMHardwareControl
             // 
             this.groupBox14.Controls.Add(this.setScramblerVoltageButton);
             this.groupBox14.Controls.Add(this.panel4);
+            this.groupBox14.Controls.Add(this.label74);
+            this.groupBox14.Controls.Add(this.scramblerVoltageTextBox);
             this.groupBox14.Controls.Add(this.panel3);
             this.groupBox14.Controls.Add(this.panel2);
             this.groupBox14.Controls.Add(this.panel1);
@@ -2225,14 +2315,14 @@ namespace EDMHardwareControl
             this.groupBox14.Controls.Add(this.rf1AttenuatorVoltageTextBox);
             this.groupBox14.Location = new System.Drawing.Point(320, 16);
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(363, 289);
+            this.groupBox14.Size = new System.Drawing.Size(363, 244);
             this.groupBox14.TabIndex = 24;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "fast rf control";
             // 
             // setScramblerVoltageButton
             // 
-            this.setScramblerVoltageButton.Location = new System.Drawing.Point(125, 259);
+            this.setScramblerVoltageButton.Location = new System.Drawing.Point(125, 218);
             this.setScramblerVoltageButton.Name = "setScramblerVoltageButton";
             this.setScramblerVoltageButton.Size = new System.Drawing.Size(131, 23);
             this.setScramblerVoltageButton.TabIndex = 33;
@@ -2244,7 +2334,7 @@ namespace EDMHardwareControl
             this.panel4.Controls.Add(this.rf2FMZeroRB);
             this.panel4.Controls.Add(this.rf2FMPlusRB);
             this.panel4.Controls.Add(this.rf2FMMinusRB);
-            this.panel4.Location = new System.Drawing.Point(249, 157);
+            this.panel4.Location = new System.Drawing.Point(249, 134);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(108, 32);
             this.panel4.TabIndex = 0;
@@ -2281,12 +2371,28 @@ namespace EDMHardwareControl
             this.rf2FMMinusRB.Text = "-";
             this.rf2FMMinusRB.UseVisualStyleBackColor = true;
             // 
+            // label74
+            // 
+            this.label74.Location = new System.Drawing.Point(6, 195);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(114, 23);
+            this.label74.TabIndex = 32;
+            this.label74.Text = "Scrambler voltage (V)";
+            // 
+            // scramblerVoltageTextBox
+            // 
+            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(128, 192);
+            this.scramblerVoltageTextBox.Name = "scramblerVoltageTextBox";
+            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(34, 20);
+            this.scramblerVoltageTextBox.TabIndex = 31;
+            this.scramblerVoltageTextBox.Text = "0";
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.rf1FMZeroRB);
             this.panel3.Controls.Add(this.rf1FMPlusRB);
             this.panel3.Controls.Add(this.rf1FMMinusRB);
-            this.panel3.Location = new System.Drawing.Point(249, 129);
+            this.panel3.Location = new System.Drawing.Point(249, 106);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(108, 32);
             this.panel3.TabIndex = 0;
@@ -2409,7 +2515,7 @@ namespace EDMHardwareControl
             // 
             // rf2FMIncTextBox
             // 
-            this.rf2FMIncTextBox.Location = new System.Drawing.Point(198, 159);
+            this.rf2FMIncTextBox.Location = new System.Drawing.Point(198, 136);
             this.rf2FMIncTextBox.Name = "rf2FMIncTextBox";
             this.rf2FMIncTextBox.Size = new System.Drawing.Size(34, 20);
             this.rf2FMIncTextBox.TabIndex = 7;
@@ -2417,7 +2523,7 @@ namespace EDMHardwareControl
             // 
             // label24
             // 
-            this.label24.Location = new System.Drawing.Point(168, 159);
+            this.label24.Location = new System.Drawing.Point(168, 136);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(24, 23);
             this.label24.TabIndex = 30;
@@ -2425,7 +2531,7 @@ namespace EDMHardwareControl
             // 
             // rf1FMIncTextBox
             // 
-            this.rf1FMIncTextBox.Location = new System.Drawing.Point(198, 133);
+            this.rf1FMIncTextBox.Location = new System.Drawing.Point(198, 110);
             this.rf1FMIncTextBox.Name = "rf1FMIncTextBox";
             this.rf1FMIncTextBox.Size = new System.Drawing.Size(34, 20);
             this.rf1FMIncTextBox.TabIndex = 5;
@@ -2433,7 +2539,7 @@ namespace EDMHardwareControl
             // 
             // label28
             // 
-            this.label28.Location = new System.Drawing.Point(168, 133);
+            this.label28.Location = new System.Drawing.Point(168, 110);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(24, 23);
             this.label28.TabIndex = 28;
@@ -2473,7 +2579,7 @@ namespace EDMHardwareControl
             // 
             // setFMVoltagesButton
             // 
-            this.setFMVoltagesButton.Location = new System.Drawing.Point(125, 189);
+            this.setFMVoltagesButton.Location = new System.Drawing.Point(125, 166);
             this.setFMVoltagesButton.Name = "setFMVoltagesButton";
             this.setFMVoltagesButton.Size = new System.Drawing.Size(131, 23);
             this.setFMVoltagesButton.TabIndex = 23;
@@ -2482,7 +2588,7 @@ namespace EDMHardwareControl
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(59, 163);
+            this.label2.Location = new System.Drawing.Point(59, 140);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 23);
             this.label2.TabIndex = 22;
@@ -2490,7 +2596,7 @@ namespace EDMHardwareControl
             // 
             // rf2FMVoltage
             // 
-            this.rf2FMVoltage.Location = new System.Drawing.Point(128, 159);
+            this.rf2FMVoltage.Location = new System.Drawing.Point(128, 136);
             this.rf2FMVoltage.Name = "rf2FMVoltage";
             this.rf2FMVoltage.Size = new System.Drawing.Size(34, 20);
             this.rf2FMVoltage.TabIndex = 6;
@@ -2498,7 +2604,7 @@ namespace EDMHardwareControl
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(59, 137);
+            this.label3.Location = new System.Drawing.Point(59, 114);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(61, 23);
             this.label3.TabIndex = 20;
@@ -2506,7 +2612,7 @@ namespace EDMHardwareControl
             // 
             // rf1FMVoltage
             // 
-            this.rf1FMVoltage.Location = new System.Drawing.Point(128, 133);
+            this.rf1FMVoltage.Location = new System.Drawing.Point(128, 110);
             this.rf1FMVoltage.Name = "rf1FMVoltage";
             this.rf1FMVoltage.Size = new System.Drawing.Size(34, 20);
             this.rf1FMVoltage.TabIndex = 4;
@@ -2566,6 +2672,7 @@ namespace EDMHardwareControl
             this.tabPage3.Size = new System.Drawing.Size(697, 575);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // groupBox23
             // 
@@ -2938,7 +3045,48 @@ namespace EDMHardwareControl
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(697, 575);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Laser";
+            this.tabPage4.Text = "Dye Laser";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox25
+            // 
+            this.groupBox25.Controls.Add(this.PumpAOMFreqUpdateButton);
+            this.groupBox25.Controls.Add(this.label83);
+            this.groupBox25.Controls.Add(this.PumpAOMFreqTextBox);
+            this.groupBox25.Location = new System.Drawing.Point(8, 353);
+            this.groupBox25.Name = "groupBox25";
+            this.groupBox25.Size = new System.Drawing.Size(529, 61);
+            this.groupBox25.TabIndex = 56;
+            this.groupBox25.TabStop = false;
+            this.groupBox25.Text = "Pump AOM";
+            // 
+            // PumpAOMFreqUpdateButton
+            // 
+            this.PumpAOMFreqUpdateButton.Location = new System.Drawing.Point(426, 17);
+            this.PumpAOMFreqUpdateButton.Name = "PumpAOMFreqUpdateButton";
+            this.PumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.PumpAOMFreqUpdateButton.TabIndex = 57;
+            this.PumpAOMFreqUpdateButton.Text = "Update";
+            this.PumpAOMFreqUpdateButton.Click += new System.EventHandler(this.PumpAOMFreqUpdateButton_Click);
+            // 
+            // label83
+            // 
+            this.label83.Location = new System.Drawing.Point(95, 22);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(111, 23);
+            this.label83.TabIndex = 57;
+            this.label83.Text = "AOM frequency (Hz)";
+            // 
+            // PumpAOMFreqTextBox
+            // 
+            this.PumpAOMFreqTextBox.BackColor = System.Drawing.Color.Black;
+            this.PumpAOMFreqTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.PumpAOMFreqTextBox.Location = new System.Drawing.Point(212, 19);
+            this.PumpAOMFreqTextBox.Name = "PumpAOMFreqTextBox";
+            this.PumpAOMFreqTextBox.ReadOnly = true;
+            this.PumpAOMFreqTextBox.Size = new System.Drawing.Size(178, 20);
+            this.PumpAOMFreqTextBox.TabIndex = 55;
+            this.PumpAOMFreqTextBox.Text = "0";
             // 
             // groupBox19
             // 
@@ -2951,7 +3099,7 @@ namespace EDMHardwareControl
             this.groupBox19.Controls.Add(this.label72);
             this.groupBox19.Controls.Add(this.I2AOMFreqUpdateButton);
             this.groupBox19.Controls.Add(this.label69);
-            this.groupBox19.Location = new System.Drawing.Point(238, 136);
+            this.groupBox19.Location = new System.Drawing.Point(238, 171);
             this.groupBox19.Name = "groupBox19";
             this.groupBox19.Size = new System.Drawing.Size(299, 176);
             this.groupBox19.TabIndex = 55;
@@ -3045,6 +3193,7 @@ namespace EDMHardwareControl
             // 
             // groupBox18
             // 
+            this.groupBox18.Controls.Add(this.FLPZTVtrackBar);
             this.groupBox18.Controls.Add(this.panel5);
             this.groupBox18.Controls.Add(this.FLPZTStepTextBox);
             this.groupBox18.Controls.Add(this.label70);
@@ -3053,10 +3202,19 @@ namespace EDMHardwareControl
             this.groupBox18.Controls.Add(this.label68);
             this.groupBox18.Location = new System.Drawing.Point(238, 20);
             this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(299, 96);
+            this.groupBox18.Size = new System.Drawing.Size(299, 145);
             this.groupBox18.TabIndex = 48;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Laser frequency";
+            // 
+            // FLPZTVtrackBar
+            // 
+            this.FLPZTVtrackBar.Location = new System.Drawing.Point(6, 94);
+            this.FLPZTVtrackBar.Maximum = 500;
+            this.FLPZTVtrackBar.Name = "FLPZTVtrackBar";
+            this.FLPZTVtrackBar.Size = new System.Drawing.Size(284, 45);
+            this.FLPZTVtrackBar.TabIndex = 49;
+            this.FLPZTVtrackBar.Scroll += new System.EventHandler(this.FLPZTVtrackBar_Scroll);
             // 
             // panel5
             // 
@@ -3150,7 +3308,7 @@ namespace EDMHardwareControl
             this.groupBox11.Controls.Add(this.label29);
             this.groupBox11.Controls.Add(this.label30);
             this.groupBox11.Controls.Add(this.label31);
-            this.groupBox11.Location = new System.Drawing.Point(8, 136);
+            this.groupBox11.Location = new System.Drawing.Point(8, 171);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(224, 176);
             this.groupBox11.TabIndex = 1;
@@ -3231,7 +3389,7 @@ namespace EDMHardwareControl
             this.groupBox10.Controls.Add(this.pumpShutterCheck);
             this.groupBox10.Location = new System.Drawing.Point(8, 16);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(224, 100);
+            this.groupBox10.Size = new System.Drawing.Size(224, 149);
             this.groupBox10.TabIndex = 0;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Shutters";
@@ -3271,6 +3429,430 @@ namespace EDMHardwareControl
             this.pumpShutterCheck.Text = "Pump";
             this.pumpShutterCheck.CheckedChanged += new System.EventHandler(this.pumpShutterCheck_CheckedChanged);
             // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.groupBox28);
+            this.tabPage8.Controls.Add(this.groupBox27);
+            this.tabPage8.Controls.Add(this.groupBox26);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(697, 575);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "Diode Laser";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // groupBox28
+            // 
+            this.groupBox28.Controls.Add(this.groupBox30);
+            this.groupBox28.Controls.Add(this.groupBox31);
+            this.groupBox28.Controls.Add(this.groupBox29);
+            this.groupBox28.Location = new System.Drawing.Point(408, 218);
+            this.groupBox28.Name = "groupBox28";
+            this.groupBox28.Size = new System.Drawing.Size(283, 252);
+            this.groupBox28.TabIndex = 2;
+            this.groupBox28.TabStop = false;
+            this.groupBox28.Text = "Fibre Amplifier";
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.fibreAmpEnableLED);
+            this.groupBox30.Controls.Add(this.fibreAmpEnableSwitch);
+            this.groupBox30.Location = new System.Drawing.Point(9, 18);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(124, 79);
+            this.groupBox30.TabIndex = 50;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = "On/Off";
+            // 
+            // fibreAmpEnableLED
+            // 
+            this.fibreAmpEnableLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpEnableLED.Location = new System.Drawing.Point(9, 20);
+            this.fibreAmpEnableLED.Name = "fibreAmpEnableLED";
+            this.fibreAmpEnableLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpEnableLED.Size = new System.Drawing.Size(47, 49);
+            this.fibreAmpEnableLED.TabIndex = 51;
+            // 
+            // fibreAmpEnableSwitch
+            // 
+            this.fibreAmpEnableSwitch.Location = new System.Drawing.Point(60, -4);
+            this.fibreAmpEnableSwitch.Name = "fibreAmpEnableSwitch";
+            this.fibreAmpEnableSwitch.Size = new System.Drawing.Size(64, 96);
+            this.fibreAmpEnableSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
+            this.fibreAmpEnableSwitch.TabIndex = 50;
+            this.fibreAmpEnableSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.fibreAmpEnableSwitch_StateChanged);
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.Controls.Add(this.updateFibreAmpPwrButton);
+            this.groupBox31.Controls.Add(this.fibreAmpPwrTextBox);
+            this.groupBox31.Location = new System.Drawing.Point(149, 19);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(124, 76);
+            this.groupBox31.TabIndex = 48;
+            this.groupBox31.TabStop = false;
+            this.groupBox31.Text = "Power";
+            // 
+            // updateFibreAmpPwrButton
+            // 
+            this.updateFibreAmpPwrButton.Location = new System.Drawing.Point(6, 45);
+            this.updateFibreAmpPwrButton.Name = "updateFibreAmpPwrButton";
+            this.updateFibreAmpPwrButton.Size = new System.Drawing.Size(100, 23);
+            this.updateFibreAmpPwrButton.TabIndex = 60;
+            this.updateFibreAmpPwrButton.Text = "Update";
+            this.updateFibreAmpPwrButton.UseVisualStyleBackColor = true;
+            this.updateFibreAmpPwrButton.Click += new System.EventHandler(this.updateFibreAmpPwrButton_Click);
+            // 
+            // fibreAmpPwrTextBox
+            // 
+            this.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.LimeGreen;
+            this.fibreAmpPwrTextBox.Location = new System.Drawing.Point(6, 19);
+            this.fibreAmpPwrTextBox.Name = "fibreAmpPwrTextBox";
+            this.fibreAmpPwrTextBox.Size = new System.Drawing.Size(100, 20);
+            this.fibreAmpPwrTextBox.TabIndex = 49;
+            this.fibreAmpPwrTextBox.Text = "0";
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.Controls.Add(this.fibreAmpPowerFaultLED);
+            this.groupBox29.Controls.Add(this.fibreAmpTempFaultLED);
+            this.groupBox29.Controls.Add(this.fibreAmpBackReflectFaultLED);
+            this.groupBox29.Controls.Add(this.fibreAmpSeedFaultLED);
+            this.groupBox29.Controls.Add(this.fibreAmpMasterFaultLED);
+            this.groupBox29.Controls.Add(this.faultCheckButton);
+            this.groupBox29.Controls.Add(this.label93);
+            this.groupBox29.Controls.Add(this.label92);
+            this.groupBox29.Controls.Add(this.label91);
+            this.groupBox29.Controls.Add(this.label90);
+            this.groupBox29.Controls.Add(this.label89);
+            this.groupBox29.Location = new System.Drawing.Point(9, 103);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(264, 142);
+            this.groupBox29.TabIndex = 1;
+            this.groupBox29.TabStop = false;
+            this.groupBox29.Text = "Faults";
+            // 
+            // fibreAmpPowerFaultLED
+            // 
+            this.fibreAmpPowerFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpPowerFaultLED.Location = new System.Drawing.Point(214, 34);
+            this.fibreAmpPowerFaultLED.Name = "fibreAmpPowerFaultLED";
+            this.fibreAmpPowerFaultLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpPowerFaultLED.OnColor = System.Drawing.Color.Red;
+            this.fibreAmpPowerFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpPowerFaultLED.TabIndex = 66;
+            // 
+            // fibreAmpTempFaultLED
+            // 
+            this.fibreAmpTempFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpTempFaultLED.Location = new System.Drawing.Point(166, 34);
+            this.fibreAmpTempFaultLED.Name = "fibreAmpTempFaultLED";
+            this.fibreAmpTempFaultLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpTempFaultLED.OnColor = System.Drawing.Color.Red;
+            this.fibreAmpTempFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpTempFaultLED.TabIndex = 65;
+            // 
+            // fibreAmpBackReflectFaultLED
+            // 
+            this.fibreAmpBackReflectFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpBackReflectFaultLED.Location = new System.Drawing.Point(112, 34);
+            this.fibreAmpBackReflectFaultLED.Name = "fibreAmpBackReflectFaultLED";
+            this.fibreAmpBackReflectFaultLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpBackReflectFaultLED.OnColor = System.Drawing.Color.Red;
+            this.fibreAmpBackReflectFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpBackReflectFaultLED.TabIndex = 64;
+            // 
+            // fibreAmpSeedFaultLED
+            // 
+            this.fibreAmpSeedFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpSeedFaultLED.Location = new System.Drawing.Point(60, 34);
+            this.fibreAmpSeedFaultLED.Name = "fibreAmpSeedFaultLED";
+            this.fibreAmpSeedFaultLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpSeedFaultLED.OnColor = System.Drawing.Color.Red;
+            this.fibreAmpSeedFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpSeedFaultLED.TabIndex = 63;
+            // 
+            // fibreAmpMasterFaultLED
+            // 
+            this.fibreAmpMasterFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.fibreAmpMasterFaultLED.Location = new System.Drawing.Point(16, 34);
+            this.fibreAmpMasterFaultLED.Name = "fibreAmpMasterFaultLED";
+            this.fibreAmpMasterFaultLED.OffColor = System.Drawing.Color.Black;
+            this.fibreAmpMasterFaultLED.OnColor = System.Drawing.Color.Red;
+            this.fibreAmpMasterFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpMasterFaultLED.TabIndex = 62;
+            // 
+            // faultCheckButton
+            // 
+            this.faultCheckButton.Location = new System.Drawing.Point(169, 111);
+            this.faultCheckButton.Name = "faultCheckButton";
+            this.faultCheckButton.Size = new System.Drawing.Size(89, 23);
+            this.faultCheckButton.TabIndex = 61;
+            this.faultCheckButton.Text = "Check for faults";
+            this.faultCheckButton.UseVisualStyleBackColor = true;
+            this.faultCheckButton.Click += new System.EventHandler(this.faultCheckButton_Click);
+            // 
+            // label93
+            // 
+            this.label93.Location = new System.Drawing.Point(218, 77);
+            this.label93.Name = "label93";
+            this.label93.Size = new System.Drawing.Size(47, 31);
+            this.label93.TabIndex = 49;
+            this.label93.Text = "Power supply";
+            // 
+            // label92
+            // 
+            this.label92.Location = new System.Drawing.Point(166, 77);
+            this.label92.Name = "label92";
+            this.label92.Size = new System.Drawing.Size(38, 18);
+            this.label92.TabIndex = 48;
+            this.label92.Text = "Temp";
+            // 
+            // label91
+            // 
+            this.label91.Location = new System.Drawing.Point(112, 77);
+            this.label91.Name = "label91";
+            this.label91.Size = new System.Drawing.Size(59, 31);
+            this.label91.TabIndex = 47;
+            this.label91.Text = "Back reflection";
+            // 
+            // label90
+            // 
+            this.label90.Location = new System.Drawing.Point(67, 77);
+            this.label90.Name = "label90";
+            this.label90.Size = new System.Drawing.Size(39, 18);
+            this.label90.TabIndex = 46;
+            this.label90.Text = "Seed";
+            // 
+            // label89
+            // 
+            this.label89.Location = new System.Drawing.Point(13, 77);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(41, 18);
+            this.label89.TabIndex = 45;
+            this.label89.Text = "Master";
+            // 
+            // groupBox27
+            // 
+            this.groupBox27.Controls.Add(this.label95);
+            this.groupBox27.Controls.Add(this.scanButton);
+            this.groupBox27.Controls.Add(this.scanRateTextBox);
+            this.groupBox27.Controls.Add(this.label94);
+            this.groupBox27.Controls.Add(this.updateDiodeRefCavButton);
+            this.groupBox27.Controls.Add(this.updateDiodeRefCavMonitorButton);
+            this.groupBox27.Controls.Add(this.diodeRefCavMonTextBox);
+            this.groupBox27.Controls.Add(this.label88);
+            this.groupBox27.Controls.Add(this.diodeRefCavTextBox);
+            this.groupBox27.Controls.Add(this.label87);
+            this.groupBox27.Location = new System.Drawing.Point(9, 218);
+            this.groupBox27.Name = "groupBox27";
+            this.groupBox27.Size = new System.Drawing.Size(370, 110);
+            this.groupBox27.TabIndex = 1;
+            this.groupBox27.TabStop = false;
+            this.groupBox27.Text = "HV Reference Cavity";
+            // 
+            // label95
+            // 
+            this.label95.Location = new System.Drawing.Point(249, 53);
+            this.label95.Name = "label95";
+            this.label95.Size = new System.Drawing.Size(115, 18);
+            this.label95.TabIndex = 68;
+            this.label95.Text = "(not yet working)";
+            // 
+            // scanButton
+            // 
+            this.scanButton.Location = new System.Drawing.Point(175, 48);
+            this.scanButton.Name = "scanButton";
+            this.scanButton.Size = new System.Drawing.Size(72, 23);
+            this.scanButton.TabIndex = 67;
+            this.scanButton.Text = "Scan";
+            this.scanButton.UseVisualStyleBackColor = true;
+            // 
+            // scanRateTextBox
+            // 
+            this.scanRateTextBox.Location = new System.Drawing.Point(105, 50);
+            this.scanRateTextBox.Name = "scanRateTextBox";
+            this.scanRateTextBox.Size = new System.Drawing.Size(64, 20);
+            this.scanRateTextBox.TabIndex = 66;
+            this.scanRateTextBox.Text = "0";
+            // 
+            // label94
+            // 
+            this.label94.Location = new System.Drawing.Point(6, 53);
+            this.label94.Name = "label94";
+            this.label94.Size = new System.Drawing.Size(93, 18);
+            this.label94.TabIndex = 65;
+            this.label94.Text = "Scan Rate (Hz)";
+            // 
+            // updateDiodeRefCavButton
+            // 
+            this.updateDiodeRefCavButton.Location = new System.Drawing.Point(175, 20);
+            this.updateDiodeRefCavButton.Name = "updateDiodeRefCavButton";
+            this.updateDiodeRefCavButton.Size = new System.Drawing.Size(72, 23);
+            this.updateDiodeRefCavButton.TabIndex = 64;
+            this.updateDiodeRefCavButton.Text = "Update";
+            this.updateDiodeRefCavButton.UseVisualStyleBackColor = true;
+            this.updateDiodeRefCavButton.Click += new System.EventHandler(this.updateDiodeRefCavButton_Click);
+            // 
+            // updateDiodeRefCavMonitorButton
+            // 
+            this.updateDiodeRefCavMonitorButton.Location = new System.Drawing.Point(175, 74);
+            this.updateDiodeRefCavMonitorButton.Name = "updateDiodeRefCavMonitorButton";
+            this.updateDiodeRefCavMonitorButton.Size = new System.Drawing.Size(72, 23);
+            this.updateDiodeRefCavMonitorButton.TabIndex = 63;
+            this.updateDiodeRefCavMonitorButton.Text = "Update";
+            this.updateDiodeRefCavMonitorButton.UseVisualStyleBackColor = true;
+            this.updateDiodeRefCavMonitorButton.Click += new System.EventHandler(this.updateDiodeRefCavMonitorButton_Click);
+            // 
+            // diodeRefCavMonTextBox
+            // 
+            this.diodeRefCavMonTextBox.BackColor = System.Drawing.Color.Black;
+            this.diodeRefCavMonTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.diodeRefCavMonTextBox.Location = new System.Drawing.Point(105, 77);
+            this.diodeRefCavMonTextBox.Name = "diodeRefCavMonTextBox";
+            this.diodeRefCavMonTextBox.ReadOnly = true;
+            this.diodeRefCavMonTextBox.Size = new System.Drawing.Size(64, 20);
+            this.diodeRefCavMonTextBox.TabIndex = 47;
+            this.diodeRefCavMonTextBox.Text = "0";
+            // 
+            // label88
+            // 
+            this.label88.Location = new System.Drawing.Point(7, 80);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(92, 18);
+            this.label88.TabIndex = 46;
+            this.label88.Text = "Piezo Monitor (V)";
+            // 
+            // diodeRefCavTextBox
+            // 
+            this.diodeRefCavTextBox.BackColor = System.Drawing.Color.LimeGreen;
+            this.diodeRefCavTextBox.Location = new System.Drawing.Point(105, 22);
+            this.diodeRefCavTextBox.Name = "diodeRefCavTextBox";
+            this.diodeRefCavTextBox.Size = new System.Drawing.Size(64, 20);
+            this.diodeRefCavTextBox.TabIndex = 45;
+            this.diodeRefCavTextBox.Text = "0";
+            // 
+            // label87
+            // 
+            this.label87.Location = new System.Drawing.Point(6, 25);
+            this.label87.Name = "label87";
+            this.label87.Size = new System.Drawing.Size(93, 18);
+            this.label87.TabIndex = 44;
+            this.label87.Text = "Piezo Control (V)";
+            // 
+            // groupBox26
+            // 
+            this.groupBox26.Controls.Add(this.updateDiodeCurrentMonButton);
+            this.groupBox26.Controls.Add(this.diodeCurrentTextBox);
+            this.groupBox26.Controls.Add(this.stopDiodeCurrentPollButton);
+            this.groupBox26.Controls.Add(this.startDiodeCurrentPollButton);
+            this.groupBox26.Controls.Add(this.diodeCurrentPollTextBox);
+            this.groupBox26.Controls.Add(this.label86);
+            this.groupBox26.Controls.Add(this.diodeCurrentGraph);
+            this.groupBox26.Location = new System.Drawing.Point(6, 6);
+            this.groupBox26.Name = "groupBox26";
+            this.groupBox26.Size = new System.Drawing.Size(685, 206);
+            this.groupBox26.TabIndex = 0;
+            this.groupBox26.TabStop = false;
+            this.groupBox26.Text = "Current Supply";
+            // 
+            // updateDiodeCurrentMonButton
+            // 
+            this.updateDiodeCurrentMonButton.Location = new System.Drawing.Point(178, 176);
+            this.updateDiodeCurrentMonButton.Name = "updateDiodeCurrentMonButton";
+            this.updateDiodeCurrentMonButton.Size = new System.Drawing.Size(72, 23);
+            this.updateDiodeCurrentMonButton.TabIndex = 62;
+            this.updateDiodeCurrentMonButton.Text = "Update";
+            this.updateDiodeCurrentMonButton.UseVisualStyleBackColor = true;
+            this.updateDiodeCurrentMonButton.Click += new System.EventHandler(this.updateDiodeCurrentMonButton_Click);
+            // 
+            // diodeCurrentTextBox
+            // 
+            this.diodeCurrentTextBox.BackColor = System.Drawing.Color.Black;
+            this.diodeCurrentTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.diodeCurrentTextBox.Location = new System.Drawing.Point(35, 178);
+            this.diodeCurrentTextBox.Name = "diodeCurrentTextBox";
+            this.diodeCurrentTextBox.ReadOnly = true;
+            this.diodeCurrentTextBox.Size = new System.Drawing.Size(137, 20);
+            this.diodeCurrentTextBox.TabIndex = 61;
+            this.diodeCurrentTextBox.Text = "0";
+            // 
+            // stopDiodeCurrentPollButton
+            // 
+            this.stopDiodeCurrentPollButton.Enabled = false;
+            this.stopDiodeCurrentPollButton.Location = new System.Drawing.Point(604, 176);
+            this.stopDiodeCurrentPollButton.Name = "stopDiodeCurrentPollButton";
+            this.stopDiodeCurrentPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopDiodeCurrentPollButton.TabIndex = 60;
+            this.stopDiodeCurrentPollButton.Text = "Stop poll";
+            this.stopDiodeCurrentPollButton.UseVisualStyleBackColor = true;
+            this.stopDiodeCurrentPollButton.Click += new System.EventHandler(this.stopDiodeCurrentPollButton_Click);
+            // 
+            // startDiodeCurrentPollButton
+            // 
+            this.startDiodeCurrentPollButton.Location = new System.Drawing.Point(523, 176);
+            this.startDiodeCurrentPollButton.Name = "startDiodeCurrentPollButton";
+            this.startDiodeCurrentPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startDiodeCurrentPollButton.TabIndex = 59;
+            this.startDiodeCurrentPollButton.Text = "Start poll";
+            this.startDiodeCurrentPollButton.UseVisualStyleBackColor = true;
+            this.startDiodeCurrentPollButton.Click += new System.EventHandler(this.startDiodeCurrentPollButton_Click);
+            // 
+            // diodeCurrentPollTextBox
+            // 
+            this.diodeCurrentPollTextBox.Location = new System.Drawing.Point(453, 178);
+            this.diodeCurrentPollTextBox.Name = "diodeCurrentPollTextBox";
+            this.diodeCurrentPollTextBox.Size = new System.Drawing.Size(64, 20);
+            this.diodeCurrentPollTextBox.TabIndex = 58;
+            this.diodeCurrentPollTextBox.Text = "100";
+            // 
+            // label86
+            // 
+            this.label86.Location = new System.Drawing.Point(366, 181);
+            this.label86.Name = "label86";
+            this.label86.Size = new System.Drawing.Size(101, 23);
+            this.label86.TabIndex = 57;
+            this.label86.Text = "Poll period (ms)";
+            // 
+            // diodeCurrentGraph
+            // 
+            this.diodeCurrentGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY)
+                        | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint)
+                        | NationalInstruments.UI.GraphInteractionModes.PanX)
+                        | NationalInstruments.UI.GraphInteractionModes.PanY)
+                        | NationalInstruments.UI.GraphInteractionModes.DragCursor)
+                        | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption)
+                        | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.diodeCurrentGraph.Location = new System.Drawing.Point(6, 19);
+            this.diodeCurrentGraph.Name = "diodeCurrentGraph";
+            this.diodeCurrentGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.diodeCurrentPlot});
+            this.diodeCurrentGraph.Size = new System.Drawing.Size(673, 153);
+            this.diodeCurrentGraph.TabIndex = 46;
+            this.diodeCurrentGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.diodeCurrentGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // diodeCurrentPlot
+            // 
+            this.diodeCurrentPlot.AntiAliased = true;
+            this.diodeCurrentPlot.HistoryCapacity = 10000;
+            this.diodeCurrentPlot.LineWidth = 2F;
+            this.diodeCurrentPlot.XAxis = this.xAxis2;
+            this.diodeCurrentPlot.YAxis = this.yAxis2;
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0, 500);
+            // 
+            // yAxis2
+            // 
+            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.OriginLineVisible = true;
+            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.groupBox17);
@@ -3280,6 +3862,7 @@ namespace EDMHardwareControl
             this.tabPage5.Size = new System.Drawing.Size(697, 575);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // groupBox17
             // 
@@ -3432,7 +4015,7 @@ namespace EDMHardwareControl
             // 
             // tabPage6
             // 
-            this.tabPage6.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage6.BackColor = System.Drawing.Color.Transparent;
             this.tabPage6.Controls.Add(this.label81);
             this.tabPage6.Controls.Add(this.pumpPolarizerUpdateButton);
             this.tabPage6.Controls.Add(this.pumpPolarizerAngleTextBox);
@@ -3448,6 +4031,7 @@ namespace EDMHardwareControl
             this.tabPage6.Size = new System.Drawing.Size(697, 575);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
+            this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // label81
             // 
@@ -3541,6 +4125,7 @@ namespace EDMHardwareControl
             this.tabPage7.Size = new System.Drawing.Size(697, 575);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Alerts";
+            this.tabPage7.UseVisualStyleBackColor = true;
             // 
             // clearAlertButton
             // 
@@ -3586,6 +4171,7 @@ namespace EDMHardwareControl
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -3665,46 +4251,6 @@ namespace EDMHardwareControl
             this.checkBox1.TabIndex = 53;
             this.checkBox1.Text = "State (Checked is 0=>N+)";
             // 
-            // groupBox25
-            // 
-            this.groupBox25.Controls.Add(this.PumpAOMFreqUpdateButton);
-            this.groupBox25.Controls.Add(this.label83);
-            this.groupBox25.Controls.Add(this.PumpAOMFreqTextBox);
-            this.groupBox25.Location = new System.Drawing.Point(8, 318);
-            this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(529, 61);
-            this.groupBox25.TabIndex = 56;
-            this.groupBox25.TabStop = false;
-            this.groupBox25.Text = "Pump AOM";
-            // 
-            // PumpAOMFreqTextBox
-            // 
-            this.PumpAOMFreqTextBox.BackColor = System.Drawing.Color.Black;
-            this.PumpAOMFreqTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.PumpAOMFreqTextBox.Location = new System.Drawing.Point(212, 19);
-            this.PumpAOMFreqTextBox.Name = "PumpAOMFreqTextBox";
-            this.PumpAOMFreqTextBox.ReadOnly = true;
-            this.PumpAOMFreqTextBox.Size = new System.Drawing.Size(178, 20);
-            this.PumpAOMFreqTextBox.TabIndex = 55;
-            this.PumpAOMFreqTextBox.Text = "0";
-            // 
-            // label83
-            // 
-            this.label83.Location = new System.Drawing.Point(95, 22);
-            this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(111, 23);
-            this.label83.TabIndex = 57;
-            this.label83.Text = "AOM frequency (Hz)";
-            // 
-            // PumpAOMFreqUpdateButton
-            // 
-            this.PumpAOMFreqUpdateButton.Location = new System.Drawing.Point(426, 17);
-            this.PumpAOMFreqUpdateButton.Name = "PumpAOMFreqUpdateButton";
-            this.PumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
-            this.PumpAOMFreqUpdateButton.TabIndex = 57;
-            this.PumpAOMFreqUpdateButton.Text = "Update";
-            this.PumpAOMFreqUpdateButton.Click += new System.EventHandler(this.PumpAOMFreqUpdateButton_Click);
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -3739,7 +4285,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.legend1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.groupBox24.ResumeLayout(false);
             this.groupBox24.PerformLayout();
             this.groupBox22.ResumeLayout(false);
@@ -3767,15 +4312,36 @@ namespace EDMHardwareControl
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.groupBox25.ResumeLayout(false);
+            this.groupBox25.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox19.PerformLayout();
             this.groupBox18.ResumeLayout(false);
             this.groupBox18.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.FLPZTVtrackBar)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
             this.groupBox10.ResumeLayout(false);
+            this.tabPage8.ResumeLayout(false);
+            this.groupBox28.ResumeLayout(false);
+            this.groupBox30.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpEnableLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpEnableSwitch)).EndInit();
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox31.PerformLayout();
+            this.groupBox29.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpPowerFaultLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpTempFaultLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpBackReflectFaultLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpSeedFaultLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).EndInit();
+            this.groupBox27.ResumeLayout(false);
+            this.groupBox27.PerformLayout();
+            this.groupBox26.ResumeLayout(false);
+            this.groupBox26.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
@@ -3790,8 +4356,6 @@ namespace EDMHardwareControl
             this.tabPage7.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox25.ResumeLayout(false);
-            this.groupBox25.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4079,6 +4643,48 @@ namespace EDMHardwareControl
             controller.UpdatePiMonitor();
         }
 
+        private void updateDiodeRefCavMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateDiodeRefCavMonitor();
+        }
+
+        private void updateDiodeCurrentMonButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateDiodeCurrentMonitor();
+        }
+
+        private void startDiodeCurrentPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StartDiodeCurrentPoll();
+        }
+
+        private void stopDiodeCurrentPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StopDiodeCurrentPoll();
+        }
+
+        private void updateDiodeRefCavButton_Click(object sender, EventArgs e)
+        {
+            controller.SetDiodeRefCav();
+        }
+        
+        private void fibreAmpEnableSwitch_StateChanged(object sender, ActionEventArgs e)
+        {
+            controller.SetFibreAmpPowerSwitch(fibreAmpEnableSwitch.Value);
+        }
+
+
+        private void faultCheckButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFibreAmpFaults();
+        }
+
+        private void updateFibreAmpPwrButton_Click(object sender, EventArgs e)
+        {
+            controller.SetFibreAmpPwr();
+        }
+
+
         #endregion
 
 		#region ThreadSafe wrappers
@@ -4169,6 +4775,34 @@ namespace EDMHardwareControl
         {
             controller.UpdatePumpAOMFreqMonitor();
         }
+
+        private void groupBox26_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FLPZTVtrackBar_Scroll(object sender, EventArgs e)
+        {
+            controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value/100.0);
+        }
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        
+
+        
+
+
 
 
     }

@@ -145,6 +145,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DigitalOutputChannel.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
     <Compile Include="RainbowFileSystem.cs" />
     <Compile Include="RainbowHardware.cs" />
@@ -177,7 +178,7 @@
     <Compile Include="DecelerationHardware.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DigitalOutputChannel.cs">
+    <Compile Include="DigitalInputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PHJKiteFileSystem.cs">

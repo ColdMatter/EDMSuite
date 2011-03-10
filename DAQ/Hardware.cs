@@ -28,6 +28,12 @@ namespace DAQ.HAL
 			get {return digitalOutputChannels;}
 		}
 
+        private Hashtable digitalInputChannels = new Hashtable();
+        public Hashtable DigitalInputChannels
+        {
+            get {return digitalInputChannels;}
+        }
+
 		private Hashtable analogInputChannels = new Hashtable();
 		public Hashtable AnalogInputChannels
 		{
@@ -91,6 +97,11 @@ namespace DAQ.HAL
 		{
 			digitalOutputChannels.Add(name, new DigitalOutputChannel(name, device, port, line));
 		}
+
+        protected void AddDigitalInputChannel(String name, string device, int port, int line)
+        {
+            digitalInputChannels.Add(name, new DigitalInputChannel(name, device, port, line));
+        }
 
 		protected void AddCounterChannel(String name, string physicalChannel)
 		{

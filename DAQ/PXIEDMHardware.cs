@@ -99,10 +99,20 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
             AddDigitalOutputChannel("pumpAOMFreqMon", pgBoard, 2, 4);
 
-            // map the analog channels
 
+            AddDigitalOutputChannel("fibreAmpEnable", aoBoard, 0, 0);
+
+            // Map the digital input channels
+            AddDigitalInputChannel("fibreAmpMasterErr", aoBoard, 0, 1);
+            AddDigitalInputChannel("fibreAmpSeedErr", aoBoard, 0, 2);
+            AddDigitalInputChannel("fibreAmpBackFeflectErr", aoBoard, 0, 3);
+            AddDigitalInputChannel("fibreAmpTempErr", aoBoard, 0, 4);
+            AddDigitalInputChannel("fibreAmpPowerSupplyErr", aoBoard, 0, 5);
+
+            // map the analog channels
             // These channels are on the daq board. Used mainly for diagnostic purposes.
             // On no account should they switch during the edm acquisition pattern.
+            AddAnalogInputChannel("diodeLaserCurrent", daqBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
@@ -113,6 +123,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
 
 
             // high quality analog inputs (will be) on the S-series analog in board
@@ -126,6 +137,8 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
             AddAnalogOutputChannel("b", aoBoard + "/ao1");
+            AddAnalogOutputChannel("diodeRefCavity", aoBoard + "/ao2");
+            AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
 
             // rf rack control
             //AddAnalogInputChannel("rfPower", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
