@@ -35,6 +35,14 @@ namespace Analysis.EDM
         public double[] NorthCurrentValAndError;
         public double[] SouthCurrentValAndError;
 
+        public double[] MagValandErr;
+
+        public double[] LFValandErr;
+        public double[] rf1FreqAndErr;
+        public double[] rf2FreqAndErr;
+        public double[] rf1AmpAndErr;
+        public double[] rf2AmpAndErr;
+        
         public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
         {
             QuickEDMAnalysis analysis = new QuickEDMAnalysis();
@@ -78,6 +86,21 @@ namespace Analysis.EDM
                 dblock.GetChannelValueAndError(new string[] { "SIG" }, "NorthCurrent");
             analysis.SouthCurrentValAndError =
                 dblock.GetChannelValueAndError(new string[] { "SIG" }, "SouthCurrent");
+
+            //magnetometer (I know it is not signed right but I just want the noise so any waveform will do)
+            analysis.MagValandErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "mag1");
+
+            //laser freq
+            analysis.LFValandErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "top");
+
+            //rf freq
+            analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");
+            analysis.rf2FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "top");
+
+            //rf amp
+            analysis.rf1AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "top");
+            analysis.rf2AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "top");
+            
 
             return analysis;
         }

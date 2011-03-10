@@ -74,6 +74,7 @@ namespace EDMBlockHead
 
             //Update Plots
             AppendToSigScatter(new double[] { blockCount }, new double[] { analysis.SIGValAndErr[0] });
+            AppendToSigNoiseScatter(new double[] { blockCount }, new double[] { analysis.SIGValAndErr[1] });
             AppendToBScatter(new double[] { blockCount }, new double[] { analysis.BValAndErr[0] });
             AppendToDBScatter(new double[] { blockCount }, new double[] { analysis.DBValAndErr[0] });
             AppendToEDMScatter(new double[] { blockCount }, 
@@ -97,6 +98,14 @@ namespace EDMBlockHead
                 new double[] { analysis.NorthCurrentValAndError[1] });
             AppendToSouthLeakageErrorScatter(new double[] { blockCount },
                 new double[] { analysis.SouthCurrentValAndError[1] });
+            AppendToMagNoiseScatter(new double[] { blockCount },
+                new double[] { analysis.MagValandErr[1] });
+            AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[0] });
+            AppendToLF1NoiseScatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[1] });
+            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
+            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
+            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
+            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
 
             blockCount = blockCount + 1;
         }
@@ -110,10 +119,17 @@ namespace EDMBlockHead
                 + Environment.NewLine + "block count: " + 0);
             UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
             ClearSIGScatter();
+            ClearSigNoiseScatterGraph();
             ClearBScatter();
             ClearDBScatter();
             ClearEDMErrScatter();
             ClearLeakageScatters();
+            ClearMagNoiseScatterGraph();
+            ClearLF1Graph();
+            ClearLF1NoiseGraph();
+            ClearRFxAGraph();
+            ClearRFxFGraph();
+            
         }
 
         #region UI methods
@@ -196,6 +212,46 @@ namespace EDMBlockHead
             PlotXYAppend(leakageErrorGraph, southLeakageVariancePlot, x, y);
         }
 
+        private void AppendToMagNoiseScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(magNoiseGraph, magNoisePlot, x, y);
+        }
+
+        private void AppendToSigNoiseScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(sigNoiseScatterGraph, sigNoisePlot, x, y);
+        }
+
+        private void AppendToLF1Scatter(double[] x, double[] y)
+        {
+            PlotXYAppend(lf1ScatterGraph, lf1Plot, x, y);
+        }
+
+        private void AppendToLF1NoiseScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(lf1NoiseScatterGraph, lf1NoisePlot, x, y);
+        }
+
+        private void AppendToRF1AScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfAmpScatterGraph, rf1aScatterPlot, x, y);
+        }
+
+        private void AppendToRF2AScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfAmpScatterGraph, rf2aScatterPlot, x, y);
+        }
+
+        private void AppendToRF1FScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfFreqScatterGraph, rf1fScatterPlot, x, y);
+        }
+
+        private void AppendToRF2FScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfFreqScatterGraph, rf2fScatterPlot, x, y);
+        }
+
         private void ClearSIGScatter()
         {
             ClearNIGraph(sigScatterGraph);
@@ -220,6 +276,36 @@ namespace EDMBlockHead
         {
             ClearNIGraph(leakageGraph);
             ClearNIGraph(leakageErrorGraph);
+        }
+
+        private void ClearMagNoiseScatterGraph()
+        {
+            ClearNIGraph(magNoiseGraph);
+        }
+
+        private void ClearSigNoiseScatterGraph()
+        {
+            ClearNIGraph(sigNoiseScatterGraph);
+        }
+
+        private void ClearLF1Graph()
+        {
+            ClearNIGraph(lf1ScatterGraph);
+        }
+
+        private void ClearLF1NoiseGraph()
+        {
+            ClearNIGraph(lf1NoiseScatterGraph);
+        }
+
+        private void ClearRFxAGraph()
+        {
+            ClearNIGraph(rfAmpScatterGraph);
+        }
+
+        private void ClearRFxFGraph()
+        {
+            ClearNIGraph(rfFreqScatterGraph);
         }
 
         #endregion
