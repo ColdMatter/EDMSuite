@@ -192,8 +192,8 @@ Global
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.SrF|Any CPU.ActiveCfg = Release|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.SrF|Any CPU.Build.0 = Release|Any CPU
-		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Any CPU.ActiveCfg = Release|Any CPU
-		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Any CPU.Build.0 = Release|Any CPU
+		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
+		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Any CPU.Build.0 = Sympathetic|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

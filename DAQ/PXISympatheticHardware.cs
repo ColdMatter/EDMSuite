@@ -27,7 +27,6 @@ namespace DAQ.HAL
             // add things to the info
             Info.Add("PGClockLine", multiDAQ + "/PFI14");
             Info.Add("PatternGeneratorBoard", multiDAQ);
-            Info.Add("PGType", "integrated");
 
             //Test this
             //Info.Add("PGType", "dedicated");

@@ -57,7 +57,6 @@ namespace SympatheticHardwareControl
             this.tabOverview = new System.Windows.Forms.TabPage();
             this.updateAttributesButton = new System.Windows.Forms.Button();
             this.saveImageCheckBox = new System.Windows.Forms.CheckBox();
-            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.stopStreamButton = new System.Windows.Forms.Button();
             this.streamButton = new System.Windows.Forms.Button();
             this.motViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
@@ -114,6 +113,7 @@ namespace SympatheticHardwareControl
             this.coil0Label1 = new System.Windows.Forms.Label();
             this.coil0CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil0Label0 = new System.Windows.Forms.Label();
+            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -130,9 +130,11 @@ namespace SympatheticHardwareControl
             this.manualControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.shcTabs.SuspendLayout();
             this.tabOverview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
             this.tabLasers.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aom3LED)).BeginInit();
@@ -145,7 +147,9 @@ namespace SympatheticHardwareControl
             this.tabCoils.SuspendLayout();
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
             this.menuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -196,16 +200,6 @@ namespace SympatheticHardwareControl
             this.saveImageCheckBox.Text = "Save Snapshot";
             this.saveImageCheckBox.UseVisualStyleBackColor = true;
             // 
-            // manualControlLED
-            // 
-            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(675, 49);
-            this.manualControlLED.Name = "manualControlLED";
-            this.manualControlLED.OffColor = System.Drawing.Color.DarkRed;
-            this.manualControlLED.OnColor = System.Drawing.Color.Red;
-            this.manualControlLED.Size = new System.Drawing.Size(110, 110);
-            this.manualControlLED.TabIndex = 14;
-            // 
             // stopStreamButton
             // 
             this.stopStreamButton.Enabled = false;
@@ -255,7 +249,7 @@ namespace SympatheticHardwareControl
             this.tabLasers.Location = new System.Drawing.Point(4, 22);
             this.tabLasers.Name = "tabLasers";
             this.tabLasers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLasers.Size = new System.Drawing.Size(788, 542);
+            this.tabLasers.Size = new System.Drawing.Size(658, 542);
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
@@ -659,7 +653,7 @@ namespace SympatheticHardwareControl
             this.tabCoils.Controls.Add(this.coil0GroupBox);
             this.tabCoils.Location = new System.Drawing.Point(4, 22);
             this.tabCoils.Name = "tabCoils";
-            this.tabCoils.Size = new System.Drawing.Size(788, 542);
+            this.tabCoils.Size = new System.Drawing.Size(658, 542);
             this.tabCoils.TabIndex = 2;
             this.tabCoils.Text = "Magnetic Field Control";
             this.tabCoils.UseVisualStyleBackColor = true;
@@ -763,6 +757,14 @@ namespace SympatheticHardwareControl
             this.coil0Label0.Size = new System.Drawing.Size(41, 13);
             this.coil0Label0.TabIndex = 7;
             this.coil0Label0.Text = "Current";
+            // 
+            // manualControlLED
+            // 
+            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.manualControlLED.Location = new System.Drawing.Point(675, 89);
+            this.manualControlLED.Name = "manualControlLED";
+            this.manualControlLED.Size = new System.Drawing.Size(110, 110);
+            this.manualControlLED.TabIndex = 14;
             // 
             // button1
             // 
@@ -885,9 +887,40 @@ namespace SympatheticHardwareControl
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
+            // remoteControlLED
+            // 
+            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.remoteControlLED.Location = new System.Drawing.Point(675, 231);
+            this.remoteControlLED.Name = "remoteControlLED";
+            this.remoteControlLED.OffColor = System.Drawing.Color.Maroon;
+            this.remoteControlLED.OnColor = System.Drawing.Color.Red;
+            this.remoteControlLED.Size = new System.Drawing.Size(110, 110);
+            this.remoteControlLED.TabIndex = 21;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(675, 215);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "Remote Control";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(675, 73);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(69, 13);
+            this.label2.TabIndex = 23;
+            this.label2.Text = "Local Control";
+            // 
             // ControlWindow
             // 
             this.ClientSize = new System.Drawing.Size(797, 596);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.remoteControlLED);
             this.Controls.Add(this.shcTabs);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.manualControlLED);
@@ -900,7 +933,6 @@ namespace SympatheticHardwareControl
             this.shcTabs.ResumeLayout(false);
             this.tabOverview.ResumeLayout(false);
             this.tabOverview.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
             this.tabLasers.ResumeLayout(false);
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
@@ -919,8 +951,10 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.PerformLayout();
             this.coil0GroupBox.ResumeLayout(false);
             this.coil0GroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1028,10 +1062,10 @@ namespace SympatheticHardwareControl
 
 
         //Declare stuff here
-        private TabControl shcTabs;
-        private TabPage tabOverview;
-        private TabPage tabLasers;
-        private TabPage tabCoils;
+        public TabControl shcTabs;
+        public TabPage tabOverview;
+        public TabPage tabLasers;
+        public TabPage tabCoils;
         private GroupBox aom0ControlBox;
         public CheckBox aom0CheckBox;
         public TextBox aom0rfFrequencyTextBox;
@@ -1123,7 +1157,7 @@ namespace SympatheticHardwareControl
 
         private void aom0UpdateButton_Click(object sender, EventArgs e)
         {
-            if(controller.SHCUIControl == true)
+            if(controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateAOM0(controller.Aom0Enabled, controller.Aom0rfAmplitude, controller.Aom0rfFrequency);
             }
@@ -1131,14 +1165,14 @@ namespace SympatheticHardwareControl
 
         private void aom1UpdateButton_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == true)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateAOM1(controller.Aom1Enabled, controller.Aom1rfAmplitude, controller.Aom1rfFrequency);
             }
         }
         private void aom2UpdateButton_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == true)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateAOM2(controller.Aom2Enabled, controller.Aom2rfAmplitude, controller.Aom2rfFrequency);
             }
@@ -1148,7 +1182,7 @@ namespace SympatheticHardwareControl
 
         private void aom3UpdateButton_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == true)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateAOM3(controller.Aom3Enabled, controller.Aom3rfAmplitude, controller.Aom3rfFrequency);
             }
@@ -1156,14 +1190,14 @@ namespace SympatheticHardwareControl
 
         private void coil0UpdateButton_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == true)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateCoil0(controller.Coil0Current);
             }
         }
         private void coil1UpdateButton_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == true)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.UpdateCoil1(controller.Coil1Current);
             }
@@ -1206,14 +1240,15 @@ namespace SympatheticHardwareControl
             this.snapshotButton.Enabled = true;
             this.streamButton.Enabled = true;
             this.stopStreamButton.Enabled = false;
-        }
+        }    
+        
 
         
 
         private void onToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.StartManualControl();
-            controller.SHCUIControl = true;
+            controller.HCState = Controller.SHCUIControlState.LOCAL;
             this.loadParametersToolStripMenuItem.Enabled = false;
             this.aom0UpdateButton.Enabled = true;
             this.aom1UpdateButton.Enabled = true;
@@ -1226,7 +1261,7 @@ namespace SympatheticHardwareControl
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.StopManualControl();
-            controller.SHCUIControl = false;
+            controller.HCState = Controller.SHCUIControlState.OFF;
             this.loadParametersToolStripMenuItem.Enabled = true;
             this.aom0UpdateButton.Enabled = false;
             this.aom1UpdateButton.Enabled = false;
@@ -1238,7 +1273,7 @@ namespace SympatheticHardwareControl
 
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (controller.SHCUIControl == false)
+            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
             {
                 controller.LoadParametersWithDialog();
             }
@@ -1272,6 +1307,10 @@ namespace SympatheticHardwareControl
         {
             controller.UpdateCameraAttributes();
         }
+
+        public Led remoteControlLED;
+        private Label label1;
+        private Label label2;
 
 
        

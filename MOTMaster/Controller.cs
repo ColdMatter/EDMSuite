@@ -13,6 +13,7 @@ using DAQ.HAL;
 using Data;
 using Data.Scans;
 using MOTMaster.PatternControl;
+using SympatheticHardwareControl;
 
 namespace MOTMaster
 {
@@ -36,7 +37,11 @@ namespace MOTMaster
         {
             get { return pc; }
         }
-        
+        private SympatheticHardwareControl.Controller hc;
+        public SympatheticHardwareControl.Controller HC
+        {
+            get { return hc; }
+        }
 
         private static Controller controllerInstance;
         public AppState appState = AppState.stopped;
@@ -74,15 +79,14 @@ namespace MOTMaster
                 "tcp://localhost:1180/controller.rem"
                 );
 
-            // make an acquisitor and connect ourself to its events
-            pc = new PatternController();
-            
+            // make an Pattern Controller and connect ourself to its events
+            pc = new PatternController();            
             controllerWindow = new ControllerWindow();
             controllerWindow.Show();
-
+            
             // Get access to any other applications required
             Environs.Hardware.ConnectApplications();
-
+            
             // run the main event loop
             Application.Run(controllerWindow);
 
@@ -133,9 +137,18 @@ namespace MOTMaster
             PatternStop();
         }
 
-        bool patternRunning = false;
+        public void StartHardwareControl()
+        {
+            hc = new SympatheticHardwareControl.Controller();
+            hc.StartRemoteControl();
+        }
 
-        
+        public void StopHardwareControl()
+        {
+            hc.StopRemoteControl();
+        }
+
+       
 
         #endregion
 

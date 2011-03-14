@@ -46,6 +46,8 @@ namespace SympatheticHardwareControl
 
         #region Setup
 
+
+
         // table of all digital tasks
         Hashtable digitalTasks = new Hashtable();
   
@@ -78,7 +80,13 @@ namespace SympatheticHardwareControl
 
         // Declare that there will be a window
         ControlWindow window;
-        private bool sHCUIControl;
+        //private bool sHCUIControl;
+        public enum SHCUIControlState {OFF, LOCAL, REMOTE};
+        SHCUIControlState hcState = new SHCUIControlState();
+        
+       
+
+          
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -124,6 +132,9 @@ namespace SympatheticHardwareControl
             // make the control window
             window = new ControlWindow();
             window.controller = this;
+
+
+            HCState = SHCUIControlState.OFF;
            
 
             // run
@@ -459,18 +470,17 @@ namespace SympatheticHardwareControl
         
        
         //This is a set of properties for controlling an aom
-
-        public bool SHCUIControl
+         public SHCUIControlState HCState
         {
-            get
-            {
-                return sHCUIControl;
-            }
-            set
-            {
-                sHCUIControl = value;
-            }
-        }
+             get
+             {
+                 return hcState;
+             }
+             set
+             {
+                 hcState = value;
+             }
+         }
 
         public bool Aom0Enabled
         {
@@ -719,10 +729,17 @@ namespace SympatheticHardwareControl
             UpdateCoil0(0.0);
             UpdateCoil1(0.0);
             window.SetLED(window.manualControlLED, false);
-            this.SHCUIControl = false;
+            HCState = SHCUIControlState.OFF;
+        }
+        public void DisableManualControl()
+        {
+            this.StoreParameters((string)Environs.FileSystem.Paths["settingsPath"]
+                + "\\SympatheticHardwareController\\tempParameters.bin");
+
         }
         public void StartManualControl()
         {
+            HCState = SHCUIControlState.LOCAL;
             UpdateAOM0(Aom0Enabled, Aom0rfAmplitude, Aom0rfFrequency);
             UpdateAOM1(Aom1Enabled, Aom1rfAmplitude, Aom1rfFrequency);
             UpdateAOM2(Aom2Enabled, Aom2rfAmplitude, Aom2rfFrequency);
@@ -730,9 +747,22 @@ namespace SympatheticHardwareControl
             UpdateCoil0(Coil0Current);
             UpdateCoil1(Coil1Current);
             window.SetLED(window.manualControlLED, true);
-            this.SHCUIControl = true;
+        }
+        public void StartRemoteControl()
+        {
+            this.StopManualControl();
+            this.StoreParameters((string)Environs.FileSystem.Paths["settingsPath"]
+                + "\\SympatheticHardwareController\\tempParameters.bin");
+            window.SetLED(window.remoteControlLED, true);
+            HCState = SHCUIControlState.REMOTE;
 
-
+        }
+        public void StopRemoteControl()
+        {
+            window.SetLED(window.remoteControlLED, false);
+            HCState = SHCUIControlState.OFF;
+            this.LoadParameters((string)Environs.FileSystem.Paths["settingsPath"]
+                + "\\SympatheticHardwareController\\tempParameters.bin");
         }
         #endregion
 
