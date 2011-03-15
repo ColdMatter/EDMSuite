@@ -16,7 +16,7 @@ namespace TransferCavityLock
         static void Main()
         {
 
-            DeadBolt controller = new DeadBolt();
+            Controller controller = new Controller();
 
             // publish the controller to the remoting system
            // TcpChannel channel = new TcpChannel(1179);

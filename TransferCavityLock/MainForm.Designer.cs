@@ -85,7 +85,6 @@
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Voltage Ramp";
-            this.voltageRampControl.Enter += new System.EventHandler(this.voltageRampControl_Enter);
             // 
             // fitEnableCheck
             // 
@@ -132,8 +131,7 @@
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size(162, 20);
             this.textBox.TabIndex = 3;
-            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
-            // 
+             // 
             // rampStartButton
             // 
             this.rampStartButton.Location = new System.Drawing.Point(6, 19);
@@ -167,7 +165,6 @@
             this.xAxis1});
             this.p1Intensity.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
-            this.p1Intensity.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.p1Intensity_PlotDataChanged);
             // 
             // scatterPlot1
             // 
@@ -186,7 +183,6 @@
             this.xAxis2});
             this.p2Intensity.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
-            this.p2Intensity.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.p2Intensity_PlotDataChanged);
             // 
             // scatterPlot2
             // 
@@ -216,7 +212,6 @@
             this.lockParams.TabIndex = 10;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
-            this.lockParams.Enter += new System.EventHandler(this.lockParams_Enter);
             // 
             // measuredPeakDistanceTextBox
             // 
@@ -224,7 +219,6 @@
             this.measuredPeakDistanceTextBox.Name = "measuredPeakDistanceTextBox";
             this.measuredPeakDistanceTextBox.Size = new System.Drawing.Size(57, 20);
             this.measuredPeakDistanceTextBox.TabIndex = 27;
-            this.measuredPeakDistanceTextBox.TextChanged += new System.EventHandler(this.measuredPeakDistanceTextBox_TextChanged);
             // 
             // cavityScanOffsetTextBox
             // 
@@ -242,7 +236,6 @@
             this.label7.Size = new System.Drawing.Size(98, 13);
             this.label7.TabIndex = 25;
             this.label7.Text = "Cavity Scan Offset:";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // cavityScanWidthTextBox
             // 
@@ -260,7 +253,6 @@
             this.label6.Size = new System.Drawing.Size(66, 13);
             this.label6.TabIndex = 23;
             this.label6.Text = "Scan Width:";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // numberOfPointsTextBox
             // 
@@ -278,7 +270,6 @@
             this.label5.Size = new System.Drawing.Size(90, 13);
             this.label5.TabIndex = 21;
             this.label5.Text = "Number of points:";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label4
             // 
@@ -288,7 +279,6 @@
             this.label4.Size = new System.Drawing.Size(29, 13);
             this.label4.TabIndex = 20;
             this.label4.Text = "Gain";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // GainTrackBar
             // 
@@ -296,7 +286,6 @@
             this.GainTrackBar.Name = "GainTrackBar";
             this.GainTrackBar.Size = new System.Drawing.Size(293, 45);
             this.GainTrackBar.TabIndex = 19;
-            this.GainTrackBar.Scroll += new System.EventHandler(this.GainTrackBar_Scroll);
             // 
             // initLaserVoltageUpDownBox
             // 
@@ -314,7 +303,6 @@
             this.label2.Size = new System.Drawing.Size(142, 13);
             this.label2.TabIndex = 17;
             this.label2.Text = "Approx. Voltage to Laser (V):";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // setPointUpDownBox
             // 
@@ -330,7 +318,6 @@
             this.voltageToLaserBox.Name = "voltageToLaserBox";
             this.voltageToLaserBox.Size = new System.Drawing.Size(57, 20);
             this.voltageToLaserBox.TabIndex = 14;
-            this.voltageToLaserBox.TextChanged += new System.EventHandler(this.voltageToLaserBox_TextChanged);
             // 
             // label3
             // 
@@ -340,7 +327,6 @@
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 13;
             this.label3.Text = "Set Point (V):";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // label8
             // 

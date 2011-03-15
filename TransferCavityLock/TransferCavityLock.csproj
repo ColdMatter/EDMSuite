@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CavityScanData.cs" />
-    <Compile Include="DeadBolt.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="ScanParameters.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

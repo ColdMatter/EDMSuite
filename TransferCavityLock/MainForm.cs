@@ -14,7 +14,7 @@ namespace TransferCavityLock
     /// </summary>
     public partial class MainForm : Form
     {
-        public DeadBolt controller;
+        public Controller controller;
 
         public object plotLock = new object();
         private double lv;
@@ -34,7 +34,7 @@ namespace TransferCavityLock
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            controller.RAMPING = false;
+            controller.Ramping = false;
             rampStartButton.Enabled = true;
             rampStopButton.Enabled = false;
             lockEnableCheck.Enabled = false;
@@ -277,15 +277,10 @@ namespace TransferCavityLock
 
         #region controls
 
-        private void voltageRampControl_Enter(object sender, EventArgs e)
-        {
-
-        }
-        
         private void rampStartButton_Click(object sender, EventArgs e)
         {
             this.AddToTextBox("Start button pressed.");
-            controller.RAMPING = true;
+            controller.Ramping = true;
             this.rampLED.Value = true;
             controller.startRamp();
             this.rampStartButton.Enabled = false;
@@ -301,7 +296,7 @@ namespace TransferCavityLock
             lock (controller.rampStopLock)
             {
                 this.AddToTextBox("Stop button pressed.");
-                controller.RAMPING = false;
+                controller.Ramping = false;
             }
             this.numberOfPointsTextBox.Enabled = true;
             rampStartButton.Enabled = true;
@@ -310,41 +305,6 @@ namespace TransferCavityLock
             this.cavityScanWidthTextBox.Enabled = true;
             this.cavityScanOffsetTextBox.Enabled = true;
             this.initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
-        }
-
-        private void rampLED_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
-        {
-
-        }
-
-        private void textBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void p1Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-           
-        }
-
-        private void p2Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-            
-        }
-
-        private void lockParams_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void voltageToLaserBox_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
@@ -389,29 +349,9 @@ namespace TransferCavityLock
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
         private void initLaserVoltageUpDownBox_ValueChanged(object sender, EventArgs e)
         {
             lv = Convert.ToDouble(initLaserVoltageUpDownBox.Value);
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GainTrackBar_Scroll(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void numberOfPointsTextBox_TextChanged(object sender, EventArgs e)
@@ -421,7 +361,7 @@ namespace TransferCavityLock
                 NewStepNumber = Convert.ToInt32(numberOfPointsTextBox.Text);
             }
             catch (FormatException f)
-            { }
+            { Console.Error.WriteLine(f.ToString()); }
         }
 
         private void cavityScanWidthTextBox_TextChanged(object sender, EventArgs e)
@@ -431,16 +371,7 @@ namespace TransferCavityLock
                 ScanWidth = Convert.ToDouble(cavityScanWidthTextBox.Text);
             }
             catch (FormatException f)
-            { }
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void label7_Click(object sender, EventArgs e)
-        {
+            { Console.Error.WriteLine(f.ToString()); }
 
         }
 
@@ -451,11 +382,7 @@ namespace TransferCavityLock
                 ScanOffset = Convert.ToDouble(cavityScanOffsetTextBox.Text);
             }
             catch (FormatException f)
-            { }
-        }
-        private void measuredPeakDistanceTextBox_TextChanged(object sender, EventArgs e)
-        {
-
+            { Console.Error.WriteLine(f.ToString()); }
         }
 
         #endregion
