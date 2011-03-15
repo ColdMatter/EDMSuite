@@ -159,6 +159,10 @@ namespace Analysis.EDM
             AddFixedSliceConfig("nudgeGate7", 2208, 90);
             AddFixedSliceConfig("nudgeGate8", 2228, 90);
             AddFixedSliceConfig("wideNudgeGate1", 2198, 100);
+            AddFixedSliceConfig("narrowNudgeGate1", 2198, 75);
+            AddFixedSliceConfig("narrowNudgeGate2", 2198, 65);
+            AddFixedSliceConfig("narrowNudgeGate3", 2198, 55);
+            AddFixedSliceConfig("narrowNudgeGate4", 2198, 45);
 
             // these two are the fast and slow halves of the 1.1 sigma central gate.
             AddFixedSliceConfig("fastFixed", 2110, 45);
