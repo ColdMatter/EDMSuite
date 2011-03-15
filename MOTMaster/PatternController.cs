@@ -50,7 +50,7 @@ namespace MOTMaster.PatternControl
             // when acquiring a set number of scans - the monitor is released in
             // AcquisitionFinishing() (not true. Released here now)
             Monitor.Enter(PatternMonitorLock);
-            PatternStart();
+            //RUN THE PATTERN HERE!!!
             backendState = PatternState.stopped;
             // set the controller state to stopped
             Controller.GetController().appState = Controller.AppState.stopped;

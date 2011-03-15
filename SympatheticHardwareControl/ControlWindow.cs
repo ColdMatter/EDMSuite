@@ -1273,7 +1273,7 @@ namespace SympatheticHardwareControl
 
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
+            if (controller.HCState == Controller.SHCUIControlState.OFF)
             {
                 controller.LoadParametersWithDialog();
             }

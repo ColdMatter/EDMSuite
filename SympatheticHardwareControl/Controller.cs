@@ -300,7 +300,7 @@ namespace SympatheticHardwareControl
                 }
             }
         }
-
+        
         // Quietly.
         public void StoreParameters()
         {
@@ -335,12 +335,20 @@ namespace SympatheticHardwareControl
 
             // serialize it
             BinaryFormatter s = new BinaryFormatter();
+            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
             try
             {
-                s.Serialize(new FileStream(dataStoreFilePath, FileMode.Create), dataStore);
+                s.Serialize(fs, dataStore);
             }
             catch (Exception)
-            { Console.Out.WriteLine("Unable to store settings"); }
+            {
+                Console.Out.WriteLine("Saving failed");
+            }
+            finally
+            {
+                fs.Close();
+            }
+            
         }
 
         //Load parameters when opening the controller
@@ -367,8 +375,8 @@ namespace SympatheticHardwareControl
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
-            // eat any errors in the following, as it's just a convenience function
             FileStream fs = new FileStream(dataStoreFilePath, FileMode.Open);
+            // eat any errors in the following, as it's just a convenience function
             try
             {
                 DataStore dataStore = (DataStore)s.Deserialize(fs);
@@ -728,41 +736,59 @@ namespace SympatheticHardwareControl
             UpdateAOM3(false, 0.0, 0.0);
             UpdateCoil0(0.0);
             UpdateCoil1(0.0);
-            window.SetLED(window.manualControlLED, false);
             HCState = SHCUIControlState.OFF;
+            window.SetLED(window.manualControlLED, false);
         }
-        public void DisableManualControl()
-        {
-            this.StoreParameters((string)Environs.FileSystem.Paths["settingsPath"]
-                + "\\SympatheticHardwareController\\tempParameters.bin");
-
-        }
+        
         public void StartManualControl()
         {
-            HCState = SHCUIControlState.LOCAL;
-            UpdateAOM0(Aom0Enabled, Aom0rfAmplitude, Aom0rfFrequency);
-            UpdateAOM1(Aom1Enabled, Aom1rfAmplitude, Aom1rfFrequency);
-            UpdateAOM2(Aom2Enabled, Aom2rfAmplitude, Aom2rfFrequency);
-            UpdateAOM3(Aom3Enabled, Aom3rfAmplitude, Aom3rfFrequency);
-            UpdateCoil0(Coil0Current);
-            UpdateCoil1(Coil1Current);
-            window.SetLED(window.manualControlLED, true);
+            if (HCState == SHCUIControlState.OFF)
+            {
+                HCState = SHCUIControlState.LOCAL;
+                UpdateAOM0(Aom0Enabled, Aom0rfAmplitude, Aom0rfFrequency);
+                UpdateAOM1(Aom1Enabled, Aom1rfAmplitude, Aom1rfFrequency);
+                UpdateAOM2(Aom2Enabled, Aom2rfAmplitude, Aom2rfFrequency);
+                UpdateAOM3(Aom3Enabled, Aom3rfAmplitude, Aom3rfFrequency);
+                UpdateCoil0(Coil0Current);
+                UpdateCoil1(Coil1Current);
+                window.SetLED(window.manualControlLED, true);
+            }
+            else
+            {
+                Console.Out.WriteLine("Controller is currently busy.");
+            }
         }
         public void StartRemoteControl()
         {
-            this.StopManualControl();
-            this.StoreParameters((string)Environs.FileSystem.Paths["settingsPath"]
-                + "\\SympatheticHardwareController\\tempParameters.bin");
-            window.SetLED(window.remoteControlLED, true);
-            HCState = SHCUIControlState.REMOTE;
+            if (HCState == SHCUIControlState.OFF)
+            {
+                HCState = SHCUIControlState.REMOTE;
+                string sp = (string)Environs.FileSystem.Paths["settingsPath"];
+                string dataStoreFilePath = "\\SympatheticHardwareController\\tempParameters.bin";
+                this.StoreParameters(sp + dataStoreFilePath);
+                window.SetLED(window.remoteControlLED, true);   
+            }
+            else
+            {
+                Console.Out.WriteLine("Controller is currently busy.");
+            }
 
         }
         public void StopRemoteControl()
         {
-            window.SetLED(window.remoteControlLED, false);
+            string sp = (string)Environs.FileSystem.Paths["settingsPath"];
+            string dataStoreFilePath = "\\SympatheticHardwareController\\tempParameters.bin";
+            try
+            {
+                this.LoadParameters(sp + dataStoreFilePath);
+                System.IO.File.Delete(sp + dataStoreFilePath);
+            }
+            catch (Exception)
+            {
+                Console.Out.WriteLine("Unable to load Parameters.");
+            }
             HCState = SHCUIControlState.OFF;
-            this.LoadParameters((string)Environs.FileSystem.Paths["settingsPath"]
-                + "\\SympatheticHardwareController\\tempParameters.bin");
+            window.SetLED(window.remoteControlLED, false);
         }
         #endregion
 
