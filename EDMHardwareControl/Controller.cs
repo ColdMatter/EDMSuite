@@ -135,7 +135,8 @@ namespace EDMHardwareControl
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
-            CreateDigitalTask("pumpAOMFreqMon");
+            CreateDigitalTask("rfCountSwBit1");
+            CreateDigitalTask("rfCountSwBit2");
             CreateDigitalTask("fibreAmpEnable");
 
             // digitial input tasks
@@ -1943,8 +1944,11 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.FLPZTStepPlusButton, true);
             UpdateFLPZTV();
             Thread.Sleep(10);
-            // The I2 VCO is connected to channel two
-            rfCounter.Channel = 2;
+            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("IodineFreqMon");
+            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
+            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
+            rfCounter.Channel = 2; 
             double I2PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.I2AOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
 
@@ -1959,18 +1963,15 @@ namespace EDMHardwareControl
 
         public void UpdatePumpAOMFreqMonitor()
         {
-            // The Pump AOM VCO is also connected to channel 2 on the counter
-            // A relay is connected to a digital channel which switches
-            // the rf counter input between the I2 VCO and the Pump VCO
 
-            // Energise the relay
-            SetDigitalLine("pumpAOMFreqMon", true);
+            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("pumpAOMFreqMon");
+            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
             Thread.Sleep(10);
+            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
             rfCounter.Channel = 2;
             double PumpAOMFreq = rfCounter.Frequency;
             window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
-            // De-energise relay
-            SetDigitalLine("pumpAOMFreqMon", false);
         }
 
         internal void UpdateProbePolarizerAngle()
@@ -2172,7 +2173,7 @@ namespace EDMHardwareControl
             if (window.FLPZTStepPlusButton.Checked) pztVoltage += Double.Parse(window.FLPZTStepTextBox.Text);
             pztVoltage = windowVoltage(pztVoltage, 0, 5);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
-            window.FLPZTVtrackBar.Value = pztVoltage;
+            window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
         }
 
         public void UpdateFLPZTV(double pztVoltage)

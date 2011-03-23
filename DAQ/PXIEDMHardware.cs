@@ -42,12 +42,19 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
+
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
+            // rf counter switch control seq
+            Info.Add("IodineFreqMon", new bool[] { false, false }); // IN 1
+            Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
+            Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
+
+           
 
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
@@ -79,6 +86,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
             // will switch if it's switch scanning.
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
+            //RF Counter Control (single pole 4 throw)
+            AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
+            AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
 
             // these channel are usually software switched - they should not be in
             // the lower half of the pattern generator
@@ -97,7 +107,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
-            AddDigitalOutputChannel("pumpAOMFreqMon", pgBoard, 2, 4);
+           
 
 
             AddDigitalOutputChannel("fibreAmpEnable", aoBoard, 0, 0);
