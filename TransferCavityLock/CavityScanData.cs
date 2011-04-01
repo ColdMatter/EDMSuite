@@ -15,55 +15,65 @@ using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {
+
+    //I tried to bundle everything to do with a single scan (scan parameters as well as data) into the same class.
+    //I might have overdone the inheritance thing, but I was practising. The base class keeps parameters 
+    //concerning the cavity ramp. Then a few other parameters about the scan get added to the 
+    //scan parameters, then this bit holds the data.
+
     class CavityScanData
     {
-        private double[] voltages, p1Data, p2Data;
-        
-        public CavityScanData(int steps)
-        {
-            this.voltages = new double[steps];
-            this.p1Data = new double[steps];
-            this.p2Data = new double[steps];
-        }
+        public double[,] PhotodiodeData;
+        public ScanParameters parameters = new ScanParameters();
 
-        public double[] Voltages
+        public CavityScanData(int Steps)
         {
-            set { voltages = value; }
-            get { return voltages; }
-        }
-        public double[] P1Data
-        {
-            set { p1Data = value; }
-            get { return p1Data; }
-        }
-        public double[] P2Data
-        {
-            set { p2Data = value; }
-            get { return p2Data; }
-        }
+            PhotodiodeData = new double[2, Steps];
+            parameters.Steps = Steps;
+       }
 
-        public void PrepareData(ScanParameters parameters)
+        public double[] MasterPhotodiodeData
         {
-            parameters.AdjustStepSize();
-            for (int i = 0; i < parameters.Steps; i++)
+            get
             {
-                this.voltages[i] = parameters.Low + i * parameters.StepSize;
-                this.p1Data[i] = 0;
-                this.p2Data[i] = 0;
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    temp[i] = PhotodiodeData[0, i];
+                }
+                return temp;
+            }
+            set
+            {
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    PhotodiodeData[0, i] = value[i];
+                }
             }
         }
-        
-        public double[,] ConvertCavityDataToDoublesArray()
+        public double[] SlavePhotodiodeData
         {
-           double[,] rd = new double[3, this.voltages.GetLength(0)];
-           for (int i = 0; i < this.voltages.GetLength(0); i++)
-           {
-               rd[0, i] = this.voltages[i];
-               rd[1, i] = this.p1Data[i];
-               rd[2, i] = this.p2Data[i];
-           }
-           return rd;
+            get
+            {
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    temp[i] = PhotodiodeData[1, i];
+                }
+                return temp;
+            }
+            set
+            {
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    PhotodiodeData[1, i] = value[i];
+                }
+            }
         }
+
+ 
 
     }
 }

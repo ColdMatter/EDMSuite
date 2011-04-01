@@ -2,33 +2,46 @@
 
 namespace TransferCavityLock
 {
-    public class ScanParameters : RampParameters
+    public class ScanParameters
     {
-        public AnalogSingleChannelWriter Writer;
-        public AnalogMultiChannelReader Reader;
-        public bool Record;
-        public double SetPoint = 0.0;
-        public RampParameters rampParams = new RampParameters();
+        //Never exceed these values during the ramp!
+        public const double UPPER_CC_VOLTAGE_LIMIT = 10.0; //volts CC: Cavity control
+        public const double LOWER_CC_VOLTAGE_LIMIT = -10.0; //volts CC: Cavity control
+      
+        public double Low;
+        public double High;
+        public int Steps;
+        public int SleepTime;
+        private double stepSize;
 
-        public ScanParameters(AnalogMultiChannelReader r, AnalogSingleChannelWriter w)
+        public double GetStepSize()
         {
-            this.Reader = r;
-            this.Writer = w;
+            CalculateStepSize();
+            return stepSize;
         }
 
-        public void ArmScan(double low, double high, int sleepTime, int steps, bool record, double setPoint)
+        private void CalculateStepSize()
         {
-            this.Low = low;
-            this.High = high;
-            this.SleepTime = sleepTime;
-            this.Steps = steps;
-            this.Record = record;
-            this.StepSize = (high - low) / (steps - 1);
-            this.SetPoint = setPoint;
+            stepSize = (High - Low) / (Steps - 1);
         }
-        public void AdjustStepSize()
+
+        public  double[] CalculateRampVoltages()
         {
-            this.StepSize = (this.High - this.Low) / (this.Steps - 1);
+            double[] voltages = new double[Steps];
+            double stepSize = GetStepSize();
+            for (int i = 0; i < Steps; i++)
+            {
+                if (Low + i * stepSize < LOWER_CC_VOLTAGE_LIMIT)
+                {
+                    voltages[i] = LOWER_CC_VOLTAGE_LIMIT;
+                }
+                else if (Low + i * stepSize > UPPER_CC_VOLTAGE_LIMIT)
+                {
+                    voltages[i] = UPPER_CC_VOLTAGE_LIMIT;
+                }
+                else { voltages[i] = Low + i * stepSize; }
+            }
+            return voltages;
         }
     }
 }
