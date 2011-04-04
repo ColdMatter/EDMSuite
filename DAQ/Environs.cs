@@ -109,7 +109,7 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
-                case "SEALCLUBBER":
+                case "TURTLETAMER":
                     Hardware = new EDMHardware();
                     FileSystem = new SealClubberFileSystem();
                     Debug = true;
