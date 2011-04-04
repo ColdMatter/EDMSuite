@@ -24,7 +24,7 @@ namespace SirCachealot
             controller.mainWindow = window;
 
             // publish the controller to the remoting system
-            TcpChannel channel = new TcpChannel(1172);
+            TcpChannel channel = new TcpChannel(1180);
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 
