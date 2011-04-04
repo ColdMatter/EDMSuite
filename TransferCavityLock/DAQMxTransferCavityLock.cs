@@ -5,6 +5,7 @@ using NationalInstruments.DAQmx;
 
 using DAQ.Environment;
 using DAQ.HAL;
+using DAQ.TransferCavityLock;
 
 // this is the DAQMx implementation of TransferCavityLock.
 // Note to self: this is where Tasks are created, where read and write commands are kept.

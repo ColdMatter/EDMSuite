@@ -15,6 +15,7 @@ using NationalInstruments.VisaNS;
 
 using DAQ.HAL;
 using DAQ.Environment;
+using DAQ.TransferCavityLock;
 
 namespace SympatheticHardwareControl
 {
@@ -33,7 +34,7 @@ namespace SympatheticHardwareControl
     /// 3/ Create the tasks
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject
+    public class Controller : MarshalByRefObject, TransferCavityLockable
     {
         #region Constants
        //Put any constants and stuff here
@@ -653,5 +654,74 @@ namespace SympatheticHardwareControl
         
         #endregion
 
+
+        #region TransferCavityLockable Members
+
+        public void ConfigureCavityScan(int numberOfSteps, bool autostart)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConfigureReadPhotodiodes(int numberOfMeasurements, bool autostart)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConfigureSetLaserVoltage(double voltage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConfigureScanTrigger()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ScanCavity(double[] rampVoltages, bool autostart)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartCavityScan()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopCavityScan()
+        {
+            throw new NotImplementedException();
+        }
+
+        public double[,] ReadPhotodiodes(int numberOfMeasurements)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartReadingPhotodiodes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopReadingPhotodiodes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetLaserVoltage(double voltage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReleaseHardwareControl()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ScanAndWait()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

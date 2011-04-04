@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using NationalInstruments.DAQmx;
+using DAQ.TransferCavityLock;
 using DAQ.Environment;
 using DAQ.HAL;
 using System.Windows.Forms;
@@ -35,7 +36,8 @@ namespace TransferCavityLock
 
         private MainForm ui;
 
-        private DAQMxTransferCavityLock tcl = new DAQMxTransferCavityLock();
+        private TransferCavityLockable tcl = 
+            (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), "http://localhost:1172");
 
         public enum ControllerState
         {

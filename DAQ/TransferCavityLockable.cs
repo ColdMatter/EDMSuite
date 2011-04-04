@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace TransferCavityLock
+namespace DAQ.TransferCavityLock
 {
     /// <summary>
     /// This is an interface for all the capabilities necessary for a transfer cavity lock.
