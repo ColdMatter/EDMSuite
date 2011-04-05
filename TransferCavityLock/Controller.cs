@@ -37,7 +37,8 @@ namespace TransferCavityLock
         private MainForm ui;
 
         private TransferCavityLockable tcl = 
-            (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), "http://localhost:1172");
+            (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), 
+            "tcp://localhost:1172/controller.rem");
 
         public enum ControllerState
         {
@@ -212,17 +213,14 @@ namespace TransferCavityLock
             double[] voltages = sp.CalculateRampVoltages();
 
             tcl.ScanCavity(voltages, false);
-            tcl.StartReadingPhotodiodes();
-            tcl.StartCavityScan();
-
+            tcl.StartScan();
 
             Thread.Sleep(10);
-            tcl.ScanAndWait();
+            tcl.SendScanTriggerAndWaitUntilDone();
 
             scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps);
 
-            tcl.StopCavityScan();
-            tcl.StopReadingPhotodiodes();
+            tcl.StopScan();
 
             return scanData;
         }
@@ -335,15 +333,15 @@ namespace TransferCavityLock
         /// This adjusts the scan range of the next scan, so that the HeNe peak stays in the middle of the scan.
         /// It modifies the scan parameters that are passed to it.
         /// </summary>
-        private void calculateNewScanRange(ScanParameters scanParameters, double[] masterPDFitCoefficients)
+        private void calculateNewScanRange(ScanParameters scanParameters, double[] fitCoefficients)
         {
-             if (masterPDFitCoefficients[1] - scanWidth > LOWER_CC_VOLTAGE_LIMIT
-                && masterPDFitCoefficients[1] + scanWidth < UPPER_CC_VOLTAGE_LIMIT
-                && masterPDFitCoefficients[1] + scanWidth < scanParameters.High
-                && masterPDFitCoefficients[1] - scanWidth > scanParameters.Low) //Only change limits if fits are reasonable.
+             if (fitCoefficients[1] - scanWidth > LOWER_CC_VOLTAGE_LIMIT
+                && fitCoefficients[1] + scanWidth < UPPER_CC_VOLTAGE_LIMIT
+                && fitCoefficients[1] + scanWidth < scanParameters.High
+                && fitCoefficients[1] - scanWidth > scanParameters.Low) //Only change limits if fits are reasonable.
             {
-                scanParameters.High = masterPDFitCoefficients[1] + scanWidth;//Adjust scan range!
-                scanParameters.Low = masterPDFitCoefficients[1] - scanWidth;
+                scanParameters.High = fitCoefficients[1] + scanWidth;//Adjust scan range!
+                scanParameters.Low = fitCoefficients[1] - scanWidth;
             }
         }
 
@@ -352,13 +350,13 @@ namespace TransferCavityLock
         /// The lock (see calculateDeviationFromSetPoint) will adjust the voltage fed to the TiS to keep this number constant.
         /// </summary>     
 
-        private double CalculateLaserSetPoint(double[] MasterPDFitCoefficients, double[] SlavePDFitCoefficients)
+        private double CalculateLaserSetPoint(double[] MasterPDFitCoefficients, double[] fitCoefficients)
         {
             double setPoint = new double();
-            if (SlavePDFitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
-               && SlavePDFitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
+            if (fitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
+               && fitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
             {
-                setPoint = Math.Round(SlavePDFitCoefficients[1] - MasterPDFitCoefficients[1], 4);
+                setPoint = Math.Round(fitCoefficients[1] - MasterPDFitCoefficients[1], 4);
             }
             else
             {
@@ -370,7 +368,7 @@ namespace TransferCavityLock
 
         private double tweakSetPoint(double oldSetPoint)
         {
-            double newSetPoint = oldSetPoint + TWEAK_GAIN * (Increments - Decrements); //
+            double newSetPoint = oldSetPoint + TWEAK_GAIN * (Increments - Decrements); 
             Increments = 0;
             Decrements = 0;
             return newSetPoint;

@@ -45,6 +45,11 @@ namespace SympatheticHardwareControl
         // table of all digital tasks
         Hashtable digitalTasks = new Hashtable();
 
+        //TCL
+        DAQMxTransferCavityLockHelper TCLHelper = new DAQMxTransferCavityLockHelper("cavity", "analogTrigger3",
+            "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
+
+       
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
@@ -659,67 +664,57 @@ namespace SympatheticHardwareControl
 
         public void ConfigureCavityScan(int numberOfSteps, bool autostart)
         {
-            throw new NotImplementedException();
+            TCLHelper.ConfigureCavityScan(numberOfSteps, autostart);
         }
 
         public void ConfigureReadPhotodiodes(int numberOfMeasurements, bool autostart)
         {
-            throw new NotImplementedException();
+            TCLHelper.ConfigureReadPhotodiodes(numberOfMeasurements, autostart);
         }
 
         public void ConfigureSetLaserVoltage(double voltage)
         {
-            throw new NotImplementedException();
+            TCLHelper.ConfigureSetLaserVoltage(voltage);
         }
 
         public void ConfigureScanTrigger()
         {
-            throw new NotImplementedException();
+            TCLHelper.ConfigureScanTrigger();
         }
 
         public void ScanCavity(double[] rampVoltages, bool autostart)
         {
-            throw new NotImplementedException();
+            TCLHelper.ScanCavity(rampVoltages, autostart);
         }
 
-        public void StartCavityScan()
+        public void StartScan()
         {
-            throw new NotImplementedException();
+            TCLHelper.StartScan();
         }
 
-        public void StopCavityScan()
+        public void StopScan()
         {
-            throw new NotImplementedException();
+            TCLHelper.StopScan();
         }
 
         public double[,] ReadPhotodiodes(int numberOfMeasurements)
         {
-            throw new NotImplementedException();
-        }
-
-        public void StartReadingPhotodiodes()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StopReadingPhotodiodes()
-        {
-            throw new NotImplementedException();
+            return TCLHelper.ReadPhotodiodes(numberOfMeasurements);
         }
 
         public void SetLaserVoltage(double voltage)
         {
-            throw new NotImplementedException();
+            TCLHelper.SetLaserVoltage(voltage);
         }
 
         public void ReleaseHardwareControl()
         {
-            throw new NotImplementedException();
+            TCLHelper.ReleaseHardwareControl();
         }
 
-        public void ScanAndWait()
+        public void SendScanTriggerAndWaitUntilDone()
         {
-            throw new NotImplementedException();
+            TCLHelper.SendScanTriggerAndWaitUntilDone();
         }
 
         #endregion

@@ -243,6 +243,7 @@
             // 
             this.LaserSetPointTextBox.Location = new System.Drawing.Point(167, 63);
             this.LaserSetPointTextBox.Name = "LaserSetPointTextBox";
+            this.LaserSetPointTextBox.ReadOnly = true;
             this.LaserSetPointTextBox.Size = new System.Drawing.Size(57, 20);
             this.LaserSetPointTextBox.TabIndex = 27;
             // 

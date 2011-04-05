@@ -15,19 +15,15 @@ namespace DAQ.TransferCavityLock
         void ConfigureScanTrigger();
 
         void ScanCavity(double[] rampVoltages, bool autostart);
-        void StartCavityScan();
-        void StopCavityScan();
-
         double[,] ReadPhotodiodes(int numberOfMeasurements);
-        void StartReadingPhotodiodes();
-        void StopReadingPhotodiodes();
 
+        void StartScan();
+        void StopScan();
+        
         void SetLaserVoltage(double voltage);
         void ReleaseHardwareControl();
-        void ScanAndWait();
+        void SendScanTriggerAndWaitUntilDone();
 
-
-      
     }
     
 
