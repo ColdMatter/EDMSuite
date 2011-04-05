@@ -53,7 +53,7 @@ namespace DAQ.Remoting
         {
             RemotingConfiguration.RegisterWellKnownClientType(
                     Type.GetType("DecelerationHardwareControl.Controller, DecelerationHardwareControl"),
-                    "tcp://localhost:1177/controller.rem"
+                    "tcp://localhost:1172/controller.rem"
                     );
         }
 

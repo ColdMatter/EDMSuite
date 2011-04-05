@@ -63,7 +63,7 @@ namespace DAQ.TransferCavityLock
             photodiodeTriggerInputName = photodiodeTriggerInput;
             this.triggerOutput = triggerOutputName;
         }
-        //WRITE CONSTRUCTOR TO TAKE CHANNEL NAMES AS PARAMERTERS!
+
         #region Methods for configuring the hardware
 
         public void ConfigureCavityScan(int numberOfSteps, bool autostart)
@@ -77,7 +77,7 @@ namespace DAQ.TransferCavityLock
 
             if (!autostart)
             {
-                outputCavityTask.Timing.ConfigureSampleClock("", 1000,
+                outputCavityTask.Timing.ConfigureSampleClock("", 500,
                 SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, 2 * numberOfSteps);
                 outputCavityTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                         (string)Environs.Hardware.GetInfo(cavityTriggerInputName), DigitalEdgeStartTriggerEdge.Rising);
@@ -101,7 +101,7 @@ namespace DAQ.TransferCavityLock
             {
                 readPhotodiodesTask.Timing.ConfigureSampleClock(
                    "",
-                   1000,
+                   500,
                    SampleClockActiveEdge.Rising,
                    SampleQuantityMode.FiniteSamples, 2 * numberOfMeasurements);
                 readPhotodiodesTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(

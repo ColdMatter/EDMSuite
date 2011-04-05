@@ -4,14 +4,19 @@ using System.Text;
 using System.Windows.Forms;
 using DAQ.Environment;
 using DAQ.HAL;
+using DAQ.TransferCavityLock;
 using NationalInstruments.DAQmx;
 
 namespace DecelerationHardwareControl
 {
-    public class Controller : MarshalByRefObject
+    public class Controller : MarshalByRefObject, TransferCavityLockable
     {
 
         ControlWindow window;
+
+        private DAQMxTransferCavityLockHelper TCLHelper = new DAQMxTransferCavityLockHelper
+            ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
+
         private bool analogsAvailable;
         private double lastCavityData;
         private double lastrefCavityData;
@@ -162,5 +167,65 @@ namespace DecelerationHardwareControl
         {
             window.SetDiodeWarning(window.diodeSaturation, false);
         }
+
+
+        #region TransferCavityLockable Members
+
+        public void ConfigureCavityScan(int numberOfSteps, bool autostart)
+        {
+            TCLHelper.ConfigureCavityScan(numberOfSteps, autostart);
+        }
+
+        public void ConfigureReadPhotodiodes(int numberOfMeasurements, bool autostart)
+        {
+            TCLHelper.ConfigureReadPhotodiodes(numberOfMeasurements, autostart);
+        }
+
+        public void ConfigureSetLaserVoltage(double voltage)
+        {
+            TCLHelper.ConfigureSetLaserVoltage(voltage);
+        }
+
+        public void ConfigureScanTrigger()
+        {
+            TCLHelper.ConfigureScanTrigger();
+        }
+
+        public void ScanCavity(double[] rampVoltages, bool autostart)
+        {
+            TCLHelper.ScanCavity(rampVoltages, autostart);
+        }
+
+        public void StartScan()
+        {
+            TCLHelper.StartScan();
+        }
+
+        public void StopScan()
+        {
+            TCLHelper.StopScan();
+        }
+
+        public double[,] ReadPhotodiodes(int numberOfMeasurements)
+        {
+            return TCLHelper.ReadPhotodiodes(numberOfMeasurements);
+        }
+
+        public void SetLaserVoltage(double voltage)
+        {
+            TCLHelper.SetLaserVoltage(voltage);
+        }
+
+        public void ReleaseHardwareControl()
+        {
+            TCLHelper.ReleaseHardwareControl();
+        }
+
+        public void SendScanTriggerAndWaitUntilDone()
+        {
+            TCLHelper.SendScanTriggerAndWaitUntilDone();
+        }
+        #endregion
+
     }
 }

@@ -11,7 +11,7 @@ namespace TransferCavityLock
         {
             double mse = 0;
             double[] voltages = data.parameters.CalculateRampVoltages();
-            double[] coefficients = new double[] {0.05, voltages[ArrayOperation.GetIndexOfMax(data.SlavePhotodiodeData)],
+            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/10, voltages[ArrayOperation.GetIndexOfMax(data.SlavePhotodiodeData)],
                 ArrayOperation.GetMax(data.SlavePhotodiodeData) - ArrayOperation.GetMin(data.SlavePhotodiodeData)};
             CurveFit.NonLinearFit(voltages, data.SlavePhotodiodeData, new ModelFunctionCallback(lorentzianNarrow),
                     coefficients, out mse, 1000);
@@ -23,7 +23,7 @@ namespace TransferCavityLock
         {
             double mse = 0;
             double[] voltages = data.parameters.CalculateRampVoltages();
-            double[] coefficients = new double[] {0.05, voltages[ArrayOperation.GetIndexOfMax(data.MasterPhotodiodeData)],
+            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/10, voltages[ArrayOperation.GetIndexOfMax(data.MasterPhotodiodeData)],
                 ArrayOperation.GetMax(data.MasterPhotodiodeData) - ArrayOperation.GetMin(data.MasterPhotodiodeData)};
             CurveFit.NonLinearFit(voltages, data.MasterPhotodiodeData, new ModelFunctionCallback(lorentzianNarrow),
                     coefficients, out mse, 1000);

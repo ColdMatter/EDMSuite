@@ -19,7 +19,7 @@ namespace DecelerationHardwareControl
             Controller controller = new Controller();
 
             // publish the controller to the remoting system
-            TcpChannel channel = new TcpChannel(1177);
+            TcpChannel channel = new TcpChannel(1172);
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 

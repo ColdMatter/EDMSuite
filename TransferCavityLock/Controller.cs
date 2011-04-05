@@ -215,7 +215,7 @@ namespace TransferCavityLock
             tcl.ScanCavity(voltages, false);
             tcl.StartScan();
 
-            Thread.Sleep(10);
+            Thread.Sleep(100);
             tcl.SendScanTriggerAndWaitUntilDone();
 
             scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps);
@@ -245,7 +245,7 @@ namespace TransferCavityLock
                 displayData(sp, scanData);
 
                 double[] masterDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
-                double[] slaveDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
+                double[] slaveDataFit;
 
                 switch (State)
                 {
@@ -253,12 +253,17 @@ namespace TransferCavityLock
                         break;
 
                     case ControllerState.CAVITYSTABILIZED:
-                        calculateNewScanRange(sp, masterDataFit);
+                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                        sp.High = ScanOffset + scanWidth;
+                        sp.Low = ScanOffset - scanWidth;
                         break;
 
                     case ControllerState.LASERLOCKING:
-                        calculateNewScanRange(sp, masterDataFit);
+                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                        sp.High = ScanOffset + scanWidth;
+                        sp.Low = ScanOffset - scanWidth;
 
+                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
                         State = ControllerState.LASERLOCKED;
@@ -266,11 +271,14 @@ namespace TransferCavityLock
                         break;
 
                     case ControllerState.LASERLOCKED:
-                        calculateNewScanRange(sp, masterDataFit);
+                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                        sp.High = ScanOffset + scanWidth;
+                        sp.Low = ScanOffset - scanWidth;
 
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
-                        double shift = calculateDeviationFromSetPoint(LaserSetPoint, slaveDataFit, masterDataFit);
+                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(shift, VoltageToLaser);
 
                         break;
@@ -333,16 +341,21 @@ namespace TransferCavityLock
         /// This adjusts the scan range of the next scan, so that the HeNe peak stays in the middle of the scan.
         /// It modifies the scan parameters that are passed to it.
         /// </summary>
-        private void calculateNewScanRange(ScanParameters scanParameters, double[] fitCoefficients)
+        private double calculateNewScanCentre(ScanParameters scanParameters, double[] fitCoefficients)
         {
-             if (fitCoefficients[1] - scanWidth > LOWER_CC_VOLTAGE_LIMIT
-                && fitCoefficients[1] + scanWidth < UPPER_CC_VOLTAGE_LIMIT
-                && fitCoefficients[1] + scanWidth < scanParameters.High
-                && fitCoefficients[1] - scanWidth > scanParameters.Low) //Only change limits if fits are reasonable.
+            double newCentroid = new double();
+            if (fitCoefficients[1] - scanWidth > LOWER_CC_VOLTAGE_LIMIT
+               && fitCoefficients[1] + scanWidth < UPPER_CC_VOLTAGE_LIMIT
+               && fitCoefficients[1] < scanParameters.High
+               && fitCoefficients[1] > scanParameters.Low) //Only change limits if fits are reasonable.
             {
-                scanParameters.High = fitCoefficients[1] + scanWidth;//Adjust scan range!
-                scanParameters.Low = fitCoefficients[1] - scanWidth;
+                newCentroid = fitCoefficients[1];
             }
+            else
+            {
+                newCentroid = scanParameters.High - scanWidth;
+            }
+             return newCentroid;
         }
 
         /// <summary>
@@ -350,13 +363,13 @@ namespace TransferCavityLock
         /// The lock (see calculateDeviationFromSetPoint) will adjust the voltage fed to the TiS to keep this number constant.
         /// </summary>     
 
-        private double CalculateLaserSetPoint(double[] MasterPDFitCoefficients, double[] fitCoefficients)
+        private double CalculateLaserSetPoint(double[] masterFitCoefficients, double[] slaveFitCoefficients)
         {
             double setPoint = new double();
-            if (fitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
-               && fitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
+            if (slaveFitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
+               && slaveFitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
             {
-                setPoint = Math.Round(fitCoefficients[1] - MasterPDFitCoefficients[1], 4);
+                setPoint = Math.Round(slaveFitCoefficients[1] - masterFitCoefficients[1], 4);
             }
             else
             {
@@ -374,20 +387,19 @@ namespace TransferCavityLock
             return newSetPoint;
         }
 
-        private double calculateDeviationFromSetPoint(double laserSetPoint, 
-            double[] SlavePDFitCoefficients, double[] MasterPDFitCoefficients)
+        private double calculateDeviationFromSetPoint(double laserSetPoint,
+            double[] masterFitCoefficients, double[] slaveFitCoefficients)
         {
             double currentPeakSeparation = new double();
 
-            if (SlavePDFitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
-                && SlavePDFitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
+            if (slaveFitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
+                && slaveFitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
             {
-                currentPeakSeparation = Math.Round(SlavePDFitCoefficients[1]
-                    - MasterPDFitCoefficients[1], 4);
+                currentPeakSeparation = Math.Round(slaveFitCoefficients[1] - masterFitCoefficients[1], 4);
             }
             else
             {
-                currentPeakSeparation = laserSetPoint;
+                currentPeakSeparation = LaserSetPoint;
             }
 
             return Math.Round(currentPeakSeparation - laserSetPoint, 4);
@@ -400,15 +412,15 @@ namespace TransferCavityLock
         {
             double newVoltage;
             if (VoltageToLaser
-                - Gain * measuredVoltageChange > UPPER_LC_VOLTAGE_LIMIT
+                + Gain * measuredVoltageChange > UPPER_LC_VOLTAGE_LIMIT
                 || VoltageToLaser
-                - Gain * measuredVoltageChange < LOWER_LC_VOLTAGE_LIMIT)
+                + Gain * measuredVoltageChange < LOWER_LC_VOLTAGE_LIMIT)
             {
                 newVoltage = VoltageToLaser;
             }
             else
             {
-                newVoltage = VoltageToLaser - Gain * measuredVoltageChange; //Feedback 
+                newVoltage = VoltageToLaser + Gain * measuredVoltageChange; //Feedback 
             }
             return Math.Round(newVoltage, 4);
         }

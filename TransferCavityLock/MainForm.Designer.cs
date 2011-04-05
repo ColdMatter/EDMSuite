@@ -259,9 +259,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(3, 187);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(136, 13);
+            this.label7.Size = new System.Drawing.Size(98, 13);
             this.label7.TabIndex = 25;
-            this.label7.Text = "Cavity UnlockCavity Offset:";
+            this.label7.Text = "Cavity Scan Offset:";
             // 
             // CavityScanWidthTextBox
             // 
@@ -275,9 +275,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(3, 167);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(104, 13);
+            this.label6.Size = new System.Drawing.Size(70, 13);
             this.label6.TabIndex = 23;
-            this.label6.Text = "UnlockCavity Width:";
+            this.label6.Text = "Cavity Width:";
             // 
             // NumberOfScanpointsTextBox
             // 
