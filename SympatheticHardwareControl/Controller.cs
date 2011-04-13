@@ -21,27 +21,33 @@ using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
 
+using SympatheticHardwareControl.CameraControl;
+
 namespace SympatheticHardwareControl
 {
     /// <summary>
     /// This is the interface to the sympathetic specific hardware.
     /// 
-    /// Everything is just bundled into a single
-    /// class. The methods/properties are grouped: the first set change the state of the hardware, these
-    /// usually act immediately, but sometimes you need to call an update method. Read the code to find out
-    /// which are which. The second set of methods read out the state of the hardware. These invariably need
-    /// to be brought up to date with an update method before use.
-    /// 
-    /// Things to go when adding a hardware component to the controller:
-    /// 1/ Declare any new pieces of hardware in Setup (and any constants if necessary)
-    /// 2/ List the Tasks involving the piece of hardware
-    /// 3/ Create the tasks
+    /// There are 2 modes of operation: LOCAL and REMOTE.
+    /// When operating in LOCAL, the state displayed on the UI gets directly output to hardware. 
+    /// The controller can only read from the UI panel and apply it to hardware. It has no capability of deciding
+    /// what to output itself.
+    /// In the unusual case when the controller needs to take over (only when stopping and starting control),
+    /// it can load a set a parameters to the panel (which then gets applied to hardware in the usual way).
     /// 
     /// </summary>
     public class Controller : MarshalByRefObject
     {
         #region Constants
        //Put any constants and stuff here
+        
+        private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
+            + "\\SympatheticHardwareController\\internalProfiles\\";
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
+            + "SympatheticHardwareController\\";
+        private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
+            + "\\SympatheticHardwareController\\";
+
         #endregion
 
         #region Setup
@@ -52,10 +58,9 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
   
         //Cameras
-        CameraControl cam0Control = new CameraControl("cam0", (string)Environs.FileSystem.Paths["settingsPath"] + "SympatheticHardwareController\\cameraAttributes.txt");
+        IMAQdxCameraControl cam0Control = new IMAQdxCameraControl("cam0", 
+            cameraAttributesPath + "cameraAttributes.txt");
 
-        //declare the pattern generators
-        DAQMxPatternGenerator motPG;
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
@@ -78,13 +83,15 @@ namespace SympatheticHardwareControl
         
 
 
-        // Declare that there will be a window
-        ControlWindow window;
+        // Declare that there will be a controlWindow
+        ControlWindow controlWindow;
+        ImageViewerWindow imageWindow;
+        
         //private bool sHCUIControl;
         public enum SHCUIControlState {OFF, LOCAL, REMOTE};
-        SHCUIControlState hcState = new SHCUIControlState();
-        
-       
+        public SHCUIControlState HCState = new SHCUIControlState();
+
+        private DataStore dataStore = new DataStore();
 
           
 
@@ -129,34 +136,43 @@ namespace SympatheticHardwareControl
             //      pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
 
             //readAnalogVoltageTask = CreateAnalogInputTask("testAI");
-            // make the control window
-            window = new ControlWindow();
-            window.controller = this;
+            // make the control controlWindow
+            controlWindow = new ControlWindow();
+            controlWindow.controller = this;
+
+            imageWindow = new ImageViewerWindow();
+            imageWindow.controller = this;
 
 
             HCState = SHCUIControlState.OFF;
            
 
             // run
-            Application.Run(window);
+            //Application.Run(imageWindow);
+            //Application.Run(controlWindow);
+            imageWindow.Show();
+            Application.Run(controlWindow);
+            
         }
 
         // this method runs immediately after the GUI sets up
         internal void WindowLoaded()
         {
             // things like loading saved parameters, checking status of experiment etc. should go here.
-            LoadParameters();
-            cam0Control.InitializeCameraControl();
+            LoadParameters(internalProfilesPath + "OffState.bin");
+            cam0Control.InitializeCamera();
         }
 
         internal void WindowClosing()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StoreParameters();
-            cam0Control.CloseCameraControl();
+            cam0Control.CloseCamera();
         }
 
+        #endregion
 
+        #region private methods for creating un-timed Tasks/channels
         // a list of functions for creating various tasks
         private Task CreateAnalogInputTask(string channel)
         {
@@ -256,10 +272,10 @@ namespace SympatheticHardwareControl
             writer.WriteSingleSampleSingleLine(true, value);
             digitalTask.Control(TaskAction.Unreserve);
         }
-        
+
         #endregion
 
-        #region Saving and loading experimental parameters
+        #region keeping track of the things on this controller!
         // this isn't really very classy, but it works (says Jony)
         // declare all parameters which SHC controls here
         [Serializable]
@@ -282,16 +298,18 @@ namespace SympatheticHardwareControl
             public double coil0Current;
             public double coil1Current;
         }
+        
 
+        #endregion
+
+        #region Saving and loading experimental parameters
         // Saving the parameters when closing the controller
         public void SaveParametersWithDialog()
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "shc parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreDir = settingsPath + "SympatheticHardwareController";
-            saveFileDialog1.InitialDirectory = dataStoreDir;
+            saveFileDialog1.InitialDirectory = profilesPath;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (saveFileDialog1.FileName != "")
@@ -304,36 +322,13 @@ namespace SympatheticHardwareControl
         // Quietly.
         public void StoreParameters()
         {
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreFilePath = settingsPath + "\\SympatheticHardwareController\\parameters.bin";
-            StoreParameters(dataStoreFilePath);
+            StoreParameters(profilesPath + "parameters.bin");
         }
 
 
 
         public void StoreParameters(String dataStoreFilePath)
         {
-            DataStore dataStore = new DataStore();
-            // fill the struct
-            //e.g   dataStore.cPlus = CPlusVoltage;
-            //      dataStore.cMinus = CMinusVoltage;
-            dataStore.aom0rfAmplitude = Aom0rfAmplitude;
-            dataStore.aom0rfFrequency = Aom0rfFrequency;
-            dataStore.aom0Enabled = Aom0Enabled;
-            dataStore.aom1rfAmplitude = Aom1rfAmplitude;
-            dataStore.aom1rfFrequency = Aom1rfFrequency;
-            dataStore.aom1Enabled = Aom1Enabled;
-            dataStore.aom2rfAmplitude = Aom2rfAmplitude;
-            dataStore.aom2rfFrequency = Aom2rfFrequency;
-            dataStore.aom2Enabled = Aom2Enabled;
-            dataStore.aom3rfAmplitude = Aom3rfAmplitude;
-            dataStore.aom3rfFrequency = Aom3rfFrequency;
-            dataStore.aom3Enabled = Aom3Enabled;
-            dataStore.coil0Current = Coil0Current;
-            dataStore.coil1Current = Coil1Current;
-    
-
-            // serialize it
             BinaryFormatter s = new BinaryFormatter();
             FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
             try
@@ -357,18 +352,9 @@ namespace SympatheticHardwareControl
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "shc parameters|*.bin";
             dialog.Title = "Load parameters";
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreDir = settingsPath + "SympatheticHardwareController";
-            dialog.InitialDirectory = dataStoreDir;
+            dialog.InitialDirectory = profilesPath;
             dialog.ShowDialog();
             if (dialog.FileName != "") LoadParameters(dialog.FileName);
-        }
-
-        private void LoadParameters()
-        {
-            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreFilePath = settingsPath + "\\SympatheticHardwareController\\parameters.bin";
-            LoadParameters(dataStoreFilePath);
         }
 
         private void LoadParameters(String dataStoreFilePath)
@@ -379,25 +365,25 @@ namespace SympatheticHardwareControl
             // eat any errors in the following, as it's just a convenience function
             try
             {
-                DataStore dataStore = (DataStore)s.Deserialize(fs);
+                dataStore = (DataStore)s.Deserialize(fs);
 
                 // copy parameters out of the struct
                 //e.g   CPlusVoltage = dataStore.cPlus;
                 //e.g   CMinusVoltage = dataStore.cMinus;
-                Aom0Enabled = dataStore.aom0Enabled;
-                Aom0rfAmplitude = dataStore.aom0rfAmplitude;
-                Aom0rfFrequency = dataStore.aom0rfFrequency;
-                Aom1Enabled = dataStore.aom1Enabled;
-                Aom1rfAmplitude = dataStore.aom1rfAmplitude;
-                Aom1rfFrequency = dataStore.aom1rfFrequency;
-                Aom2Enabled = dataStore.aom2Enabled;
-                Aom2rfAmplitude = dataStore.aom2rfAmplitude;
-                Aom2rfFrequency = dataStore.aom2rfFrequency;
-                Aom3Enabled = dataStore.aom3Enabled;
-                Aom3rfAmplitude = dataStore.aom3rfAmplitude;
-                Aom3rfFrequency = dataStore.aom3rfFrequency;
-                Coil0Current = dataStore.coil0Current;
-                Coil1Current = dataStore.coil1Current;
+                SetUIAom0EnabledState(dataStore.aom0Enabled);
+                SetUIAom0rfAmplitude(dataStore.aom0rfAmplitude);
+                SetUIAom0rfFrequency(dataStore.aom0rfFrequency);
+                SetUIAom1EnabledState(dataStore.aom1Enabled);
+                SetUIAom1rfAmplitude(dataStore.aom1rfAmplitude);
+                SetUIAom1rfFrequency(dataStore.aom1rfFrequency);
+                SetUIAom2EnabledState(dataStore.aom2Enabled);
+                SetUIAom2rfAmplitude(dataStore.aom2rfAmplitude);
+                SetUIAom2rfFrequency(dataStore.aom2rfFrequency);
+                SetUIAom3EnabledState(dataStore.aom3Enabled);
+                SetUIAom3rfAmplitude(dataStore.aom3rfAmplitude);
+                SetUIAom3rfFrequency(dataStore.aom3rfFrequency);
+                SetUICoil0Current(dataStore.coil0Current);
+                SetUICoil1Current(dataStore.coil1Current);
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to load settings"); }
@@ -408,336 +394,192 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        #region Saving and loading images
-        // Saving the image
-        public void SaveImageWithDialog(VisionImage image)
-        {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "shc images|*.jpg";
-            saveFileDialog1.Title = "Save Image";
-            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
-            String dataStoreDir = dataPath + "SHC Single Images";
-            saveFileDialog1.InitialDirectory = dataStoreDir;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                if (saveFileDialog1.FileName != "")
-                {
-                    StoreImage(saveFileDialog1.FileName, image);
-                }
-            }
-        }
-
-        // Quietly.
-        public void StoreImage(VisionImage image)
-        {
-            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
-            String dataStoreFilePath = dataPath + "\\SHC Single Images\\tempImage.jpg";
-            StoreImage(dataStoreFilePath, image);
-        }
-
-
-
-        public void StoreImage(String dataStoreFilePath, VisionImage image)
-        {
-            image.WriteJpegFile(dataStoreFilePath);
-        }
-
-        //Load image when opening the controller
-        public void LoadImagesWithDialog()
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "shc images|*.jpg";
-            dialog.Title = "Load Image";
-            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
-            String dataStoreDir = dataPath + "SHC Single Images";
-            dialog.InitialDirectory = dataStoreDir;
-            dialog.ShowDialog();
-            if (dialog.FileName != "") LoadImage(dialog.FileName);
-        }
-
-        private void LoadImage()
-        {
-            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
-            String dataStoreFilePath = dataPath + "\\SHC Single Images\\tempImage.jpg";
-            LoadImage(dataStoreFilePath);
-        }
-
-        private void LoadImage(String dataStoreFilePath)
-        {
-            VisionImage image = new VisionImage();
-            image.ReadFile(dataStoreFilePath);
-            window.AttachToViewer(window.motViewer, image);
-        }
-
-
-
-        #endregion
-
-        #region Public properties for controlling the panel. 
+        #region Properties for controlling hardware and UI.
         //This gets/sets the values on the GUI panel
-        
        
-        //This is a set of properties for controlling an aom
-         public SHCUIControlState HCState
+        public bool ReadAndApplyUIAom0EnabledState()
         {
-             get
-             {
-                 return hcState;
-             }
-             set
-             {
-                 hcState = value;
-             }
-         }
-
-        public bool Aom0Enabled
-        {
-            get
-            {
-                return window.aom0CheckBox.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.aom0CheckBox, value);
-            }
+            bool value = controlWindow.ReadAom0EnabledState();
+            dataStore.aom0Enabled = value;
+            SetDigitalLine("aom0Enable", value);
+            return value;
         }
-        public double Aom0rfAmplitude
+        public void SetUIAom0EnabledState(bool value)
         {
-            get
-            {
-                return Double.Parse(window.aom0rfAmplitudeTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom0rfAmplitudeTextBox, Convert.ToString(value));
-            }
-        }
-        public double Aom0rfFrequency
-        {
-            get
-            {
-                return Double.Parse(window.aom0rfFrequencyTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom0rfFrequencyTextBox, Convert.ToString(value));
-            }
+            controlWindow.SetAom0EnabledState(value);            
         }
 
-
-
-        public bool Aom1Enabled
+        public double ReadAndApplyUIAom0rfAmplitude()
         {
-            get
-            {
-                return window.aom1CheckBox.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.aom1CheckBox, value);
-            }
+            double value = controlWindow.ReadAom0rfAmplitude();
+            dataStore.aom0rfAmplitude = value;
+            SetAnalogOutput(aom0rfAmplitudeTask, value);
+            return value;
         }
-        public double Aom1rfAmplitude
+        public void SetUIAom0rfAmplitude(double value)
         {
-            get
-            {
-                return Double.Parse(window.aom1rfAmplitudeTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom1rfAmplitudeTextBox, Convert.ToString(value));
-            }
-        }
-        public double Aom1rfFrequency
-        {
-            get
-            {
-                return Double.Parse(window.aom1rfFrequencyTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom1rfFrequencyTextBox, Convert.ToString(value));
-            }
-        }
-
-
-
-        public bool Aom2Enabled
-        {
-            get
-            {
-                return window.aom2CheckBox.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.aom2CheckBox, value);
-            }
-        }
-        public double Aom2rfAmplitude
-        {
-            get
-            {
-                return Double.Parse(window.aom2rfAmplitudeTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom2rfAmplitudeTextBox, Convert.ToString(value));
-            }
+            controlWindow.SetAom0rfAmplitude(value);
         }
         
-        public double Aom2rfFrequency
+        public double ReadAndApplyUIAom0rfFrequency()
         {
-            get
-            {
-                return Double.Parse(window.aom2rfFrequencyTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom2rfFrequencyTextBox, Convert.ToString(value));
-            }
+            double value = controlWindow.ReadAom0rfFrequency();
+            dataStore.aom0rfFrequency = value;
+            SetAnalogOutput(aom0rfFrequencyTask, value);
+            return value;
+        }
+        public void SetUIAom0rfFrequency(double value)
+        {
+            controlWindow.SetAom0rfFrequency(value);
         }
 
-        public bool Aom3Enabled
+        ///
+
+        public bool ReadAndApplyUIAom1EnabledState()
         {
-            get
-            {
-                return window.aom3CheckBox.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.aom3CheckBox, value);
-            }
+            bool value = controlWindow.ReadAom1EnabledState();
+            dataStore.aom1Enabled = value;
+            SetDigitalLine("aom1Enable", value);
+            return value;
         }
-        public double Aom3rfAmplitude
+        public void SetUIAom1EnabledState(bool value)
         {
-            get
-            {
-                return Double.Parse(window.aom3rfAmplitudeTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom3rfAmplitudeTextBox, Convert.ToString(value));
-            }
+            controlWindow.SetAom1EnabledState(value);
+        }
+
+        public double ReadAndApplyUIAom1rfAmplitude()
+        {
+            double value = controlWindow.ReadAom1rfAmplitude();
+            dataStore.aom1rfAmplitude = value;
+            SetAnalogOutput(aom1rfAmplitudeTask, value);
+            return value;
+        }
+        public void SetUIAom1rfAmplitude(double value)
+        {
+            controlWindow.SetAom1rfAmplitude(value);
+        }
+
+        public double ReadAndApplyUIAom1rfFrequency()
+        {
+            double value = controlWindow.ReadAom1rfFrequency();
+            dataStore.aom1rfFrequency = value;
+            SetAnalogOutput(aom1rfFrequencyTask, value);
+            return value;
+        }
+        public void SetUIAom1rfFrequency(double value)
+        {
+            controlWindow.SetAom1rfFrequency(value);
         }
         
-        public double Aom3rfFrequency
+        ///
+
+        public bool ReadAndApplyUIAom2EnabledState()
         {
-            get
-            {
-                return Double.Parse(window.aom3rfFrequencyTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.aom3rfFrequencyTextBox, Convert.ToString(value));
-            }
+            bool value = controlWindow.ReadAom2EnabledState();
+            SetDigitalLine("aom2Enable", value);
+            dataStore.aom2Enabled = value;
+            return value;
+        }
+        public void SetUIAom2EnabledState(bool value)
+        {
+            controlWindow.SetAom2EnabledState(value);
         }
 
-        public double Coil0Current
+        public double ReadAndApplyUIAom2rfAmplitude()
         {
-            get
-            {
-                return Double.Parse(window.coil0CurrentTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.coil0CurrentTextBox, Convert.ToString(value));
-            }
+            double value = controlWindow.ReadAom2rfAmplitude();
+            dataStore.aom2rfAmplitude = value;
+            SetAnalogOutput(aom2rfAmplitudeTask, value);
+            return value;
         }
-        public double Coil1Current
+        public void SetUIAom2rfAmplitude(double value)
         {
-            get
-            {
-                return Double.Parse(window.coil1CurrentTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.coil1CurrentTextBox, Convert.ToString(value));
-            }
+            controlWindow.SetAom2rfAmplitude(value);
         }
 
-        //streaming video bool
-        private bool streaming;
-        public bool Streaming
+        public double ReadAndApplyUIAom2rfFrequency()
         {
-            get
-            {
-                return this.streaming;
-            }
-            set
-            {
-                this.streaming = value;
-            }
+            double value = controlWindow.ReadAom2rfFrequency();
+            dataStore.aom2rfFrequency = value;
+            SetAnalogOutput(aom2rfFrequencyTask, value);
+            return value;
         }
- 
-        #endregion
+        public void SetUIAom2rfFrequency(double value)
+        {
+            controlWindow.SetAom2rfFrequency(value);
+        }
 
-        #region Public properties for monitoring the hardware
-        //This gets the values on the GUI panel
-        /*
-        public double BCurrent00
+        ///
+
+        public bool ReadAndApplyUIAom3EnabledState()
         {
-            get
-            {
-                return Double.Parse(window.bCurrent00TextBox.Text);
-            }
+            bool value = controlWindow.ReadAom3EnabledState();
+            dataStore.aom3Enabled = value;
+            SetDigitalLine("aom3Enable", value);
+            return value;
         }
-         */
+        public void SetUIAom3EnabledState(bool value)
+        {
+            controlWindow.SetAom3EnabledState(value);
+        }
+
+        public double ReadAndApplyUIAom3rfAmplitude()
+        {
+            double value = controlWindow.ReadAom3rfAmplitude();
+            dataStore.aom3rfAmplitude = value;
+            SetAnalogOutput(aom3rfAmplitudeTask, value);
+            return value;
+        }
+        public void SetUIAom3rfAmplitude(double value)
+        {
+            controlWindow.SetAom3rfAmplitude(value);
+        }
+
+        public double ReadAndApplyUIAom3rfFrequency()
+        {
+            double value = controlWindow.ReadAom3rfFrequency();
+            dataStore.aom3rfFrequency = value;
+            SetAnalogOutput(aom3rfFrequencyTask, value);
+            return value;
+        }
+        public void SetUIAom3rfFrequency(double value)
+        {
+            controlWindow.SetAom3rfFrequency(value);
+        }
+
+        public double ReadAndApplyUICoil0Current()
+        {
+            double value = controlWindow.ReadCoil0Current();
+            dataStore.coil0Current = value;
+            SetAnalogOutput(coil0CurrentTask, value);
+            return value;
+        }
+        public void SetUICoil0Current(double value)
+        {
+            controlWindow.SetCoil0Current(value);
+        }
+
+        public double ReadAndApplyUICoil1Current()
+        {
+            double value = controlWindow.ReadCoil1Current();
+            dataStore.coil1Current = value;
+            SetAnalogOutput(coil1CurrentTask, value);
+            return value;
+        }
+        public void SetUICoil1Current(double value)
+        {
+            controlWindow.SetCoil1Current(value);
+        }
 
         #endregion
 
-        #region Hardware control methods - safe for remote
-        //This turns the aom on and off.
-
-        public void UpdateAOM0(bool ttl, double amp, double freq)
-        {
-            SetDigitalLine("aom0Enable", ttl);
-            SetAnalogOutput(aom0rfAmplitudeTask, amp);
-            SetAnalogOutput(aom0rfFrequencyTask, freq);
-            window.SetLED(window.aom0LED, ttl);
-        }
-
-        public void UpdateAOM1(bool ttl, double amp, double freq)
-        {
-            SetDigitalLine("aom1Enable", ttl);
-            SetAnalogOutput(aom1rfAmplitudeTask, amp);
-            SetAnalogOutput(aom1rfFrequencyTask, freq);
-            window.SetLED(window.aom1LED, ttl);
-        }
-
-        public void UpdateAOM2(bool ttl, double amp, double freq)
-        {
-            SetDigitalLine("aom2Enable", ttl);
-            SetAnalogOutput(aom2rfAmplitudeTask, amp);
-            SetAnalogOutput(aom2rfFrequencyTask, freq);
-            window.SetLED(window.aom2LED, ttl);
-        }
-
-        public void UpdateAOM3(bool ttl, double amp, double freq)
-        {
-            SetDigitalLine("aom3Enable", ttl);
-            SetAnalogOutput(aom3rfAmplitudeTask, amp);
-            SetAnalogOutput(aom3rfFrequencyTask, freq);
-            window.SetLED(window.aom3LED, ttl);
-        }
-        public void UpdateCoil0(double current)
-        {
-            SetAnalogOutput(coil0CurrentTask, current);
-        }
-        public void UpdateCoil1(double current)
-        {
-            SetAnalogOutput(coil1CurrentTask, current);
-        }
+        #region Manging the controller's State
 
         public void StopManualControl()
         {
-            UpdateAOM0(false, 0.0, 0.0);
-            UpdateAOM1(false, 0.0, 0.0);
-            UpdateAOM2(false, 0.0, 0.0);
-            UpdateAOM3(false, 0.0, 0.0);
-            UpdateCoil0(0.0);
-            UpdateCoil1(0.0);
+            stopAll();
             HCState = SHCUIControlState.OFF;
-            window.SetLED(window.manualControlLED, false);
+            controlWindow.UpdateUIState(HCState);      
         }
         
         public void StartManualControl()
@@ -745,28 +587,71 @@ namespace SympatheticHardwareControl
             if (HCState == SHCUIControlState.OFF)
             {
                 HCState = SHCUIControlState.LOCAL;
-                UpdateAOM0(Aom0Enabled, Aom0rfAmplitude, Aom0rfFrequency);
-                UpdateAOM1(Aom1Enabled, Aom1rfAmplitude, Aom1rfFrequency);
-                UpdateAOM2(Aom2Enabled, Aom2rfAmplitude, Aom2rfFrequency);
-                UpdateAOM3(Aom3Enabled, Aom3rfAmplitude, Aom3rfFrequency);
-                UpdateCoil0(Coil0Current);
-                UpdateCoil1(Coil1Current);
-                window.SetLED(window.manualControlLED, true);
+                controlWindow.UpdateUIState(HCState);
+                refreshHardwareState();
             }
             else
             {
                 Console.Out.WriteLine("Controller is currently busy.");
             }
         }
+        public void StartManualControlUsingLastSavedValues()
+        {
+            if (HCState == SHCUIControlState.OFF)
+            {
+                HCState = SHCUIControlState.LOCAL;
+                controlWindow.UpdateUIState(HCState);
+                LoadLastSavedParameterValues();
+            }
+            else
+            {
+                Console.Out.WriteLine("Controller is currently busy.");
+            }
+        }
+        public void LoadLastSavedParameterValues()
+        {
+            applyState(internalProfilesPath + "LastHardwareState.bin");
+        }
+
+        private void refreshHardwareState()
+        {
+            ReadAndApplyUIAom0EnabledState();
+            ReadAndApplyUIAom0rfAmplitude();
+            ReadAndApplyUIAom0rfFrequency();
+            ReadAndApplyUIAom1EnabledState();
+            ReadAndApplyUIAom1rfAmplitude();
+            ReadAndApplyUIAom1rfFrequency();
+            ReadAndApplyUIAom2EnabledState();
+            ReadAndApplyUIAom2rfAmplitude();
+            ReadAndApplyUIAom2rfFrequency();
+            ReadAndApplyUIAom3EnabledState();
+            ReadAndApplyUIAom3rfAmplitude();
+            ReadAndApplyUIAom3rfFrequency();
+            ReadAndApplyUICoil0Current();
+            ReadAndApplyUICoil1Current();
+        }
+
+
+        private void stopAll()
+        {
+            StoreParameters(internalProfilesPath + "LastHardwareState.bin");
+            LoadParameters(internalProfilesPath + "OffState.bin");
+            refreshHardwareState();
+
+        }
+        private void applyState(String dataStoreFilePath)
+        {
+            LoadParameters(dataStoreFilePath);
+            refreshHardwareState();
+        }
+
         public void StartRemoteControl()
         {
             if (HCState == SHCUIControlState.OFF)
             {
                 HCState = SHCUIControlState.REMOTE;
-                string sp = (string)Environs.FileSystem.Paths["settingsPath"];
-                string dataStoreFilePath = "\\SympatheticHardwareController\\tempParameters.bin";
-                this.StoreParameters(sp + dataStoreFilePath);
-                window.SetLED(window.remoteControlLED, true);   
+                controlWindow.UpdateUIState(HCState);
+                StoreParameters(internalProfilesPath + "tempParameters.bin");
             }
             else
             {
@@ -776,27 +661,26 @@ namespace SympatheticHardwareControl
         }
         public void StopRemoteControl()
         {
-            string sp = (string)Environs.FileSystem.Paths["settingsPath"];
-            string dataStoreFilePath = "\\SympatheticHardwareController\\tempParameters.bin";
             try
             {
-                this.LoadParameters(sp + dataStoreFilePath);
-                System.IO.File.Delete(sp + dataStoreFilePath);
+                applyState(internalProfilesPath + "tempParameters.bin");
+                System.IO.File.Delete(internalProfilesPath + "tempParameters.bin");
             }
             catch (Exception)
             {
                 Console.Out.WriteLine("Unable to load Parameters.");
             }
+            stopAll();
             HCState = SHCUIControlState.OFF;
-            window.SetLED(window.remoteControlLED, false);
+            controlWindow.UpdateUIState(HCState);
         }
         #endregion
 
         //camera stuff
 
         #region Testing the camera
-        //untriggered single shot commands. This just starts a new session, takes one image then closes the session.
-        //Avoid using these. I think, there should only be a single session per camera for the entire time the program is running.
+        //untriggered single shot commands. This just starts a new Session, takes one image then closes the Session.
+        //Avoid using these. I think, there should only be a single Session per camera for the entire time the program is running.
         //I wrote these to test the camera.
         //Cameras
        /* public const string motCamera = "cam0";
@@ -804,56 +688,56 @@ namespace SympatheticHardwareControl
         public void CameraSnapshot()
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
-            session.Snap(image);
-            session.Close();
+            ImaqdxSession Session = new ImaqdxSession(motCamera);
+            Session.Snap(image);
+            Session.Close();
             
-            if (window.saveImageCheckBox.Checked == true)
+            if (controlWindow.saveImageCheckBox.Checked == true)
             {
                 StoreImage(image);
             }
-            window.AttachToViewer(window.motViewer, image);
+            controlWindow.AttachToViewer(controlWindow.motViewer, image);
 
         }
 
         public void CameraSnapshot(string dataStoreFilePath)
         {
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
-            session.Snap(image);
-            session.Close();
+            ImaqdxSession Session = new ImaqdxSession(motCamera);
+            Session.Snap(image);
+            Session.Close();
             
-            if (window.saveImageCheckBox.Checked == true)
+            if (controlWindow.saveImageCheckBox.Checked == true)
             {
                 StoreImage(dataStoreFilePath, image);
             }
             
-            window.AttachToViewer(window.motViewer, image);
+            controlWindow.AttachToViewer(controlWindow.motViewer, image);
         }
         //streaming video
         public object streamStopLock = new object();
         public void CameraStream()
         {
-            Thread streamThread = new Thread(new ThreadStart(cameraStream));
+            Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
             streamThread.Start();
         }
-        private void cameraStream()
+        private void streamAndDisplay()
         {
             this.Streaming = true;
             VisionImage image = new VisionImage();
-            ImaqdxSession session = new ImaqdxSession(motCamera);
-            session.ConfigureGrab();
-            window.AttachToViewer(window.motViewer, image);
+            ImaqdxSession Session = new ImaqdxSession(motCamera);
+            Session.ConfigureGrab();
+            controlWindow.AttachToViewer(controlWindow.motViewer, image);
             for (; ; )
             {
-                session.Grab(image, true);
-                window.UpdateViewer(window.motViewer);
+                Session.Grab(image, true);
+                controlWindow.UpdateViewer(controlWindow.motViewer);
 
                 lock (streamStopLock)
                 {
                     if (Streaming == false)
                     {
-                        session.Close();
+                        Session.Close();
                         return;
                     }
                 }
@@ -867,77 +751,67 @@ namespace SympatheticHardwareControl
         public object streamStopLock = new object();
         public void CameraStream()
         {
-            Thread streamThread = new Thread(new ThreadStart(cameraStream));
+            Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
             streamThread.Start();
         }
         public void CameraSnapshot()
         {
-            Thread cameraThread = new Thread(new ThreadStart(cameraSnapshot));
+            Thread cameraThread = new Thread(new ThreadStart(takeSnapshotAndDisplay));
             cameraThread.Start();
         }
-        public void DisplayImage(VisionImage image)
-        {
-            window.AttachToViewer(window.motViewer, image);
-        }
-        public void UpdateImage()
-        {
-            window.UpdateViewer(window.motViewer);
-        }
-        private void cameraSnapshot()
+
+        private void takeSnapshotAndDisplay()
         {
             VisionImage image = new VisionImage();
             cam0Control.Session.Snap(image);
-            
-            if (window.saveImageCheckBox.Checked == true)
-            {
-                StoreImage(image);
-            }
-            DisplayImage(image);
+            imageWindow.Image = image;
         }
-        private void cameraSnapshot(string dataStoreFilePath)
+        
+        private void streamAndDisplay()
         {
-            VisionImage image = new VisionImage();
-            cam0Control.Session.Snap(image);
-
-            if (window.saveImageCheckBox.Checked == true)
-            {
-                StoreImage(dataStoreFilePath, image);
-            }
-            DisplayImage(image);
-
-        }
-        private void cameraStream()
-        {
-            this.Streaming = true;
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
-            DisplayImage(image);
             for (; ; )
             {
                 cam0Control.Session.Grab(image, true);
-                UpdateImage();
+                imageWindow.Image = image;
 
                 lock (streamStopLock)
                 {
-                    if (this.Streaming == false)
-                    {
-                        return;
-                    }
+                    return;
                 }
 
             }
         }
 
-        public void UpdateCameraAttributes()
+        public void SetCameraAttributes()
         {
-            cam0Control.UpdateCameraAttributes();
+            cam0Control.SetCameraAttributes();
         }
 
+        #endregion
+
+        #region Saving and Loading Images
+
+        private ImageFileIOManager imageFileIO = new ImageFileIOManager();
+        public void SaveImageWithDialog()
+        {
+            imageFileIO.SaveImageWithDialog(imageWindow.Image);
+        }
+        public void LoadImagesWithDialog()
+        {
+            imageWindow.Image = imageFileIO.LoadImagesWithDialog();
+        }
+        
         #endregion
 
 
 
 
 
+
+
+
+        
     }
 }

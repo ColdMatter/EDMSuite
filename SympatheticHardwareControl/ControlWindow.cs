@@ -22,9 +22,6 @@ namespace SympatheticHardwareControl
     {
         #region Setup
 
-       
-        
-        
         public Controller controller;
 
         public ControlWindow()
@@ -32,17 +29,15 @@ namespace SympatheticHardwareControl
             InitializeComponent();
         }
 
-        /*protected override void Dispose(bool disposing)
+        private void WindowClosing(object sender, FormClosingEventArgs e)
         {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }*/
+            controller.WindowClosing();
+        }
+
+        private void WindowLoaded(object sender, EventArgs e)
+        {
+            controller.WindowLoaded();
+        }
 
         #endregion
 
@@ -54,62 +49,51 @@ namespace SympatheticHardwareControl
         private void InitializeComponent()
         {
             this.shcTabs = new System.Windows.Forms.TabControl();
-            this.tabOverview = new System.Windows.Forms.TabPage();
+            this.tabCamera = new System.Windows.Forms.TabPage();
             this.updateAttributesButton = new System.Windows.Forms.Button();
             this.saveImageCheckBox = new System.Windows.Forms.CheckBox();
             this.stopStreamButton = new System.Windows.Forms.Button();
             this.streamButton = new System.Windows.Forms.Button();
-            this.motViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
             this.snapshotButton = new System.Windows.Forms.Button();
             this.tabLasers = new System.Windows.Forms.TabPage();
             this.aom3ControlBox = new System.Windows.Forms.GroupBox();
-            this.aom3UpdateButton = new System.Windows.Forms.Button();
             this.aom3Label3 = new System.Windows.Forms.Label();
             this.aom3Label1 = new System.Windows.Forms.Label();
             this.aom3CheckBox = new System.Windows.Forms.CheckBox();
             this.aom3rfFrequencyTextBox = new System.Windows.Forms.TextBox();
             this.aom3rfAmplitudeTextBox = new System.Windows.Forms.TextBox();
-            this.aom3LED = new NationalInstruments.UI.WindowsForms.Led();
             this.aom3Label2 = new System.Windows.Forms.Label();
             this.aom3Label0 = new System.Windows.Forms.Label();
             this.aom2ControlBox = new System.Windows.Forms.GroupBox();
-            this.aom2UpdateButton = new System.Windows.Forms.Button();
             this.aom2Label3 = new System.Windows.Forms.Label();
             this.aom2Label1 = new System.Windows.Forms.Label();
             this.aom2CheckBox = new System.Windows.Forms.CheckBox();
             this.aom2rfFrequencyTextBox = new System.Windows.Forms.TextBox();
             this.aom2rfAmplitudeTextBox = new System.Windows.Forms.TextBox();
-            this.aom2LED = new NationalInstruments.UI.WindowsForms.Led();
             this.aom2Label2 = new System.Windows.Forms.Label();
             this.aom2Label0 = new System.Windows.Forms.Label();
             this.aom1ControlBox = new System.Windows.Forms.GroupBox();
-            this.aom1UpdateButton = new System.Windows.Forms.Button();
             this.aom1Label3 = new System.Windows.Forms.Label();
             this.aom1Label1 = new System.Windows.Forms.Label();
             this.aom1CheckBox = new System.Windows.Forms.CheckBox();
             this.aom1rfFrequencyTextBox = new System.Windows.Forms.TextBox();
             this.aom1rfAmplitudeTextBox = new System.Windows.Forms.TextBox();
-            this.aom1LED = new NationalInstruments.UI.WindowsForms.Led();
             this.aom1Label2 = new System.Windows.Forms.Label();
             this.aom1Label0 = new System.Windows.Forms.Label();
             this.aom0ControlBox = new System.Windows.Forms.GroupBox();
-            this.aom0UpdateButton = new System.Windows.Forms.Button();
             this.aom0Label3 = new System.Windows.Forms.Label();
             this.aom0Label1 = new System.Windows.Forms.Label();
             this.aom0CheckBox = new System.Windows.Forms.CheckBox();
             this.aom0rfFrequencyTextBox = new System.Windows.Forms.TextBox();
             this.aom0rfAmplitudeTextBox = new System.Windows.Forms.TextBox();
-            this.aom0LED = new NationalInstruments.UI.WindowsForms.Led();
             this.aom0Label2 = new System.Windows.Forms.Label();
             this.aom0Label0 = new System.Windows.Forms.Label();
             this.tabCoils = new System.Windows.Forms.TabPage();
             this.coil1GroupBox = new System.Windows.Forms.GroupBox();
-            this.coil1UpdateButton = new System.Windows.Forms.Button();
             this.coil1Label1 = new System.Windows.Forms.Label();
             this.coil1CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil1Label0 = new System.Windows.Forms.Label();
             this.coil0GroupBox = new System.Windows.Forms.GroupBox();
-            this.coil0UpdateButton = new System.Windows.Forms.Button();
             this.coil0Label1 = new System.Windows.Forms.Label();
             this.coil0CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil0Label0 = new System.Windows.Forms.Label();
@@ -120,6 +104,7 @@ namespace SympatheticHardwareControl
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadLastParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -133,17 +118,15 @@ namespace SympatheticHardwareControl
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
-            this.tabOverview.SuspendLayout();
+            this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom3LED)).BeginInit();
             this.aom2ControlBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom2LED)).BeginInit();
             this.aom1ControlBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom1LED)).BeginInit();
             this.aom0ControlBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom0LED)).BeginInit();
             this.tabCoils.SuspendLayout();
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
@@ -155,34 +138,33 @@ namespace SympatheticHardwareControl
             // shcTabs
             // 
             this.shcTabs.AllowDrop = true;
-            this.shcTabs.Controls.Add(this.tabOverview);
+            this.shcTabs.Controls.Add(this.tabCamera);
             this.shcTabs.Controls.Add(this.tabLasers);
             this.shcTabs.Controls.Add(this.tabCoils);
             this.shcTabs.Location = new System.Drawing.Point(3, 27);
             this.shcTabs.Name = "shcTabs";
             this.shcTabs.SelectedIndex = 0;
-            this.shcTabs.Size = new System.Drawing.Size(666, 568);
+            this.shcTabs.Size = new System.Drawing.Size(666, 235);
             this.shcTabs.TabIndex = 0;
             // 
-            // tabOverview
+            // tabCamera
             // 
-            this.tabOverview.Controls.Add(this.updateAttributesButton);
-            this.tabOverview.Controls.Add(this.saveImageCheckBox);
-            this.tabOverview.Controls.Add(this.stopStreamButton);
-            this.tabOverview.Controls.Add(this.streamButton);
-            this.tabOverview.Controls.Add(this.motViewer);
-            this.tabOverview.Controls.Add(this.snapshotButton);
-            this.tabOverview.Location = new System.Drawing.Point(4, 22);
-            this.tabOverview.Name = "tabOverview";
-            this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOverview.Size = new System.Drawing.Size(658, 542);
-            this.tabOverview.TabIndex = 0;
-            this.tabOverview.Text = "Overview";
-            this.tabOverview.UseVisualStyleBackColor = true;
+            this.tabCamera.Controls.Add(this.updateAttributesButton);
+            this.tabCamera.Controls.Add(this.saveImageCheckBox);
+            this.tabCamera.Controls.Add(this.stopStreamButton);
+            this.tabCamera.Controls.Add(this.streamButton);
+            this.tabCamera.Controls.Add(this.snapshotButton);
+            this.tabCamera.Location = new System.Drawing.Point(4, 22);
+            this.tabCamera.Name = "tabCamera";
+            this.tabCamera.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCamera.Size = new System.Drawing.Size(658, 209);
+            this.tabCamera.TabIndex = 0;
+            this.tabCamera.Text = "Camera Control";
+            this.tabCamera.UseVisualStyleBackColor = true;
             // 
             // updateAttributesButton
             // 
-            this.updateAttributesButton.Location = new System.Drawing.Point(395, 505);
+            this.updateAttributesButton.Location = new System.Drawing.Point(404, 14);
             this.updateAttributesButton.Name = "updateAttributesButton";
             this.updateAttributesButton.Size = new System.Drawing.Size(107, 23);
             this.updateAttributesButton.TabIndex = 20;
@@ -193,7 +175,7 @@ namespace SympatheticHardwareControl
             // saveImageCheckBox
             // 
             this.saveImageCheckBox.AutoSize = true;
-            this.saveImageCheckBox.Location = new System.Drawing.Point(7, 509);
+            this.saveImageCheckBox.Location = new System.Drawing.Point(16, 18);
             this.saveImageCheckBox.Name = "saveImageCheckBox";
             this.saveImageCheckBox.Size = new System.Drawing.Size(99, 17);
             this.saveImageCheckBox.TabIndex = 19;
@@ -203,7 +185,7 @@ namespace SympatheticHardwareControl
             // stopStreamButton
             // 
             this.stopStreamButton.Enabled = false;
-            this.stopStreamButton.Location = new System.Drawing.Point(278, 505);
+            this.stopStreamButton.Location = new System.Drawing.Point(287, 14);
             this.stopStreamButton.Name = "stopStreamButton";
             this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
             this.stopStreamButton.TabIndex = 18;
@@ -213,7 +195,7 @@ namespace SympatheticHardwareControl
             // 
             // streamButton
             // 
-            this.streamButton.Location = new System.Drawing.Point(197, 505);
+            this.streamButton.Location = new System.Drawing.Point(206, 14);
             this.streamButton.Name = "streamButton";
             this.streamButton.Size = new System.Drawing.Size(75, 23);
             this.streamButton.TabIndex = 17;
@@ -221,17 +203,9 @@ namespace SympatheticHardwareControl
             this.streamButton.UseVisualStyleBackColor = true;
             this.streamButton.Click += new System.EventHandler(this.streamButton_Click);
             // 
-            // motViewer
-            // 
-            this.motViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.motViewer.Location = new System.Drawing.Point(2, 0);
-            this.motViewer.Name = "motViewer";
-            this.motViewer.Size = new System.Drawing.Size(656, 494);
-            this.motViewer.TabIndex = 16;
-            // 
             // snapshotButton
             // 
-            this.snapshotButton.Location = new System.Drawing.Point(116, 505);
+            this.snapshotButton.Location = new System.Drawing.Point(125, 14);
             this.snapshotButton.Name = "snapshotButton";
             this.snapshotButton.Size = new System.Drawing.Size(75, 23);
             this.snapshotButton.TabIndex = 15;
@@ -249,39 +223,26 @@ namespace SympatheticHardwareControl
             this.tabLasers.Location = new System.Drawing.Point(4, 22);
             this.tabLasers.Name = "tabLasers";
             this.tabLasers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLasers.Size = new System.Drawing.Size(658, 542);
+            this.tabLasers.Size = new System.Drawing.Size(658, 209);
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
             // 
             // aom3ControlBox
             // 
-            this.aom3ControlBox.Controls.Add(this.aom3UpdateButton);
             this.aom3ControlBox.Controls.Add(this.aom3Label3);
             this.aom3ControlBox.Controls.Add(this.aom3Label1);
             this.aom3ControlBox.Controls.Add(this.aom3CheckBox);
             this.aom3ControlBox.Controls.Add(this.aom3rfFrequencyTextBox);
             this.aom3ControlBox.Controls.Add(this.aom3rfAmplitudeTextBox);
-            this.aom3ControlBox.Controls.Add(this.aom3LED);
             this.aom3ControlBox.Controls.Add(this.aom3Label2);
             this.aom3ControlBox.Controls.Add(this.aom3Label0);
             this.aom3ControlBox.Location = new System.Drawing.Point(3, 156);
             this.aom3ControlBox.Name = "aom3ControlBox";
-            this.aom3ControlBox.Size = new System.Drawing.Size(606, 45);
+            this.aom3ControlBox.Size = new System.Drawing.Size(549, 45);
             this.aom3ControlBox.TabIndex = 19;
             this.aom3ControlBox.TabStop = false;
             this.aom3ControlBox.Text = "AOM 3 (Absorption)";
-            // 
-            // aom3UpdateButton
-            // 
-            this.aom3UpdateButton.Enabled = false;
-            this.aom3UpdateButton.Location = new System.Drawing.Point(542, 14);
-            this.aom3UpdateButton.Name = "aom3UpdateButton";
-            this.aom3UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.aom3UpdateButton.TabIndex = 18;
-            this.aom3UpdateButton.Text = "Update";
-            this.aom3UpdateButton.UseVisualStyleBackColor = true;
-            this.aom3UpdateButton.Click += new System.EventHandler(this.aom3UpdateButton_Click);
             // 
             // aom3Label3
             // 
@@ -309,6 +270,7 @@ namespace SympatheticHardwareControl
             this.aom3CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom3CheckBox.TabIndex = 10;
             this.aom3CheckBox.UseVisualStyleBackColor = true;
+            this.aom3CheckBox.CheckedChanged += new System.EventHandler(this.aom3CheckBox_CheckedChanged);
             // 
             // aom3rfFrequencyTextBox
             // 
@@ -317,6 +279,7 @@ namespace SympatheticHardwareControl
             this.aom3rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom3rfFrequencyTextBox.TabIndex = 0;
             this.aom3rfFrequencyTextBox.Text = "0";
+            this.aom3rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom3rfFrequencyTextBox_TextChanged);
             // 
             // aom3rfAmplitudeTextBox
             // 
@@ -325,14 +288,7 @@ namespace SympatheticHardwareControl
             this.aom3rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom3rfAmplitudeTextBox.TabIndex = 8;
             this.aom3rfAmplitudeTextBox.Text = "0";
-            // 
-            // aom3LED
-            // 
-            this.aom3LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.aom3LED.Location = new System.Drawing.Point(10, 16);
-            this.aom3LED.Name = "aom3LED";
-            this.aom3LED.Size = new System.Drawing.Size(22, 23);
-            this.aom3LED.TabIndex = 3;
+            this.aom3rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom3rfAmplitudeTextBox_TextChanged);
             // 
             // aom3Label2
             // 
@@ -354,32 +310,19 @@ namespace SympatheticHardwareControl
             // 
             // aom2ControlBox
             // 
-            this.aom2ControlBox.Controls.Add(this.aom2UpdateButton);
             this.aom2ControlBox.Controls.Add(this.aom2Label3);
             this.aom2ControlBox.Controls.Add(this.aom2Label1);
             this.aom2ControlBox.Controls.Add(this.aom2CheckBox);
             this.aom2ControlBox.Controls.Add(this.aom2rfFrequencyTextBox);
             this.aom2ControlBox.Controls.Add(this.aom2rfAmplitudeTextBox);
-            this.aom2ControlBox.Controls.Add(this.aom2LED);
             this.aom2ControlBox.Controls.Add(this.aom2Label2);
             this.aom2ControlBox.Controls.Add(this.aom2Label0);
             this.aom2ControlBox.Location = new System.Drawing.Point(3, 105);
             this.aom2ControlBox.Name = "aom2ControlBox";
-            this.aom2ControlBox.Size = new System.Drawing.Size(606, 45);
+            this.aom2ControlBox.Size = new System.Drawing.Size(549, 45);
             this.aom2ControlBox.TabIndex = 20;
             this.aom2ControlBox.TabStop = false;
             this.aom2ControlBox.Text = "AOM 2 (Zeeman)";
-            // 
-            // aom2UpdateButton
-            // 
-            this.aom2UpdateButton.Enabled = false;
-            this.aom2UpdateButton.Location = new System.Drawing.Point(542, 14);
-            this.aom2UpdateButton.Name = "aom2UpdateButton";
-            this.aom2UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.aom2UpdateButton.TabIndex = 18;
-            this.aom2UpdateButton.Text = "Update";
-            this.aom2UpdateButton.UseVisualStyleBackColor = true;
-            this.aom2UpdateButton.Click += new System.EventHandler(this.aom2UpdateButton_Click);
             // 
             // aom2Label3
             // 
@@ -407,6 +350,7 @@ namespace SympatheticHardwareControl
             this.aom2CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom2CheckBox.TabIndex = 10;
             this.aom2CheckBox.UseVisualStyleBackColor = true;
+            this.aom2CheckBox.CheckedChanged += new System.EventHandler(this.aom2CheckBox_CheckedChanged);
             // 
             // aom2rfFrequencyTextBox
             // 
@@ -415,6 +359,7 @@ namespace SympatheticHardwareControl
             this.aom2rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom2rfFrequencyTextBox.TabIndex = 0;
             this.aom2rfFrequencyTextBox.Text = "0";
+            this.aom2rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom2rfFrequencyTextBox_TextChanged);
             // 
             // aom2rfAmplitudeTextBox
             // 
@@ -423,14 +368,7 @@ namespace SympatheticHardwareControl
             this.aom2rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom2rfAmplitudeTextBox.TabIndex = 8;
             this.aom2rfAmplitudeTextBox.Text = "0";
-            // 
-            // aom2LED
-            // 
-            this.aom2LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.aom2LED.Location = new System.Drawing.Point(10, 16);
-            this.aom2LED.Name = "aom2LED";
-            this.aom2LED.Size = new System.Drawing.Size(22, 23);
-            this.aom2LED.TabIndex = 3;
+            this.aom2rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom2rfAmplitudeTextBox_TextChanged);
             // 
             // aom2Label2
             // 
@@ -452,32 +390,19 @@ namespace SympatheticHardwareControl
             // 
             // aom1ControlBox
             // 
-            this.aom1ControlBox.Controls.Add(this.aom1UpdateButton);
             this.aom1ControlBox.Controls.Add(this.aom1Label3);
             this.aom1ControlBox.Controls.Add(this.aom1Label1);
             this.aom1ControlBox.Controls.Add(this.aom1CheckBox);
             this.aom1ControlBox.Controls.Add(this.aom1rfFrequencyTextBox);
             this.aom1ControlBox.Controls.Add(this.aom1rfAmplitudeTextBox);
-            this.aom1ControlBox.Controls.Add(this.aom1LED);
             this.aom1ControlBox.Controls.Add(this.aom1Label2);
             this.aom1ControlBox.Controls.Add(this.aom1Label0);
             this.aom1ControlBox.Location = new System.Drawing.Point(3, 54);
             this.aom1ControlBox.Name = "aom1ControlBox";
-            this.aom1ControlBox.Size = new System.Drawing.Size(606, 45);
+            this.aom1ControlBox.Size = new System.Drawing.Size(549, 45);
             this.aom1ControlBox.TabIndex = 19;
             this.aom1ControlBox.TabStop = false;
             this.aom1ControlBox.Text = "AOM 1 (MOT Repump)";
-            // 
-            // aom1UpdateButton
-            // 
-            this.aom1UpdateButton.Enabled = false;
-            this.aom1UpdateButton.Location = new System.Drawing.Point(542, 14);
-            this.aom1UpdateButton.Name = "aom1UpdateButton";
-            this.aom1UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.aom1UpdateButton.TabIndex = 18;
-            this.aom1UpdateButton.Text = "Update";
-            this.aom1UpdateButton.UseVisualStyleBackColor = true;
-            this.aom1UpdateButton.Click += new System.EventHandler(this.aom1UpdateButton_Click);
             // 
             // aom1Label3
             // 
@@ -505,6 +430,7 @@ namespace SympatheticHardwareControl
             this.aom1CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom1CheckBox.TabIndex = 10;
             this.aom1CheckBox.UseVisualStyleBackColor = true;
+            this.aom1CheckBox.CheckedChanged += new System.EventHandler(this.aom1CheckBox_CheckedChanged);
             // 
             // aom1rfFrequencyTextBox
             // 
@@ -513,6 +439,7 @@ namespace SympatheticHardwareControl
             this.aom1rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom1rfFrequencyTextBox.TabIndex = 0;
             this.aom1rfFrequencyTextBox.Text = "0";
+            this.aom1rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom1rfFrequencyTextBox_TextChanged);
             // 
             // aom1rfAmplitudeTextBox
             // 
@@ -521,14 +448,7 @@ namespace SympatheticHardwareControl
             this.aom1rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom1rfAmplitudeTextBox.TabIndex = 8;
             this.aom1rfAmplitudeTextBox.Text = "0";
-            // 
-            // aom1LED
-            // 
-            this.aom1LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.aom1LED.Location = new System.Drawing.Point(10, 16);
-            this.aom1LED.Name = "aom1LED";
-            this.aom1LED.Size = new System.Drawing.Size(22, 23);
-            this.aom1LED.TabIndex = 3;
+            this.aom1rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom1rfAmplitudeTextBox_TextChanged);
             // 
             // aom1Label2
             // 
@@ -550,32 +470,19 @@ namespace SympatheticHardwareControl
             // 
             // aom0ControlBox
             // 
-            this.aom0ControlBox.Controls.Add(this.aom0UpdateButton);
             this.aom0ControlBox.Controls.Add(this.aom0Label3);
             this.aom0ControlBox.Controls.Add(this.aom0Label1);
             this.aom0ControlBox.Controls.Add(this.aom0CheckBox);
             this.aom0ControlBox.Controls.Add(this.aom0rfFrequencyTextBox);
             this.aom0ControlBox.Controls.Add(this.aom0rfAmplitudeTextBox);
-            this.aom0ControlBox.Controls.Add(this.aom0LED);
             this.aom0ControlBox.Controls.Add(this.aom0Label2);
             this.aom0ControlBox.Controls.Add(this.aom0Label0);
             this.aom0ControlBox.Location = new System.Drawing.Point(3, 3);
             this.aom0ControlBox.Name = "aom0ControlBox";
-            this.aom0ControlBox.Size = new System.Drawing.Size(606, 45);
+            this.aom0ControlBox.Size = new System.Drawing.Size(549, 45);
             this.aom0ControlBox.TabIndex = 12;
             this.aom0ControlBox.TabStop = false;
             this.aom0ControlBox.Text = "AOM 0 (MOT AOM)";
-            // 
-            // aom0UpdateButton
-            // 
-            this.aom0UpdateButton.Enabled = false;
-            this.aom0UpdateButton.Location = new System.Drawing.Point(542, 14);
-            this.aom0UpdateButton.Name = "aom0UpdateButton";
-            this.aom0UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.aom0UpdateButton.TabIndex = 18;
-            this.aom0UpdateButton.Text = "Update";
-            this.aom0UpdateButton.UseVisualStyleBackColor = true;
-            this.aom0UpdateButton.Click += new System.EventHandler(this.aom0UpdateButton_Click);
             // 
             // aom0Label3
             // 
@@ -612,6 +519,7 @@ namespace SympatheticHardwareControl
             this.aom0rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom0rfFrequencyTextBox.TabIndex = 0;
             this.aom0rfFrequencyTextBox.Text = "0";
+            this.aom0rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom0rfFrequencyTextBox_TextChanged);
             // 
             // aom0rfAmplitudeTextBox
             // 
@@ -620,14 +528,7 @@ namespace SympatheticHardwareControl
             this.aom0rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom0rfAmplitudeTextBox.TabIndex = 8;
             this.aom0rfAmplitudeTextBox.Text = "0";
-            // 
-            // aom0LED
-            // 
-            this.aom0LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.aom0LED.Location = new System.Drawing.Point(10, 16);
-            this.aom0LED.Name = "aom0LED";
-            this.aom0LED.Size = new System.Drawing.Size(22, 23);
-            this.aom0LED.TabIndex = 3;
+            this.aom0rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom0rfAmplitudeTextBox_TextChanged);
             // 
             // aom0Label2
             // 
@@ -653,34 +554,23 @@ namespace SympatheticHardwareControl
             this.tabCoils.Controls.Add(this.coil0GroupBox);
             this.tabCoils.Location = new System.Drawing.Point(4, 22);
             this.tabCoils.Name = "tabCoils";
-            this.tabCoils.Size = new System.Drawing.Size(658, 542);
+            this.tabCoils.Size = new System.Drawing.Size(658, 209);
             this.tabCoils.TabIndex = 2;
             this.tabCoils.Text = "Magnetic Field Control";
             this.tabCoils.UseVisualStyleBackColor = true;
             // 
             // coil1GroupBox
             // 
-            this.coil1GroupBox.Controls.Add(this.coil1UpdateButton);
             this.coil1GroupBox.Controls.Add(this.coil1Label1);
             this.coil1GroupBox.Controls.Add(this.coil1CurrentTextBox);
             this.coil1GroupBox.Controls.Add(this.coil1Label0);
-            this.coil1GroupBox.Location = new System.Drawing.Point(307, 3);
+            this.coil1GroupBox.Location = new System.Drawing.Point(3, 54);
             this.coil1GroupBox.Name = "coil1GroupBox";
-            this.coil1GroupBox.Size = new System.Drawing.Size(304, 45);
+            this.coil1GroupBox.Size = new System.Drawing.Size(225, 45);
             this.coil1GroupBox.TabIndex = 19;
             this.coil1GroupBox.TabStop = false;
             this.coil1GroupBox.Text = "lower MOT Coil";
-            // 
-            // coil1UpdateButton
-            // 
-            this.coil1UpdateButton.Enabled = false;
-            this.coil1UpdateButton.Location = new System.Drawing.Point(220, 14);
-            this.coil1UpdateButton.Name = "coil1UpdateButton";
-            this.coil1UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.coil1UpdateButton.TabIndex = 18;
-            this.coil1UpdateButton.Text = "Update";
-            this.coil1UpdateButton.UseVisualStyleBackColor = true;
-            this.coil1UpdateButton.Click += new System.EventHandler(this.coil1UpdateButton_Click);
+            this.coil1GroupBox.Enter += new System.EventHandler(this.coil1GroupBox_Enter);
             // 
             // coil1Label1
             // 
@@ -710,27 +600,15 @@ namespace SympatheticHardwareControl
             // 
             // coil0GroupBox
             // 
-            this.coil0GroupBox.Controls.Add(this.coil0UpdateButton);
             this.coil0GroupBox.Controls.Add(this.coil0Label1);
             this.coil0GroupBox.Controls.Add(this.coil0CurrentTextBox);
             this.coil0GroupBox.Controls.Add(this.coil0Label0);
             this.coil0GroupBox.Location = new System.Drawing.Point(3, 3);
             this.coil0GroupBox.Name = "coil0GroupBox";
-            this.coil0GroupBox.Size = new System.Drawing.Size(298, 45);
+            this.coil0GroupBox.Size = new System.Drawing.Size(225, 45);
             this.coil0GroupBox.TabIndex = 13;
             this.coil0GroupBox.TabStop = false;
             this.coil0GroupBox.Text = "Upper MOT Coil";
-            // 
-            // coil0UpdateButton
-            // 
-            this.coil0UpdateButton.Enabled = false;
-            this.coil0UpdateButton.Location = new System.Drawing.Point(220, 14);
-            this.coil0UpdateButton.Name = "coil0UpdateButton";
-            this.coil0UpdateButton.Size = new System.Drawing.Size(58, 23);
-            this.coil0UpdateButton.TabIndex = 18;
-            this.coil0UpdateButton.Text = "Update";
-            this.coil0UpdateButton.UseVisualStyleBackColor = true;
-            this.coil0UpdateButton.Click += new System.EventHandler(this.coil0UpdateButton_Click);
             // 
             // coil0Label1
             // 
@@ -748,6 +626,7 @@ namespace SympatheticHardwareControl
             this.coil0CurrentTextBox.Size = new System.Drawing.Size(100, 20);
             this.coil0CurrentTextBox.TabIndex = 8;
             this.coil0CurrentTextBox.Text = "0";
+            this.coil0CurrentTextBox.TextChanged += new System.EventHandler(this.coil0CurrentTextBox_TextChanged);
             // 
             // coil0Label0
             // 
@@ -761,9 +640,9 @@ namespace SympatheticHardwareControl
             // manualControlLED
             // 
             this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(675, 89);
+            this.manualControlLED.Location = new System.Drawing.Point(678, 69);
             this.manualControlLED.Name = "manualControlLED";
-            this.manualControlLED.Size = new System.Drawing.Size(110, 110);
+            this.manualControlLED.Size = new System.Drawing.Size(80, 80);
             this.manualControlLED.TabIndex = 14;
             // 
             // button1
@@ -808,6 +687,7 @@ namespace SympatheticHardwareControl
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadLastParametersToolStripMenuItem,
             this.loadParametersToolStripMenuItem,
             this.saveParametersToolStripMenuItem,
             this.toolStripSeparator1,
@@ -819,48 +699,55 @@ namespace SympatheticHardwareControl
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // loadLastParametersToolStripMenuItem
+            // 
+            this.loadLastParametersToolStripMenuItem.Name = "loadLastParametersToolStripMenuItem";
+            this.loadLastParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.loadLastParametersToolStripMenuItem.Text = "Load last parameter set";
+            this.loadLastParametersToolStripMenuItem.Click += new System.EventHandler(this.loadLastParametersToolStripMenuItem_Click);
+            // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.loadParametersToolStripMenuItem.Text = "Load Parameters";
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.loadParametersToolStripMenuItem.Text = "Load parameters";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.saveParametersToolStripMenuItem.Text = "Save Parameters";
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.saveParametersToolStripMenuItem.Text = "Save parameters";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.saveParametersToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(193, 6);
             // 
             // loadImageToolStripMenuItem
             // 
             this.loadImageToolStripMenuItem.Name = "loadImageToolStripMenuItem";
-            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.loadImageToolStripMenuItem.Text = "Load Image";
+            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.loadImageToolStripMenuItem.Text = "Load image";
             this.loadImageToolStripMenuItem.Click += new System.EventHandler(this.loadImageToolStripMenuItem_Click);
             // 
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.saveImageToolStripMenuItem.Text = "Save Image";
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.saveImageToolStripMenuItem.Text = "Save image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(193, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -875,8 +762,11 @@ namespace SympatheticHardwareControl
             // 
             // onToolStripMenuItem
             // 
+            this.onToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.usingLastSavedValuesToolStripMenuItem,
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem});
             this.onToolStripMenuItem.Name = "onToolStripMenuItem";
-            this.onToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.onToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.onToolStripMenuItem.Text = "Start";
             this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
             // 
@@ -890,17 +780,17 @@ namespace SympatheticHardwareControl
             // remoteControlLED
             // 
             this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.remoteControlLED.Location = new System.Drawing.Point(675, 231);
+            this.remoteControlLED.Location = new System.Drawing.Point(678, 182);
             this.remoteControlLED.Name = "remoteControlLED";
             this.remoteControlLED.OffColor = System.Drawing.Color.Maroon;
             this.remoteControlLED.OnColor = System.Drawing.Color.Red;
-            this.remoteControlLED.Size = new System.Drawing.Size(110, 110);
+            this.remoteControlLED.Size = new System.Drawing.Size(80, 76);
             this.remoteControlLED.TabIndex = 21;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(675, 215);
+            this.label1.Location = new System.Drawing.Point(675, 166);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 22;
@@ -909,15 +799,29 @@ namespace SympatheticHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(675, 73);
+            this.label2.Location = new System.Drawing.Point(675, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 23;
             this.label2.Text = "Local Control";
             // 
+            // usingLastSavedValuesToolStripMenuItem
+            // 
+            this.usingLastSavedValuesToolStripMenuItem.Name = "usingLastSavedValuesToolStripMenuItem";
+            this.usingLastSavedValuesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.usingLastSavedValuesToolStripMenuItem.Text = "using last saved values";
+            this.usingLastSavedValuesToolStripMenuItem.Click += new System.EventHandler(this.usingLastSavedValuesToolStripMenuItem_Click);
+            // 
+            // usingValuesCurrentlyOnPanelToolStripMenuItem
+            // 
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Name = "usingValuesCurrentlyOnPanelToolStripMenuItem";
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Text = "using values currently on panel";
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Click += new System.EventHandler(this.usingValuesCurrentlyOnPanelToolStripMenuItem_Click);
+            // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(797, 596);
+            this.ClientSize = new System.Drawing.Size(797, 264);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.remoteControlLED);
@@ -931,21 +835,17 @@ namespace SympatheticHardwareControl
             this.Load += new System.EventHandler(this.WindowLoaded);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.shcTabs.ResumeLayout(false);
-            this.tabOverview.ResumeLayout(false);
-            this.tabOverview.PerformLayout();
+            this.tabCamera.ResumeLayout(false);
+            this.tabCamera.PerformLayout();
             this.tabLasers.ResumeLayout(false);
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom3LED)).EndInit();
             this.aom2ControlBox.ResumeLayout(false);
             this.aom2ControlBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom2LED)).EndInit();
             this.aom1ControlBox.ResumeLayout(false);
             this.aom1ControlBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom1LED)).EndInit();
             this.aom0ControlBox.ResumeLayout(false);
             this.aom0ControlBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.aom0LED)).EndInit();
             this.tabCoils.ResumeLayout(false);
             this.coil1GroupBox.ResumeLayout(false);
             this.coil1GroupBox.PerformLayout();
@@ -961,43 +861,29 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        #region Click handlers
-
-        #endregion
-
         #region ThreadSafe wrappers
 
-        public void SetCheckBox(CheckBox box, bool state)
+        private void setCheckBox(CheckBox box, bool state)
         {
-            box.Invoke(new SetCheckDelegate(SetCheckHelper), new object[] { box, state });
+            box.Invoke(new setCheckDelegate(setCheckHelper), new object[] { box, state });
         }
-        private delegate void SetCheckDelegate(CheckBox box, bool state);
-        private void SetCheckHelper(CheckBox box, bool state)
+        private delegate void setCheckDelegate(CheckBox box, bool state);
+        private void setCheckHelper(CheckBox box, bool state)
         {
             box.Checked = state;
         }
 
-        public void SetRadioButton(RadioButton button, bool state)
+        private void setTextBox(TextBox box, string text)
         {
-            button.Invoke(new SetRadioButtonDelegate(SetRadioButtonHelper), new object[] { button, state });
+            box.Invoke(new setTextDelegate(setTextHelper), new object[] { box, text });
         }
-        private delegate void SetRadioButtonDelegate(RadioButton button, bool state);
-        private void SetRadioButtonHelper(RadioButton button, bool state)
-        {
-            button.Checked = state;
-        }
-
-        public void SetTextBox(TextBox box, string text)
-        {
-            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
-        }
-        private delegate void SetTextDelegate(TextBox box, string text);
-        private void SetTextHelper(TextBox box, string text)
+        private delegate void setTextDelegate(TextBox box, string text);
+        private void setTextHelper(TextBox box, string text)
         {
             box.Text = text;
         }
 
-        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        private void setLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
         {
             led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
         }
@@ -1007,113 +893,52 @@ namespace SympatheticHardwareControl
             led.Value = val;
         }
 
-        public void EnableControl(Control control, bool enabled)
-        {
-            control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
-        }
-        private delegate void EnableControlDelegate(Control control, bool enabled);
-        private void EnableControlHelper(Control control, bool enabled)
-        {
-            control.Enabled = enabled;
-        }
-
-        private delegate void PlotYDelegate(double[] y);
-        public void PlotYAppend(Graph graph, WaveformPlot plot, double[] y)
-        {
-            graph.Invoke(new PlotYDelegate(plot.PlotYAppend), new Object[] { y });
-        }
-
-        //An irritating number of threadsafe delegates for the viewer window.
-        public void AttachToViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
-        {
-            viewer.Invoke(new AttachImageToViewerDelegate(AttachImageHelper), new object[] {viewer, image});
-        }
-
-        private delegate void AttachImageToViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image);
-        private void AttachImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
-        {
-            viewer.Attach(image);
-        }
-
-        public void UpdateViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
-        {
-            viewer.Invoke(new UpdateViewerDelegate(UpdateImageHelper), new object[] { viewer } );
-        }
-
-        private delegate void UpdateViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer);
-        private void UpdateImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
-        {
-            viewer.Update();
-        }
-        /*
-        public void DisposeViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
-        {
-            viewer.Invoke(new DisposeViewerDelegate(DisposeImageHelper), new object[] { viewer });
-        }
-
-        private delegate void DisposeViewerDelegate(NationalInstruments.Vision.WindowsForms.ImageViewer viewer);
-        private void DisposeImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer)
-        {
-            viewer.Dispose();
-        }
-        */
         #endregion
 
-
-
+        #region Declarations
         //Declare stuff here
         public TabControl shcTabs;
-        public TabPage tabOverview;
+        public TabPage tabCamera;
         public TabPage tabLasers;
         public TabPage tabCoils;
         private GroupBox aom0ControlBox;
         public CheckBox aom0CheckBox;
         public TextBox aom0rfFrequencyTextBox;
         public TextBox aom0rfAmplitudeTextBox;
-        public Led aom0LED;
         private Label aom0Label2;
         private Label aom0Label0;
         private Label aom0Label1;
         private Label aom0Label3;
-        private Button aom0UpdateButton;
         public Led manualControlLED;
         private GroupBox aom3ControlBox;
-        private Button aom3UpdateButton;
         private Label aom3Label3;
         private Label aom3Label1;
         public CheckBox aom3CheckBox;
         public TextBox aom3rfFrequencyTextBox;
         public TextBox aom3rfAmplitudeTextBox;
-        public Led aom3LED;
         private Label aom3Label2;
         private Label aom3Label0;
         private GroupBox aom2ControlBox;
-        private Button aom2UpdateButton;
         private Label aom2Label3;
         private Label aom2Label1;
         public CheckBox aom2CheckBox;
         public TextBox aom2rfFrequencyTextBox;
         public TextBox aom2rfAmplitudeTextBox;
-        public Led aom2LED;
         private Label aom2Label2;
         private Label aom2Label0;
         private GroupBox aom1ControlBox;
-        private Button aom1UpdateButton;
         private Label aom1Label3;
         private Label aom1Label1;
         public CheckBox aom1CheckBox;
         public TextBox aom1rfFrequencyTextBox;
         public TextBox aom1rfAmplitudeTextBox;
-        public Led aom1LED;
         private Label aom1Label2;
         private Label aom1Label0;
         private GroupBox coil1GroupBox;
-        private Button coil1UpdateButton;
         private Label coil1Label1;
         public TextBox coil1CurrentTextBox;
         private Label coil1Label0;
         private GroupBox coil0GroupBox;
-        private Button coil0UpdateButton;
         private Label coil0Label1;
         public TextBox coil0CurrentTextBox;
         private Label coil0Label0;
@@ -1121,7 +946,6 @@ namespace SympatheticHardwareControl
         public CheckBox checkBox1;
         public TextBox textBox1;
         public TextBox textBox2;
-        public NationalInstruments.Vision.WindowsForms.ImageViewer motViewer;
         public CheckBox saveImageCheckBox;
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
@@ -1135,141 +959,95 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
+        public Led remoteControlLED;
+        private Label label1;
+        private Label label2;
+        private Button snapshotButton;
+        private Button updateAttributesButton;
+        private ToolStripMenuItem loadLastParametersToolStripMenuItem;
+        private ToolStripMenuItem usingLastSavedValuesToolStripMenuItem;
+        private ToolStripMenuItem usingValuesCurrentlyOnPanelToolStripMenuItem;
+
+        #endregion
+
+        #region Click Handlers
+
+        private void loadLastParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadLastSavedParameterValues();
+        }
 
         private void aom0CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            controller.Aom0Enabled = this.aom0CheckBox.Checked;
+            controller.ReadAndApplyUIAom0EnabledState();
         }
+
         private void aom1CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            controller.Aom1Enabled = this.aom1CheckBox.Checked;
+            controller.ReadAndApplyUIAom1EnabledState();
         }
         private void aom2CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            controller.Aom2Enabled = this.aom2CheckBox.Checked;
+            controller.ReadAndApplyUIAom2EnabledState();
         }
         private void aom3CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            controller.Aom3Enabled = this.aom3CheckBox.Checked;
+            controller.ReadAndApplyUIAom3EnabledState();
         }
 
 
+        //
 
-        private void aom0UpdateButton_Click(object sender, EventArgs e)
+        private void aom0rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            if(controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateAOM0(controller.Aom0Enabled, controller.Aom0rfAmplitude, controller.Aom0rfFrequency);
-            }
+            controller.ReadAndApplyUIAom0rfFrequency();
         }
 
-        private void aom1UpdateButton_Click(object sender, EventArgs e)
+        private void aom0rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateAOM1(controller.Aom1Enabled, controller.Aom1rfAmplitude, controller.Aom1rfFrequency);
-            }
-        }
-        private void aom2UpdateButton_Click(object sender, EventArgs e)
-        {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateAOM2(controller.Aom2Enabled, controller.Aom2rfAmplitude, controller.Aom2rfFrequency);
-            }
-        }
-        
-
-
-        private void aom3UpdateButton_Click(object sender, EventArgs e)
-        {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateAOM3(controller.Aom3Enabled, controller.Aom3rfAmplitude, controller.Aom3rfFrequency);
-            }
+            controller.ReadAndApplyUIAom0rfAmplitude();
         }
 
-        private void coil0UpdateButton_Click(object sender, EventArgs e)
+        private void aom1rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateCoil0(controller.Coil0Current);
-            }
-        }
-        private void coil1UpdateButton_Click(object sender, EventArgs e)
-        {
-            if (controller.HCState == Controller.SHCUIControlState.LOCAL)
-            {
-                controller.UpdateCoil1(controller.Coil1Current);
-            }
-        }
-        
-        private void WindowClosing(object sender, FormClosingEventArgs e)
-        {
-            controller.WindowClosing();
+            controller.ReadAndApplyUIAom1rfFrequency();
         }
 
-        private void WindowLoaded(object sender, EventArgs e)
+        private void aom1rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.WindowLoaded();
-        }
-        private Button snapshotButton;
-
-        private void snapshotButton_Click(object sender, EventArgs e)
-        {
-            controller.CameraSnapshot();
-            //controller.ManualCameraSnapshot();
+            controller.ReadAndApplyUIAom1rfAmplitude();
         }
 
-        private Button streamButton;
-        private Button stopStreamButton;
-
-        private void streamButton_Click(object sender, EventArgs e)
+        private void aom2rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            this.snapshotButton.Enabled = false;
-            this.streamButton.Enabled = false;
-            this.stopStreamButton.Enabled = true;
-
-            controller.Streaming = true;
-            controller.CameraStream();
+            controller.ReadAndApplyUIAom2rfFrequency();
         }
 
-        private void stopStreamButton_Click(object sender, EventArgs e)
+        private void aom2rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.Streaming = false;
-
-            this.snapshotButton.Enabled = true;
-            this.streamButton.Enabled = true;
-            this.stopStreamButton.Enabled = false;
-        }    
-        
-
-        
-
-        private void onToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.StartManualControl();
-            controller.HCState = Controller.SHCUIControlState.LOCAL;
-            this.loadParametersToolStripMenuItem.Enabled = false;
-            this.aom0UpdateButton.Enabled = true;
-            this.aom1UpdateButton.Enabled = true;
-            this.aom2UpdateButton.Enabled = true;
-            this.aom3UpdateButton.Enabled = true;
-            this.coil0UpdateButton.Enabled = true;
-            this.coil1UpdateButton.Enabled = true;
+            controller.ReadAndApplyUIAom2rfAmplitude();
         }
 
-        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        private void aom3rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.StopManualControl();
-            controller.HCState = Controller.SHCUIControlState.OFF;
-            this.loadParametersToolStripMenuItem.Enabled = true;
-            this.aom0UpdateButton.Enabled = false;
-            this.aom1UpdateButton.Enabled = false;
-            this.aom2UpdateButton.Enabled = false;
-            this.aom3UpdateButton.Enabled = false;
-            this.coil0UpdateButton.Enabled = false;
-            this.coil1UpdateButton.Enabled = false;
+            controller.ReadAndApplyUIAom3rfFrequency();
         }
+
+        private void aom3rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            controller.ReadAndApplyUIAom3rfAmplitude();
+        }
+
+        private void coil0CurrentTextBox_TextChanged(object sender, EventArgs e)
+        {
+            controller.ReadAndApplyUICoil0Current();
+        }
+
+        private void coil1GroupBox_Enter(object sender, EventArgs e)
+        {
+            controller.ReadAndApplyUICoil1Current();
+        }
+
 
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1286,7 +1064,7 @@ namespace SympatheticHardwareControl
 
         private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controller.SaveImageWithDialog(this.motViewer.Image);
+            controller.SaveImageWithDialog();
         }
 
         private void loadImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1301,37 +1079,237 @@ namespace SympatheticHardwareControl
             Close();
         }
 
-        private Button updateAttributesButton;
-
         private void updateAttributesButton_Click(object sender, EventArgs e)
         {
-            controller.UpdateCameraAttributes();
+            controller.SetCameraAttributes();
         }
 
-        public Led remoteControlLED;
-        private Label label1;
-        private Label label2;
+        private void onToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StartManualControl();
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StopManualControl();
+        }
+
+        private void usingLastSavedValuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StartManualControlUsingLastSavedValues();
+        }
+
+        private void usingValuesCurrentlyOnPanelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StartManualControl();
+        }
+        #endregion
+
+        #region Public properties for controlling UI.
+        //This gets/sets the values on the GUI panel
+
+        public bool ReadAom0EnabledState()
+        {
+            return aom0CheckBox.Checked;
+        }
+        public void SetAom0EnabledState(bool value)
+        {
+            setCheckBox(aom0CheckBox, value);
+        }
+
+        public double ReadAom0rfAmplitude()
+        {
+            return Double.Parse(aom0rfAmplitudeTextBox.Text);
+        }
+        public void SetAom0rfAmplitude(double value)
+        {
+            setTextBox(aom0rfAmplitudeTextBox, Convert.ToString(value));
+        }
+
+        public double ReadAom0rfFrequency()
+        {
+            return Double.Parse(aom0rfFrequencyTextBox.Text); ;
+        }
+        public void SetAom0rfFrequency(double value)
+        {
+            setTextBox(aom0rfFrequencyTextBox, Convert.ToString(value));
+        }
+
+        ///
+
+        public bool ReadAom1EnabledState()
+        {
+            return aom1CheckBox.Checked;
+        }
+        public void SetAom1EnabledState(bool value)
+        {
+            setCheckBox(aom1CheckBox, value);
+        }
+
+        public double ReadAom1rfAmplitude()
+        {
+            return Double.Parse(aom1rfAmplitudeTextBox.Text);
+        }
+        public void SetAom1rfAmplitude(double value)
+        {
+            setTextBox(aom1rfAmplitudeTextBox, Convert.ToString(value));
+        }
+
+        public double ReadAom1rfFrequency()
+        {
+            return Double.Parse(aom1rfFrequencyTextBox.Text);
+        }
+        public void SetAom1rfFrequency(double value)
+        {
+            setTextBox(aom1rfFrequencyTextBox, Convert.ToString(value));
+        }
+
+        ///
+
+        public bool ReadAom2EnabledState()
+        {
+            return aom2CheckBox.Checked;
+        }
+        public void SetAom2EnabledState(bool value)
+        {
+            setCheckBox(aom2CheckBox, value);
+        }
+
+        public double ReadAom2rfAmplitude()
+        {
+            return Double.Parse(aom2rfAmplitudeTextBox.Text); ;
+        }
+        public void SetAom2rfAmplitude(double value)
+        {
+            setTextBox(aom2rfAmplitudeTextBox, Convert.ToString(value));
+        }
+
+        public double ReadAom2rfFrequency()
+        {
+            return Double.Parse(aom2rfFrequencyTextBox.Text);
+        }
+        public void SetAom2rfFrequency(double value)
+        {
+            setTextBox(aom2rfFrequencyTextBox, Convert.ToString(value));
+        }
+
+        ///
+
+        public bool ReadAom3EnabledState()
+        {
+            return aom3CheckBox.Checked; ;
+        }
+        public void SetAom3EnabledState(bool value)
+        {
+            setCheckBox(aom3CheckBox, value);
+        }
+
+        public double ReadAom3rfAmplitude()
+        {
+            return Double.Parse(aom3rfAmplitudeTextBox.Text);
+        }
+        public void SetAom3rfAmplitude(double value)
+        {
+            setTextBox(aom3rfAmplitudeTextBox, Convert.ToString(value));
+        }
+
+        public double ReadAom3rfFrequency()
+        {
+            return Double.Parse(aom3rfFrequencyTextBox.Text); ;
+        }
+        public void SetAom3rfFrequency(double value)
+        {
+            setTextBox(aom3rfFrequencyTextBox, Convert.ToString(value));
+        }
+
+        public double ReadCoil0Current()
+        {
+            return Double.Parse(coil0CurrentTextBox.Text); ;
+        }
+        public void SetCoil0Current(double value)
+        {
+            setTextBox(coil0CurrentTextBox, Convert.ToString(value));
+        }
+
+        public double ReadCoil1Current()
+        {
+            return Double.Parse(coil0CurrentTextBox.Text);
+        }
+        public void SetCoil1Current(double value)
+        {
+            setTextBox(coil1CurrentTextBox, Convert.ToString(value));
+        }
+
+        #endregion
+
+        #region Camera Control
+        
+
+        private void snapshotButton_Click(object sender, EventArgs e)
+        {
+            controller.CameraSnapshot();
+            //controller.ManualCameraSnapshot();
+        }
+
+        private Button streamButton;
+        private Button stopStreamButton;
+
+        private void streamButton_Click(object sender, EventArgs e)
+        {
+            this.snapshotButton.Enabled = false;
+            this.streamButton.Enabled = false;
+            this.stopStreamButton.Enabled = true;
+
+            controller.CameraStream();
+        }
+
+        private void stopStreamButton_Click(object sender, EventArgs e)
+        {
+
+            this.snapshotButton.Enabled = true;
+            this.streamButton.Enabled = true;
+            this.stopStreamButton.Enabled = false;
+        }
 
 
-       
+        #endregion
+
+        #region UI state
+        
+        public void UpdateUIState(Controller.SHCUIControlState state)
+        {
+            switch (state)
+            {
+                case Controller.SHCUIControlState.OFF:
+                    loadParametersToolStripMenuItem.Enabled = true;
+                    setLED(manualControlLED, false);
+                    setLED(remoteControlLED, false);
+                    break;
+
+                case Controller.SHCUIControlState.LOCAL:
+                    loadParametersToolStripMenuItem.Enabled = false;
+                    setLED(manualControlLED, true);
+                    break;
+
+                case Controller.SHCUIControlState.REMOTE:
+                    loadParametersToolStripMenuItem.Enabled = false;
+                    setLED(remoteControlLED, true);
+                    break;
+            }
+        }
+
+
+
+        #endregion
+
         
 
 
-        
 
-
-
-        
-        
-        
-     
       
 
+        
 
-       
-
-
-     
 
     }
 }

@@ -92,7 +92,7 @@ namespace MOTMaster
 
         }
 
-        // When the main window gets told to shut, it calls this function.
+        // When the main controlWindow gets told to shut, it calls this function.
         // In here things that need to be done before the application stops
         // are sorted out.
         public void StopApplication()
