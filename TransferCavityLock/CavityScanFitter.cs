@@ -11,10 +11,10 @@ namespace TransferCavityLock
         {
             double mse = 0;
             double[] voltages = data.parameters.CalculateRampVoltages();
-            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/20, voltages[ArrayOperation.GetIndexOfMax(data.SlavePhotodiodeData)],
+            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/10, voltages[ArrayOperation.GetIndexOfMax(data.SlavePhotodiodeData)],
                 ArrayOperation.GetMax(data.SlavePhotodiodeData) - ArrayOperation.GetMin(data.SlavePhotodiodeData)};
             CurveFit.NonLinearFit(voltages, data.SlavePhotodiodeData, new ModelFunctionCallback(lorentzianNarrow),
-                    coefficients, out mse, 1000);
+                    coefficients, out mse, 4000);
             fitFailSafe(coefficients, limitLow, limitHigh);
             
             return coefficients;
@@ -23,11 +23,12 @@ namespace TransferCavityLock
         {
             double mse = 0;
             double[] voltages = data.parameters.CalculateRampVoltages();
-            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/20, voltages[ArrayOperation.GetIndexOfMax(data.MasterPhotodiodeData)],
+            double[] coefficients = new double[] {(data.parameters.High - data.parameters.Low)/10, voltages[ArrayOperation.GetIndexOfMax(data.MasterPhotodiodeData)],
                 ArrayOperation.GetMax(data.MasterPhotodiodeData) - ArrayOperation.GetMin(data.MasterPhotodiodeData)};
+            
             CurveFit.NonLinearFit(voltages, data.MasterPhotodiodeData, new ModelFunctionCallback(lorentzianNarrow),
-                    coefficients, out mse, 1000);
-
+                    coefficients, out mse, 4000);
+            
             fitFailSafe(coefficients, limitLow, limitHigh);
 
             return coefficients;
@@ -49,7 +50,7 @@ namespace TransferCavityLock
             double centroid = parameters[1];
             double amplitude = parameters[2];
             if (width < 0) width = Math.Abs(width); // watch out for divide by zero
-            return amplitude / (1 + Math.Pow((1 / 0.01), 2) * Math.Pow(x - centroid, 2));
+            return amplitude / (1 + Math.Pow((1 / width), 2) * Math.Pow(x - centroid, 2));
         }
         private static double lorentzianNarrow(double x, double[] parameters) //A Narrow Lorentzian (Kind of silly to have to have this...)
         {
@@ -57,7 +58,7 @@ namespace TransferCavityLock
             double centroid = parameters[1];
             double amplitude = parameters[2];
             if (width < 0) width = Math.Abs(width); // watch out for divide by zero
-            return amplitude / (1 + Math.Pow((1 / 0.002), 2) * Math.Pow(x - centroid, 2));
+            return amplitude / (1 + Math.Pow((1 / width), 2) * Math.Pow(x - centroid, 2));
         }
 
     }
