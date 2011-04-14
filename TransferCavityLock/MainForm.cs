@@ -247,6 +247,7 @@ namespace TransferCavityLock
             }
             catch (Exception)
             {
+                
             }
         }
 
@@ -272,6 +273,10 @@ namespace TransferCavityLock
         public void SetGain(double value)
         {
             SetTextBox(GainTextbox, Convert.ToString(value)); 
+        }
+        public double GetGain()
+        {
+            return Double.Parse(GainTextbox.Text);
         }
 
         public double GetScanWidth()

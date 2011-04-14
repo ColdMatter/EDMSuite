@@ -72,8 +72,8 @@ namespace DAQ.TransferCavityLock
             outputCavityTask = new Task("CavityPiezoVoltage");
             cavityChannel =
                         (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[cavityChannelName];
-            cavityChannel.AddToTask(outputCavityTask, -10, 10);
-            outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Dma;
+            cavityChannel.AddToTask(outputCavityTask, 0, 10);
+            outputCavityTask.AOChannels[0].DataTransferMechanism = AODataTransferMechanism.Interrupts;
 
             if (!autostart)
             {

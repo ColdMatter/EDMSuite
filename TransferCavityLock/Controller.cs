@@ -26,10 +26,10 @@ namespace TransferCavityLock
         public int Increments = 0;          // for tweaking the laser set point
         public int Decrements = 0;
 
-        public const int default_ScanPoints = 100;
-        public const double default_ScanOffset = 3.0;
-        public const double default_ScanWidth = 0.3;
-        public const double default_Gain = 0.0;
+        public const int default_ScanPoints = 200;
+        public const double default_ScanOffset = 4.75;
+        public const double default_ScanWidth = 2;
+        public const double default_Gain = 0.5;
         public const double default_VoltageToLaser = 0.0;
 
 
@@ -74,9 +74,10 @@ namespace TransferCavityLock
         {
             ui = new MainForm();
             ui.controller = this;
-            
-            Application.Run(ui);
+
             State = ControllerState.STOPPED;
+            initializeControllerValues();
+            Application.Run(ui);
         }
 
         #endregion
@@ -208,7 +209,12 @@ namespace TransferCavityLock
             ui.SetGain(default_Gain);
             ui.SetNumberOfPoints(default_ScanPoints);
         }
-
+        private void initializeControllerValues()
+        {
+            scanOffset = default_ScanOffset;
+            voltageToLaser = default_VoltageToLaser;
+            gain = default_Gain;
+        }
         /// <summary>
         /// A function to scan across the voltage range set by the limits high and low. 
         /// Reads from the two photodiodes and spits out an array.
@@ -293,7 +299,7 @@ namespace TransferCavityLock
 
                         slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
-                        VoltageToLaser = calculateNewVoltageToLaser(shift, VoltageToLaser);
+                        VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
 
                         break;
 
@@ -433,32 +439,32 @@ namespace TransferCavityLock
             if (slaveFitCoefficients[1] > LOWER_CC_VOLTAGE_LIMIT
                 && slaveFitCoefficients[1] < UPPER_CC_VOLTAGE_LIMIT) //Only change limits if fits are reasonable.
             {
-                currentPeakSeparation = Math.Round(slaveFitCoefficients[1] - masterFitCoefficients[1], 4);
+                currentPeakSeparation = slaveFitCoefficients[1] - masterFitCoefficients[1];
             }
             else
             {
                 currentPeakSeparation = LaserSetPoint;
             }
 
-            return Math.Round(currentPeakSeparation - laserSetPoint, 4);
+            return currentPeakSeparation - LaserSetPoint;
 
             
 
         }
 
-        private double calculateNewVoltageToLaser(double VoltageToLaser, double measuredVoltageChange)
+        private double calculateNewVoltageToLaser(double vtolaser, double measuredVoltageChange)
         {
             double newVoltage;
-            if (VoltageToLaser
+            if (vtolaser
                 + Gain * measuredVoltageChange > UPPER_LC_VOLTAGE_LIMIT
-                || VoltageToLaser
+                || vtolaser
                 + Gain * measuredVoltageChange < LOWER_LC_VOLTAGE_LIMIT)
             {
-                newVoltage = VoltageToLaser;
+                newVoltage = vtolaser;
             }
             else
             {
-                newVoltage = VoltageToLaser + Gain * measuredVoltageChange; //Feedback 
+                newVoltage = vtolaser + Gain * measuredVoltageChange; //Feedback 
             }
             return Math.Round(newVoltage, 4);
         }
