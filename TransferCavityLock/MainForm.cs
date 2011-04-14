@@ -63,6 +63,7 @@ namespace TransferCavityLock
                     rampStopButton.Enabled = true;
 
                     fitAndStabilizeEnableCheck.Enabled = true;
+                    fitAndStabilizeEnableCheck.Checked = false;
 
                     lockEnableCheck.Enabled = false;
                     VoltageToLaserTextBox.Enabled = false;
@@ -229,12 +230,24 @@ namespace TransferCavityLock
 
         private void VoltageToLaserChanged(object sender, EventArgs e)
         {
-            controller.WindowVoltageToLaserChanged(Double.Parse(VoltageToLaserTextBox.Text));
+            try
+            {
+                controller.WindowVoltageToLaserChanged(Double.Parse(VoltageToLaserTextBox.Text));
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void GainChanged(object sender, EventArgs e)
         {
-            controller.WindowGainChanged(Double.Parse(GainTextbox.Text));
+            try
+            {
+                controller.WindowGainChanged(Double.Parse(GainTextbox.Text));
+            }
+            catch (Exception)
+            {
+            }
         }
 
         

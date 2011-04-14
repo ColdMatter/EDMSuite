@@ -37,14 +37,23 @@ namespace TransferCavityLock
         private MainForm ui;
 
         private TransferCavityLockable tcl = 
-            (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), 
+           (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), 
             "tcp://localhost:1172/controller.rem");
+        //DAQMxTransferCavityLockHelper tcl = new DAQMxTransferCavityLockHelper("cavity", "analogTrigger3",
+        //    "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
+
 
         public enum ControllerState
         {
             STOPPED, FREERUNNING, CAVITYSTABILIZED, LASERLOCKING, LASERLOCKED
         };
         public ControllerState State = ControllerState.STOPPED;
+
+        public enum LaserState
+        {
+            FREE, BUSY
+        };
+        public LaserState lState = LaserState.FREE;
 
         public object rampStopLock = new object();
         public object tweakLock = new object();
@@ -105,7 +114,7 @@ namespace TransferCavityLock
         }
         public void DisengageLock()
         {
-            State = ControllerState.CAVITYSTABILIZED;
+            State = ControllerState.FREERUNNING;
             ui.updateUIState(State);
         }
         public void StabilizeCavity()
@@ -250,12 +259,15 @@ namespace TransferCavityLock
                 switch (State)
                 {
                     case ControllerState.FREERUNNING:
+                        releaseLaser();
                         break;
 
                     case ControllerState.CAVITYSTABILIZED:
                         ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
+
+                        engageLaser();
                         break;
 
                     case ControllerState.LASERLOCKING:
@@ -263,6 +275,8 @@ namespace TransferCavityLock
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
 
+                       
+                        
                         slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
@@ -284,7 +298,10 @@ namespace TransferCavityLock
                         break;
 
                 }
-                tcl.SetLaserVoltage(VoltageToLaser);
+                if (lState == LaserState.BUSY)
+                {
+                    tcl.SetLaserVoltage(VoltageToLaser);
+                }
 
                 scanData = scan(sp);
             }
@@ -315,8 +332,8 @@ namespace TransferCavityLock
         {
             ScanParameters sp = new ScanParameters();
             sp.Steps = numberOfPoints;
-            sp.Low = ScanOffset - (0.5 * scanWidth);
-            sp.High = ScanOffset + (0.5 * scanWidth);
+            sp.Low = ScanOffset - scanWidth;
+            sp.High = ScanOffset + scanWidth;
             sp.SleepTime = 0;
 
             return sp;
@@ -324,18 +341,39 @@ namespace TransferCavityLock
 
         private void finalizeRamping()
         {
-            VoltageToLaser = 0.0;
-            tcl.SetLaserVoltage(0.0);
-            tcl.ReleaseHardwareControl();
+            tcl.ReleaseCavityHardware();
+            if (lState == LaserState.BUSY)
+            {
+                VoltageToLaser = 0.0;
+                tcl.SetLaserVoltage(0.0);
+                tcl.ReleaseLaser();
+                lState = LaserState.FREE;
+            }
         }
-
+        private void releaseLaser()
+        {
+            if (lState == LaserState.BUSY)
+            {
+                tcl.ReleaseLaser();
+                lState = LaserState.FREE;
+            }
+        }
+        private void engageLaser()
+        {
+            if (lState == LaserState.FREE)
+            {
+                lState = LaserState.BUSY;
+                tcl.ConfigureSetLaserVoltage(VoltageToLaser);
+            }
+        }
         private void initializeHardware()
         {
             tcl.ConfigureCavityScan(numberOfPoints, false);
             tcl.ConfigureReadPhotodiodes(numberOfPoints, false);
             tcl.ConfigureScanTrigger();
-            tcl.ConfigureSetLaserVoltage(VoltageToLaser);
+            //tcl.ConfigureSetLaserVoltage(VoltageToLaser);
         }
+
         
         /// <summary>
         /// This adjusts the scan range of the next scan, so that the HeNe peak stays in the middle of the scan.

@@ -25,8 +25,8 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
-            Boards.Add("usbDAQ1", "/dev3");
-            Boards.Add("usbDAQ2", "/dev4");
+            Boards.Add("usbDAQ2", "/dev3");
+            //Boards.Add("usbDAQ1", "/dev4");
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];

@@ -164,6 +164,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-RAGNAROK":
+                    Hardware = new SympatheticHardware();
+                    FileSystem = new RagnarokFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

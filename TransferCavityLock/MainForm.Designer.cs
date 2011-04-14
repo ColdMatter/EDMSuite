@@ -275,9 +275,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(3, 167);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 13);
+            this.label6.Size = new System.Drawing.Size(120, 13);
             this.label6.TabIndex = 23;
-            this.label6.Text = "Cavity Width:";
+            this.label6.Text = "Cavity Scan Half Width:";
             // 
             // NumberOfScanpointsTextBox
             // 

@@ -148,6 +148,7 @@
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
+    <Compile Include="RagnarokFileSystem.cs" />
     <Compile Include="RainbowFileSystem.cs" />
     <Compile Include="RainbowHardware.cs" />
     <Compile Include="HP438A.cs" />

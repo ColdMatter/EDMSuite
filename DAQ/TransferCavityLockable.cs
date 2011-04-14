@@ -21,7 +21,8 @@ namespace DAQ.TransferCavityLock
         void StopScan();
         
         void SetLaserVoltage(double voltage);
-        void ReleaseHardwareControl();
+        void ReleaseCavityHardware();
+        void ReleaseLaser();
         void SendScanTriggerAndWaitUntilDone();
 
     }

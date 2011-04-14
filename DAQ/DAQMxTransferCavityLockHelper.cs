@@ -179,12 +179,15 @@ namespace DAQ.TransferCavityLock
             readPhotodiodesTask.Stop();
         }
         
-        public void ReleaseHardwareControl()
+        public void ReleaseCavityHardware()
         {
-            outputLaserTask.Dispose();
             readPhotodiodesTask.Dispose();
             outputCavityTask.Dispose();
             sendScanTriggerTask.Dispose();
+        }
+        public void ReleaseLaser()
+        {
+            outputLaserTask.Dispose();
         }
         #endregion
 

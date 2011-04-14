@@ -216,14 +216,18 @@ namespace DecelerationHardwareControl
             TCLHelper.SetLaserVoltage(voltage);
         }
 
-        public void ReleaseHardwareControl()
+        public void ReleaseCavityHardware()
         {
-            TCLHelper.ReleaseHardwareControl();
+            TCLHelper.ReleaseCavityHardware();
         }
 
         public void SendScanTriggerAndWaitUntilDone()
         {
             TCLHelper.SendScanTriggerAndWaitUntilDone();
+        }
+        public void ReleaseLaser()
+        {
+            TCLHelper.ReleaseLaser();
         }
         #endregion
 
