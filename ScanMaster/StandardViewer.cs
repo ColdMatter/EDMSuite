@@ -339,6 +339,7 @@ namespace ScanMaster.GUI
 			{
 				startSpectrumGate = window.SpectrumGate.Minimum;
 				endSpectrumGate = window.SpectrumGate.Maximum;
+                window.SetStatus("S: " + string.Format("{0:N4}", startSpectrumGate) + " E: " + string.Format("{0:N4}", endSpectrumGate));
 				UpdateTOFAveragePlots();
 			}
 		}

@@ -822,6 +822,16 @@ namespace ScanMaster.GUI
 			label.Text = text;
 		}
 
+        public void SetStatus(string text)
+        {
+            this.Invoke(new SetStatusDelegate(SetStatusHelper), new object[] { text });
+        }
+        private delegate void SetStatusDelegate(string text);
+        private void SetStatusHelper(string text)
+        {
+            statusBar1.Text = text;
+        }
+
         private void TofFitComboHelper(bool state)
         {
             tofFitFunctionCombo.Enabled = state;
