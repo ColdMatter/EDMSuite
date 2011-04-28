@@ -14,7 +14,7 @@ namespace DecelerationHardwareControl
 
         ControlWindow window;
 
-        private DAQMxTransferCavityLockHelper TCLHelper = new DAQMxTransferCavityLockHelper
+        private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
 
         private bool analogsAvailable;
