@@ -289,6 +289,11 @@ namespace TransferCavityLock
             SetTextBox(CavityScanWidthTextBox, Convert.ToString(value)); 
         }
 
+        public void SetSetPointIncrementSize(double value)
+        {
+            SetTextBox(setPointIncrementBox, Convert.ToString(value)); 
+        }
+
         public double GetScanOffset()
         {
             return Double.Parse(CavityScanOffsetTextBox.Text);
@@ -306,6 +311,11 @@ namespace TransferCavityLock
             SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
         }
         #endregion
+
+        private void setPointIncrementBox_TextChanged(object sender, EventArgs e)
+        {
+            controller.setPointIncrementSize = Double.Parse(setPointIncrementBox.Text);
+        }
 
 
         

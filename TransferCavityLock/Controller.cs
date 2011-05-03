@@ -22,13 +22,14 @@ namespace TransferCavityLock
         private const double UPPER_CC_VOLTAGE_LIMIT = 10.0; //volts CC: Cavity control
         private const double LOWER_CC_VOLTAGE_LIMIT = 0; //volts CC: Cavity control
 
-        private const double TWEAK_GAIN = 0.001;
+        private const double TWEAK_GAIN = 0.01;
         public int Increments = 0;          // for tweaking the laser set point
         public int Decrements = 0;
+        public double setPointIncrementSize = TWEAK_GAIN;
 
         public const int default_ScanPoints = 200;
-        public const double default_ScanOffset = 4.75;
-        public const double default_ScanWidth = 2;
+        public const double default_ScanOffset = 6;
+        public const double default_ScanWidth = 2.7;
         public const double default_Gain = 0.5;
         public const double default_VoltageToLaser = 0.0;
 
@@ -36,11 +37,11 @@ namespace TransferCavityLock
 
         private MainForm ui;
 
-        private TransferCavityLockable tcl = 
-           (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), 
-            "tcp://localhost:1172/controller.rem");
-        //DAQMxTransferCavityLockHelper tcl = new DAQMxTransferCavityLockHelper("cavity", "analogTrigger3",
-        //    "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
+        //private TransferCavityLockable tcl = 
+        //   (TransferCavityLockable)Activator.GetObject(typeof(TransferCavityLockable), 
+        //    "tcp://localhost:1172/controller.rem");
+        TransferCavityLockable tcl = new DAQMxTCLHelperSWTimed("cavity", "analogTrigger3",
+            "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
 
 
         public enum ControllerState
@@ -208,6 +209,7 @@ namespace TransferCavityLock
             ui.SetLaserVoltage(default_VoltageToLaser);
             ui.SetGain(default_Gain);
             ui.SetNumberOfPoints(default_ScanPoints);
+            ui.SetSetPointIncrementSize(setPointIncrementSize);
         }
         private void initializeControllerValues()
         {
@@ -255,13 +257,15 @@ namespace TransferCavityLock
             initializeHardware();
             CavityScanData scanData = scan(sp);
 
+            double[] masterDataFit;
+            double[] slaveDataFit;
+
             while (State != ControllerState.STOPPED)
             {
                 displayData(sp, scanData);
 
-                double[] masterDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
-                double[] slaveDataFit;
-
+                masterDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
+             
                 switch (State)
                 {
                     case ControllerState.FREERUNNING:
@@ -272,12 +276,12 @@ namespace TransferCavityLock
                         ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
-
+                       
                         engageLaser();
                         break;
 
                     case ControllerState.LASERLOCKING:
-                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                            ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
 
@@ -298,6 +302,7 @@ namespace TransferCavityLock
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
                         slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                       
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
 
@@ -399,7 +404,8 @@ namespace TransferCavityLock
             {
                 newCentroid = scanParameters.High - scanWidth;
             }
-             return newCentroid;
+            Console.WriteLine(newCentroid); 
+            return newCentroid;
         }
 
         /// <summary>
@@ -425,7 +431,7 @@ namespace TransferCavityLock
 
         private double tweakSetPoint(double oldSetPoint)
         {
-            double newSetPoint = oldSetPoint + TWEAK_GAIN * (Increments - Decrements); 
+            double newSetPoint = oldSetPoint + setPointIncrementSize * (Increments - Decrements); 
             Increments = 0;
             Decrements = 0;
             return newSetPoint;

@@ -60,6 +60,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.setPointIncrementBox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -179,6 +181,8 @@
             // 
             // lockParams
             // 
+            this.lockParams.Controls.Add(this.label10);
+            this.lockParams.Controls.Add(this.setPointIncrementBox);
             this.lockParams.Controls.Add(this.GainTextbox);
             this.lockParams.Controls.Add(this.VoltageToLaserTextBox);
             this.lockParams.Controls.Add(this.setPointAdjustMinusButton);
@@ -212,7 +216,7 @@
             // 
             // VoltageToLaserTextBox
             // 
-            this.VoltageToLaserTextBox.Location = new System.Drawing.Point(167, 102);
+            this.VoltageToLaserTextBox.Location = new System.Drawing.Point(167, 113);
             this.VoltageToLaserTextBox.Name = "VoltageToLaserTextBox";
             this.VoltageToLaserTextBox.Size = new System.Drawing.Size(100, 20);
             this.VoltageToLaserTextBox.TabIndex = 30;
@@ -241,9 +245,9 @@
             // 
             // LaserSetPointTextBox
             // 
+            this.LaserSetPointTextBox.AcceptsReturn = true;
             this.LaserSetPointTextBox.Location = new System.Drawing.Point(167, 63);
             this.LaserSetPointTextBox.Name = "LaserSetPointTextBox";
-            this.LaserSetPointTextBox.ReadOnly = true;
             this.LaserSetPointTextBox.Size = new System.Drawing.Size(57, 20);
             this.LaserSetPointTextBox.TabIndex = 27;
             // 
@@ -307,7 +311,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 105);
+            this.label2.Location = new System.Drawing.Point(6, 116);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 13);
             this.label2.TabIndex = 17;
@@ -339,6 +343,24 @@
             this.label9.Size = new System.Drawing.Size(38, 13);
             this.label9.TabIndex = 12;
             this.label9.Text = "He-Ne";
+            // 
+            // setPointIncrementBox
+            // 
+            this.setPointIncrementBox.Location = new System.Drawing.Point(168, 87);
+            this.setPointIncrementBox.Name = "setPointIncrementBox";
+            this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
+            this.setPointIncrementBox.TabIndex = 32;
+            
+            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 90);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(123, 13);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Set Point Increment Size";
             // 
             // MainForm
             // 
@@ -400,6 +422,8 @@
         private System.Windows.Forms.TextBox LaserSetPointTextBox;
         private System.Windows.Forms.TextBox GainTextbox;
         private System.Windows.Forms.TextBox VoltageToLaserTextBox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox setPointIncrementBox;
     }
 }
 
