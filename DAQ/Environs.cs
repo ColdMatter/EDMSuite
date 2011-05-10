@@ -170,6 +170,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-RHENDRIC0":
+                    Hardware = new BufferGasHardware();
+                    FileSystem = new PHRHENDRIC0FileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
