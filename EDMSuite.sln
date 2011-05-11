@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAQ", "DAQ\DAQ.csproj", "{BB737B99-2E9F-40C9-9809-895A7C51AD40}"

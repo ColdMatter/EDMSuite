@@ -28,7 +28,7 @@ namespace SirCachealot
         private MySqlDBlockStore blockStore;
 
         // TOF Demodulation
-        private TOFChannelSetGroupAccumulator tcsga;
+ //       private TOFChannelSetGroupAccumulator tcsga;
         private object accumulatorLock = new object();
 
         // Threading
@@ -236,73 +236,73 @@ namespace SirCachealot
 
         #region TOFDemodulation
 
-        public void TOFDemodulateBlocks(string[] blockFiles, string savePath)
-        {
-            // first of all test that the save location exists to avoid later disappointment.
+        //public void TOFDemodulateBlocks(string[] blockFiles, string savePath)
+        //{
+        //    // first of all test that the save location exists to avoid later disappointment.
 
-            if (!Directory.Exists(Path.GetDirectoryName(savePath)))
-            {
-                log("Save path does not exist!!");
-                return;
-            }
+        //    if (!Directory.Exists(Path.GetDirectoryName(savePath)))
+        //    {
+        //        log("Save path does not exist!!");
+        //        return;
+        //    }
 
-            // initialise the accumulator
-            tcsga = new TOFChannelSetGroupAccumulator();
-            // queue the blocks - the last block analysed will take care of saving the results.
-            foreach (string blockFile in blockFiles)
-            {
-                tofDemodulateParams tdp = new tofDemodulateParams();
-                tdp.blockPath = blockFile;
-                tdp.savePath = savePath;
-                threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
-            }
-        }
+        //    // initialise the accumulator
+        //    tcsga = new TOFChannelSetGroupAccumulator();
+        //    // queue the blocks - the last block analysed will take care of saving the results.
+        //    foreach (string blockFile in blockFiles)
+        //    {
+        //        tofDemodulateParams tdp = new tofDemodulateParams();
+        //        tdp.blockPath = blockFile;
+        //        tdp.savePath = savePath;
+        //        threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
+        //    }
+        //}
 
-        private void TOFDemodulateBlock(string blockPath, string savePath)
-        {
-            BlockSerializer bs = new BlockSerializer();
-            string[] splitPath = blockPath.Split('\\');
-            log("Loading block " + splitPath[splitPath.Length - 1]); 
-            Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
-            log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-            BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0, true);
-            log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-            lock (accumulatorLock) tcsga.Add(tcs);
-            // are we the last block to be added? If so, it's our job to save the results
-            if (threadManager.RemainingJobs == 1)
-            {
-                // this lock should not be needed
-                lock(accumulatorLock)
-                {
-                    TOFChannelSetGroup tcsg = tcsga.GetResult();
-                    Stream fileStream = new FileStream(savePath, FileMode.Create);
-                    (new BinaryFormatter()).Serialize(fileStream, tcsg);
-                    fileStream.Close();
-                }
-            }
-        }
+        //private void TOFDemodulateBlock(string blockPath, string savePath)
+        //{
+        //    BlockSerializer bs = new BlockSerializer();
+        //    string[] splitPath = blockPath.Split('\\');
+        //    log("Loading block " + splitPath[splitPath.Length - 1]); 
+        //    Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
+        //    log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+        //    BlockTOFDemodulator btd = new BlockTOFDemodulator();
+        //    TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0, true);
+        //    log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+        //    lock (accumulatorLock) tcsga.Add(tcs);
+        //    // are we the last block to be added? If so, it's our job to save the results
+        //    if (threadManager.RemainingJobs == 1)
+        //    {
+        //        // this lock should not be needed
+        //        lock(accumulatorLock)
+        //        {
+        //            TOFChannelSetGroup tcsg = tcsga.GetResult();
+        //            Stream fileStream = new FileStream(savePath, FileMode.Create);
+        //            (new BinaryFormatter()).Serialize(fileStream, tcsg);
+        //            fileStream.Close();
+        //        }
+        //    }
+        //}
 
-        private void TOFDemodulateThreadWrapper(object parametersIn)
-        {
-            threadManager.QueueItemWrapper(delegate(object parms)
-            {
-                tofDemodulateParams parameters = (tofDemodulateParams)parms;
-                TOFDemodulateBlock(parameters.blockPath, parameters.savePath);
-            },
-            parametersIn
-            );
-        }
-        private struct tofDemodulateParams
-        {
-            public string blockPath;
-            public string savePath;
-            // this struct has a ToString method defined for error reporting porpoises.
-            public override string ToString()
-            {
-                return blockPath;
-            }
-        }
+        //private void TOFDemodulateThreadWrapper(object parametersIn)
+        //{
+        //    threadManager.QueueItemWrapper(delegate(object parms)
+        //    {
+        //        tofDemodulateParams parameters = (tofDemodulateParams)parms;
+        //        TOFDemodulateBlock(parameters.blockPath, parameters.savePath);
+        //    },
+        //    parametersIn
+        //    );
+        //}
+        //private struct tofDemodulateParams
+        //{
+        //    public string blockPath;
+        //    public string savePath;
+        //    // this struct has a ToString method defined for error reporting porpoises.
+        //    public override string ToString()
+        //    {
+        //        return blockPath;
+        //    }
+        //}
 
         #endregion
 
@@ -311,20 +311,20 @@ namespace SirCachealot
         // Somewhere for SirCachealot to store test results that's accessible by Mathematica.
         // Makes debugging easier and is needed as a workaround for the constant Mathematica
         // NET/Link errors.
-        public TOFChannelSetGroup ChanSetGroup;
+//        public TOFChannelSetGroup ChanSetGroup;
         // workarounds for NET/Link bugs
-        public TOFChannelSet GetAveragedChannelSet(bool eSign, bool bSign, bool rfSign)
-        {
-            return ChanSetGroup.AverageChannelSetSignedByMachineState(eSign, bSign, rfSign);
-        }
+        //public TOFChannelSet GetAveragedChannelSet(bool eSign, bool bSign, bool rfSign)
+        //{
+        //    return ChanSetGroup.AverageChannelSetSignedByMachineState(eSign, bSign, rfSign);
+        //}
 
-        public void LoadChannelSetGroup(string path)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(path, FileMode.Open);
-            ChanSetGroup = (TOFChannelSetGroup)bf.Deserialize(fs);
-            fs.Close();
-        }
+        //public void LoadChannelSetGroup(string path)
+        //{
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    FileStream fs = new FileStream(path, FileMode.Open);
+        //    ChanSetGroup = (TOFChannelSetGroup)bf.Deserialize(fs);
+        //    fs.Close();
+        //}
 
 
         public void Test1()

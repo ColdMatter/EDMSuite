@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -26,7 +27,24 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -89,7 +107,6 @@
       <Name>ICSharpCode.SharpZipLib</Name>
       <HintPath>C:\Program Files\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -102,17 +119,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelSetGroup.cs" />
-    <Compile Include="IAccumulator.cs" />
-    <Compile Include="IField.cs" />
-    <Compile Include="IVectorSpace.cs" />
+    <Compile Include="OldCode\ChannelSetGroup.cs" />
+    <Compile Include="OldCode\IAccumulator.cs" />
+    <Compile Include="OldCode\IField.cs" />
+    <Compile Include="OldCode\IVectorSpace.cs" />
     <Compile Include="TOFChannel.cs" />
-    <Compile Include="TOFChannelAccumulator.cs" />
+    <Compile Include="OldCode\TOFChannelAccumulator.cs" />
     <Compile Include="TOFChannelSet.cs" />
-    <Compile Include="TOFChannelSetAccumulator.cs" />
-    <Compile Include="TOFChannelSetGroup.cs" />
-    <Compile Include="TOFChannelSetGroupAccumulator.cs" />
-    <Compile Include="TOFWithError.cs" />
+    <Compile Include="OldCode\TOFChannelSetAccumulator.cs" />
+    <Compile Include="OldCode\TOFChannelSetGroup.cs" />
+    <Compile Include="OldCode\TOFChannelSetGroupAccumulator.cs" />
+    <Compile Include="OldCode\TOFWithError.cs" />
     <Compile Include="AnalogModulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,7 +151,7 @@
     <Compile Include="PointDetectorData.cs" />
     <Compile Include="QuickEDMAnalysis.cs" />
     <Compile Include="RunningStatistics.cs" />
-    <Compile Include="TOFAccumulator.cs" />
+    <Compile Include="OldCode\TOFAccumulator.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelSet.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
@@ -187,12 +204,26 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Newtonsoft.Json.Net20.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="licenses.licx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

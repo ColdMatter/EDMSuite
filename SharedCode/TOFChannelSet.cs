@@ -7,13 +7,11 @@ using Data;
 namespace Analysis.EDM
 {
     [Serializable]
-    public class TOFChannelSet : ChannelSet<TOFWithError>
+    public class TOFChannelSet : ChannelSet<TOF>
     {
         static public TOFChannelSet operator +(TOFChannelSet t1, TOFChannelSet t2)
         {
             TOFChannelSet t = new TOFChannelSet();
-            t.Config = t1.Config;
-            t.Count = t1.Count + t2.Count;
             foreach (string[] channel in t1.Channels)
                 t.AddChannel(channel, (TOFChannel)t1.GetChannel(channel) + (TOFChannel)t2.GetChannel(channel));
             return t;
@@ -22,8 +20,6 @@ namespace Analysis.EDM
         static public TOFChannelSet operator -(TOFChannelSet t1, TOFChannelSet t2)
         {
             TOFChannelSet t = new TOFChannelSet();
-            t.Config = t1.Config;
-            t.Count = t1.Count + t2.Count;
             //t.SwitchMasks = t1.SwitchMasks;
             //t.Channels = new Channel<TOFWithError>[t1.Channels.Length];
             foreach (string[] channel in t1.Channels)
@@ -35,8 +31,6 @@ namespace Analysis.EDM
         {
             TOFChannelSet temp = new TOFChannelSet();
             //temp.SwitchMasks = t.SwitchMasks;
-            temp.Config = t.Config;
-            temp.Count = t.Count;
             foreach (string[] channel in t.Channels) 
                 temp.AddChannel(channel, (TOFChannel)t.GetChannel(channel) / d); 
             return temp;
@@ -46,8 +40,6 @@ namespace Analysis.EDM
         {
             TOFChannelSet temp = new TOFChannelSet();
             //temp.SwitchMasks = t.SwitchMasks;
-            temp.Config = t.Config;
-            temp.Count = t.Count;
             foreach (string[] channel in t.Channels)
                 temp.AddChannel(channel, (TOFChannel)t.GetChannel(channel) * d); 
             return temp;
