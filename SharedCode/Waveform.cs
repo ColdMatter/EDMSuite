@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json;
+
 
 namespace EDMConfig
 {
@@ -76,7 +76,6 @@ namespace EDMConfig
 		/// The waveform. The bits are not serialized, but rather are generated when the object is
         /// deserialized.
 		/// </summary>
-        [JsonIgnore]
 		public bool[] Bits
 		{
 			get 
