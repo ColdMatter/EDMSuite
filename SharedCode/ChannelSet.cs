@@ -12,12 +12,7 @@ namespace Analysis.EDM
     /// type that the channels contain. Note that you can subclass the Channel class
     /// to give different types of channel specific behaviours.
     /// 
-    /// It is used to carry the results of demodulating a Block into its channels. It carries
-    /// with it the Block's BlockConfig.
-    /// 
-    /// ChannelSets are often the results of accumulation, so they carry with them a Count
-    /// parameter that counts the number of ChannelSets that were accumulated to make this
-    /// channelSet. This can be used to appropriately weight averages.
+    /// It is used to carry the results of demodulating a single detector form a Block into its channels.
     /// </summary>
     [Serializable]
     [XmlInclude(typeof(TOFChannelSet))]
@@ -27,10 +22,7 @@ namespace Analysis.EDM
         // arrays in the way we'd expect (see below)
         private Dictionary<string[], Channel<T>> ChannelDictionary 
             = new Dictionary<string[],Channel<T>>(new ChannelComparer());
-        public BlockConfig Config;
-
-        public int Count = 1; //default of 1: makes sense when the channelSet was not accumulated.
-
+ 
         public Channel<T> GetChannel(string[] switches)
         {
             Array.Sort(switches);

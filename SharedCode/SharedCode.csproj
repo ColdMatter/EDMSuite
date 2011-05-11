@@ -102,17 +102,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelSetGroup.cs" />
-    <Compile Include="IAccumulator.cs" />
-    <Compile Include="IField.cs" />
-    <Compile Include="IVectorSpace.cs" />
+    <Compile Include="OldCode\ChannelSetGroup.cs" />
+    <Compile Include="OldCode\IAccumulator.cs" />
+    <Compile Include="OldCode\IField.cs" />
+    <Compile Include="OldCode\IVectorSpace.cs" />
     <Compile Include="TOFChannel.cs" />
-    <Compile Include="TOFChannelAccumulator.cs" />
+    <Compile Include="OldCode\TOFChannelAccumulator.cs" />
     <Compile Include="TOFChannelSet.cs" />
-    <Compile Include="TOFChannelSetAccumulator.cs" />
-    <Compile Include="TOFChannelSetGroup.cs" />
-    <Compile Include="TOFChannelSetGroupAccumulator.cs" />
-    <Compile Include="TOFWithError.cs" />
+    <Compile Include="OldCode\TOFChannelSetAccumulator.cs" />
+    <Compile Include="OldCode\TOFChannelSetGroup.cs" />
+    <Compile Include="OldCode\TOFChannelSetGroupAccumulator.cs" />
+    <Compile Include="OldCode\TOFWithError.cs" />
     <Compile Include="AnalogModulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,7 +134,7 @@
     <Compile Include="PointDetectorData.cs" />
     <Compile Include="QuickEDMAnalysis.cs" />
     <Compile Include="RunningStatistics.cs" />
-    <Compile Include="TOFAccumulator.cs" />
+    <Compile Include="OldCode\TOFAccumulator.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelSet.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
@@ -187,9 +187,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Newtonsoft.Json.Net20.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="licenses.licx" />

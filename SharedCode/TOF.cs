@@ -69,7 +69,7 @@ namespace Data
             for (int i = lowest; i < highest; i++) sum += ((double)clockPeriod * 0.5) * (tofData[i] + tofData[i + 1]);
 
             // correct the first and last trapeziums which may not be fully included
-            sum -= ((2 * tofData[lowest]) + (tofData[lowest + 1] - tofData[lowest]) 
+            sum -= ((2 * tofData[lowest]) + (tofData[lowest + 1] - tofData[lowest])
                             * (p - Math.Floor(p))) * ((double)clockPeriod * 0.5 * (p - Math.Floor(p)));
             sum -= ((2 * tofData[highest]) - (tofData[highest] - tofData[highest - 1])
                             * (Math.Ceiling(q) - q)) * ((double)clockPeriod * 0.5 * (Math.Ceiling(q) - q));
@@ -153,6 +153,21 @@ namespace Data
             return p1 + temp;
         }
 
+        static public TOF operator *(TOF t, double d)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[t.Data.Length];
+            temp.GateStartTime = t.GateStartTime;
+            temp.ClockPeriod = t.ClockPeriod;
+            temp.Calibration = t.Calibration;
+
+            for (int i = 0; i < t.Data.Length; i++)
+            {
+                temp.Data[i] = d * t.Data[i];
+            }
+            return temp;
+        }
+
         public static TOF operator /(TOF p, double d)
         {
             double[] tempData = new double[p.Length];
@@ -168,6 +183,35 @@ namespace Data
             return temp;
         }
 
+        static public TOF operator /(TOF t1, TOF t2)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[t1.Data.Length];
+            temp.GateStartTime = t1.GateStartTime;
+            temp.ClockPeriod = t1.ClockPeriod;
+            temp.Calibration = t1.Calibration;
+
+            for (int i = 0; i < t1.Data.Length; i++)
+            {
+                temp.Data[i] = t1.Data[i] / t2.Data[i];
+            }
+            return temp;
+        }
+
+        static public TOF operator *(TOF t1, TOF t2)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[t1.Data.Length];
+            temp.GateStartTime = t1.GateStartTime;
+            temp.ClockPeriod = t1.ClockPeriod;
+
+            for (int i = 0; i < t1.Data.Length; i++)
+            {
+                temp.Data[i] = t1.Data[i] * t2.Data[i];
+            }
+            return temp;
+        }
+
 
         [XmlArrayItem("s")]
         public double[] Data
@@ -176,7 +220,7 @@ namespace Data
             set
             {
                 tofData = value;
-//                length = value.Length;
+                //                length = value.Length;
             }
         }
 
