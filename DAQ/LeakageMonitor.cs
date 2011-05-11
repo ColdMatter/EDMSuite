@@ -76,7 +76,7 @@ namespace DAQ.HAL
         private double f2iSlope;
         private double v2fSlope;
         private double offset;
-        private double measurementTime;
+ //       private double measurementTime;
 
         //public LeakageMonitor(CounterChannel clChannel, double slope, double offset, double measurementTime)
         //{
