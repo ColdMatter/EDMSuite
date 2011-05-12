@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 
 using EDMConfig;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Analysis.EDM
 {
@@ -18,70 +19,81 @@ namespace Analysis.EDM
     [XmlInclude(typeof(TOFChannelSet))]
     public class ChannelSet<T>
     {
-        // The custom comparer fixes the hashtable so that it works with string 
-        // arrays in the way we'd expect (see below)
-        private Dictionary<string[], Channel<T>> ChannelDictionary 
-            = new Dictionary<string[],Channel<T>>(new ChannelComparer());
+        [BsonElement("csd")]
+        private Dictionary<string, Channel<T>> ChannelDictionary = new Dictionary<string, Channel<T>>();
  
+        public Channel<T> GetChannel(string channelName)
+        {
+            return ChannelDictionary[CanonicalChannelString(channelName)];
+        }
+
+        // sometimes its more convenient to use a list of switches rather than a channel name
         public Channel<T> GetChannel(string[] switches)
         {
-            Array.Sort(switches);
-            return ChannelDictionary[switches];
+            return ChannelDictionary[CanonicalChannelString(switches)];
+        }
+        
+        public void AddChannel(string channelName, Channel<T> channel)
+        {
+            ChannelDictionary.Add(CanonicalChannelString(channelName), channel);
         }
 
+        // sometimes its more convenient to use a list of switches rather than a channel name
         public void AddChannel(string[] switches, Channel<T> channel)
         {
+            ChannelDictionary.Add(CanonicalChannelString(switches), channel);
+        }
+        
+        // this sorts the channel in a channel string, giving its canonical representation.
+        // It is this representation that is used as the key to the dictionary of channels
+        private string CanonicalChannelString(string channelName)
+        {
+            string[] switches = channelName.Split(new char[] { '.' });
+            return CanonicalChannelString(switches);
+        }
+        private string CanonicalChannelString(string[] switches)
+        {
             Array.Sort(switches);
-            ChannelDictionary.Add(switches, channel);
+            return ArrayToDottedString(switches);
         }
 
-        public List<string[]> Channels
+        private string ArrayToDottedString(string[] switches)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < switches.Length - 1; i++) {
+                sb.Append(switches[i]);
+                sb.Append(".");
+            }
+            sb.Append(switches[switches.Length - 1]);
+            return sb.ToString();
+        }
+
+        public List<string> Channels
         {
             get
             {
-                Dictionary<string[], Channel<T>>.KeyCollection keys = ChannelDictionary.Keys;
-                List<string[]> keyArray = new List<string[]>();
-                foreach (string[] key in keys) keyArray.Add(key);
+                Dictionary<string, Channel<T>>.KeyCollection keys = ChannelDictionary.Keys;
+                List<string> keyArray = new List<string>();
+                foreach (string key in keys) keyArray.Add(key);
                 return keyArray;
             }
         }
 
-        // Improbable as it seems, .NET doesn't give a way to get the same hashcode for two
+       // Improbable as it seems, .NET doesn't give a way to get the same hashcode for two
         // seemingly identical arrays i.e. for
         // string[] s1 = new string[] {"SIG"}
         // string[] s2 = new string[] {"SIG"}
         // s1.GetHashCode() will not be the same as s2.GetHashCode().
-        // To work around this we have to provide our own equality comparer to the dictionary.
-        [Serializable]
-        private class ChannelComparer : IEqualityComparer<string[]>
+        // To work around this we have to provide our hash method that has this property
+        private int HashStringArray(string[] channel)
         {
-            #region IEqualityComparer<string[]> Members
-
-            public bool Equals(string[] x, string[] y)
+            int hash = 0x76BC45AD;
+            foreach (var sw in channel)
             {
-                return HashStringArray(x) == HashStringArray(y);
+                int swHash = sw.GetHashCode();
+                hash = swHash ^ ((hash << 5) + hash);
             }
-
-            public int GetHashCode(string[] obj)
-            {
-                return HashStringArray(obj);
-            }
-
-            #endregion
-
-            // This method hashes an array of strings in a way that only depends on the contents.
-            private int HashStringArray(string[] channel)
-            {
-                int hash = 0x76BC45AD;
-                foreach (var sw in channel)
-                {
-                    int swHash = sw.GetHashCode();
-                    hash = swHash ^ ((hash << 5) + hash);
-                }
-                return hash;
-            }
+            return hash;
         }
-
-
     }
 }
