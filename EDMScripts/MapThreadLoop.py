@@ -3,7 +3,7 @@
 
 from DAQ.Environment import *
 
-def mapThreadLoop(plugin1, param1, file1Loc, pugin2, param2, file2Loc, numScans):
+def mapThreadLoop(plugin1, param1, file1Loc, plugin2, param2, file2Loc, numScans):
 	# setup
 	fileSystem = Environs.FileSystem
 	file = \
