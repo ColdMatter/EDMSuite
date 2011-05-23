@@ -127,6 +127,7 @@
     <Compile Include="AnalogOutputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AnalogPatternBuilder.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

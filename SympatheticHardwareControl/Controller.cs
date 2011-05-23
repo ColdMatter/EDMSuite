@@ -234,6 +234,7 @@ namespace SympatheticHardwareControl
             return val;
         }
 
+       
         // overload for reading multiple samples
         private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
         {

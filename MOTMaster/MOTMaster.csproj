@@ -81,7 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicMOTPatternBuilder.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
@@ -89,7 +88,9 @@
     <Compile Include="ControllerWindow.Designer.cs">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PatternController.cs" />
+    <Compile Include="DAQmxAnalogPatternGenerator.cs" />
+    <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControllerWindow.resx">

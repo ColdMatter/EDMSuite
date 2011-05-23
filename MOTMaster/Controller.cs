@@ -7,59 +7,57 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Forms;
 using System.Text;
+using System.Diagnostics;
+using System.Reflection;
+using Microsoft.CSharp;
 
 using DAQ.Environment;
 using DAQ.HAL;
 using Data;
 using Data.Scans;
-using MOTMaster.PatternControl;
 using SympatheticHardwareControl;
+
+using System.Runtime.InteropServices;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+
+using NationalInstruments;
+using NationalInstruments.DAQmx;
+using NationalInstruments.UI;
+using NationalInstruments.UI.WindowsForms;
 
 namespace MOTMaster
 {
     /// <summary>
-    /// Here's MOTMaster's controller. It's supposed to be much simpler than ScanMaster's counterpart.
-    /// Its only role is to generate a pattern along with a few commands like ("take data") 
-    /// to the hardware controller.
-    /// It has an interface to allow the user to create a pattern and a big "go" button. That's it. 
+    /// Here's MOTMaster's controller. It loads some instructions from the window, converts it to a PatternList
+    /// which it then sends to the hardware.
     /// </summary>
     public class Controller : MarshalByRefObject
     {
 
         #region Class members
 
-        public enum AppState { stopped, running };
+        private static string
+            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
+        private static string
+            daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"] + "//daq.dll";
+        private static string
+            scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
+        private const int
+            pgClockFrequency = 1000;
+        private const int
+            apgClockFrequency = 10000;
+        private const int
+            patternLength = 100;
 
-        private ControllerWindow controllerWindow;
-        //This is the Acquisitor's counterpart. (the "rebranding" was done because this doesn't acquire anything)
-        private PatternController pc;
-        public PatternController PC
-        {
-            get { return pc; }
-        }
-        private SympatheticHardwareControl.Controller hc;
-        public SympatheticHardwareControl.Controller HC
-        {
-            get { return hc; }
-        }
+        ControllerWindow controllerWindow;
 
-        private static Controller controllerInstance;
-        public AppState appState = AppState.stopped;
+        DAQMxPatternGenerator pg;
+        DAQmxAnalogPatternGenerator apg;
 
         #endregion
 
         #region Initialisation
-
-        // This is the right way to get a reference to the controller. You shouldn't create a
-        // controller yourself.
-        public static Controller GetController()
-        {
-            if (controllerInstance == null)
-            {
-                controllerInstance = new Controller();
-            }
-            return controllerInstance;
-        }
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -73,89 +71,201 @@ namespace MOTMaster
         public void StartApplication()
         {
 
-            // ask the remoting system for access to the SympatheticHardwareController
-            RemotingConfiguration.RegisterWellKnownClientType(
-                Type.GetType("SympatheticHardwareControl.Controller, SympatheticHardwareControl"),
-                "tcp://localhost:1180/controller.rem"
-                );
-
-            // make an Pattern Controller and connect ourself to its events
-            pc = new PatternController();            
             controllerWindow = new ControllerWindow();
-            controllerWindow.Show();
-            
-            // Get access to any other applications required
-            Environs.Hardware.ConnectApplications();
-            
+            controllerWindow.controller = this;
+
+            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
+            apg = new DAQmxAnalogPatternGenerator();
             // run the main event loop
+            
             Application.Run(controllerWindow);
 
         }
 
-        // When the main controlWindow gets told to shut, it calls this function.
-        // In here things that need to be done before the application stops
-        // are sorted out.
-        public void StopApplication()
+        #endregion
+        #region Public hardware control methods
+
+        public void SendSequenceToHardware(MOTMasterSequence s)
         {
+            InitializeHardware(s);
+
+            s.DigitalPattern.BuildPattern(patternLength);
+            s.AnalogPattern.BuildPattern();
+
+            apg.OutputPatternAndWait(s.AnalogPattern.Pattern);
+            pg.OutputPattern(s.DigitalPattern.Pattern);
+
+            s.DigitalPattern.Clear(); //No clearing required for analog (I think).
+
+            ReleaseHardware();
+            // Add something about analog stuff here.
+        }
+        public void InitializeHardware(MOTMasterSequence sequence)
+        {
+            pg.Configure(pgClockFrequency, false, true, true, patternLength, true);
+            apg.Configure(sequence, apgClockFrequency);
+        }
+        public void ReleaseHardware()
+        {
+            pg.StopPattern();
+            apg.StopPattern();
+        }
+
+        #endregion
+
+        #region Script Housekeeping
+
+        public void ScriptLookupAndDisplay()
+        {
+            string[] s = scriptLookup();
+            displayScripts(s);
+        }
+        private string[] scriptLookup()
+        {
+            string[] scriptList = Directory.GetFiles(scriptListPath, "*.cs");
+            return scriptList;
+        }
+        private void displayScripts(string[] s)
+        {
+            controllerWindow.FillScriptComboBox(s);
+        }
+        #endregion
+
+        /*#region Compiler
+
+        CompilerResults CompiledPattern;
+        public void Compile(string scriptPath)
+        {
+            CompiledPattern = compileCodeOnUI(scriptPath);
+        }
+
+        public void LoadAndRunPattern()
+        {
+            MOTMasterSequence sequence = 
+                (MOTMasterSequence)LoadAndRunMethodFromDll(CompiledPattern, "GetSequence");
+
+            SendSequenceToHardware(sequence);
+        }
+
+        private CompilerResults compileCodeOnUI(string scriptPath)
+        {
+            CompilerParameters options = new CompilerParameters();
             
-        }
-
-        #endregion
-
-        #region Local functions - these should only be called locally
-
-        #endregion
-
-        #region Remote functions - these functions can be called remotely
-
-        public void PatternStart()
-        {
-            if (appState != AppState.running)
+            options.ReferencedAssemblies.Add(motMasterPath);
+            options.ReferencedAssemblies.Add(daqPath);
+            
+            TempFileCollection tempFiles = new TempFileCollection();
+            tempFiles.KeepFiles = true;
+            CompilerResults results = new CompilerResults(tempFiles);
+            options.GenerateExecutable = false;                         //Creates .dll instead of .exe.
+            CodeDomProvider codeProvider = new CSharpCodeProvider();
+            options.TempFiles = tempFiles;
+            try
             {
-                // start the acquisition
-                pc.PatternStart();
-                appState = AppState.running;
+                results = codeProvider.CompileAssemblyFromSource(options, scriptPath);
             }
-        }
-
-        public void PatternStop()
-        {
-            if (appState == AppState.running)
+            catch (Exception e)
             {
-                pc.PatternStop();
-                appState = AppState.stopped;
+                controllerWindow.WriteToConsole(e.Message);
             }
+            controllerWindow.WriteToConsole(results.PathToAssembly);
+            return results;
         }
 
-        public void SetPatternAndWait(int numberOfScans)
+        private object LoadAndRunMethodFromDll(CompilerResults results, string methodName)
         {
-            Monitor.Enter(pc.PatternMonitorLock);
-            this.PatternStart();
-            // check that acquisition is underway. Provided it is, release the lock
-            if (appState == AppState.running) Monitor.Wait(pc.PatternMonitorLock);
-            Monitor.Exit(pc.PatternMonitorLock);
-            PatternStop();
+            object result = new object();
+            try
+            {
+                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
+                foreach (Type type in patternAssembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        //controllerWindow.WriteToConsole(type.FullName);
+                        object obj = Activator.CreateInstance(type);
+                        result = type.InvokeMember(methodName, BindingFlags.Default | BindingFlags.InvokeMethod,
+                                 null,
+                                 obj,
+                                 null);
+                        //controllerWindow.WriteToConsole((string)result);
+                        controllerWindow.WriteToConsole("done");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
+            return result;
         }
 
-        public void StartHardwareControl()
+        #endregion*/
+
+        #region Compiler
+
+        CompilerResults CompiledPattern;
+        public void CompileAndRun(string scriptPath)
         {
-            hc = new SympatheticHardwareControl.Controller();
-            hc.StartRemoteControl();
-        }
+            CompiledPattern = compileFromFile(scriptPath);
 
-        public void StopHardwareControl()
+            MOTMasterSequence sequence =
+                (MOTMasterSequence)LoadAndRunMethodFromDll(CompiledPattern, "GetSequence");
+
+            SendSequenceToHardware(sequence);
+        }
+        private CompilerResults compileFromFile(string filePath)
         {
-            hc.StopRemoteControl();
+            CompilerParameters options = new CompilerParameters();
+
+            options.ReferencedAssemblies.Add(motMasterPath);
+            options.ReferencedAssemblies.Add(daqPath);
+
+            TempFileCollection tempFiles = new TempFileCollection();
+            tempFiles.KeepFiles = true;
+            CompilerResults results = new CompilerResults(tempFiles);
+            options.GenerateExecutable = false;                         //Creates .dll instead of .exe.
+            CodeDomProvider codeProvider = new CSharpCodeProvider();
+            options.TempFiles = tempFiles;
+            try
+            {
+                results = codeProvider.CompileAssemblyFromFile(options, filePath);
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
+            controllerWindow.WriteToConsole(results.PathToAssembly);
+            return results;
         }
 
-       
-
-        #endregion
-
-        #region Private functions
-
-       
-
+        private object LoadAndRunMethodFromDll(CompilerResults results, string methodName)
+        {
+            object result = new object();
+            try
+            {
+                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
+                foreach (Type type in patternAssembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        //controllerWindow.WriteToConsole(type.FullName);
+                        object obj = Activator.CreateInstance(type);
+                        result = type.InvokeMember(methodName, BindingFlags.Default | BindingFlags.InvokeMethod,
+                                 null,
+                                 obj,
+                                 null);
+                        //controllerWindow.WriteToConsole((string)result);
+                        controllerWindow.WriteToConsole("done");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
+            return result;
+        }
         #endregion
     }
 }

@@ -16,7 +16,7 @@ namespace MOTMaster
         static void Main()
         {
             // instantiate the controller
-            Controller controller = Controller.GetController();
+            Controller controller = new Controller();
 
             // publish the controller to the remoting system
             TcpChannel channel = new TcpChannel(1181);

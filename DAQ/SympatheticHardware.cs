@@ -63,7 +63,7 @@ namespace DAQ.HAL
             //GPIBInstruments.Add("gigatronics", new Gigatronics7100Synth("GPIB0::6::INSTR"));
 
             // map the digital channels
-            // these channels are to be part of the "pattern" and shoud all be on the low half of the board
+            // these channels are to be part of the "PatternList" and shoud all be on the low half of the board
 			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
             AddDigitalOutputChannel("valve2", pgBoard, 0, 1);

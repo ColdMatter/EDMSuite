@@ -27,13 +27,14 @@ namespace DAQ.HAL
             // add things to the info
             Info.Add("PGClockLine", multiDAQ + "/PFI14");
             Info.Add("PatternGeneratorBoard", multiDAQ);
+            Info.Add("PGClockCounter", "/ctr0");
+            Info.Add("APGClockCounter", aoBoard + "/ctr0");
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
 
             //Test this
             //Info.Add("PGType", "dedicated");
             Info.Add("PGType", "integrated");
 
-            // the analog triggers
-            //Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
            
             // map the digital output channels
             // Control of atoms
