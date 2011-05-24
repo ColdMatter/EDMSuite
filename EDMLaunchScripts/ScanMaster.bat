@@ -1,1 +1,1 @@
-start ..\ScanMaster\bin\EDM\ScanMaster.exe
+start ..\ScanMaster\bin\Sympathetic\ScanMaster.exe
