@@ -17,16 +17,6 @@ namespace MOTMaster
             InitializeComponent();
         }
 
-        /*private void runPatternButton_Click(object sender, EventArgs e)
-        {
-            controller.LoadAndRunPattern();
-        }
-
-        private void compilePatternButton_Click(object sender, EventArgs e)
-        {
-            controller.Compile(patternTextBox.Text);
-        }*/
-
         public void WriteToConsole(string str)
         {
             resultsTextBox.Text = str;
@@ -47,16 +37,6 @@ namespace MOTMaster
 
         #endregion
 
-       /* private void ControllerWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            patternTextBox.SaveFile(@"C:\Data\Settings\MOTMaster\tempSourceCode.txt");
-        }
-
-        private void ControllerWindow_Load(object sender, EventArgs e)
-        {
-            patternTextBox.LoadFile(@"C:\Data\Settings\MOTMaster\tempSourceCode.txt");
-        }
-        */
         public void FillScriptComboBox(string[] s)
         {
             scriptListComboBox.Items.Clear();
@@ -69,11 +49,9 @@ namespace MOTMaster
             controller.ScriptLookupAndDisplay();
         }
 
-        private void compileAndRunButton_Click(object sender, EventArgs e)
+        private void compileAndInitializeButton_Click(object sender, EventArgs e)
         {
-            string scriptPath = scriptListComboBox.Text;
-            controller.CompileAndRun(scriptPath);
+            controller.CompileAndRun(scriptListComboBox.Text);
         }
-
     }
 }

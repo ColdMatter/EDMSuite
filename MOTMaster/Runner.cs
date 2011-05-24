@@ -27,7 +27,7 @@ namespace MOTMaster
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            //Application.Run(new MOTMasterWindow());
+            //Application.run(new MOTMasterWindow());
             controller.StartApplication();
 
             // the application is finishing - close down the remoting channel

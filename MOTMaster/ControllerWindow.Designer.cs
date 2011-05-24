@@ -39,7 +39,7 @@
             this.resultsTextBox.Location = new System.Drawing.Point(290, 41);
             this.resultsTextBox.Name = "resultsTextBox";
             this.resultsTextBox.ReadOnly = true;
-            this.resultsTextBox.Size = new System.Drawing.Size(364, 20);
+            this.resultsTextBox.Size = new System.Drawing.Size(629, 20);
             this.resultsTextBox.TabIndex = 4;
             // 
             // scriptListComboBox
@@ -48,7 +48,7 @@
             this.scriptListComboBox.Location = new System.Drawing.Point(4, 12);
             this.scriptListComboBox.MaxDropDownItems = 32;
             this.scriptListComboBox.Name = "scriptListComboBox";
-            this.scriptListComboBox.Size = new System.Drawing.Size(650, 21);
+            this.scriptListComboBox.Size = new System.Drawing.Size(915, 21);
             this.scriptListComboBox.Sorted = true;
             this.scriptListComboBox.TabIndex = 6;
             // 
@@ -58,7 +58,7 @@
             this.lookupScriptsButton.Name = "lookupScriptsButton";
             this.lookupScriptsButton.Size = new System.Drawing.Size(137, 23);
             this.lookupScriptsButton.TabIndex = 7;
-            this.lookupScriptsButton.Text = "Lookup scripts";
+            this.lookupScriptsButton.Text = "Refresh Script List";
             this.lookupScriptsButton.UseVisualStyleBackColor = true;
             this.lookupScriptsButton.Click += new System.EventHandler(this.lookupScriptsButton_Click);
             // 
@@ -70,13 +70,13 @@
             this.compileAndRunButton.TabIndex = 8;
             this.compileAndRunButton.Text = "Compile and Run";
             this.compileAndRunButton.UseVisualStyleBackColor = true;
-            this.compileAndRunButton.Click += new System.EventHandler(this.compileAndRunButton_Click);
+            this.compileAndRunButton.Click += new System.EventHandler(this.compileAndInitializeButton_Click);
             // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(656, 69);
+            this.ClientSize = new System.Drawing.Size(931, 70);
             this.Controls.Add(this.compileAndRunButton);
             this.Controls.Add(this.lookupScriptsButton);
             this.Controls.Add(this.scriptListComboBox);

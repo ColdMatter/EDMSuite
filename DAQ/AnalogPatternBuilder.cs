@@ -8,6 +8,10 @@ namespace DAQ.Analog
     /// <summary>
     /// A class for building analog patterns that can be output by a NI PatternList generator.
     /// This class lets you set a value (AddAnalogValue) and do a linear ramp (AddLinearRamp).
+    /// 
+    /// IMPORTANT NOTE ABOUT WRITING SCRIPTS: At the moment, THERE IS NO AUTOMATIC TIME ORDERING FOR ANALOG
+    /// CHANNELS. IT WILL BUILD A PATTERN FOLLOWING THE ORDER IN WHICH YOU CALL AddAnalogValue / AddLinearRamp!!
+    /// ---> Stick to writing out the pattern in the correct time order to avoid weirdo behaviour.
     /// </summary>
     public class AnalogPatternBuilder
     {
@@ -49,7 +53,6 @@ namespace DAQ.Analog
         {
             if (time < ((double[])PatternList[SearchPatternIndex(channel)]).GetLength(0))
             {
-                // add the command to setValue
                 for (int i = time; i < ((double[])PatternList[SearchPatternIndex(channel)]).GetLength(0); i++)
                 {
                     ((double[])PatternList[SearchPatternIndex(channel)])[i] = value;
@@ -57,7 +60,7 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new RampLengthException();
+                throw new InsufficientPatternLengthException();
             }
         }
 
@@ -82,11 +85,10 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new RampLengthException();
+                throw new InsufficientPatternLengthException();
             }
         }
 
-        
         public double[,] BuildPattern()
         {
             Pattern = new double[PatternList.Count,PatternLength];
@@ -100,7 +102,7 @@ namespace DAQ.Analog
             return Pattern;
         }
 
-        public class RampLengthException : ApplicationException { }
+        public class InsufficientPatternLengthException : ApplicationException { }
         public class PatternBuildException : ApplicationException
         {
             public PatternBuildException(String message) : base(message) { }

@@ -88,7 +88,6 @@
     <Compile Include="ControllerWindow.Designer.cs">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="Runner.cs" />

@@ -146,6 +146,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
     <Compile Include="RainbowFileSystem.cs" />
     <Compile Include="RainbowHardware.cs" />

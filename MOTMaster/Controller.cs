@@ -13,6 +13,7 @@ using Microsoft.CSharp;
 
 using DAQ.Environment;
 using DAQ.HAL;
+using DAQ.Analog;
 using Data;
 using Data.Scans;
 using SympatheticHardwareControl;
@@ -29,8 +30,35 @@ using NationalInstruments.UI.WindowsForms;
 namespace MOTMaster
 {
     /// <summary>
-    /// Here's MOTMaster's controller. It loads some instructions from the window, converts it to a PatternList
-    /// which it then sends to the hardware.
+    /// Here's MOTMaster's controller.
+    /// 
+    /// Here's what it does:
+    /// 
+    /// - MOTMaster looks in a folder ("scriptListPath") for all classes. Then displays the list in a combo box.
+    /// 
+    /// - These classes contain an implementation of a "MOTMasterScript". This contains the information 
+    /// about the patterns.
+    /// 
+    /// - Once the user has selected a particular implementation of MOTMasterScript, 
+    /// MOTMaster will compile it. Note: the dll is currently stored in a temp folder somewhere. 
+    /// Its path can be found in the CompilerResults.PathToAssembly). 
+    /// This newly formed dll contain methods named GetDigitalPattern and GetAnalogPattern. 
+    /// 
+    /// - These are called by the script's "GetSequence". GetSequence always returns a 
+    /// "MOTMasterSequence", which comprises a PatternBuilder32 and an AnalogPatternBuilder.
+    /// 
+    /// - MOTMaster then initializes the hardware, faffs a little to prepare the patterns in the 
+    /// builders (e.g. calls "BuildPattern"), and sends the pattern to Hardware.
+    /// 
+    /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved 
+    /// for triggering the analog pattern.
+    /// 
+    /// - After everything's finished, MM releases the hardware.
+    /// 
+    /// IMPORTANT NOTE ABOUT WRITING SCRIPTS: At the moment, THERE IS NO AUTOMATIC TIME ORDERING FOR ANALOG
+    /// CHANNELS. IT WILL BUILD A PATTERN FOLLOWING THE ORDER IN WHICH YOU CALL AddAnalogValue / AddLinearRamp!!
+    /// ---> Stick to writing out the pattern in the correct time order to avoid weirdo behaviour.
+    /// 
     /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -67,7 +95,6 @@ namespace MOTMaster
             return null;
         }
 
-        // This function is called at the very start of application execution.
         public void StartApplication()
         {
 
@@ -76,37 +103,32 @@ namespace MOTMaster
 
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQmxAnalogPatternGenerator();
-            // run the main event loop
-            
+
+            ScriptLookupAndDisplay();
+
             Application.Run(controllerWindow);
 
         }
 
         #endregion
-        #region Public hardware control methods
 
-        public void SendSequenceToHardware(MOTMasterSequence s)
+        #region Hardware control methods
+
+        private void run(MOTMasterSequence sequence)
         {
-            InitializeHardware(s);
-
-            s.DigitalPattern.BuildPattern(patternLength);
-            s.AnalogPattern.BuildPattern();
-
-            apg.OutputPatternAndWait(s.AnalogPattern.Pattern);
-            pg.OutputPattern(s.DigitalPattern.Pattern);
-
-            s.DigitalPattern.Clear(); //No clearing required for analog (I think).
-
-            ReleaseHardware();
-            // Add something about analog stuff here.
+            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+            pg.OutputPattern(sequence.DigitalPattern.Pattern);
         }
-        public void InitializeHardware(MOTMasterSequence sequence)
+
+        private void initializeHardware(MOTMasterSequence sequence)
         {
             pg.Configure(pgClockFrequency, false, true, true, patternLength, true);
-            apg.Configure(sequence, apgClockFrequency);
+            apg.Configure(sequence.AnalogPattern, apgClockFrequency);
         }
-        public void ReleaseHardware()
+
+        private void releaseHardware(MOTMasterSequence sequence)
         {
+            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
             pg.StopPattern();
             apg.StopPattern();
         }
@@ -129,92 +151,42 @@ namespace MOTMaster
         {
             controllerWindow.FillScriptComboBox(s);
         }
+
         #endregion
 
-        /*#region Compiler
+        #region Compiler & scripts
 
         CompilerResults CompiledPattern;
-        public void Compile(string scriptPath)
-        {
-            CompiledPattern = compileCodeOnUI(scriptPath);
-        }
 
-        public void LoadAndRunPattern()
-        {
-            MOTMasterSequence sequence = 
-                (MOTMasterSequence)LoadAndRunMethodFromDll(CompiledPattern, "GetSequence");
-
-            SendSequenceToHardware(sequence);
-        }
-
-        private CompilerResults compileCodeOnUI(string scriptPath)
-        {
-            CompilerParameters options = new CompilerParameters();
-            
-            options.ReferencedAssemblies.Add(motMasterPath);
-            options.ReferencedAssemblies.Add(daqPath);
-            
-            TempFileCollection tempFiles = new TempFileCollection();
-            tempFiles.KeepFiles = true;
-            CompilerResults results = new CompilerResults(tempFiles);
-            options.GenerateExecutable = false;                         //Creates .dll instead of .exe.
-            CodeDomProvider codeProvider = new CSharpCodeProvider();
-            options.TempFiles = tempFiles;
-            try
-            {
-                results = codeProvider.CompileAssemblyFromSource(options, scriptPath);
-            }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToConsole(e.Message);
-            }
-            controllerWindow.WriteToConsole(results.PathToAssembly);
-            return results;
-        }
-
-        private object LoadAndRunMethodFromDll(CompilerResults results, string methodName)
-        {
-            object result = new object();
-            try
-            {
-                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
-                foreach (Type type in patternAssembly.GetTypes())
-                {
-                    if (type.IsClass == true)
-                    {
-                        //controllerWindow.WriteToConsole(type.FullName);
-                        object obj = Activator.CreateInstance(type);
-                        result = type.InvokeMember(methodName, BindingFlags.Default | BindingFlags.InvokeMethod,
-                                 null,
-                                 obj,
-                                 null);
-                        //controllerWindow.WriteToConsole((string)result);
-                        controllerWindow.WriteToConsole("done");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToConsole(e.Message);
-            }
-            return result;
-        }
-
-        #endregion*/
-
-        #region Compiler
-
-        CompilerResults CompiledPattern;
         public void CompileAndRun(string scriptPath)
         {
+            MOTMasterSequence sequence;
             CompiledPattern = compileFromFile(scriptPath);
 
-            MOTMasterSequence sequence =
-                (MOTMasterSequence)LoadAndRunMethodFromDll(CompiledPattern, "GetSequence");
+            try
+            {
+                sequence =
+                    (MOTMasterSequence)loadAndRunGetSequenceFromDll(CompiledPattern, "GetSequence");
 
-            SendSequenceToHardware(sequence);
+                buildPattern(sequence);
+                initializeHardware(sequence);
+                run(sequence);
+                releaseHardware(sequence);
+                controllerWindow.WriteToConsole("Run Complete.");
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
         }
-        private CompilerResults compileFromFile(string filePath)
+
+        private void buildPattern(MOTMasterSequence sequence)
+        {
+            sequence.DigitalPattern.BuildPattern(patternLength);
+            sequence.AnalogPattern.BuildPattern();
+        }
+
+        private CompilerResults compileFromFile(string scriptPath)
         {
             CompilerParameters options = new CompilerParameters();
 
@@ -229,7 +201,7 @@ namespace MOTMaster
             options.TempFiles = tempFiles;
             try
             {
-                results = codeProvider.CompileAssemblyFromFile(options, filePath);
+                results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
             }
             catch (Exception e)
             {
@@ -239,7 +211,7 @@ namespace MOTMaster
             return results;
         }
 
-        private object LoadAndRunMethodFromDll(CompilerResults results, string methodName)
+        private object loadAndRunGetSequenceFromDll(CompilerResults results, string methodName)
         {
             object result = new object();
             try
@@ -256,7 +228,7 @@ namespace MOTMaster
                                  obj,
                                  null);
                         //controllerWindow.WriteToConsole((string)result);
-                        controllerWindow.WriteToConsole("done");
+                        //controllerWindow.WriteToConsole("Pattern Loaded.");
                     }
                 }
             }

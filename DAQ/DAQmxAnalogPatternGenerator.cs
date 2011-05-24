@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
@@ -13,29 +12,27 @@ using DAQ.Analog;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
 
-namespace MOTMaster
+namespace DAQ.Analog
 {
     public class DAQmxAnalogPatternGenerator
     {
         Task analogOutputTask;
 
 
-        public void Configure(MOTMasterSequence sequence, int clockRate)
+        public void Configure(AnalogPatternBuilder aPattern, int clockRate)
         {
             analogOutputTask = new Task();
-            for (int i = 0; i < sequence.AnalogPattern.ChannelNames.Count; i++)
+            for (int i = 0; i < aPattern.ChannelNames.Count; i++)
             {
-                AddToAnalogOutputTask(analogOutputTask, (string)sequence.AnalogPattern.ChannelNames[i]);
+                AddToAnalogOutputTask(analogOutputTask, (string)aPattern.ChannelNames[i]);
             }
 
             string clockSource = "";
             
             analogOutputTask.Timing.ConfigureSampleClock(clockSource, clockRate,
-                    SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, 
-                    sequence.AnalogPattern.PatternLength);
+                    SampleClockActiveEdge.Rising, SampleQuantityMode.ContinuousSamples, 
+                    aPattern.PatternLength);
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("AOPatternTrigger"), DigitalEdgeStartTriggerEdge.Rising);
             analogOutputTask.Control(TaskAction.Verify);
@@ -48,8 +45,10 @@ namespace MOTMaster
             writer.WriteMultiSample(false, pattern);
             analogOutputTask.Start();
         }
+
         public void StopPattern()
         {
+            analogOutputTask.Stop();
             analogOutputTask.Dispose();
             
         }
