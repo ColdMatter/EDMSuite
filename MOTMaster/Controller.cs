@@ -158,8 +158,9 @@ namespace MOTMaster
 
         #region RUN RUN RUN
         CompilerResults CompiledPattern;
-        public void CompileAndRun(string scriptPath)
+        public void CompileAndRun()
         {
+            string scriptPath = controllerWindow.GetScriptPath();
             CompiledPattern = compileFromFile(scriptPath);
             try
             {
@@ -177,8 +178,9 @@ namespace MOTMaster
             }
         }
 
-        public void CompileAndRun(string scriptPath, Dictionary<String, Object> dictionary)
+        public void CompileAndRun(Dictionary<String, Object> dictionary)
         {
+            string scriptPath = controllerWindow.GetScriptPath();
             CompiledPattern = compileFromFile(scriptPath);
             try
             {

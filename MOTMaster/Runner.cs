@@ -19,7 +19,7 @@ namespace MOTMaster
             Controller controller = new Controller();
 
             // publish the controller to the remoting system
-            TcpChannel channel = new TcpChannel(1181);
+            TcpChannel channel = new TcpChannel(1187);
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 

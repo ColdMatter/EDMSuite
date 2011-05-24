@@ -19,7 +19,7 @@ namespace MOTMaster
 
         public void WriteToConsole(string str)
         {
-            resultsTextBox.Text = str;
+            setTextBox(resultsTextBox, str);
         }
 
 
@@ -33,6 +33,15 @@ namespace MOTMaster
         private void setTextHelper(TextBox box, string text)
         {
             box.Text = text;
+        }
+        private string readComboBox(ComboBox box)
+        {
+            return (string)box.Invoke(new ReadComboDelegate(readComboHelper), new object[] { box });
+        }
+        private delegate string ReadComboDelegate(ComboBox box);
+        private string readComboHelper(ComboBox box)
+        {
+            return box.Text;
         }
 
         #endregion
@@ -51,7 +60,12 @@ namespace MOTMaster
 
         private void compileAndInitializeButton_Click(object sender, EventArgs e)
         {
-            controller.CompileAndRun(scriptListComboBox.Text);
+            controller.CompileAndRun();
+        }
+
+        public string GetScriptPath()
+        {
+            return readComboBox(scriptListComboBox);
         }
     }
 }
