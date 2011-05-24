@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
@@ -135,7 +136,7 @@ namespace MOTMaster
 
         #endregion
 
-        #region Script Housekeeping
+        #region Script Housekeeping on UI
 
         public void ScriptLookupAndDisplay()
         {
@@ -154,20 +155,38 @@ namespace MOTMaster
 
         #endregion
 
-        #region Compiler & scripts
 
+        #region RUN RUN RUN
         CompilerResults CompiledPattern;
-
         public void CompileAndRun(string scriptPath)
         {
-            MOTMasterSequence sequence;
             CompiledPattern = compileFromFile(scriptPath);
-
             try
             {
-                sequence =
-                    (MOTMasterSequence)loadAndRunGetSequenceFromDll(CompiledPattern, "GetSequence");
+                MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
+                MOTMasterSequence sequence = getSequenceFromScript(script);
+                buildPattern(sequence);
+                initializeHardware(sequence);
+                run(sequence);
+                releaseHardware(sequence);
+                controllerWindow.WriteToConsole("Run Complete.");
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
+        }
 
+        public void CompileAndRun(string scriptPath, Dictionary<String, Object> dictionary)
+        {
+            CompiledPattern = compileFromFile(scriptPath);
+            try
+            {
+                MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
+
+                SwapDictionary(script, dictionary);
+
+                MOTMasterSequence sequence = getSequenceFromScript(script);
                 buildPattern(sequence);
                 initializeHardware(sequence);
                 run(sequence);
@@ -185,6 +204,9 @@ namespace MOTMaster
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
         }
+        #endregion
+
+        #region Compiler & Loading DLLs
 
         private CompilerResults compileFromFile(string scriptPath)
         {
@@ -207,13 +229,13 @@ namespace MOTMaster
             {
                 controllerWindow.WriteToConsole(e.Message);
             }
-            controllerWindow.WriteToConsole(results.PathToAssembly);
+            //controllerWindow.WriteToConsole(results.PathToAssembly);
             return results;
         }
 
-        private object loadAndRunGetSequenceFromDll(CompilerResults results, string methodName)
+        private MOTMasterScript loadInstanceOfScript(CompilerResults results)
         {
-            object result = new object();
+            object loadedInstance = new object();
             try
             {
                 Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
@@ -221,14 +243,7 @@ namespace MOTMaster
                 {
                     if (type.IsClass == true)
                     {
-                        //controllerWindow.WriteToConsole(type.FullName);
-                        object obj = Activator.CreateInstance(type);
-                        result = type.InvokeMember(methodName, BindingFlags.Default | BindingFlags.InvokeMethod,
-                                 null,
-                                 obj,
-                                 null);
-                        //controllerWindow.WriteToConsole((string)result);
-                        //controllerWindow.WriteToConsole("Pattern Loaded.");
+                        loadedInstance = Activator.CreateInstance(type);
                     }
                 }
             }
@@ -236,8 +251,28 @@ namespace MOTMaster
             {
                 controllerWindow.WriteToConsole(e.Message);
             }
-            return result;
+            return (MOTMasterScript)loadedInstance;
         }
+
+        private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
+        {
+            MOTMasterSequence sequence = script.GetSequence(); 
+            return sequence;
+        }
+
+        #endregion
+
+        #region Methods to be called remotely
+
+        /*public void SwapDictionary(MOTMasterScript script, string key, object value)
+        {
+            script.Parameters[key] = value;
+        }*/
+        public void SwapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
+        {
+            script.Parameters = dictionary;
+        }
+
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MOTMaster;
 using System;
+using System.Collections.Generic;
 
 using DAQ.Pattern;
 using DAQ.Analog;
@@ -15,7 +16,7 @@ public class Patterns : MOTMasterScript
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
-        // AddEdge[int channel, int time, bool value] 
+        // AddEdge[int channel, int time, bool values] 
         p.AddEdge(1, 0, true);
         p.AddEdge(1, 1, false);
 
@@ -31,7 +32,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("cavity");
         p.AddChannel("laser");
 
-        //AddAnalogValue(string channel, int time, double value)
+        //AddAnalogValue(string channel, int time, double values)
         p.AddAnalogValue("cavity", 0, 4);
         p.AddAnalogValue("cavity", 1, 2);
         p.AddAnalogValue("cavity", 3, 4);

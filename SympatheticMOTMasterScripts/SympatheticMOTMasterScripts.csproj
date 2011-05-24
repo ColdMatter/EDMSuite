@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="ExamplePattern.cs" />
     <Compile Include="MOTPattern.cs" />
+    <Compile Include="SympatheticScriptParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

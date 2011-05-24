@@ -64,10 +64,7 @@ namespace DAQ.Analog
             }
         }
 
-        public int SearchPatternIndex(string channel)
-        {
-            return ChannelNames.BinarySearch((Object)channel);
-        }
+        
 
 
         public void AddLinearRamp(string channel, int startTime, int steps, double finalValue)
@@ -87,6 +84,11 @@ namespace DAQ.Analog
             {
                 throw new InsufficientPatternLengthException();
             }
+        }
+
+        public int SearchPatternIndex(string channel)
+        {
+            return ChannelNames.BinarySearch((Object)channel);
         }
 
         public double[,] BuildPattern()
