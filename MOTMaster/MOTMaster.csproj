@@ -114,7 +114,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="MOTMasterScriptParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

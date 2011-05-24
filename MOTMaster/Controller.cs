@@ -183,9 +183,7 @@ namespace MOTMaster
             try
             {
                 MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
-
-                SwapDictionary(script, dictionary);
-
+                swapDictionary(script, dictionary); //To changes parameters before running, if we want.
                 MOTMasterSequence sequence = getSequenceFromScript(script);
                 buildPattern(sequence);
                 initializeHardware(sequence);
@@ -204,6 +202,7 @@ namespace MOTMaster
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
         }
+
         #endregion
 
         #region Compiler & Loading DLLs
@@ -262,13 +261,9 @@ namespace MOTMaster
 
         #endregion
 
-        #region Methods to be called remotely
+        #region Miscellaneous stuff
 
-        /*public void SwapDictionary(MOTMasterScript script, string key, object value)
-        {
-            script.Parameters[key] = value;
-        }*/
-        public void SwapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
+        private void swapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
         {
             script.Parameters = dictionary;
         }
