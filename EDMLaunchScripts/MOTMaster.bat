@@ -1,1 +1,2 @@
-start ..\MOTMaster\bin\Sympathetic\MOTMaster.exe
+cd ..\MOTMaster\bin\Sympathetic\
+start MOTMaster.exe
