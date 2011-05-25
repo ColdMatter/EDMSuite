@@ -170,7 +170,7 @@ namespace MOTMaster
                 initializeHardware(sequence);
                 run(sequence);
                 releaseHardware(sequence);
-                controllerWindow.WriteToConsole("Run Complete.");
+                //controllerWindow.WriteToConsole("Run Complete.");
             }
             catch (Exception e)
             {
@@ -191,7 +191,7 @@ namespace MOTMaster
                 initializeHardware(sequence);
                 run(sequence);
                 releaseHardware(sequence);
-                controllerWindow.WriteToConsole("Run Complete.");
+                //controllerWindow.WriteToConsole("Run Complete.");
             }
             catch (Exception e)
             {
@@ -230,7 +230,7 @@ namespace MOTMaster
             {
                 controllerWindow.WriteToConsole(e.Message);
             }
-            //controllerWindow.WriteToConsole(results.PathToAssembly);
+            controllerWindow.WriteToConsole(results.PathToAssembly);
             return results;
         }
 
