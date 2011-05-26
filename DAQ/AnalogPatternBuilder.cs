@@ -15,15 +15,13 @@ namespace DAQ.Analog
     /// </summary>
     public class AnalogPatternBuilder
     {
-        public ArrayList PatternList;
-        public ArrayList ChannelNames;
+        public Dictionary<String,Double[]> AnalogPatterns;
         public int PatternLength;
         public double[,] Pattern;
 
         public AnalogPatternBuilder(string[] channelNames, int patternLength)
         {
-            PatternList = new ArrayList();
-            ChannelNames = new ArrayList();
+            AnalogPatterns = new Dictionary<string, double[]>();
             PatternLength = patternLength;
             int numberOfChannels = channelNames.GetLength(0);
             for (int i = 0; i < numberOfChannels; i++)
@@ -33,29 +31,27 @@ namespace DAQ.Analog
         }
         public AnalogPatternBuilder(int patternLength)
         {
-            PatternList = new ArrayList();
-            ChannelNames = new ArrayList();
+            AnalogPatterns = new Dictionary<string, double[]>();
             PatternLength = patternLength;
         }
 
         public void AddChannel(string channelName)
         {
             double[] data = new double[PatternLength];
-                for (int j = 0; j < PatternLength; j++)
-                {
-                    data[j] = 0;
-                }
-            PatternList.Add(data);
-            ChannelNames.Add(channelName);
+            for (int j = 0; j < PatternLength; j++)
+            {
+               data[j] = 0;
+            }
+            AnalogPatterns[channelName] = data;
         }
 
         public void AddAnalogValue(string channel, int time, double value)
         {
-            if (time < ((double[])PatternList[SearchPatternIndex(channel)]).GetLength(0))
+            if (time < PatternLength)
             {
-                for (int i = time; i < ((double[])PatternList[SearchPatternIndex(channel)]).GetLength(0); i++)
+                for (int i = time; i < PatternLength; i++)
                 {
-                    ((double[])PatternList[SearchPatternIndex(channel)])[i] = value;
+                    ((double[])AnalogPatterns[channel])[i] = value;
                 }
             }
             else
@@ -64,19 +60,32 @@ namespace DAQ.Analog
             }
         }
 
-        
+        //value is the voltage during the pulse
+        //finalValue is the voltage AFTER the pulse.
+        public void AddAnalogPulse(string channel, int startTime, int duration, double value, double finalValue)
+        {
+            if (startTime + duration < PatternLength)
+            {
+                AddAnalogValue(channel, startTime, value);
+                AddAnalogValue(channel, startTime + duration, finalValue);
+            }
+            else
+            {
+                throw new InsufficientPatternLengthException();
+            }
+        }
+
 
 
         public void AddLinearRamp(string channel, int startTime, int steps, double finalValue)
         {
-            int targetIndex = SearchPatternIndex(channel);
             if (PatternLength > startTime + steps)
             {
-                double stepSize = (finalValue - ((double[])PatternList[targetIndex])[startTime]) / steps;
+                double stepSize = (finalValue - ((double[])AnalogPatterns[channel])[startTime]) / steps;
                 for (int i = 0; i < steps; i++)
                 {
-                    ((double[])PatternList[targetIndex])[startTime + i] =
-                        ((double[])PatternList[targetIndex])[startTime + i] + stepSize * i;
+                    ((double[])AnalogPatterns[channel])[startTime + i] =
+                        ((double[])AnalogPatterns[channel])[startTime + i] + stepSize * i;
                 }
                 AddAnalogValue(channel, startTime + steps, finalValue);
             }
@@ -86,20 +95,18 @@ namespace DAQ.Analog
             }
         }
 
-        public int SearchPatternIndex(string channel)
-        {
-            return ChannelNames.BinarySearch((Object)channel);
-        }
-
         public double[,] BuildPattern()
         {
-            Pattern = new double[PatternList.Count,PatternLength];
-            for (int i = 0; i < PatternList.Count; i++)
+            Pattern = new double[AnalogPatterns.Count, PatternLength];
+            ICollection<string> keys = AnalogPatterns.Keys;
+            int i = 0;
+            foreach(string key in keys)
             {
-                for (int j = 0; j < PatternLength; j++)
+                for (int j = 0; j < PatternLength ; j++)
                 {
-                    Pattern[i, j] = ((double[])PatternList[i])[j];
+                    Pattern[i, j] = ((double[])AnalogPatterns[key])[j];
                 }
+                i++;
             }
             return Pattern;
         }

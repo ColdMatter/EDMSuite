@@ -38,11 +38,17 @@ namespace DAQ.HAL
            
             // map the digital output channels
             // Control of atoms
+            AddDigitalOutputChannel("MOTMasterPatternTrigger", multiDAQ, 0, 0);
+            
             AddDigitalOutputChannel("aom0Enable", multiDAQ, 0, 16);
             AddDigitalOutputChannel("aom1Enable", multiDAQ, 0, 17);
             AddDigitalOutputChannel("aom2Enable", multiDAQ, 0, 18);
             AddDigitalOutputChannel("aom3Enable", multiDAQ, 0, 19);
+
+            AddDigitalOutputChannel("CameraTrigger", multiDAQ, 0, 1);
+
             
+            /*
             //Control of molecules
             AddDigitalOutputChannel("valve", multiDAQ, 0, 0); 
             AddDigitalOutputChannel("valve2", multiDAQ, 0, 1);
@@ -54,6 +60,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("detector", multiDAQ, 0, 7);
             AddDigitalOutputChannel("detectorprime", multiDAQ, 0, 8);
             AddDigitalOutputChannel("flash", multiDAQ, 0, 9);
+             */
             
             
 

@@ -23,11 +23,10 @@ namespace DAQ.Analog
         public void Configure(AnalogPatternBuilder aPattern, int clockRate)
         {
             analogOutputTask = new Task();
-            for (int i = 0; i < aPattern.ChannelNames.Count; i++)
+            foreach (string keys in aPattern.AnalogPatterns.Keys)
             {
-                AddToAnalogOutputTask(analogOutputTask, (string)aPattern.ChannelNames[i]);
+                AddToAnalogOutputTask(analogOutputTask, keys);
             }
-
             string clockSource = "";
             
             analogOutputTask.Timing.ConfigureSampleClock(clockSource, clockRate,
