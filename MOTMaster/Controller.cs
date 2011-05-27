@@ -27,6 +27,7 @@ using NationalInstruments;
 using NationalInstruments.DAQmx;
 using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster
 {
@@ -72,6 +73,8 @@ namespace MOTMaster
             daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"] + "//daq.dll";
         private static string
             scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
+        private static string
+            motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private const int
             pgClockFrequency = 1000;
         private const int
@@ -83,6 +86,8 @@ namespace MOTMaster
 
         DAQMxPatternGenerator pg;
         DAQmxAnalogPatternGenerator apg;
+
+        public bool SaveEnable = false;
 
         #endregion
 
@@ -127,7 +132,7 @@ namespace MOTMaster
             apg.Configure(sequence.AnalogPattern, apgClockFrequency);
         }
 
-        private void releaseHardware(MOTMasterSequence sequence)
+        private void releaseHardwareAndClearPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
             pg.StopPattern();
@@ -155,22 +160,31 @@ namespace MOTMaster
 
         #endregion
 
-
         #region RUN RUN RUN
         CompilerResults CompiledPattern;
         public void CompileAndRun()
         {
             string scriptPath = controllerWindow.GetScriptPath();
             CompiledPattern = compileFromFile(scriptPath);
+            MOTMasterSequence sequence;
             try
             {
                 MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
-                MOTMasterSequence sequence = getSequenceFromScript(script);
+                sequence = getSequenceFromScript(script);
                 buildPattern(sequence);
                 initializeHardware(sequence);
                 run(sequence);
-                releaseHardware(sequence);
-                controllerWindow.WriteToConsole("Run Complete.");
+                if (SaveEnable)
+                {
+                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
+                        controllerWindow.GetSaveBatch());
+                    controllerWindow.WriteToConsole(filePath);
+                    storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
+                    storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
+                }
+                releaseHardwareAndClearPattern(sequence);
+                
+                //controllerWindow.WriteToConsole("Run Complete.");
             }
             catch (Exception e)
             {
@@ -182,17 +196,26 @@ namespace MOTMaster
         {
             string scriptPath = controllerWindow.GetScriptPath();
             CompiledPattern = compileFromFile(scriptPath);
+            MOTMasterSequence sequence;
             try
             {
                 MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
                 
                 swapDictionary(script, dictionary); //To changes parameters before running, if we want.
                 
-                MOTMasterSequence sequence = getSequenceFromScript(script);
+                sequence = getSequenceFromScript(script);
                 buildPattern(sequence);
                 initializeHardware(sequence);
                 run(sequence);
-                releaseHardware(sequence);
+                if (SaveEnable)
+                {
+                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
+                        controllerWindow.GetSaveBatch());
+
+                    storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
+                    storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
+                }
+                releaseHardwareAndClearPattern(sequence);
                 controllerWindow.WriteToConsole("Run Complete.");
             }
             catch (Exception e)
@@ -200,7 +223,23 @@ namespace MOTMaster
                 controllerWindow.WriteToConsole(e.Message);
             }
         }
-
+        public void ReloadAndRun()
+        {
+            MOTMasterSequence sequence = new MOTMasterSequence();
+            try
+            {
+                sequence = reloadSequenceFromBinaryFile("C:\\Data\\MOTMasterData\\Li27May1100_000.bin");
+                //buildPattern(sequence);
+                initializeHardware(sequence);
+                run(sequence);
+                releaseHardwareAndClearPattern(sequence);
+                //controllerWindow.WriteToConsole("Run Complete.");
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToConsole(e.Message);
+            }
+        }
         private void buildPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
@@ -265,13 +304,83 @@ namespace MOTMaster
 
         #endregion
 
-        #region Miscellaneous stuff
-
+        #region Saving, Loading and Modifying Experimental Parameters
+        
         private void swapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
         {
             script.Parameters = dictionary;
         }
+        private MOTMasterSequence reloadSequenceFromBinaryFile(String dataStoreFilePath)
+        {
+            // deserialize
+            BinaryFormatter s = new BinaryFormatter();
+            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Open);
+            MOTMasterSequence sequence = new MOTMasterSequence();
+            // eat any errors in the following, as it's just a convenience function
+            try
+            {
+                sequence = (MOTMasterSequence)s.Deserialize(fs);
 
+            }
+            catch (Exception)
+            { Console.Out.WriteLine("Unable to load settings"); }
+            finally
+            {
+                fs.Close();
+            }
+            return sequence;
+        }
+        private void storeMOTMasterSequence(String dataStoreFilePath, MOTMasterSequence sequence)
+        {
+            BinaryFormatter s = new BinaryFormatter();
+            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
+            try
+            {
+                s.Serialize(fs, sequence);
+            }
+            catch (Exception)
+            {
+                Console.Out.WriteLine("Saving failed");
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+        }
+        private void storeDictionary(String dataStoreFilePath, Dictionary<string, object> dict)
+        {
+            TextWriter output = File.CreateText(dataStoreFilePath);
+            foreach (KeyValuePair<string, object> pair in dict)
+            {
+                output.Write((string)pair.Key);
+                output.Write('\t');
+                output.WriteLine(pair.Value.ToString());
+            }
+            output.Close();
+
+
+        }
+
+        private string getDataID(string element, int batchNumber)
+        {
+            DateTime dt = DateTime.Now;
+            string dateTag;
+            string batchTag;
+            int subTag = 0;
+
+            dateTag = String.Format("{0:ddMMMyy}", dt);
+            batchTag = batchNumber.ToString().PadLeft(2, '0');
+            subTag = (Directory.GetFiles(motMasterDataPath, element +
+                dateTag + batchTag + "*.txt")).Length;
+            string id = element + dateTag + batchTag
+                + "_" + subTag.ToString().PadLeft(3, '0');
+            return id;
+        }
+        public void SetSaveBatch(int value)
+        {
+            controllerWindow.SetSaveBatch(value);
+        }
         #endregion
     }
 }

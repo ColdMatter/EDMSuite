@@ -67,5 +67,39 @@ namespace MOTMaster
         {
             return readComboBox(scriptListComboBox);
         }
+
+        private void ControllerWindow_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveExperimentCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (saveExperimentCheckBox.Checked == true)
+            {
+                saveBatchTextBox.Enabled = true;
+                controller.SaveEnable = true;
+            }
+            if (saveExperimentCheckBox.Checked == false)
+            {
+                saveBatchTextBox.Enabled = false;
+                controller.SaveEnable = false;
+            }
+        }
+
+        public int GetSaveBatch()
+        {
+            return int.Parse(saveBatchTextBox.Text);
+        }
+        public void SetSaveBatch(int value)
+        {
+            setTextBox(saveBatchTextBox, value.ToString());
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            controller.ReloadAndRun();
+        }
+
     }
 }

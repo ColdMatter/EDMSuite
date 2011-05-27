@@ -13,6 +13,8 @@ namespace DAQ.Analog
     /// CHANNELS. IT WILL BUILD A PATTERN FOLLOWING THE ORDER IN WHICH YOU CALL AddAnalogValue / AddLinearRamp!!
     /// ---> Stick to writing out the pattern in the correct time order to avoid weirdo behaviour.
     /// </summary>
+    
+    [Serializable]
     public class AnalogPatternBuilder
     {
         public Dictionary<String,Double[]> AnalogPatterns;

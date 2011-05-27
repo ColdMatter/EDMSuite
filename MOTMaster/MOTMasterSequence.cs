@@ -7,6 +7,7 @@ using DAQ.Pattern;
 
 namespace MOTMaster
 {
+    [Serializable]
     public class MOTMasterSequence
     {
         public PatternBuilder32 DigitalPattern;

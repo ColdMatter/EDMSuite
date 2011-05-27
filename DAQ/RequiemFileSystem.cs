@@ -13,8 +13,8 @@ namespace DAQ
             Paths.Add("scanMasterDataPath", "c:\\Data\\ScanMasterData\\");
             Paths.Add("dataPath", "c:\\Data\\");
             Paths.Add("fakeData", "c:\\Data\\Examples\\");
-            
-            
+
+            Paths.Add("MOTMasterDataPath", "c:\\Data\\MOTMasterData\\");
             Paths.Add("scriptListPath", "C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\");
             Paths.Add("daqDLLPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\bin\\Sympathetic");
             Paths.Add("MOTMasterExePath",

@@ -31,6 +31,7 @@ namespace DAQ.HAL
             Info.Add("APGClockCounter", aoBoard + "/ctr0");
             Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
 
+            Info.Add("Element", "Li");
             //Test this
             //Info.Add("PGType", "dedicated");
             Info.Add("PGType", "integrated");

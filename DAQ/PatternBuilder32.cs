@@ -12,14 +12,19 @@ namespace DAQ.Pattern
 	/// To use this class, subclass it, and add your own structure. This class provides
 	/// the primitives edge and pulse. Everything else is up to you.
 	/// </summary>
+    /// 
+    [Serializable]
 	public class PatternBuilder32 : IPatternSource
 	{
-		private bool timeOrdered = true;
-		private Layout layout;
+        [NonSerialized]
+        private bool timeOrdered = true;
+        [NonSerialized]
+        private Layout layout;
 		private UInt32[] pattern;
-		private Int16[] patternInt16;
-		private byte[] bytePattern;
-		private int[] latestTimes;
+        private Int16[] patternInt16;
+        private byte[] bytePattern;
+        [NonSerialized]
+        private int[] latestTimes;
 
 		// Build a table of bit -> int conversions
 		private UInt32[] bitValues = new UInt32[32];
