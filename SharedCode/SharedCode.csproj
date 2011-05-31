@@ -94,10 +94,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.0.0.4098, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\MongoDB.Driver.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -113,6 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockDBEntry.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
     <Compile Include="OldCode\IAccumulator.cs" />
     <Compile Include="OldCode\IField.cs" />
@@ -198,6 +195,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
+    <Content Include="MongoDB.Bson.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="licenses.licx" />

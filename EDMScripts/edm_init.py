@@ -16,7 +16,6 @@ clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
 sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\EDM\\"))
 clr.AddReferenceToFile("SirCachealot.exe")
-clr.AddReferenceToFile("Newtonsoft.Json.Net20.dll")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")

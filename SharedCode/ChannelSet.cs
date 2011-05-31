@@ -13,7 +13,7 @@ namespace Analysis.EDM
     /// type that the channels contain. Note that you can subclass the Channel class
     /// to give different types of channel specific behaviours.
     /// 
-    /// It is used to carry the results of demodulating a single detector form a Block into its channels.
+    /// It is used to carry the results of demodulating a single detector from a Block into its channels.
     /// </summary>
     [Serializable]
     [XmlInclude(typeof(TOFChannelSet))]
@@ -77,23 +77,6 @@ namespace Analysis.EDM
                 foreach (string key in keys) keyArray.Add(key);
                 return keyArray;
             }
-        }
-
-       // Improbable as it seems, .NET doesn't give a way to get the same hashcode for two
-        // seemingly identical arrays i.e. for
-        // string[] s1 = new string[] {"SIG"}
-        // string[] s2 = new string[] {"SIG"}
-        // s1.GetHashCode() will not be the same as s2.GetHashCode().
-        // To work around this we have to provide our hash method that has this property
-        private int HashStringArray(string[] channel)
-        {
-            int hash = 0x76BC45AD;
-            foreach (var sw in channel)
-            {
-                int swHash = sw.GetHashCode();
-                hash = swHash ^ ((hash << 5) + hash);
-            }
-            return hash;
         }
     }
 }

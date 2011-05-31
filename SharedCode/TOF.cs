@@ -266,5 +266,20 @@ namespace Data
             }
         }
 
+        // returns a typically sized TOF with random data
+        private const int RANDOM_TOF_SIZE = 80;
+        private static Random r = new Random();
+
+        public static TOF Random()
+        {
+            TOF t = new TOF();
+            t.Data = new double[RANDOM_TOF_SIZE];
+            for (int i = 0; i < RANDOM_TOF_SIZE; i++) t.Data[i] = r.NextDouble();
+            t.Calibration = 1.0;
+            t.ClockPeriod = 10;
+            t.GateStartTime = 1800;
+            return t;
+        }
+
     }
 }

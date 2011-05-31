@@ -63,5 +63,18 @@ namespace Analysis.EDM
             temp.Difference = t1.Difference * t2.Difference;
             return temp;
         }
+
+        // makes a random TOFChannel, by making random TOFs
+        public static TOFChannel Random()
+        {
+            TOFChannel tc = new TOFChannel();
+            TOF on = TOF.Random();
+            TOF off = TOF.Random();
+            tc.On = on;
+            tc.Off = off;
+            tc.Difference = on - off;
+
+            return tc;
+        }
     }
 }

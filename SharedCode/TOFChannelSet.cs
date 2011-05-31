@@ -44,5 +44,14 @@ namespace Analysis.EDM
                 temp.AddChannel(channel, (TOFChannel)t.GetChannel(channel) * d); 
             return temp;
         }
+
+        private const int NUMBER_OF_CHANNELS = 527;
+        // makes a random TOFChannelSet, using random TOFChannels.
+        public static TOFChannelSet Random()
+        {   
+            TOFChannelSet tcs = new TOFChannelSet();
+            for (int i = 0; i < NUMBER_OF_CHANNELS; i++) tcs.AddChannel("c" + i, TOFChannel.Random());
+            return tcs;
+        }
     }
 }
