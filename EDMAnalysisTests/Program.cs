@@ -16,6 +16,7 @@ using Data.EDM;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Linq;
+using EDMConfig;
 
 namespace EDMAnalysisTests
 {
@@ -30,30 +31,38 @@ namespace EDMAnalysisTests
         private static void testDB4O()
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
-            config.Common.ObjectClass(typeof(TOFChannelSet)).CascadeOnUpdate(true);
-            config.Common.ObjectClass(typeof(TOFChannelSet)).CascadeOnDelete(true);
-            config.Common.ObjectClass(typeof(TOFChannelSet)).CascadeOnActivate(true);
+            config.Common.MessageLevel = 1;
+            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnUpdate(true);
+            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnDelete(true);
+            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnActivate(true);
+ //           config.Common.ObjectClass(typeof(BlockConfig)).ObjectField("Settings").Indexed(true);
             IObjectContainer db = Db4oEmbedded.OpenFile("C:\\Users\\jony\\Desktop\\test.yap");
 
-            BlockSerializer bs = new BlockSerializer();
-            string[] blockFiles = Directory.GetFiles(
-                "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2010\\March2010", "*.zip");
-            int i = 0;
-            foreach (string blockFile in blockFiles)
-            {
-                try
-                {
-                    Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-                    BlockDBEntry bdb = new BlockDBEntry();
-                    bdb.Config = b.Config;
-                    db.Store(bdb);
-                    Console.WriteLine(i++);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.StackTrace);
-                }
-            }
+            //BlockSerializer bs = new BlockSerializer();
+            //string[] blockFiles = Directory.GetFiles(
+            //    "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2010\\March2010", "*.zip");
+            //int i = 0;
+            //foreach (string blockFile in blockFiles)
+            //{
+            //    try
+            //    {
+            //        Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
+            //        BlockDBEntry bdb = new BlockDBEntry();
+            //        bdb.Config = b.Config;
+            //        db.Store(bdb);
+            //        Console.WriteLine(i++);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Console.WriteLine(e.StackTrace);
+            //    }
+            //}
+
+            IEnumerable<string> names = from BlockConfig b in db
+                                       where ((bool)b.Settings["eState"] == true)
+                                       select (string)b.Settings["cluster"];
+            string[] nameArray = names.ToArray<string>();
+            foreach (string n in nameArray) Console.WriteLine(n);
             db.Close();
 
 

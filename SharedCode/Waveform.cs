@@ -14,6 +14,7 @@ namespace EDMConfig
 		private int codeLength;
 		private int bitsLength;
 		private bool[] code;
+        [NonSerialized]
 		private bool[] bits;
         public bool Inverted = false;
 
