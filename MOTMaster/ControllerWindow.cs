@@ -17,9 +17,9 @@ namespace MOTMaster
             InitializeComponent();
         }
 
-        public void WriteToConsole(string str)
+        public void WriteToPatternSourcePath(string str)
         {
-            setTextBox(resultsTextBox, str);
+            setTextBox(PatternSourceTextBox, str);
         }
 
 
@@ -58,12 +58,12 @@ namespace MOTMaster
             controller.ScriptLookupAndDisplay();
         }
 
-        private void compileAndInitializeButton_Click(object sender, EventArgs e)
+        private void runButton_Click(object sender, EventArgs e)
         {
-            controller.CompileAndRun();
+            controller.Run();
         }
 
-        public string GetScriptPath()
+        private string getScriptPath()
         {
             return readComboBox(scriptListComboBox);
         }
@@ -87,19 +87,23 @@ namespace MOTMaster
             }
         }
 
-        public int GetSaveBatch()
+        public int GetSaveBatchNumber()
         {
             return int.Parse(saveBatchTextBox.Text);
         }
-        public void SetSaveBatch(int value)
+
+
+        private void selectScriptButton_Click(object sender, EventArgs e)
         {
-            setTextBox(saveBatchTextBox, value.ToString());
+            controller.SetPatternPath(getScriptPath());
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SelectBinaryButton_Click(object sender, EventArgs e)
         {
-            controller.ReloadAndRun();
+            controller.SelectPatternPathDialog();
         }
+
+
 
     }
 }

@@ -28,22 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.resultsTextBox = new System.Windows.Forms.TextBox();
+            this.PatternSourceTextBox = new System.Windows.Forms.TextBox();
             this.scriptListComboBox = new System.Windows.Forms.ComboBox();
             this.lookupScriptsButton = new System.Windows.Forms.Button();
-            this.compileAndRunButton = new System.Windows.Forms.Button();
+            this.runButton = new System.Windows.Forms.Button();
             this.saveExperimentCheckBox = new System.Windows.Forms.CheckBox();
             this.saveBatchTextBox = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.SelectBinaryButton = new System.Windows.Forms.Button();
+            this.selectScriptButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // resultsTextBox
+            // PatternSourceTextBox
             // 
-            this.resultsTextBox.Location = new System.Drawing.Point(564, 41);
-            this.resultsTextBox.Name = "resultsTextBox";
-            this.resultsTextBox.ReadOnly = true;
-            this.resultsTextBox.Size = new System.Drawing.Size(355, 20);
-            this.resultsTextBox.TabIndex = 4;
+            this.PatternSourceTextBox.Location = new System.Drawing.Point(589, 41);
+            this.PatternSourceTextBox.Name = "PatternSourceTextBox";
+            this.PatternSourceTextBox.ReadOnly = true;
+            this.PatternSourceTextBox.Size = new System.Drawing.Size(355, 20);
+            this.PatternSourceTextBox.TabIndex = 4;
             // 
             // scriptListComboBox
             // 
@@ -51,7 +52,7 @@
             this.scriptListComboBox.Location = new System.Drawing.Point(4, 12);
             this.scriptListComboBox.MaxDropDownItems = 32;
             this.scriptListComboBox.Name = "scriptListComboBox";
-            this.scriptListComboBox.Size = new System.Drawing.Size(915, 21);
+            this.scriptListComboBox.Size = new System.Drawing.Size(940, 21);
             this.scriptListComboBox.Sorted = true;
             this.scriptListComboBox.TabIndex = 6;
             // 
@@ -65,20 +66,20 @@
             this.lookupScriptsButton.UseVisualStyleBackColor = true;
             this.lookupScriptsButton.Click += new System.EventHandler(this.lookupScriptsButton_Click);
             // 
-            // compileAndRunButton
+            // runButton
             // 
-            this.compileAndRunButton.Location = new System.Drawing.Point(147, 39);
-            this.compileAndRunButton.Name = "compileAndRunButton";
-            this.compileAndRunButton.Size = new System.Drawing.Size(137, 23);
-            this.compileAndRunButton.TabIndex = 8;
-            this.compileAndRunButton.Text = "Compile and Run";
-            this.compileAndRunButton.UseVisualStyleBackColor = true;
-            this.compileAndRunButton.Click += new System.EventHandler(this.compileAndInitializeButton_Click);
+            this.runButton.Location = new System.Drawing.Point(433, 39);
+            this.runButton.Name = "runButton";
+            this.runButton.Size = new System.Drawing.Size(137, 23);
+            this.runButton.TabIndex = 8;
+            this.runButton.Text = "Run";
+            this.runButton.UseVisualStyleBackColor = true;
+            this.runButton.Click += new System.EventHandler(this.runButton_Click);
             // 
             // saveExperimentCheckBox
             // 
             this.saveExperimentCheckBox.AutoSize = true;
-            this.saveExperimentCheckBox.Location = new System.Drawing.Point(290, 43);
+            this.saveExperimentCheckBox.Location = new System.Drawing.Point(294, 70);
             this.saveExperimentCheckBox.Name = "saveExperimentCheckBox";
             this.saveExperimentCheckBox.Size = new System.Drawing.Size(148, 17);
             this.saveExperimentCheckBox.TabIndex = 9;
@@ -90,34 +91,45 @@
             // 
             this.saveBatchTextBox.Enabled = false;
             this.saveBatchTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.saveBatchTextBox.Location = new System.Drawing.Point(444, 41);
+            this.saveBatchTextBox.Location = new System.Drawing.Point(463, 72);
             this.saveBatchTextBox.Name = "saveBatchTextBox";
             this.saveBatchTextBox.Size = new System.Drawing.Size(49, 20);
             this.saveBatchTextBox.TabIndex = 10;
             this.saveBatchTextBox.Text = "0";
             // 
-            // button1
+            // SelectBinaryButton
             // 
-            this.button1.Location = new System.Drawing.Point(28, 70);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.SelectBinaryButton.Location = new System.Drawing.Point(290, 39);
+            this.SelectBinaryButton.Name = "SelectBinaryButton";
+            this.SelectBinaryButton.Size = new System.Drawing.Size(137, 23);
+            this.SelectBinaryButton.TabIndex = 11;
+            this.SelectBinaryButton.Text = "Select prebuilt pattern";
+            this.SelectBinaryButton.UseVisualStyleBackColor = true;
+            this.SelectBinaryButton.Click += new System.EventHandler(this.SelectBinaryButton_Click);
+            // 
+            // selectScriptButton
+            // 
+            this.selectScriptButton.Location = new System.Drawing.Point(147, 39);
+            this.selectScriptButton.Name = "selectScriptButton";
+            this.selectScriptButton.Size = new System.Drawing.Size(137, 23);
+            this.selectScriptButton.TabIndex = 12;
+            this.selectScriptButton.Text = "Select script";
+            this.selectScriptButton.UseVisualStyleBackColor = true;
+            this.selectScriptButton.Click += new System.EventHandler(this.selectScriptButton_Click);
             // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(931, 105);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(953, 105);
+            this.Controls.Add(this.selectScriptButton);
+            this.Controls.Add(this.SelectBinaryButton);
             this.Controls.Add(this.saveBatchTextBox);
             this.Controls.Add(this.saveExperimentCheckBox);
-            this.Controls.Add(this.compileAndRunButton);
+            this.Controls.Add(this.runButton);
             this.Controls.Add(this.lookupScriptsButton);
             this.Controls.Add(this.scriptListComboBox);
-            this.Controls.Add(this.resultsTextBox);
+            this.Controls.Add(this.PatternSourceTextBox);
             this.Name = "ControllerWindow";
             this.Text = "MOTMaster Main Window";
             this.Load += new System.EventHandler(this.ControllerWindow_Load);
@@ -128,13 +140,14 @@
 
         #endregion
 
-        public System.Windows.Forms.TextBox resultsTextBox;
+        public System.Windows.Forms.TextBox PatternSourceTextBox;
         private System.Windows.Forms.ComboBox scriptListComboBox;
         private System.Windows.Forms.Button lookupScriptsButton;
-        private System.Windows.Forms.Button compileAndRunButton;
+        private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.CheckBox saveExperimentCheckBox;
         private System.Windows.Forms.TextBox saveBatchTextBox;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button SelectBinaryButton;
+        private System.Windows.Forms.Button selectScriptButton;
     }
 }
 

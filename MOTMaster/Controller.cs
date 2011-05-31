@@ -43,7 +43,7 @@ namespace MOTMaster
     /// 
     /// - Once the user has selected a particular implementation of MOTMasterScript, 
     /// MOTMaster will compile it. Note: the dll is currently stored in a temp folder somewhere. 
-    /// Its path can be found in the CompilerResults.PathToAssembly). 
+    /// Its pathToPattern can be found in the CompilerResults.PathToAssembly). 
     /// This newly formed dll contain methods named GetDigitalPattern and GetAnalogPattern. 
     /// 
     /// - These are called by the script's "GetSequence". GetSequence always returns a 
@@ -88,6 +88,8 @@ namespace MOTMaster
         DAQmxAnalogPatternGenerator apg;
 
         public bool SaveEnable = false;
+        public enum GetPattern { FROM_MOTMASTERSCRIPT, FROM_MOTMASTERSCRIPT_W_CHANGES, FROM_BINARY}
+        public GetPattern PatternSource = new GetPattern();
 
         #endregion
 
@@ -109,6 +111,8 @@ namespace MOTMaster
 
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQmxAnalogPatternGenerator();
+
+            PatternSource = GetPattern.FROM_BINARY;
 
             ScriptLookupAndDisplay();
 
@@ -132,7 +136,7 @@ namespace MOTMaster
             apg.Configure(sequence.AnalogPattern, apgClockFrequency);
         }
 
-        private void releaseHardwareAndClearPattern(MOTMasterSequence sequence)
+        private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
             pg.StopPattern();
@@ -161,91 +165,84 @@ namespace MOTMaster
         #endregion
 
         #region RUN RUN RUN
-        CompilerResults CompiledPattern;
-        public void CompileAndRun()
+        
+        public void Run()
         {
-            string scriptPath = controllerWindow.GetScriptPath();
-            CompiledPattern = compileFromFile(scriptPath);
-            MOTMasterSequence sequence;
+            
+            MOTMasterSequence sequence = preparePattern(patternPath, null);
+            runPattern(sequence); 
+        }
+        public void Run(Dictionary<String,Object> dict)
+        {
+
+            MOTMasterSequence sequence = preparePattern(patternPath, dict);
+            runPattern(sequence);
+        }
+
+        private void runPattern(MOTMasterSequence sequence)
+        {
             try
             {
-                MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
-                sequence = getSequenceFromScript(script);
-                buildPattern(sequence);
                 initializeHardware(sequence);
                 run(sequence);
-                if (SaveEnable)
-                {
-                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
-                        controllerWindow.GetSaveBatch());
-                    controllerWindow.WriteToConsole(filePath);
-                    storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
-                    storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
-                }
-                releaseHardwareAndClearPattern(sequence);
-                
-                //controllerWindow.WriteToConsole("Run Complete.");
+                releaseHardwareAndClearDigitalPattern(sequence);
             }
             catch (Exception e)
             {
-                controllerWindow.WriteToConsole(e.Message);
+                controllerWindow.WriteToPatternSourcePath(e.Message);
             }
         }
 
-        public void CompileAndRun(Dictionary<String, Object> dictionary)
-        {
-            string scriptPath = controllerWindow.GetScriptPath();
-            CompiledPattern = compileFromFile(scriptPath);
-            MOTMasterSequence sequence;
-            try
-            {
-                MOTMasterScript script = loadInstanceOfScript(CompiledPattern);
-                
-                swapDictionary(script, dictionary); //To changes parameters before running, if we want.
-                
-                sequence = getSequenceFromScript(script);
-                buildPattern(sequence);
-                initializeHardware(sequence);
-                run(sequence);
-                if (SaveEnable)
-                {
-                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
-                        controllerWindow.GetSaveBatch());
-
-                    storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
-                    storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
-                }
-                releaseHardwareAndClearPattern(sequence);
-                controllerWindow.WriteToConsole("Run Complete.");
-            }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToConsole(e.Message);
-            }
-        }
-        public void ReloadAndRun()
+        private MOTMasterSequence preparePattern(string pathToPattern, Dictionary<String,Object> dict)
         {
             MOTMasterSequence sequence = new MOTMasterSequence();
-            try
+            if (pathToPattern.Length != 0)
             {
-                sequence = reloadSequenceFromBinaryFile("C:\\Data\\MOTMasterData\\Li27May1100_000.bin");
-                //buildPattern(sequence);
-                initializeHardware(sequence);
-                run(sequence);
-                releaseHardwareAndClearPattern(sequence);
-                //controllerWindow.WriteToConsole("Run Complete.");
+
+                if (getFileType(pathToPattern) == "bin")
+                {
+                    sequence = loadSequenceFromBinaryFile(pathToPattern);
+                }
+
+                else if (getFileType(pathToPattern) == ".cs")
+                {
+                    CompilerResults results = compileFromFile(pathToPattern);
+                    MOTMasterScript script = loadScriptFromDLL(results);
+
+                    if (dict != null)
+                    {
+                        swapDictionary(script, dict);
+                    }
+                    sequence = getSequenceFromScript(script);
+                    buildPattern(sequence);
+
+                    if (SaveEnable)
+                    {
+                        string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
+                            controllerWindow.GetSaveBatchNumber());
+
+                        storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
+                        storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
+                    }
+                }
+                else
+                {
+                    controllerWindow.WriteToPatternSourcePath("File not recognized");
+                }
             }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToConsole(e.Message);
-            }
+            return sequence;
+        }
+
+
+        private string getFileType(string path)
+        {
+            return path.Substring(path.Length - 3, 3);
         }
         private void buildPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
         }
-
         #endregion
 
         #region Compiler & Loading DLLs
@@ -269,48 +266,13 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
-                controllerWindow.WriteToConsole(e.Message);
+                controllerWindow.WriteToPatternSourcePath(e.Message);
             }
-            //controllerWindow.WriteToConsole(results.PathToAssembly);
+            //controllerWindow.WriteToPatternSourcePath(results.PathToAssembly);
             return results;
         }
 
-        private MOTMasterScript loadInstanceOfScript(CompilerResults results)
-        {
-            object loadedInstance = new object();
-            try
-            {
-                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
-                foreach (Type type in patternAssembly.GetTypes())
-                {
-                    if (type.IsClass == true)
-                    {
-                        loadedInstance = Activator.CreateInstance(type);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToConsole(e.Message);
-            }
-            return (MOTMasterScript)loadedInstance;
-        }
-
-        private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
-        {
-            MOTMasterSequence sequence = script.GetSequence(); 
-            return sequence;
-        }
-
-        #endregion
-
-        #region Saving, Loading and Modifying Experimental Parameters
-        
-        private void swapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
-        {
-            script.Parameters = dictionary;
-        }
-        private MOTMasterSequence reloadSequenceFromBinaryFile(String dataStoreFilePath)
+        private MOTMasterSequence loadSequenceFromBinaryFile(String dataStoreFilePath)
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
@@ -330,6 +292,43 @@ namespace MOTMaster
             }
             return sequence;
         }
+
+        private MOTMasterScript loadScriptFromDLL(CompilerResults results)
+        {
+            object loadedInstance = new object();
+            try
+            {
+                Assembly patternAssembly = Assembly.LoadFrom(results.PathToAssembly);
+                foreach (Type type in patternAssembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        loadedInstance = Activator.CreateInstance(type);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                controllerWindow.WriteToPatternSourcePath(e.Message);
+            }
+            return (MOTMasterScript)loadedInstance;
+        }
+
+        private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
+        {
+            MOTMasterSequence sequence = script.GetSequence(); 
+            return sequence;
+        }
+
+        #endregion
+
+        #region Saving, Loading and Modifying Experimental Parameters
+        
+        private void swapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
+        {
+            script.Parameters = dictionary;
+        }
+       
         private void storeMOTMasterSequence(String dataStoreFilePath, MOTMasterSequence sequence)
         {
             BinaryFormatter s = new BinaryFormatter();
@@ -377,9 +376,21 @@ namespace MOTMaster
                 + "_" + subTag.ToString().PadLeft(3, '0');
             return id;
         }
-        public void SetSaveBatch(int value)
+
+        private string patternPath;
+        public void SetPatternPath(string path)
         {
-            controllerWindow.SetSaveBatch(value);
+            patternPath = path;
+            controllerWindow.WriteToPatternSourcePath(path);
+        }
+        public void SelectPatternPathDialog()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Saved Patterns|*.bin";
+            dialog.Title = "Load previously saved pattern";
+            dialog.InitialDirectory = motMasterDataPath;
+            dialog.ShowDialog();
+            SetPatternPath(dialog.FileName);
         }
         #endregion
     }
