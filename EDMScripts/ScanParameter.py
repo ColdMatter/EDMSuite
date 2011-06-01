@@ -19,8 +19,10 @@ def run_script():
 def ScanMOTLoadTime():
 	count = 0
 	dic = Dictionary[String,Object]()
+	dic["PatternLength"] = 2000
+	mm.SetPatternPath("C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\ExamplePattern.cs")
 	while(count < 10):
 		dic["MOTLoadTime"] = 5 + count
-		mm.CompileAndRun(dic)
+		mm.Run(dic)
 		count = count + 1
 

@@ -18,7 +18,8 @@ def run_script():
 def SwapMOTLoadTime():
 	count = 0
 	while(count < 10):
-		mm.CompileAndRun()
+		mm.SetPatternPath("C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\ExamplePattern.cs")
+		mm.Run()
 		count = count + 1
 
 

@@ -17,8 +17,9 @@ def run_script():
 
 def SwapMOTLoadTime():
 	dic = Dictionary[String,Object]()
-	dic["MOTLoadTime"] = 5
-	mm.CompileAndRun(dic)
+	dic["MOTLoadTime"] = 6
+	dic["PatternLength"] = 2000
+	mm.Run(dic)
 
 
 
