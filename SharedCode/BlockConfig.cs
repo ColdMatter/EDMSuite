@@ -24,9 +24,9 @@ namespace EDMConfig
 	public class BlockConfig
 	{
 		// modulations - timing modulations are not implemented yet
-		private ArrayList digitalModulations = new ArrayList();
-		private ArrayList analogModulations = new ArrayList();
-		private ArrayList timingModulations = new ArrayList();
+		protected ArrayList digitalModulations = new ArrayList();
+        protected ArrayList analogModulations = new ArrayList();
+        protected ArrayList timingModulations = new ArrayList();
 		public XmlSerializableHashtable Settings = new XmlSerializableHashtable();
 
 		[XmlArray]

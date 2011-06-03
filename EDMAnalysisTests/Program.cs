@@ -5,18 +5,19 @@ using System.Text;
 using System.IO;
 
 using Analysis.EDM;
-using Analysis.EDM.Database;
 using Data;
 using Data.EDM;
-//using MongoDB.Bson;
-//using MongoDB.Bson.IO;
-//using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
 //using MongoDB.Driver;
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Linq;
+using Db4objects.Db4o.IO;
 using EDMConfig;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EDMAnalysisTests
 {
@@ -30,42 +31,70 @@ namespace EDMAnalysisTests
 
         private static void testDB4O()
         {
-            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
-            config.Common.MessageLevel = 1;
-            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnUpdate(true);
-            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnDelete(true);
-            config.Common.ObjectClass(typeof(BlockConfig)).CascadeOnActivate(true);
- //           config.Common.ObjectClass(typeof(BlockConfig)).ObjectField("Settings").Indexed(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile("C:\\Users\\jony\\Desktop\\test.yap");
 
-            //BlockSerializer bs = new BlockSerializer();
-            //string[] blockFiles = Directory.GetFiles(
-            //    "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2010\\March2010", "*.zip");
-            //int i = 0;
-            //foreach (string blockFile in blockFiles)
-            //{
-            //    try
-            //    {
-            //        Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-            //        BlockDBEntry bdb = new BlockDBEntry();
-            //        bdb.Config = b.Config;
-            //        db.Store(bdb);
-            //        Console.WriteLine(i++);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Console.WriteLine(e.StackTrace);
-            //    }
-            //}
+            IEmbeddedConfiguration config2 = Db4oEmbedded.NewConfiguration();
+            config2.Common.MessageLevel = 1;
+            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnUpdate(true);
+            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnDelete(true);
+            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnActivate(true);
+            config2.Common.ObjectClass(typeof(BlockDBEntry)).ObjectField("EState").Indexed(true);
 
-            IEnumerable<string> names = from BlockConfig b in db
-                                       where ((bool)b.Settings["eState"] == true)
-                                       select (string)b.Settings["cluster"];
-            string[] nameArray = names.ToArray<string>();
-            foreach (string n in nameArray) Console.WriteLine(n);
-            db.Close();
+            IObjectContainer db2 = Db4oEmbedded.OpenFile("C:\\Users\\jony\\Desktop\\test2.yap");
 
+            BlockSerializer bs = new BlockSerializer();
+            string[] blockFiles = Directory.GetFiles(
+                "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2010\\", "*.zip", SearchOption.AllDirectories);
+            int i = 0;
+            foreach (string blockFile in blockFiles)
+            {
+                try
+                {
+                    Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
+                    BlockDBEntry bdb = new BlockDBEntry(b.Config);
+                    db2.Store(bdb);
+                    db2.Commit();
+                    Console.WriteLine(i++);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
+            }
 
+            //IEnumerable<string> names = from BlockConfig b in db
+            //                           where ((bool)b.Settings["eState"] == true)
+            //                           select (string)b.Settings["cluster"];
+            //string[] nameArray = names.ToArray<string>();
+            //foreach (string n in nameArray) Console.WriteLine(n);
+
+           //IEnumerable<BlockDBEntry> bcs = from BlockConfig b in db
+           //                                select new BlockDBEntry(b);
+
+          
+
+            //foreach (BlockDBEntry b in bcs) db2.Store(b);
+            //IEnumerable<string> bcs = from BlockDBEntry b in db2
+            //                                    where b.BState == true
+            //                                    where b.Tags.Contains("include")
+            //                                    select b.Cluster;
+
+            //foreach (string s in bcs) Console.WriteLine(s);
+
+            //db.Close();
+            db2.Close();
+        }
+
+        private static byte[] serializeAsByteArray(BlockConfig bc)
+
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, bc);
+            byte[] buffer = new Byte[ms.Length];
+            ms.Seek(0, SeekOrigin.Begin);
+            ms.Read(buffer, 0, (int)ms.Length);
+            ms.Close();
+            return buffer;
         }
 
 //        private static void testBSonSerializer()

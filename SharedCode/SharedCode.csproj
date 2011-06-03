@@ -109,7 +109,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockDBEntry.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
     <Compile Include="OldCode\IAccumulator.cs" />
     <Compile Include="OldCode\IField.cs" />
