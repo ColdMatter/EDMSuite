@@ -16,6 +16,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.CS;
 using EDMConfig;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -32,53 +33,54 @@ namespace EDMAnalysisTests
         private static void testDB4O()
         {
 
-            IEmbeddedConfiguration config2 = Db4oEmbedded.NewConfiguration();
-            config2.Common.MessageLevel = 1;
-            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnUpdate(true);
-            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnDelete(true);
-            config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnActivate(true);
-            config2.Common.ObjectClass(typeof(BlockDBEntry)).ObjectField("EState").Indexed(true);
+            //IEmbeddedConfiguration config2 = Db4oEmbedded.NewConfiguration();
+            //config2.Common.MessageLevel = 1;
+            //config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnUpdate(true);
+            //config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnDelete(true);
+            //config2.Common.ObjectClass(typeof(BlockDBEntry)).CascadeOnActivate(true);
+            //config2.Common.ObjectClass(typeof(BlockDBEntry)).ObjectField("EState").Indexed(true);
 
-            IObjectContainer db2 = Db4oEmbedded.OpenFile("C:\\Users\\jony\\Desktop\\test2.yap");
+            //IObjectContainer db2 = Db4oEmbedded.OpenFile("C:\\Users\\jony\\Desktop\\test2.yap");
+            IObjectServer server = Db4oClientServer.OpenServer("C:\\Users\\jony\\Desktop\\test2.yap", 1234565);
 
             BlockSerializer bs = new BlockSerializer();
             string[] blockFiles = Directory.GetFiles(
                 "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2010\\", "*.zip", SearchOption.AllDirectories);
             int i = 0;
-            foreach (string blockFile in blockFiles)
-            {
-                try
-                {
-                    Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
-                    BlockDBEntry bdb = new BlockDBEntry(b.Config);
-                    db2.Store(bdb);
-                    db2.Commit();
-                    Console.WriteLine(i++);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.StackTrace);
-                }
-            }
+            //foreach (string blockFile in blockFiles)
+            //{
+            //    try
+            //    {
+            //        Block b = bs.DeserializeBlockFromZippedXML(blockFile, "block.xml");
+            //        BlockDBEntry bdb = new BlockDBEntry(b.Config);
+            //        db2.Store(bdb);
+            //        db2.Commit();
+            //        Console.WriteLine(i++);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Console.WriteLine(e.StackTrace);
+            //    }
+            //}
 
             //IEnumerable<string> names = from BlockConfig b in db
-            //                           where ((bool)b.Settings["eState"] == true)
-            //                           select (string)b.Settings["cluster"];
+            //                            where ((bool)b.Settings["eState"] == true)
+            //                            select (string)b.Settings["cluster"];
             //string[] nameArray = names.ToArray<string>();
             //foreach (string n in nameArray) Console.WriteLine(n);
 
-           //IEnumerable<BlockDBEntry> bcs = from BlockConfig b in db
-           //                                select new BlockDBEntry(b);
+            //IEnumerable<BlockDBEntry> bcs = from BlockConfig b in db
+            //                                select new BlockDBEntry(b);
 
-          
 
-            //foreach (BlockDBEntry b in bcs) db2.Store(b);
-            //IEnumerable<string> bcs = from BlockDBEntry b in db2
-            //                                    where b.BState == true
-            //                                    where b.Tags.Contains("include")
-            //                                    select b.Cluster;
 
-            //foreach (string s in bcs) Console.WriteLine(s);
+            foreach (BlockDBEntry b in bcs) db2.Store(b);
+            IEnumerable<string> bcs = from BlockDBEntry b in db2
+                                      where b.BState == true
+                                      where b.Tags.Contains("include")
+                                      select b.Cluster;
+
+            foreach (string s in bcs) Console.WriteLine(s);
 
             //db.Close();
             db2.Close();
