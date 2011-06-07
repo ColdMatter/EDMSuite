@@ -19,6 +19,8 @@ namespace DAQ
             Paths.Add("daqDLLPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\bin\\Sympathetic");
             Paths.Add("MOTMasterExePath",
                 "C:\\Experiment Control\\EDMSuite\\MOTMaster\\bin\\Sympathetic");
+            
+
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

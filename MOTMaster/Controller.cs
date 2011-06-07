@@ -248,6 +248,7 @@ namespace MOTMaster
 
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
+
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
             CompilerResults results = new CompilerResults(tempFiles);

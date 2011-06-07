@@ -1,9 +1,12 @@
 ﻿using MOTMaster;
+using MOTMaster.SnippetLibrary;
+
 using System;
 using System.Collections.Generic;
 
 using DAQ.Pattern;
 using DAQ.Analog;
+
 
 
 public class Patterns : MOTMasterScript
@@ -20,11 +23,15 @@ public class Patterns : MOTMasterScript
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
+
+        SHLoadMOT lm = new SHLoadMOT(p, Parameters);
+
         // AddEdge[int channel, int time, bool values] 
         //p.AddEdge("CameraTrigger", 0, true);
 
         //Pulse(int startTime, int delay (Don't know what that's for), int duration, int channel )
-        p.Pulse(2, 0, 1, "CameraTrigger");
+        //p.Pulse(2, 0, 1, "CameraTrigger");
+        
         //DownPulse(int startTime, int delay, int duration, int channel )
         return p;
     }
@@ -33,13 +40,10 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
-
-
-
-
         p.AddChannel("laser");
-        p.AddAnalogPulse("laser", 1, 2, 4, 2);
-        p.AddAnalogValue("laser", 5, -2);
+        //p.AddAnalogPulse("laser", 1, 2, 4, 2);
+        //p.AddAnalogValue("laser", 5, -2);
+        SHLoadMOT lm = new SHLoadMOT(p, Parameters);
 
         p.AddChannel("cavity");
         p.AddAnalogValue("cavity", 0, 4);

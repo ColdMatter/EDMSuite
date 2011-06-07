@@ -90,6 +90,7 @@
       <DependentUpon>ControllerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,6 +117,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="MOTMasterScriptSerializer.cs" />
+    <Compile Include="SHLoadMOT.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
