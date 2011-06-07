@@ -192,15 +192,11 @@ namespace MOTMaster
         private MOTMasterSequence preparePattern(string pathToPattern, Dictionary<String,Object> dict)
         {
             MOTMasterSequence sequence = new MOTMasterSequence();
-            if (pathToPattern.Length != 0)
+            try
             {
-                if (Path.GetExtension(pathToPattern) == ".bin")
+                if (pathToPattern.Length != 0 && Path.GetExtension(pathToPattern) == ".cs")
                 {
-                    sequence = loadSequenceFromBinaryFile(pathToPattern);
-                }
 
-                else if (Path.GetExtension(pathToPattern) == ".cs")
-                {
                     CompilerResults results = compileFromFile(pathToPattern);
                     MOTMasterScript script = loadScriptFromDLL(results);
 
@@ -225,15 +221,17 @@ namespace MOTMaster
                             storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters);
                         }
                     }
+
+
                 }
-                else
-                {
-                    controllerWindow.WriteToPatternSourcePath("File not recognized");
-                }
+            }
+            catch
+            {
+                throw new FileNotRecognizedException();
             }
             return sequence;
         }
-
+        public class FileNotRecognizedException : ApplicationException { }
 
         private void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
