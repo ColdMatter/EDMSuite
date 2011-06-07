@@ -17,6 +17,7 @@ using DAQ.HAL;
 using DAQ.Analog;
 using Data;
 using Data.Scans;
+
 using SympatheticHardwareControl;
 
 using System.Runtime.InteropServices;
@@ -57,10 +58,6 @@ namespace MOTMaster
     /// 
     /// - After everything's finished, MM releases the hardware.
     /// 
-    /// IMPORTANT NOTE ABOUT WRITING SCRIPTS: At the moment, THERE IS NO AUTOMATIC TIME ORDERING FOR ANALOG
-    /// CHANNELS. IT WILL BUILD A PATTERN FOLLOWING THE ORDER IN WHICH YOU CALL AddAnalogValue / AddLinearRamp!!
-    /// ---> Stick to writing out the pattern in the correct time order to avoid weirdo behaviour.
-    /// 
     /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -76,20 +73,21 @@ namespace MOTMaster
         private static string
             motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private const int
-            pgClockFrequency = 1000;
+            pgClockFrequency = 10000;
         private const int
             apgClockFrequency = 10000;
-        private const int
-            patternLength = 100;
 
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
         DAQmxAnalogPatternGenerator apg;
 
-        public bool SaveEnable = false;
-        public enum GetPattern { FROM_MOTMASTERSCRIPT, FROM_MOTMASTERSCRIPT_W_CHANGES, FROM_BINARY}
-        public GetPattern PatternSource = new GetPattern();
+
+        public System.Boolean SaveEnable = false;
+        public void SaveToggle(bool value)
+        {
+            SaveEnable = value;
+        }
 
         #endregion
 
@@ -112,8 +110,6 @@ namespace MOTMaster
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQmxAnalogPatternGenerator();
 
-            PatternSource = GetPattern.FROM_BINARY;
-
             ScriptLookupAndDisplay();
 
             Application.Run(controllerWindow);
@@ -132,7 +128,7 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            pg.Configure(pgClockFrequency, false, true, true, patternLength, true);
+            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true);
             apg.Configure(sequence.AnalogPattern, apgClockFrequency);
         }
 
@@ -198,31 +194,36 @@ namespace MOTMaster
             MOTMasterSequence sequence = new MOTMasterSequence();
             if (pathToPattern.Length != 0)
             {
-
-                if (getFileType(pathToPattern) == "bin")
+                if (Path.GetExtension(pathToPattern) == ".bin")
                 {
                     sequence = loadSequenceFromBinaryFile(pathToPattern);
                 }
 
-                else if (getFileType(pathToPattern) == ".cs")
+                else if (Path.GetExtension(pathToPattern) == ".cs")
                 {
                     CompilerResults results = compileFromFile(pathToPattern);
                     MOTMasterScript script = loadScriptFromDLL(results);
 
                     if (dict != null)
                     {
-                        swapDictionary(script, dict);
+                        script.EditDictionary(dict);
                     }
                     sequence = getSequenceFromScript(script);
-                    buildPattern(sequence);
+                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
                     if (SaveEnable)
                     {
                         string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
                             controllerWindow.GetSaveBatchNumber());
 
-                        storeDictionary(motMasterDataPath + filePath + ".txt", script.Parameters);
-                        storeMOTMasterSequence(motMasterDataPath + filePath + ".bin", sequence);
+                        if (dict != null)
+                        {
+                            storeRun(motMasterDataPath, filePath, pathToPattern, dict);
+                        }
+                        else
+                        {
+                            storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters);
+                        }
                     }
                 }
                 else
@@ -234,11 +235,7 @@ namespace MOTMaster
         }
 
 
-        private string getFileType(string path)
-        {
-            return path.Substring(path.Length - 3, 3);
-        }
-        private void buildPattern(MOTMasterSequence sequence)
+        private void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
@@ -253,7 +250,6 @@ namespace MOTMaster
 
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
-
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
             CompilerResults results = new CompilerResults(tempFiles);
@@ -316,19 +312,36 @@ namespace MOTMaster
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
-            MOTMasterSequence sequence = script.GetSequence(); 
+            MOTMasterSequence sequence = script.GetSequence();
             return sequence;
         }
 
         #endregion
 
         #region Saving, Loading and Modifying Experimental Parameters
-        
-        private void swapDictionary(MOTMasterScript script, Dictionary<String,Object> dictionary)
+
+        MOTMasterScriptSerializer serializer = new MOTMasterScriptSerializer();
+        private void storeRun(string saveFolder, string fileTag, string pathToPattern, Dictionary<String, Object> dict)
         {
-            script.Parameters = dictionary;
+            System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
+            storeDictionary(saveFolder + fileTag + ".txt", dict);
+            storeMOTMasterScript(saveFolder + fileTag + ".cs", pathToPattern);
+            serializer.PrepareZip(fs);
+            serializer.AppendToZip(saveFolder, fileTag + ".txt");
+            serializer.AppendToZip(saveFolder, fileTag + ".cs");
+            serializer.CloseZip();
+            fs.Close();
+            File.Delete(saveFolder + fileTag + ".txt");
+            File.Delete(saveFolder + fileTag + ".cs");
         }
-       
+
+
+        private void storeMOTMasterScript(String savePath, String pathToScript)
+        {
+            File.Copy(pathToScript, savePath);
+        }
+
+        //NEVER GETS CALLED ANYMORE.
         private void storeMOTMasterSequence(String dataStoreFilePath, MOTMasterSequence sequence)
         {
             BinaryFormatter s = new BinaryFormatter();
@@ -371,7 +384,7 @@ namespace MOTMaster
             dateTag = String.Format("{0:ddMMMyy}", dt);
             batchTag = batchNumber.ToString().PadLeft(2, '0');
             subTag = (Directory.GetFiles(motMasterDataPath, element +
-                dateTag + batchTag + "*.txt")).Length;
+                dateTag + batchTag + "*.zip")).Length;
             string id = element + dateTag + batchTag
                 + "_" + subTag.ToString().PadLeft(3, '0');
             return id;

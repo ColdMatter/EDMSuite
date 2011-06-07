@@ -20,5 +20,21 @@ namespace MOTMaster
             s.AnalogPattern = GetAnalogPattern();
             return s;
         }
+
+        public void EditDictionary(Dictionary<String, Object> dictionary)
+        {
+            foreach (KeyValuePair<string, object> k in dictionary)
+            {
+                if (Parameters.ContainsKey(k.Key))
+                {
+                    Parameters[k.Key] = k.Value;
+                }
+                else
+                {
+                    throw new ParameterNotInOriginalDictionaryException();
+                }
+            }
+        }
+        public class ParameterNotInOriginalDictionaryException : ApplicationException { }
     }
 }

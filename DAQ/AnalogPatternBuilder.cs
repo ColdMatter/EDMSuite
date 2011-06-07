@@ -7,23 +7,21 @@ namespace DAQ.Analog
 {
     /// <summary>
     /// A class for building analog patterns that can be output by a NI PatternList generator.
-    /// This class lets you set a value (AddAnalogValue) and do a linear ramp (AddLinearRamp).
+    /// This class lets you set a value (AddAnalogValue), do a linear ramp (AddLinearRamp) and have 
+    /// an analog pulse (AddAnalogPulse).
     /// 
-    /// IMPORTANT NOTE ABOUT WRITING SCRIPTS: At the moment, THERE IS NO AUTOMATIC TIME ORDERING FOR ANALOG
-    /// CHANNELS. IT WILL BUILD A PATTERN FOLLOWING THE ORDER IN WHICH YOU CALL AddAnalogValue / AddLinearRamp!!
-    /// ---> Stick to writing out the pattern in the correct time order to avoid weirdo behaviour.
     /// </summary>
-    
+
     [Serializable]
     public class AnalogPatternBuilder
     {
-        public Dictionary<String,Double[]> AnalogPatterns;
+        public Dictionary<String, Dictionary<Int32, Double>> AnalogPatterns;
         public int PatternLength;
         public double[,] Pattern;
 
         public AnalogPatternBuilder(string[] channelNames, int patternLength)
         {
-            AnalogPatterns = new Dictionary<string, double[]>();
+            AnalogPatterns = new Dictionary<string, Dictionary<int, double>>();
             PatternLength = patternLength;
             int numberOfChannels = channelNames.GetLength(0);
             for (int i = 0; i < numberOfChannels; i++)
@@ -33,28 +31,22 @@ namespace DAQ.Analog
         }
         public AnalogPatternBuilder(int patternLength)
         {
-            AnalogPatterns = new Dictionary<string, double[]>();
+            AnalogPatterns = new Dictionary<string, Dictionary<int, double>>();
             PatternLength = patternLength;
         }
 
         public void AddChannel(string channelName)
         {
-            double[] data = new double[PatternLength];
-            for (int j = 0; j < PatternLength; j++)
-            {
-               data[j] = 0;
-            }
-            AnalogPatterns[channelName] = data;
+            Dictionary<int, double> d = new Dictionary<int, double>();
+            AnalogPatterns.Add(channelName, d);
+
         }
 
         public void AddAnalogValue(string channel, int time, double value)
         {
             if (time < PatternLength)
             {
-                for (int i = time; i < PatternLength; i++)
-                {
-                    ((double[])AnalogPatterns[channel])[i] = value;
-                }
+                AnalogPatterns[channel][time] = value;
             }
             else
             {
@@ -77,19 +69,43 @@ namespace DAQ.Analog
             }
         }
 
+        private List<int> getSortedListOfEvents(string channel)
+        {
+            List<int> ints = new List<int>(AnalogPatterns[channel].Keys);
+            ints.Sort();
 
-
+            return ints;
+        }
+        public double GetValue(string channel, int time)
+        {
+            List<int> events = getSortedListOfEvents(channel);
+            double val = 0.0;
+            for (int i = 0; i < AnalogPatterns[channel].Count; i++)
+            {
+                if (events[i] <= time)
+                {
+                    val = AnalogPatterns[channel][events[i]];
+                }
+            }
+            return val;
+        }
         public void AddLinearRamp(string channel, int startTime, int steps, double finalValue)
         {
             if (PatternLength > startTime + steps)
             {
-                double stepSize = (finalValue - ((double[])AnalogPatterns[channel])[startTime]) / steps;
+                double startValue = GetValue(channel, startTime);
+                double stepSize = (finalValue - startValue) / steps;
                 for (int i = 0; i < steps; i++)
                 {
-                    ((double[])AnalogPatterns[channel])[startTime + i] =
-                        ((double[])AnalogPatterns[channel])[startTime + i] + stepSize * i;
+                    if (AnalogPatterns[channel].ContainsKey(startTime + i) == false)
+                    {
+                        AddAnalogValue(channel, startTime + i, startValue + (i + 1) * stepSize);
+                    }
+                    else
+                    {
+                        throw new ConflictInPatternException();
+                    }
                 }
-                AddAnalogValue(channel, startTime + steps, finalValue);
             }
             else
             {
@@ -97,22 +113,60 @@ namespace DAQ.Analog
             }
         }
 
+        //For a single channel, gets a sequence of events (changes to the output value) and builds a pattern.
+        private double[] buildSinglePattern(string channel)
+        {
+            double[] d = new double[PatternLength];
+            List<int> events = getSortedListOfEvents(channel);
+            int timeUntilNextEvent = 0;
+            events.Add(PatternLength);
+            for (int i = 0; i < events.Count - 1; i++)
+            {
+                timeUntilNextEvent = events[i + 1] - events[i];
+                double dval = AnalogPatterns[channel][events[i]];
+                for (int j = 0; j < timeUntilNextEvent; j++)
+                {
+                    d[events[i] + j] = dval;
+                }
+
+            }
+
+            return d;
+        }
+
+
         public double[,] BuildPattern()
         {
             Pattern = new double[AnalogPatterns.Count, PatternLength];
             ICollection<string> keys = AnalogPatterns.Keys;
             int i = 0;
-            foreach(string key in keys)
+            foreach (string key in keys)
             {
-                for (int j = 0; j < PatternLength ; j++)
+                double[] d = buildSinglePattern(key);
+                for (int j = 0; j < PatternLength; j++)
                 {
-                    Pattern[i, j] = ((double[])AnalogPatterns[key])[j];
+                    Pattern[i, j] = d[j];
                 }
                 i++;
             }
+
             return Pattern;
         }
 
+        public void SwitchOffAtEndOfPattern(string channel)
+        {
+            AddAnalogValue(channel, PatternLength - 1, 0.0);
+        }
+        public void SwitchAllOffAtEndOfPattern()
+        {
+            ICollection<string> keys = AnalogPatterns.Keys;
+            foreach (string key in keys)
+            {
+                AddAnalogValue(key, PatternLength - 1, 0.0);
+            }
+        }
+
+        public class ConflictInPatternException : ApplicationException { }
         public class InsufficientPatternLengthException : ApplicationException { }
         public class PatternBuildException : ApplicationException
         {

@@ -98,10 +98,22 @@ namespace MOTMaster
             controller.SetPatternPath(getScriptPath());
         }
 
-        private void SelectBinaryButton_Click(object sender, EventArgs e)
+        private void newPatternToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SetPatternPath(getScriptPath());
+        }
+
+        private void prebuiltPatternToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.SelectPatternPathDialog();
         }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+       
 
 
 

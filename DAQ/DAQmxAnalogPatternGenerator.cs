@@ -30,7 +30,7 @@ namespace DAQ.Analog
             string clockSource = "";
             
             analogOutputTask.Timing.ConfigureSampleClock(clockSource, clockRate,
-                    SampleClockActiveEdge.Rising, SampleQuantityMode.ContinuousSamples, 
+                    SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, 
                     aPattern.PatternLength);
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("AOPatternTrigger"), DigitalEdgeStartTriggerEdge.Rising);
