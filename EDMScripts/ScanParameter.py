@@ -13,8 +13,7 @@ from DAQ import *
 from MOTMaster import*
 
 def run_script():
-	ScanMOTLoadTime()
-
+	return 0
 
 def ScanMOTLoadTime():
 	count = 0

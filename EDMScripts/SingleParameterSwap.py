@@ -12,8 +12,7 @@ from DAQ.Environment import *
 from DAQ import *
 from MOTMaster import*
 
-def run_script():
-	SwapMOTLoadTime()
+def run_script()
 
 def SwapMOTLoadTime():
 	dic = Dictionary[String,Object]()
