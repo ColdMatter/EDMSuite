@@ -17,7 +17,8 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         Parameters["MOTLoadTime"] = 5;
-        Parameters["PatternLength"] = 150;
+        
+        Parameters["PatternLength"] = 25;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
