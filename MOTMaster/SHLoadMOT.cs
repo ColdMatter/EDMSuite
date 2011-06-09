@@ -29,6 +29,12 @@ namespace MOTMaster.SnippetLibrary
         {
             p.AddAnalogPulse("laser", 1, 2, 4, 2);
             p.AddAnalogValue("laser", 5, -2);
+
+            p.AddAnalogValue("cavity", 0, 4);
+            p.AddAnalogValue("cavity", 1, 2);
+            p.AddAnalogValue("cavity", 3, 4);
+            p.AddAnalogValue("cavity", 4, 0);
+            p.AddLinearRamp("cavity", (int)parameters["MOTLoadTime"], 5, 1);
         }
 
        

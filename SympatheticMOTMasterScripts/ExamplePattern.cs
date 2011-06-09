@@ -42,18 +42,7 @@ public class Patterns : MOTMasterScript
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
         p.AddChannel("laser");
-        //p.AddAnalogPulse("laser", 1, 2, 4, 2);
-        //p.AddAnalogValue("laser", 5, -2);
-        MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
-
         p.AddChannel("cavity");
-        p.AddAnalogValue("cavity", 0, 4);
-        p.AddAnalogValue("cavity", 1, 2);
-        p.AddAnalogValue("cavity", 3, 4);
-        p.AddAnalogValue("cavity", 4, 0);
-        p.AddLinearRamp("cavity", (int)Parameters["MOTLoadTime"], 5, 1);
-
-
         p.AddChannel("aom1amplitude");
         p.AddChannel("aom0frequency");
         p.AddChannel("aom0amplitude");
@@ -63,7 +52,9 @@ public class Patterns : MOTMasterScript
         p.AddChannel("aom3amplitude");
         p.AddChannel("aom3frequency");
 
-
+        //p.AddAnalogPulse("laser", 1, 2, 4, 2);
+        //p.AddAnalogValue("laser", 5, -2);
+        MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
 
 
