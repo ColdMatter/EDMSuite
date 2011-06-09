@@ -70,7 +70,7 @@ namespace MOTMaster
 
         private void ControllerWindow_Load(object sender, EventArgs e)
         {
-
+            controller.SetPatternPath(getScriptPath());
         }
 
         private void saveExperimentCheckBox_CheckedChanged(object sender, EventArgs e)

@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
     {
         PatternBuilder32 p = new PatternBuilder32();
 
-        SHLoadMOT lm = new SHLoadMOT(p, Parameters);
+        MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
         // AddEdge[int channel, int time, bool values] 
         //p.AddEdge("CameraTrigger", 0, true);
@@ -44,7 +44,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("laser");
         //p.AddAnalogPulse("laser", 1, 2, 4, 2);
         //p.AddAnalogValue("laser", 5, -2);
-        SHLoadMOT lm = new SHLoadMOT(p, Parameters);
+        MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
         p.AddChannel("cavity");
         p.AddAnalogValue("cavity", 0, 4);

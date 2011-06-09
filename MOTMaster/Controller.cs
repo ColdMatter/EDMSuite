@@ -161,12 +161,11 @@ namespace MOTMaster
         #endregion
 
         #region RUN RUN RUN
-        
+
         public void Run()
         {
-            
             MOTMasterSequence sequence = preparePattern(patternPath, null);
-            runPattern(sequence); 
+            runPattern(sequence);
         }
         public void Run(Dictionary<String,Object> dict)
         {
@@ -189,49 +188,49 @@ namespace MOTMaster
             }
         }
 
-        private MOTMasterSequence preparePattern(string pathToPattern, Dictionary<String,Object> dict)
+        private MOTMasterSequence preparePattern(string pathToPattern, Dictionary<String, Object> dict)
         {
             MOTMasterSequence sequence = new MOTMasterSequence();
-            try
-            {
-                if (pathToPattern.Length != 0 && Path.GetExtension(pathToPattern) == ".cs")
-                {
 
-                    CompilerResults results = compileFromFile(pathToPattern);
-                    MOTMasterScript script = loadScriptFromDLL(results);
+            if (pathToPattern.Length != 0 && Path.GetExtension(pathToPattern) == ".cs")
+            {
+
+                CompilerResults results = compileFromFile(pathToPattern);
+                MOTMasterScript script = loadScriptFromDLL(results);
+
+                if (dict != null)
+                {
+                    script.EditDictionary(dict);
+                }
+                sequence = getSequenceFromScript(script);
+                buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+                if (SaveEnable)
+                {
+                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
+                        controllerWindow.GetSaveBatchNumber());
 
                     if (dict != null)
                     {
-                        script.EditDictionary(dict);
+                        storeRun(motMasterDataPath, filePath, pathToPattern, dict);
                     }
-                    sequence = getSequenceFromScript(script);
-                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-
-                    if (SaveEnable)
+                    else
                     {
-                        string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
-                            controllerWindow.GetSaveBatchNumber());
-
-                        if (dict != null)
-                        {
-                            storeRun(motMasterDataPath, filePath, pathToPattern, dict);
-                        }
-                        else
-                        {
-                            storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters);
-                        }
+                        storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters);
                     }
-
-
                 }
+
+
             }
-            catch
+            else
             {
-                throw new FileNotRecognizedException();
+                throw new NoFileSelectedException();
             }
+            
             return sequence;
         }
         public class FileNotRecognizedException : ApplicationException { }
+        public class NoFileSelectedException : ApplicationException { }
 
         private void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
@@ -259,9 +258,9 @@ namespace MOTMaster
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
             }
-            catch (Exception e)
+            catch
             {
-                controllerWindow.WriteToPatternSourcePath(e.Message);
+                throw new FileNotRecognizedException();
             }
             //controllerWindow.WriteToPatternSourcePath(results.PathToAssembly);
             return results;
@@ -389,7 +388,7 @@ namespace MOTMaster
             return id;
         }
 
-        private string patternPath;
+        private string patternPath = "";
         public void SetPatternPath(string path)
         {
             patternPath = path;
@@ -398,7 +397,7 @@ namespace MOTMaster
         public void SelectPatternPathDialog()
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Saved Patterns|*.bin";
+            dialog.Filter = "Saved Patterns|*.cs";
             dialog.Title = "Load previously saved pattern";
             dialog.InitialDirectory = motMasterDataPath;
             dialog.ShowDialog();
