@@ -74,16 +74,16 @@ namespace EDMAnalysisTests
 
 
 
-            foreach (BlockDBEntry b in bcs) db2.Store(b);
-            IEnumerable<string> bcs = from BlockDBEntry b in db2
-                                      where b.BState == true
-                                      where b.Tags.Contains("include")
-                                      select b.Cluster;
+            //foreach (BlockDBEntry b in bcs) db2.Store(b);
+            //IEnumerable<string> bcs = from BlockDBEntry b in db2
+            //                          where b.BState == true
+            //                          where b.Tags.Contains("include")
+            //                          select b.Cluster;
 
-            foreach (string s in bcs) Console.WriteLine(s);
+            //foreach (string s in bcs) Console.WriteLine(s);
 
             //db.Close();
-            db2.Close();
+            //db2.Close();
         }
 
         private static byte[] serializeAsByteArray(BlockConfig bc)
