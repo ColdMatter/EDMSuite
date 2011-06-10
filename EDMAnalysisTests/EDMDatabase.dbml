@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="EDMDatabase" Class="EDMDatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\sqlexpress;Initial Catalog=EDMDatabase;Integrated Security=True" SettingsObjectName="EDMAnalysisTests.Properties.Settings" SettingsPropertyName="EDMDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.DBBlocks" Member="DBBlocks">
+    <Type Name="DBBlock">
+      <Column Name="blockID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="cluster" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="clusterIndex" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="configBytes" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="DBBlock_DBTOFChannelSet" Member="DBTOFChannelSets" ThisKey="blockID" OtherKey="blockID" Type="DBTOFChannelSet" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DBTOFChannelSets" Member="DBTOFChannelSets">
+    <Type Name="DBTOFChannelSet">
+      <Column Name="tcsID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="blockID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="detector" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="FileID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="tcsData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="DBBlock_DBTOFChannelSet" Member="DBBlock" ThisKey="blockID" OtherKey="blockID" Type="DBBlock" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
