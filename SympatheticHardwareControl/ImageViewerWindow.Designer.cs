@@ -46,6 +46,7 @@
             this.ClientSize = new System.Drawing.Size(656, 494);
             this.Controls.Add(this.imageViewer);
             this.Name = "ImageViewerWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
             this.Text = "Image";
             this.ResumeLayout(false);
 

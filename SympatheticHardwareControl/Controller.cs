@@ -160,14 +160,14 @@ namespace SympatheticHardwareControl
         {
             // things like loading saved parameters, checking status of experiment etc. should go here.
             LoadParameters(internalProfilesPath + "OffState.bin");
-            cam0Control.InitializeCamera();
+
         }
 
         internal void WindowClosing()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StoreParameters();
-            cam0Control.CloseCamera();
+
         }
 
         #endregion
@@ -763,13 +763,16 @@ namespace SympatheticHardwareControl
 
         private void takeSnapshotAndDisplay()
         {
+            cam0Control.InitializeCamera();
             VisionImage image = new VisionImage();
             cam0Control.Session.Snap(image);
             imageWindow.Image = image;
+            cam0Control.CloseCamera();
         }
         
         private void streamAndDisplay()
         {
+            cam0Control.InitializeCamera();
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
@@ -779,10 +782,21 @@ namespace SympatheticHardwareControl
 
                 lock (streamStopLock)
                 {
-                    return;
+                    if (stopStream)
+                    {
+                        cam0Control.CloseCamera();
+                        stopStream = false;
+                        return;
+                        
+                    }
                 }
 
             }
+        }
+        private bool stopStream = false;
+        public void StopCameraStream()
+        {
+            stopStream = true;
         }
 
         public void SetCameraAttributes()

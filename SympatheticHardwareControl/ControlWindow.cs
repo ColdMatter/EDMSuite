@@ -1269,6 +1269,8 @@ namespace SympatheticHardwareControl
             this.snapshotButton.Enabled = true;
             this.streamButton.Enabled = true;
             this.stopStreamButton.Enabled = false;
+
+            controller.StopCameraStream();
         }
 
 
