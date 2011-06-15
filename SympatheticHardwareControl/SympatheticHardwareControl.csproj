@@ -88,6 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraControlable.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>

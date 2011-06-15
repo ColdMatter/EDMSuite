@@ -51,7 +51,6 @@ namespace SympatheticHardwareControl
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabCamera = new System.Windows.Forms.TabPage();
             this.updateAttributesButton = new System.Windows.Forms.Button();
-            this.saveImageCheckBox = new System.Windows.Forms.CheckBox();
             this.stopStreamButton = new System.Windows.Forms.Button();
             this.streamButton = new System.Windows.Forms.Button();
             this.snapshotButton = new System.Windows.Forms.Button();
@@ -114,12 +113,12 @@ namespace SympatheticHardwareControl
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manualControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -150,7 +149,6 @@ namespace SympatheticHardwareControl
             // tabCamera
             // 
             this.tabCamera.Controls.Add(this.updateAttributesButton);
-            this.tabCamera.Controls.Add(this.saveImageCheckBox);
             this.tabCamera.Controls.Add(this.stopStreamButton);
             this.tabCamera.Controls.Add(this.streamButton);
             this.tabCamera.Controls.Add(this.snapshotButton);
@@ -164,7 +162,7 @@ namespace SympatheticHardwareControl
             // 
             // updateAttributesButton
             // 
-            this.updateAttributesButton.Location = new System.Drawing.Point(404, 14);
+            this.updateAttributesButton.Location = new System.Drawing.Point(249, 6);
             this.updateAttributesButton.Name = "updateAttributesButton";
             this.updateAttributesButton.Size = new System.Drawing.Size(107, 23);
             this.updateAttributesButton.TabIndex = 20;
@@ -172,20 +170,10 @@ namespace SympatheticHardwareControl
             this.updateAttributesButton.UseVisualStyleBackColor = true;
             this.updateAttributesButton.Click += new System.EventHandler(this.updateAttributesButton_Click);
             // 
-            // saveImageCheckBox
-            // 
-            this.saveImageCheckBox.AutoSize = true;
-            this.saveImageCheckBox.Location = new System.Drawing.Point(16, 18);
-            this.saveImageCheckBox.Name = "saveImageCheckBox";
-            this.saveImageCheckBox.Size = new System.Drawing.Size(99, 17);
-            this.saveImageCheckBox.TabIndex = 19;
-            this.saveImageCheckBox.Text = "Save Snapshot";
-            this.saveImageCheckBox.UseVisualStyleBackColor = true;
-            // 
             // stopStreamButton
             // 
             this.stopStreamButton.Enabled = false;
-            this.stopStreamButton.Location = new System.Drawing.Point(287, 14);
+            this.stopStreamButton.Location = new System.Drawing.Point(168, 6);
             this.stopStreamButton.Name = "stopStreamButton";
             this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
             this.stopStreamButton.TabIndex = 18;
@@ -195,7 +183,7 @@ namespace SympatheticHardwareControl
             // 
             // streamButton
             // 
-            this.streamButton.Location = new System.Drawing.Point(206, 14);
+            this.streamButton.Location = new System.Drawing.Point(87, 6);
             this.streamButton.Name = "streamButton";
             this.streamButton.Size = new System.Drawing.Size(75, 23);
             this.streamButton.TabIndex = 17;
@@ -205,7 +193,7 @@ namespace SympatheticHardwareControl
             // 
             // snapshotButton
             // 
-            this.snapshotButton.Location = new System.Drawing.Point(125, 14);
+            this.snapshotButton.Location = new System.Drawing.Point(6, 6);
             this.snapshotButton.Name = "snapshotButton";
             this.snapshotButton.Size = new System.Drawing.Size(75, 23);
             this.snapshotButton.TabIndex = 15;
@@ -766,9 +754,23 @@ namespace SympatheticHardwareControl
             this.usingLastSavedValuesToolStripMenuItem,
             this.usingValuesCurrentlyOnPanelToolStripMenuItem});
             this.onToolStripMenuItem.Name = "onToolStripMenuItem";
-            this.onToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.onToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.onToolStripMenuItem.Text = "Start";
             this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
+            // 
+            // usingLastSavedValuesToolStripMenuItem
+            // 
+            this.usingLastSavedValuesToolStripMenuItem.Name = "usingLastSavedValuesToolStripMenuItem";
+            this.usingLastSavedValuesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.usingLastSavedValuesToolStripMenuItem.Text = "using last saved values";
+            this.usingLastSavedValuesToolStripMenuItem.Click += new System.EventHandler(this.usingLastSavedValuesToolStripMenuItem_Click);
+            // 
+            // usingValuesCurrentlyOnPanelToolStripMenuItem
+            // 
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Name = "usingValuesCurrentlyOnPanelToolStripMenuItem";
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Text = "using values currently on panel";
+            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Click += new System.EventHandler(this.usingValuesCurrentlyOnPanelToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
@@ -805,20 +807,6 @@ namespace SympatheticHardwareControl
             this.label2.TabIndex = 23;
             this.label2.Text = "Local Control";
             // 
-            // usingLastSavedValuesToolStripMenuItem
-            // 
-            this.usingLastSavedValuesToolStripMenuItem.Name = "usingLastSavedValuesToolStripMenuItem";
-            this.usingLastSavedValuesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.usingLastSavedValuesToolStripMenuItem.Text = "using last saved values";
-            this.usingLastSavedValuesToolStripMenuItem.Click += new System.EventHandler(this.usingLastSavedValuesToolStripMenuItem_Click);
-            // 
-            // usingValuesCurrentlyOnPanelToolStripMenuItem
-            // 
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Name = "usingValuesCurrentlyOnPanelToolStripMenuItem";
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Text = "using values currently on panel";
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Click += new System.EventHandler(this.usingValuesCurrentlyOnPanelToolStripMenuItem_Click);
-            // 
             // ControlWindow
             // 
             this.ClientSize = new System.Drawing.Size(797, 264);
@@ -836,7 +824,6 @@ namespace SympatheticHardwareControl
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
             this.shcTabs.ResumeLayout(false);
             this.tabCamera.ResumeLayout(false);
-            this.tabCamera.PerformLayout();
             this.tabLasers.ResumeLayout(false);
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
@@ -946,7 +933,6 @@ namespace SympatheticHardwareControl
         public CheckBox checkBox1;
         public TextBox textBox1;
         public TextBox textBox2;
-        public CheckBox saveImageCheckBox;
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem loadParametersToolStripMenuItem;
@@ -1248,7 +1234,7 @@ namespace SympatheticHardwareControl
         private void snapshotButton_Click(object sender, EventArgs e)
         {
             controller.CameraSnapshot();
-            //controller.ManualCameraSnapshot();
+            
         }
 
         private Button streamButton;

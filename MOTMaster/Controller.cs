@@ -12,6 +12,9 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.CSharp;
 
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Analog;
@@ -19,6 +22,7 @@ using Data;
 using Data.Scans;
 
 using SympatheticHardwareControl;
+using SympatheticHardwareControl.CameraControl;
 
 using System.Runtime.InteropServices;
 using System.CodeDom;
@@ -58,6 +62,11 @@ namespace MOTMaster
     /// 
     /// - After everything's finished, MM releases the hardware.
     /// 
+    /// - Camera control is run through the hardware controller. All MOTMaster knows about it a function called
+    /// "GrabImage(string cameraSettings)". To take an image, MOTMaster has to call that function, then a TTL to 
+    /// trigger the camera. It'll expect a short[,] as a return value.
+    /// 
+    /// 
     /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -72,6 +81,8 @@ namespace MOTMaster
             scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
         private static string
             motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+        private static string
+            cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
         private const int
             pgClockFrequency = 10000;
         private const int
@@ -82,13 +93,13 @@ namespace MOTMaster
         DAQMxPatternGenerator pg;
         DAQmxAnalogPatternGenerator apg;
 
+        CameraControlable camera;
 
         public System.Boolean SaveEnable = false;
         public void SaveToggle(bool value)
         {
             SaveEnable = value;
         }
-
         #endregion
 
         #region Initialisation
@@ -109,6 +120,10 @@ namespace MOTMaster
 
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQmxAnalogPatternGenerator();
+
+            camera = (CameraControlable)Activator.GetObject(typeof(CameraControlable),
+            "tcp://localhost:1180/controller.rem");
+
 
             ScriptLookupAndDisplay();
 
@@ -164,16 +179,36 @@ namespace MOTMaster
 
         public void Run()
         {
-            MOTMasterSequence sequence = preparePattern(patternPath, null);
+            MOTMasterScript script = prepareScript(patternPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            byte[,] imageData = GrabImage(cameraAttributesPath);
+            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
             runPattern(sequence);
+            if (SaveEnable)
+            {
+                save(script, patternPath, imageData);
+            }
         }
         public void Run(Dictionary<String,Object> dict)
         {
 
-            MOTMasterSequence sequence = preparePattern(patternPath, dict);
+            MOTMasterScript script = prepareScript(patternPath, dict);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            byte[,] imageData = GrabImage(cameraAttributesPath);
+            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
             runPattern(sequence);
+            if (SaveEnable)
+            {
+                save(script, patternPath, imageData);
+            }
         }
-
+        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData)
+        {
+            string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
+                controllerWindow.GetSaveBatchNumber());
+            storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters, 
+                cameraAttributesPath, imageData);
+        }
         private void runPattern(MOTMasterSequence sequence)
         {
             try
@@ -188,46 +223,28 @@ namespace MOTMaster
             }
         }
 
-        private MOTMasterSequence preparePattern(string pathToPattern, Dictionary<String, Object> dict)
+        private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
         {
-            MOTMasterSequence sequence = new MOTMasterSequence();
-
+            
+            MOTMasterScript script;
             if (pathToPattern.Length != 0 && Path.GetExtension(pathToPattern) == ".cs")
             {
 
                 CompilerResults results = compileFromFile(pathToPattern);
-                MOTMasterScript script = loadScriptFromDLL(results);
+                script = loadScriptFromDLL(results);
 
                 if (dict != null)
                 {
                     script.EditDictionary(dict);
                 }
-                sequence = getSequenceFromScript(script);
-                buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-
-                if (SaveEnable)
-                {
-                    string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
-                        controllerWindow.GetSaveBatchNumber());
-
-                    if (dict != null)
-                    {
-                        storeRun(motMasterDataPath, filePath, pathToPattern, dict);
-                    }
-                    else
-                    {
-                        storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters);
-                    }
-                }
-
-
+                
             }
             else
             {
                 throw new NoFileSelectedException();
             }
             
-            return sequence;
+            return script;
         }
         public class FileNotRecognizedException : ApplicationException { }
         public class NoFileSelectedException : ApplicationException { }
@@ -316,21 +333,76 @@ namespace MOTMaster
 
         #endregion
 
+        #region CameraControl
+
+        public byte[,] GrabImage(string cameraAttributes)
+        {
+            return camera.GrabImage(cameraAttributes);
+        }
+
+        private void storeImage(string savePath, byte[,] imageData)
+        {
+            int width = imageData.GetLength(1);
+            int height = imageData.GetLength(0);
+            byte[] pixels = new byte[width * height];
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    pixels[(width * j) + i] = imageData[j, i];
+                }
+            }
+            // Define the image palette
+            BitmapPalette myPalette = BitmapPalettes.Gray256Transparent;
+
+            // Creates a new empty image with the pre-defined palette
+            
+            BitmapSource image = BitmapSource.Create(
+                width,
+                height,
+                96,
+                96,
+                PixelFormats.Indexed8,
+                myPalette,
+                pixels,
+                width);
+
+            FileStream stream = new FileStream(savePath, FileMode.Create);
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Interlace = PngInterlaceOption.On;
+            encoder.Frames.Add(BitmapFrame.Create(image));
+            encoder.Save(stream);
+            stream.Dispose();
+
+        }
+        private void storeCameraAttributes(string savePath, string attributesPath)
+        {
+            File.Copy(attributesPath, savePath);
+        }
+        #endregion
         #region Saving, Loading and Modifying Experimental Parameters
 
         MOTMasterScriptSerializer serializer = new MOTMasterScriptSerializer();
-        private void storeRun(string saveFolder, string fileTag, string pathToPattern, Dictionary<String, Object> dict)
+        private void storeRun(string saveFolder, string fileTag, string pathToPattern, Dictionary<String, Object> dict,
+            string cameraAttributesPath, byte[,] imageData)
         {
             System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
-            storeDictionary(saveFolder + fileTag + ".txt", dict);
+            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             storeMOTMasterScript(saveFolder + fileTag + ".cs", pathToPattern);
+
+            storeCameraAttributes(saveFolder + fileTag + "_cameraParams.txt", cameraAttributesPath);
+            storeImage(saveFolder + fileTag + ".png", imageData);
             serializer.PrepareZip(fs);
-            serializer.AppendToZip(saveFolder, fileTag + ".txt");
+            serializer.AppendToZip(saveFolder, fileTag + "_parameters.txt");
             serializer.AppendToZip(saveFolder, fileTag + ".cs");
+            serializer.AppendToZip(saveFolder, fileTag + ".png");
+            serializer.AppendToZip(saveFolder, fileTag + "_cameraParams.txt");
             serializer.CloseZip();
             fs.Close();
-            File.Delete(saveFolder + fileTag + ".txt");
+            File.Delete(saveFolder + fileTag + "_parameters.txt");
             File.Delete(saveFolder + fileTag + ".cs");
+            File.Delete(saveFolder + fileTag + ".png");
+            File.Delete(saveFolder + fileTag + "_cameraParams.txt");
         }
 
 
@@ -339,25 +411,7 @@ namespace MOTMaster
             File.Copy(pathToScript, savePath);
         }
 
-        //NEVER GETS CALLED ANYMORE.
-        private void storeMOTMasterSequence(String dataStoreFilePath, MOTMasterSequence sequence)
-        {
-            BinaryFormatter s = new BinaryFormatter();
-            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
-            try
-            {
-                s.Serialize(fs, sequence);
-            }
-            catch (Exception)
-            {
-                Console.Out.WriteLine("Saving failed");
-            }
-            finally
-            {
-                fs.Close();
-            }
-
-        }
+        
         private void storeDictionary(String dataStoreFilePath, Dictionary<string, object> dict)
         {
             TextWriter output = File.CreateText(dataStoreFilePath);

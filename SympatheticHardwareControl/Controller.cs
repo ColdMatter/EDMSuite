@@ -36,15 +36,14 @@ namespace SympatheticHardwareControl
     /// it can load a set a parameters to the panel (which then gets applied to hardware in the usual way).
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject
+    public class Controller : MarshalByRefObject, CameraControlable
     {
         #region Constants
        //Put any constants and stuff here
         
         private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
             + "\\SympatheticHardwareController\\internalProfiles\\";
-        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
-            + "SympatheticHardwareController\\";
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
 
@@ -56,10 +55,10 @@ namespace SympatheticHardwareControl
 
         // table of all digital tasks
         Hashtable digitalTasks = new Hashtable();
-  
+        public string p = cameraAttributesPath;
         //Cameras
         IMAQdxCameraControl cam0Control = new IMAQdxCameraControl("cam0", 
-            cameraAttributesPath + "cameraAttributes.txt");
+            cameraAttributesPath);
 
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
@@ -160,14 +159,14 @@ namespace SympatheticHardwareControl
         {
             // things like loading saved parameters, checking status of experiment etc. should go here.
             LoadParameters(internalProfilesPath + "OffState.bin");
-
+            cam0Control.InitializeCamera();
         }
 
         internal void WindowClosing()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StoreParameters();
-
+            cam0Control.CloseCamera();
         }
 
         #endregion
@@ -763,16 +762,14 @@ namespace SympatheticHardwareControl
 
         private void takeSnapshotAndDisplay()
         {
-            cam0Control.InitializeCamera();
             VisionImage image = new VisionImage();
             cam0Control.Session.Snap(image);
             imageWindow.Image = image;
-            cam0Control.CloseCamera();
         }
         
         private void streamAndDisplay()
         {
-            cam0Control.InitializeCamera();
+            
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
@@ -784,7 +781,6 @@ namespace SympatheticHardwareControl
                 {
                     if (stopStream)
                     {
-                        cam0Control.CloseCamera();
                         stopStream = false;
                         return;
                         
@@ -817,16 +813,25 @@ namespace SympatheticHardwareControl
         {
             imageWindow.Image = imageFileIO.LoadImagesWithDialog();
         }
-        
+
         #endregion
 
 
-
-
-
-
-
-
-        
+        #region Remote Image Processing
+        //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
+        private void armCameraAndWait(VisionImage image, string cameraAttributesPath)
+        {
+            cam0Control.SetCameraAttributes(cameraAttributesPath);
+            cam0Control.Session.Snap(image);
+        }
+        public byte[,] GrabImage(string cameraAttributesPath)
+        {
+            VisionImage image = new VisionImage();
+            armCameraAndWait(image, cameraAttributesPath);
+            PixelValue2D pval = image.ImageToArray();
+            return pval.U8;
+        }
+    
+        #endregion
     }
 }
