@@ -1,27 +1,13 @@
 using System;
-using System.Data;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Threading;
-
-//using NationalInstruments.Analysis;
-//using NationalInstruments.Analysis.Conversion;
-//using NationalInstruments.Analysis.Dsp;
-//using NationalInstruments.Analysis.Dsp.Filters;
-//using NationalInstruments.Analysis.Math;
-//using NationalInstruments.Analysis.Monitoring;
-//using NationalInstruments.Analysis.SignalGeneration;
-//using NationalInstruments.Analysis.SpectralMeasurements;
-using NationalInstruments;
-using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.VisaNS;
-
+using System.Windows.Forms;
 using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
+using NationalInstruments.UI;
+//using NationalInstruments.Analysis.Math;
 
 namespace EDMPhaseLock
 {
@@ -621,12 +607,12 @@ namespace EDMPhaseLock
 				// calculate the slope
 				double[] lockXVals = new double[lockPhaseData.Count];
 				for (int i = 0 ; i < lockPhaseData.Count ; i++) lockXVals[i] = i;
-				double slope, intercept, err;
+				double slope;//, intercept, err;
 				ArrayList lockPhaseDataDouble = new ArrayList();
 				foreach (int p in lockPhaseData) lockPhaseDataDouble.Add((double)p);
 				double[] lockYVals = (double[])lockPhaseDataDouble.ToArray(Type.GetType("System.Double"));
-				CurveFit.LinearFit(lockXVals, lockYVals, FitMethod.LeastSquare, out slope, out intercept, out err);
-			
+				//CurveFit.LinearFit(lockXVals, lockYVals, FitMethod.LeastSquare, out slope, out intercept, out err);
+                slope = (lockYVals[lockYVals.Length - 1] - lockYVals[0]) / (lockXVals[lockXVals.Length - 1] - lockXVals[0]);
 				// proportional gain
 				oscillatorFrequency -= accumulatedPhaseDifference * PROPORTIONAL_GAIN;
 				// derivative gain
