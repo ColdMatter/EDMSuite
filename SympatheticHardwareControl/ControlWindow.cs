@@ -1233,7 +1233,7 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            controller.CameraSnapshot();
+            controller.GrabImage();
             
         }
 

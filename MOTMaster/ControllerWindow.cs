@@ -17,12 +17,19 @@ namespace MOTMaster
             InitializeComponent();
         }
 
-        public void WriteToPatternSourcePath(string str)
+        public void WriteToScriptPath(string str)
         {
-            setTextBox(PatternSourceTextBox, str);
+            setTextBox(PatternPathTextBox, str);
         }
 
-
+        public void WriteToSaveBatchTextBox(int number)
+        {
+            setTextBox(saveBatchTextBox, Convert.ToString(number));
+        }
+        public void SetSaveCheckBox(bool value)
+        {
+            setCheckBox(saveExperimentCheckBox, value);
+        }
         #region wrappers
 
         private void setTextBox(TextBox box, string text)
@@ -42,6 +49,15 @@ namespace MOTMaster
         private string readComboHelper(ComboBox box)
         {
             return box.Text;
+        }
+        private void setCheckBox(CheckBox box, bool value)
+        {
+            box.Invoke(new SetCheckDelegate(setCheckHelper), new object[] { box, value });
+        }
+        private delegate void SetCheckDelegate(CheckBox box, bool value);
+        private void setCheckHelper(CheckBox box, bool value)
+        {
+            box.Checked = value;
         }
 
         #endregion
@@ -70,7 +86,7 @@ namespace MOTMaster
 
         private void ControllerWindow_Load(object sender, EventArgs e)
         {
-            controller.SetPatternPath(getScriptPath());
+            controller.SetScriptPath(getScriptPath());
         }
 
         private void saveExperimentCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -78,12 +94,12 @@ namespace MOTMaster
             if (saveExperimentCheckBox.Checked == true)
             {
                 saveBatchTextBox.Enabled = true;
-                controller.SaveEnable = true;
+                controller.SaveToggle(true);
             }
             if (saveExperimentCheckBox.Checked == false)
             {
                 saveBatchTextBox.Enabled = false;
-                controller.SaveEnable = false;
+                controller.SaveToggle(false);
             }
         }
 
@@ -95,23 +111,25 @@ namespace MOTMaster
 
         private void selectScriptButton_Click(object sender, EventArgs e)
         {
-            controller.SetPatternPath(getScriptPath());
+            controller.SetScriptPath(getScriptPath());
         }
 
         private void newPatternToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controller.SetPatternPath(getScriptPath());
-        }
-
-        private void prebuiltPatternToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.SelectPatternPathDialog();
+            controller.SetScriptPath(getScriptPath());
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
+
+        private void ReplicateScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+             controller.RunReplica();
+        }
+
+
 
        
 

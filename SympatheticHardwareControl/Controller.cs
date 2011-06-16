@@ -43,7 +43,7 @@ namespace SympatheticHardwareControl
         
         private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
             + "\\SympatheticHardwareController\\internalProfiles\\";
-        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
 
@@ -828,10 +828,14 @@ namespace SympatheticHardwareControl
         {
             VisionImage image = new VisionImage();
             armCameraAndWait(image, cameraAttributesPath);
+            imageWindow.Image = image;
             PixelValue2D pval = image.ImageToArray();
             return pval.U8;
         }
-    
+        public void GrabImage()
+        {
+            GrabImage(cameraAttributesPath);
+        }
         #endregion
     }
 }

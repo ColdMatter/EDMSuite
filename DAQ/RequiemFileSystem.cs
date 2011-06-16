@@ -16,10 +16,10 @@ namespace DAQ
 
             Paths.Add("MOTMasterDataPath", "c:\\Data\\MOTMasterData\\");
             Paths.Add("scriptListPath", "C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\");
-            Paths.Add("daqDLLPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\bin\\Sympathetic");
+            Paths.Add("daqDLLPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\bin\\Sympathetic\\daq.dll");
             Paths.Add("MOTMasterExePath",
                 "C:\\Experiment Control\\EDMSuite\\MOTMaster\\bin\\Sympathetic\\");
-            Paths.Add("cameraAttributesPath", "c:\\Data\\Settings\\cameraAttributes\\cameraAttributes.txt");
+            Paths.Add("CameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\cameraAttributes.txt");
 
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);

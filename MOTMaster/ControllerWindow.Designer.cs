@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.PatternSourceTextBox = new System.Windows.Forms.TextBox();
+            this.PatternPathTextBox = new System.Windows.Forms.TextBox();
             this.scriptListComboBox = new System.Windows.Forms.ComboBox();
             this.lookupScriptsButton = new System.Windows.Forms.Button();
             this.runButton = new System.Windows.Forms.Button();
@@ -40,23 +40,23 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.patternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OpenOtherScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReplicateScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // PatternSourceTextBox
+            // PatternPathTextBox
             // 
-            this.PatternSourceTextBox.Location = new System.Drawing.Point(96, 85);
-            this.PatternSourceTextBox.Name = "PatternSourceTextBox";
-            this.PatternSourceTextBox.ReadOnly = true;
-            this.PatternSourceTextBox.Size = new System.Drawing.Size(474, 20);
-            this.PatternSourceTextBox.TabIndex = 4;
+            this.PatternPathTextBox.Location = new System.Drawing.Point(128, 85);
+            this.PatternPathTextBox.Name = "PatternPathTextBox";
+            this.PatternPathTextBox.ReadOnly = true;
+            this.PatternPathTextBox.Size = new System.Drawing.Size(454, 20);
+            this.PatternPathTextBox.TabIndex = 4;
             // 
             // scriptListComboBox
             // 
             this.scriptListComboBox.FormattingEnabled = true;
-            this.scriptListComboBox.Location = new System.Drawing.Point(4, 26);
+            this.scriptListComboBox.Location = new System.Drawing.Point(16, 24);
             this.scriptListComboBox.MaxDropDownItems = 32;
             this.scriptListComboBox.Name = "scriptListComboBox";
             this.scriptListComboBox.Size = new System.Drawing.Size(566, 21);
@@ -65,7 +65,7 @@
             // 
             // lookupScriptsButton
             // 
-            this.lookupScriptsButton.Location = new System.Drawing.Point(576, 24);
+            this.lookupScriptsButton.Location = new System.Drawing.Point(589, 24);
             this.lookupScriptsButton.Name = "lookupScriptsButton";
             this.lookupScriptsButton.Size = new System.Drawing.Size(137, 23);
             this.lookupScriptsButton.TabIndex = 7;
@@ -75,7 +75,7 @@
             // 
             // runButton
             // 
-            this.runButton.Location = new System.Drawing.Point(576, 83);
+            this.runButton.Location = new System.Drawing.Point(589, 83);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(137, 23);
             this.runButton.TabIndex = 8;
@@ -86,7 +86,9 @@
             // saveExperimentCheckBox
             // 
             this.saveExperimentCheckBox.AutoSize = true;
-            this.saveExperimentCheckBox.Location = new System.Drawing.Point(147, 55);
+            this.saveExperimentCheckBox.Checked = true;
+            this.saveExperimentCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.saveExperimentCheckBox.Location = new System.Drawing.Point(311, 55);
             this.saveExperimentCheckBox.Name = "saveExperimentCheckBox";
             this.saveExperimentCheckBox.Size = new System.Drawing.Size(148, 17);
             this.saveExperimentCheckBox.TabIndex = 9;
@@ -96,9 +98,8 @@
             // 
             // saveBatchTextBox
             // 
-            this.saveBatchTextBox.Enabled = false;
             this.saveBatchTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.saveBatchTextBox.Location = new System.Drawing.Point(301, 53);
+            this.saveBatchTextBox.Location = new System.Drawing.Point(465, 53);
             this.saveBatchTextBox.Name = "saveBatchTextBox";
             this.saveBatchTextBox.Size = new System.Drawing.Size(49, 20);
             this.saveBatchTextBox.TabIndex = 10;
@@ -110,7 +111,7 @@
             this.selectScriptButton.Name = "selectScriptButton";
             this.selectScriptButton.Size = new System.Drawing.Size(137, 23);
             this.selectScriptButton.TabIndex = 12;
-            this.selectScriptButton.Text = "Select script";
+            this.selectScriptButton.Text = "Select Script";
             this.selectScriptButton.UseVisualStyleBackColor = true;
             this.selectScriptButton.Click += new System.EventHandler(this.selectScriptButton_Click);
             // 
@@ -121,7 +122,7 @@
             this.patternsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(722, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(736, 24);
             this.menuStrip1.TabIndex = 13;
             // 
             // fileToolStripMenuItem
@@ -143,7 +144,7 @@
             // 
             this.patternsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newPatternToolStripMenuItem,
-            this.OpenOtherScriptToolStripMenuItem});
+            this.ReplicateScriptToolStripMenuItem});
             this.patternsToolStripMenuItem.Name = "patternsToolStripMenuItem";
             this.patternsToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.patternsToolStripMenuItem.Text = "Patterns";
@@ -151,31 +152,32 @@
             // newPatternToolStripMenuItem
             // 
             this.newPatternToolStripMenuItem.Name = "newPatternToolStripMenuItem";
-            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.newPatternToolStripMenuItem.Text = "Build from selected script";
+            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.newPatternToolStripMenuItem.Text = "Select script";
             this.newPatternToolStripMenuItem.Click += new System.EventHandler(this.newPatternToolStripMenuItem_Click);
             // 
-            // OpenOtherScriptToolStripMenuItem
+            // ReplicateScriptToolStripMenuItem
             // 
-            this.OpenOtherScriptToolStripMenuItem.Name = "OpenOtherScriptToolStripMenuItem";
-            this.OpenOtherScriptToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.OpenOtherScriptToolStripMenuItem.Text = "Open other patterns";
-            this.OpenOtherScriptToolStripMenuItem.Click += new System.EventHandler(this.prebuiltPatternToolStripMenuItem_Click);
+            this.ReplicateScriptToolStripMenuItem.Name = "ReplicateScriptToolStripMenuItem";
+            this.ReplicateScriptToolStripMenuItem.ShowShortcutKeys = false;
+            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.ReplicateScriptToolStripMenuItem.Text = "Replicate saved run";
+            this.ReplicateScriptToolStripMenuItem.Click += new System.EventHandler(this.ReplicateScriptToolStripMenuItem_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(1, 88);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 13);
+            this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 14;
-            this.label1.Text = "Selected Pattern:";
+            this.label1.Text = "Selected Script:";
             // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(722, 111);
+            this.ClientSize = new System.Drawing.Size(736, 112);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.selectScriptButton);
             this.Controls.Add(this.saveBatchTextBox);
@@ -183,7 +185,7 @@
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.lookupScriptsButton);
             this.Controls.Add(this.scriptListComboBox);
-            this.Controls.Add(this.PatternSourceTextBox);
+            this.Controls.Add(this.PatternPathTextBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ControllerWindow";
@@ -198,7 +200,7 @@
 
         #endregion
 
-        public System.Windows.Forms.TextBox PatternSourceTextBox;
+        public System.Windows.Forms.TextBox PatternPathTextBox;
         private System.Windows.Forms.ComboBox scriptListComboBox;
         private System.Windows.Forms.Button lookupScriptsButton;
         private System.Windows.Forms.Button runButton;
@@ -209,7 +211,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem patternsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newPatternToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OpenOtherScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ReplicateScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.Label label1;
     }

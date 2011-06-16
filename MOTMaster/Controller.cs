@@ -12,9 +12,6 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.CSharp;
 
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Analog;
@@ -60,11 +57,12 @@ namespace MOTMaster
     /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved 
     /// for triggering the analog pattern.
     /// 
-    /// - After everything's finished, MM releases the hardware.
+    /// - Once the experiment is finished, MM releases the hardware.
     /// 
-    /// - Camera control is run through the hardware controller. All MOTMaster knows about it a function called
-    /// "GrabImage(string cameraSettings)". To take an image, MOTMaster has to call that function, then a TTL to 
-    /// trigger the camera. It'll expect a short[,] as a return value.
+    /// - MOTMaster also saves the data to a .zip. This includes: the original MOTMasterScript (.cs), a text file
+    /// with the parameters in it (IF DIFFERENT FROM THE VALUES IN .cs, THE PARAMETERS IN THE TEXT FILE ARE THE
+    /// CORRECT VALUES!), another text file with the camera attributes and a .png file containing the final image.
+    /// 
     /// 
     /// 
     /// </summary>
@@ -76,13 +74,13 @@ namespace MOTMaster
         private static string
             motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
         private static string
-            daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"] + "//daq.dll";
+            daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
         private static string
             scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
         private static string
             motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string
-            cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
+            cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private const int
             pgClockFrequency = 10000;
         private const int
@@ -95,11 +93,8 @@ namespace MOTMaster
 
         CameraControlable camera;
 
-        public System.Boolean SaveEnable = false;
-        public void SaveToggle(bool value)
-        {
-            SaveEnable = value;
-        }
+        MOTMasterDataIOHelper ioHelper;
+
         #endregion
 
         #region Initialisation
@@ -124,6 +119,8 @@ namespace MOTMaster
             camera = (CameraControlable)Activator.GetObject(typeof(CameraControlable),
             "tcp://localhost:1180/controller.rem");
 
+            ioHelper = new MOTMasterDataIOHelper(motMasterDataPath, 
+                    (string)Environs.Hardware.GetInfo("Element"));
 
             ScriptLookupAndDisplay();
 
@@ -175,39 +172,71 @@ namespace MOTMaster
 
         #endregion
 
-        #region RUN RUN RUN
+        #region RUN RUN RUN (public & remotable stuff)
+
+
+        private bool saveEnable = true;
+        public void SaveToggle(System.Boolean value)
+        {
+            saveEnable = value;
+            controllerWindow.SetSaveCheckBox(value);
+        }
+        private int batchNumber = 0;
+        public void SetBatchNumber(Int32 number)
+        {
+            batchNumber = number;
+            controllerWindow.WriteToSaveBatchTextBox(number);
+        }
+        private string scriptPath = "";
+        public void SetScriptPath(string path)
+        {
+            scriptPath = path;
+            controllerWindow.WriteToScriptPath(path);
+        }
+        private bool replicaRun = false;
+        public void SetReplicaRunBool(System.Boolean value)
+        {
+            replicaRun = value;
+        }
+        private string dictionaryPath = "";
+        public void SetDictionaryPath(string path)
+        {
+            dictionaryPath = path;
+        }
+
 
         public void Run()
         {
-            MOTMasterScript script = prepareScript(patternPath, null);
-            MOTMasterSequence sequence = getSequenceFromScript(script);
-            byte[,] imageData = GrabImage(cameraAttributesPath);
-            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-            runPattern(sequence);
-            if (SaveEnable)
+            if (replicaRun)
             {
-                save(script, patternPath, imageData);
+                Run(ioHelper.LoadDictionary(dictionaryPath));
+            }
+            else
+            {
+                Run(null);
             }
         }
         public void Run(Dictionary<String,Object> dict)
         {
-
-            MOTMasterScript script = prepareScript(patternPath, dict);
+            MOTMasterScript script = prepareScript(scriptPath, dict);
             MOTMasterSequence sequence = getSequenceFromScript(script);
             byte[,] imageData = GrabImage(cameraAttributesPath);
             buildPattern(sequence, (int)script.Parameters["PatternLength"]);
             runPattern(sequence);
-            if (SaveEnable)
+            if (saveEnable)
             {
-                save(script, patternPath, imageData);
+                save(script, scriptPath, imageData);
             }
         }
+
+        #endregion
+
+        #region private stuff
+
         private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData)
         {
-            string filePath = getDataID((string)Environs.Hardware.GetInfo("Element"),
-                controllerWindow.GetSaveBatchNumber());
-            storeRun(motMasterDataPath, filePath, pathToPattern, script.Parameters, 
-                cameraAttributesPath, imageData);
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, 
+                script.Parameters, cameraAttributesPath, imageData);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
@@ -219,7 +248,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
-                controllerWindow.WriteToPatternSourcePath(e.Message);
+                controllerWindow.WriteToScriptPath(e.Message);
             }
         }
 
@@ -241,7 +270,7 @@ namespace MOTMaster
             }
             else
             {
-                throw new NoFileSelectedException();
+                throw new FileNotRecognizedException();
             }
             
             return script;
@@ -279,29 +308,8 @@ namespace MOTMaster
             {
                 throw new FileNotRecognizedException();
             }
-            //controllerWindow.WriteToPatternSourcePath(results.PathToAssembly);
+            //controllerWindow.WriteToScriptPath(results.PathToAssembly);
             return results;
-        }
-
-        private MOTMasterSequence loadSequenceFromBinaryFile(String dataStoreFilePath)
-        {
-            // deserialize
-            BinaryFormatter s = new BinaryFormatter();
-            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Open);
-            MOTMasterSequence sequence = new MOTMasterSequence();
-            // eat any errors in the following, as it's just a convenience function
-            try
-            {
-                sequence = (MOTMasterSequence)s.Deserialize(fs);
-
-            }
-            catch (Exception)
-            { Console.Out.WriteLine("Unable to load settings"); }
-            finally
-            {
-                fs.Close();
-            }
-            return sequence;
         }
 
         private MOTMasterScript loadScriptFromDLL(CompilerResults results)
@@ -320,7 +328,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
-                controllerWindow.WriteToPatternSourcePath(e.Message);
+                controllerWindow.WriteToScriptPath(e.Message);
             }
             return (MOTMasterScript)loadedInstance;
         }
@@ -333,6 +341,18 @@ namespace MOTMaster
 
         #endregion
 
+
+        /// <summary>
+        /// - Camera control is run through the hardware controller. All MOTMaster knows 
+        /// about it a function called "GrabImage(string cameraSettings)". If the camera attributes are 
+        /// set so that it needs a trigger, MOTMaster will have to deliver that too.
+        /// It'll expect a short[,] as a return value.
+        /// 
+        /// -At the moment MOTMaster won't run without a camera nor with 
+        /// more than one, and it can only take one photograph per run. In the long term, we might 
+        /// want to fix this.
+        /// </summary>
+
         #region CameraControl
 
         public byte[,] GrabImage(string cameraAttributes)
@@ -340,122 +360,38 @@ namespace MOTMaster
             return camera.GrabImage(cameraAttributes);
         }
 
-        private void storeImage(string savePath, byte[,] imageData)
-        {
-            int width = imageData.GetLength(1);
-            int height = imageData.GetLength(0);
-            byte[] pixels = new byte[width * height];
-            for (int j = 0; j < height; j++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    pixels[(width * j) + i] = imageData[j, i];
-                }
-            }
-            // Define the image palette
-            BitmapPalette myPalette = BitmapPalettes.Gray256Transparent;
-
-            // Creates a new empty image with the pre-defined palette
-            
-            BitmapSource image = BitmapSource.Create(
-                width,
-                height,
-                96,
-                96,
-                PixelFormats.Indexed8,
-                myPalette,
-                pixels,
-                width);
-
-            FileStream stream = new FileStream(savePath, FileMode.Create);
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Interlace = PngInterlaceOption.On;
-            encoder.Frames.Add(BitmapFrame.Create(image));
-            encoder.Save(stream);
-            stream.Dispose();
-
-        }
-        private void storeCameraAttributes(string savePath, string attributesPath)
-        {
-            File.Copy(attributesPath, savePath);
-        }
         #endregion
-        #region Saving, Loading and Modifying Experimental Parameters
 
-        MOTMasterScriptSerializer serializer = new MOTMasterScriptSerializer();
-        private void storeRun(string saveFolder, string fileTag, string pathToPattern, Dictionary<String, Object> dict,
-            string cameraAttributesPath, byte[,] imageData)
+        #region Re-Running a script (intended for reloading old scripts)
+
+        public void RunReplica()
         {
-            System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
-            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            storeMOTMasterScript(saveFolder + fileTag + ".cs", pathToPattern);
-
-            storeCameraAttributes(saveFolder + fileTag + "_cameraParams.txt", cameraAttributesPath);
-            storeImage(saveFolder + fileTag + ".png", imageData);
-            serializer.PrepareZip(fs);
-            serializer.AppendToZip(saveFolder, fileTag + "_parameters.txt");
-            serializer.AppendToZip(saveFolder, fileTag + ".cs");
-            serializer.AppendToZip(saveFolder, fileTag + ".png");
-            serializer.AppendToZip(saveFolder, fileTag + "_cameraParams.txt");
-            serializer.CloseZip();
-            fs.Close();
-            File.Delete(saveFolder + fileTag + "_parameters.txt");
-            File.Delete(saveFolder + fileTag + ".cs");
-            File.Delete(saveFolder + fileTag + ".png");
-            File.Delete(saveFolder + fileTag + "_cameraParams.txt");
+            armReplicaRun();
+            Run();
+            disposeReplicaRun();
         }
 
-
-        private void storeMOTMasterScript(String savePath, String pathToScript)
+        private void armReplicaRun()
         {
-            File.Copy(pathToScript, savePath);
-        }
+            string zipPath = ioHelper.SelectSavedScriptPathDialog();
+            string outputFolderPath = Path.GetDirectoryName(zipPath) + "\\" +
+                Path.GetFileNameWithoutExtension(zipPath) + "\\";
 
-        
-        private void storeDictionary(String dataStoreFilePath, Dictionary<string, object> dict)
-        {
-            TextWriter output = File.CreateText(dataStoreFilePath);
-            foreach (KeyValuePair<string, object> pair in dict)
-            {
-                output.Write((string)pair.Key);
-                output.Write('\t');
-                output.WriteLine(pair.Value.ToString());
-            }
-            output.Close();
+            ioHelper.UnzipFolder(zipPath);
+            SetScriptPath(outputFolderPath +
+                Path.GetFileNameWithoutExtension(zipPath) + ".cs");
 
+            SetDictionaryPath(outputFolderPath +
+                Path.GetFileNameWithoutExtension(zipPath) + "_parameters.txt");
+
+            SetReplicaRunBool(true);
 
         }
 
-        private string getDataID(string element, int batchNumber)
+        private void disposeReplicaRun()
         {
-            DateTime dt = DateTime.Now;
-            string dateTag;
-            string batchTag;
-            int subTag = 0;
-
-            dateTag = String.Format("{0:ddMMMyy}", dt);
-            batchTag = batchNumber.ToString().PadLeft(2, '0');
-            subTag = (Directory.GetFiles(motMasterDataPath, element +
-                dateTag + batchTag + "*.zip")).Length;
-            string id = element + dateTag + batchTag
-                + "_" + subTag.ToString().PadLeft(3, '0');
-            return id;
-        }
-
-        private string patternPath = "";
-        public void SetPatternPath(string path)
-        {
-            patternPath = path;
-            controllerWindow.WriteToPatternSourcePath(path);
-        }
-        public void SelectPatternPathDialog()
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Saved Patterns|*.cs";
-            dialog.Title = "Load previously saved pattern";
-            dialog.InitialDirectory = motMasterDataPath;
-            dialog.ShowDialog();
-            SetPatternPath(dialog.FileName);
+            SetReplicaRunBool(false);
+            ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
         #endregion
     }
