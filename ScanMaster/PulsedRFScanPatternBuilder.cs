@@ -129,7 +129,7 @@ namespace ScanMaster.Acquire.Patterns
 				if (tempTime > time) time = tempTime;
 			}
             // pulse rf amp blanking for rf2
-            if (rf1BlankingLength != 0)
+            if (rf2BlankingLength != 0)
             {
                 tempTime = Pulse(startTime, valveToQ + rf2BlankingCentreTime - (rf2BlankingLength / 2), rf2BlankingLength, ampBlankingChannel);
                 if (tempTime > time) time = tempTime;
