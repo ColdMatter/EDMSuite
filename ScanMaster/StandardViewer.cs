@@ -49,10 +49,10 @@ namespace ScanMaster.GUI
 		{
 			window = new StandardViewerWindow(this);
             AddFitter(new TofFitter());
-			AddFitter( new LorentzianFitter() );
+            AddFitter(new LorentzianFitter());
             AddFitter(new GaussianFitter());
-			AddFitter(new SincFitter());
-			AddFitter(new InterferenceFitter());
+            AddFitter(new SincFitter());
+            AddFitter(new InterferenceFitter());
 			window.tofFitModeCombo.SelectedIndex = 0;
             window.spectrumFitModeCombo.SelectedIndex = 0;
             window.tofFitFunctionCombo.SelectedIndex = 0;

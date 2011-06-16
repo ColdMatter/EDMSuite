@@ -98,9 +98,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.Analysis.Enterprise.dll</HintPath>
+    <Reference Include="alglibnet2">
+      <HintPath>..\SharedCode\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,10 +108,6 @@
     <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.Net, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.Net.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -173,6 +168,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AGLibFitter.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -318,9 +314,7 @@
     <Compile Include="RollViewer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RollViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="RollViewerWindow.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="ScanOutputPlugin.cs">
       <SubType>Code</SubType>
@@ -341,9 +335,7 @@
     <Compile Include="StatisticsViewer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="StatisticsViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="StatisticsViewerWindow.cs" />
     <Compile Include="SupersonicPGPluginBase.cs">
       <SubType>Code</SubType>
     </Compile>

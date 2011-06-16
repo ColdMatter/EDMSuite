@@ -1,5 +1,4 @@
 using System;
-using NationalInstruments.Analysis.Math;
 using DAQ.Environment;
 
 namespace ScanMaster.Analyze
@@ -14,7 +13,7 @@ namespace ScanMaster.Analyze
         public TofFitter()
         {
             Name = "TOF";
-            model = new ModelFunctionCallback(gaussian);
+            model = gaussian;
         }
 
         public override string ParameterReport
