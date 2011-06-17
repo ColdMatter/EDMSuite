@@ -168,7 +168,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AGLibFitter.cs" />
+    <Compile Include="Fitter.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -224,7 +224,7 @@
     <Compile Include="DualAblationPatternPlugin.cs" />
     <Compile Include="DualValvePatternBuilder.cs" />
     <Compile Include="DualValvePatternPlugin.cs" />
-    <Compile Include="Fitter.cs">
+    <Compile Include="OldFitter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FlashampPatternBuilder.cs">

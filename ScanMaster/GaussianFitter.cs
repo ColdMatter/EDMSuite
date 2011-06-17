@@ -31,7 +31,7 @@ namespace ScanMaster.Analyze
             double c = parameters[2];
             double w = parameters[3];
             if (w == 0) w = 0.001; // watch out for divide by zero
-            func = n - q * Math.Exp(-Math.Pow(x[0] - c, 2) / ((2 / 5.52) * Math.Pow(w, 2)));
+            func = n + q * Math.Exp(-Math.Pow(x[0] - c, 2) / ((2 / 5.52) * Math.Pow(w, 2)));
         }
 
         public override string ParameterReport

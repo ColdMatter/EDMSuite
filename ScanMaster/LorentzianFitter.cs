@@ -30,7 +30,7 @@ namespace ScanMaster.Analyze
             double c = parameters[2];
             double w = parameters[3];
             if (w == 0) w = 0.001; // watch out for divide by zero
-            result = n - q * (1 / (1 + (((x[0] - c) * (x[0] - c)) / ((w / 2) * (w / 2)))));
+            result = n + q * (1 / (1 + (((x[0] - c) * (x[0] - c)) / ((w / 2) * (w / 2)))));
         }
 
         public override string ParameterReport

@@ -29,7 +29,7 @@ namespace ScanMaster.Analyze
             double w = parameters[3];
             if (x[0] == c) x[0] += 1e-3; // watch out for divide by zero
             double z = 2.78 * (x[0] - c) / w;
-            result = n - q * Math.Pow(Math.Sin(z) / z, 2);
+            result = n + q * Math.Pow(Math.Sin(z) / z, 2);
         }
 
         public override string ParameterReport
