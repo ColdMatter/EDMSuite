@@ -1049,15 +1049,15 @@ namespace EDMHardwareControl
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(24, 88);
+            this.label1.Location = new System.Drawing.Point(6, 88);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 23);
+            this.label1.Size = new System.Drawing.Size(133, 23);
             this.label1.TabIndex = 23;
             this.label1.Text = "Green synth DC FM (kHz)";
             // 
             // greenDCFMBox
             // 
-            this.greenDCFMBox.Location = new System.Drawing.Point(168, 88);
+            this.greenDCFMBox.Location = new System.Drawing.Point(168, 85);
             this.greenDCFMBox.Name = "greenDCFMBox";
             this.greenDCFMBox.Size = new System.Drawing.Size(64, 20);
             this.greenDCFMBox.TabIndex = 2;
@@ -1074,15 +1074,15 @@ namespace EDMHardwareControl
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(24, 56);
+            this.label7.Location = new System.Drawing.Point(6, 56);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(144, 23);
+            this.label7.Size = new System.Drawing.Size(122, 23);
             this.label7.TabIndex = 13;
             this.label7.Text = "Green synth amplitude";
             // 
             // greenOnAmpBox
             // 
-            this.greenOnAmpBox.Location = new System.Drawing.Point(168, 56);
+            this.greenOnAmpBox.Location = new System.Drawing.Point(168, 53);
             this.greenOnAmpBox.Name = "greenOnAmpBox";
             this.greenOnAmpBox.Size = new System.Drawing.Size(64, 20);
             this.greenOnAmpBox.TabIndex = 1;
@@ -1090,15 +1090,15 @@ namespace EDMHardwareControl
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(24, 24);
+            this.label8.Location = new System.Drawing.Point(6, 24);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(144, 23);
+            this.label8.Size = new System.Drawing.Size(122, 23);
             this.label8.TabIndex = 11;
             this.label8.Text = "Green synth frequency";
             // 
             // greenOnFreqBox
             // 
-            this.greenOnFreqBox.Location = new System.Drawing.Point(168, 24);
+            this.greenOnFreqBox.Location = new System.Drawing.Point(168, 21);
             this.greenOnFreqBox.Name = "greenOnFreqBox";
             this.greenOnFreqBox.Size = new System.Drawing.Size(64, 20);
             this.greenOnFreqBox.TabIndex = 0;
@@ -4784,6 +4784,11 @@ namespace EDMHardwareControl
         private void FLPZTVtrackBar_Scroll(object sender, EventArgs e)
         {
             controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value/100.0);
+        }
+
+        private void label96_Click(object sender, EventArgs e)
+        {
+
         }
 
 

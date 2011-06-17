@@ -35,6 +35,10 @@ namespace ScanMaster.Acquire.Plugins
 			settings["piFlipTime"] = 1400;
             settings["scramblerCentreTime"] = 1400;
             settings["scramblerLength"] = 200;
+            settings["rf1BlankingCentreTime"] = 1400;
+            settings["rf1BlankingLength"] = 500;
+            settings["rf2BlankingCentreTime"] =  700;
+            settings["rf2BlankingLength"] = 500;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -67,6 +71,10 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["attLength"],
                 (int)settings["scramblerCentreTime"],
                 (int)settings["scramblerLength"],
+                (int)settings["rf1BlankingCentreTime"],
+                (int)settings["rf1BlankingLength"],
+                (int)settings["rf2BlankingCentreTime"],
+                (int)settings["rf2BlankingLength"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
             scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

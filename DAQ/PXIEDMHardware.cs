@@ -89,6 +89,8 @@ namespace DAQ.HAL
             //RF Counter Control (single pole 4 throw)
             AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
             AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            // new rf amp blanking
+            AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
 
             // these channel are usually software switched - they should not be in
             // the lower half of the pattern generator

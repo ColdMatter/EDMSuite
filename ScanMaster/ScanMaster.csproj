@@ -175,6 +175,8 @@
     <Compile Include="AnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AomLevelControlPatternBuilder.cs" />
+    <Compile Include="AomLevelControlPatternPlugin.cs" />
     <Compile Include="AomModulatedPatternBuilder.cs" />
     <Compile Include="AomModulatedPatternPlugin.cs" />
     <Compile Include="AssemblyInfo.cs">
