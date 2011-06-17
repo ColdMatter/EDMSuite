@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="BlockDatabase">
+  <DataContextMoniker Name="/BlockDatabaseDataContext" />
+  <nestedChildShapes>
+    <classShape Id="bc315c86-f04f-41f6-8c70-98f8208847f6" absoluteBounds="1, 1.25, 2, 2.9247054036458326">
+      <DataClassMoniker Name="/BlockDatabaseDataContext/DBBlock" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e1e9cbaa-71d9-49a6-aaa8-dc0167072ebe" absoluteBounds="1.0150000000000001, 1.71, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1864fbd2-f4d6-4142-a2a5-b63b6c28ddbd" absoluteBounds="3.875, 1.25, 2, 1.7708968098958329">
+      <DataClassMoniker Name="/BlockDatabaseDataContext/DBTOFChannelSet" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a839f34d-04d1-47ce-852c-bc7a9bd5560b" absoluteBounds="3.89, 1.71, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3 : 2.13544840494792); (3.875 : 2.13544840494792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/BlockDatabaseDataContext/DBBlock/DBBlock_DBTOFChannelSet" />
+      <nodes>
+        <classShapeMoniker Id="bc315c86-f04f-41f6-8c70-98f8208847f6" />
+        <classShapeMoniker Id="1864fbd2-f4d6-4142-a2a5-b63b6c28ddbd" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

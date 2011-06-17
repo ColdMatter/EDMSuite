@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferCavityLock", "Trans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMAnalysisTests", "EDMAnalysisTests\EDMAnalysisTests.csproj", "{98BC417C-5044-463B-A45B-61241F8F1B0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonOfSirCachealot", "SonOfSirCachealot\SonOfSirCachealot.csproj", "{434CD947-D8DB-4DB6-B28D-1879CB0E0353}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Buffer|Any CPU = Buffer|Any CPU
@@ -189,6 +191,22 @@ Global
 		{98BC417C-5044-463B-A45B-61241F8F1B0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98BC417C-5044-463B-A45B-61241F8F1B0A}.SrF|Any CPU.ActiveCfg = Release|Any CPU
 		{98BC417C-5044-463B-A45B-61241F8F1B0A}.Sympathetic|Any CPU.ActiveCfg = Release|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Buffer|Any CPU.ActiveCfg = Buffer|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Buffer|Any CPU.Build.0 = Buffer|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDM|Any CPU.Build.0 = EDM|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDMAnalysis|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDMAnalysis|Any CPU.Build.0 = EDMAnalysis|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Release|Any CPU.ActiveCfg = SrF|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Release|Any CPU.Build.0 = SrF|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.SrF|Any CPU.ActiveCfg = SrF|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.SrF|Any CPU.Build.0 = SrF|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Sympathetic|Any CPU.Build.0 = Sympathetic|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
