@@ -96,7 +96,6 @@ namespace SympatheticHardwareControl
             this.coil0Label1 = new System.Windows.Forms.Label();
             this.coil0CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil0Label0 = new System.Windows.Forms.Label();
-            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -116,9 +115,10 @@ namespace SympatheticHardwareControl
             this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label1 = new System.Windows.Forms.Label();
+            this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -129,8 +129,8 @@ namespace SympatheticHardwareControl
             this.tabCoils.SuspendLayout();
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
             this.menuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
             this.SuspendLayout();
             // 
@@ -625,14 +625,6 @@ namespace SympatheticHardwareControl
             this.coil0Label0.TabIndex = 7;
             this.coil0Label0.Text = "Current";
             // 
-            // manualControlLED
-            // 
-            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(678, 69);
-            this.manualControlLED.Name = "manualControlLED";
-            this.manualControlLED.Size = new System.Drawing.Size(80, 80);
-            this.manualControlLED.TabIndex = 14;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(0, 0);
@@ -779,15 +771,22 @@ namespace SympatheticHardwareControl
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
-            // remoteControlLED
+            // label2
             // 
-            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.remoteControlLED.Location = new System.Drawing.Point(678, 182);
-            this.remoteControlLED.Name = "remoteControlLED";
-            this.remoteControlLED.OffColor = System.Drawing.Color.Maroon;
-            this.remoteControlLED.OnColor = System.Drawing.Color.Red;
-            this.remoteControlLED.Size = new System.Drawing.Size(80, 76);
-            this.remoteControlLED.TabIndex = 21;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(675, 48);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(69, 13);
+            this.label2.TabIndex = 23;
+            this.label2.Text = "Local Control";
+            // 
+            // manualControlLED
+            // 
+            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.manualControlLED.Location = new System.Drawing.Point(678, 69);
+            this.manualControlLED.Name = "manualControlLED";
+            this.manualControlLED.Size = new System.Drawing.Size(80, 80);
+            this.manualControlLED.TabIndex = 14;
             // 
             // label1
             // 
@@ -798,14 +797,15 @@ namespace SympatheticHardwareControl
             this.label1.TabIndex = 22;
             this.label1.Text = "Remote Control";
             // 
-            // label2
+            // remoteControlLED
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(675, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 23;
-            this.label2.Text = "Local Control";
+            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.remoteControlLED.Location = new System.Drawing.Point(678, 182);
+            this.remoteControlLED.Name = "remoteControlLED";
+            this.remoteControlLED.OffColor = System.Drawing.Color.Maroon;
+            this.remoteControlLED.OnColor = System.Drawing.Color.Red;
+            this.remoteControlLED.Size = new System.Drawing.Size(80, 76);
+            this.remoteControlLED.TabIndex = 21;
             // 
             // ControlWindow
             // 
@@ -838,9 +838,9 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.PerformLayout();
             this.coil0GroupBox.ResumeLayout(false);
             this.coil0GroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -896,7 +896,6 @@ namespace SympatheticHardwareControl
         private Label aom0Label0;
         private Label aom0Label1;
         private Label aom0Label3;
-        public Led manualControlLED;
         private GroupBox aom3ControlBox;
         private Label aom3Label3;
         private Label aom3Label1;
@@ -945,8 +944,6 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
-        public Led remoteControlLED;
-        private Label label1;
         private Label label2;
         private Button snapshotButton;
         private Button updateAttributesButton;
@@ -1289,6 +1286,10 @@ namespace SympatheticHardwareControl
 
 
         #endregion
+
+        public Led manualControlLED;
+        private Label label1;
+        public Led remoteControlLED;
 
         
 

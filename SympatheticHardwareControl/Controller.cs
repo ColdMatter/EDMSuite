@@ -57,8 +57,7 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
         public string p = cameraAttributesPath;
         //Cameras
-        IMAQdxCameraControl cam0Control = new IMAQdxCameraControl("cam0", 
-            cameraAttributesPath);
+        IMAQdxCameraControl cam0Control;
 
         // list Hardware (boards on computer are already known!?)
         //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
@@ -91,7 +90,7 @@ namespace SympatheticHardwareControl
         public SHCUIControlState HCState = new SHCUIControlState();
 
         private DataStore dataStore = new DataStore();
-
+        private class cameraNotFoundException : ArgumentException { };
           
 
         // without this method, any remote connections to this object will time out after
@@ -105,11 +104,11 @@ namespace SympatheticHardwareControl
 
         public void Start()
         {
-            
+
             // make the digital tasks. The function "CreateDigitalTask" is defined later
             //e.g   CreateDigitalTask("notEOnOff");
             //      CreateDigitalTask("eOnOff");
-           
+
             CreateDigitalTask("aom0Enable");
             CreateDigitalTask("aom1Enable");
             CreateDigitalTask("aom2Enable");
@@ -144,29 +143,45 @@ namespace SympatheticHardwareControl
 
 
             HCState = SHCUIControlState.OFF;
-           
+
 
             // run
             //Application.Run(imageWindow);
             //Application.Run(controlWindow);
             imageWindow.Show();
             Application.Run(controlWindow);
-            
+
         }
 
         // this method runs immediately after the GUI sets up
         internal void WindowLoaded()
         {
+            try
+            {
+                cam0Control = new IMAQdxCameraControl("cam0", cameraAttributesPath);
+                cam0Control.InitializeCamera();
+            }
+            catch (ImaqdxException e)
+            {
+                MessageBox.Show(e.Message, "Camera Initialization Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+                
+            }
             // things like loading saved parameters, checking status of experiment etc. should go here.
             LoadParameters(internalProfilesPath + "OffState.bin");
-            cam0Control.InitializeCamera();
+            
         }
 
         internal void WindowClosing()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StoreParameters();
-            cam0Control.CloseCamera();
+            try
+            {
+                cam0Control.CloseCamera();
+            }
+            catch {}
         }
 
         #endregion

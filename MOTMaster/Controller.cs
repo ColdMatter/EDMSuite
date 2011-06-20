@@ -36,35 +36,9 @@ namespace MOTMaster
     /// <summary>
     /// Here's MOTMaster's controller.
     /// 
-    /// Here's what it does:
-    /// 
-    /// - MOTMaster looks in a folder ("scriptListPath") for all classes. Then displays the list in a combo box.
-    /// 
-    /// - These classes contain an implementation of a "MOTMasterScript". This contains the information 
-    /// about the patterns.
-    /// 
-    /// - Once the user has selected a particular implementation of MOTMasterScript, 
-    /// MOTMaster will compile it. Note: the dll is currently stored in a temp folder somewhere. 
-    /// Its pathToPattern can be found in the CompilerResults.PathToAssembly). 
-    /// This newly formed dll contain methods named GetDigitalPattern and GetAnalogPattern. 
-    /// 
-    /// - These are called by the script's "GetSequence". GetSequence always returns a 
-    /// "MOTMasterSequence", which comprises a PatternBuilder32 and an AnalogPatternBuilder.
-    /// 
-    /// - MOTMaster then initializes the hardware, faffs a little to prepare the patterns in the 
-    /// builders (e.g. calls "BuildPattern"), and sends the pattern to Hardware.
-    /// 
-    /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved 
-    /// for triggering the analog pattern.
-    /// 
-    /// - Once the experiment is finished, MM releases the hardware.
-    /// 
-    /// - MOTMaster also saves the data to a .zip. This includes: the original MOTMasterScript (.cs), a text file
-    /// with the parameters in it (IF DIFFERENT FROM THE VALUES IN .cs, THE PARAMETERS IN THE TEXT FILE ARE THE
-    /// CORRECT VALUES!), another text file with the camera attributes and a .png file containing the final image.
-    /// 
-    /// 
-    /// 
+    /// Gets a MOTMasterScript (a script contaning a series of commands like "addEdge" for both digital and analog)
+    /// from user (either remotely or via UI), compiles it, builds a pattern and sends it
+    /// to hardware.
     /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -117,8 +91,8 @@ namespace MOTMaster
             apg = new DAQmxAnalogPatternGenerator();
 
             camera = (CameraControlable)Activator.GetObject(typeof(CameraControlable),
-            "tcp://localhost:1180/controller.rem");
-
+                "tcp://localhost:1180/controller.rem");
+            
             ioHelper = new MOTMasterDataIOHelper(motMasterDataPath, 
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -131,6 +105,7 @@ namespace MOTMaster
         #endregion
 
         #region Hardware control methods
+
 
         private void run(MOTMasterSequence sequence)
         {
@@ -153,8 +128,13 @@ namespace MOTMaster
 
         #endregion
 
-        #region Script Housekeeping on UI
+        #region Housekeeping on UI
 
+        /// - MOTMaster looks in a folder ("scriptListPath") for all classes. 
+        ///  Then displays the list in a combo box.
+        /// 
+        /// - These classes contain an implementation of a "MOTMasterScript". This contains the information 
+        /// about the patterns.
         public void ScriptLookupAndDisplay()
         {
             string[] s = scriptLookup();
@@ -174,7 +154,32 @@ namespace MOTMaster
 
         #region RUN RUN RUN (public & remotable stuff)
 
-
+        /// <summary>
+        /// This is the guts of MOTMaster.
+        /// 
+        /// - MOTMaster initializes the hardware, faffs a little to prepare the patterns in the 
+        /// builders (e.g. calls "BuildPattern"), and sends the pattern to Hardware.
+        /// 
+        /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved 
+        /// for triggering the analog pattern.
+        /// 
+        /// - Once the experiment is finished, MM releases the hardware.
+        /// 
+        /// - MOTMaster also saves the data to a .zip. This includes: the original MOTMasterScript (.cs), a text file
+        /// with the parameters in it (IF DIFFERENT FROM THE VALUES IN .cs, THE PARAMETERS IN THE TEXT FILE ARE THE
+        /// CORRECT VALUES!), another text file with the camera attributes and a .png file containing the final image.
+        /// 
+        /// -There are 2 ways of using "Run". Run(null) uses the parameters given in the script (.cs file).
+        ///  Run(Dictionary<>) compiles the .cs file but then replaces values in the dictionary. This is to allow
+        ///  the user to inject values after compilation but before sending to hardware. By doing this,
+        ///  the user can scan parameters using a python script, for example.
+        ///  If you call Run(), MOTMaster immediately checks to see if you're running a fresh script 
+        ///  or whether you're re-running an old one. In the former case Run(null) is called. In the latter,
+        ///  MOTMaster will fetch the dictionary used in the previous experiment and use it as the
+        ///  argument for Run(Dictionary<>).        ///  
+        /// 
+        
+        /// </summary>
         private bool saveEnable = true;
         public void SaveToggle(System.Boolean value)
         {
@@ -188,7 +193,7 @@ namespace MOTMaster
             controllerWindow.WriteToSaveBatchTextBox(number);
         }
         private string scriptPath = "";
-        public void SetScriptPath(string path)
+        public void SetScriptPath(String path)
         {
             scriptPath = path;
             controllerWindow.WriteToScriptPath(path);
@@ -199,7 +204,7 @@ namespace MOTMaster
             replicaRun = value;
         }
         private string dictionaryPath = "";
-        public void SetDictionaryPath(string path)
+        public void SetDictionaryPath(String path)
         {
             dictionaryPath = path;
         }
@@ -216,22 +221,43 @@ namespace MOTMaster
                 Run(null);
             }
         }
-        public void Run(Dictionary<String,Object> dict)
+        public void Run(Dictionary<String, Object> dict)
         {
             MOTMasterScript script = prepareScript(scriptPath, dict);
-            MOTMasterSequence sequence = getSequenceFromScript(script);
-            byte[,] imageData = GrabImage(cameraAttributesPath);
-            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-            runPattern(sequence);
-            if (saveEnable)
+            if (script != null)
             {
-                save(script, scriptPath, imageData);
+                MOTMasterSequence sequence = getSequenceFromScript(script);
+                byte[,] imageData;
+                try
+                {
+                    imageData = GrabImage(cameraAttributesPath);
+
+
+                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                    runPattern(sequence);
+                    if (saveEnable)
+                    {
+                        save(script, scriptPath, imageData);
+                    }
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    MessageBox.Show("CameraControllable not found. Is the SHC running? \n \n" + e.Message, "Remoting Error");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
             }
         }
-
+        
         #endregion
 
         #region private stuff
+
+        /// <summary>
+        /// Functions called by the public functions which do the work.
+        /// </summary>
 
         private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData)
         {
@@ -240,52 +266,47 @@ namespace MOTMaster
         }
         private void runPattern(MOTMasterSequence sequence)
         {
-            try
-            {
-                initializeHardware(sequence);
-                run(sequence);
-                releaseHardwareAndClearDigitalPattern(sequence);
-            }
-            catch (Exception e)
-            {
-                controllerWindow.WriteToScriptPath(e.Message);
-            }
+            initializeHardware(sequence);
+            run(sequence);
+            releaseHardwareAndClearDigitalPattern(sequence);
+
         }
 
         private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
         {
-            
             MOTMasterScript script;
-            if (pathToPattern.Length != 0 && Path.GetExtension(pathToPattern) == ".cs")
+            CompilerResults results = compileFromFile(pathToPattern);
+            if (results != null)
             {
-
-                CompilerResults results = compileFromFile(pathToPattern);
                 script = loadScriptFromDLL(results);
-
                 if (dict != null)
                 {
                     script.EditDictionary(dict);
                 }
-                
+                return script;
             }
-            else
-            {
-                throw new FileNotRecognizedException();
-            }
-            
-            return script;
+            return null;
         }
-        public class FileNotRecognizedException : ApplicationException { }
-        public class NoFileSelectedException : ApplicationException { }
 
         private void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
         }
+       
         #endregion
 
         #region Compiler & Loading DLLs
+
+        /// <summary>
+        ///   /// - Once the user has selected a particular implementation of MOTMasterScript, 
+        /// MOTMaster will compile it. Note: the dll is currently stored in a temp folder somewhere. 
+        /// Its pathToPattern can be found in the CompilerResults.PathToAssembly). 
+        /// This newly formed dll contain methods named GetDigitalPattern and GetAnalogPattern. 
+        /// 
+        /// - These are called by the script's "GetSequence". GetSequence always returns a 
+        /// "MOTMasterSequence", which comprises a PatternBuilder32 and an AnalogPatternBuilder.
+        /// </summary>
 
         private CompilerResults compileFromFile(string scriptPath)
         {
@@ -304,14 +325,15 @@ namespace MOTMaster
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
             }
-            catch
+            catch (Exception e)
             {
-                throw new FileNotRecognizedException();
+                MessageBox.Show(e.Message);
+                return null;
             }
             //controllerWindow.WriteToScriptPath(results.PathToAssembly);
             return results;
         }
-
+        public class CompilationException : ApplicationException { }
         private MOTMasterScript loadScriptFromDLL(CompilerResults results)
         {
             object loadedInstance = new object();
@@ -328,7 +350,8 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
-                controllerWindow.WriteToScriptPath(e.Message);
+                MessageBox.Show(e.Message);
+                return null;
             }
             return (MOTMasterScript)loadedInstance;
         }
@@ -341,6 +364,7 @@ namespace MOTMaster
 
         #endregion
 
+        #region CameraControl
 
         /// <summary>
         /// - Camera control is run through the hardware controller. All MOTMaster knows 
@@ -352,9 +376,7 @@ namespace MOTMaster
         /// more than one, and it can only take one photograph per run. In the long term, we might 
         /// want to fix this.
         /// </summary>
-
-        #region CameraControl
-
+        /// 
         public byte[,] GrabImage(string cameraAttributes)
         {
             return camera.GrabImage(cameraAttributes);
@@ -363,6 +385,15 @@ namespace MOTMaster
         #endregion
 
         #region Re-Running a script (intended for reloading old scripts)
+
+        /// <summary>
+        /// This section is meant to be for the situation when you want to re-run exactly the same pattern
+        /// you ran sometime in the past.
+        /// armReplicaRun prompts you for a zip file which contains the run you want to replicate. It unzipps the
+        /// file into a folder of the same name, picks out the dictionary and the script.
+        /// These then get loaded in the usual way through Run().
+        /// disposeReplicaRun does some clean up after the experiment is finished.
+        /// </summary>
 
         public void RunReplica()
         {
