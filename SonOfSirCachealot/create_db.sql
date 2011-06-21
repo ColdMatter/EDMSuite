@@ -1,4 +1,4 @@
-DROP DATABASE [EDMDatabase]
+IF EXISTS(SELECT name FROM sys.databases WHERE name = 'EDMDatabase') DROP DATABASE [EDMDatabase]
 GO
 
 CREATE DATABASE EDMDatabase 

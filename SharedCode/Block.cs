@@ -11,10 +11,13 @@ namespace Data.EDM
 	[Serializable]
 	public class Block : MarshalByRefObject
 	{
-		public int Version = 2;
+		public int Version = 3;
 		private ArrayList points = new ArrayList();
 		private DateTime timeStamp = DateTime.Now;
 		private BlockConfig config = new BlockConfig();
+
+        public Dictionary<string, int> detectors = new Dictionary<string, int>()
+            {{"top", 0}, {"norm", 1}, {"", 2}, {"", 3}, {"", 4}};
 
 		public void SetTimeStamp()
 		{
