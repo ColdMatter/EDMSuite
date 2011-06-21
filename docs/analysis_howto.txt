@@ -1,0 +1,35 @@
+Setting up for EDM data analysis
+================================
+
+1) Install Visual Studio 2010 - this will install SQL Server along with it.
+
+-- make sure you select c#, f# and "Microsoft SQL Server", the rest is optional.
+
+2) Get the latest code
+
+-- check out EDMSuite from SVN
+
+2) Configure SQL Server
+
+-- create a directory "C:\edmdatabase" (You can put this elsewhere if you like, but you'll have to edit the SQL script which creates the database.
+
+-- Open "Sql Server Configuration Manager". Under "SQL Server Services", find "SQL Server (SQLEXPRESS)" and right click for properties. On the FILESTREAM tab enable filestream (only the first checkbox). Right click on the "SQL Server (SQLEXPRESS)" to restart it.
+
+3) Build the analysis code.
+
+-- Open the EDMSuite solution in Visual Studio, select the EDMAnalysis build configuration, and build.
+
+4) Create the database
+
+-- Open the create_db.sql script in Visual Studio (it's part of SonOfSirCachealot). Use the database toolbar to "Connect to server". You want to connect to ".\SQLEXPRESS" (without the quotes). Don't run the script yet, it won't work.
+
+-- From the database toolbar, "Create new query". And paste in to the query:
+
+EXEC sp_configure filestream_access_level, 2
+RECONFIGURE
+
+Execute it from the toolbar.
+
+-- Now go back to the create_db.sql script and execute it from the toolbar. (You can do this any time you want to blitz the database and start afresh).
+
+5) Run SonOfSirCachealot and start analysing ...
