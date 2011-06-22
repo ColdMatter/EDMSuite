@@ -15,6 +15,8 @@ namespace Data
         private int clockPeriod;
         public double calibration;
 
+        public TOF() { }
+
         public double Integrate()
         {
             double sum = 0;
@@ -279,6 +281,16 @@ namespace Data
             t.ClockPeriod = 10;
             t.GateStartTime = 1800;
             return t;
+        }
+
+        // helper to make a TOF from a single data point
+        public TOF(double d)
+        {
+            this.Data = new double[1];
+            this.Data[0] = d;
+            this.ClockPeriod = 1;
+            this.gateStartTime = 0;
+            this.Calibration = 1.0;
         }
 
     }

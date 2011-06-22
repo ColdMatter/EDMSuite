@@ -90,13 +90,12 @@ namespace SonOfSirCachealot
 
         private string GetThreadStats()
         {
-            return "";
+            return BlockStore.Monitor.GetStats();
         }
   
         private string GetDatabaseStats()
         {
-            StringBuilder b = new StringBuilder();
-            return b.ToString();
+            return "";
         }
 
 

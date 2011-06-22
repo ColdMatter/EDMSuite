@@ -15,15 +15,21 @@ namespace SonOfSirCachealot.Database
     {
         #region Adding blocks
 
+        public ThreadMonitor Monitor = new ThreadMonitor();
+
         public void AddBlocks(string[] paths)
         {
-            new Thread(new ThreadStart(() => 
-                paths.AsParallel().ForAll((e) => AddBlock(e))
+            Monitor.ClearStats();
+            Monitor.SetQueueLength(paths.Length);
+
+            new Thread(new ThreadStart(() =>
+                paths.AsParallel().ForAll((e) => AddBlock(e, "cgate11Fixed"))
             )).Start();
         }
 
-        public void AddBlock(string path)
+        private void AddBlock(string path, string normConfig)
         {
+            Monitor.JobStarted();
             string fileName = path.Split('\\').Last();
             try
             {
@@ -36,7 +42,11 @@ namespace SonOfSirCachealot.Database
                     // at the moment the block data is normalized by dividing each "top" TOF through
                     // by the integral of the corresponding "norm" TOF over the gate in the function below.
                     // TODO: this could be improved!
-                    b.Normalise(DemodulationConfig.GetStandardDemodulationConfig("cgate11Fixed", b).GatedDetectorExtractSpecs["norm"]);
+                    b.Normalise(DemodulationConfig.GetStandardDemodulationConfig(normConfig, b).GatedDetectorExtractSpecs["norm"]);
+                    // add some of the single point data to the Shot TOFs so that it gets analysed
+                    string[] spvsToTOFulise = new string[] { "NorthCurrent", "SouthCurrent", "MiniFlux1",
+                        "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD"};
+                    b.TOFuliseSinglePointData(spvsToTOFulise);
 
                     // extract the metadata and config into a DB object
                     DBBlock dbb = new DBBlock();
@@ -62,19 +72,22 @@ namespace SonOfSirCachealot.Database
                     dbb.configBytes = bts;
 
                     // extract the TOFChannelSets
-                    Dictionary<string, int> detectorsToExtract = new Dictionary<string, int> { { "top", 0 }, { "norm", 1 }, { "topNormed", 5 } };
-                    foreach (KeyValuePair<string, int> detector in detectorsToExtract)
+                    List<string> detectorsToExtract = new List<string>
+                        { "top", "norm", "magnetometer", "gnd", "battery","topNormed","NorthCurrent", "SouthCurrent",
+                            "MiniFlux1", "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD" };
+                    foreach (string detector in detectorsToExtract)
                     {
                         BlockTOFDemodulator demod = new BlockTOFDemodulator();
-                        TOFChannelSet tcs = demod.TOFDemodulateBlock(b, detector.Value, true);
+                        TOFChannelSet tcs = demod.TOFDemodulateBlock(b, b.detectors.IndexOf(detector), true);
                         byte[] tcsBytes = serializeAsByteArray(tcs);
                         DBTOFChannelSet t = new DBTOFChannelSet();
                         t.tcsData = tcsBytes;
-                        t.detector = detector.Key;
+                        t.detector = detector;
                         t.FileID = Guid.NewGuid();
                         dbb.DBTOFChannelSets.Add(t);
                     }
                     Controller.log("Demodulated " + fileName);
+
                     // add to the database
                     dc.DBBlocks.InsertOnSubmit(dbb);
                     dc.SubmitChanges();
@@ -85,6 +98,10 @@ namespace SonOfSirCachealot.Database
             {
                 Controller.log("Error adding " + fileName);
                 Controller.errorLog("Error adding block " + path + "\n" + e.StackTrace);
+            }
+            finally
+            {
+                Monitor.JobFinished();
             }
         }
 

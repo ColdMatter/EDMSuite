@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadMonitor.cs" />
     <None Include="BlockDatabase.dbml.layout">
       <DependentUpon>BlockDatabase.dbml</DependentUpon>
     </None>

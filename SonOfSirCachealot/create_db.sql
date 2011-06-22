@@ -46,9 +46,31 @@ CREATE TABLE EDMDatabase.dbo.DBTOFChannelSets (
 END
 GO
 
+BEGIN
+CREATE TABLE EDMDatabase.dbo.DBDBlocks (
+	[dblockID] [int] IDENTITY(1,1) NOT NULL,
+	[blockID] [int] NOT NULL,
+	[aTag] [varchar](50) COLLATE Latin1_General_CI_AS NOT NULL,
+	[FileID] [uniqueidentifier] ROWGUIDCOL NOT NULL UNIQUE,
+	[dblockData] [varbinary](max) FILESTREAM NOT NULL,
+ CONSTRAINT [PK_DBDBlocks] PRIMARY KEY CLUSTERED 
+(
+	[dblockID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON)
+)
+END
+GO
+
 ALTER TABLE EDMDatabase.dbo.DBTOFChannelSets  WITH CHECK ADD  CONSTRAINT [FK_DBTOFChannelSets_DBBlocks] FOREIGN KEY([blockID])
 REFERENCES EDMDatabase.dbo.DBBlocks ([blockID])
 GO
 
 ALTER TABLE EDMDatabase.dbo.DBTOFChannelSets CHECK CONSTRAINT [FK_DBTOFChannelSets_DBBlocks]
+GO
+
+ALTER TABLE EDMDatabase.dbo.DBDBlocks  WITH CHECK ADD  CONSTRAINT [FK_DBDBlocks_DBBlocks] FOREIGN KEY([blockID])
+REFERENCES EDMDatabase.dbo.DBBlocks ([blockID])
+GO
+
+ALTER TABLE EDMDatabase.dbo.DBDBlocks CHECK CONSTRAINT [FK_DBDBlocks_DBBlocks]
 GO
