@@ -14,7 +14,7 @@ using NationalInstruments.Vision;
 namespace SympatheticHardwareControl
 {
     /// <summary>
-    /// Front panel for the edm hardware controller. Everything is just stuffed in there. No particularly
+    /// Front panel for the sympathetic hardware controller. Everything is just stuffed in there. No particularly
     /// clever structure. This class just hands everything straight off to the controller. It has a few
     /// thread safe wrappers so that remote calls can safely manipulate the front panel.
     /// </summary>
@@ -31,7 +31,7 @@ namespace SympatheticHardwareControl
 
         private void WindowClosing(object sender, FormClosingEventArgs e)
         {
-            controller.WindowClosing();
+            controller.Stop();
         }
 
         private void WindowLoaded(object sender, EventArgs e)
@@ -115,10 +115,6 @@ namespace SympatheticHardwareControl
             this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label2 = new System.Windows.Forms.Label();
-            this.manualControlLED = new NationalInstruments.UI.WindowsForms.Led();
-            this.label1 = new System.Windows.Forms.Label();
-            this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -130,8 +126,6 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -660,7 +654,7 @@ namespace SympatheticHardwareControl
             this.manualControlToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(797, 24);
+            this.menuStrip.Size = new System.Drawing.Size(670, 24);
             this.menuStrip.TabIndex = 15;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -771,51 +765,11 @@ namespace SympatheticHardwareControl
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(675, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 23;
-            this.label2.Text = "Local Control";
-            // 
-            // manualControlLED
-            // 
-            this.manualControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.manualControlLED.Location = new System.Drawing.Point(678, 69);
-            this.manualControlLED.Name = "manualControlLED";
-            this.manualControlLED.Size = new System.Drawing.Size(80, 80);
-            this.manualControlLED.TabIndex = 14;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(675, 166);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 13);
-            this.label1.TabIndex = 22;
-            this.label1.Text = "Remote Control";
-            // 
-            // remoteControlLED
-            // 
-            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.remoteControlLED.Location = new System.Drawing.Point(678, 182);
-            this.remoteControlLED.Name = "remoteControlLED";
-            this.remoteControlLED.OffColor = System.Drawing.Color.Maroon;
-            this.remoteControlLED.OnColor = System.Drawing.Color.Red;
-            this.remoteControlLED.Size = new System.Drawing.Size(80, 76);
-            this.remoteControlLED.TabIndex = 21;
-            // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(797, 264);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.remoteControlLED);
+            this.ClientSize = new System.Drawing.Size(670, 264);
             this.Controls.Add(this.shcTabs);
             this.Controls.Add(this.menuStrip);
-            this.Controls.Add(this.manualControlLED);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "ControlWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -840,8 +794,6 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.PerformLayout();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.manualControlLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -944,7 +896,6 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
-        private Label label2;
         private Button snapshotButton;
         private Button updateAttributesButton;
         private ToolStripMenuItem loadLastParametersToolStripMenuItem;
@@ -1267,18 +1218,14 @@ namespace SympatheticHardwareControl
             {
                 case Controller.SHCUIControlState.OFF:
                     loadParametersToolStripMenuItem.Enabled = true;
-                    setLED(manualControlLED, false);
-                    setLED(remoteControlLED, false);
                     break;
 
                 case Controller.SHCUIControlState.LOCAL:
                     loadParametersToolStripMenuItem.Enabled = false;
-                    setLED(manualControlLED, true);
                     break;
 
                 case Controller.SHCUIControlState.REMOTE:
                     loadParametersToolStripMenuItem.Enabled = false;
-                    setLED(remoteControlLED, true);
                     break;
             }
         }
@@ -1287,17 +1234,14 @@ namespace SympatheticHardwareControl
 
         #endregion
 
-        public Led manualControlLED;
-        private Label label1;
-        public Led remoteControlLED;
-
-        
 
 
 
-      
 
-        
+
+
+
+
 
 
     }

@@ -175,7 +175,7 @@ namespace MOTMaster
         ///  the user can scan parameters using a python script, for example.
         ///  If you call Run(), MOTMaster immediately checks to see if you're running a fresh script 
         ///  or whether you're re-running an old one. In the former case Run(null) is called. In the latter,
-        ///  MOTMaster will fetch the dictionary used in the previous experiment and use it as the
+        ///  MOTMaster will fetch the dictionary used in the old experiment and use it as the
         ///  argument for Run(Dictionary<>).        ///  
         /// 
         
@@ -227,11 +227,10 @@ namespace MOTMaster
             if (script != null)
             {
                 MOTMasterSequence sequence = getSequenceFromScript(script);
-                byte[,] imageData;
+               
                 try
                 {
-                    imageData = GrabImage(cameraAttributesPath);
-
+                    byte[,] imageData = GrabImage(cameraAttributesPath);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                     runPattern(sequence);
@@ -242,7 +241,7 @@ namespace MOTMaster
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
-                    MessageBox.Show("CameraControllable not found. Is the SHC running? \n \n" + e.Message, "Remoting Error");
+                    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
                 }
             }
             else
@@ -333,7 +332,7 @@ namespace MOTMaster
             //controllerWindow.WriteToScriptPath(results.PathToAssembly);
             return results;
         }
-        public class CompilationException : ApplicationException { }
+
         private MOTMasterScript loadScriptFromDLL(CompilerResults results)
         {
             object loadedInstance = new object();
@@ -381,6 +380,7 @@ namespace MOTMaster
         {
             return camera.GrabImage(cameraAttributes);
         }
+
 
         #endregion
 

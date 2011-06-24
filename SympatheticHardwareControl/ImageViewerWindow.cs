@@ -38,8 +38,9 @@ namespace SympatheticHardwareControl.CameraControl
         private void AttachImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
         {
             viewer.Attach(image);
+            
         }
-
+        
         #endregion
 
         #region Public methods
@@ -57,5 +58,10 @@ namespace SympatheticHardwareControl.CameraControl
         }
 
         #endregion
+
+        private void ImageViewerWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.Stop();
+        }
     }
 }

@@ -91,7 +91,6 @@ namespace SympatheticHardwareControl
 
         private DataStore dataStore = new DataStore();
         private class cameraNotFoundException : ArgumentException { };
-          
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -142,13 +141,13 @@ namespace SympatheticHardwareControl
             imageWindow.controller = this;
 
 
-            HCState = SHCUIControlState.OFF;
 
+            HCState = SHCUIControlState.OFF;
 
             // run
             //Application.Run(imageWindow);
             //Application.Run(controlWindow);
-            imageWindow.Show();
+
             Application.Run(controlWindow);
 
         }
@@ -160,6 +159,7 @@ namespace SympatheticHardwareControl
             {
                 cam0Control = new IMAQdxCameraControl("cam0", cameraAttributesPath);
                 cam0Control.InitializeCamera();
+                imageWindow.Show();
             }
             catch (ImaqdxException e)
             {
@@ -173,15 +173,17 @@ namespace SympatheticHardwareControl
             
         }
 
-        internal void WindowClosing()
+        public void Stop()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StoreParameters();
+            StopCameraStream();
             try
             {
                 cam0Control.CloseCamera();
             }
             catch {}
+            Application.Exit();
         }
 
         #endregion
@@ -385,20 +387,21 @@ namespace SympatheticHardwareControl
                 // copy parameters out of the struct
                 //e.g   CPlusVoltage = dataStore.cPlus;
                 //e.g   CMinusVoltage = dataStore.cMinus;
-                SetUIAom0EnabledState(dataStore.aom0Enabled);
-                SetUIAom0rfAmplitude(dataStore.aom0rfAmplitude);
-                SetUIAom0rfFrequency(dataStore.aom0rfFrequency);
-                SetUIAom1EnabledState(dataStore.aom1Enabled);
-                SetUIAom1rfAmplitude(dataStore.aom1rfAmplitude);
-                SetUIAom1rfFrequency(dataStore.aom1rfFrequency);
-                SetUIAom2EnabledState(dataStore.aom2Enabled);
-                SetUIAom2rfAmplitude(dataStore.aom2rfAmplitude);
-                SetUIAom2rfFrequency(dataStore.aom2rfFrequency);
-                SetUIAom3EnabledState(dataStore.aom3Enabled);
-                SetUIAom3rfAmplitude(dataStore.aom3rfAmplitude);
-                SetUIAom3rfFrequency(dataStore.aom3rfFrequency);
-                SetUICoil0Current(dataStore.coil0Current);
-                SetUICoil1Current(dataStore.coil1Current);
+                setUIAom0EnabledState(dataStore.aom0Enabled);
+                setUIAom0rfAmplitude(dataStore.aom0rfAmplitude);
+                setUIAom0rfFrequency(dataStore.aom0rfFrequency);
+                setUIAom1EnabledState(dataStore.aom1Enabled);
+                setUIAom1rfAmplitude(dataStore.aom1rfAmplitude);
+                setUIAom1rfFrequency(dataStore.aom1rfFrequency);
+                setUIAom2EnabledState(dataStore.aom2Enabled);
+                setUIAom2rfAmplitude(dataStore.aom2rfAmplitude);
+                setUIAom2rfFrequency(dataStore.aom2rfFrequency);
+                setUIAom3EnabledState(dataStore.aom3Enabled);
+                setUIAom3rfAmplitude(dataStore.aom3rfAmplitude);
+                setUIAom3rfFrequency(dataStore.aom3rfFrequency);
+                setUICoil0Current(dataStore.coil0Current);
+                setUICoil1Current(dataStore.coil1Current);
+
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to load settings"); }
@@ -419,7 +422,7 @@ namespace SympatheticHardwareControl
             SetDigitalLine("aom0Enable", value);
             return value;
         }
-        public void SetUIAom0EnabledState(bool value)
+        private void setUIAom0EnabledState(bool value)
         {
             controlWindow.SetAom0EnabledState(value);            
         }
@@ -431,7 +434,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom0rfAmplitudeTask, value);
             return value;
         }
-        public void SetUIAom0rfAmplitude(double value)
+        private void setUIAom0rfAmplitude(double value)
         {
             controlWindow.SetAom0rfAmplitude(value);
         }
@@ -443,7 +446,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom0rfFrequencyTask, value);
             return value;
         }
-        public void SetUIAom0rfFrequency(double value)
+        private void setUIAom0rfFrequency(double value)
         {
             controlWindow.SetAom0rfFrequency(value);
         }
@@ -457,7 +460,7 @@ namespace SympatheticHardwareControl
             SetDigitalLine("aom1Enable", value);
             return value;
         }
-        public void SetUIAom1EnabledState(bool value)
+        private void setUIAom1EnabledState(bool value)
         {
             controlWindow.SetAom1EnabledState(value);
         }
@@ -469,7 +472,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom1rfAmplitudeTask, value);
             return value;
         }
-        public void SetUIAom1rfAmplitude(double value)
+        private void setUIAom1rfAmplitude(double value)
         {
             controlWindow.SetAom1rfAmplitude(value);
         }
@@ -481,7 +484,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom1rfFrequencyTask, value);
             return value;
         }
-        public void SetUIAom1rfFrequency(double value)
+        private void setUIAom1rfFrequency(double value)
         {
             controlWindow.SetAom1rfFrequency(value);
         }
@@ -495,7 +498,7 @@ namespace SympatheticHardwareControl
             dataStore.aom2Enabled = value;
             return value;
         }
-        public void SetUIAom2EnabledState(bool value)
+        private void setUIAom2EnabledState(bool value)
         {
             controlWindow.SetAom2EnabledState(value);
         }
@@ -507,7 +510,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom2rfAmplitudeTask, value);
             return value;
         }
-        public void SetUIAom2rfAmplitude(double value)
+        private void setUIAom2rfAmplitude(double value)
         {
             controlWindow.SetAom2rfAmplitude(value);
         }
@@ -519,7 +522,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom2rfFrequencyTask, value);
             return value;
         }
-        public void SetUIAom2rfFrequency(double value)
+        private void setUIAom2rfFrequency(double value)
         {
             controlWindow.SetAom2rfFrequency(value);
         }
@@ -533,7 +536,7 @@ namespace SympatheticHardwareControl
             SetDigitalLine("aom3Enable", value);
             return value;
         }
-        public void SetUIAom3EnabledState(bool value)
+        private void setUIAom3EnabledState(bool value)
         {
             controlWindow.SetAom3EnabledState(value);
         }
@@ -545,7 +548,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom3rfAmplitudeTask, value);
             return value;
         }
-        public void SetUIAom3rfAmplitude(double value)
+        private void setUIAom3rfAmplitude(double value)
         {
             controlWindow.SetAom3rfAmplitude(value);
         }
@@ -557,7 +560,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(aom3rfFrequencyTask, value);
             return value;
         }
-        public void SetUIAom3rfFrequency(double value)
+        private void setUIAom3rfFrequency(double value)
         {
             controlWindow.SetAom3rfFrequency(value);
         }
@@ -569,7 +572,7 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(coil0CurrentTask, value);
             return value;
         }
-        public void SetUICoil0Current(double value)
+        private void setUICoil0Current(double value)
         {
             controlWindow.SetCoil0Current(value);
         }
@@ -581,14 +584,14 @@ namespace SympatheticHardwareControl
             SetAnalogOutput(coil1CurrentTask, value);
             return value;
         }
-        public void SetUICoil1Current(double value)
+        private void setUICoil1Current(double value)
         {
             controlWindow.SetCoil1Current(value);
         }
 
         #endregion
 
-        #region Manging the controller's State
+        #region Manging the controller's state
 
         public void StopManualControl()
         {
@@ -784,7 +787,7 @@ namespace SympatheticHardwareControl
         
         private void streamAndDisplay()
         {
-            
+           
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
@@ -841,6 +844,8 @@ namespace SympatheticHardwareControl
         }
         public byte[,] GrabImage(string cameraAttributesPath)
         {
+                imageWindow.Show();
+
             VisionImage image = new VisionImage();
             armCameraAndWait(image, cameraAttributesPath);
             imageWindow.Image = image;
