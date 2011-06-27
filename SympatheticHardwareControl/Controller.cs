@@ -84,6 +84,7 @@ namespace SympatheticHardwareControl
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
         ImageViewerWindow imageWindow;
+        HardwareMonitorWindow monitorWindow;
         
         //private bool sHCUIControl;
         public enum SHCUIControlState {OFF, LOCAL, REMOTE};
@@ -140,7 +141,10 @@ namespace SympatheticHardwareControl
             imageWindow = new ImageViewerWindow();
             imageWindow.controller = this;
 
+            monitorWindow = new HardwareMonitorWindow();
+            monitorWindow.controller = this;
 
+            monitorWindow.Show();
 
             HCState = SHCUIControlState.OFF;
 
@@ -793,10 +797,11 @@ namespace SympatheticHardwareControl
             for (; ; )
             {
                 cam0Control.Session.Grab(image, true);
-                imageWindow.Image = image;
+                
 
                 lock (streamStopLock)
                 {
+                    imageWindow.Image = image;
                     if (stopStream)
                     {
                         stopStream = false;
@@ -855,6 +860,23 @@ namespace SympatheticHardwareControl
         public void GrabImage()
         {
             GrabImage(cameraAttributesPath);
+        }
+        #endregion
+
+        #region Hardware Monitor
+        public void StartMonitoringLaserErrorSignal()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopMonitoringLaserErrorSignal()
+        {
+            throw new NotImplementedException();
+        }
+
+        public double ReadLaserErrorSignal()
+        {
+            return 3;
         }
         #endregion
     }
