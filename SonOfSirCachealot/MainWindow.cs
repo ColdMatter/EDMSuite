@@ -65,5 +65,10 @@ namespace SonOfSirCachealot
             controller.RunTest1();
         }
 
+        private void test2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.RunTest2();
+        }
+
     }
 }

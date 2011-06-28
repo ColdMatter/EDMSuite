@@ -14,7 +14,6 @@
       <Column Name="blockTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="configBytes" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Association Name="DBBlock_DBTOFChannelSet" Member="DBTOFChannelSets" ThisKey="blockID" OtherKey="blockID" Type="DBTOFChannelSet" />
-      <Association Name="DBBlock_DBDBlock" Member="DBDBlocks" ThisKey="blockID" OtherKey="blockID" Type="DBDBlock" />
     </Type>
   </Table>
   <Table Name="dbo.DBTOFChannelSets" Member="DBTOFChannelSets">
@@ -25,16 +24,6 @@
       <Column Name="FileID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="tcsData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Association Name="DBBlock_DBTOFChannelSet" Member="DBBlock" ThisKey="blockID" OtherKey="blockID" Type="DBBlock" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.DBDBlocks" Member="DBDBlocks">
-    <Type Name="DBDBlock">
-      <Column Name="dblockID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="blockID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="aTag" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="FileID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="dblockData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="DBBlock_DBDBlock" Member="DBBlock" ThisKey="blockID" OtherKey="blockID" Type="DBBlock" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

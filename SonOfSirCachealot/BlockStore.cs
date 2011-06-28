@@ -122,24 +122,28 @@ namespace SonOfSirCachealot.Database
 
         #region Querying
 
+
+
         #endregion
 
 
-        #region Tagging
+        #region Including blocks
 
-        public void AddTagToBlock(string clusterName, int blockIndex, string tag)
+        public void SetIncluded(string cluster, int clusterIndex, bool included)
         {
+            using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
+            {
+                IEnumerable<DBBlock> b = from DBBlock dbb in dc.DBBlocks
+                                         where (dbb.cluster == cluster)
+                                         && (dbb.clusterIndex == clusterIndex)
+                                         select dbb;
+                foreach (DBBlock dbb in b) dbb.include = included;
+                dc.SubmitChanges();              
+            }
         }
 
-        public void RemoveTagFromBlock(string clusterName, int blockIndex, string tag)
-        {
-        }
         #endregion
 
-
-        #region Stats
-
-        #endregion
     }
 
 }

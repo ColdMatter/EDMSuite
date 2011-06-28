@@ -32,11 +32,12 @@ namespace SonOfSirCachealot
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.statsTextBox = new System.Windows.Forms.TextBox();
             this.errorLogTextBox = new System.Windows.Forms.TextBox();
-            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.test2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +66,22 @@ namespace SonOfSirCachealot
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.test1ToolStripMenuItem,
+            this.test2ToolStripMenuItem});
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // test1ToolStripMenuItem
+            // 
+            this.test1ToolStripMenuItem.Name = "test1ToolStripMenuItem";
+            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.test1ToolStripMenuItem.Text = "Test1";
+            this.test1ToolStripMenuItem.Click += new System.EventHandler(this.test1ToolStripMenuItem_Click);
             // 
             // logTextBox
             // 
@@ -101,20 +118,12 @@ namespace SonOfSirCachealot
             this.errorLogTextBox.TabIndex = 4;
             this.errorLogTextBox.Text = "Error log";
             // 
-            // debugToolStripMenuItem
+            // test2ToolStripMenuItem
             // 
-            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.test1ToolStripMenuItem});
-            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
-            this.debugToolStripMenuItem.Text = "Debug";
-            // 
-            // test1ToolStripMenuItem
-            // 
-            this.test1ToolStripMenuItem.Name = "test1ToolStripMenuItem";
-            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.test1ToolStripMenuItem.Text = "Test1";
-            this.test1ToolStripMenuItem.Click += new System.EventHandler(this.test1ToolStripMenuItem_Click);
+            this.test2ToolStripMenuItem.Name = "test2ToolStripMenuItem";
+            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.test2ToolStripMenuItem.Text = "Test2";
+            this.test2ToolStripMenuItem.Click += new System.EventHandler(this.test2ToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -149,6 +158,7 @@ namespace SonOfSirCachealot
         private System.Windows.Forms.TextBox errorLogTextBox;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem test1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem test2ToolStripMenuItem;
     }
 }
 

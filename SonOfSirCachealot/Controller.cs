@@ -104,8 +104,13 @@ namespace SonOfSirCachealot
             //BlockStore.AddBlock("C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip");
             string datRoot = "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_";
             List<string> files = new List<string>();
-            for (int i = 0; i < 20; i++) files.Add(datRoot + i + ".zip");
+            for (int i = 0; i < 10; i++) files.Add(datRoot + i + ".zip");
             BlockStore.AddBlocks(files.ToArray());
+        }
+
+        internal void RunTest2()
+        {
+            BlockStore.SetIncluded("01Oct0900", 7, true);
         }
     }
 }

@@ -2,36 +2,23 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="BlockDatabase">
   <DataContextMoniker Name="/BlockDatabaseDataContext" />
   <nestedChildShapes>
-    <classShape Id="ec6f8b87-e22b-45c0-8840-ef3b1729323f" absoluteBounds="0.75, 1.75, 2, 2.9247054036458326">
+    <classShape Id="c8792bc7-799c-425a-ae93-5578bfc44591" absoluteBounds="0.75, 1, 2, 2.9247054036458326">
       <DataClassMoniker Name="/BlockDatabaseDataContext/DBBlock" />
       <nestedChildShapes>
-        <elementListCompartment Id="12e0da58-8c4f-43b1-bd3d-656dc6f95279" absoluteBounds="0.765, 2.21, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="14948971-644e-41d4-bca1-16035f9d9ab9" absoluteBounds="0.765, 1.46, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="7ca286dc-aa3a-444c-9062-f824a0237f7c" absoluteBounds="3.5, 1, 2, 1.7708968098958331">
+    <classShape Id="a46744af-ae85-4160-9080-dfc815d9b347" absoluteBounds="3.5, 1.5, 2, 1.7708968098958329">
       <DataClassMoniker Name="/BlockDatabaseDataContext/DBTOFChannelSet" />
       <nestedChildShapes>
-        <elementListCompartment Id="e5652ea2-5daa-466a-bf20-4a291b2f1a87" absoluteBounds="3.515, 1.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="c7e0529e-f027-4b24-80f6-da4a800e97dd" absoluteBounds="3.515, 1.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="9021e999-dbdd-41d3-b37f-0ab17813c4a2" absoluteBounds="3.5, 3.5, 2, 1.7708968098958327">
-      <DataClassMoniker Name="/BlockDatabaseDataContext/DBDBlock" />
-      <nestedChildShapes>
-        <elementListCompartment Id="fd4a603a-9873-426c-9edb-7f0d6a88c4c6" absoluteBounds="3.515, 3.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <associationConnector edgePoints="[(2.75 : 2.26044840494792); (3.5 : 2.26044840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 2.38544840494792); (3.5 : 2.38544840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/BlockDatabaseDataContext/DBBlock/DBBlock_DBTOFChannelSet" />
       <nodes>
-        <classShapeMoniker Id="ec6f8b87-e22b-45c0-8840-ef3b1729323f" />
-        <classShapeMoniker Id="7ca286dc-aa3a-444c-9062-f824a0237f7c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 4.08735270182292); (3.5 : 4.08735270182292)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/BlockDatabaseDataContext/DBBlock/DBBlock_DBDBlock" />
-      <nodes>
-        <classShapeMoniker Id="ec6f8b87-e22b-45c0-8840-ef3b1729323f" />
-        <classShapeMoniker Id="9021e999-dbdd-41d3-b37f-0ab17813c4a2" />
+        <classShapeMoniker Id="c8792bc7-799c-425a-ae93-5578bfc44591" />
+        <classShapeMoniker Id="a46744af-ae85-4160-9080-dfc815d9b347" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>
