@@ -69,23 +69,67 @@ namespace SympatheticHardwareControl
             setTextBox(laserErrorMonitorTextbox, Convert.ToString(value));
         }
 
-        public void SetChamber1Pressure(double value)
-        {
-            setTextBox(chamber1PressureTextBox, Convert.ToString(value));
-        }
-
+       
         private void laserErrorMonitorCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (laserErrorMonitorCheckBox.Checked)
             {
+                setLED(laserErrorLED, true);
                 controller.StartMonitoringLaserErrorSignal();
             }
             if (!laserErrorMonitorCheckBox.Checked)
             {
+                setLED(laserErrorLED, false);
                 controller.StopMonitoringLaserErrorSignal();
             }
         }
+        public double GetLaserErrorSignalThreshold()
+        {
+            return Double.Parse(laserLockErrorThresholdTextBox.Text);
+        }
+
+
+        public void SetChamber1Pressure(double value)
+        {
+            setTextBox(chamber1PressureTextBox, Convert.ToString(value));
+        }
+        private void chamber1PressureCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if(chamber1PressureCheckBox.Checked)
+            {
+                controller.StartChamber1PressureMonitor();
+            }
+            if (!chamber1PressureCheckBox.Checked)
+            {
+                controller.StopChamber1PressureMonitor();
+            }
+        }
+
         #endregion
+        #region Menu
+        private void startAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            laserErrorMonitorCheckBox.Checked = true;
+            chamber1PressureCheckBox.Checked = true;
+        }
+
+        private void stopAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            stopAll();
+        }
+        private void stopAll()
+        {
+            laserErrorMonitorCheckBox.Checked = false;
+            chamber1PressureCheckBox.Checked = false;
+        }
+        #endregion
+
+        private void HardwareMonitorWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            stopAll();
+        }
+
+        
 
     }
 }

@@ -69,7 +69,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pmt", multiDAQ + "/ai0", AITerminalConfiguration.Rse); //Pin 68
             AddAnalogInputChannel("lockcavity", multiDAQ + "/ai1", AITerminalConfiguration.Rse); //Pin 33
             AddAnalogInputChannel("probepower", multiDAQ + "/ai9", AITerminalConfiguration.Rse); //Pin 66
-           
+
+            AddAnalogInputChannel("laserLockErrorSignal", multiDAQ + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("chamber1Pressure", multiDAQ + "/ai3", AITerminalConfiguration.Rse);
+
             // map the analog output channels
             // Control of atoms
             AddAnalogOutputChannel("aom0amplitude", aoBoard + "/ao8");

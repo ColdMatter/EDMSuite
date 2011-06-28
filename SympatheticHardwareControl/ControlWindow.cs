@@ -115,6 +115,8 @@ namespace SympatheticHardwareControl
             this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -651,7 +653,8 @@ namespace SympatheticHardwareControl
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.manualControlToolStripMenuItem});
+            this.manualControlToolStripMenuItem,
+            this.windowsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(670, 24);
@@ -764,6 +767,21 @@ namespace SympatheticHardwareControl
             this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
+            // windowsToolStripMenuItem
+            // 
+            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hardwareMonitorToolStripMenuItem});
+            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.windowsToolStripMenuItem.Text = "Windows";
+            // 
+            // hardwareMonitorToolStripMenuItem
+            // 
+            this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
+            this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
             // ControlWindow
             // 
@@ -1232,6 +1250,16 @@ namespace SympatheticHardwareControl
 
 
 
+        #endregion
+
+        #region Other Windows
+        private ToolStripMenuItem windowsToolStripMenuItem;
+        private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
+
+        private void hardwareMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.OpenNewHardwareMonitorWindow();
+        }
         #endregion
 
 

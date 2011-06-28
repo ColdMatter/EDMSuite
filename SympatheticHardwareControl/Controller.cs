@@ -7,6 +7,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
+using System.Drawing;
+
 using NationalInstruments;
 using NationalInstruments.DAQmx;
 using NationalInstruments.UI;
@@ -39,13 +41,15 @@ namespace SympatheticHardwareControl
     public class Controller : MarshalByRefObject, CameraControlable
     {
         #region Constants
-       //Put any constants and stuff here
-        
-        private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"] 
+        //Put any constants and stuff here
+
+        private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\internalProfiles\\";
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
+
+        private static Dictionary<string,HardwareCalibration> calibrations = Environs.HardwareCalibrationLibrary.Calibrations;
 
         #endregion
 
@@ -64,6 +68,7 @@ namespace SympatheticHardwareControl
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
         //      ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 
+        //Hardware Control Tasks:
         Task aom0rfAmplitudeTask;
         Task aom0rfFrequencyTask;
         Task aom1rfAmplitudeTask;
@@ -75,19 +80,18 @@ namespace SympatheticHardwareControl
         Task coil0CurrentTask;
         Task coil1CurrentTask;
 
-        // list ALL Tasks
-        //e.g.  Task bBoxAnalogOutputTask;
-        //      Task steppingBBiasAnalogOutputTask;
-        
+        //Hardware Monitor Tasks;
+        Task laserLockErrorSignalMonitorTask;
+        Task chamber1PressureMonitorTask;
 
 
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
         ImageViewerWindow imageWindow;
         HardwareMonitorWindow monitorWindow;
-        
+
         //private bool sHCUIControl;
-        public enum SHCUIControlState {OFF, LOCAL, REMOTE};
+        public enum SHCUIControlState { OFF, LOCAL, REMOTE };
         public SHCUIControlState HCState = new SHCUIControlState();
 
         private DataStore dataStore = new DataStore();
@@ -129,6 +133,9 @@ namespace SympatheticHardwareControl
             coil0CurrentTask = CreateAnalogOutputTask("coil0Current");
             coil1CurrentTask = CreateAnalogOutputTask("coil1Current");
 
+            laserLockErrorSignalMonitorTask = CreateAnalogInputTask("laserLockErrorSignal", -10, 10);
+            chamber1PressureMonitorTask = CreateAnalogInputTask("chamber1Pressure");
+
             // make analog input tasks. "CreateAnalogInputTask" is defined later
             //e.g   probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
             //      pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
@@ -141,10 +148,8 @@ namespace SympatheticHardwareControl
             imageWindow = new ImageViewerWindow();
             imageWindow.controller = this;
 
-            monitorWindow = new HardwareMonitorWindow();
-            monitorWindow.controller = this;
 
-            monitorWindow.Show();
+
 
             HCState = SHCUIControlState.OFF;
 
@@ -170,11 +175,11 @@ namespace SympatheticHardwareControl
                 MessageBox.Show(e.Message, "Camera Initialization Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
-                
+
             }
             // things like loading saved parameters, checking status of experiment etc. should go here.
             LoadParameters(internalProfilesPath + "OffState.bin");
-            
+
         }
 
         public void Stop()
@@ -186,10 +191,15 @@ namespace SympatheticHardwareControl
             {
                 cam0Control.CloseCamera();
             }
-            catch {}
+            catch { }
             Application.Exit();
         }
-
+        public void OpenNewHardwareMonitorWindow()
+        {
+            monitorWindow = new HardwareMonitorWindow();
+            monitorWindow.controller = this;
+            monitorWindow.Show();
+        }
         #endregion
 
         #region private methods for creating un-timed Tasks/channels
@@ -221,7 +231,7 @@ namespace SympatheticHardwareControl
             return task;
         }
 
-       
+
         private Task CreateAnalogOutputTask(string channel)
         {
             //SHCAO stands for "sympathetic hardware control analog output"
@@ -239,7 +249,7 @@ namespace SympatheticHardwareControl
         // setting an analog voltage to an output
         private void SetAnalogOutput(Task task, double voltage)
         {
-           
+
             AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
             writer.WriteSingleSample(true, voltage);
             task.Control(TaskAction.Unreserve);
@@ -254,7 +264,7 @@ namespace SympatheticHardwareControl
             return val;
         }
 
-       
+
         // overload for reading multiple samples
         private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
         {
@@ -302,8 +312,8 @@ namespace SympatheticHardwareControl
         [Serializable]
         private struct DataStore
         {
-          //e.g.    public double cPlus;
-          //        public double cMinus
+            //e.g.    public double cPlus;
+            //        public double cMinus
             public double aom0rfFrequency;
             public double aom0rfAmplitude;
             public bool aom0Enabled;
@@ -319,7 +329,7 @@ namespace SympatheticHardwareControl
             public double coil0Current;
             public double coil1Current;
         }
-        
+
 
         #endregion
 
@@ -339,7 +349,7 @@ namespace SympatheticHardwareControl
                 }
             }
         }
-        
+
         // Quietly.
         public void StoreParameters()
         {
@@ -364,7 +374,7 @@ namespace SympatheticHardwareControl
             {
                 fs.Close();
             }
-            
+
         }
 
         //Load parameters when opening the controller
@@ -416,9 +426,9 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        #region Properties for controlling hardware and UI.
+        #region Controlling hardware and UI.
         //This gets/sets the values on the GUI panel
-       
+
         public bool ReadAndApplyUIAom0EnabledState()
         {
             bool value = controlWindow.ReadAom0EnabledState();
@@ -428,7 +438,7 @@ namespace SympatheticHardwareControl
         }
         private void setUIAom0EnabledState(bool value)
         {
-            controlWindow.SetAom0EnabledState(value);            
+            controlWindow.SetAom0EnabledState(value);
         }
 
         public double ReadAndApplyUIAom0rfAmplitude()
@@ -442,7 +452,7 @@ namespace SympatheticHardwareControl
         {
             controlWindow.SetAom0rfAmplitude(value);
         }
-        
+
         public double ReadAndApplyUIAom0rfFrequency()
         {
             double value = controlWindow.ReadAom0rfFrequency();
@@ -492,7 +502,7 @@ namespace SympatheticHardwareControl
         {
             controlWindow.SetAom1rfFrequency(value);
         }
-        
+
         ///
 
         public bool ReadAndApplyUIAom2EnabledState()
@@ -601,9 +611,9 @@ namespace SympatheticHardwareControl
         {
             stopAll();
             HCState = SHCUIControlState.OFF;
-            controlWindow.UpdateUIState(HCState);      
+            controlWindow.UpdateUIState(HCState);
         }
-        
+
         public void StartManualControl()
         {
             if (HCState == SHCUIControlState.OFF)
@@ -705,71 +715,71 @@ namespace SympatheticHardwareControl
         //Avoid using these. I think, there should only be a single Session per camera for the entire time the program is running.
         //I wrote these to test the camera.
         //Cameras
-       /* public const string motCamera = "cam0";
+        /* public const string motCamera = "cam0";
         
-        public void CameraSnapshot()
-        {
-            VisionImage image = new VisionImage();
-            ImaqdxSession Session = new ImaqdxSession(motCamera);
-            Session.Snap(image);
-            Session.Close();
+         public void CameraSnapshot()
+         {
+             VisionImage image = new VisionImage();
+             ImaqdxSession Session = new ImaqdxSession(motCamera);
+             Session.Snap(image);
+             Session.Close();
             
-            if (controlWindow.saveImageCheckBox.Checked == true)
-            {
-                StoreImage(image);
-            }
-            controlWindow.AttachToViewer(controlWindow.motViewer, image);
+             if (controlWindow.saveImageCheckBox.Checked == true)
+             {
+                 StoreImage(image);
+             }
+             controlWindow.AttachToViewer(controlWindow.motViewer, image);
 
-        }
+         }
 
-        public void CameraSnapshot(string dataStoreFilePath)
-        {
-            VisionImage image = new VisionImage();
-            ImaqdxSession Session = new ImaqdxSession(motCamera);
-            Session.Snap(image);
-            Session.Close();
+         public void CameraSnapshot(string dataStoreFilePath)
+         {
+             VisionImage image = new VisionImage();
+             ImaqdxSession Session = new ImaqdxSession(motCamera);
+             Session.Snap(image);
+             Session.Close();
             
-            if (controlWindow.saveImageCheckBox.Checked == true)
-            {
-                StoreImage(dataStoreFilePath, image);
-            }
+             if (controlWindow.saveImageCheckBox.Checked == true)
+             {
+                 StoreImage(dataStoreFilePath, image);
+             }
             
-            controlWindow.AttachToViewer(controlWindow.motViewer, image);
-        }
-        //streaming video
-        public object streamStopLock = new object();
-        public void CameraStream()
-        {
-            Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
-            streamThread.Start();
-        }
-        private void streamAndDisplay()
-        {
-            this.Streaming = true;
-            VisionImage image = new VisionImage();
-            ImaqdxSession Session = new ImaqdxSession(motCamera);
-            Session.ConfigureGrab();
-            controlWindow.AttachToViewer(controlWindow.motViewer, image);
-            for (; ; )
-            {
-                Session.Grab(image, true);
-                controlWindow.UpdateViewer(controlWindow.motViewer);
+             controlWindow.AttachToViewer(controlWindow.motViewer, image);
+         }
+         //streaming video
+         public object streamStopLock = new object();
+         public void CameraStream()
+         {
+             Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
+             streamThread.Start();
+         }
+         private void streamAndDisplay()
+         {
+             this.Streaming = true;
+             VisionImage image = new VisionImage();
+             ImaqdxSession Session = new ImaqdxSession(motCamera);
+             Session.ConfigureGrab();
+             controlWindow.AttachToViewer(controlWindow.motViewer, image);
+             for (; ; )
+             {
+                 Session.Grab(image, true);
+                 controlWindow.UpdateViewer(controlWindow.motViewer);
 
-                lock (streamStopLock)
-                {
-                    if (Streaming == false)
-                    {
-                        Session.Close();
-                        return;
-                    }
-                }
+                 lock (streamStopLock)
+                 {
+                     if (Streaming == false)
+                     {
+                         Session.Close();
+                         return;
+                     }
+                 }
 
-            }
-        }*/
+             }
+         }*/
         #endregion
 
         #region Camera control
-        
+
         public object streamStopLock = new object();
         public void CameraStream()
         {
@@ -788,16 +798,16 @@ namespace SympatheticHardwareControl
             cam0Control.Session.Snap(image);
             imageWindow.Image = image;
         }
-        
+
         private void streamAndDisplay()
         {
-           
+
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
             {
                 cam0Control.Session.Grab(image, true);
-                
+
 
                 lock (streamStopLock)
                 {
@@ -806,7 +816,7 @@ namespace SympatheticHardwareControl
                     {
                         stopStream = false;
                         return;
-                        
+
                     }
                 }
 
@@ -849,7 +859,7 @@ namespace SympatheticHardwareControl
         }
         public byte[,] GrabImage(string cameraAttributesPath)
         {
-                imageWindow.Show();
+            imageWindow.Show();
 
             VisionImage image = new VisionImage();
             armCameraAndWait(image, cameraAttributesPath);
@@ -864,20 +874,145 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region Hardware Monitor
+
+        #region Laser Lock Error Monitor
+        
+        public object leStopLock = new object();
+        private bool monitorLE = false;
+        public double LaserLockErrorThreshold = new double();
+
         public void StartMonitoringLaserErrorSignal()
         {
-            throw new NotImplementedException();
+            monitorLE = true;
+            Thread LLEThread = new Thread(new ThreadStart(leMonitorLoop));
+            LLEThread.Start();
+        }
+        
+
+        private double getLaserThresholdFromUI()
+        {
+            return monitorWindow.GetLaserErrorSignalThreshold();
         }
 
+        private void leMonitorLoop()
+        {
+            Color ledColor = new Color();
+            while (monitorLE)
+            {
+                Thread.Sleep(1000);
+
+                LaserLockErrorThreshold = getLaserThresholdFromUI();
+
+                double error = ReadLaserErrorSignal();
+                
+                bool isLocked = isLaserLocked(LaserLockErrorThreshold, error);
+                
+                if (isLocked)
+                {
+                    ledColor = Color.LightGreen;
+                }
+                else
+                {
+                    ledColor = Color.Red;
+                    MessageBox.Show("Careful! Laser appears to be unlocked!");
+                }
+                lock (leStopLock)
+                {
+
+                    monitorWindow.SetLaserErrorSignal(error, ledColor);
+                    if (!monitorLE)
+                    {
+                        return;
+                    }
+                }
+
+            }
+        }
+        private bool isLaserLocked(double threshold, double error)
+        {
+            if (-threshold <= error && error <= threshold)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
         public void StopMonitoringLaserErrorSignal()
         {
-            throw new NotImplementedException();
+            monitorLE = false;
         }
 
         public double ReadLaserErrorSignal()
         {
-            return 3;
+            double es = 10;
+            try
+            {
+                es = ReadAnalogInput(laserLockErrorSignalMonitorTask);
+            }
+            catch
+            {
+            }
+            return es;
         }
         #endregion
+        #region Pressure Gauges
+
+        private bool monitorC1P = false;
+        public object c1pStopLock = new object();
+
+
+        public void StartChamber1PressureMonitor()
+        {
+            monitorC1P = true;
+            Thread C1PThread = new Thread(new ThreadStart(chamber1PressureMonitorLoop));
+            C1PThread.Start();
+        }
+
+
+        private void chamber1PressureMonitorLoop()
+        {
+            while (monitorC1P)
+            {
+                Thread.Sleep(1000);
+                double voltage = ReadChannel1Pressure();                
+                lock (c1pStopLock)
+                {
+                    double pressure = 
+                        calibrations["chamber1Pressure"].ConvertFromVoltage(voltage);
+                    monitorWindow.SetChamber1Pressure(pressure);
+                    if (!monitorC1P)
+                    {
+                        return;
+                    }
+                }
+
+            }
+        }
+
+        public double ReadChannel1Pressure()
+        {
+            double value = 10;
+            try
+            {
+                value = ReadAnalogInput(laserLockErrorSignalMonitorTask);
+            }
+            catch
+            {
+            }
+            return value;
+        }
+
+        public void StopChamber1PressureMonitor()
+        {
+            monitorC1P = false;
+        }
+
+        #endregion
+
+        #endregion
+
     }
 }
