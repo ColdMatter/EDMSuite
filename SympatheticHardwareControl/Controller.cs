@@ -38,7 +38,7 @@ namespace SympatheticHardwareControl
     /// it can load a set a parameters to the panel (which then gets applied to hardware in the usual way).
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject, CameraControlable
+    public class Controller : MarshalByRefObject, CameraControlable, HardwareReportable
     {
         #region Constants
         //Put any constants and stuff here
@@ -49,8 +49,7 @@ namespace SympatheticHardwareControl
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
 
-        private static Dictionary<string,HardwareCalibration> calibrations = Environs.HardwareCalibrationLibrary.Calibrations;
-
+        private static Hashtable calibrations = Environs.Hardware.Calibrations;
         #endregion
 
         #region Setup
@@ -876,7 +875,7 @@ namespace SympatheticHardwareControl
         #region Hardware Monitor
 
         #region Laser Lock Error Monitor
-        
+
         public object leStopLock = new object();
         private bool monitorLE = false;
         public double LaserLockErrorThreshold = new double();
@@ -958,6 +957,7 @@ namespace SympatheticHardwareControl
             return es;
         }
         #endregion
+
         #region Pressure Gauges
 
         private bool monitorC1P = false;
@@ -981,7 +981,7 @@ namespace SympatheticHardwareControl
                 lock (c1pStopLock)
                 {
                     double pressure = 
-                        calibrations["chamber1Pressure"].ConvertFromVoltage(voltage);
+                        ((HardwareCalibration)calibrations["chamber1Pressure"]).ConvertFromVoltage(voltage);
                     monitorWindow.SetChamber1Pressure(pressure);
                     if (!monitorC1P)
                     {
@@ -1012,6 +1012,17 @@ namespace SympatheticHardwareControl
 
         #endregion
 
+        #endregion
+
+        #region Remote Access for Hardware Monitor
+
+        public Dictionary<String, Object> GetHardwareReport()
+        {
+            Dictionary<String, Object> report = new Dictionary<String, Object>();
+            report["laserLockErrorSignal"] = ReadLaserErrorSignal();
+            report["chamber1Pressure"] = ReadChannel1Pressure();
+            return report;
+        }
         #endregion
 
     }

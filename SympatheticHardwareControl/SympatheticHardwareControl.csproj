@@ -101,6 +101,7 @@
     <Compile Include="HardwareMonitorWindow.Designer.cs">
       <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="HardwareReportable.cs" />
     <Compile Include="ImageFileIOManager.cs" />
     <Compile Include="ImageViewerWindow.cs">
       <SubType>Form</SubType>

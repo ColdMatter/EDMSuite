@@ -20,7 +20,7 @@ namespace DAQ
             Paths.Add("MOTMasterExePath",
                 "C:\\Experiment Control\\EDMSuite\\MOTMaster\\bin\\Sympathetic\\");
             Paths.Add("CameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\cameraAttributes.txt");
-
+            Paths.Add("HardwareClassPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\PXISympatheticHardware.cs");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

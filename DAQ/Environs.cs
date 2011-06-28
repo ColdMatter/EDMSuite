@@ -26,7 +26,7 @@ namespace DAQ.Environment
         /// <summary>
         /// This is where calibrations for specific experiments go.
         /// </summary>
-        public static HardwareCalibrationLibrary HardwareCalibrationLibrary;
+        //public static HardwareCalibrationLibrary HardwareCalibrationLibrary;
 
 		/// <summary>
 		/// This hashtable stores information about the system (as Strings). You can put
@@ -166,7 +166,6 @@ namespace DAQ.Environment
                 case "PH-REQUIEM":
                     Hardware = new PXISympatheticHardware();
                     FileSystem = new RequiemFileSystem();
-                    HardwareCalibrationLibrary = new PXISympatheticHardwareCalibrations();
                     Debug = false;
                     break;
 

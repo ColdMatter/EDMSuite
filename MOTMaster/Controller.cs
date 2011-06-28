@@ -55,6 +55,8 @@ namespace MOTMaster
             motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
+        private static string
+            hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private const int
             pgClockFrequency = 10000;
         private const int
@@ -66,6 +68,7 @@ namespace MOTMaster
         DAQmxAnalogPatternGenerator apg;
 
         CameraControlable camera;
+        HardwareReportable hardwareReporter;
 
         MOTMasterDataIOHelper ioHelper;
 
@@ -92,6 +95,10 @@ namespace MOTMaster
 
             camera = (CameraControlable)Activator.GetObject(typeof(CameraControlable),
                 "tcp://localhost:1180/controller.rem");
+
+            hardwareReporter = (HardwareReportable)Activator.GetObject(typeof(HardwareReportable),
+                "tcp://localhost:1180/controller.rem");
+
             
             ioHelper = new MOTMasterDataIOHelper(motMasterDataPath, 
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -236,7 +243,8 @@ namespace MOTMaster
                     runPattern(sequence);
                     if (saveEnable)
                     {
-                        save(script, scriptPath, imageData);
+                        Dictionary<String, Object> report = GetHardwareReport();
+                        save(script, scriptPath, imageData, report);
                     }
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -258,10 +266,10 @@ namespace MOTMaster
         /// Functions called by the public functions which do the work.
         /// </summary>
 
-        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData)
+        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, 
-                script.Parameters, cameraAttributesPath, imageData);
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
+                script.Parameters, report, cameraAttributesPath, imageData);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
@@ -380,8 +388,20 @@ namespace MOTMaster
         {
             return camera.GrabImage(cameraAttributes);
         }
+        #endregion
 
+        #region Getting a Hardware Report
+        /// <summary>
+        /// This is the mechanism for saving experimental parameters which MM doesn't control, but that the hardware controller can monitor
+        /// (e.g. oven temperature, vacuum chamber pressure etc).
+        /// </summary>
 
+        public Dictionary<String, Object> GetHardwareReport()
+        {
+            return hardwareReporter.GetHardwareReport();
+        }
+
+        
         #endregion
 
         #region Re-Running a script (intended for reloading old scripts)

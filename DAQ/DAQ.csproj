@@ -148,9 +148,7 @@
     </Compile>
     <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="HardwareCalibration.cs" />
-    <Compile Include="HardwareCalibrationLibrary.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
-    <Compile Include="PXISympatheticHardwareCalibrations.cs" />
     <Compile Include="RainbowFileSystem.cs" />
     <Compile Include="RainbowHardware.cs" />
     <Compile Include="HP438A.cs" />

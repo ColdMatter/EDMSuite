@@ -95,7 +95,22 @@ namespace DAQ.HAL
             AddCounterChannel("pmt", multiDAQ + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", multiDAQ + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
+
+            //Calibrations
+            AddCalibration("chamber1Pressure", new chamber1PressureCalibration());
         }
 
+        public class chamber1PressureCalibration : HardwareCalibration
+        {
+            public override double ConvertFromVoltage(double voltage)
+            {
+                return 10000 * voltage;
+            }
+
+            public override double ConvertToVoltage(double otherUnit)
+            {
+                return otherUnit / 10000;
+            }
+        }
     }
 }

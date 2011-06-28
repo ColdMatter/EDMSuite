@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,27 +26,34 @@ namespace MOTMaster
 
 
 
-        public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, Dictionary<String, Object> dict,
+        public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report,
             string cameraAttributesPath, byte[,] imageData)
         {
             string fileTag = getDataID(element, batchNumber);
             System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            storeMOTMasterScript(saveFolder + fileTag + ".cs", pathToPattern);
-
+            File.Copy(pathToPattern, saveFolder + fileTag + ".cs");
+            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
             storeImage(saveFolder + fileTag + ".png", imageData);
+            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+            
             zipper.PrepareZip(fs);
             zipper.AppendToZip(saveFolder, fileTag + "_parameters.txt");
             zipper.AppendToZip(saveFolder, fileTag + ".cs");
             zipper.AppendToZip(saveFolder, fileTag + ".png");
             zipper.AppendToZip(saveFolder, fileTag + "_cameraParameters.txt");
+            zipper.AppendToZip(saveFolder, fileTag + "_hardwareClass.cs");
+            zipper.AppendToZip(saveFolder, fileTag + "_hardwareReport.txt");
             zipper.CloseZip();
             fs.Close();
             File.Delete(saveFolder + fileTag + "_parameters.txt");
             File.Delete(saveFolder + fileTag + ".cs");
             File.Delete(saveFolder + fileTag + ".png");
             File.Delete(saveFolder + fileTag + "_cameraParameters.txt");
+            File.Delete(saveFolder + fileTag + "_hardwareClass.cs");
+            File.Delete(saveFolder + fileTag + "_hardwareReport.txt");
         }
 
         public string SelectSavedScriptPathDialog()
@@ -124,12 +132,6 @@ namespace MOTMaster
             stream.Dispose();
 
         }
-
-        private void storeMOTMasterScript(String savePath, String pathToScript)
-        {
-            File.Copy(pathToScript, savePath);
-        }
-
 
         private void storeDictionary(String dataStoreFilePath, Dictionary<string, object> dict)
         {
