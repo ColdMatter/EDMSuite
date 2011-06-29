@@ -399,7 +399,7 @@ namespace MOTMaster
         }
         private bool waitUntilCameraAquisitionIsDone()
         {
-            while (camera.IsDone())
+            while (!camera.IsDone())
             { Thread.Sleep(10); }
             return true;
         }
