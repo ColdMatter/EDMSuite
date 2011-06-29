@@ -58,9 +58,9 @@ namespace MOTMaster
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private const int
-            pgClockFrequency = 10000;
+            pgClockFrequency = 1000;
         private const int
-            apgClockFrequency = 10000;
+            apgClockFrequency = 1000;
 
         ControllerWindow controllerWindow;
 
@@ -237,15 +237,18 @@ namespace MOTMaster
                
                 try
                 {
-                    byte[,] imageData = GrabImage(cameraAttributesPath);
+                    prepareCameraControl();
+                    GrabImage(cameraAttributesPath);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                     runPattern(sequence);
                     if (saveEnable)
                     {
+                        waitUntilCameraAquisitionIsDone();
                         Dictionary<String, Object> report = GetHardwareReport();
                         save(script, scriptPath, imageData, report);
                     }
+                    finishCameraControl();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -384,9 +387,29 @@ namespace MOTMaster
         /// want to fix this.
         /// </summary>
         /// 
-        public byte[,] GrabImage(string cameraAttributes)
+        public void GrabImage(string cameraAttributes)
         {
-            return camera.GrabImage(cameraAttributes);
+            Thread LLEThread = new Thread(new ThreadStart(grabImage));
+            LLEThread.Start();
+        }
+        private byte[,] imageData;
+        private void grabImage()
+        {
+            imageData = camera.GrabImage(cameraAttributesPath);
+        }
+        private bool waitUntilCameraAquisitionIsDone()
+        {
+            while (camera.IsDone())
+            { Thread.Sleep(10); }
+            return true;
+        }
+        private bool prepareCameraControl()
+        {
+            return camera.PrepareRemoteCameraControl();
+        }
+        private bool finishCameraControl()
+        {
+            return camera.FinishRemoteCameraControl();
         }
         #endregion
 

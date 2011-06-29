@@ -553,8 +553,7 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.Size = new System.Drawing.Size(225, 45);
             this.coil1GroupBox.TabIndex = 19;
             this.coil1GroupBox.TabStop = false;
-            this.coil1GroupBox.Text = "lower MOT Coil";
-            this.coil1GroupBox.Enter += new System.EventHandler(this.coil1GroupBox_Enter);
+            this.coil1GroupBox.Text = "Bias field coils";
             // 
             // coil1Label1
             // 
@@ -572,6 +571,7 @@ namespace SympatheticHardwareControl
             this.coil1CurrentTextBox.Size = new System.Drawing.Size(100, 20);
             this.coil1CurrentTextBox.TabIndex = 8;
             this.coil1CurrentTextBox.Text = "0";
+            this.coil1CurrentTextBox.TextChanged += new System.EventHandler(this.coil1CurrentTextBox_TextChanged);
             // 
             // coil1Label0
             // 
@@ -592,7 +592,7 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.Size = new System.Drawing.Size(225, 45);
             this.coil0GroupBox.TabIndex = 13;
             this.coil0GroupBox.TabStop = false;
-            this.coil0GroupBox.Text = "Upper MOT Coil";
+            this.coil0GroupBox.Text = "MOT coils";
             // 
             // coil0Label1
             // 
@@ -745,7 +745,6 @@ namespace SympatheticHardwareControl
             this.onToolStripMenuItem.Name = "onToolStripMenuItem";
             this.onToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.onToolStripMenuItem.Text = "Start";
-            this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
             // 
             // usingLastSavedValuesToolStripMenuItem
             // 
@@ -952,55 +951,82 @@ namespace SympatheticHardwareControl
 
         private void aom0rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom0rfFrequency();
+            if (aom0rfFrequencyTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom0rfFrequency();
+            }
         }
 
         private void aom0rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom0rfAmplitude();
+            if (aom0rfAmplitudeTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom0rfAmplitude();
+            }
         }
 
         private void aom1rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom1rfFrequency();
+            if (aom1rfFrequencyTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom1rfFrequency();
+            }
         }
 
         private void aom1rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom1rfAmplitude();
+            if (aom2rfAmplitudeTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom1rfAmplitude();
+            }
         }
 
         private void aom2rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom2rfFrequency();
+            if (aom2rfFrequencyTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom2rfFrequency();
+            }
         }
-
         private void aom2rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom2rfAmplitude();
+            if (aom2rfAmplitudeTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom2rfAmplitude();
+            }
         }
 
         private void aom3rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom3rfFrequency();
+            if (aom3rfFrequencyTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom3rfFrequency();
+            }
         }
 
         private void aom3rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUIAom3rfAmplitude();
+            if (aom3rfAmplitudeTextBox.Text != "")
+            {
+                controller.ReadAndApplyUIAom3rfAmplitude();
+            }
         }
 
         private void coil0CurrentTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUICoil0Current();
+            if (coil0CurrentTextBox.Text != "")
+            {
+                controller.ReadAndApplyUICoil0Current();
+            }
         }
 
-        private void coil1GroupBox_Enter(object sender, EventArgs e)
+        private void coil1CurrentTextBox_TextChanged(object sender, EventArgs e)
         {
-            controller.ReadAndApplyUICoil1Current();
+            if (coil1CurrentTextBox.Text != "")
+            {
+                controller.ReadAndApplyUICoil1Current();
+            }
         }
-
-
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (controller.HCState == Controller.SHCUIControlState.OFF)
@@ -1034,11 +1060,6 @@ namespace SympatheticHardwareControl
         private void updateAttributesButton_Click(object sender, EventArgs e)
         {
             controller.SetCameraAttributes();
-        }
-
-        private void onToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.StartManualControl();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1176,7 +1197,7 @@ namespace SympatheticHardwareControl
 
         public double ReadCoil0Current()
         {
-            return Double.Parse(coil0CurrentTextBox.Text); ;
+            return Double.Parse(coil0CurrentTextBox.Text);
         }
         public void SetCoil0Current(double value)
         {
@@ -1185,7 +1206,7 @@ namespace SympatheticHardwareControl
 
         public double ReadCoil1Current()
         {
-            return Double.Parse(coil0CurrentTextBox.Text);
+            return Double.Parse(coil1CurrentTextBox.Text);
         }
         public void SetCoil1Current(double value)
         {
@@ -1208,23 +1229,29 @@ namespace SympatheticHardwareControl
 
         private void streamButton_Click(object sender, EventArgs e)
         {
-            this.snapshotButton.Enabled = false;
-            this.streamButton.Enabled = false;
-            this.stopStreamButton.Enabled = true;
-
+            
             controller.CameraStream();
         }
 
         private void stopStreamButton_Click(object sender, EventArgs e)
         {
 
+            
+            controller.StopCameraStream();
+        }
+        public void StopStreaming()
+        {
             this.snapshotButton.Enabled = true;
             this.streamButton.Enabled = true;
             this.stopStreamButton.Enabled = false;
-
-            controller.StopCameraStream();
         }
+        public void Stream()
+        {
+            this.snapshotButton.Enabled = false;
+            this.streamButton.Enabled = false;
+            this.stopStreamButton.Enabled = true;
 
+        }
 
         #endregion
 
@@ -1236,6 +1263,7 @@ namespace SympatheticHardwareControl
             {
                 case Controller.SHCUIControlState.OFF:
                     loadParametersToolStripMenuItem.Enabled = true;
+
                     break;
 
                 case Controller.SHCUIControlState.LOCAL:
@@ -1244,6 +1272,7 @@ namespace SympatheticHardwareControl
 
                 case Controller.SHCUIControlState.REMOTE:
                     loadParametersToolStripMenuItem.Enabled = false;
+
                     break;
             }
         }
@@ -1261,6 +1290,8 @@ namespace SympatheticHardwareControl
             controller.OpenNewHardwareMonitorWindow();
         }
         #endregion
+
+      
 
 
 

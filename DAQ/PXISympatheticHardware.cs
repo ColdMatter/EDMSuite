@@ -44,12 +44,13 @@ namespace DAQ.HAL
             // Control of atoms
             AddDigitalOutputChannel("MOTMasterPatternTrigger", multiDAQ, 0, 0);
             
-            AddDigitalOutputChannel("aom0Enable", multiDAQ, 0, 16);
-            AddDigitalOutputChannel("aom1Enable", multiDAQ, 0, 17);
-            AddDigitalOutputChannel("aom2Enable", multiDAQ, 0, 18);
-            AddDigitalOutputChannel("aom3Enable", multiDAQ, 0, 19);
+            AddDigitalOutputChannel("aom0Enable", multiDAQ, 0, 0);
+            AddDigitalOutputChannel("aom1Enable", multiDAQ, 0, 1);
+            AddDigitalOutputChannel("aom2Enable", multiDAQ, 0, 2);
+            AddDigitalOutputChannel("aom3Enable", multiDAQ, 0, 3);
 
-            AddDigitalOutputChannel("CameraTrigger", multiDAQ, 0, 1);
+            AddDigitalOutputChannel("CameraTrigger", multiDAQ, 0, 4);
+            AddDigitalOutputChannel("AnalogPatternTrigger", multiDAQ, 0, 5);
 
             
             /*
@@ -86,7 +87,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("aom2frequency", aoBoard + "/ao13");
             AddAnalogOutputChannel("aom3amplitude", aoBoard + "/ao14");
             AddAnalogOutputChannel("aom3frequency", aoBoard + "/ao15");
-            AddAnalogOutputChannel("coil0Current", aoBoard + "/ao16");
+            AddAnalogOutputChannel("coil0Current", aoBoard + "/ao8");
             AddAnalogOutputChannel("coil1Current", aoBoard + "/ao17");
 
             //Control of molecules

@@ -65,7 +65,6 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="ExamplePattern.cs" />
     <Compile Include="MOTPattern.cs" />
   </ItemGroup>
   <ItemGroup>

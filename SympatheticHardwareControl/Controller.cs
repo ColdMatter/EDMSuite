@@ -45,7 +45,7 @@ namespace SympatheticHardwareControl
 
         private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\internalProfiles\\";
-        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["UntriggeredCameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
 
@@ -684,6 +684,11 @@ namespace SympatheticHardwareControl
                 controlWindow.UpdateUIState(HCState);
                 StoreParameters(internalProfilesPath + "tempParameters.bin");
             }
+            if (HCState == SHCUIControlState.LOCAL)
+            {
+                StopManualControl();
+                stopStream = true;
+            }
             else
             {
                 Console.Out.WriteLine("Controller is currently busy.");
@@ -800,7 +805,7 @@ namespace SympatheticHardwareControl
 
         private void streamAndDisplay()
         {
-
+            controlWindow.Stream();
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
@@ -825,6 +830,7 @@ namespace SympatheticHardwareControl
         public void StopCameraStream()
         {
             stopStream = true;
+            controlWindow.StopStreaming();
         }
 
         public void SetCameraAttributes()
@@ -857,17 +863,34 @@ namespace SympatheticHardwareControl
         }
         public byte[,] GrabImage(string cameraAttributesPath)
         {
-            imageWindow.Show();
 
+            isDone = false;
             VisionImage image = new VisionImage();
             armCameraAndWait(image, cameraAttributesPath);
             imageWindow.Image = image;
             PixelValue2D pval = image.ImageToArray();
+            isDone = true;
             return pval.U8;
         }
         public void GrabImage()
         {
             GrabImage(cameraAttributesPath);
+        }
+        private bool isDone;
+        public bool IsDone()
+        {
+            return isDone;
+        }
+        public bool PrepareRemoteCameraControl()
+        {
+            StartRemoteControl();
+            StopCameraStream();
+            return true;
+        }
+        public bool FinishRemoteCameraControl()
+        {
+            StopRemoteControl();
+            return true;
         }
         #endregion
 
