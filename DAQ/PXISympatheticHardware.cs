@@ -2,6 +2,7 @@
 using System.Collections;
 
 using NationalInstruments.DAQmx;
+using NationalInstruments.Analysis.Math;
 
 using DAQ.Pattern;
 
@@ -20,9 +21,11 @@ namespace DAQ.HAL
             // add the boards
             Boards.Add("multiDAQ", "/PXI1Slot4");
             Boards.Add("aoBoard", "/PXI1Slot5");
-            // this drives the rf attenuators
+            Boards.Add("usbDAQ", "/Dev1");
+
             string multiDAQ = (string)Boards["multiDAQ"];
             string aoBoard = (string)Boards["aoBoard"];
+            string usbDAQ = (string)Boards["usbDAQ"];
             
             // add things to the info
             Info.Add("PGClockLine", multiDAQ + "/PFI14");
@@ -71,7 +74,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("probepower", multiDAQ + "/ai9", AITerminalConfiguration.Rse); //Pin 66
 
             AddAnalogInputChannel("laserLockErrorSignal", multiDAQ + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("chamber1Pressure", multiDAQ + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("chamber1Pressure", usbDAQ + "/ai0", AITerminalConfiguration.Rse);
 
             // map the analog output channels
             // Control of atoms
@@ -97,20 +100,8 @@ namespace DAQ.HAL
 
 
             //Calibrations
-            AddCalibration("chamber1Pressure", new chamber1PressureCalibration());
+            AddCalibration("chamber1Pressure", new ExponentialCalibration(1.01335 * Math.Pow(10,-6), 0, 5.0037, 2.30259));
         }
 
-        public class chamber1PressureCalibration : HardwareCalibration
-        {
-            public override double ConvertFromVoltage(double voltage)
-            {
-                return 10000 * voltage;
-            }
-
-            public override double ConvertToVoltage(double otherUnit)
-            {
-                return otherUnit / 10000;
-            }
-        }
     }
 }

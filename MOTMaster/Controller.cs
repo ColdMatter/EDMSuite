@@ -70,7 +70,7 @@ namespace MOTMaster
         CameraControlable camera;
         HardwareReportable hardwareReporter;
 
-        MOTMasterDataIOHelper ioHelper;
+        MMDataIOHelper ioHelper;
 
         #endregion
 
@@ -100,7 +100,7 @@ namespace MOTMaster
                 "tcp://localhost:1180/controller.rem");
 
             
-            ioHelper = new MOTMasterDataIOHelper(motMasterDataPath, 
+            ioHelper = new MMDataIOHelper(motMasterDataPath, 
                     (string)Environs.Hardware.GetInfo("Element"));
 
             ScriptLookupAndDisplay();

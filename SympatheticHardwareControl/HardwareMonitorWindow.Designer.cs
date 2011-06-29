@@ -55,7 +55,7 @@
             this.chamber1PressureCheckBox.AutoSize = true;
             this.chamber1PressureCheckBox.Location = new System.Drawing.Point(6, 19);
             this.chamber1PressureCheckBox.Name = "chamber1PressureCheckBox";
-            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(120, 17);
+            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(115, 17);
             this.chamber1PressureCheckBox.TabIndex = 0;
             this.chamber1PressureCheckBox.Text = "Chamber 1 voltage";
             this.chamber1PressureCheckBox.UseVisualStyleBackColor = true;
@@ -66,13 +66,13 @@
             this.chamber1PressureTextBox.Location = new System.Drawing.Point(155, 17);
             this.chamber1PressureTextBox.Name = "chamber1PressureTextBox";
             this.chamber1PressureTextBox.ReadOnly = true;
-            this.chamber1PressureTextBox.Size = new System.Drawing.Size(100, 20);
+            this.chamber1PressureTextBox.Size = new System.Drawing.Size(305, 20);
             this.chamber1PressureTextBox.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(261, 20);
+            this.label1.Location = new System.Drawing.Point(466, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 2;
@@ -85,7 +85,7 @@
             this.groupBox1.Controls.Add(this.chamber1PressureTextBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 80);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(319, 133);
+            this.groupBox1.Size = new System.Drawing.Size(502, 133);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pressure Gauges";
@@ -190,14 +190,14 @@
             // startAllToolStripMenuItem
             // 
             this.startAllToolStripMenuItem.Name = "startAllToolStripMenuItem";
-            this.startAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startAllToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.startAllToolStripMenuItem.Text = "Start All";
             this.startAllToolStripMenuItem.Click += new System.EventHandler(this.startAllToolStripMenuItem_Click);
             // 
             // stopAllToolStripMenuItem
             // 
             this.stopAllToolStripMenuItem.Name = "stopAllToolStripMenuItem";
-            this.stopAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopAllToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.stopAllToolStripMenuItem.Text = "Stop All";
             this.stopAllToolStripMenuItem.Click += new System.EventHandler(this.stopAllToolStripMenuItem_Click);
             // 
@@ -211,7 +211,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "HardwareMonitorWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "HardwareMonitorWindow";
+            this.Text = "Hardware Monitor Window";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HardwareMonitorWindow_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

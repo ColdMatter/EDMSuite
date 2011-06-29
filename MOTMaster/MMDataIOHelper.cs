@@ -12,13 +12,13 @@ using System.Windows.Forms;
 
 namespace MOTMaster
 {
-    public class MOTMasterDataIOHelper
+    public class MMDataIOHelper
     {
-        MOTMasterDataZipper zipper = new MOTMasterDataZipper();
+        MMDataZipper zipper = new MMDataZipper();
         private string motMasterDataPath;
         private string element;
 
-        public MOTMasterDataIOHelper(string motMasterDataPath, string element)
+        public MMDataIOHelper(string motMasterDataPath, string element)
         {
             this.motMasterDataPath = motMasterDataPath;
             this.element = element;
@@ -31,29 +31,46 @@ namespace MOTMaster
             string cameraAttributesPath, byte[,] imageData)
         {
             string fileTag = getDataID(element, batchNumber);
+
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
+
+            putCopiesOfFilesToZip(saveFolder, fileTag);
+
+            deleteFiles(saveFolder, fileTag);
+        }
+
+        private void deleteFiles(string saveFolder, string fileTag)
+        {
+            File.Delete(saveFolder + fileTag + "_parameters.txt");
+            File.Delete(saveFolder + fileTag + "_script.cs");
+            File.Delete(saveFolder + fileTag + ".png");
+            File.Delete(saveFolder + fileTag + "_cameraParameters.txt");
+            File.Delete(saveFolder + fileTag + "_hardwareClass.cs");
+            File.Delete(saveFolder + fileTag + "_hardwareReport.txt");
+        }
+        private void putCopiesOfFilesToZip(string saveFolder, string fileTag)
+        {
             System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
-            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            File.Copy(pathToPattern, saveFolder + fileTag + ".cs");
-            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
-            storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
-            storeImage(saveFolder + fileTag + ".png", imageData);
-            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
-            
             zipper.PrepareZip(fs);
             zipper.AppendToZip(saveFolder, fileTag + "_parameters.txt");
-            zipper.AppendToZip(saveFolder, fileTag + ".cs");
+            zipper.AppendToZip(saveFolder, fileTag + "_script.cs");
             zipper.AppendToZip(saveFolder, fileTag + ".png");
             zipper.AppendToZip(saveFolder, fileTag + "_cameraParameters.txt");
             zipper.AppendToZip(saveFolder, fileTag + "_hardwareClass.cs");
             zipper.AppendToZip(saveFolder, fileTag + "_hardwareReport.txt");
             zipper.CloseZip();
             fs.Close();
-            File.Delete(saveFolder + fileTag + "_parameters.txt");
-            File.Delete(saveFolder + fileTag + ".cs");
-            File.Delete(saveFolder + fileTag + ".png");
-            File.Delete(saveFolder + fileTag + "_cameraParameters.txt");
-            File.Delete(saveFolder + fileTag + "_hardwareClass.cs");
-            File.Delete(saveFolder + fileTag + "_hardwareReport.txt");
+        }
+        private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report,
+            string cameraAttributesPath, byte[,] imageData)
+        {
+            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
+            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
+            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
+            storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
+            storeImage(saveFolder + fileTag + ".png", imageData);
+            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
 
         public string SelectSavedScriptPathDialog()

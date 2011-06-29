@@ -848,7 +848,6 @@ namespace SympatheticHardwareControl
 
         #endregion
 
-
         #region Remote Image Processing
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
         private void armCameraAndWait(VisionImage image, string cameraAttributesPath)
@@ -960,6 +959,7 @@ namespace SympatheticHardwareControl
 
         #region Pressure Gauges
 
+        #region Chamber 1
         private bool monitorC1P = false;
         public object c1pStopLock = new object();
 
@@ -981,7 +981,7 @@ namespace SympatheticHardwareControl
                 lock (c1pStopLock)
                 {
                     double pressure = 
-                        ((HardwareCalibration)calibrations["chamber1Pressure"]).ConvertFromVoltage(voltage);
+                        ((Calibration)calibrations["chamber1Pressure"]).Convert(voltage);
                     monitorWindow.SetChamber1Pressure(pressure);
                     if (!monitorC1P)
                     {
@@ -997,7 +997,7 @@ namespace SympatheticHardwareControl
             double value = 10;
             try
             {
-                value = ReadAnalogInput(laserLockErrorSignalMonitorTask);
+                value = ReadAnalogInput(chamber1PressureMonitorTask);
             }
             catch
             {
@@ -1011,7 +1011,6 @@ namespace SympatheticHardwareControl
         }
 
         #endregion
-
         #endregion
 
         #region Remote Access for Hardware Monitor
@@ -1025,5 +1024,6 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
+        #endregion
     }
 }

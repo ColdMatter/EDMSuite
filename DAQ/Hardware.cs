@@ -102,7 +102,7 @@ namespace DAQ.HAL
 			counterChannels.Add(name, new CounterChannel(name, physicalChannel));
 		}
 
-        protected void AddCalibration(String channelName, HardwareCalibration calibration)
+        protected void AddCalibration(String channelName, Calibration calibration)
         {
             calibrations.Add(channelName, calibration);
         }

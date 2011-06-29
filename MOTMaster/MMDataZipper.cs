@@ -13,7 +13,7 @@ namespace MOTMaster
     /// <summary>
     /// Summary description for MOTMasterScriptSerializer
     /// </summary>
-    public class MOTMasterDataZipper
+    public class MMDataZipper
     {
 
         private ZipOutputStream runningZipStream;
