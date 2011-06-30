@@ -16,8 +16,8 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["MOTLoadTime"] = 8000;
-        Parameters["PatternLength"] = 8001;
+        Parameters["MOTLoadTime"] = 800;
+        Parameters["PatternLength"] = 801;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -28,7 +28,7 @@ public class Patterns : MOTMasterScript
 
         p.Pulse(0, 0, 1, "AnalogPatternTrigger");  //NEVER CHANGE THIS!!!!
         
-        p.Pulse((int)Parameters["MOTLoadTime"] - 10, 0, 10, "CameraTrigger");
+        p.Pulse((int)Parameters["MOTLoadTime"] - 1, 0, 1, "CameraTrigger");
         // AddEdge[int channel, int time, bool values] 
 
         //Pulse(int startTime, int delay (Don't know what that's for), int duration, int channel )

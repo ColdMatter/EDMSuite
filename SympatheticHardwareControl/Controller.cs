@@ -676,23 +676,21 @@ namespace SympatheticHardwareControl
             refreshHardwareState();
         }
 
+        /// <summary>
+        /// Note: It saves the parameter values and the HCstate before moving to remote mode. when returning to manual control, these values are
+        /// brought back.
+        /// </summary>
+        private SHCUIControlState preRemotingState;
         public void StartRemoteControl()
         {
-            if (HCState == SHCUIControlState.OFF)
+            preRemotingState = HCState;
+            if (streaming)
             {
-                HCState = SHCUIControlState.REMOTE;
-                controlWindow.UpdateUIState(HCState);
-                StoreParameters(internalProfilesPath + "tempParameters.bin");
+                StopCameraStream();
             }
-            if (HCState == SHCUIControlState.LOCAL)
-            {
-                StopManualControl();
-                stopStream = true;
-            }
-            else
-            {
-                Console.Out.WriteLine("Controller is currently busy.");
-            }
+            StoreParameters(internalProfilesPath + "tempParameters.bin");
+            HCState = SHCUIControlState.REMOTE;
+            controlWindow.UpdateUIState(HCState);
 
         }
         public void StopRemoteControl()
@@ -700,14 +698,16 @@ namespace SympatheticHardwareControl
             try
             {
                 applyState(internalProfilesPath + "tempParameters.bin");
-                System.IO.File.Delete(internalProfilesPath + "tempParameters.bin");
+                if (System.IO.File.Exists(internalProfilesPath + "tempParameters.bin"))
+                {
+                    System.IO.File.Delete(internalProfilesPath + "tempParameters.bin");
+                }
             }
             catch (Exception)
             {
                 Console.Out.WriteLine("Unable to load Parameters.");
             }
-            stopAll();
-            HCState = SHCUIControlState.OFF;
+            HCState = preRemotingState;
             controlWindow.UpdateUIState(HCState);
         }
         #endregion
@@ -787,6 +787,7 @@ namespace SympatheticHardwareControl
         public object streamStopLock = new object();
         public void CameraStream()
         {
+            streaming = true;
             Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
             streamThread.Start();
         }
@@ -805,32 +806,36 @@ namespace SympatheticHardwareControl
 
         private void streamAndDisplay()
         {
-            controlWindow.Stream();
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
             {
-                cam0Control.Session.Grab(image, true);
-
-
+                try
+                {
+                    cam0Control.Session.Grab(image, true);
+                }
+                catch (ImaqdxException e)
+                { MessageBox.Show("You're probably already streaming...\n" + e.Message); }
+                catch (InvalidOperationException e)
+                {
+                    MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message); 
+                    streaming = false;
+                }
                 lock (streamStopLock)
                 {
                     imageWindow.Image = image;
-                    if (stopStream)
+                    if (!streaming)
                     {
-                        stopStream = false;
                         return;
-
                     }
                 }
 
             }
         }
-        private bool stopStream = false;
+        private bool streaming = false;
         public void StopCameraStream()
         {
-            stopStream = true;
-            controlWindow.StopStreaming();
+            streaming = false;
         }
 
         public void SetCameraAttributes()
@@ -872,10 +877,7 @@ namespace SympatheticHardwareControl
             isDone = true;
             return pval.U8;
         }
-        public void GrabImage()
-        {
-            GrabImage(cameraAttributesPath);
-        }
+
         private bool isDone;
         public bool IsDone()
         {
@@ -884,7 +886,6 @@ namespace SympatheticHardwareControl
         public bool PrepareRemoteCameraControl()
         {
             StartRemoteControl();
-            StopCameraStream();
             return true;
         }
         public bool FinishRemoteCameraControl()

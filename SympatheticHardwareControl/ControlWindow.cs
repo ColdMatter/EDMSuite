@@ -117,6 +117,8 @@ namespace SympatheticHardwareControl
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label1 = new System.Windows.Forms.Label();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -128,6 +130,7 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -168,7 +171,6 @@ namespace SympatheticHardwareControl
             // 
             // stopStreamButton
             // 
-            this.stopStreamButton.Enabled = false;
             this.stopStreamButton.Location = new System.Drawing.Point(168, 6);
             this.stopStreamButton.Name = "stopStreamButton";
             this.stopStreamButton.Size = new System.Drawing.Size(75, 23);
@@ -657,7 +659,7 @@ namespace SympatheticHardwareControl
             this.windowsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(670, 24);
+            this.menuStrip.Size = new System.Drawing.Size(794, 24);
             this.menuStrip.TabIndex = 15;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -782,9 +784,28 @@ namespace SympatheticHardwareControl
             this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
             this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
+            // remoteControlLED
+            // 
+            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.remoteControlLED.Location = new System.Drawing.Point(757, 55);
+            this.remoteControlLED.Name = "remoteControlLED";
+            this.remoteControlLED.Size = new System.Drawing.Size(25, 24);
+            this.remoteControlLED.TabIndex = 16;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(671, 60);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Remote Control";
+            // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(670, 264);
+            this.ClientSize = new System.Drawing.Size(794, 264);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.remoteControlLED);
             this.Controls.Add(this.shcTabs);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
@@ -811,6 +832,7 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.PerformLayout();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -827,6 +849,16 @@ namespace SympatheticHardwareControl
         private void setCheckHelper(CheckBox box, bool state)
         {
             box.Checked = state;
+        }
+
+        private void setTabEnable(TabControl box, bool state)
+        {
+            box.Invoke(new setTabEnableDelegate(setTabEnableHelper), new object[] { box, state });
+        }
+        private delegate void setTabEnableDelegate(TabControl box, bool state);
+        private void setTabEnableHelper(TabControl box, bool state)
+        {
+            box.Enabled = state;
         }
 
         private void setTextBox(TextBox box, string text)
@@ -1220,7 +1252,7 @@ namespace SympatheticHardwareControl
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            controller.GrabImage();
+            controller.CameraSnapshot();
             
         }
 
@@ -1239,19 +1271,7 @@ namespace SympatheticHardwareControl
             
             controller.StopCameraStream();
         }
-        public void StopStreaming()
-        {
-            this.snapshotButton.Enabled = true;
-            this.streamButton.Enabled = true;
-            this.stopStreamButton.Enabled = false;
-        }
-        public void Stream()
-        {
-            this.snapshotButton.Enabled = false;
-            this.streamButton.Enabled = false;
-            this.stopStreamButton.Enabled = true;
 
-        }
 
         #endregion
 
@@ -1263,15 +1283,21 @@ namespace SympatheticHardwareControl
             {
                 case Controller.SHCUIControlState.OFF:
                     loadParametersToolStripMenuItem.Enabled = true;
+                    remoteControlLED.Value = false;
+                    setTabEnable(shcTabs, true);
 
                     break;
 
                 case Controller.SHCUIControlState.LOCAL:
                     loadParametersToolStripMenuItem.Enabled = false;
+                    remoteControlLED.Value = false;
+                    setTabEnable(shcTabs, true);
                     break;
 
                 case Controller.SHCUIControlState.REMOTE:
                     loadParametersToolStripMenuItem.Enabled = false;
+                    remoteControlLED.Value = true;
+                    setTabEnable(shcTabs, false) ;
 
                     break;
             }
@@ -1290,6 +1316,9 @@ namespace SympatheticHardwareControl
             controller.OpenNewHardwareMonitorWindow();
         }
         #endregion
+
+        private Led remoteControlLED;
+        private Label label1;
 
       
 

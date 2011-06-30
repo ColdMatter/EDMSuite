@@ -58,9 +58,9 @@ namespace MOTMaster
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private const int
-            pgClockFrequency = 1000;
+            pgClockFrequency = 100;
         private const int
-            apgClockFrequency = 1000;
+            apgClockFrequency = 100;
 
         ControllerWindow controllerWindow;
 
