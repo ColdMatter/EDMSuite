@@ -617,14 +617,14 @@ namespace SympatheticHardwareControl
         {
             if (HCState == SHCUIControlState.OFF)
             {
-                controlWindow.WriteToConsole("Remoting Started!");
                 if (streaming)
                 {
                     StopCameraStream();
-                }
+                }             
                 StoreParameters(profilesPath + "tempParameters.bin", currentState);
                 HCState = SHCUIControlState.REMOTE;
                 controlWindow.UpdateUIState(HCState);
+                controlWindow.WriteToConsole("Remoting Started!");
             }
             else
             {
@@ -749,6 +749,7 @@ namespace SympatheticHardwareControl
 
         private void streamAndDisplay()
         {
+            controlWindow.WriteToConsole("Streaming from camera");
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
@@ -769,6 +770,8 @@ namespace SympatheticHardwareControl
                     imageWindow.Image = image;
                     if (!streaming)
                     {
+                        cam0Control.Session.Acquisition.Stop();
+                        controlWindow.WriteToConsole("Streaming stopped");
                         return;
                     }
                 }
