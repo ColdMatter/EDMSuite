@@ -15,13 +15,14 @@ from MOTMaster import*
 def run_script():
 	return 0
 
-def ScanMOTLoadTime():
-	count = 0
+def ScanMOTLoadDuration():
+	count = 1
 	dic = Dictionary[String,Object]()
 	mm.SetScriptPath("C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\MOTPattern.cs")
-	while(count < 14):
-		dic["MOTLoadTime"] = 1000 + 500 * count
-		dic["PatternLength"] = 1001 + 500 * count
+	while(count < 21):
+		dic["MOTLoadDuration"] = 50 * count
+		dic["PatternLength"] =  50 * count + 1
+		dic["CameraTriggerTime"] = dic["MOTLoadDuration"]
 		mm.Run(dic)
 		count = count + 1
 
