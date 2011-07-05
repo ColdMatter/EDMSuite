@@ -128,13 +128,14 @@ namespace SympatheticHardwareControl
             this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.localControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.updateHardwareButton = new System.Windows.Forms.Button();
-            this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -682,7 +683,7 @@ namespace SympatheticHardwareControl
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
@@ -696,33 +697,48 @@ namespace SympatheticHardwareControl
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
             // 
             // loadImageToolStripMenuItem
             // 
             this.loadImageToolStripMenuItem.Name = "loadImageToolStripMenuItem";
-            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadImageToolStripMenuItem.Text = "Load image";
             this.loadImageToolStripMenuItem.Click += new System.EventHandler(this.loadImageToolStripMenuItem_Click);
             // 
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveImageToolStripMenuItem.Text = "Save image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // windowsToolStripMenuItem
+            // 
+            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hardwareMonitorToolStripMenuItem});
+            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.windowsToolStripMenuItem.Text = "Windows";
+            // 
+            // hardwareMonitorToolStripMenuItem
+            // 
+            this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
+            this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
             // remoteControlLED
             // 
@@ -768,24 +784,22 @@ namespace SympatheticHardwareControl
             this.updateHardwareButton.UseVisualStyleBackColor = true;
             this.updateHardwareButton.Click += new System.EventHandler(this.updateHardwareButton_Click);
             // 
-            // hardwareMonitorToolStripMenuItem
+            // consoleRichTextBox
             // 
-            this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
-            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
-            this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
-            // 
-            // windowsToolStripMenuItem
-            // 
-            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hardwareMonitorToolStripMenuItem});
-            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
-            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.windowsToolStripMenuItem.Text = "Windows";
+            this.consoleRichTextBox.BackColor = System.Drawing.Color.Black;
+            this.consoleRichTextBox.ForeColor = System.Drawing.Color.Lime;
+            this.consoleRichTextBox.Location = new System.Drawing.Point(3, 264);
+            this.consoleRichTextBox.Name = "consoleRichTextBox";
+            this.consoleRichTextBox.ReadOnly = true;
+            this.consoleRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.consoleRichTextBox.Size = new System.Drawing.Size(791, 154);
+            this.consoleRichTextBox.TabIndex = 23;
+            this.consoleRichTextBox.Text = "";
             // 
             // ControlWindow
             // 
-            this.ClientSize = new System.Drawing.Size(794, 264);
+            this.ClientSize = new System.Drawing.Size(794, 419);
+            this.Controls.Add(this.consoleRichTextBox);
             this.Controls.Add(this.updateHardwareButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.localControlLED);
@@ -855,6 +869,16 @@ namespace SympatheticHardwareControl
         private void setTextHelper(TextBox box, string text)
         {
             box.Text = text;
+        }
+        
+        private void setRichTextBox(RichTextBox box, string text)
+        {
+            box.Invoke(new setRichTextDelegate(setRichTextHelper), new object[] { box, text });
+        }
+        private delegate void setRichTextDelegate(RichTextBox box, string text);
+        private void setRichTextHelper(RichTextBox box, string text)
+        {
+            box.AppendText(text);
         }
 
         private void setLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
@@ -930,6 +954,14 @@ namespace SympatheticHardwareControl
         private ToolStripSeparator toolStripSeparator2;
         private Button snapshotButton;
         private Button updateAttributesButton;
+        private Led remoteControlLED;
+        private Label label1;
+        private Label label2;
+        private Led localControlLED;
+        private Button updateHardwareButton;
+        private ToolStripMenuItem windowsToolStripMenuItem;
+        private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
+
 
         #endregion
 
@@ -976,6 +1008,13 @@ namespace SympatheticHardwareControl
 
         #region Public properties for controlling UI.
         //This gets/sets the values on the GUI panel
+        public void WriteToConsole(string text)
+        {
+            setRichTextBox(consoleRichTextBox, ">> " + text + "\n");
+            consoleRichTextBox.ScrollToCaret();
+           
+        }
+
 
         public double ReadAnalog(string channelName)
         {
@@ -1067,20 +1106,16 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        private Led remoteControlLED;
-        private Label label1;
-        private Label label2;
-        private Led localControlLED;
-        private Button updateHardwareButton;
+
 
         private void updateHardwareButton_Click(object sender, EventArgs e)
         {
             controller.UpdateHardware();
         }
 
-        private ToolStripMenuItem windowsToolStripMenuItem;
-        private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
+        private RichTextBox consoleRichTextBox;
 
+       
       
 
 

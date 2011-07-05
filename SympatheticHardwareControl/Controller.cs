@@ -60,10 +60,6 @@ namespace SympatheticHardwareControl
         //Cameras
         IMAQdxCameraControl cam0Control;
 
-        // list Hardware (boards on computer are already known!?)
-        //e.g.  HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
-        //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
-        //      ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
@@ -101,6 +97,7 @@ namespace SympatheticHardwareControl
             currentState = new hardwareState();
             currentState.analogs = new Dictionary<string, double>();
             currentState.digitals = new Dictionary<string, bool>();
+            
 
             CreateDigitalTask("aom0enable");
             CreateDigitalTask("aom1enable");
@@ -133,6 +130,7 @@ namespace SympatheticHardwareControl
             // make the control controlWindow
             controlWindow = new ControlWindow();
             controlWindow.controller = this;
+            
 
             imageWindow = new ImageViewerWindow();
             imageWindow.controller = this;
@@ -146,7 +144,7 @@ namespace SympatheticHardwareControl
             //Application.Run(imageWindow);
             //Application.Run(controlWindow);
 
-            Application.Run(controlWindow);
+             Application.Run(controlWindow);
 
         }
 
@@ -158,6 +156,7 @@ namespace SympatheticHardwareControl
                 cam0Control = new IMAQdxCameraControl("cam0", cameraAttributesPath);
                 cam0Control.InitializeCamera();
                 imageWindow.Show();
+
             }
             catch (ImaqdxException e)
             {
@@ -166,7 +165,10 @@ namespace SympatheticHardwareControl
                 Application.Exit();
 
             }
-
+            finally
+            {
+                setUIValues(loadParameters(profilesPath + "StoppedParameters.bin"));
+            }
 
         }
 
@@ -409,8 +411,7 @@ namespace SympatheticHardwareControl
             dialog.Title = "Load parameters";
             dialog.InitialDirectory = profilesPath;
             dialog.ShowDialog();
-            if (dialog.FileName != "") currentState = loadParameters(dialog.FileName);
-            setUIValues(currentState);
+            if (dialog.FileName != "") setUIValues(loadParameters(dialog.FileName));
         }
 
         private hardwareState loadParameters(String dataStoreFilePath)
@@ -437,22 +438,23 @@ namespace SympatheticHardwareControl
         #region Controlling hardware and UI.
         //This gets/sets the values on the GUI panel
 
-        public void manuallyApplyCurrentStateToHardware()
+        public void ApplyWholeCurrentStateToHardware()
         {
             if (HCState == SHCUIControlState.LOCAL)
             {
-                manuallyApplyAnalogsToHardware();
-                manuallyApplyDigitalsToHardware();
+                ApplyAnalogsToHardware(currentState);
+                ApplyDigitalsToHardware(currentState);
             }
             else
             {
                 MessageBox.Show("Controller state not set to Local");
             }
         }
-        private void manuallyApplyAnalogsToHardware()
+        private void ApplyAnalogsToHardware(hardwareState state)
         {
-            foreach(KeyValuePair<string, double> pairs in currentState.analogs)
+            foreach(KeyValuePair<string, double> pairs in state.analogs)
                 {
+                    
                     if(calibrations.ContainsKey(pairs.Key))
                     {
                         SetAnalogOutput(pairs.Key, pairs.Value, true);
@@ -461,31 +463,79 @@ namespace SympatheticHardwareControl
                     {
                         SetAnalogOutput(pairs.Key, pairs.Value);
                     }
+                    controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
                 }
         }
-        private void manuallyApplyDigitalsToHardware()
+        private void ApplyDigitalsToHardware(hardwareState state)
         {
-            foreach(KeyValuePair<string, bool> pairs in currentState.digitals)
+            foreach(KeyValuePair<string, bool> pairs in state.digitals)
                 {
                     SetDigitalLine(pairs.Key, pairs.Value);
+                    controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
                 }
         }
 
 
         public void UpdateHardware()
         {
-            readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
-            if (HCState == SHCUIControlState.OFF)
+            hardwareState uiState = readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
+            hardwareState differences = getChangesToState(currentState, uiState);
+            if (differences.analogs.Count != 0 || differences.digitals.Count != 0)
             {
-                HCState = SHCUIControlState.LOCAL;
-                controlWindow.UpdateUIState(HCState);
-                manuallyApplyCurrentStateToHardware();
-                HCState = SHCUIControlState.OFF;
-                controlWindow.UpdateUIState(HCState);
+                if (HCState == SHCUIControlState.OFF)
+                {
+
+                    HCState = SHCUIControlState.LOCAL;
+                    controlWindow.UpdateUIState(HCState);
+
+                    ApplyAnalogsToHardware(differences);
+                    ApplyDigitalsToHardware(differences);
+
+                    HCState = SHCUIControlState.OFF;
+                    controlWindow.UpdateUIState(HCState);
+
+                    applyChangesToControllerCopy(differences, currentState);
+
+                    controlWindow.WriteToConsole("Update finished!");
+                }
+            }
+            else
+            {
+                controlWindow.WriteToConsole("I can't find any changes to the hardware state.");
             }
         }
-
-
+        private hardwareState getChangesToState(hardwareState oldState, hardwareState newState)
+        {
+            hardwareState state = new hardwareState();
+            state.analogs = new Dictionary<string, double>();
+            state.digitals = new Dictionary<string, bool>();
+            foreach(KeyValuePair<string, double> pairs in oldState.analogs)
+            {
+                if (oldState.analogs[pairs.Key] != newState.analogs[pairs.Key])
+                {
+                    state.analogs[pairs.Key] = newState.analogs[pairs.Key];
+                }
+            }
+            foreach (KeyValuePair<string, bool> pairs in oldState.digitals)
+            {
+                if (oldState.digitals[pairs.Key] != newState.digitals[pairs.Key])
+                {
+                    state.digitals[pairs.Key] = newState.digitals[pairs.Key];
+                }
+            }
+            return state;
+        }
+        private void applyChangesToControllerCopy(hardwareState changes, hardwareState controllerCopy)
+        {
+            foreach (KeyValuePair<string, double> pairs in changes.analogs)
+            {
+                controllerCopy.analogs[pairs.Key] = changes.analogs[pairs.Key];
+            }
+            foreach (KeyValuePair<string, bool> pairs in changes.digitals)
+            {
+                controllerCopy.digitals[pairs.Key] = changes.digitals[pairs.Key];
+            }
+        }
         private hardwareState readUIValues()
         {
             return readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
@@ -565,8 +615,7 @@ namespace SympatheticHardwareControl
         {
             try
             {
-                loadParameters(profilesPath + "tempParameters.bin");
-                setUIValues(currentState);
+                setUIValues(loadParameters(profilesPath + "tempParameters.bin"));
                 UpdateHardware();
                 if (System.IO.File.Exists(profilesPath + "tempParameters.bin"))
                 {
