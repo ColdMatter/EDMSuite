@@ -247,8 +247,9 @@ namespace MOTMaster
                         waitUntilCameraAquisitionIsDone();
                         Dictionary<String, Object> report = GetHardwareReport();
                         save(script, scriptPath, imageData, report);
+                        finishCameraControl();
                     }
-                    finishCameraControl();
+                    
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -265,9 +266,6 @@ namespace MOTMaster
 
         #region private stuff
 
-        /// <summary>
-        /// Functions called by the public functions which do the work.
-        /// </summary>
 
         private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
         {

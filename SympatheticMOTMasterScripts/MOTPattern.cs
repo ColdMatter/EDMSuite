@@ -16,8 +16,9 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["MOTLoadTime"] = 800;
+        Parameters["MOTLoadDuration"] = 800;
         Parameters["PatternLength"] = 801;
+        Parameters["CameraTriggerTime"] = Parameters["MOTLoadDuration"]; //Note: Camera triggers on the falling edge of the pulse.
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -26,9 +27,9 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
-        p.Pulse(0, 0, 1, "AnalogPatternTrigger");  //NEVER CHANGE THIS!!!!
+        p.Pulse(0, 0, 1, "AnalogPatternTrigger");  //NEVER CHANGE THIS!!!! IT TRIGGERS THE ANALOG PATTERN!
         
-        p.Pulse((int)Parameters["MOTLoadTime"] - 1, 0, 1, "CameraTrigger");
+        p.Pulse((int)Parameters["CameraTriggerTime"] - 1, 0, 1, "CameraTrigger");
         // AddEdge[int channel, int time, bool values] 
 
         //Pulse(int startTime, int delay (Don't know what that's for), int duration, int channel )

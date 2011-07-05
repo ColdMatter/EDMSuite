@@ -44,10 +44,10 @@ namespace DAQ.HAL
             // Control of atoms
             AddDigitalOutputChannel("MOTMasterPatternTrigger", multiDAQ, 0, 0);
             
-            AddDigitalOutputChannel("aom0Enable", multiDAQ, 0, 0);
-            AddDigitalOutputChannel("aom1Enable", multiDAQ, 0, 1);
-            AddDigitalOutputChannel("aom2Enable", multiDAQ, 0, 2);
-            AddDigitalOutputChannel("aom3Enable", multiDAQ, 0, 3);
+            AddDigitalOutputChannel("aom0enable", multiDAQ, 0, 0);
+            AddDigitalOutputChannel("aom1enable", multiDAQ, 0, 1);
+            AddDigitalOutputChannel("aom2enable", multiDAQ, 0, 2);
+            AddDigitalOutputChannel("aom3enable", multiDAQ, 0, 3);
 
             AddDigitalOutputChannel("CameraTrigger", multiDAQ, 0, 4);
             AddDigitalOutputChannel("AnalogPatternTrigger", multiDAQ, 0, 5);
@@ -87,8 +87,8 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("aom2frequency", aoBoard + "/ao13");
             AddAnalogOutputChannel("aom3amplitude", aoBoard + "/ao14");
             AddAnalogOutputChannel("aom3frequency", aoBoard + "/ao15");
-            AddAnalogOutputChannel("coil0Current", aoBoard + "/ao8");
-            AddAnalogOutputChannel("coil1Current", aoBoard + "/ao17");
+            AddAnalogOutputChannel("coil0current", aoBoard + "/ao8");
+            AddAnalogOutputChannel("coil1current", aoBoard + "/ao17");
 
             //Control of molecules
             AddAnalogOutputChannel("laser", aoBoard + "/ao0"); // Pin 22
@@ -99,9 +99,10 @@ namespace DAQ.HAL
             AddCounterChannel("pmt", multiDAQ + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", multiDAQ + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
-
             //Calibrations
             AddCalibration("chamber1Pressure", new ExponentialCalibration(1.01335 * Math.Pow(10,-6), 0, 5.0037, 2.30259));
+            AddCalibration("aom3frequency", new PolynomialCalibration
+                (new double[] {-27.2757, 0.698297, -0.0075598, 0.000045057, -1.33872 * Math.Pow(10,-7), 1.57402* Math.Pow(10, -10)}));
         }
 
     }

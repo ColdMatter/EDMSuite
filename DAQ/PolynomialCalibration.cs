@@ -17,7 +17,7 @@ namespace DAQ.HAL
         public override double Convert(double input)
         {
             double output = 0.0;
-            for (int i = 0; i < coefficients.GetLength(0); i++)
+            for (int i = 0; i < coefficients.Length; i++)
             {
                 output = output + coefficients[i] * (Math.Pow(input, i));
             }

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
+using System.Collections.Generic;
 
 
 using NationalInstruments.UI.WindowsForms;
@@ -23,10 +24,27 @@ namespace SympatheticHardwareControl
         #region Setup
 
         public Controller controller;
+        private Dictionary<string, TextBox> AOTextBoxes = new Dictionary<string, TextBox>();
+        private Dictionary<string, CheckBox> DOCheckBoxes = new Dictionary<string, CheckBox>();
+            
 
         public ControlWindow()
         {
             InitializeComponent();
+            AOTextBoxes["aom0amplitude"] = aom0rfAmplitudeTextBox;
+            AOTextBoxes["aom1amplitude"] = aom1rfAmplitudeTextBox;
+            AOTextBoxes["aom2amplitude"] = aom2rfAmplitudeTextBox;
+            AOTextBoxes["aom3amplitude"] = aom3rfAmplitudeTextBox;
+            AOTextBoxes["aom0frequency"] = aom0rfFrequencyTextBox;
+            AOTextBoxes["aom1frequency"] = aom1rfFrequencyTextBox;
+            AOTextBoxes["aom2frequency"] = aom2rfFrequencyTextBox;
+            AOTextBoxes["aom3frequency"] = aom3rfFrequencyTextBox;
+            AOTextBoxes["coil0current"] = coil0CurrentTextBox;
+            AOTextBoxes["coil1current"] = coil1CurrentTextBox;
+            DOCheckBoxes["aom0enable"] = aom0CheckBox;
+            DOCheckBoxes["aom1enable"] = aom1CheckBox;
+            DOCheckBoxes["aom2enable"] = aom2CheckBox;
+            DOCheckBoxes["aom3enable"] = aom3CheckBox;
         }
 
         private void WindowClosing(object sender, FormClosingEventArgs e)
@@ -37,6 +55,7 @@ namespace SympatheticHardwareControl
         private void WindowLoaded(object sender, EventArgs e)
         {
             controller.WindowLoaded();
+            
         }
 
         #endregion
@@ -102,7 +121,6 @@ namespace SympatheticHardwareControl
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadLastParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -110,15 +128,13 @@ namespace SympatheticHardwareControl
             this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manualControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.usingLastSavedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.localControlLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.updateHardwareButton = new System.Windows.Forms.Button();
+            this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -131,6 +147,7 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.localControlLED)).BeginInit();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -256,7 +273,6 @@ namespace SympatheticHardwareControl
             this.aom3CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom3CheckBox.TabIndex = 10;
             this.aom3CheckBox.UseVisualStyleBackColor = true;
-            this.aom3CheckBox.CheckedChanged += new System.EventHandler(this.aom3CheckBox_CheckedChanged);
             // 
             // aom3rfFrequencyTextBox
             // 
@@ -264,8 +280,7 @@ namespace SympatheticHardwareControl
             this.aom3rfFrequencyTextBox.Name = "aom3rfFrequencyTextBox";
             this.aom3rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom3rfFrequencyTextBox.TabIndex = 0;
-            this.aom3rfFrequencyTextBox.Text = "0";
-            this.aom3rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom3rfFrequencyTextBox_TextChanged);
+            this.aom3rfFrequencyTextBox.Text = "200";
             // 
             // aom3rfAmplitudeTextBox
             // 
@@ -274,7 +289,6 @@ namespace SympatheticHardwareControl
             this.aom3rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom3rfAmplitudeTextBox.TabIndex = 8;
             this.aom3rfAmplitudeTextBox.Text = "0";
-            this.aom3rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom3rfAmplitudeTextBox_TextChanged);
             // 
             // aom3Label2
             // 
@@ -336,7 +350,6 @@ namespace SympatheticHardwareControl
             this.aom2CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom2CheckBox.TabIndex = 10;
             this.aom2CheckBox.UseVisualStyleBackColor = true;
-            this.aom2CheckBox.CheckedChanged += new System.EventHandler(this.aom2CheckBox_CheckedChanged);
             // 
             // aom2rfFrequencyTextBox
             // 
@@ -345,7 +358,6 @@ namespace SympatheticHardwareControl
             this.aom2rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom2rfFrequencyTextBox.TabIndex = 0;
             this.aom2rfFrequencyTextBox.Text = "0";
-            this.aom2rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom2rfFrequencyTextBox_TextChanged);
             // 
             // aom2rfAmplitudeTextBox
             // 
@@ -354,7 +366,6 @@ namespace SympatheticHardwareControl
             this.aom2rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom2rfAmplitudeTextBox.TabIndex = 8;
             this.aom2rfAmplitudeTextBox.Text = "0";
-            this.aom2rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom2rfAmplitudeTextBox_TextChanged);
             // 
             // aom2Label2
             // 
@@ -416,7 +427,6 @@ namespace SympatheticHardwareControl
             this.aom1CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom1CheckBox.TabIndex = 10;
             this.aom1CheckBox.UseVisualStyleBackColor = true;
-            this.aom1CheckBox.CheckedChanged += new System.EventHandler(this.aom1CheckBox_CheckedChanged);
             // 
             // aom1rfFrequencyTextBox
             // 
@@ -425,7 +435,6 @@ namespace SympatheticHardwareControl
             this.aom1rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom1rfFrequencyTextBox.TabIndex = 0;
             this.aom1rfFrequencyTextBox.Text = "0";
-            this.aom1rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom1rfFrequencyTextBox_TextChanged);
             // 
             // aom1rfAmplitudeTextBox
             // 
@@ -434,7 +443,6 @@ namespace SympatheticHardwareControl
             this.aom1rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom1rfAmplitudeTextBox.TabIndex = 8;
             this.aom1rfAmplitudeTextBox.Text = "0";
-            this.aom1rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom1rfAmplitudeTextBox_TextChanged);
             // 
             // aom1Label2
             // 
@@ -496,7 +504,6 @@ namespace SympatheticHardwareControl
             this.aom0CheckBox.Size = new System.Drawing.Size(15, 14);
             this.aom0CheckBox.TabIndex = 10;
             this.aom0CheckBox.UseVisualStyleBackColor = true;
-            this.aom0CheckBox.CheckedChanged += new System.EventHandler(this.aom0CheckBox_CheckedChanged);
             // 
             // aom0rfFrequencyTextBox
             // 
@@ -505,7 +512,6 @@ namespace SympatheticHardwareControl
             this.aom0rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
             this.aom0rfFrequencyTextBox.TabIndex = 0;
             this.aom0rfFrequencyTextBox.Text = "0";
-            this.aom0rfFrequencyTextBox.TextChanged += new System.EventHandler(this.aom0rfFrequencyTextBox_TextChanged);
             // 
             // aom0rfAmplitudeTextBox
             // 
@@ -514,7 +520,6 @@ namespace SympatheticHardwareControl
             this.aom0rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
             this.aom0rfAmplitudeTextBox.TabIndex = 8;
             this.aom0rfAmplitudeTextBox.Text = "0";
-            this.aom0rfAmplitudeTextBox.TextChanged += new System.EventHandler(this.aom0rfAmplitudeTextBox_TextChanged);
             // 
             // aom0Label2
             // 
@@ -573,7 +578,6 @@ namespace SympatheticHardwareControl
             this.coil1CurrentTextBox.Size = new System.Drawing.Size(100, 20);
             this.coil1CurrentTextBox.TabIndex = 8;
             this.coil1CurrentTextBox.Text = "0";
-            this.coil1CurrentTextBox.TextChanged += new System.EventHandler(this.coil1CurrentTextBox_TextChanged);
             // 
             // coil1Label0
             // 
@@ -612,7 +616,6 @@ namespace SympatheticHardwareControl
             this.coil0CurrentTextBox.Size = new System.Drawing.Size(100, 20);
             this.coil0CurrentTextBox.TabIndex = 8;
             this.coil0CurrentTextBox.Text = "0";
-            this.coil0CurrentTextBox.TextChanged += new System.EventHandler(this.coil0CurrentTextBox_TextChanged);
             // 
             // coil0Label0
             // 
@@ -655,7 +658,6 @@ namespace SympatheticHardwareControl
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.manualControlToolStripMenuItem,
             this.windowsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -666,7 +668,6 @@ namespace SympatheticHardwareControl
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadLastParametersToolStripMenuItem,
             this.loadParametersToolStripMenuItem,
             this.saveParametersToolStripMenuItem,
             this.toolStripSeparator1,
@@ -678,96 +679,101 @@ namespace SympatheticHardwareControl
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // loadLastParametersToolStripMenuItem
-            // 
-            this.loadLastParametersToolStripMenuItem.Name = "loadLastParametersToolStripMenuItem";
-            this.loadLastParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
-            this.loadLastParametersToolStripMenuItem.Text = "Load last parameter set";
-            this.loadLastParametersToolStripMenuItem.Click += new System.EventHandler(this.loadLastParametersToolStripMenuItem_Click);
-            // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
-            this.saveParametersToolStripMenuItem.Text = "Save parameters";
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveParametersToolStripMenuItem.Text = "Save parameters on UI";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.saveParametersToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
             // 
             // loadImageToolStripMenuItem
             // 
             this.loadImageToolStripMenuItem.Name = "loadImageToolStripMenuItem";
-            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.loadImageToolStripMenuItem.Text = "Load image";
             this.loadImageToolStripMenuItem.Click += new System.EventHandler(this.loadImageToolStripMenuItem_Click);
             // 
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.saveImageToolStripMenuItem.Text = "Save image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(159, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // manualControlToolStripMenuItem
+            // remoteControlLED
             // 
-            this.manualControlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.onToolStripMenuItem,
-            this.stopToolStripMenuItem});
-            this.manualControlToolStripMenuItem.Name = "manualControlToolStripMenuItem";
-            this.manualControlToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
-            this.manualControlToolStripMenuItem.Text = "Manual Control";
+            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.remoteControlLED.Location = new System.Drawing.Point(761, 76);
+            this.remoteControlLED.Name = "remoteControlLED";
+            this.remoteControlLED.Size = new System.Drawing.Size(25, 24);
+            this.remoteControlLED.TabIndex = 16;
             // 
-            // onToolStripMenuItem
+            // label1
             // 
-            this.onToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.usingLastSavedValuesToolStripMenuItem,
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem});
-            this.onToolStripMenuItem.Name = "onToolStripMenuItem";
-            this.onToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
-            this.onToolStripMenuItem.Text = "Start";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(675, 81);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Remote Control";
             // 
-            // usingLastSavedValuesToolStripMenuItem
+            // label2
             // 
-            this.usingLastSavedValuesToolStripMenuItem.Name = "usingLastSavedValuesToolStripMenuItem";
-            this.usingLastSavedValuesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.usingLastSavedValuesToolStripMenuItem.Text = "using last saved values";
-            this.usingLastSavedValuesToolStripMenuItem.Click += new System.EventHandler(this.usingLastSavedValuesToolStripMenuItem_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(675, 55);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(69, 13);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "Local Control";
             // 
-            // usingValuesCurrentlyOnPanelToolStripMenuItem
+            // localControlLED
             // 
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Name = "usingValuesCurrentlyOnPanelToolStripMenuItem";
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Text = "using values currently on panel";
-            this.usingValuesCurrentlyOnPanelToolStripMenuItem.Click += new System.EventHandler(this.usingValuesCurrentlyOnPanelToolStripMenuItem_Click);
+            this.localControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.localControlLED.Location = new System.Drawing.Point(761, 50);
+            this.localControlLED.Name = "localControlLED";
+            this.localControlLED.Size = new System.Drawing.Size(25, 24);
+            this.localControlLED.TabIndex = 19;
             // 
-            // stopToolStripMenuItem
+            // updateHardwareButton
             // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
-            this.stopToolStripMenuItem.Text = "Stop";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            this.updateHardwareButton.Location = new System.Drawing.Point(680, 109);
+            this.updateHardwareButton.Name = "updateHardwareButton";
+            this.updateHardwareButton.Size = new System.Drawing.Size(102, 23);
+            this.updateHardwareButton.TabIndex = 21;
+            this.updateHardwareButton.Text = "Update hardware";
+            this.updateHardwareButton.UseVisualStyleBackColor = true;
+            this.updateHardwareButton.Click += new System.EventHandler(this.updateHardwareButton_Click);
+            // 
+            // hardwareMonitorToolStripMenuItem
+            // 
+            this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
+            this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
             // windowsToolStripMenuItem
             // 
@@ -777,33 +783,12 @@ namespace SympatheticHardwareControl
             this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.windowsToolStripMenuItem.Text = "Windows";
             // 
-            // hardwareMonitorToolStripMenuItem
-            // 
-            this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
-            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
-            this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
-            // 
-            // remoteControlLED
-            // 
-            this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.remoteControlLED.Location = new System.Drawing.Point(757, 55);
-            this.remoteControlLED.Name = "remoteControlLED";
-            this.remoteControlLED.Size = new System.Drawing.Size(25, 24);
-            this.remoteControlLED.TabIndex = 16;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(671, 60);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 13);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "Remote Control";
-            // 
             // ControlWindow
             // 
             this.ClientSize = new System.Drawing.Size(794, 264);
+            this.Controls.Add(this.updateHardwareButton);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.localControlLED);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.remoteControlLED);
             this.Controls.Add(this.shcTabs);
@@ -833,6 +818,7 @@ namespace SympatheticHardwareControl
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.localControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -939,126 +925,17 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem saveParametersToolStripMenuItem;
         private ToolStripMenuItem loadImageToolStripMenuItem;
         private ToolStripMenuItem saveImageToolStripMenuItem;
-        private ToolStripMenuItem manualControlToolStripMenuItem;
-        private ToolStripMenuItem onToolStripMenuItem;
-        private ToolStripMenuItem stopToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
         private Button snapshotButton;
         private Button updateAttributesButton;
-        private ToolStripMenuItem loadLastParametersToolStripMenuItem;
-        private ToolStripMenuItem usingLastSavedValuesToolStripMenuItem;
-        private ToolStripMenuItem usingValuesCurrentlyOnPanelToolStripMenuItem;
 
         #endregion
 
         #region Click Handlers
 
-        private void loadLastParametersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.LoadLastSavedParameterValues();
-        }
 
-        private void aom0CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.ReadAndApplyUIAom0EnabledState();
-        }
-
-        private void aom1CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.ReadAndApplyUIAom1EnabledState();
-        }
-        private void aom2CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.ReadAndApplyUIAom2EnabledState();
-        }
-        private void aom3CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.ReadAndApplyUIAom3EnabledState();
-        }
-
-
-        //
-
-        private void aom0rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom0rfFrequencyTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom0rfFrequency();
-            }
-        }
-
-        private void aom0rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom0rfAmplitudeTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom0rfAmplitude();
-            }
-        }
-
-        private void aom1rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom1rfFrequencyTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom1rfFrequency();
-            }
-        }
-
-        private void aom1rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom2rfAmplitudeTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom1rfAmplitude();
-            }
-        }
-
-        private void aom2rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom2rfFrequencyTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom2rfFrequency();
-            }
-        }
-        private void aom2rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom2rfAmplitudeTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom2rfAmplitude();
-            }
-        }
-
-        private void aom3rfFrequencyTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom3rfFrequencyTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom3rfFrequency();
-            }
-        }
-
-        private void aom3rfAmplitudeTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (aom3rfAmplitudeTextBox.Text != "")
-            {
-                controller.ReadAndApplyUIAom3rfAmplitude();
-            }
-        }
-
-        private void coil0CurrentTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (coil0CurrentTextBox.Text != "")
-            {
-                controller.ReadAndApplyUICoil0Current();
-            }
-        }
-
-        private void coil1CurrentTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (coil1CurrentTextBox.Text != "")
-            {
-                controller.ReadAndApplyUICoil1Current();
-            }
-        }
         private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (controller.HCState == Controller.SHCUIControlState.OFF)
@@ -1094,157 +971,28 @@ namespace SympatheticHardwareControl
             controller.SetCameraAttributes();
         }
 
-        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.StopManualControl();
-        }
 
-        private void usingLastSavedValuesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.StartManualControlUsingLastSavedValues();
-        }
-
-        private void usingValuesCurrentlyOnPanelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.StartManualControl();
-        }
         #endregion
 
         #region Public properties for controlling UI.
         //This gets/sets the values on the GUI panel
 
-        public bool ReadAom0EnabledState()
+        public double ReadAnalog(string channelName)
         {
-            return aom0CheckBox.Checked;
+            return double.Parse(AOTextBoxes[channelName].Text);
         }
-        public void SetAom0EnabledState(bool value)
+        public void SetAnalog(string channelName, double value)
         {
-            setCheckBox(aom0CheckBox, value);
+            setTextBox(AOTextBoxes[channelName], Convert.ToString(value));
         }
-
-        public double ReadAom0rfAmplitude()
+        public bool ReadDigital(string channelName)
         {
-            return Double.Parse(aom0rfAmplitudeTextBox.Text);
+            return DOCheckBoxes[channelName].Checked;
         }
-        public void SetAom0rfAmplitude(double value)
+        public void SetDigital(string channelName, bool value)
         {
-            setTextBox(aom0rfAmplitudeTextBox, Convert.ToString(value));
+            setCheckBox(DOCheckBoxes[channelName], value);
         }
-
-        public double ReadAom0rfFrequency()
-        {
-            return Double.Parse(aom0rfFrequencyTextBox.Text); ;
-        }
-        public void SetAom0rfFrequency(double value)
-        {
-            setTextBox(aom0rfFrequencyTextBox, Convert.ToString(value));
-        }
-
-        ///
-
-        public bool ReadAom1EnabledState()
-        {
-            return aom1CheckBox.Checked;
-        }
-        public void SetAom1EnabledState(bool value)
-        {
-            setCheckBox(aom1CheckBox, value);
-        }
-
-        public double ReadAom1rfAmplitude()
-        {
-            return Double.Parse(aom1rfAmplitudeTextBox.Text);
-        }
-        public void SetAom1rfAmplitude(double value)
-        {
-            setTextBox(aom1rfAmplitudeTextBox, Convert.ToString(value));
-        }
-
-        public double ReadAom1rfFrequency()
-        {
-            return Double.Parse(aom1rfFrequencyTextBox.Text);
-        }
-        public void SetAom1rfFrequency(double value)
-        {
-            setTextBox(aom1rfFrequencyTextBox, Convert.ToString(value));
-        }
-
-        ///
-
-        public bool ReadAom2EnabledState()
-        {
-            return aom2CheckBox.Checked;
-        }
-        public void SetAom2EnabledState(bool value)
-        {
-            setCheckBox(aom2CheckBox, value);
-        }
-
-        public double ReadAom2rfAmplitude()
-        {
-            return Double.Parse(aom2rfAmplitudeTextBox.Text); ;
-        }
-        public void SetAom2rfAmplitude(double value)
-        {
-            setTextBox(aom2rfAmplitudeTextBox, Convert.ToString(value));
-        }
-
-        public double ReadAom2rfFrequency()
-        {
-            return Double.Parse(aom2rfFrequencyTextBox.Text);
-        }
-        public void SetAom2rfFrequency(double value)
-        {
-            setTextBox(aom2rfFrequencyTextBox, Convert.ToString(value));
-        }
-
-        ///
-
-        public bool ReadAom3EnabledState()
-        {
-            return aom3CheckBox.Checked; ;
-        }
-        public void SetAom3EnabledState(bool value)
-        {
-            setCheckBox(aom3CheckBox, value);
-        }
-
-        public double ReadAom3rfAmplitude()
-        {
-            return Double.Parse(aom3rfAmplitudeTextBox.Text);
-        }
-        public void SetAom3rfAmplitude(double value)
-        {
-            setTextBox(aom3rfAmplitudeTextBox, Convert.ToString(value));
-        }
-
-        public double ReadAom3rfFrequency()
-        {
-            return Double.Parse(aom3rfFrequencyTextBox.Text); ;
-        }
-        public void SetAom3rfFrequency(double value)
-        {
-            setTextBox(aom3rfFrequencyTextBox, Convert.ToString(value));
-        }
-
-        public double ReadCoil0Current()
-        {
-            return Double.Parse(coil0CurrentTextBox.Text);
-        }
-        public void SetCoil0Current(double value)
-        {
-            setTextBox(coil0CurrentTextBox, Convert.ToString(value));
-        }
-
-        public double ReadCoil1Current()
-        {
-            return Double.Parse(coil1CurrentTextBox.Text);
-        }
-        public void SetCoil1Current(double value)
-        {
-            setTextBox(coil1CurrentTextBox, Convert.ToString(value));
-        }
-
         #endregion
 
         #region Camera Control
@@ -1284,6 +1032,7 @@ namespace SympatheticHardwareControl
                 case Controller.SHCUIControlState.OFF:
                     loadParametersToolStripMenuItem.Enabled = true;
                     remoteControlLED.Value = false;
+                    localControlLED.Value = false;
                     setTabEnable(shcTabs, true);
 
                     break;
@@ -1291,12 +1040,14 @@ namespace SympatheticHardwareControl
                 case Controller.SHCUIControlState.LOCAL:
                     loadParametersToolStripMenuItem.Enabled = false;
                     remoteControlLED.Value = false;
+                    localControlLED.Value = true;
                     setTabEnable(shcTabs, true);
                     break;
 
                 case Controller.SHCUIControlState.REMOTE:
                     loadParametersToolStripMenuItem.Enabled = false;
                     remoteControlLED.Value = true;
+                    localControlLED.Value = false;
                     setTabEnable(shcTabs, false) ;
 
                     break;
@@ -1308,8 +1059,7 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region Other Windows
-        private ToolStripMenuItem windowsToolStripMenuItem;
-        private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
+
 
         private void hardwareMonitorToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1319,6 +1069,17 @@ namespace SympatheticHardwareControl
 
         private Led remoteControlLED;
         private Label label1;
+        private Label label2;
+        private Led localControlLED;
+        private Button updateHardwareButton;
+
+        private void updateHardwareButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateHardware();
+        }
+
+        private ToolStripMenuItem windowsToolStripMenuItem;
+        private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
 
       
 

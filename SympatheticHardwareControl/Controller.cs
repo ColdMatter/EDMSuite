@@ -43,8 +43,6 @@ namespace SympatheticHardwareControl
         #region Constants
         //Put any constants and stuff here
 
-        private static string internalProfilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
-            + "\\SympatheticHardwareController\\internalProfiles\\";
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["UntriggeredCameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "\\SympatheticHardwareController\\";
@@ -56,7 +54,7 @@ namespace SympatheticHardwareControl
 
 
 
-        // table of all digital tasks
+        // table of all digital analogTasks
         Hashtable digitalTasks = new Hashtable();
         public string p = cameraAttributesPath;
         //Cameras
@@ -67,23 +65,6 @@ namespace SympatheticHardwareControl
         //      Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
         //      ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
 
-        //Hardware Control Tasks:
-        Task aom0rfAmplitudeTask;
-        Task aom0rfFrequencyTask;
-        Task aom1rfAmplitudeTask;
-        Task aom1rfFrequencyTask;
-        Task aom2rfAmplitudeTask;
-        Task aom2rfFrequencyTask;
-        Task aom3rfAmplitudeTask;
-        Task aom3rfFrequencyTask;
-        Task coil0CurrentTask;
-        Task coil1CurrentTask;
-
-        //Hardware Monitor Tasks;
-        Task laserLockErrorSignalMonitorTask;
-        Task chamber1PressureMonitorTask;
-
-
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
         ImageViewerWindow imageWindow;
@@ -93,8 +74,12 @@ namespace SympatheticHardwareControl
         public enum SHCUIControlState { OFF, LOCAL, REMOTE };
         public SHCUIControlState HCState = new SHCUIControlState();
 
-        private DataStore dataStore = new DataStore();
+        //private DataStore dataStore = new DataStore();
         private class cameraNotFoundException : ArgumentException { };
+
+        
+        hardwareState currentState;
+        private Dictionary<string, Task> analogTasks;
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -108,34 +93,39 @@ namespace SympatheticHardwareControl
         public void Start()
         {
 
-            // make the digital tasks. The function "CreateDigitalTask" is defined later
+            // make the digital analogTasks. The function "CreateDigitalTask" is defined later
             //e.g   CreateDigitalTask("notEOnOff");
             //      CreateDigitalTask("eOnOff");
 
-            CreateDigitalTask("aom0Enable");
-            CreateDigitalTask("aom1Enable");
-            CreateDigitalTask("aom2Enable");
-            CreateDigitalTask("aom3Enable");
+            analogTasks = new Dictionary<string, Task>();
+            currentState = new hardwareState();
+            currentState.analogs = new Dictionary<string, double>();
+            currentState.digitals = new Dictionary<string, bool>();
 
-            // make the analog output tasks. The function "CreateAnalogOutputTask" is defined later
+            CreateDigitalTask("aom0enable");
+            CreateDigitalTask("aom1enable");
+            CreateDigitalTask("aom2enable");
+            CreateDigitalTask("aom3enable");
+
+            // make the analog output analogTasks. The function "CreateAnalogOutputTask" is defined later
             //e.g.  bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
             //      steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
 
-            aom0rfAmplitudeTask = CreateAnalogOutputTask("aom0amplitude");
-            aom0rfFrequencyTask = CreateAnalogOutputTask("aom0frequency");
-            aom1rfAmplitudeTask = CreateAnalogOutputTask("aom1amplitude");
-            aom1rfFrequencyTask = CreateAnalogOutputTask("aom1frequency");
-            aom2rfAmplitudeTask = CreateAnalogOutputTask("aom2amplitude");
-            aom2rfFrequencyTask = CreateAnalogOutputTask("aom2frequency");
-            aom3rfAmplitudeTask = CreateAnalogOutputTask("aom3amplitude");
-            aom3rfFrequencyTask = CreateAnalogOutputTask("aom3frequency");
-            coil0CurrentTask = CreateAnalogOutputTask("coil0Current");
-            coil1CurrentTask = CreateAnalogOutputTask("coil1Current");
+            CreateAnalogOutputTask("aom0amplitude");
+            CreateAnalogOutputTask("aom0frequency");
+            CreateAnalogOutputTask("aom1amplitude");
+            CreateAnalogOutputTask("aom1frequency");
+            CreateAnalogOutputTask("aom2amplitude");
+            CreateAnalogOutputTask("aom2frequency");
+            CreateAnalogOutputTask("aom3amplitude");
+            CreateAnalogOutputTask("aom3frequency");
+            CreateAnalogOutputTask("coil0current");
+            CreateAnalogOutputTask("coil1current");
+            
+            CreateAnalogInputTask("laserLockErrorSignal", -10, 10);
+            CreateAnalogInputTask("chamber1Pressure");
 
-            laserLockErrorSignalMonitorTask = CreateAnalogInputTask("laserLockErrorSignal", -10, 10);
-            chamber1PressureMonitorTask = CreateAnalogInputTask("chamber1Pressure");
-
-            // make analog input tasks. "CreateAnalogInputTask" is defined later
+            // make analog input analogTasks. "CreateAnalogInputTask" is defined later
             //e.g   probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
             //      pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
 
@@ -148,7 +138,7 @@ namespace SympatheticHardwareControl
             imageWindow.controller = this;
 
 
-
+            
 
             HCState = SHCUIControlState.OFF;
 
@@ -176,15 +166,13 @@ namespace SympatheticHardwareControl
                 Application.Exit();
 
             }
-            // things like loading saved parameters, checking status of experiment etc. should go here.
-            LoadParameters(internalProfilesPath + "OffState.bin");
+
 
         }
 
         public void Stop()
         {
             // things like saving parameters, turning things off before quitting the program should go here
-            StoreParameters();
             StopCameraStream();
             try
             {
@@ -202,79 +190,121 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region private methods for creating un-timed Tasks/channels
-        // a list of functions for creating various tasks
-        private Task CreateAnalogInputTask(string channel)
+        // a list of functions for creating various analogTasks
+        private void CreateAnalogInputTask(string channel)
         {
-            //SHCAI stands for "sympathetic hardware control analog input"
-            Task task = new Task("SHCAI" + channel);
+            analogTasks[channel] = new Task(channel);
             ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                task,
+                analogTasks[channel],
                 0,
                 10
             );
-            task.Control(TaskAction.Verify);
-            return task;
+            analogTasks[channel].Control(TaskAction.Verify);
         }
 
         // an overload to specify input range
-        private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
+        private void CreateAnalogInputTask(string channel, double lowRange, double highRange)
         {
-            //SHCAI stands for "sympathetic hardware control analog input"
-            Task task = new Task("SHCAI" + channel);
+            analogTasks[channel] = new Task(channel);
             ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                task,
+                analogTasks[channel],
                 lowRange,
                 highRange
             );
-            task.Control(TaskAction.Verify);
-            return task;
+            analogTasks[channel].Control(TaskAction.Verify);
         }
 
 
-        private Task CreateAnalogOutputTask(string channel)
+        private void CreateAnalogOutputTask(string channel)
         {
-            //SHCAO stands for "sympathetic hardware control analog output"
-            Task task = new Task("SHCAO" + channel);
+            currentState.analogs[channel] = (double)0.0;
+            analogTasks[channel] = new Task(channel);
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
             c.AddToTask(
-                task,
+                analogTasks[channel],
                 c.RangeLow,
                 c.RangeHigh
                 );
-            task.Control(TaskAction.Verify);
-            return task;
+            analogTasks[channel].Control(TaskAction.Verify);
         }
 
         // setting an analog voltage to an output
-        private void SetAnalogOutput(Task task, double voltage)
+        private void SetAnalogOutput(string channel, double voltage)
         {
-
-            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
-            writer.WriteSingleSample(true, voltage);
-            task.Control(TaskAction.Unreserve);
+            SetAnalogOutput(channel, voltage, false);
+        }
+        //Overload for using a calibration before outputting to hardware
+        private void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
+        {
+            
+            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogTasks[channelName].Stream);
+            double output;
+            if (useCalibration)
+            {
+                try
+                {
+                    output = ((Calibration)calibrations[channelName]).Convert(voltage);
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    output = voltage;
+                }
+            }
+            else
+            {
+                output = voltage;
+            }
+            try
+            {
+                writer.WriteSingleSample(true, output);
+                analogTasks[channelName].Control(TaskAction.Unreserve);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         // reading an analog voltage from input
-        private double ReadAnalogInput(Task task)
+        private double ReadAnalogInput(string channel)
         {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
-            double val = reader.ReadSingleSample();
-            task.Control(TaskAction.Unreserve);
-            return val;
+            return ReadAnalogInput(channel, false);
         }
-
-
+        private double ReadAnalogInput(string channelName, bool useCalibration)
+        {
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogTasks[channelName].Stream);
+            double val = reader.ReadSingleSample();
+            analogTasks[channelName].Control(TaskAction.Unreserve);
+            if (useCalibration)
+            {
+                try
+                {
+                    return ((Calibration)calibrations[channelName]).Convert(val);
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    return val;
+                }
+            }
+            else
+            {
+                return val;
+            }
+        }
+        
         // overload for reading multiple samples
-        private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
+        private double ReadAnalogInput(string channel, double sampleRate, int numOfSamples, bool useCalibration)
         {
             //Configure the timing parameters of the task
-            task.Timing.ConfigureSampleClock("", sampleRate,
+            analogTasks[channel].Timing.ConfigureSampleClock("", sampleRate,
                 SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, numOfSamples);
 
             //Read in multiple samples
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogTasks[channel].Stream);
             double[] valArray = reader.ReadMultiSample(numOfSamples);
-            task.Control(TaskAction.Unreserve);
+            analogTasks[channel].Control(TaskAction.Unreserve);
 
             //Calculate the average of the samples
             double sum = 0;
@@ -283,12 +313,28 @@ namespace SympatheticHardwareControl
                 sum = sum + valArray[j];
             }
             double val = sum / numOfSamples;
-            return val;
+            if (useCalibration)
+            {
+                try
+                {
+                    return ((Calibration)calibrations[channel]).Convert(val);
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    return val;
+                }
+            }
+            else
+            {
+                return val;
+            }
         }
 
 
         private void CreateDigitalTask(String name)
         {
+            currentState.digitals[name] = false;
             Task digitalTask = new Task(name);
             ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
             digitalTask.Control(TaskAction.Verify);
@@ -306,29 +352,14 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region keeping track of the things on this controller!
-        // this isn't really very classy, but it works (says Jony)
-        // declare all parameters which SHC controls here
-        [Serializable]
-        private struct DataStore
-        {
-            //e.g.    public double cPlus;
-            //        public double cMinus
-            public double aom0rfFrequency;
-            public double aom0rfAmplitude;
-            public bool aom0Enabled;
-            public double aom1rfFrequency;
-            public double aom1rfAmplitude;
-            public bool aom1Enabled;
-            public double aom2rfFrequency;
-            public double aom2rfAmplitude;
-            public bool aom2Enabled;
-            public double aom3rfFrequency;
-            public double aom3rfAmplitude;
-            public bool aom3Enabled;
-            public double coil0Current;
-            public double coil1Current;
-        }
 
+        [Serializable]
+        private struct hardwareState
+        {
+            public Dictionary<string, double> analogs;
+            public Dictionary<string, bool> digitals;
+        }
+        
 
         #endregion
 
@@ -336,6 +367,7 @@ namespace SympatheticHardwareControl
         // Saving the parameters when closing the controller
         public void SaveParametersWithDialog()
         {
+            hardwareState state = readUIValues();
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "shc parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
@@ -344,26 +376,19 @@ namespace SympatheticHardwareControl
             {
                 if (saveFileDialog1.FileName != "")
                 {
-                    StoreParameters(saveFileDialog1.FileName);
+                    StoreParameters(saveFileDialog1.FileName, state);
                 }
             }
         }
 
-        // Quietly.
-        public void StoreParameters()
-        {
-            StoreParameters(profilesPath + "parameters.bin");
-        }
-
-
-
-        public void StoreParameters(String dataStoreFilePath)
+        private void StoreParameters(String dataStoreFilePath, hardwareState state)
         {
             BinaryFormatter s = new BinaryFormatter();
             FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
             try
             {
-                s.Serialize(fs, dataStore);
+                //s.Serialize(fs, dataStore);
+                s.Serialize(fs, state);
             }
             catch (Exception)
             {
@@ -384,330 +409,175 @@ namespace SympatheticHardwareControl
             dialog.Title = "Load parameters";
             dialog.InitialDirectory = profilesPath;
             dialog.ShowDialog();
-            if (dialog.FileName != "") LoadParameters(dialog.FileName);
+            if (dialog.FileName != "") currentState = loadParameters(dialog.FileName);
+            setUIValues(currentState);
         }
 
-        private void LoadParameters(String dataStoreFilePath)
+        private hardwareState loadParameters(String dataStoreFilePath)
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
-            FileStream fs = new FileStream(dataStoreFilePath, FileMode.Open);
-            // eat any errors in the following, as it's just a convenience function
+            FileStream fs;
+            hardwareState state = new hardwareState();
+            fs = new FileStream(dataStoreFilePath, FileMode.Open);
             try
             {
-                dataStore = (DataStore)s.Deserialize(fs);
-
-                // copy parameters out of the struct
-                //e.g   CPlusVoltage = dataStore.cPlus;
-                //e.g   CMinusVoltage = dataStore.cMinus;
-                setUIAom0EnabledState(dataStore.aom0Enabled);
-                setUIAom0rfAmplitude(dataStore.aom0rfAmplitude);
-                setUIAom0rfFrequency(dataStore.aom0rfFrequency);
-                setUIAom1EnabledState(dataStore.aom1Enabled);
-                setUIAom1rfAmplitude(dataStore.aom1rfAmplitude);
-                setUIAom1rfFrequency(dataStore.aom1rfFrequency);
-                setUIAom2EnabledState(dataStore.aom2Enabled);
-                setUIAom2rfAmplitude(dataStore.aom2rfAmplitude);
-                setUIAom2rfFrequency(dataStore.aom2rfFrequency);
-                setUIAom3EnabledState(dataStore.aom3Enabled);
-                setUIAom3rfAmplitude(dataStore.aom3rfAmplitude);
-                setUIAom3rfFrequency(dataStore.aom3rfFrequency);
-                setUICoil0Current(dataStore.coil0Current);
-                setUICoil1Current(dataStore.coil1Current);
-
+                state = (hardwareState)s.Deserialize(fs);
             }
-            catch (Exception)
-            { Console.Out.WriteLine("Unable to load settings"); }
+            catch (Exception e)
+            { MessageBox.Show(e.Message); }
             finally
             {
                 fs.Close();
             }
+            return state;
         }
         #endregion
 
         #region Controlling hardware and UI.
         //This gets/sets the values on the GUI panel
 
-        public bool ReadAndApplyUIAom0EnabledState()
+        public void manuallyApplyCurrentStateToHardware()
         {
-            bool value = controlWindow.ReadAom0EnabledState();
-            dataStore.aom0Enabled = value;
-            SetDigitalLine("aom0Enable", value);
-            return value;
+            if (HCState == SHCUIControlState.LOCAL)
+            {
+                manuallyApplyAnalogsToHardware();
+                manuallyApplyDigitalsToHardware();
+            }
+            else
+            {
+                MessageBox.Show("Controller state not set to Local");
+            }
         }
-        private void setUIAom0EnabledState(bool value)
+        private void manuallyApplyAnalogsToHardware()
         {
-            controlWindow.SetAom0EnabledState(value);
+            foreach(KeyValuePair<string, double> pairs in currentState.analogs)
+                {
+                    if(calibrations.ContainsKey(pairs.Key))
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value, true);
+                    }
+                    else
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value);
+                    }
+                }
         }
-
-        public double ReadAndApplyUIAom0rfAmplitude()
+        private void manuallyApplyDigitalsToHardware()
         {
-            double value = controlWindow.ReadAom0rfAmplitude();
-            dataStore.aom0rfAmplitude = value;
-            SetAnalogOutput(aom0rfAmplitudeTask, value);
-            return value;
-        }
-        private void setUIAom0rfAmplitude(double value)
-        {
-            controlWindow.SetAom0rfAmplitude(value);
-        }
-
-        public double ReadAndApplyUIAom0rfFrequency()
-        {
-            double value = controlWindow.ReadAom0rfFrequency();
-            dataStore.aom0rfFrequency = value;
-            SetAnalogOutput(aom0rfFrequencyTask, value);
-            return value;
-        }
-        private void setUIAom0rfFrequency(double value)
-        {
-            controlWindow.SetAom0rfFrequency(value);
+            foreach(KeyValuePair<string, bool> pairs in currentState.digitals)
+                {
+                    SetDigitalLine(pairs.Key, pairs.Value);
+                }
         }
 
-        ///
 
-        public bool ReadAndApplyUIAom1EnabledState()
+        public void UpdateHardware()
         {
-            bool value = controlWindow.ReadAom1EnabledState();
-            dataStore.aom1Enabled = value;
-            SetDigitalLine("aom1Enable", value);
-            return value;
-        }
-        private void setUIAom1EnabledState(bool value)
-        {
-            controlWindow.SetAom1EnabledState(value);
-        }
-
-        public double ReadAndApplyUIAom1rfAmplitude()
-        {
-            double value = controlWindow.ReadAom1rfAmplitude();
-            dataStore.aom1rfAmplitude = value;
-            SetAnalogOutput(aom1rfAmplitudeTask, value);
-            return value;
-        }
-        private void setUIAom1rfAmplitude(double value)
-        {
-            controlWindow.SetAom1rfAmplitude(value);
-        }
-
-        public double ReadAndApplyUIAom1rfFrequency()
-        {
-            double value = controlWindow.ReadAom1rfFrequency();
-            dataStore.aom1rfFrequency = value;
-            SetAnalogOutput(aom1rfFrequencyTask, value);
-            return value;
-        }
-        private void setUIAom1rfFrequency(double value)
-        {
-            controlWindow.SetAom1rfFrequency(value);
-        }
-
-        ///
-
-        public bool ReadAndApplyUIAom2EnabledState()
-        {
-            bool value = controlWindow.ReadAom2EnabledState();
-            SetDigitalLine("aom2Enable", value);
-            dataStore.aom2Enabled = value;
-            return value;
-        }
-        private void setUIAom2EnabledState(bool value)
-        {
-            controlWindow.SetAom2EnabledState(value);
-        }
-
-        public double ReadAndApplyUIAom2rfAmplitude()
-        {
-            double value = controlWindow.ReadAom2rfAmplitude();
-            dataStore.aom2rfAmplitude = value;
-            SetAnalogOutput(aom2rfAmplitudeTask, value);
-            return value;
-        }
-        private void setUIAom2rfAmplitude(double value)
-        {
-            controlWindow.SetAom2rfAmplitude(value);
-        }
-
-        public double ReadAndApplyUIAom2rfFrequency()
-        {
-            double value = controlWindow.ReadAom2rfFrequency();
-            dataStore.aom2rfFrequency = value;
-            SetAnalogOutput(aom2rfFrequencyTask, value);
-            return value;
-        }
-        private void setUIAom2rfFrequency(double value)
-        {
-            controlWindow.SetAom2rfFrequency(value);
-        }
-
-        ///
-
-        public bool ReadAndApplyUIAom3EnabledState()
-        {
-            bool value = controlWindow.ReadAom3EnabledState();
-            dataStore.aom3Enabled = value;
-            SetDigitalLine("aom3Enable", value);
-            return value;
-        }
-        private void setUIAom3EnabledState(bool value)
-        {
-            controlWindow.SetAom3EnabledState(value);
-        }
-
-        public double ReadAndApplyUIAom3rfAmplitude()
-        {
-            double value = controlWindow.ReadAom3rfAmplitude();
-            dataStore.aom3rfAmplitude = value;
-            SetAnalogOutput(aom3rfAmplitudeTask, value);
-            return value;
-        }
-        private void setUIAom3rfAmplitude(double value)
-        {
-            controlWindow.SetAom3rfAmplitude(value);
-        }
-
-        public double ReadAndApplyUIAom3rfFrequency()
-        {
-            double value = controlWindow.ReadAom3rfFrequency();
-            dataStore.aom3rfFrequency = value;
-            SetAnalogOutput(aom3rfFrequencyTask, value);
-            return value;
-        }
-        private void setUIAom3rfFrequency(double value)
-        {
-            controlWindow.SetAom3rfFrequency(value);
-        }
-
-        public double ReadAndApplyUICoil0Current()
-        {
-            double value = controlWindow.ReadCoil0Current();
-            dataStore.coil0Current = value;
-            SetAnalogOutput(coil0CurrentTask, value);
-            return value;
-        }
-        private void setUICoil0Current(double value)
-        {
-            controlWindow.SetCoil0Current(value);
-        }
-
-        public double ReadAndApplyUICoil1Current()
-        {
-            double value = controlWindow.ReadCoil1Current();
-            dataStore.coil1Current = value;
-            SetAnalogOutput(coil1CurrentTask, value);
-            return value;
-        }
-        private void setUICoil1Current(double value)
-        {
-            controlWindow.SetCoil1Current(value);
-        }
-
-        #endregion
-
-        #region Manging the controller's state
-
-        public void StopManualControl()
-        {
-            stopAll();
-            HCState = SHCUIControlState.OFF;
-            controlWindow.UpdateUIState(HCState);
-        }
-
-        public void StartManualControl()
-        {
+            readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
             if (HCState == SHCUIControlState.OFF)
             {
                 HCState = SHCUIControlState.LOCAL;
                 controlWindow.UpdateUIState(HCState);
-                refreshHardwareState();
-            }
-            else
-            {
-                Console.Out.WriteLine("Controller is currently busy.");
-            }
-        }
-        public void StartManualControlUsingLastSavedValues()
-        {
-            if (HCState == SHCUIControlState.OFF)
-            {
-                HCState = SHCUIControlState.LOCAL;
+                manuallyApplyCurrentStateToHardware();
+                HCState = SHCUIControlState.OFF;
                 controlWindow.UpdateUIState(HCState);
-                LoadLastSavedParameterValues();
             }
-            else
+        }
+
+
+        private hardwareState readUIValues()
+        {
+            return readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
+        }
+        private hardwareState readUIValues(Dictionary<string, bool>.KeyCollection digitalKeys, 
+            Dictionary<string, double>.KeyCollection analogKeys)
+        {
+            hardwareState state = new hardwareState();
+            state.analogs = readUIAnalogs(analogKeys);
+            state.digitals = readUIDigitals(digitalKeys);
+            return state;
+        }
+        private Dictionary<string, double> readUIAnalogs(Dictionary<string, double>.KeyCollection keys)
+        {
+            Dictionary<string, double> analogs = new Dictionary<string, double>();
+            string[] keyArray = new string[keys.Count];
+            keys.CopyTo(keyArray, 0);
+            for (int i = 0; i < keys.Count; i++)
             {
-                Console.Out.WriteLine("Controller is currently busy.");
+                analogs[keyArray[i]] = controlWindow.ReadAnalog(keyArray[i]);
+            }
+            return analogs;
+        }
+        private Dictionary<string, bool> readUIDigitals(Dictionary<string, bool>.KeyCollection keys)
+        {
+            Dictionary<string, bool> digitals = new Dictionary<string,bool>();
+            string[] keyArray = new string[keys.Count];
+            keys.CopyTo(keyArray, 0);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                digitals[keyArray[i]] = controlWindow.ReadDigital(keyArray[i]);
+            }
+            return digitals;
+        }
+       
+
+        private void setUIValues(hardwareState state)
+        {
+            setUIAnalogs(state);
+            setUIDigitals(state);
+        }
+        private void setUIAnalogs(hardwareState state)
+        {
+            foreach (KeyValuePair<string, double> pairs in state.analogs)
+            {
+                    controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
             }
         }
-        public void LoadLastSavedParameterValues()
+        private void setUIDigitals(hardwareState state)
         {
-            applyState(internalProfilesPath + "LastHardwareState.bin");
+            foreach (KeyValuePair<string, bool> pairs in state.digitals)
+            {
+                controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
+            }
         }
 
-        private void refreshHardwareState()
-        {
-            ReadAndApplyUIAom0EnabledState();
-            ReadAndApplyUIAom0rfAmplitude();
-            ReadAndApplyUIAom0rfFrequency();
-            ReadAndApplyUIAom1EnabledState();
-            ReadAndApplyUIAom1rfAmplitude();
-            ReadAndApplyUIAom1rfFrequency();
-            ReadAndApplyUIAom2EnabledState();
-            ReadAndApplyUIAom2rfAmplitude();
-            ReadAndApplyUIAom2rfFrequency();
-            ReadAndApplyUIAom3EnabledState();
-            ReadAndApplyUIAom3rfAmplitude();
-            ReadAndApplyUIAom3rfFrequency();
-            ReadAndApplyUICoil0Current();
-            ReadAndApplyUICoil1Current();
-        }
-
-
-        private void stopAll()
-        {
-            StoreParameters(internalProfilesPath + "LastHardwareState.bin");
-            LoadParameters(internalProfilesPath + "OffState.bin");
-            refreshHardwareState();
-
-        }
-        private void applyState(String dataStoreFilePath)
-        {
-            LoadParameters(dataStoreFilePath);
-            refreshHardwareState();
-        }
-
-        /// <summary>
-        /// Note: It saves the parameter values and the HCstate before moving to remote mode. when returning to manual control, these values are
-        /// brought back.
-        /// </summary>
-        private SHCUIControlState preRemotingState;
+        
         public void StartRemoteControl()
         {
-            preRemotingState = HCState;
-            if (streaming)
+            if (HCState == SHCUIControlState.OFF)
             {
-                StopCameraStream();
+                if (streaming)
+                {
+                    StopCameraStream();
+                }
+                StoreParameters(profilesPath + "tempParameters.bin", currentState);
+                HCState = SHCUIControlState.REMOTE;
+                controlWindow.UpdateUIState(HCState);
             }
-            StoreParameters(internalProfilesPath + "tempParameters.bin");
-            HCState = SHCUIControlState.REMOTE;
-            controlWindow.UpdateUIState(HCState);
+            else
+            {
+                MessageBox.Show("Controller is busy");
+            }
 
         }
         public void StopRemoteControl()
         {
             try
             {
-                applyState(internalProfilesPath + "tempParameters.bin");
-                if (System.IO.File.Exists(internalProfilesPath + "tempParameters.bin"))
+                loadParameters(profilesPath + "tempParameters.bin");
+                setUIValues(currentState);
+                UpdateHardware();
+                if (System.IO.File.Exists(profilesPath + "tempParameters.bin"))
                 {
-                    System.IO.File.Delete(internalProfilesPath + "tempParameters.bin");
+                    System.IO.File.Delete(profilesPath + "tempParameters.bin");
                 }
             }
             catch (Exception)
             {
                 Console.Out.WriteLine("Unable to load Parameters.");
             }
-            HCState = preRemotingState;
+            HCState = SHCUIControlState.OFF;
             controlWindow.UpdateUIState(HCState);
         }
         #endregion
@@ -782,7 +652,7 @@ namespace SympatheticHardwareControl
          }*/
         #endregion
 
-        #region Camera control
+        #region Local camera control
 
         public object streamStopLock = new object();
         public void CameraStream()
@@ -891,6 +761,7 @@ namespace SympatheticHardwareControl
         public bool FinishRemoteCameraControl()
         {
             StopRemoteControl();
+            cam0Control.SetCameraAttributes(cameraAttributesPath);
             return true;
         }
         #endregion
@@ -972,7 +843,7 @@ namespace SympatheticHardwareControl
             double es = 10;
             try
             {
-                es = ReadAnalogInput(laserLockErrorSignalMonitorTask);
+                es = ReadAnalogInput("laserLockErrorSignal");
             }
             catch
             {
@@ -1001,11 +872,9 @@ namespace SympatheticHardwareControl
             while (monitorC1P)
             {
                 Thread.Sleep(1000);
-                double voltage = ReadChannel1Pressure();                
+                double pressure = ReadChannel1Pressure();                
                 lock (c1pStopLock)
                 {
-                    double pressure = 
-                        ((Calibration)calibrations["chamber1Pressure"]).Convert(voltage);
                     monitorWindow.SetChamber1Pressure(pressure);
                     if (!monitorC1P)
                     {
@@ -1021,7 +890,7 @@ namespace SympatheticHardwareControl
             double value = 10;
             try
             {
-                value = ReadAnalogInput(chamber1PressureMonitorTask);
+                value = ReadAnalogInput("chamber1Pressure", true);
             }
             catch
             {
