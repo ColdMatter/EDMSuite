@@ -42,7 +42,7 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
-        p.AddChannel("coil0Current");
+        p.AddChannel("coil0current");
 
         MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 

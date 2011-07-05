@@ -879,6 +879,7 @@ namespace SympatheticHardwareControl
         private void setRichTextHelper(RichTextBox box, string text)
         {
             box.AppendText(text);
+            consoleRichTextBox.ScrollToCaret();
         }
 
         private void setLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
@@ -1011,7 +1012,7 @@ namespace SympatheticHardwareControl
         public void WriteToConsole(string text)
         {
             setRichTextBox(consoleRichTextBox, ">> " + text + "\n");
-            consoleRichTextBox.ScrollToCaret();
+            
            
         }
 
@@ -1069,32 +1070,31 @@ namespace SympatheticHardwareControl
             switch (state)
             {
                 case Controller.SHCUIControlState.OFF:
-                    loadParametersToolStripMenuItem.Enabled = true;
-                    remoteControlLED.Value = false;
-                    localControlLED.Value = false;
+
+                    setLED(remoteControlLED, false);
+                    setLED(localControlLED, false);
                     setTabEnable(shcTabs, true);
 
                     break;
 
                 case Controller.SHCUIControlState.LOCAL:
-                    loadParametersToolStripMenuItem.Enabled = false;
-                    remoteControlLED.Value = false;
-                    localControlLED.Value = true;
+
+                    setLED(remoteControlLED, false);
+                    setLED(localControlLED, true);
                     setTabEnable(shcTabs, true);
                     break;
 
                 case Controller.SHCUIControlState.REMOTE:
-                    loadParametersToolStripMenuItem.Enabled = false;
-                    remoteControlLED.Value = true;
-                    localControlLED.Value = false;
+
+                    setLED(remoteControlLED, true);
+                    setLED(localControlLED, false);
                     setTabEnable(shcTabs, false) ;
 
                     break;
             }
         }
 
-
-
+       
         #endregion
 
         #region Other Windows

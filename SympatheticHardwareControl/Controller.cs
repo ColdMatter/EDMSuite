@@ -45,7 +45,7 @@ namespace SympatheticHardwareControl
 
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["UntriggeredCameraAttributesPath"];
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
-            + "\\SympatheticHardwareController\\";
+            + "SympatheticHardwareController\\";
 
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
         #endregion
@@ -168,6 +168,7 @@ namespace SympatheticHardwareControl
             finally
             {
                 setUIValues(loadParameters(profilesPath + "StoppedParameters.bin"));
+                UpdateHardware();
             }
 
         }
@@ -399,6 +400,7 @@ namespace SympatheticHardwareControl
             finally
             {
                 fs.Close();
+                controlWindow.WriteToConsole("Saved parameters to " + dataStoreFilePath);
             }
 
         }
@@ -430,6 +432,7 @@ namespace SympatheticHardwareControl
             finally
             {
                 fs.Close();
+                controlWindow.WriteToConsole("Loaded parameters from " + dataStoreFilePath);
             }
             return state;
         }
@@ -438,41 +441,29 @@ namespace SympatheticHardwareControl
         #region Controlling hardware and UI.
         //This gets/sets the values on the GUI panel
 
-        public void ApplyWholeCurrentStateToHardware()
+        
+
+        #region updating the hardware
+
+        public void ReapplyStateToHardware()
         {
-            if (HCState == SHCUIControlState.LOCAL)
+            hardwareState uiState = readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
+            if (HCState == SHCUIControlState.OFF)
             {
-                ApplyAnalogsToHardware(currentState);
-                ApplyDigitalsToHardware(currentState);
+
+                HCState = SHCUIControlState.LOCAL;
+                controlWindow.UpdateUIState(HCState);
+
+                ApplyAnalogsToHardware(uiState);
+                ApplyDigitalsToHardware(uiState);
+
+                HCState = SHCUIControlState.OFF;
+                controlWindow.UpdateUIState(HCState);
+
+                currentState = uiState;
+
+                controlWindow.WriteToConsole("Reapplied Hardware State.");
             }
-            else
-            {
-                MessageBox.Show("Controller state not set to Local");
-            }
-        }
-        private void ApplyAnalogsToHardware(hardwareState state)
-        {
-            foreach(KeyValuePair<string, double> pairs in state.analogs)
-                {
-                    
-                    if(calibrations.ContainsKey(pairs.Key))
-                    {
-                        SetAnalogOutput(pairs.Key, pairs.Value, true);
-                    }
-                    else
-                    {
-                        SetAnalogOutput(pairs.Key, pairs.Value);
-                    }
-                    controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
-                }
-        }
-        private void ApplyDigitalsToHardware(hardwareState state)
-        {
-            foreach(KeyValuePair<string, bool> pairs in state.digitals)
-                {
-                    SetDigitalLine(pairs.Key, pairs.Value);
-                    controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
-                }
         }
 
 
@@ -501,7 +492,7 @@ namespace SympatheticHardwareControl
             }
             else
             {
-                controlWindow.WriteToConsole("I can't find any changes to the hardware state.");
+                controlWindow.WriteToConsole("I can't find any changes to make. Hardware must be up to date.");
             }
         }
         private hardwareState getChangesToState(hardwareState oldState, hardwareState newState)
@@ -536,6 +527,33 @@ namespace SympatheticHardwareControl
                 controllerCopy.digitals[pairs.Key] = changes.digitals[pairs.Key];
             }
         }
+        private void ApplyAnalogsToHardware(hardwareState state)
+        {
+            foreach (KeyValuePair<string, double> pairs in state.analogs)
+            {
+
+                if (calibrations.ContainsKey(pairs.Key))
+                {
+                    SetAnalogOutput(pairs.Key, pairs.Value, true);
+                }
+                else
+                {
+                    SetAnalogOutput(pairs.Key, pairs.Value);
+                }
+                controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
+            }
+        }
+        private void ApplyDigitalsToHardware(hardwareState state)
+        {
+            foreach (KeyValuePair<string, bool> pairs in state.digitals)
+            {
+                SetDigitalLine(pairs.Key, pairs.Value);
+                controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
+            }
+        }
+        #endregion 
+
+        #region Reading and Writing to UI
         private hardwareState readUIValues()
         {
             return readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
@@ -591,12 +609,15 @@ namespace SympatheticHardwareControl
                 controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
             }
         }
+        #endregion
 
-        
+        #region remoting stuff
+
         public void StartRemoteControl()
         {
             if (HCState == SHCUIControlState.OFF)
             {
+                controlWindow.WriteToConsole("Remoting Started!");
                 if (streaming)
                 {
                     StopCameraStream();
@@ -615,8 +636,9 @@ namespace SympatheticHardwareControl
         {
             try
             {
+                controlWindow.WriteToConsole("Remoting Stopped!");
                 setUIValues(loadParameters(profilesPath + "tempParameters.bin"));
-                UpdateHardware();
+                
                 if (System.IO.File.Exists(profilesPath + "tempParameters.bin"))
                 {
                     System.IO.File.Delete(profilesPath + "tempParameters.bin");
@@ -628,7 +650,9 @@ namespace SympatheticHardwareControl
             }
             HCState = SHCUIControlState.OFF;
             controlWindow.UpdateUIState(HCState);
+            ReapplyStateToHardware();
         }
+        #endregion
         #endregion
 
         //camera stuff
