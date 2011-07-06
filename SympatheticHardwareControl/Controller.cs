@@ -74,7 +74,7 @@ namespace SympatheticHardwareControl
         private class cameraNotFoundException : ArgumentException { };
 
         
-        hardwareState currentState;
+        hardwareState stateRecord;
         private Dictionary<string, Task> analogTasks;
 
         // without this method, any remote connections to this object will time out after
@@ -94,9 +94,9 @@ namespace SympatheticHardwareControl
             //      CreateDigitalTask("eOnOff");
 
             analogTasks = new Dictionary<string, Task>();
-            currentState = new hardwareState();
-            currentState.analogs = new Dictionary<string, double>();
-            currentState.digitals = new Dictionary<string, bool>();
+            stateRecord = new hardwareState();
+            stateRecord.analogs = new Dictionary<string, double>();
+            stateRecord.digitals = new Dictionary<string, bool>();
             
 
             CreateDigitalTask("aom0enable");
@@ -220,7 +220,7 @@ namespace SympatheticHardwareControl
 
         private void CreateAnalogOutputTask(string channel)
         {
-            currentState.analogs[channel] = (double)0.0;
+            stateRecord.analogs[channel] = (double)0.0;
             analogTasks[channel] = new Task(channel);
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
             c.AddToTask(
@@ -337,7 +337,7 @@ namespace SympatheticHardwareControl
 
         private void CreateDigitalTask(String name)
         {
-            currentState.digitals[name] = false;
+            stateRecord.digitals[name] = false;
             Task digitalTask = new Task(name);
             ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
             digitalTask.Control(TaskAction.Verify);
@@ -370,7 +370,7 @@ namespace SympatheticHardwareControl
         // Saving the parameters when closing the controller
         public void SaveParametersWithDialog()
         {
-            hardwareState state = readUIValues();
+            hardwareState state = readAllUIValues();
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "shc parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
@@ -445,33 +445,29 @@ namespace SympatheticHardwareControl
 
         #region updating the hardware
 
-        public void ReapplyStateToHardware()
+        public void ApplyFullUIStateToHardware()
         {
-            hardwareState uiState = readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
-            if (HCState == SHCUIControlState.OFF)
-            {
-
-                HCState = SHCUIControlState.LOCAL;
-                controlWindow.UpdateUIState(HCState);
-
-                ApplyAnalogsToHardware(uiState);
-                ApplyDigitalsToHardware(uiState);
-
-                HCState = SHCUIControlState.OFF;
-                controlWindow.UpdateUIState(HCState);
-
-                currentState = uiState;
-
-                controlWindow.WriteToConsole("Reapplied Hardware State.");
-            }
+            hardwareState uiState = readAllUIValues();
+            stateRecord = uiState;
+            applyToHardware(stateRecord);
+            
         }
 
 
         public void UpdateHardware()
         {
-            hardwareState uiState = readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
-            hardwareState differences = getChangesToState(currentState, uiState);
-            if (differences.analogs.Count != 0 || differences.digitals.Count != 0)
+            hardwareState uiState = readAllUIValues();
+
+            hardwareState changes = getChanges(stateRecord, uiState);
+
+            applyToHardware(changes);
+
+            recordChanges(changes, stateRecord);
+        }
+
+        private void applyToHardware(hardwareState state)
+        {
+            if (state.analogs.Count != 0 || state.digitals.Count != 0)
             {
                 if (HCState == SHCUIControlState.OFF)
                 {
@@ -479,23 +475,22 @@ namespace SympatheticHardwareControl
                     HCState = SHCUIControlState.LOCAL;
                     controlWindow.UpdateUIState(HCState);
 
-                    ApplyAnalogsToHardware(differences);
-                    ApplyDigitalsToHardware(differences);
+                    applyAnalogs(state);
+                    applyDigitals(state);
 
                     HCState = SHCUIControlState.OFF;
                     controlWindow.UpdateUIState(HCState);
-
-                    applyChangesToControllerCopy(differences, currentState);
 
                     controlWindow.WriteToConsole("Update finished!");
                 }
             }
             else
             {
-                controlWindow.WriteToConsole("I can't find any changes to make. Hardware must be up to date.");
+                controlWindow.WriteToConsole("The values on the UI are identical to those on the controller's records. Hardware must be up to date.");
             }
         }
-        private hardwareState getChangesToState(hardwareState oldState, hardwareState newState)
+
+        private hardwareState getChanges(hardwareState oldState, hardwareState newState)
         {
             hardwareState state = new hardwareState();
             state.analogs = new Dictionary<string, double>();
@@ -516,7 +511,8 @@ namespace SympatheticHardwareControl
             }
             return state;
         }
-        private void applyChangesToControllerCopy(hardwareState changes, hardwareState controllerCopy)
+
+        private void recordChanges(hardwareState changes, hardwareState controllerCopy)
         {
             foreach (KeyValuePair<string, double> pairs in changes.analogs)
             {
@@ -527,7 +523,8 @@ namespace SympatheticHardwareControl
                 controllerCopy.digitals[pairs.Key] = changes.digitals[pairs.Key];
             }
         }
-        private void ApplyAnalogsToHardware(hardwareState state)
+
+        private void applyAnalogs(hardwareState state)
         {
             foreach (KeyValuePair<string, double> pairs in state.analogs)
             {
@@ -540,23 +537,24 @@ namespace SympatheticHardwareControl
                 {
                     SetAnalogOutput(pairs.Key, pairs.Value);
                 }
-                controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
+                controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
             }
         }
-        private void ApplyDigitalsToHardware(hardwareState state)
+        private void applyDigitals(hardwareState state)
         {
             foreach (KeyValuePair<string, bool> pairs in state.digitals)
             {
                 SetDigitalLine(pairs.Key, pairs.Value);
-                controlWindow.WriteToConsole("Updated " + pairs.Key.ToString() + " to " + pairs.Value.ToString());
+                controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
             }
         }
         #endregion 
 
         #region Reading and Writing to UI
-        private hardwareState readUIValues()
+
+        private hardwareState readAllUIValues()
         {
-            return readUIValues(currentState.digitals.Keys, currentState.analogs.Keys);
+            return readUIValues(stateRecord.digitals.Keys, stateRecord.analogs.Keys);
         }
         private hardwareState readUIValues(Dictionary<string, bool>.KeyCollection digitalKeys, 
             Dictionary<string, double>.KeyCollection analogKeys)
@@ -621,7 +619,7 @@ namespace SympatheticHardwareControl
                 {
                     StopCameraStream();
                 }             
-                StoreParameters(profilesPath + "tempParameters.bin", currentState);
+                StoreParameters(profilesPath + "tempParameters.bin", stateRecord);
                 HCState = SHCUIControlState.REMOTE;
                 controlWindow.UpdateUIState(HCState);
                 controlWindow.WriteToConsole("Remoting Started!");
@@ -650,9 +648,10 @@ namespace SympatheticHardwareControl
             }
             HCState = SHCUIControlState.OFF;
             controlWindow.UpdateUIState(HCState);
-            ReapplyStateToHardware();
+            ApplyFullUIStateToHardware();
         }
         #endregion
+
         #endregion
 
         //camera stuff
@@ -759,7 +758,10 @@ namespace SympatheticHardwareControl
                     cam0Control.Session.Grab(image, true);
                 }
                 catch (ImaqdxException e)
-                { MessageBox.Show("You're probably already streaming...\n" + e.Message); }
+                {
+                    MessageBox.Show("ImaqdxException. \n Did you try to control the camera while it was streaming...?\n Stopping camera now.");
+                    streaming = false;
+                }
                 catch (InvalidOperationException e)
                 {
                     MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message); 
