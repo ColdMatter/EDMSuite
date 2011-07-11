@@ -11,10 +11,13 @@ namespace DAQ.HAL
         public LinearInterpolationCalibration(double[,] interpolationData)
         {
             this.interpolationData = interpolationData;
+            rangeLow = interpolationData[0, 0];
+            rangeHigh = interpolationData[0, interpolationData.GetLength(0)];
         }
 
         public override double Convert(double input)
         {
+            CheckRange(input);
             double idLength = interpolationData.GetLength(1);
             int n = 0;
             for (int i = 0; i < idLength; i++)

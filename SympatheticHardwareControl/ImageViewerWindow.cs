@@ -29,7 +29,7 @@ namespace SympatheticHardwareControl.CameraControl
         #region ThreadSafe wrappers
 
         //An irritating number of threadsafe delegates for the viewer controlWindow.
-        public void AttachToViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
+        private void attachToViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
         {
             viewer.Invoke(new AttachImageToViewerDelegate(AttachImageHelper), new object[] { viewer, image });
         }
@@ -44,7 +44,11 @@ namespace SympatheticHardwareControl.CameraControl
         #endregion
 
         #region Public methods
- 
+
+        public void AttachToViewer(VisionImage image)
+        {
+            attachToViewer(imageViewer, image);
+        }
         public VisionImage Image
         {
             get
@@ -53,7 +57,7 @@ namespace SympatheticHardwareControl.CameraControl
             }
             set
             {
-                AttachToViewer(imageViewer, value);
+                attachToViewer(imageViewer, value);
             }
         }
 
@@ -61,7 +65,7 @@ namespace SympatheticHardwareControl.CameraControl
 
         private void ImageViewerWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            controller.Stop();
+            controller.StopCameraStream();
         }
     }
 }

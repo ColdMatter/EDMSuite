@@ -56,7 +56,7 @@ namespace SympatheticHardwareControl
 
         // table of all digital analogTasks
         Hashtable digitalTasks = new Hashtable();
-        public string p = cameraAttributesPath;
+
         //Cameras
         IMAQdxCameraControl cam0Control;
 
@@ -130,12 +130,10 @@ namespace SympatheticHardwareControl
             // make the control controlWindow
             controlWindow = new ControlWindow();
             controlWindow.controller = this;
-            
-
-            imageWindow = new ImageViewerWindow();
-            imageWindow.controller = this;
 
 
+
+            OpenImageViewer();
             
 
             HCState = SHCUIControlState.OFF;
@@ -147,6 +145,16 @@ namespace SympatheticHardwareControl
              Application.Run(controlWindow);
 
         }
+        public void OpenImageViewer()
+        {
+            try
+            {
+                imageWindow = new ImageViewerWindow();
+                imageWindow.controller = this;
+                imageWindow.Show();
+            }
+            catch { }
+        }
 
         // this method runs immediately after the GUI sets up
         internal void WindowLoaded()
@@ -155,7 +163,7 @@ namespace SympatheticHardwareControl
             {
                 cam0Control = new IMAQdxCameraControl("cam0", cameraAttributesPath);
                 cam0Control.InitializeCamera();
-                imageWindow.Show();
+                
 
             }
             catch (ImaqdxException e)
@@ -248,10 +256,15 @@ namespace SympatheticHardwareControl
                 {
                     output = ((Calibration)calibrations[channelName]).Convert(voltage);
                 }
+                catch (DAQ.HAL.Calibration.CalibrationRangeException)
+                {
+                    MessageBox.Show("The number you have typed is out of the calibrated range! \n Try typing something more sensible.");
+                    throw new CalibrationException();
+                }
                 catch
                 {
                     MessageBox.Show("Calibration error");
-                    output = voltage;
+                    throw new CalibrationException();
                 }
             }
             else
@@ -268,7 +281,7 @@ namespace SympatheticHardwareControl
                 MessageBox.Show(e.Message);
             }
         }
-
+        public class CalibrationException : ArgumentOutOfRangeException { };
         // reading an analog voltage from input
         private double ReadAnalogInput(string channel)
         {
@@ -461,8 +474,9 @@ namespace SympatheticHardwareControl
             hardwareState changes = getChanges(stateRecord, uiState);
 
             applyToHardware(changes);
-
             recordChanges(changes, stateRecord);
+
+
         }
 
         private void applyToHardware(hardwareState state)
@@ -524,20 +538,34 @@ namespace SympatheticHardwareControl
             }
         }
 
+        
         private void applyAnalogs(hardwareState state)
         {
+            List<string> toRemove = new List<string>();  //In case of errors, keep track of things to delete from the list of changes.
             foreach (KeyValuePair<string, double> pairs in state.analogs)
             {
+                try
+                {
+                    if (calibrations.ContainsKey(pairs.Key))
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value, true);
 
-                if (calibrations.ContainsKey(pairs.Key))
-                {
-                    SetAnalogOutput(pairs.Key, pairs.Value, true);
+                    }
+                    else
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value);
+                    }
+                    controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
                 }
-                else
+                catch (CalibrationException)
                 {
-                    SetAnalogOutput(pairs.Key, pairs.Value);
+                    controlWindow.WriteToConsole("Failed to set channel '"+ pairs.Key.ToString() + "' to new value");                    
+                    toRemove.Add(pairs.Key);
                 }
-                controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
+            }
+            foreach (string s in toRemove)  //Remove those from the list of changes, as nothing was done to the Hardware.
+            {
+                state.analogs.Remove(s);
             }
         }
         private void applyDigitals(hardwareState state)
@@ -597,7 +625,7 @@ namespace SympatheticHardwareControl
         {
             foreach (KeyValuePair<string, double> pairs in state.analogs)
             {
-                    controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
+                controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
             }
         }
         private void setUIDigitals(hardwareState state)
@@ -743,7 +771,7 @@ namespace SympatheticHardwareControl
         {
             VisionImage image = new VisionImage();
             cam0Control.Session.Snap(image);
-            imageWindow.Image = image;
+            imageWindow.AttachToViewer(image);
         }
 
         private void streamAndDisplay()
@@ -752,24 +780,32 @@ namespace SympatheticHardwareControl
             VisionImage image = new VisionImage();
             cam0Control.Session.ConfigureGrab();
             for (; ; )
-            {
-                try
-                {
-                    cam0Control.Session.Grab(image, true);
-                }
-                catch (ImaqdxException e)
-                {
-                    MessageBox.Show("ImaqdxException. \n Did you try to control the camera while it was streaming...?\n Stopping camera now.");
-                    streaming = false;
-                }
-                catch (InvalidOperationException e)
-                {
-                    MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message); 
-                    streaming = false;
-                }
+            {           
                 lock (streamStopLock)
                 {
-                    imageWindow.Image = image;
+                    try
+                    {
+                        cam0Control.Session.Grab(image, true);
+                    }
+                    catch (ImaqdxException e)
+                    {
+                        MessageBox.Show("ImaqdxException. \n Did you try to control the camera while it was streaming...?\n Stopping camera now. \n" + e.Message);
+                        streaming = false;
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message);
+                        streaming = false;
+                    }
+                    try
+                    {
+                        imageWindow.AttachToViewer(image);
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        MessageBox.Show("I have a leftover image without anywhere to display it. Dumping...\n\n" + e.Message);
+                        streaming = false;
+                    }
                     if (!streaming)
                     {
                         cam0Control.Session.Acquisition.Stop();

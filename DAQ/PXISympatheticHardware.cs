@@ -79,7 +79,7 @@ namespace DAQ.HAL
 
             // map the analog output channels
             // Control of atoms
-            AddAnalogOutputChannel("aom0amplitude", aoBoard + "/ao8");
+            AddAnalogOutputChannel("aom0amplitude", aoBoard + "/ao16");
             AddAnalogOutputChannel("aom0frequency", aoBoard + "/ao9");
             AddAnalogOutputChannel("aom1amplitude", aoBoard + "/ao10");
             AddAnalogOutputChannel("aom1frequency", aoBoard + "/ao11");
@@ -101,8 +101,17 @@ namespace DAQ.HAL
 
             //Calibrations
             AddCalibration("chamber1Pressure", new ExponentialCalibration(1.01335 * Math.Pow(10,-6), 0, 5.0037, 2.30259));
-            AddCalibration("aom3frequency", new PolynomialCalibration
-                (new double[] {-27.2757, 0.698297, -0.0075598, 0.000045057, -1.33872 * Math.Pow(10,-7), 1.57402* Math.Pow(10, -10)}));
+            //AddCalibration("aom3frequency", new PolynomialCalibration
+                //(new double[] {-27.2757, 0.698297, -0.0075598, 0.000045057, -1.33872 * Math.Pow(10,-7), 1.57402* Math.Pow(10, -10)}));
+            AddCalibration("aom0frequency", new PolynomialCalibration(new double[] 
+            {9.73471, -0.389447, 0.00439124, -0.0000200009, 4.27697*Math.Pow(10,-8), -3.44365*Math.Pow(10,-11)}, 130, 260));
+            AddCalibration("aom1frequency", new PolynomialCalibration(new double[] 
+            {-11.9562, 0.185676, -0.00161757, 0.0000109047, -3.54351*Math.Pow(10,-8), 4.35218*Math.Pow(10,-11)}, 130, 260));
+            AddCalibration("aom2frequency", new PolynomialCalibration(new double[] 
+            { 0.471968, -0.139565, 0.00173958, -6.18839 * Math.Pow(10, -6), 7.4987 * Math.Pow(10, -9), 8.99272 * Math.Pow(10, -13) }, 130,260));
+            AddCalibration("aom3frequency", new PolynomialCalibration(new double[] 
+            {0.879515, -0.143097, 0.00170292, -5.6672*Math.Pow(10,-6), 5.44491*Math.Pow(10,-9), 3.56736*Math.Pow(10,-12)},130,260));
+            //AddCalibration("aom3amplitude", new ExponentialAndPolynomialCalibration(1, 2, 3, new double[] {}));
         }
 
     }

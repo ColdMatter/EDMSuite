@@ -136,6 +136,7 @@ namespace SympatheticHardwareControl
             this.localControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.openImageViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -728,7 +729,8 @@ namespace SympatheticHardwareControl
             // windowsToolStripMenuItem
             // 
             this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hardwareMonitorToolStripMenuItem});
+            this.hardwareMonitorToolStripMenuItem,
+            this.openImageViewerToolStripMenuItem});
             this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
             this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.windowsToolStripMenuItem.Text = "Windows";
@@ -795,6 +797,13 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.Size = new System.Drawing.Size(791, 154);
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
+            // 
+            // openImageViewerToolStripMenuItem
+            // 
+            this.openImageViewerToolStripMenuItem.Name = "openImageViewerToolStripMenuItem";
+            this.openImageViewerToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.openImageViewerToolStripMenuItem.Text = "Open image viewer";
+            this.openImageViewerToolStripMenuItem.Click += new System.EventHandler(this.openImageViewerToolStripMenuItem_Click);
             // 
             // ControlWindow
             // 
@@ -1114,6 +1123,12 @@ namespace SympatheticHardwareControl
         }
 
         private RichTextBox consoleRichTextBox;
+        private ToolStripMenuItem openImageViewerToolStripMenuItem;
+
+        private void openImageViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.OpenImageViewer();
+        }
 
        
       
