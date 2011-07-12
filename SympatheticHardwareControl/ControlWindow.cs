@@ -49,12 +49,12 @@ namespace SympatheticHardwareControl
 
         private void WindowClosing(object sender, FormClosingEventArgs e)
         {
-            controller.Stop();
+            controller.ControllerStopping();
         }
 
         private void WindowLoaded(object sender, EventArgs e)
         {
-            controller.WindowLoaded();
+            controller.ControllerLoaded();
             
         }
 

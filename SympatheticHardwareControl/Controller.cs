@@ -58,7 +58,7 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
 
         //Cameras
-        IMAQdxCameraControl cam0Control;
+        IMAQdxCameraControl cameraControl;
 
 
         // Declare that there will be a controlWindow
@@ -156,15 +156,18 @@ namespace SympatheticHardwareControl
             catch { }
         }
 
+        public IMAQdxCameraControl ConnectToCamera(string cameraID)
+        {
+            IMAQdxCameraControl cc = new IMAQdxCameraControl(cameraID, cameraAttributesPath);
+            cc.InitializeCamera();
+            return cc;
+        }
         // this method runs immediately after the GUI sets up
-        internal void WindowLoaded()
+        internal void ControllerLoaded()
         {
             try
             {
-                cam0Control = new IMAQdxCameraControl("cam0", cameraAttributesPath);
-                cam0Control.InitializeCamera();
-                
-
+                cameraControl = ConnectToCamera("cam0");
             }
             catch (ImaqdxException e)
             {
@@ -181,16 +184,13 @@ namespace SympatheticHardwareControl
 
         }
 
-        public void Stop()
+        public void ControllerStopping()
         {
             // things like saving parameters, turning things off before quitting the program should go here
             StopCameraStream();
-            try
-            {
-                cam0Control.CloseCamera();
-            }
-            catch { }
-            Application.Exit();
+
+            cameraControl.CloseCamera();
+
         }
         public void OpenNewHardwareMonitorWindow()
         {
@@ -770,7 +770,7 @@ namespace SympatheticHardwareControl
         private void takeSnapshotAndDisplay()
         {
             VisionImage image = new VisionImage();
-            cam0Control.Session.Snap(image);
+            cameraControl.Session.Snap(image);
             imageWindow.AttachToViewer(image);
         }
 
@@ -778,14 +778,14 @@ namespace SympatheticHardwareControl
         {
             controlWindow.WriteToConsole("Streaming from camera");
             VisionImage image = new VisionImage();
-            cam0Control.Session.ConfigureGrab();
+            cameraControl.Session.ConfigureGrab();
             for (; ; )
             {           
                 lock (streamStopLock)
                 {
                     try
                     {
-                        cam0Control.Session.Grab(image, true);
+                        cameraControl.Session.Grab(image, true);
                     }
                     catch (ImaqdxException e)
                     {
@@ -808,7 +808,7 @@ namespace SympatheticHardwareControl
                     }
                     if (!streaming)
                     {
-                        cam0Control.Session.Acquisition.Stop();
+                        cameraControl.Session.Acquisition.Stop();
                         controlWindow.WriteToConsole("Streaming stopped");
                         return;
                     }
@@ -824,7 +824,7 @@ namespace SympatheticHardwareControl
 
         public void SetCameraAttributes()
         {
-            cam0Control.SetCameraAttributes();
+            cameraControl.SetCameraAttributes();
         }
 
         #endregion
@@ -847,8 +847,8 @@ namespace SympatheticHardwareControl
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
         private void armCameraAndWait(VisionImage image, string cameraAttributesPath)
         {
-            cam0Control.SetCameraAttributes(cameraAttributesPath);
-            cam0Control.Session.Snap(image);
+            cameraControl.SetCameraAttributes(cameraAttributesPath);
+            cameraControl.Session.Snap(image);
         }
         public byte[,] GrabImage(string cameraAttributesPath)
         {
@@ -875,7 +875,7 @@ namespace SympatheticHardwareControl
         public bool FinishRemoteCameraControl()
         {
             StopRemoteControl();
-            cam0Control.SetCameraAttributes(cameraAttributesPath);
+            cameraControl.SetCameraAttributes(cameraAttributesPath);
             return true;
         }
         #endregion
