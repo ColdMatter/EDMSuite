@@ -58,19 +58,18 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
 
         //Cameras
-        IMAQdxCameraControl cameraControl;
+        public ImageMaster ImageController;
 
 
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
-        ImageViewerWindow imageWindow;
+        
         HardwareMonitorWindow monitorWindow;
 
         //private bool sHCUIControl;
         public enum SHCUIControlState { OFF, LOCAL, REMOTE };
         public SHCUIControlState HCState = new SHCUIControlState();
 
-        //private DataStore dataStore = new DataStore();
         private class cameraNotFoundException : ArgumentException { };
 
         
@@ -130,10 +129,6 @@ namespace SympatheticHardwareControl
             // make the control controlWindow
             controlWindow = new ControlWindow();
             controlWindow.controller = this;
-
-
-
-            OpenImageViewer();
             
 
             HCState = SHCUIControlState.OFF;
@@ -145,29 +140,22 @@ namespace SympatheticHardwareControl
              Application.Run(controlWindow);
 
         }
-        public void OpenImageViewer()
-        {
-            try
-            {
-                imageWindow = new ImageViewerWindow();
-                imageWindow.controller = this;
-                imageWindow.Show();
-            }
-            catch { }
-        }
 
-        public IMAQdxCameraControl ConnectToCamera(string cameraID)
+        /*public IMAQdxCameraControl ConnectToCamera(string cameraID)
         {
             IMAQdxCameraControl cc = new IMAQdxCameraControl(cameraID, cameraAttributesPath);
             cc.InitializeCamera();
             return cc;
         }
+         * */
         // this method runs immediately after the GUI sets up
         internal void ControllerLoaded()
         {
             try
             {
-                cameraControl = ConnectToCamera("cam0");
+                 ImageController = new ImageMaster("cam0", cameraAttributesPath);
+                 ImageController.Initialize();
+                //cameraControl = ConnectToCamera("cam0");
             }
             catch (ImaqdxException e)
             {
@@ -187,9 +175,6 @@ namespace SympatheticHardwareControl
         public void ControllerStopping()
         {
             // things like saving parameters, turning things off before quitting the program should go here
-            StopCameraStream();
-
-            cameraControl.CloseCamera();
 
         }
         public void OpenNewHardwareMonitorWindow()
@@ -643,7 +628,7 @@ namespace SympatheticHardwareControl
         {
             if (HCState == SHCUIControlState.OFF)
             {
-                if (streaming)
+                if (ImageController.Streaming)
                 {
                     StopCameraStream();
                 }             
@@ -684,179 +669,66 @@ namespace SympatheticHardwareControl
 
         //camera stuff
 
-        #region Testing the camera
-        //untriggered single shot commands. This just starts a new Session, takes one image then closes the Session.
-        //Avoid using these. I think, there should only be a single Session per camera for the entire time the program is running.
-        //I wrote these to test the camera.
-        //Cameras
-        /* public const string motCamera = "cam0";
-        
-         public void CameraSnapshot()
-         {
-             VisionImage image = new VisionImage();
-             ImaqdxSession Session = new ImaqdxSession(motCamera);
-             Session.Snap(image);
-             Session.Close();
-            
-             if (controlWindow.saveImageCheckBox.Checked == true)
-             {
-                 StoreImage(image);
-             }
-             controlWindow.AttachToViewer(controlWindow.motViewer, image);
-
-         }
-
-         public void CameraSnapshot(string dataStoreFilePath)
-         {
-             VisionImage image = new VisionImage();
-             ImaqdxSession Session = new ImaqdxSession(motCamera);
-             Session.Snap(image);
-             Session.Close();
-            
-             if (controlWindow.saveImageCheckBox.Checked == true)
-             {
-                 StoreImage(dataStoreFilePath, image);
-             }
-            
-             controlWindow.AttachToViewer(controlWindow.motViewer, image);
-         }
-         //streaming video
-         public object streamStopLock = new object();
-         public void CameraStream()
-         {
-             Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
-             streamThread.Start();
-         }
-         private void streamAndDisplay()
-         {
-             this.Streaming = true;
-             VisionImage image = new VisionImage();
-             ImaqdxSession Session = new ImaqdxSession(motCamera);
-             Session.ConfigureGrab();
-             controlWindow.AttachToViewer(controlWindow.motViewer, image);
-             for (; ; )
-             {
-                 Session.Grab(image, true);
-                 controlWindow.UpdateViewer(controlWindow.motViewer);
-
-                 lock (streamStopLock)
-                 {
-                     if (Streaming == false)
-                     {
-                         Session.Close();
-                         return;
-                     }
-                 }
-
-             }
-         }*/
-        #endregion
-
         #region Local camera control
 
-        public object streamStopLock = new object();
+        public void StartCameraControl()
+        {
+            ImageController.Initialize();
+        }
         public void CameraStream()
         {
-            streaming = true;
-            Thread streamThread = new Thread(new ThreadStart(streamAndDisplay));
-            streamThread.Start();
-        }
-        public void CameraSnapshot()
-        {
-            Thread cameraThread = new Thread(new ThreadStart(takeSnapshotAndDisplay));
-            cameraThread.Start();
-        }
-
-        private void takeSnapshotAndDisplay()
-        {
-            VisionImage image = new VisionImage();
-            cameraControl.Session.Snap(image);
-            imageWindow.AttachToViewer(image);
-        }
-
-        private void streamAndDisplay()
-        {
             controlWindow.WriteToConsole("Streaming from camera");
-            VisionImage image = new VisionImage();
-            cameraControl.Session.ConfigureGrab();
-            for (; ; )
-            {           
-                lock (streamStopLock)
-                {
-                    try
-                    {
-                        cameraControl.Session.Grab(image, true);
-                    }
-                    catch (ImaqdxException e)
-                    {
-                        MessageBox.Show("ImaqdxException. \n Did you try to control the camera while it was streaming...?\n Stopping camera now. \n" + e.Message);
-                        streaming = false;
-                    }
-                    catch (InvalidOperationException e)
-                    {
-                        MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message);
-                        streaming = false;
-                    }
-                    try
-                    {
-                        imageWindow.AttachToViewer(image);
-                    }
-                    catch (InvalidOperationException e)
-                    {
-                        MessageBox.Show("I have a leftover image without anywhere to display it. Dumping...\n\n" + e.Message);
-                        streaming = false;
-                    }
-                    if (!streaming)
-                    {
-                        cameraControl.Session.Acquisition.Stop();
-                        controlWindow.WriteToConsole("Streaming stopped");
-                        return;
-                    }
-                }
 
-            }
+            ImageController.Stream();
+                   
         }
-        private bool streaming = false;
+
         public void StopCameraStream()
         {
-            streaming = false;
+            bool finished = ImageController.StopStream();
+            if (finished)
+            {
+                controlWindow.WriteToConsole("Streaming stopped");
+
+            } 
+        }
+
+        public void CameraSnapshot()
+        {
+            controlWindow.WriteToConsole("Taking snapshot");
+            ImageController.Snapshot();
         }
 
         public void SetCameraAttributes()
         {
-            cameraControl.SetCameraAttributes();
+            ImageController.SetCameraAttributes();
         }
 
         #endregion
 
         #region Saving and Loading Images
 
-        private ImageFileIOManager imageFileIO = new ImageFileIOManager();
         public void SaveImageWithDialog()
         {
-            imageFileIO.SaveImageWithDialog(imageWindow.Image);
+            ImageController.SaveImageWithDialog();
+            controlWindow.WriteToConsole("Image saved");
         }
         public void LoadImagesWithDialog()
         {
-            imageWindow.Image = imageFileIO.LoadImagesWithDialog();
+            ImageController.LoadImagesWithDialog();
+            controlWindow.WriteToConsole("Image loaded");
         }
 
         #endregion
 
         #region Remote Image Processing
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
-        private void armCameraAndWait(VisionImage image, string cameraAttributesPath)
-        {
-            cameraControl.SetCameraAttributes(cameraAttributesPath);
-            cameraControl.Session.Snap(image);
-        }
+
         public byte[,] GrabImage(string cameraAttributesPath)
         {
 
             isDone = false;
-            VisionImage image = new VisionImage();
-            armCameraAndWait(image, cameraAttributesPath);
-            imageWindow.Image = image;
+            VisionImage image = ImageController.Snapshot(cameraAttributesPath);
             PixelValue2D pval = image.ImageToArray();
             isDone = true;
             return pval.U8;
@@ -875,9 +747,10 @@ namespace SympatheticHardwareControl
         public bool FinishRemoteCameraControl()
         {
             StopRemoteControl();
-            cameraControl.SetCameraAttributes(cameraAttributesPath);
+            ImageController.SetCameraAttributes(cameraAttributesPath);
             return true;
         }
+
         #endregion
 
         #region Hardware Monitor
@@ -1032,5 +905,6 @@ namespace SympatheticHardwareControl
         #endregion
 
         #endregion
+
     }
 }

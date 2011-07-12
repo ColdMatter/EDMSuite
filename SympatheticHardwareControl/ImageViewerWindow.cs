@@ -18,7 +18,7 @@ namespace SympatheticHardwareControl.CameraControl
 {
     public partial class ImageViewerWindow : Form
     {
-        public Controller controller;
+        public ImageMaster IM;
 
         public ImageViewerWindow()
         {
@@ -65,7 +65,9 @@ namespace SympatheticHardwareControl.CameraControl
 
         private void ImageViewerWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            controller.StopCameraStream();
+            IM.Dispose();
         }
+
+
     }
 }

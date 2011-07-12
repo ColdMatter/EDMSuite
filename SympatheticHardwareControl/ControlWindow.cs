@@ -130,13 +130,13 @@ namespace SympatheticHardwareControl
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hardwareMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openImageViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.localControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.openImageViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -738,9 +738,16 @@ namespace SympatheticHardwareControl
             // hardwareMonitorToolStripMenuItem
             // 
             this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
-            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
             this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
             this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
+            // 
+            // openImageViewerToolStripMenuItem
+            // 
+            this.openImageViewerToolStripMenuItem.Name = "openImageViewerToolStripMenuItem";
+            this.openImageViewerToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.openImageViewerToolStripMenuItem.Text = "Start camera and open image viewer";
+            this.openImageViewerToolStripMenuItem.Click += new System.EventHandler(this.openImageViewerToolStripMenuItem_Click);
             // 
             // remoteControlLED
             // 
@@ -797,13 +804,6 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.Size = new System.Drawing.Size(791, 154);
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
-            // 
-            // openImageViewerToolStripMenuItem
-            // 
-            this.openImageViewerToolStripMenuItem.Name = "openImageViewerToolStripMenuItem";
-            this.openImageViewerToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.openImageViewerToolStripMenuItem.Text = "Open image viewer";
-            this.openImageViewerToolStripMenuItem.Click += new System.EventHandler(this.openImageViewerToolStripMenuItem_Click);
             // 
             // ControlWindow
             // 
@@ -1127,7 +1127,7 @@ namespace SympatheticHardwareControl
 
         private void openImageViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controller.OpenImageViewer();
+            controller.StartCameraControl();
         }
 
        

@@ -102,7 +102,7 @@
       <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="HardwareReportable.cs" />
-    <Compile Include="ImageFileIOManager.cs" />
+    <Compile Include="ImageMaster.cs" />
     <Compile Include="ImageViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
