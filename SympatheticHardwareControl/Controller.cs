@@ -553,6 +553,7 @@ namespace SympatheticHardwareControl
                 state.analogs.Remove(s);
             }
         }
+
         private void applyDigitals(hardwareState state)
         {
             foreach (KeyValuePair<string, bool> pairs in state.digitals)
