@@ -11,7 +11,6 @@ using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Remoting;
 using System.Windows.Forms;
-using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {

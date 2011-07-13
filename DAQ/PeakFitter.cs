@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace ScanMaster.Analyze
+namespace DAQ.Analyze
 {
 	/// <summary>
 	/// A helper class that implements the initial parameter estimation for the fitters that
 	/// fit to peaky functions.
 	/// </summary>
-	public abstract class PeakFitter : ScanMaster.Analyze.Fitter
+	public abstract class PeakFitter : DAQ.Analyze.Fitter
 	{
 		public override double[] SuggestParameters(double[] xDat, double[] yDat, double scanStart, double scanEnd)
 		{

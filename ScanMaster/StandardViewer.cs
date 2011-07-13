@@ -8,6 +8,8 @@ using ScanMaster.Acquire;
 using ScanMaster.Acquire.Plugin;
 using ScanMaster.Analyze;
 
+using DAQ.Analyze;
+
 namespace ScanMaster.GUI
 {
 	/// <summary>

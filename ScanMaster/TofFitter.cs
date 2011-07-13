@@ -8,7 +8,7 @@ namespace ScanMaster.Analyze
     /// to return a mean speed and translational temperature in the ParameterReport.
     /// Requires a "sourceToDetect" and a "moleculeMass" in the Hardware.Info.
     /// </summary>
-    class TofFitter : ScanMaster.Analyze.GaussianFitter
+    class TofFitter : DAQ.Analyze.GaussianFitter
     {
         public TofFitter()
         {

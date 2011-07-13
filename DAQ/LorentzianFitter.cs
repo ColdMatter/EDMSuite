@@ -1,7 +1,7 @@
 using System;
 
 
-namespace ScanMaster.Analyze
+namespace DAQ.Analyze
 {
     /// <summary>
     /// A class to fit Lorentzians. Note that the standard normalised definition of
@@ -9,7 +9,7 @@ namespace ScanMaster.Analyze
     /// This makes the estimated amplitude parameter more meaningful (i.e. it's the
     /// height of the peak). The w parameter that is returned is the FWHM.
     /// </summary>
-    public class LorentzianFitter : ScanMaster.Analyze.PeakFitter
+    public class LorentzianFitter : DAQ.Analyze.PeakFitter
     {
 
         public LorentzianFitter()
@@ -44,6 +44,13 @@ namespace ScanMaster.Analyze
             }
         }
 
+        public double[] Parameters
+        {
+            get
+            {
+                return lastFittedParameters;
+            }
+        }
 
     }
 }

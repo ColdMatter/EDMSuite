@@ -22,5 +22,4 @@ NationalInstruments.UI.WindowsForms.ScatterGraph, NationalInstruments.UI.Windows
 NationalInstruments.UI.WindowsForms.SwitchArray, NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298
 NationalInstruments.UI.WindowsForms.ComplexGraph, NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298
 NationalInstruments.UI.WindowsForms.Switch, NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298
-NationalInstruments.Restricted.AnalysisLicenser, NationalInstruments.Analysis.Enterprise, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298
 # End Measurement Studio licenses

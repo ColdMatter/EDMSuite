@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ScanMaster.Analyze
+namespace DAQ.Analyze
 {
     /// <summary>
     /// This class uses is the bsae class for fitters. A fitter is specialized to a particular fitting

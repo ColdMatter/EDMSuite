@@ -1,7 +1,7 @@
 using System;
 
 
-namespace ScanMaster.Analyze
+namespace DAQ.Analyze
 {
     /// <summary>
     /// A class to fit Gaussians. Note that the standard normalised definition of
@@ -10,7 +10,7 @@ namespace ScanMaster.Analyze
     /// height of the peak). The w parameter that is returned is the FWHM. Again, this
     /// is slightly different to the usual definition of the Gaussian.
     /// </summary>
-    public class GaussianFitter : ScanMaster.Analyze.PeakFitter
+    public class GaussianFitter : DAQ.Analyze.PeakFitter
     {
 
         public GaussianFitter()

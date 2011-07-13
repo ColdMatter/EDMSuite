@@ -1,12 +1,12 @@
 using System;
 
-namespace ScanMaster.Analyze
+namespace DAQ.Analyze
 {
     /// <summary>
     /// A class to fit sinc-squareds. This sinc-squared has a peak height of 1.
     /// The w parameter that is returned is the FWHM.
     /// </summary>
-    public class InterferenceFitter : ScanMaster.Analyze.Fitter
+    public class InterferenceFitter : DAQ.Analyze.Fitter
     {
 
         public InterferenceFitter()

@@ -99,24 +99,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
-      <HintPath>..\SharedCode\alglibnet2.dll</HintPath>
+      <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -168,7 +159,6 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Fitter.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -232,16 +222,11 @@
     <Compile Include="FlashampPatternBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GaussianFitter.cs" />
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GuidePatternBuilder.cs" />
     <Compile Include="GuidePatternPlugin.cs" />
-    <Compile Include="InterferenceFitter.cs" />
-    <Compile Include="LorentzianFitter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -278,7 +263,6 @@
     <Compile Include="PatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PeakFitter.cs" />
     <Compile Include="PGOutputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -327,7 +311,6 @@
     <Compile Include="ShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SincFitter.cs" />
     <Compile Include="StandardViewer.cs">
       <SubType>Code</SubType>
     </Compile>

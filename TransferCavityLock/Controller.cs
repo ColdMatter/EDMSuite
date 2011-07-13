@@ -5,7 +5,6 @@ using DAQ.TransferCavityLock;
 using DAQ.Environment;
 using DAQ.HAL;
 using System.Windows.Forms;
-using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {
@@ -264,7 +263,7 @@ namespace TransferCavityLock
             {
                 displayData(sp, scanData);
 
-                masterDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
+                masterDataFit = CavityScanFitHelper.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
              
                 switch (State)
                 {
@@ -287,7 +286,7 @@ namespace TransferCavityLock
 
                        
                         
-                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
                         State = ControllerState.LASERLOCKED;
@@ -301,7 +300,7 @@ namespace TransferCavityLock
 
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
-                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                        
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
