@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace SonOfSirCachealot
 {
@@ -22,12 +23,12 @@ namespace SonOfSirCachealot
         public string GetStats()
         {
             StringBuilder b = new StringBuilder();
-            b.AppendLine("Analysis threads: " + analysisThreadCount);
-            b.AppendLine("Queued: " + queueLength);
-            b.AppendLine("Analysed this run: " + currentAnalysisTotal);
-            b.AppendLine("Run time: " + (DateTime.Now.Subtract(currentAnalysisStart)));
-            b.AppendLine("Estimated time to go: " + EstimateFinishTime());
-            b.AppendLine("Total analysed: " + totalAnalysed);
+            b.Append("Analysis threads: " + analysisThreadCount);
+            b.Append("; Queued: " + queueLength);
+            b.Append("; Analysed this run: " + currentAnalysisTotal);
+            b.Append("; Run time: " + (DateTime.Now.Subtract(currentAnalysisStart)));
+            b.Append("; Estimated time to go: " + EstimateFinishTime());
+            b.Append("; Total analysed: " + totalAnalysed +".");
             return b.ToString();
         }
 
@@ -69,6 +70,29 @@ namespace SonOfSirCachealot
                     return TimeSpan.FromTicks(ticksPerBlock * (queueLength + analysisThreadCount));
                 }
             }
+        }
+
+        public bool IsFinished()
+        {
+            lock (threadStatsLock)
+            {
+                return (queueLength + analysisThreadCount) == 0;
+            }
+        }
+
+        internal void UpdateProgressUntilFinished()
+        {
+            Thread progressThread = new Thread(new ThreadStart(() =>
+                {
+                    while (!IsFinished())
+                    {
+                        Console.WriteLine(GetStats());
+                        Thread.Sleep(5000);
+                    }
+                }
+            ));
+            progressThread.Start();
+            progressThread.Join();
         }
     }
 }

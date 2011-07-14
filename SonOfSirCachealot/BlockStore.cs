@@ -25,6 +25,9 @@ namespace SonOfSirCachealot.Database
             new Thread(new ThreadStart(() =>
                 paths.AsParallel().ForAll((e) => AddBlock(e, "cgate11Fixed"))
             )).Start();
+
+            // spawn a progress monitor thread
+            Monitor.UpdateProgressUntilFinished();
         }
 
         private void AddBlock(string path, string normConfig)
@@ -33,12 +36,12 @@ namespace SonOfSirCachealot.Database
             string fileName = path.Split('\\').Last();
             try
             {
-                Controller.log("Adding block " + fileName);
+                Console.WriteLine("Adding block " + fileName);
                 using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
                 {
                     BlockSerializer bls = new BlockSerializer();
                     Block b = bls.DeserializeBlockFromZippedXML(path, "block.xml");
-                    Controller.log("Loaded " + fileName);
+                    //Controller.log("Loaded " + fileName);
                     // at the moment the block data is normalized by dividing each "top" TOF through
                     // by the integral of the corresponding "norm" TOF over the gate in the function below.
                     // TODO: this could be improved!
@@ -86,18 +89,18 @@ namespace SonOfSirCachealot.Database
                         t.FileID = Guid.NewGuid();
                         dbb.DBTOFChannelSets.Add(t);
                     }
-                    Controller.log("Demodulated " + fileName);
+                    Console.WriteLine("Demodulated " + fileName);
 
                     // add to the database
                     dc.DBBlocks.InsertOnSubmit(dbb);
                     dc.SubmitChanges();
-                    Controller.log("Added " + fileName);
+                    Console.WriteLine("Added " + fileName);
                 }
             }
             catch (Exception e)
             {
-                Controller.log("Error adding " + fileName);
-                Controller.errorLog("Error adding block " + path + "\n" + e.StackTrace);
+                Console.WriteLine("Error adding " + fileName);
+                Console.WriteLine("Error adding block " + path + "\n" + e.StackTrace);
             }
             finally
             {
@@ -121,8 +124,6 @@ namespace SonOfSirCachealot.Database
 
 
         #region Querying
-
-
 
         #endregion
 
