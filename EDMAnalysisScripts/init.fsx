@@ -1,11 +1,4 @@
-﻿module init
-
-#I @"C:\Users\Jony\Files\Work files\CCM\code\EDMSuite\SonOfSirCachealot\bin\EDMAnalysis"
-#r "SonOfSirCachealot.dll"
-
-open SonOfSirCachealot.Database
-
-let dataRoot = @"C:\Users\jony\Files\Data"
-let bs = new BlockStore()
-
-
+﻿#load "constants.fsx"
+#load "blockstore.fsx"
+#load "file_functions.fsx"
+#load "blockList_0910.fsx"

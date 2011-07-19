@@ -99,6 +99,8 @@
       <DependentUpon>BlockDatabase.dbml</DependentUpon>
     </Compile>
     <Compile Include="BlockStore.cs" />
+    <Compile Include="BlockStoreQuery.cs" />
+    <Compile Include="BlockStoreResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThreadMonitor.cs" />
     <None Include="BlockDatabase.dbml.layout">

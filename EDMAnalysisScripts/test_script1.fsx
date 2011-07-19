@@ -1,28 +1,12 @@
 ﻿#load "init.fsx"
-#load "blockList_0910.fsx"
 
+open SonOfSirCachealot
 
-let GetDirectoryForCluster(cName: string) : string = 
-    let monthMap = dict ["Jan","January";
-    "Feb","February";
-    "Mar","March";
-    "Apr","April";
-    "May","May";
-    "Jun","June";
-    "Jul","July";
-    "Aug","August";
-    "Sep","September";
-    "Oct","October";
-    "Nov","November";
-    "Dec","December"]
+let bs = blockstore.bs
 
-    let cMonth = cName.Substring(2,3)
-    let cYear = "20" + cName.Substring(5,2)
+let q = new BlockStoreQuery()
 
-    let filePath = init.dataRoot + @"\sedm\v3\" + cYear + @"\" + monthMap.Item(cMonth) + cYear
-    filePath
+q.Detector = "top"
+q.blockIDs = [| 1; 2; 3 |]
 
-let GetFilesForCluster(cName: string) =
-    let filePath = GetDirectoryForCluster(cName)
-    System.IO.Directory.GetFiles(filePath, cName + "*.zip")
-
+bs.processQuery(q)

@@ -39,8 +39,11 @@
   <ItemGroup>
     <Compile Include="Program.fs" />
     <None Include="blockList_0910.fsx" />
-    <None Include="init.fsx" />
+    <None Include="blockstore.fsx" />
     <None Include="test_script1.fsx" />
+    <None Include="file_functions.fsx" />
+    <None Include="constants.fsx" />
+    <None Include="init.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -48,6 +51,13 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SonOfSirCachealot\SonOfSirCachealot.csproj">
+      <Name>SonOfSirCachealot</Name>
+      <Project>{434cd947-d8db-4db6-b28d-1879cb0e0353}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

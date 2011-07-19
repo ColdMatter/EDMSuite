@@ -8,8 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using EDMConfig;
 
-namespace SonOfSirCachealot.Database
+namespace SonOfSirCachealot
 {
     public class BlockStore
     {
@@ -120,10 +121,84 @@ namespace SonOfSirCachealot.Database
             return buffer;
         }
 
+        private static object deserializeFromByteArray(byte[] ba)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream(ba);
+            return bf.Deserialize(ms);
+        }
+
+        private static TOFChannelSet deserializeTCS(byte[] ba)
+        {
+            return (TOFChannelSet)deserializeFromByteArray(ba);
+        }
+        private static BlockConfig deserializeBC(byte[] ba)
+        {
+            return (BlockConfig)deserializeFromByteArray(ba);
+        }
+
         #endregion
 
 
         #region Querying
+
+        public BlockStoreResponse processQuery(BlockStoreQuery query)
+        {
+            BlockStoreResponse bsr = new BlockStoreResponse();
+            bsr.BlockResponses = new List<BlockStoreBlockResponse>();
+            foreach(int blockID in query.BlockIDs) bsr.BlockResponses.Add(processBlockQuery(query.BlockQuery, blockID));
+            return bsr;
+        }
+
+        private BlockStoreBlockResponse processBlockQuery(BlockStoreBlockQuery query, int blockID)
+        {
+            BlockStoreBlockResponse br = new BlockStoreBlockResponse();
+            br.BlockID = blockID;
+            br.DetectorResponses = new List<BlockStoreDetectorResponse>();
+            br.Settings = getBlockConfig(blockID);
+
+            foreach (BlockStoreDetectorQuery q in query.DetectorQueries)
+                br.DetectorResponses.Add(processDetectorQuery(q, blockID));
+
+            return br;
+        }
+
+        private BlockConfig getBlockConfig(int blockID)
+        {
+            BlockConfig bc = new BlockConfig();
+            using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
+            {
+                IEnumerable<DBBlock> bs = from DBBlock dbb in dc.DBBlocks
+                                          where (dbb.blockID == blockID)
+                                          select dbb;
+                // there should only be one item - better to check or not?
+                DBBlock dbbb = bs.First();
+                bc = deserializeBC(dbbb.configBytes.ToArray());
+            }
+            return bc;
+        }
+
+        private BlockStoreDetectorResponse processDetectorQuery(BlockStoreDetectorQuery query, int blockID)
+        {
+            BlockStoreDetectorResponse dr = new BlockStoreDetectorResponse();
+            dr.Detector = query.Detector;
+            dr.Channels = new Dictionary<string, TOFChannel>();
+            using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
+            {
+                IEnumerable<DBTOFChannelSet> tcss = from DBTOFChannelSet tcs in dc.DBTOFChannelSets
+                                                    where (tcs.detector == query.Detector)
+                                                    && (tcs.blockID == blockID)
+                                                    select tcs;
+                // there should only be one item - better to check or not?
+                DBTOFChannelSet tc = tcss.First();
+                TOFChannelSet t = deserializeTCS(tc.tcsData.ToArray());
+                // TODO: Handle special channels
+                foreach (string channel in query.Channels)
+                    dr.Channels.Add(channel, (TOFChannel)t.GetChannel(channel));
+
+            }
+            return dr;
+        }
 
         #endregion
 
