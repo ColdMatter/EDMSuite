@@ -166,8 +166,9 @@ namespace SympatheticHardwareControl
             }
             finally
             {
-                setUIValues(loadParameters(profilesPath + "StoppedParameters.bin"));
-                UpdateHardware();
+                stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
+                setUIValues(stateRecord);
+                ApplyRecordedStateToHardware();
             }
 
         }
@@ -175,7 +176,8 @@ namespace SympatheticHardwareControl
         public void ControllerStopping()
         {
             // things like saving parameters, turning things off before quitting the program should go here
-
+            
+            StoreParameters(profilesPath + "StoppedParameters.bin");
         }
         public void OpenNewHardwareMonitorWindow()
         {
@@ -368,7 +370,6 @@ namespace SympatheticHardwareControl
         // Saving the parameters when closing the controller
         public void SaveParametersWithDialog()
         {
-            hardwareState state = readAllUIValues();
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "shc parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
@@ -377,19 +378,20 @@ namespace SympatheticHardwareControl
             {
                 if (saveFileDialog1.FileName != "")
                 {
-                    StoreParameters(saveFileDialog1.FileName, state);
+                    StoreParameters(saveFileDialog1.FileName);
                 }
             }
         }
 
-        private void StoreParameters(String dataStoreFilePath, hardwareState state)
+        private void StoreParameters(String dataStoreFilePath)
         {
+            stateRecord = readAllUIValues();
             BinaryFormatter s = new BinaryFormatter();
             FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
             try
             {
                 //s.Serialize(fs, dataStore);
-                s.Serialize(fs, state);
+                s.Serialize(fs, stateRecord);
             }
             catch (Exception)
             {
@@ -411,7 +413,8 @@ namespace SympatheticHardwareControl
             dialog.Title = "Load parameters";
             dialog.InitialDirectory = profilesPath;
             dialog.ShowDialog();
-            if (dialog.FileName != "") setUIValues(loadParameters(dialog.FileName));
+            if (dialog.FileName != "") stateRecord = loadParameters(dialog.FileName);
+            setUIValues(stateRecord);
         }
 
         private hardwareState loadParameters(String dataStoreFilePath)
@@ -443,12 +446,9 @@ namespace SympatheticHardwareControl
 
         #region updating the hardware
 
-        public void ApplyFullUIStateToHardware()
+        public void ApplyRecordedStateToHardware()
         {
-            hardwareState uiState = readAllUIValues();
-            stateRecord = uiState;
-            applyToHardware(stateRecord);
-            
+            applyToHardware(stateRecord);          
         }
 
 
@@ -459,6 +459,7 @@ namespace SympatheticHardwareControl
             hardwareState changes = getChanges(stateRecord, uiState);
 
             applyToHardware(changes);
+
             recordChanges(changes, stateRecord);
 
 
@@ -633,7 +634,7 @@ namespace SympatheticHardwareControl
                 {
                     StopCameraStream();
                 }             
-                StoreParameters(profilesPath + "tempParameters.bin", stateRecord);
+                StoreParameters(profilesPath + "tempParameters.bin");
                 HCState = SHCUIControlState.REMOTE;
                 controlWindow.UpdateUIState(HCState);
                 controlWindow.WriteToConsole("Remoting Started!");
@@ -662,7 +663,7 @@ namespace SympatheticHardwareControl
             }
             HCState = SHCUIControlState.OFF;
             controlWindow.UpdateUIState(HCState);
-            ApplyFullUIStateToHardware();
+            ApplyRecordedStateToHardware();
         }
         #endregion
 

@@ -12,31 +12,31 @@ namespace DAQ.HAL
         {
             this.interpolationData = interpolationData;
             rangeLow = interpolationData[0, 0];
-            rangeHigh = interpolationData[0, interpolationData.GetLength(0)];
+            rangeHigh = interpolationData[interpolationData.GetLength(0)-1, 0];
         }
 
         public override double Convert(double input)
         {
             CheckRange(input);
-            double idLength = interpolationData.GetLength(1);
+            double idLength = interpolationData.GetLength(0);
             int n = 0;
             for (int i = 0; i < idLength; i++)
             {
-                if (interpolationData[0, i] == input)
+                if (interpolationData[i , 0 ] == input)
                 {
-                    return interpolationData[1, i];
+                    return interpolationData[i,0];
                 }
                 else
                 {
-                    if (interpolationData[0, i] < input)
+                    if (interpolationData[i,0] < input)
                     {
                         n = i;
                     }
                 }
             }
-            double m = (interpolationData[1, n + 1] - interpolationData[1, n])
-                / (interpolationData[0, n + 1] - interpolationData[0, n]);
-            return interpolationData[1, n] + (m * (input - interpolationData[0, n]));
+            double m = (interpolationData[n + 1, 1] - interpolationData[ n,1])
+                / (interpolationData[ n + 1,0] - interpolationData[ n,0]);
+            return interpolationData[ n,1] + (m * (input - interpolationData[n,0]));
         }
 
     }
