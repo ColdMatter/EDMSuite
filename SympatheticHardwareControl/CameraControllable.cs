@@ -4,11 +4,12 @@ using System.Text;
 
 namespace SympatheticHardwareControl.CameraControl
 {
-    public interface CameraControlable
+    public interface CameraControllable
     {
         bool PrepareRemoteCameraControl();
         bool FinishRemoteCameraControl();
-        byte[,] GrabImage(string cameraSettings);
-        bool IsDone();
+        byte[,] GrabSingleImage(string cameraSettings);
+        byte[][,] GrabMultipleImages(string cameraSettings, int numberOfShots);
+        bool IsReadyForAcquisition();
     }
 }

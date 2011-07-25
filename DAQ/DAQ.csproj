@@ -149,7 +149,6 @@
     </Compile>
     <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="Calibration.cs" />
-    <Compile Include="ExponentialAndPolynomialCalibration.cs" />
     <Compile Include="ExponentialCalibration.cs" />
     <Compile Include="LinearCalibration.cs" />
     <Compile Include="LinearInterpolationCalibration.cs" />

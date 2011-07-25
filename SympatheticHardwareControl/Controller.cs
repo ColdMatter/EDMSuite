@@ -38,7 +38,7 @@ namespace SympatheticHardwareControl
     /// it can load a set a parameters to the panel (which then gets applied to hardware in the usual way).
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject, CameraControlable, HardwareReportable
+    public class Controller : MarshalByRefObject, CameraControllable, HardwareReportable
     {
         #region Constants
         //Put any constants and stuff here
@@ -59,7 +59,7 @@ namespace SympatheticHardwareControl
 
         //Cameras
         public ImageMaster ImageController;
-
+        
 
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
@@ -69,6 +69,8 @@ namespace SympatheticHardwareControl
         //private bool sHCUIControl;
         public enum SHCUIControlState { OFF, LOCAL, REMOTE };
         public SHCUIControlState HCState = new SHCUIControlState();
+
+
 
         private class cameraNotFoundException : ArgumentException { };
 
@@ -92,6 +94,7 @@ namespace SympatheticHardwareControl
             //e.g   CreateDigitalTask("notEOnOff");
             //      CreateDigitalTask("eOnOff");
 
+            //This is to keep track of the various things which the HC controls.
             analogTasks = new Dictionary<string, Task>();
             stateRecord = new hardwareState();
             stateRecord.analogs = new Dictionary<string, double>();
@@ -121,11 +124,6 @@ namespace SympatheticHardwareControl
             CreateAnalogInputTask("laserLockErrorSignal", -10, 10);
             CreateAnalogInputTask("chamber1Pressure");
 
-            // make analog input analogTasks. "CreateAnalogInputTask" is defined later
-            //e.g   probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            //      pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
-
-            //readAnalogVoltageTask = CreateAnalogInputTask("testAI");
             // make the control controlWindow
             controlWindow = new ControlWindow();
             controlWindow.controller = this;
@@ -133,27 +131,19 @@ namespace SympatheticHardwareControl
 
             HCState = SHCUIControlState.OFF;
 
-            // run
-            //Application.Run(imageWindow);
-            //Application.Run(controlWindow);
+
 
              Application.Run(controlWindow);
 
         }
 
-        /*public IMAQdxCameraControl ConnectToCamera(string cameraID)
-        {
-            IMAQdxCameraControl cc = new IMAQdxCameraControl(cameraID, cameraAttributesPath);
-            cc.InitializeCamera();
-            return cc;
-        }
-         * */
         // this method runs immediately after the GUI sets up
         internal void ControllerLoaded()
         {
             try
             {
                  ImageController = new ImageMaster("cam0", cameraAttributesPath);
+                 ImageController.controller = this;
                  ImageController.Initialize();
                 //cameraControl = ConnectToCamera("cam0");
             }
@@ -227,12 +217,12 @@ namespace SympatheticHardwareControl
         }
 
         // setting an analog voltage to an output
-        private void SetAnalogOutput(string channel, double voltage)
+        public void SetAnalogOutput(string channel, double voltage)
         {
             SetAnalogOutput(channel, voltage, false);
         }
         //Overload for using a calibration before outputting to hardware
-        private void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
+        public void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
         {
             
             AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogTasks[channelName].Stream);
@@ -270,11 +260,11 @@ namespace SympatheticHardwareControl
         }
         public class CalibrationException : ArgumentOutOfRangeException { };
         // reading an analog voltage from input
-        private double ReadAnalogInput(string channel)
+        public double ReadAnalogInput(string channel)
         {
             return ReadAnalogInput(channel, false);
         }
-        private double ReadAnalogInput(string channelName, bool useCalibration)
+        public double ReadAnalogInput(string channelName, bool useCalibration)
         {
             AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogTasks[channelName].Stream);
             double val = reader.ReadSingleSample();
@@ -298,7 +288,7 @@ namespace SympatheticHardwareControl
         }
         
         // overload for reading multiple samples
-        private double ReadAnalogInput(string channel, double sampleRate, int numOfSamples, bool useCalibration)
+        public double ReadAnalogInput(string channel, double sampleRate, int numOfSamples, bool useCalibration)
         {
             //Configure the timing parameters of the task
             analogTasks[channel].Timing.ConfigureSampleClock("", sampleRate,
@@ -344,7 +334,7 @@ namespace SympatheticHardwareControl
             digitalTasks.Add(name, digitalTask);
         }
 
-        private void SetDigitalLine(string name, bool value)
+        public void SetDigitalLine(string name, bool value)
         {
             Task digitalTask = ((Task)digitalTasks[name]);
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
@@ -385,7 +375,7 @@ namespace SympatheticHardwareControl
 
         private void StoreParameters(String dataStoreFilePath)
         {
-            stateRecord = readAllUIValues();
+            stateRecord = readValuesOnUI();
             BinaryFormatter s = new BinaryFormatter();
             FileStream fs = new FileStream(dataStoreFilePath, FileMode.Create);
             try
@@ -444,7 +434,7 @@ namespace SympatheticHardwareControl
 
         
 
-        #region updating the hardware
+        #region Updating the hardware
 
         public void ApplyRecordedStateToHardware()
         {
@@ -454,13 +444,13 @@ namespace SympatheticHardwareControl
 
         public void UpdateHardware()
         {
-            hardwareState uiState = readAllUIValues();
+            hardwareState uiState = readValuesOnUI();
 
-            hardwareState changes = getChanges(stateRecord, uiState);
+            hardwareState changes = getDiscrepancies(stateRecord, uiState);
 
             applyToHardware(changes);
 
-            recordChanges(changes, stateRecord);
+            updateStateRecord(changes);
 
 
         }
@@ -490,7 +480,7 @@ namespace SympatheticHardwareControl
             }
         }
 
-        private hardwareState getChanges(hardwareState oldState, hardwareState newState)
+        private hardwareState getDiscrepancies(hardwareState oldState, hardwareState newState)
         {
             hardwareState state = new hardwareState();
             state.analogs = new Dictionary<string, double>();
@@ -512,15 +502,15 @@ namespace SympatheticHardwareControl
             return state;
         }
 
-        private void recordChanges(hardwareState changes, hardwareState controllerCopy)
+        private void updateStateRecord(hardwareState changes)
         {
             foreach (KeyValuePair<string, double> pairs in changes.analogs)
             {
-                controllerCopy.analogs[pairs.Key] = changes.analogs[pairs.Key];
+                stateRecord.analogs[pairs.Key] = changes.analogs[pairs.Key];
             }
             foreach (KeyValuePair<string, bool> pairs in changes.digitals)
             {
-                controllerCopy.digitals[pairs.Key] = changes.digitals[pairs.Key];
+                stateRecord.digitals[pairs.Key] = changes.digitals[pairs.Key];
             }
         }
 
@@ -567,16 +557,11 @@ namespace SympatheticHardwareControl
 
         #region Reading and Writing to UI
 
-        private hardwareState readAllUIValues()
-        {
-            return readUIValues(stateRecord.digitals.Keys, stateRecord.analogs.Keys);
-        }
-        private hardwareState readUIValues(Dictionary<string, bool>.KeyCollection digitalKeys, 
-            Dictionary<string, double>.KeyCollection analogKeys)
+        private hardwareState readValuesOnUI()
         {
             hardwareState state = new hardwareState();
-            state.analogs = readUIAnalogs(analogKeys);
-            state.digitals = readUIDigitals(digitalKeys);
+            state.analogs = readUIAnalogs(stateRecord.analogs.Keys);
+            state.digitals = readUIDigitals(stateRecord.digitals.Keys);
             return state;
         }
         private Dictionary<string, double> readUIAnalogs(Dictionary<string, double>.KeyCollection keys)
@@ -622,9 +607,10 @@ namespace SympatheticHardwareControl
                 controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
             }
         }
+
         #endregion
 
-        #region remoting stuff
+        #region Remoting stuff
 
         public void StartRemoteControl()
         {
@@ -665,6 +651,30 @@ namespace SympatheticHardwareControl
             controlWindow.UpdateUIState(HCState);
             ApplyRecordedStateToHardware();
         }
+        public void SetValue(string channel, double value)
+        {
+
+            stateRecord.analogs[channel] = value;
+            SetAnalogOutput(channel, value, false);
+            setUIValues(stateRecord);
+
+        }
+        public void SetValue(string channel, double value, bool useCalibration)
+        {
+
+            stateRecord.analogs[channel] = value;
+            SetAnalogOutput(channel, value, useCalibration);
+            setUIValues(stateRecord);
+
+        }
+        public void SetValue(string channel, bool value)
+        {
+
+            stateRecord.digitals[channel] = value;
+            SetDigitalLine(channel, value);
+            setUIValues(stateRecord);
+
+        }
         #endregion
 
         #endregion
@@ -698,6 +708,7 @@ namespace SympatheticHardwareControl
         public void CameraSnapshot()
         {
             controlWindow.WriteToConsole("Taking snapshot");
+            ImageController.SetCameraAttributes();
             ImageController.Snapshot();
         }
 
@@ -726,21 +737,46 @@ namespace SympatheticHardwareControl
         #region Remote Image Processing
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
 
-        public byte[,] GrabImage(string cameraAttributesPath)
+        public byte[,] GrabSingleImage(string cameraAttributesPath)
         {
-
-            isDone = false;
-            VisionImage image = ImageController.Snapshot(cameraAttributesPath);
+            ImageController.SetCameraAttributes(cameraAttributesPath);
+            /*VisionImage image = ImageController.Snapshot();
             PixelValue2D pval = image.ImageToArray();
-            isDone = true;
             return pval.U8;
+             */
+            return ImageController.Snapshot();
+            
+        }
+        public byte[][,] GrabMultipleImages(string cameraAttributesPath, int numberOfShots)
+        {
+            
+            ImageController.SetCameraAttributes(cameraAttributesPath);
+
+            try
+            {
+                return ImageController.TriggeredSequence(numberOfShots);
+            }
+
+            catch (TimeoutException)
+            {
+                FinishRemoteCameraControl();
+                return null;
+            }
+            
         }
 
-        private bool isDone;
-        public bool IsDone()
-        {
-            return isDone;
+       public bool IsReadyForAcquisition()
+           {
+               if (ImageController.State == ImageMaster.CameraState.READY_FOR_ACQUISITION)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
+
         public bool PrepareRemoteCameraControl()
         {
             StartRemoteControl();
@@ -902,11 +938,20 @@ namespace SympatheticHardwareControl
             Dictionary<String, Object> report = new Dictionary<String, Object>();
             report["laserLockErrorSignal"] = ReadLaserErrorSignal();
             report["chamber1Pressure"] = ReadChannel1Pressure();
+            foreach (KeyValuePair<string, double> pair in stateRecord.analogs)
+            {
+                report[pair.Key] = pair.Value;
+            }
+            foreach (KeyValuePair<string, bool> pair in stateRecord.digitals)
+            {
+                report[pair.Key] = pair.Value;
+            }
             return report;
         }
         #endregion
 
         #endregion
+
 
     }
 }

@@ -27,7 +27,9 @@ namespace MOTMaster.SnippetLibrary
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
-            p.AddAnalogPulse("coil0current", 0, (int)parameters["MOTLoadDuration"], 7, 0);
+            p.AddChannel("coil0current");
+
+            p.AddAnalogPulse("coil0current", 0, (int)parameters["MOTLoadDuration"], (double)parameters["MOTCoilsCurrent"], 0);
         }
 
        

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using DAQ.HAL;
+using DAQ.Environment;
 
 namespace DAQ.Analog
 {
@@ -18,6 +20,7 @@ namespace DAQ.Analog
         public Dictionary<String, Dictionary<Int32, Double>> AnalogPatterns;
         public int PatternLength;
         public double[,] Pattern;
+        private static Hashtable calibrations = Environs.Hardware.Calibrations;
 
         public AnalogPatternBuilder(string[] channelNames, int patternLength)
         {
@@ -126,7 +129,14 @@ namespace DAQ.Analog
                 double dval = AnalogPatterns[channel][events[i]];
                 for (int j = 0; j < timeUntilNextEvent; j++)
                 {
-                    d[events[i] + j] = dval;
+                    try
+                    {
+                        d[events[i] + j] = ((Calibration)calibrations[channel]).Convert(dval);
+                    }
+                    catch
+                    {
+                        d[events[i] + j] = dval;
+                    }
                 }
 
             }

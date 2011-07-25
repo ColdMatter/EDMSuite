@@ -16,13 +16,25 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
+
+
 namespace SympatheticHardwareControl.CameraControl
 {
+    /// <summary>
+    /// This keeps track of everything to do with images. It has 3 sections:
+    /// the form (to display the image)
+    /// an IMAQdxSession (the class which controls the camera)
+    /// a VisionImage (the class that deals with image which the camera spits out)
+    /// Although this stuff could actually be part of the hardware controller, I just shoved it all into one class.
+    /// In principle, the hardware controller doesn't really need to know anything about IMAQ anymore.
+    /// </summary>
     public class ImageMaster
     {
         public Controller controller;
-        public bool Streaming, AcquisitionIsDone;
+        public bool Streaming;
         public VisionImage Image;
+        public enum CameraState { FREE, BUSY, READY_FOR_ACQUISITION, STREAMING };
+        private CameraState state = new CameraState();
 
 
         public ImageMaster(string cameraName, string attributesFile)
@@ -30,10 +42,9 @@ namespace SympatheticHardwareControl.CameraControl
             cameraAttributesFilePath = attributesFile;
             this.cameraName = cameraName;
             Streaming = false;
-            AcquisitionIsDone = true;
-
             windowShowing = false;
             Image = new VisionImage();
+            state = CameraState.FREE;
         }
         #region ImageMaster functions
 
@@ -66,29 +77,56 @@ namespace SympatheticHardwareControl.CameraControl
             return true;
         }
 
-        public VisionImage Snapshot(string cameraAttributes)
+        public byte[,] Snapshot()
         {
-            SetCameraAttributes(cameraAttributes);
+
             Image = new VisionImage();
+            state = CameraState.READY_FOR_ACQUISITION;
             try
             {
                 ImaqdxSession.Snap(Image);
+                if (windowShowing)
+                {
+                    imageWindow.AttachToViewer(Image);
+                }
+                PixelValue2D pval = Image.ImageToArray();
+                state = CameraState.FREE;
+                return pval.U8;
             }
             catch (ObjectDisposedException e)
             {
                 MessageBox.Show(e.Message);
-                return Image;
+                throw new TimeoutException();
             }
-            if (windowShowing)
-            {
-                imageWindow.AttachToViewer(Image);
-            }
-            return Image;
+            
         }
 
-        public VisionImage Snapshot()
+        public byte[][,] TriggeredSequence(int numberOfShots)
+        {            
+            state = CameraState.READY_FOR_ACQUISITION;
+            VisionImage[] images = new VisionImage[numberOfShots];
+            try
+            {
+                ImaqdxSession.Sequence(images, numberOfShots);
+                List<byte[,]> byteList = new List<byte[,]>();
+                foreach (VisionImage i in images)
+                {
+                    byteList.Add((i.ImageToArray()).U8);
+                }
+                state = CameraState.FREE;
+                return byteList.ToArray();
+            }
+            catch (ImaqdxException e)
+            {
+                MessageBox.Show(e.Message);
+                throw new TimeoutException();
+            }
+
+        }
+
+        public CameraState State
         {
-            return Snapshot(cameraAttributesFilePath);
+            get { return state; }
         }
         #endregion
 

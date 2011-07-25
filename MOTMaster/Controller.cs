@@ -67,7 +67,7 @@ namespace MOTMaster
         DAQMxPatternGenerator pg;
         DAQmxAnalogPatternGenerator apg;
 
-        CameraControlable camera;
+        CameraControllable camera;
         HardwareReportable hardwareReporter;
 
         MMDataIOHelper ioHelper;
@@ -93,7 +93,7 @@ namespace MOTMaster
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQmxAnalogPatternGenerator();
 
-            camera = (CameraControlable)Activator.GetObject(typeof(CameraControlable),
+            camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1180/controller.rem");
 
             hardwareReporter = (HardwareReportable)Activator.GetObject(typeof(HardwareReportable),
@@ -174,7 +174,8 @@ namespace MOTMaster
         /// 
         /// - MOTMaster also saves the data to a .zip. This includes: the original MOTMasterScript (.cs), a text file
         /// with the parameters in it (IF DIFFERENT FROM THE VALUES IN .cs, THE PARAMETERS IN THE TEXT FILE ARE THE
-        /// CORRECT VALUES!), another text file with the camera attributes and a .png file containing the final image.
+        /// CORRECT VALUES!), another text file with the camera attributes, yet another file (entitled hardware report)
+        ///  which contains the values set by the Hardware controller at the start of the run, and a .png file(s) containing the final image(s).
         /// 
         /// -There are 2 ways of using "Run". Run(null) uses the parameters given in the script (.cs file).
         ///  Run(Dictionary<>) compiles the .cs file but then replaces values in the dictionary. This is to allow
@@ -238,18 +239,30 @@ namespace MOTMaster
                 try
                 {
                     prepareCameraControl();
-                    GrabImage(cameraAttributesPath);
+
+                    GrabImage((int)script.Parameters["numberOfFrames"]);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+                    waitUntilCameraIsReadyForAcquisition();
+
                     runPattern(sequence);
+
                     if (saveEnable)
                     {
                         waitUntilCameraAquisitionIsDone();
-                        Dictionary<String, Object> report = GetHardwareReport();
-                        save(script, scriptPath, imageData, report);
-                        finishCameraControl();
+                        if (imageData == null)
+                        {
+                            MessageBox.Show("No data. Something's Wrong.");
+                            throw new DataNotArrivedFromHardwareControllerException();
+                        }
+                        else
+                        {
+                            Dictionary<String, Object> report = GetHardwareReport();
+                            save(script, scriptPath, imageData, report); 
+                        }
                     }
-                    
+                    finishCameraControl();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -270,6 +283,11 @@ namespace MOTMaster
         private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
+                script.Parameters, report, cameraAttributesPath, imageData);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
+        {
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 script.Parameters, report, cameraAttributesPath, imageData);
         }
         private void runPattern(MOTMasterSequence sequence)
@@ -385,19 +403,40 @@ namespace MOTMaster
         /// want to fix this.
         /// </summary>
         /// 
-        public void GrabImage(string cameraAttributes)
+        int nof;
+        public void GrabImage(int numberOfFrames)
         {
+            nof = numberOfFrames;
             Thread LLEThread = new Thread(new ThreadStart(grabImage));
             LLEThread.Start();
+
         }
-        private byte[,] imageData;
+        
+        bool imagesRecieved = false;
+        /*private byte[,] imageData;
         private void grabImage()
         {
-            imageData = camera.GrabImage(cameraAttributesPath);
+            imagesRecieved = false;
+            imageData = (byte[,])camera.GrabSingleImage(cameraAttributesPath);
+            imagesRecieved = true;
+        }*/
+        private byte[][,] imageData;
+        private void grabImage()
+        {
+            imagesRecieved = false;
+            imageData = camera.GrabMultipleImages(cameraAttributesPath, nof);
+            imagesRecieved = true;
         }
+        public class DataNotArrivedFromHardwareControllerException : Exception { };
         private bool waitUntilCameraAquisitionIsDone()
         {
-            while (!camera.IsDone())
+            while (!imagesRecieved)
+            { Thread.Sleep(10); }
+            return true;
+        }
+        private bool waitUntilCameraIsReadyForAcquisition()
+        {
+            while (!camera.IsReadyForAcquisition())
             { Thread.Sleep(10); }
             return true;
         }

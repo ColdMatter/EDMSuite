@@ -34,32 +34,48 @@ namespace MOTMaster
 
             saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
 
-            putCopiesOfFilesToZip(saveFolder, fileTag);
+            string[] files = putCopiesOfFilesToZip(saveFolder, fileTag);
 
-            deleteFiles(saveFolder, fileTag);
+            //deleteFiles(saveFolder, fileTag);
+            deleteFiles(files);
+        }
+        public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report,
+            string cameraAttributesPath, byte[][,] imageData)
+        {
+            string fileTag = getDataID(element, batchNumber);
+
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
+
+            string[] files = putCopiesOfFilesToZip(saveFolder, fileTag);
+
+            //deleteFiles(saveFolder, fileTag);
+            deleteFiles(files);
         }
 
-        private void deleteFiles(string saveFolder, string fileTag)
+        private void deleteFiles(string[] files)
         {
-            File.Delete(saveFolder + fileTag + "_parameters.txt");
-            File.Delete(saveFolder + fileTag + "_script.cs");
-            File.Delete(saveFolder + fileTag + ".png");
-            File.Delete(saveFolder + fileTag + "_cameraParameters.txt");
-            File.Delete(saveFolder + fileTag + "_hardwareClass.cs");
-            File.Delete(saveFolder + fileTag + "_hardwareReport.txt");
+            foreach (string s in files)
+            {
+                File.Delete(s);
+            }
         }
-        private void putCopiesOfFilesToZip(string saveFolder, string fileTag)
+        private string[] putCopiesOfFilesToZip(string saveFolder, string fileTag)
         {
+
+            string[] files = Directory.GetFiles(saveFolder, fileTag + "*");
             System.IO.FileStream fs = new FileStream(saveFolder + fileTag + ".zip", FileMode.Create);
             zipper.PrepareZip(fs);
-            zipper.AppendToZip(saveFolder, fileTag + "_parameters.txt");
-            zipper.AppendToZip(saveFolder, fileTag + "_script.cs");
-            zipper.AppendToZip(saveFolder, fileTag + ".png");
-            zipper.AppendToZip(saveFolder, fileTag + "_cameraParameters.txt");
-            zipper.AppendToZip(saveFolder, fileTag + "_hardwareClass.cs");
-            zipper.AppendToZip(saveFolder, fileTag + "_hardwareReport.txt");
+            foreach (string s in files)
+            {
+                string[] bits = (s.Split('\\'));
+                string name = bits[bits.Length - 1];
+                zipper.AppendToZip(saveFolder, name);
+            }
+ 
             zipper.CloseZip();
             fs.Close();
+            return files;
         }
         private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report,
@@ -69,7 +85,18 @@ namespace MOTMaster
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
-            storeImage(saveFolder + fileTag + ".png", imageData);
+            storeImage(saveFolder + fileTag, imageData);
+            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+        }
+        private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report,
+            string cameraAttributesPath, byte[][,] imageData)
+        {
+            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
+            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
+            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
+            storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
+            storeImage(saveFolder + fileTag, imageData);
             storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
 
@@ -114,6 +141,14 @@ namespace MOTMaster
             File.Copy(attributesPath, savePath);
         }
 
+        private void storeImage(string savePath, byte[][,] imageData)
+        {
+            for (int i = 0; i < imageData.Length; i++)
+            {
+                storeImage(savePath + "_" + i.ToString(), imageData[i]);
+            }
+        }
+
         private void storeImage(string savePath, byte[,] imageData)
         {
             int width = imageData.GetLength(1);
@@ -141,7 +176,7 @@ namespace MOTMaster
                 pixels,
                 width);
 
-            FileStream stream = new FileStream(savePath, FileMode.Create);
+            FileStream stream = new FileStream(savePath + ".png", FileMode.Create);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Interlace = PngInterlaceOption.On;
             encoder.Frames.Add(BitmapFrame.Create(image));
