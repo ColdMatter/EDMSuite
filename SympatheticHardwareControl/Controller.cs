@@ -140,26 +140,12 @@ namespace SympatheticHardwareControl
         // this method runs immediately after the GUI sets up
         internal void ControllerLoaded()
         {
-            try
-            {
-                 ImageController = new ImageMaster("cam0", cameraAttributesPath);
-                 ImageController.controller = this;
-                 ImageController.Initialize();
-                //cameraControl = ConnectToCamera("cam0");
-            }
-            catch (ImaqdxException e)
-            {
-                MessageBox.Show(e.Message, "Camera Initialization Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
 
-            }
-            finally
-            {
-                stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
-                setUIValues(stateRecord);
-                ApplyRecordedStateToHardware();
-            }
+            StartCameraControl();
+            stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
+            setUIValues(stateRecord);
+            ApplyRecordedStateToHardware();
+
 
         }
 
@@ -616,7 +602,7 @@ namespace SympatheticHardwareControl
         {
             if (HCState == SHCUIControlState.OFF)
             {
-                if (ImageController.Streaming)
+                if (ImageController.State  == ImageMaster.CameraState.STREAMING)
                 {
                     StopCameraStream();
                 }             
@@ -645,7 +631,7 @@ namespace SympatheticHardwareControl
             }
             catch (Exception)
             {
-                Console.Out.WriteLine("Unable to load Parameters.");
+                controlWindow.WriteToConsole("Unable to load Parameters.");
             }
             HCState = SHCUIControlState.OFF;
             controlWindow.UpdateUIState(HCState);
@@ -685,12 +671,28 @@ namespace SympatheticHardwareControl
 
         public void StartCameraControl()
         {
-            ImageController.Initialize();
+            try
+            {
+                ImageController = new ImageMaster("cam0", cameraAttributesPath);
+                ImageController.controller = this;
+                ImageController.Initialize();
+                PrintCameraAttributesToConsole();
+            }
+            catch (ImaqdxException e)
+            {
+                MessageBox.Show(e.Message, "Camera Initialization Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+
+            }
         }
         public void CameraStream()
         {
+            
+            ImageController.SetCameraAttributes(cameraAttributesPath);
+            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
+            PrintCameraAttributesToConsole();
             controlWindow.WriteToConsole("Streaming from camera");
-
             ImageController.Stream();
                    
         }
@@ -708,15 +710,27 @@ namespace SympatheticHardwareControl
         public void CameraSnapshot()
         {
             controlWindow.WriteToConsole("Taking snapshot");
-            ImageController.SetCameraAttributes();
-            ImageController.Snapshot();
+            ImageController.SetCameraAttributes(cameraAttributesPath);
+            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
+            PrintCameraAttributesToConsole();
+            try
+            {
+                ImageController.Snapshot();
+            }
+            catch (TimeoutException)
+            {
+              
+            }
+
         }
 
-        public void SetCameraAttributes()
+
+        public void PrintCameraAttributesToConsole()
         {
-            ImageController.SetCameraAttributes();
+            controlWindow.WriteToConsole("Attributes loaded in camera:");
+            controlWindow.WriteToConsole(ImageController.ImaqdxSession.Attributes.WriteAttributesToString());
+            
         }
-
         #endregion
 
         #region Saving and Loading Images
@@ -740,10 +754,9 @@ namespace SympatheticHardwareControl
         public byte[,] GrabSingleImage(string cameraAttributesPath)
         {
             ImageController.SetCameraAttributes(cameraAttributesPath);
-            /*VisionImage image = ImageController.Snapshot();
-            PixelValue2D pval = image.ImageToArray();
-            return pval.U8;
-             */
+            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
+            PrintCameraAttributesToConsole();
+            
             return ImageController.Snapshot();
             
         }
@@ -751,10 +764,14 @@ namespace SympatheticHardwareControl
         {
             
             ImageController.SetCameraAttributes(cameraAttributesPath);
-
+            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
+            PrintCameraAttributesToConsole();
+            
             try
             {
-                return ImageController.TriggeredSequence(numberOfShots);
+                byte[][,] images = ImageController.TriggeredSequence(numberOfShots);
+
+                return images;
             }
 
             catch (TimeoutException)
@@ -764,29 +781,23 @@ namespace SympatheticHardwareControl
             }
             
         }
-
-       public bool IsReadyForAcquisition()
-           {
-               if (ImageController.State == ImageMaster.CameraState.READY_FOR_ACQUISITION)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+        public void DisplayInterval(TimeSpan interval)
+        {
+            controlWindow.WriteToConsole("Duration of acquisition: " + interval.ToString());
         }
 
-        public bool PrepareRemoteCameraControl()
+        public bool IsReadyForAcquisition()
+        {
+            return true;//ImageController.IsReadyForAcqisition();
+        }
+
+        public void PrepareRemoteCameraControl()
         {
             StartRemoteControl();
-            return true;
         }
-        public bool FinishRemoteCameraControl()
+        public void FinishRemoteCameraControl()
         {
             StopRemoteControl();
-            ImageController.SetCameraAttributes(cameraAttributesPath);
-            return true;
         }
 
         #endregion

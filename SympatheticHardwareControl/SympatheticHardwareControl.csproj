@@ -109,7 +109,6 @@
     <Compile Include="ImageViewerWindow.Designer.cs">
       <DependentUpon>ImageViewerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="IMAQdxCameraControl.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControlWindow.resx">

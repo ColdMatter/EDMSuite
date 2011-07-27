@@ -90,6 +90,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("coil0current", aoBoard + "/ao8");
             AddAnalogOutputChannel("coil1current", aoBoard + "/ao17");
 
+
             //Control of molecules
             AddAnalogOutputChannel("laser", aoBoard + "/ao0"); // Pin 22
             AddAnalogOutputChannel("highvoltage", aoBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified

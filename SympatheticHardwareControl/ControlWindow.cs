@@ -69,7 +69,6 @@ namespace SympatheticHardwareControl
         {
             this.shcTabs = new System.Windows.Forms.TabControl();
             this.tabCamera = new System.Windows.Forms.TabPage();
-            this.updateAttributesButton = new System.Windows.Forms.Button();
             this.stopStreamButton = new System.Windows.Forms.Button();
             this.streamButton = new System.Windows.Forms.Button();
             this.snapshotButton = new System.Windows.Forms.Button();
@@ -166,7 +165,6 @@ namespace SympatheticHardwareControl
             // 
             // tabCamera
             // 
-            this.tabCamera.Controls.Add(this.updateAttributesButton);
             this.tabCamera.Controls.Add(this.stopStreamButton);
             this.tabCamera.Controls.Add(this.streamButton);
             this.tabCamera.Controls.Add(this.snapshotButton);
@@ -177,16 +175,6 @@ namespace SympatheticHardwareControl
             this.tabCamera.TabIndex = 0;
             this.tabCamera.Text = "Camera Control";
             this.tabCamera.UseVisualStyleBackColor = true;
-            // 
-            // updateAttributesButton
-            // 
-            this.updateAttributesButton.Location = new System.Drawing.Point(249, 6);
-            this.updateAttributesButton.Name = "updateAttributesButton";
-            this.updateAttributesButton.Size = new System.Drawing.Size(107, 23);
-            this.updateAttributesButton.TabIndex = 20;
-            this.updateAttributesButton.Text = "Update Attributes";
-            this.updateAttributesButton.UseVisualStyleBackColor = true;
-            this.updateAttributesButton.Click += new System.EventHandler(this.updateAttributesButton_Click);
             // 
             // stopStreamButton
             // 
@@ -738,7 +726,7 @@ namespace SympatheticHardwareControl
             // hardwareMonitorToolStripMenuItem
             // 
             this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
-            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
             this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
@@ -963,7 +951,6 @@ namespace SympatheticHardwareControl
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
         private Button snapshotButton;
-        private Button updateAttributesButton;
         private Led remoteControlLED;
         private Label label1;
         private Label label2;
@@ -1008,10 +995,7 @@ namespace SympatheticHardwareControl
             Close();
         }
 
-        private void updateAttributesButton_Click(object sender, EventArgs e)
-        {
-            controller.SetCameraAttributes();
-        }
+
 
 
         #endregion

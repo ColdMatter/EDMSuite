@@ -31,17 +31,17 @@ namespace SympatheticHardwareControl.CameraControl
     public class ImageMaster
     {
         public Controller controller;
-        public bool Streaming;
+
         public VisionImage Image;
-        public enum CameraState { FREE, BUSY, READY_FOR_ACQUISITION, STREAMING };
+        public enum CameraState { FREE, BUSY, READY_FOR_ACQUISITION, STREAMING, ACQUISITION_TERMINATED };
         private CameraState state = new CameraState();
+        
 
 
         public ImageMaster(string cameraName, string attributesFile)
         {
             cameraAttributesFilePath = attributesFile;
             this.cameraName = cameraName;
-            Streaming = false;
             windowShowing = false;
             Image = new VisionImage();
             state = CameraState.FREE;
@@ -59,66 +59,100 @@ namespace SympatheticHardwareControl.CameraControl
             disposeCamera();
             closeViewerWindow();
         }
-
+        public void Clear()
+        {
+            clearCamera();
+        }
         private object streamStopLock = new object();
         public bool Stream()
         {
-            Thread streamThread = new Thread(new ThreadStart(stream));
-            streamThread.Start();
-            return true;
+            if (state == CameraState.FREE)
+            {
+                state = CameraState.STREAMING;
+                Thread streamThread = new Thread(new ThreadStart(stream));
+                streamThread.Start();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         
         public bool StopStream()
         {
-            if (Streaming)
+            if (state == CameraState.STREAMING)
             {
-                Streaming = false;
+                state = CameraState.BUSY;
             }
             return true;
         }
 
         public byte[,] Snapshot()
         {
-
-            Image = new VisionImage();
-            state = CameraState.READY_FOR_ACQUISITION;
-            try
+            if (state == CameraState.FREE)
             {
-                ImaqdxSession.Snap(Image);
-                if (windowShowing)
+                Image = new VisionImage();
+                state = CameraState.READY_FOR_ACQUISITION;
+                try
                 {
-                    imageWindow.AttachToViewer(Image);
+                    ImaqdxSession.Snap(Image);
+                    if (windowShowing)
+                    {
+                        imageWindow.AttachToViewer(Image);
+                    }
+                    PixelValue2D pval = Image.ImageToArray();
+                    state = CameraState.FREE;
+                    return pval.U8;
                 }
-                PixelValue2D pval = Image.ImageToArray();
-                state = CameraState.FREE;
-                return pval.U8;
+                catch (ObjectDisposedException e)
+                {
+                    MessageBox.Show(e.Message);
+                    throw new ObjectDisposedException("");
+                }
+                catch (ImaqdxException e)
+                {
+                    MessageBox.Show(e.Message);
+                    throw new ImaqdxException();
+                }
             }
-            catch (ObjectDisposedException e)
-            {
-                MessageBox.Show(e.Message);
-                throw new TimeoutException();
-            }
-            
+            else return null;
         }
 
         public byte[][,] TriggeredSequence(int numberOfShots)
-        {            
-            state = CameraState.READY_FOR_ACQUISITION;
+        {
+
             VisionImage[] images = new VisionImage[numberOfShots];
+
             try
             {
+
+                state = CameraState.READY_FOR_ACQUISITION;
+                DateTime start = DateTime.Now;
                 ImaqdxSession.Sequence(images, numberOfShots);
+                TimeSpan interval = DateTime.Now - start;
+                controller.DisplayInterval(interval);
+                /*for (int i = 0; i < numberOfShots; i++)
+                {
+                    
+                    ImaqdxSession.Snap(Image);
+                    images[i] = Image;
+                }*/
+                
+
                 List<byte[,]> byteList = new List<byte[,]>();
                 foreach (VisionImage i in images)
                 {
                     byteList.Add((i.ImageToArray()).U8);
                 }
                 state = CameraState.FREE;
+
                 return byteList.ToArray();
             }
             catch (ImaqdxException e)
             {
                 MessageBox.Show(e.Message);
+                state = CameraState.FREE;
                 throw new TimeoutException();
             }
 
@@ -127,6 +161,17 @@ namespace SympatheticHardwareControl.CameraControl
         public CameraState State
         {
             get { return state; }
+        }
+        public bool IsReadyForAcqisition()
+        {
+            if (state == CameraState.READY_FOR_ACQUISITION)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -146,27 +191,33 @@ namespace SympatheticHardwareControl.CameraControl
             {
                 MessageBox.Show(e.Message);
             }
-            ImaqdxSession.Attributes.ReadAttributesFromFile(cameraAttributesFilePath);
+
         }
 
         private void disposeCamera()
         {
             ImaqdxSession.Dispose();
         }
-
-        public void SetCameraAttributes()
+        private void clearCamera()
         {
-            ImaqdxSession.Attributes.ReadAttributesFromFile(cameraAttributesFilePath);
+            ImaqdxSession.Acquisition.Unconfigure();
+            
         }
 
-        public void SetCameraAttributes(string newPath)
+        public string SetCameraAttributes(string newPath)
         {
-            ImaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+            lock (this)
+            {
+                cameraAttributesFilePath = newPath;
+                
+                ImaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+
+            }
+            return newPath;
         }
 
         private void stream()
         {
-            Streaming = true;
             Image = new VisionImage();
             try
             {
@@ -185,16 +236,10 @@ namespace SympatheticHardwareControl.CameraControl
                     {
                         ImaqdxSession.Grab(Image, true);
                     }
-                    catch (ImaqdxException e)
-                    {
-                        MessageBox.Show("ImaqdxException. \n Did you try to control the camera while it was streaming...?\n Stopping camera now. \n" + e.Message);
-                        Streaming = false;
-                        return;
-                    }
                     catch (InvalidOperationException e)
                     {
                         MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message);
-                        Streaming = false;
+                        state = CameraState.FREE;
                         return;
                     }
                     try
@@ -207,12 +252,14 @@ namespace SympatheticHardwareControl.CameraControl
                     catch (InvalidOperationException e)
                     {
                         MessageBox.Show("I have a leftover image without anywhere to display it. Dumping...\n\n" + e.Message);
-                        Streaming = false;
+                        ImaqdxSession.Acquisition.Stop();
+                        state = CameraState.FREE;
                         return;
                     }
-                    if (!Streaming)
+                    if (state != CameraState.STREAMING)
                     {
                         ImaqdxSession.Acquisition.Stop();
+                        state = CameraState.FREE;
                         return;
                     }
                 }

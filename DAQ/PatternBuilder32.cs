@@ -74,7 +74,7 @@ namespace DAQ.Pattern
 		/** Adds a downward going pulse **/
 		public int DownPulse(int startTime, int delay, int duration, int channel )
 		{
-			AddEdge(channel, startTime, true);
+			//AddEdge(channel, startTime, true);
 			AddEdge(channel, startTime + delay, false );
 			AddEdge(channel, startTime + delay + duration, true );
 		

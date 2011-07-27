@@ -58,9 +58,9 @@ namespace MOTMaster
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private const int
-            pgClockFrequency = 100;
+            pgClockFrequency = 1000;
         private const int
-            apgClockFrequency = 100;
+            apgClockFrequency = 1000;
 
         ControllerWindow controllerWindow;
 
@@ -240,7 +240,7 @@ namespace MOTMaster
                 {
                     prepareCameraControl();
 
-                    GrabImage((int)script.Parameters["numberOfFrames"]);
+                    GrabImage((int)script.Parameters["NumberOfFrames"]);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
@@ -251,16 +251,18 @@ namespace MOTMaster
                     if (saveEnable)
                     {
                         waitUntilCameraAquisitionIsDone();
-                        if (imageData == null)
+                        try
                         {
-                            MessageBox.Show("No data. Something's Wrong.");
-                            throw new DataNotArrivedFromHardwareControllerException();
+                            checkDataArrived();
                         }
-                        else
+                        catch (DataNotArrivedFromHardwareControllerException)
                         {
-                            Dictionary<String, Object> report = GetHardwareReport();
-                            save(script, scriptPath, imageData, report); 
+                            return;
                         }
+                        Dictionary<String, Object> report = GetHardwareReport();
+                        save(script, scriptPath, imageData, report);
+
+
                     }
                     finishCameraControl();
                 }
@@ -273,6 +275,7 @@ namespace MOTMaster
             {
                 MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
             }
+            
         }
         
         #endregion
@@ -440,13 +443,21 @@ namespace MOTMaster
             { Thread.Sleep(10); }
             return true;
         }
-        private bool prepareCameraControl()
+        private void prepareCameraControl()
         {
-            return camera.PrepareRemoteCameraControl();
+            camera.PrepareRemoteCameraControl();
         }
-        private bool finishCameraControl()
+        private void finishCameraControl()
         {
-            return camera.FinishRemoteCameraControl();
+            camera.FinishRemoteCameraControl();
+        }
+        private void checkDataArrived()
+        {
+            if (imageData == null)
+            {
+                MessageBox.Show("No data. Something's Wrong.");
+                throw new DataNotArrivedFromHardwareControllerException();
+            }
         }
         #endregion
 
