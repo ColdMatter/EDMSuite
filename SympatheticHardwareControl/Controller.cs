@@ -781,14 +781,14 @@ namespace SympatheticHardwareControl
             }
             
         }
-        public void DisplayInterval(TimeSpan interval)
+        public void PrintIntervalInConsole(long interval)
         {
             controlWindow.WriteToConsole("Duration of acquisition: " + interval.ToString());
         }
 
         public bool IsReadyForAcquisition()
         {
-            return true;//ImageController.IsReadyForAcqisition();
+            return ImageController.IsReadyForAcqisition();
         }
 
         public void PrepareRemoteCameraControl()

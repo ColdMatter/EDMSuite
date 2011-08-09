@@ -31,8 +31,10 @@ namespace MOTMaster
             {
                 string entryName = ZipEntry.CleanName(name);
                 ZipEntry entry = new ZipEntry(entryName);
+                FileInfo f = new FileInfo(folder + name);
+                entry.Size = f.Length;
                 runningZipStream.PutNextEntry(entry);
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[16384];
                 using (FileStream streamReader = File.OpenRead(folder + name))
                 {
                     StreamUtils.Copy(streamReader, runningZipStream, buffer);

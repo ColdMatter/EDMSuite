@@ -16,15 +16,16 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["MOTLoadDuration"] = 800;
-        Parameters["PatternLength"] = 10000;
+        Parameters["MOTLoadDuration"] = 100000;
+        Parameters["PatternLength"] = 200000;
         Parameters["NumberOfFrames"] = 3;
-        Parameters["Frame0Trigger"] = 10;
-        Parameters["Frame0Exposure"] =  1;
-        Parameters["Frame1Trigger"] = 500;
-        Parameters["Frame1Exposure"] = 1;
-        Parameters["Frame2Trigger"] = 1000;
-        Parameters["Frame2Exposure"] = 1;
+        Parameters["ReleaseTime"] = 1;
+        Parameters["Frame0TriggerDuration"] = 10;
+        Parameters["Frame0Trigger"] = 95000;
+        Parameters["Frame1TriggerDuration"] = 10;
+        Parameters["Frame1Trigger"] = 100002;
+        Parameters["Frame2TriggerDuration"] = 10;
+        Parameters["Frame2Trigger"] = 115000;
         Parameters["MOTCoilsCurrent"] = 15.0;
     }
 
@@ -37,24 +38,18 @@ public class Patterns : MOTMasterScript
         p.Pulse(0, 0, 1, "AnalogPatternTrigger");  //NEVER CHANGE THIS!!!! IT TRIGGERS THE ANALOG PATTERN!
 
         p.AddEdge("CameraTrigger", 0, true);
-        p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["Frame0Exposure"], "CameraTrigger");
-        p.DownPulse((int)Parameters["Frame1Trigger"], 0, (int)Parameters["Frame1Exposure"], "CameraTrigger");
-        p.DownPulse((int)Parameters["Frame2Trigger"], 0, (int)Parameters["Frame2Exposure"], "CameraTrigger");
+        p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["Frame0TriggerDuration"], "CameraTrigger");
+        p.DownPulse((int)Parameters["Frame1Trigger"], 0, (int)Parameters["Frame1TriggerDuration"], "CameraTrigger");
+        p.DownPulse((int)Parameters["Frame2Trigger"], 0, (int)Parameters["Frame2TriggerDuration"], "CameraTrigger");        
 
-        p.DownPulse(2000, 0, 50, "CameraTrigger");
-        p.DownPulse(3000, 0, 50, "CameraTrigger");
+        p.DownPulse(120000, 0, 50, "CameraTrigger");
+        p.DownPulse(130000, 0, 50, "CameraTrigger");
 
-
-        //p.AddEdge("CameraTrigger", 1, false);
-        //p.Pulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["Frame0Exposure"], "CameraTrigger");
-        //p.Pulse((int)Parameters["Frame1Trigger"], 0, (int)Parameters["Frame1Exposure"], "CameraTrigger");
-        //p.Pulse((int)Parameters["Frame2Trigger"], 0, (int)Parameters["Frame2Exposure"], "CameraTrigger");
-
-        // AddEdge[int channel, int time, bool values] 
-
-        //Pulse(int startTime, int delay (Don't know what that's for), int duration, int channel )
-
-        //DownPulse(int startTime, int delay, int duration, int channel )
+        p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["ReleaseTime"], "aom0enable");
+        p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["ReleaseTime"], "aom1enable");
+        p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["ReleaseTime"], "aom3enable");
+        p.AddEdge("aom2enable", (int)Parameters["Frame0Trigger"] - 1, false);
+        
         return p;
     }
 
@@ -65,6 +60,8 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
+        p.AddAnalogPulse("coil0current", (int)Parameters["MOTLoadDuration"], (int)Parameters["ReleaseTime"], 0, (double)Parameters["MOTCoilsCurrent"]);
+        p.AddAnalogValue("coil0current", 110000, 0);
 
         p.SwitchAllOffAtEndOfPattern();
         return p;

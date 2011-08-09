@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using DAQ.HAL;
 using DAQ.Environment;
@@ -118,20 +119,26 @@ namespace SympatheticHardwareControl.CameraControl
             }
             else return null;
         }
-
+        /*public void SetExposureTime(double exposure)
+        {
+            ImaqdxAttributeCollection collection = ImaqdxSession.Attributes;
+            collection.
+        }*/
         public byte[][,] TriggeredSequence(int numberOfShots)
         {
 
             VisionImage[] images = new VisionImage[numberOfShots];
-
+            Stopwatch watch = new Stopwatch();
             try
             {
 
+                watch.Start();
                 state = CameraState.READY_FOR_ACQUISITION;
-                DateTime start = DateTime.Now;
+                
                 ImaqdxSession.Sequence(images, numberOfShots);
-                TimeSpan interval = DateTime.Now - start;
-                controller.DisplayInterval(interval);
+                watch.Stop();
+                long interval = watch.ElapsedMilliseconds;
+                controller.PrintIntervalInConsole(interval);
                 /*for (int i = 0; i < numberOfShots; i++)
                 {
                     

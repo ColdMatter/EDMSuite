@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
+using System.Diagnostics;
 using Microsoft.CSharp;
 
 using DAQ.Environment;
@@ -58,9 +59,9 @@ namespace MOTMaster
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private const int
-            pgClockFrequency = 1000;
+            pgClockFrequency = 10000;
         private const int
-            apgClockFrequency = 1000;
+            apgClockFrequency = 10000;
 
         ControllerWindow controllerWindow;
 
@@ -231,6 +232,7 @@ namespace MOTMaster
         }
         public void Run(Dictionary<String, Object> dict)
         {
+            Stopwatch watch = new Stopwatch();
             MOTMasterScript script = prepareScript(scriptPath, dict);
             if (script != null)
             {
@@ -246,8 +248,10 @@ namespace MOTMaster
 
                     waitUntilCameraIsReadyForAcquisition();
 
+                    watch.Start();
                     runPattern(sequence);
-
+                    watch.Stop();
+                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
                         waitUntilCameraAquisitionIsDone();
@@ -311,6 +315,7 @@ namespace MOTMaster
                 if (dict != null)
                 {
                     script.EditDictionary(dict);
+                    
                 }
                 return script;
             }
@@ -399,7 +404,7 @@ namespace MOTMaster
         /// - Camera control is run through the hardware controller. All MOTMaster knows 
         /// about it a function called "GrabImage(string cameraSettings)". If the camera attributes are 
         /// set so that it needs a trigger, MOTMaster will have to deliver that too.
-        /// It'll expect a short[,] as a return value.
+        /// It'll expect a byte[,] or byte[][,] (if there are several images) as a return value.
         /// 
         /// -At the moment MOTMaster won't run without a camera nor with 
         /// more than one, and it can only take one photograph per run. In the long term, we might 
