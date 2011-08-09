@@ -44,7 +44,7 @@ import MOTMaster
 import SympatheticHardwareControl
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-hc = typedproxy(System.Activator.GetObject(SympatheticHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), SympatheticHardwareControl.Controller)
+hc = typedproxy(System.Activator.GetObject(SympatheticHardwareControl.Controller, 'tcp://localhost:1180/controller.rem'), SympatheticHardwareControl.Controller)
 mm = typedproxy(System.Activator.GetObject(MOTMaster.Controller, 'tcp://localhost:1187/controller.rem'), MOTMaster.Controller)
 
 # usage message

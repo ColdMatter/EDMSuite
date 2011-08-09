@@ -15,14 +15,21 @@ from MOTMaster import*
 def run_script():
 	return 0
 
-def ScanMOTLoadDuration():
-	count = 1
+def ScanReleaseTime(initial,final,interval):
+	count = 0
+	endcount = (final-initial)/interval
 	dic = Dictionary[String,Object]()
 	mm.SetScriptPath("C:\\Experiment Control\\EDMSuite\\SympatheticMOTMasterScripts\\MOTPattern.cs")
-	while(count < 21):
-		dic["MOTLoadDuration"] = 50 * count
-		dic["PatternLength"] =  50 * count + 1
-		dic["CameraTriggerTime"] = dic["MOTLoadDuration"]
+	while(count < endcount+1):
+		dic["ReleaseTime"] = (count*interval)+initial
+		dic["Frame1Trigger"] = 100001 + (count*interval)+initial
 		mm.Run(dic)
 		count = count + 1
+	return 0
 
+def RepeatScans(numberofrepeats):
+	j = 0
+	while(j < numberofrepeats):
+		ScanReleaseTime(250,350,10)
+		j = j+1
+	return 0
