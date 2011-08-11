@@ -302,7 +302,7 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		scramblerV = 0.724774 * r.NextDouble()
+		scramblerV = 1.18835 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
 		probePolAngle = 360.0 * r.NextDouble()

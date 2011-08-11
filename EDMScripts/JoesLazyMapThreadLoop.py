@@ -26,7 +26,7 @@ def mapLoop(numScans):
 		sm.AdjustProfileParameter("out", "scanOnAmplitude", list2[i], False)
 		sm.AcquireAndWait(numScans)
 		scanPath = file + "_" + str(i) + ".zip"
-		sm.SaveAverageData(scanPath)
+		sm.SaveData(scanPath)
 
 def run_script():
 	print "Use mapLoop(numScans)"
