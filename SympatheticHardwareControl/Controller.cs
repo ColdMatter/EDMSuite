@@ -30,12 +30,25 @@ namespace SympatheticHardwareControl
     /// <summary>
     /// This is the interface to the sympathetic specific hardware.
     /// 
-    /// There are 2 modes of operation: LOCAL and REMOTE.
-    /// When operating in LOCAL, the state displayed on the UI gets directly output to hardware. 
-    /// The controller can only read from the UI panel and apply it to hardware. It has no capability of deciding
-    /// what to output itself.
-    /// In the unusual case when the controller needs to take over (only when stopping and starting control),
-    /// it can load a set a parameters to the panel (which then gets applied to hardware in the usual way).
+    /// There are 3 states which the controller can be in: OFF, LOCAL and REMOTE.
+    /// OFF just means the HC is idle.
+    /// 
+    /// The state is set to LOCAL when this program is actively upating the state of the hardware. It does this by
+    /// reading off what's on the UI, finding any discrepancies between the current state of the hardware and the values on the UI
+    /// and by updating the hardware accordingly.
+    /// After finishing with the update, it resets the state to OFF.
+    /// 
+    /// 
+    /// When the state is set to REMOTE, the UI is disactivated. The hardware controller saves all the parameter values upon switching from
+    /// LOCAL to REMOTE, then does nothing. When switching back, it reinstates the hardware state to what it was before it switched to REMOTE.
+    /// Use this when you want to control the hardware from somewhere else (e.g. MOTMaster)
+    /// 
+    /// Having said that, you'll notice that there are also public functions for modifying parameter values without putting the HC in REMOTE.
+    /// I wrote it like this because you want to be able to do two different things:
+    /// -Have the hardware controller take a back seat and let something else control the hardware for a while (e.g. MOTMaster)
+    /// This is when you should use the REMOTE state.
+    /// -You still want the HC to keep track of the hardware (hence remaining in LOCAL), but you want to send commands to it remotely 
+    /// (say from a console) instead of from the UI. This is when you would use the SetValue functions.
     /// 
     /// </summary>
     public class Controller : MarshalByRefObject, CameraControllable, HardwareReportable
@@ -143,7 +156,7 @@ namespace SympatheticHardwareControl
 
             StartCameraControl();
             stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
-            setUIValues(stateRecord);
+            setValuesDisplayedOnUI(stateRecord);
             ApplyRecordedStateToHardware();
 
 
@@ -331,7 +344,15 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region keeping track of the things on this controller!
-
+        /// <summary>
+        /// There's this thing I've called a hardware state. It's something which keeps track of digital and analog values.
+        /// I then have something called stateRecord (defines above as an instance of hardwareState) which keeps track of 
+        /// what the hardware is doing.
+        /// Anytime the hardware gets modified by this program, the stateRecord get updated. Don't hack this. 
+        /// It's useful to know what the hardware is doing at all times.
+        /// When switching to REMOTE, the updates no longer happen. That's why we store the state before switching to REMOTE and apply the state
+        /// back again when returning to LOCAL.
+        /// </summary>
         [Serializable]
         private struct hardwareState
         {
@@ -390,7 +411,7 @@ namespace SympatheticHardwareControl
             dialog.InitialDirectory = profilesPath;
             dialog.ShowDialog();
             if (dialog.FileName != "") stateRecord = loadParameters(dialog.FileName);
-            setUIValues(stateRecord);
+            setValuesDisplayedOnUI(stateRecord);
         }
 
         private hardwareState loadParameters(String dataStoreFilePath)
@@ -574,7 +595,7 @@ namespace SympatheticHardwareControl
         }
        
 
-        private void setUIValues(hardwareState state)
+        private void setValuesDisplayedOnUI(hardwareState state)
         {
             setUIAnalogs(state);
             setUIDigitals(state);
@@ -598,11 +619,15 @@ namespace SympatheticHardwareControl
 
         #region Remoting stuff
 
+        /// <summary>
+        /// This is used when you want another program to take control of some/all of the hardware. The hc then just saves the
+        /// last hardware state, then prevents you from making any changes to the UI.
+        /// </summary>
         public void StartRemoteControl()
         {
             if (HCState == SHCUIControlState.OFF)
             {
-                if (ImageController.State  == ImageMaster.CameraState.STREAMING)
+                if (!ImageController.IsCameraFree())
                 {
                     StopCameraStream();
                 }             
@@ -622,7 +647,7 @@ namespace SympatheticHardwareControl
             try
             {
                 controlWindow.WriteToConsole("Remoting Stopped!");
-                setUIValues(loadParameters(profilesPath + "tempParameters.bin"));
+                setValuesDisplayedOnUI(loadParameters(profilesPath + "tempParameters.bin"));
                 
                 if (System.IO.File.Exists(profilesPath + "tempParameters.bin"))
                 {
@@ -637,28 +662,38 @@ namespace SympatheticHardwareControl
             controlWindow.UpdateUIState(HCState);
             ApplyRecordedStateToHardware();
         }
+
+        /// <summary>
+        /// These SetValue functions are for giving commands to the hc from another program, while keeping the hc in control of hardware.
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="value"></param>
         public void SetValue(string channel, double value)
         {
-
+            HCState = SHCUIControlState.LOCAL;
             stateRecord.analogs[channel] = value;
             SetAnalogOutput(channel, value, false);
-            setUIValues(stateRecord);
+            setValuesDisplayedOnUI(stateRecord);
+            HCState = SHCUIControlState.OFF;
 
         }
         public void SetValue(string channel, double value, bool useCalibration)
         {
 
             stateRecord.analogs[channel] = value;
+            HCState = SHCUIControlState.LOCAL;
             SetAnalogOutput(channel, value, useCalibration);
-            setUIValues(stateRecord);
+            setValuesDisplayedOnUI(stateRecord);
+            HCState = SHCUIControlState.OFF;
 
         }
         public void SetValue(string channel, bool value)
         {
-
+            HCState = SHCUIControlState.LOCAL;
             stateRecord.digitals[channel] = value;
             SetDigitalLine(channel, value);
-            setUIValues(stateRecord);
+            setValuesDisplayedOnUI(stateRecord);
+            HCState = SHCUIControlState.OFF;
 
         }
         #endregion
@@ -699,12 +734,9 @@ namespace SympatheticHardwareControl
 
         public void StopCameraStream()
         {
-            bool finished = ImageController.StopStream();
-            if (finished)
-            {
-                controlWindow.WriteToConsole("Streaming stopped");
-
-            } 
+            ImageController.StopStream();
+            
+            controlWindow.WriteToConsole("Streaming stopped");
         }
 
         public void CameraSnapshot()
@@ -725,6 +757,10 @@ namespace SympatheticHardwareControl
         }
 
 
+        /// <summary>
+        /// This is cheezy. I'm channelling information from the camera to the console. The controller is the only bit that sees
+        /// both.
+        /// </summary>
         public void PrintCameraAttributesToConsole()
         {
             controlWindow.WriteToConsole("Attributes loaded in camera:");

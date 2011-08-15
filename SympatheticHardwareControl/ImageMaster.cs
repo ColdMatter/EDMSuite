@@ -57,13 +57,10 @@ namespace SympatheticHardwareControl.CameraControl
 
         public void Dispose()
         {
-            disposeCamera();
+            ImaqdxSession.Dispose();
             closeViewerWindow();
         }
-        public void Clear()
-        {
-            clearCamera();
-        }
+
         private object streamStopLock = new object();
         public bool Stream()
         {
@@ -80,13 +77,18 @@ namespace SympatheticHardwareControl.CameraControl
             }
         }
         
-        public bool StopStream()
+        /// <summary>
+        /// This is to stop the Grab loop. It sets the camera state from "Streaming" to "Busy". In the loop, there is an 
+        /// if-statement to check for this.
+        /// The thread then waits until the camera is free again.
+        /// </summary>
+        /// <returns></returns>
+        public void StopStream()
         {
             if (state == CameraState.STREAMING)
             {
                 state = CameraState.BUSY;
             }
-            return true;
         }
 
         public byte[,] Snapshot()
@@ -119,11 +121,7 @@ namespace SympatheticHardwareControl.CameraControl
             }
             else return null;
         }
-        /*public void SetExposureTime(double exposure)
-        {
-            ImaqdxAttributeCollection collection = ImaqdxSession.Attributes;
-            collection.
-        }*/
+
         public byte[][,] TriggeredSequence(int numberOfShots)
         {
 
@@ -139,12 +137,6 @@ namespace SympatheticHardwareControl.CameraControl
                 watch.Stop();
                 long interval = watch.ElapsedMilliseconds;
                 controller.PrintIntervalInConsole(interval);
-                /*for (int i = 0; i < numberOfShots; i++)
-                {
-                    
-                    ImaqdxSession.Snap(Image);
-                    images[i] = Image;
-                }*/
                 
 
                 List<byte[,]> byteList = new List<byte[,]>();
@@ -165,13 +157,20 @@ namespace SympatheticHardwareControl.CameraControl
 
         }
 
-        public CameraState State
-        {
-            get { return state; }
-        }
         public bool IsReadyForAcqisition()
         {
             if (state == CameraState.READY_FOR_ACQUISITION)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool IsCameraFree()
+        {
+            if (state == CameraState.FREE)
             {
                 return true;
             }
@@ -199,16 +198,6 @@ namespace SympatheticHardwareControl.CameraControl
                 MessageBox.Show(e.Message);
             }
 
-        }
-
-        private void disposeCamera()
-        {
-            ImaqdxSession.Dispose();
-        }
-        private void clearCamera()
-        {
-            ImaqdxSession.Acquisition.Unconfigure();
-            
         }
 
         public string SetCameraAttributes(string newPath)
@@ -275,13 +264,12 @@ namespace SympatheticHardwareControl.CameraControl
 
         #endregion
 
-        #region Image Viewer
+        #region Image Viewer (private)
 
-        public ImageViewerWindow imageWindow;
+        private ImageViewerWindow imageWindow;
         bool windowShowing;
 
-
-        public void openViewerWindow()
+        private void openViewerWindow()
         {
             if (!windowShowing)
             {
@@ -302,7 +290,7 @@ namespace SympatheticHardwareControl.CameraControl
 
         #endregion
 
-        #region Saving and loading images
+        #region Saving and loading images (Public functions)
         // Saving the image
         public void SaveImageWithDialog()
         {
@@ -337,7 +325,7 @@ namespace SympatheticHardwareControl.CameraControl
         }
 
         //Load image when opening the controller
-        public VisionImage LoadImagesWithDialog()
+        public void LoadImagesWithDialog()
         {
             VisionImage image = new VisionImage();
             OpenFileDialog dialog = new OpenFileDialog();
@@ -347,27 +335,27 @@ namespace SympatheticHardwareControl.CameraControl
             String dataStoreDir = dataPath + "SHC Single Images";
             dialog.InitialDirectory = dataStoreDir;
             dialog.ShowDialog();
-            if (dialog.FileName != "") image = LoadImage(dialog.FileName);
-            return image;
+            if (dialog.FileName != "") LoadImage(dialog.FileName);
+
         }
 
-        public VisionImage LoadImage()
+        public void LoadImage()
         {
             String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
             String dataStoreFilePath = dataPath + "\\SHC Single Images\\tempImage.png";
-            Image = LoadImage(dataStoreFilePath);
-            return Image;
+            LoadImage(dataStoreFilePath);
+            //return Image;
 
         }
 
-        public VisionImage LoadImage(String dataStoreFilePath)
+        public void LoadImage(String dataStoreFilePath)
         {
             Image.ReadFile(dataStoreFilePath);
             if (windowShowing)
             {
                 imageWindow.AttachToViewer(Image);
             }
-            return Image;
+            //return Image;
 
         }
         #endregion

@@ -4,6 +4,7 @@ using System.Text;
 
 namespace SympatheticHardwareControl.CameraControl
 {
+
     public interface CameraControllable
     {
         void PrepareRemoteCameraControl();
