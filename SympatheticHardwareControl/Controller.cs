@@ -30,25 +30,34 @@ namespace SympatheticHardwareControl
     /// <summary>
     /// This is the interface to the sympathetic specific hardware.
     /// 
+    /// Flow chart (under normal conditions): UI -> controller -> hardware. Basically, that's it.
+    /// Exceptions: 
+    /// -controller can set values displayed on UI (only meant for special cases, like startup or re-loading a saved parameter set)
+    /// -Some public functions allow the HC to be controlled remotely (see below).
+    /// 
+    /// HardwareState:
     /// There are 3 states which the controller can be in: OFF, LOCAL and REMOTE.
     /// OFF just means the HC is idle.
-    /// 
     /// The state is set to LOCAL when this program is actively upating the state of the hardware. It does this by
     /// reading off what's on the UI, finding any discrepancies between the current state of the hardware and the values on the UI
     /// and by updating the hardware accordingly.
     /// After finishing with the update, it resets the state to OFF.
-    /// 
-    /// 
     /// When the state is set to REMOTE, the UI is disactivated. The hardware controller saves all the parameter values upon switching from
     /// LOCAL to REMOTE, then does nothing. When switching back, it reinstates the hardware state to what it was before it switched to REMOTE.
-    /// Use this when you want to control the hardware from somewhere else (e.g. MOTMaster)
-    /// 
+    /// Use this when you want to control the hardware from somewhere else (e.g. MOTMaster).
+    ///
+    /// Remoting functions (SetValue):
     /// Having said that, you'll notice that there are also public functions for modifying parameter values without putting the HC in REMOTE.
     /// I wrote it like this because you want to be able to do two different things:
     /// -Have the hardware controller take a back seat and let something else control the hardware for a while (e.g. MOTMaster)
     /// This is when you should use the REMOTE state.
     /// -You still want the HC to keep track of the hardware (hence remaining in LOCAL), but you want to send commands to it remotely 
     /// (say from a console) instead of from the UI. This is when you would use the SetValue functions.
+    /// 
+    /// The Hardware Report:
+    /// The Hardware report is a way of passing a dictionary (gauges, temperature measurements, error signals) to another program
+    /// (MotMaster, say). MOTMaster can then save the dictionary along with the data. I hope this will help towards answering questions
+    /// like: "what was the source chamber pressure when we took this data?". At the moment, the hardware state is also included in the report.
     /// 
     /// </summary>
     public class Controller : MarshalByRefObject, CameraControllable, HardwareReportable
@@ -343,7 +352,7 @@ namespace SympatheticHardwareControl
 
         #endregion
 
-        #region keeping track of the things on this controller!
+        #region keeping track of the state of the hardware!
         /// <summary>
         /// There's this thing I've called a hardware state. It's something which keeps track of digital and analog values.
         /// I then have something called stateRecord (defines above as an instance of hardwareState) which keeps track of 
