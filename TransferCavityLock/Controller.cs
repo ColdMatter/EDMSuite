@@ -264,7 +264,7 @@ namespace TransferCavityLock
                 displayData(sp, scanData);
 
                 masterDataFit = CavityScanFitHelper.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
-             
+                displayMasterFit(sp, masterDataFit);
                 switch (State)
                 {
                     case ControllerState.FREERUNNING:
@@ -280,13 +280,14 @@ namespace TransferCavityLock
                         break;
 
                     case ControllerState.LASERLOCKING:
-                            ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
 
                        
                         
                         slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        displaySlaveFit(sp, slaveDataFit);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
                         State = ControllerState.LASERLOCKED;
@@ -301,6 +302,9 @@ namespace TransferCavityLock
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
                         slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        displaySlaveFit(sp, slaveDataFit);
+                        Console.WriteLine("width=" + slaveDataFit[0].ToString() + ", centre =" + slaveDataFit[1].ToString()
+                            + ", amp=" + slaveDataFit[2].ToString() + ", offset=" + slaveDataFit[3].ToString());
                        
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
@@ -322,10 +326,46 @@ namespace TransferCavityLock
 
         private void displayData(ScanParameters sp, CavityScanData data)
         {
-            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph, sp.CalculateRampVoltages(), data.SlavePhotodiodeData);
-            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph, sp.CalculateRampVoltages(), data.MasterPhotodiodeData);
+            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph,
+                ui.SlaveDataPlot, sp.CalculateRampVoltages(),  data.SlavePhotodiodeData);
+            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph, ui.MasterDataPlot,
+                sp.CalculateRampVoltages(), data.MasterPhotodiodeData);
         }
+        private void displayMasterFit(ScanParameters sp, double[] fitCoefficients)
+        {
+            double[] fitPoints = new double[sp.Steps];
+            double[] ramp = sp.CalculateRampVoltages();
+            double n = fitCoefficients[3];
+            double q = fitCoefficients[2];
+            double c = fitCoefficients[1];
+            double w = fitCoefficients[0];
+            for (int i = 0; i < sp.Steps; i++)
+            {
+                if (w == 0) w = 0.001; // watch out for divide by zero
+                fitPoints[i] = n + q * (1 / (1 + (((ramp[i] - c) * (ramp[i] - c)) / ((w / 2) * (w / 2)))));
+            }
+            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph,
+                ui.MasterFitPlot, ramp, fitPoints);
 
+        }
+        
+        private void displaySlaveFit(ScanParameters sp, double[] fitCoefficients)
+        {
+            double[] fitPoints = new double[sp.Steps];
+            double[] ramp = sp.CalculateRampVoltages();
+            double n = fitCoefficients[3];
+            double q = fitCoefficients[2];
+            double c = fitCoefficients[1];
+            double w = fitCoefficients[0];
+            for (int i = 0; i < sp.Steps; i++)
+            {
+                if (w == 0) w = 0.001; // watch out for divide by zero
+                fitPoints[i] = n + q * (1 / (1 + (((ramp[i] - c) * (ramp[i] - c)) / ((w / 2) * (w / 2)))));
+            }
+            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph,
+                ui.SlaveFitPlot, ramp, fitPoints);
+
+        }
         /// <summary>
         /// Gets some parameters from the UI and stores them on the controller.
         /// </summary>

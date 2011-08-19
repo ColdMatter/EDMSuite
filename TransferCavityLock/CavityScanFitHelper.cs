@@ -24,8 +24,8 @@ namespace TransferCavityLock
 
             dataPoint max = getMax(data.SlavePhotodiodeData);
             dataPoint min = getMin(data.SlavePhotodiodeData);
-            lorentzianFitter.Fit(voltages, data.MasterPhotodiodeData,
-                new double[] {0, max.value - min.value,
+            lorentzianFitter.Fit(voltages, data.SlavePhotodiodeData,
+                new double[] {min.value, max.value - min.value,
                     voltages[max.index], (data.parameters.High - data.parameters.Low)/10,
                 });
             
@@ -50,7 +50,7 @@ namespace TransferCavityLock
             dataPoint max = getMax(data.MasterPhotodiodeData);
             dataPoint min = getMin(data.MasterPhotodiodeData);
             lorentzianFitter.Fit(voltages, data.MasterPhotodiodeData,
-                new double[] {0, max.value - min.value,
+                new double[] {min.value, max.value - min.value,
                     voltages[max.index], (data.parameters.High - data.parameters.Low)/10,
                 });
 

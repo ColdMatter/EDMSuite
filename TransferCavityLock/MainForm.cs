@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 
+using NationalInstruments.UI.WindowsForms;
+using NationalInstruments.UI;
+
 namespace TransferCavityLock
 {
     /// <summary>
@@ -130,12 +133,12 @@ namespace TransferCavityLock
             box.Text = text;
         }
 
-        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        public void SetLED(Led led, bool val)
         {
             led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
         }
-        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
-        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        private delegate void SetLedDelegate(Led led, bool val);
+        private void SetLedHelper(Led led, bool val)
         {
             led.Value = val;
         }
@@ -151,21 +154,26 @@ namespace TransferCavityLock
         }
 
 
-        private delegate void plotScatterGraphDelegate(NationalInstruments.UI.WindowsForms.ScatterGraph graph,
+        private delegate void plotScatterGraphDelegate(ScatterPlot plot,
             double[] x, double[] y);
-        private void plotScatterGraphHelper(NationalInstruments.UI.WindowsForms.ScatterGraph graph,
+        private void plotScatterGraphHelper(ScatterPlot plot,
             double[] x, double[] y)
         {
             lock (this)
             {
-                graph.ClearData();
-                graph.PlotXY(x, y);
+                plot.ClearData();
+                plot.PlotXY(x, y);
+                
+                
             }
         }
-        public void ScatterGraphPlot(NationalInstruments.UI.WindowsForms.ScatterGraph graph, double[] x, double[] y)
+        public void ScatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
         {
-            SlaveLaserIntensityScatterGraph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] { graph, x, y });
+            graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] {plot, x, y });
         }
+
+
+
 
 
         private void rampStartButton_Click(object sender, EventArgs e)

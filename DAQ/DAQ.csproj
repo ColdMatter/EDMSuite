@@ -157,6 +157,7 @@
     <Compile Include="DigitalOutputChannel.cs" />
     <Compile Include="Fitter.cs" />
     <Compile Include="GaussianFitter.cs" />
+    <Compile Include="Gigatronics7100Synth.cs" />
     <Compile Include="InterferenceFitter.cs" />
     <Compile Include="LorentzianFitter.cs" />
     <Compile Include="PeakFitter.cs" />
