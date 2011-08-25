@@ -152,6 +152,7 @@
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />
+    <Compile Include="Instrument.cs" />
     <Compile Include="PHRHENDRIC0FileSystem.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
     <Compile Include="RagnarokFileSystem.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="LeakageMonitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SerialInstrument.cs" />
     <Compile Include="SunshineFileSystem.cs" />
     <Compile Include="SympatheticHardware.cs">
       <SubType>Code</SubType>

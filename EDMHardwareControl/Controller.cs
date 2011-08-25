@@ -61,13 +61,13 @@ namespace EDMHardwareControl
         #region Setup
 
         // hardware
-        HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
-        Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
-        ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
-        HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
-        Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
-        Agilent53131A rfCounter2 = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter2"];
-        HP438A rfPower = (HP438A)Environs.Hardware.GPIBInstruments["rfPower"];
+        HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
+        Synth redSynth = (Synth)Environs.Hardware.Instruments["red"];
+        ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
+        HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
+        Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
+        Agilent53131A rfCounter2 = (Agilent53131A)Environs.Hardware.Instruments["rfCounter2"];
+        HP438A rfPower = (HP438A)Environs.Hardware.Instruments["rfPower"];
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
         //LeakageMonitor northLeakageMonitor =
