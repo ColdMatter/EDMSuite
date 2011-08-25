@@ -366,6 +366,15 @@ namespace EDMHardwareControl
         public Led fibreAmpSeedFaultLED;
         public Led fibreAmpMasterFaultLED;
         public TrackBar FLPZTVtrackBar;
+        public TextBox diodeRefCavStepTextBox;
+        private Label label96;
+        private Panel panel6;
+        public RadioButton diodeRefCavStepZeroButton;
+        public RadioButton diodeRefCavStepPlusButton;
+        public RadioButton diodeRefCavStepMinusButton;
+        public RadioButton radioButton4;
+        public RadioButton radioButton5;
+        public RadioButton radioButton6;
 
 
 		public Controller controller;
@@ -681,6 +690,12 @@ namespace EDMHardwareControl
             this.label90 = new System.Windows.Forms.Label();
             this.label89 = new System.Windows.Forms.Label();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.diodeRefCavStepZeroButton = new System.Windows.Forms.RadioButton();
+            this.diodeRefCavStepPlusButton = new System.Windows.Forms.RadioButton();
+            this.diodeRefCavStepMinusButton = new System.Windows.Forms.RadioButton();
+            this.diodeRefCavStepTextBox = new System.Windows.Forms.TextBox();
+            this.label96 = new System.Windows.Forms.Label();
             this.label95 = new System.Windows.Forms.Label();
             this.scanButton = new System.Windows.Forms.Button();
             this.scanRateTextBox = new System.Windows.Forms.TextBox();
@@ -743,6 +758,9 @@ namespace EDMHardwareControl
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -794,6 +812,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpSeedFaultLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).BeginInit();
             this.groupBox27.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.groupBox26.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).BeginInit();
             this.tabPage5.SuspendLayout();
@@ -3635,6 +3654,9 @@ namespace EDMHardwareControl
             // 
             // groupBox27
             // 
+            this.groupBox27.Controls.Add(this.panel6);
+            this.groupBox27.Controls.Add(this.diodeRefCavStepTextBox);
+            this.groupBox27.Controls.Add(this.label96);
             this.groupBox27.Controls.Add(this.label95);
             this.groupBox27.Controls.Add(this.scanButton);
             this.groupBox27.Controls.Add(this.scanRateTextBox);
@@ -3647,14 +3669,72 @@ namespace EDMHardwareControl
             this.groupBox27.Controls.Add(this.label87);
             this.groupBox27.Location = new System.Drawing.Point(9, 218);
             this.groupBox27.Name = "groupBox27";
-            this.groupBox27.Size = new System.Drawing.Size(370, 110);
+            this.groupBox27.Size = new System.Drawing.Size(370, 252);
             this.groupBox27.TabIndex = 1;
             this.groupBox27.TabStop = false;
             this.groupBox27.Text = "HV Reference Cavity";
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.diodeRefCavStepZeroButton);
+            this.panel6.Controls.Add(this.diodeRefCavStepPlusButton);
+            this.panel6.Controls.Add(this.diodeRefCavStepMinusButton);
+            this.panel6.Location = new System.Drawing.Point(194, 16);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(108, 29);
+            this.panel6.TabIndex = 71;
+            // 
+            // diodeRefCavStepZeroButton
+            // 
+            this.diodeRefCavStepZeroButton.AutoSize = true;
+            this.diodeRefCavStepZeroButton.Checked = true;
+            this.diodeRefCavStepZeroButton.Location = new System.Drawing.Point(77, 7);
+            this.diodeRefCavStepZeroButton.Name = "diodeRefCavStepZeroButton";
+            this.diodeRefCavStepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.diodeRefCavStepZeroButton.TabIndex = 32;
+            this.diodeRefCavStepZeroButton.TabStop = true;
+            this.diodeRefCavStepZeroButton.Text = "0";
+            this.diodeRefCavStepZeroButton.UseVisualStyleBackColor = true;
+            // 
+            // diodeRefCavStepPlusButton
+            // 
+            this.diodeRefCavStepPlusButton.AutoSize = true;
+            this.diodeRefCavStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.diodeRefCavStepPlusButton.Name = "diodeRefCavStepPlusButton";
+            this.diodeRefCavStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.diodeRefCavStepPlusButton.TabIndex = 32;
+            this.diodeRefCavStepPlusButton.Text = "+";
+            this.diodeRefCavStepPlusButton.UseVisualStyleBackColor = true;
+            // 
+            // diodeRefCavStepMinusButton
+            // 
+            this.diodeRefCavStepMinusButton.AutoSize = true;
+            this.diodeRefCavStepMinusButton.Location = new System.Drawing.Point(42, 7);
+            this.diodeRefCavStepMinusButton.Name = "diodeRefCavStepMinusButton";
+            this.diodeRefCavStepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.diodeRefCavStepMinusButton.TabIndex = 32;
+            this.diodeRefCavStepMinusButton.Text = "-";
+            this.diodeRefCavStepMinusButton.UseVisualStyleBackColor = true;
+            // 
+            // diodeRefCavStepTextBox
+            // 
+            this.diodeRefCavStepTextBox.Location = new System.Drawing.Point(104, 50);
+            this.diodeRefCavStepTextBox.Name = "diodeRefCavStepTextBox";
+            this.diodeRefCavStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.diodeRefCavStepTextBox.TabIndex = 70;
+            this.diodeRefCavStepTextBox.Text = "0";
+            // 
+            // label96
+            // 
+            this.label96.Location = new System.Drawing.Point(7, 53);
+            this.label96.Name = "label96";
+            this.label96.Size = new System.Drawing.Size(80, 23);
+            this.label96.TabIndex = 69;
+            this.label96.Text = "Step (V)";
+            // 
             // label95
             // 
-            this.label95.Location = new System.Drawing.Point(249, 53);
+            this.label95.Location = new System.Drawing.Point(249, 180);
             this.label95.Name = "label95";
             this.label95.Size = new System.Drawing.Size(115, 18);
             this.label95.TabIndex = 68;
@@ -3662,7 +3742,7 @@ namespace EDMHardwareControl
             // 
             // scanButton
             // 
-            this.scanButton.Location = new System.Drawing.Point(175, 48);
+            this.scanButton.Location = new System.Drawing.Point(175, 175);
             this.scanButton.Name = "scanButton";
             this.scanButton.Size = new System.Drawing.Size(72, 23);
             this.scanButton.TabIndex = 67;
@@ -3671,7 +3751,7 @@ namespace EDMHardwareControl
             // 
             // scanRateTextBox
             // 
-            this.scanRateTextBox.Location = new System.Drawing.Point(105, 50);
+            this.scanRateTextBox.Location = new System.Drawing.Point(105, 177);
             this.scanRateTextBox.Name = "scanRateTextBox";
             this.scanRateTextBox.Size = new System.Drawing.Size(64, 20);
             this.scanRateTextBox.TabIndex = 66;
@@ -3679,7 +3759,7 @@ namespace EDMHardwareControl
             // 
             // label94
             // 
-            this.label94.Location = new System.Drawing.Point(6, 53);
+            this.label94.Location = new System.Drawing.Point(6, 180);
             this.label94.Name = "label94";
             this.label94.Size = new System.Drawing.Size(93, 18);
             this.label94.TabIndex = 65;
@@ -3687,7 +3767,7 @@ namespace EDMHardwareControl
             // 
             // updateDiodeRefCavButton
             // 
-            this.updateDiodeRefCavButton.Location = new System.Drawing.Point(175, 20);
+            this.updateDiodeRefCavButton.Location = new System.Drawing.Point(96, 87);
             this.updateDiodeRefCavButton.Name = "updateDiodeRefCavButton";
             this.updateDiodeRefCavButton.Size = new System.Drawing.Size(72, 23);
             this.updateDiodeRefCavButton.TabIndex = 64;
@@ -3697,7 +3777,7 @@ namespace EDMHardwareControl
             // 
             // updateDiodeRefCavMonitorButton
             // 
-            this.updateDiodeRefCavMonitorButton.Location = new System.Drawing.Point(175, 74);
+            this.updateDiodeRefCavMonitorButton.Location = new System.Drawing.Point(175, 201);
             this.updateDiodeRefCavMonitorButton.Name = "updateDiodeRefCavMonitorButton";
             this.updateDiodeRefCavMonitorButton.Size = new System.Drawing.Size(72, 23);
             this.updateDiodeRefCavMonitorButton.TabIndex = 63;
@@ -3709,7 +3789,7 @@ namespace EDMHardwareControl
             // 
             this.diodeRefCavMonTextBox.BackColor = System.Drawing.Color.Black;
             this.diodeRefCavMonTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.diodeRefCavMonTextBox.Location = new System.Drawing.Point(105, 77);
+            this.diodeRefCavMonTextBox.Location = new System.Drawing.Point(105, 204);
             this.diodeRefCavMonTextBox.Name = "diodeRefCavMonTextBox";
             this.diodeRefCavMonTextBox.ReadOnly = true;
             this.diodeRefCavMonTextBox.Size = new System.Drawing.Size(64, 20);
@@ -3718,7 +3798,7 @@ namespace EDMHardwareControl
             // 
             // label88
             // 
-            this.label88.Location = new System.Drawing.Point(7, 80);
+            this.label88.Location = new System.Drawing.Point(7, 207);
             this.label88.Name = "label88";
             this.label88.Size = new System.Drawing.Size(92, 18);
             this.label88.TabIndex = 46;
@@ -4251,6 +4331,38 @@ namespace EDMHardwareControl
             this.checkBox1.TabIndex = 53;
             this.checkBox1.Text = "State (Checked is 0=>N+)";
             // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(77, 7);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(31, 17);
+            this.radioButton4.TabIndex = 32;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "0";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Location = new System.Drawing.Point(3, 6);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(31, 17);
+            this.radioButton5.TabIndex = 32;
+            this.radioButton5.Text = "+";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Location = new System.Drawing.Point(42, 7);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(28, 17);
+            this.radioButton6.TabIndex = 32;
+            this.radioButton6.Text = "-";
+            this.radioButton6.UseVisualStyleBackColor = true;
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -4339,6 +4451,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).EndInit();
             this.groupBox27.ResumeLayout(false);
             this.groupBox27.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.groupBox26.ResumeLayout(false);
             this.groupBox26.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).EndInit();
@@ -4766,19 +4880,9 @@ namespace EDMHardwareControl
             controller.WindowClosing();
         }
 
-        private void label83_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void PumpAOMFreqUpdateButton_Click(object sender, EventArgs e)
         {
             controller.UpdatePumpAOMFreqMonitor();
-        }
-
-        private void groupBox26_Enter(object sender, EventArgs e)
-        {
-
         }
 
         private void FLPZTVtrackBar_Scroll(object sender, EventArgs e)
@@ -4786,10 +4890,6 @@ namespace EDMHardwareControl
             controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value/100.0);
         }
 
-        private void label96_Click(object sender, EventArgs e)
-        {
-
-        }
 
 
 

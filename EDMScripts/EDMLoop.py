@@ -195,13 +195,13 @@ def updateLocks(bState):
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
 	# RFF  locks
-	deltaRF1F = - (1.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF1F = - (5.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (1.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF2F = - (5.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
@@ -259,16 +259,16 @@ def EDMGo():
 	probePolAngle = 360.0 * r.NextDouble()
 	hc.SetProbePolarizerAngle(probePolAngle)
 	pumpPolAngle = 360.0 * r.NextDouble()
-	hc.SetPumpPolarizerAngle(pumpPolAngle)
+	#hc.SetPumpPolarizerAngle(pumpPolAngle) # TEMPORARILY REMOVED WHILST BROKEN!
 	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 	# calibrate leakage monitors
 	hc.EnableEField( False )
 	System.Threading.Thread.Sleep(10000)
 	hc.EnableBleed( True )
-	System.Threading.Thread.Sleep(1000)
-	hc.EnableBleed( False )
 	System.Threading.Thread.Sleep(5000)
 	hc.CalibrateIMonitors()
+	hc.EnableBleed( False )
+	System.Threading.Thread.Sleep(500)
 	hc.EnableEField( True )
 
 	# loop and take data
@@ -302,13 +302,13 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocks(bState)
 		# randomise Ramsey phase
-		scramblerV = 1.18835 * r.NextDouble()
+		scramblerV = 1.18787 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
 		probePolAngle = 360.0 * r.NextDouble()
 		hc.SetProbePolarizerAngle(probePolAngle)
 		pumpPolAngle = 360.0 * r.NextDouble()
-		hc.SetPumpPolarizerAngle(pumpPolAngle)
+		#hc.SetPumpPolarizerAngle(pumpPolAngle) !Temporarily disabled
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 		hc.StepTarget(1)
 		# do things that need periodically doing
@@ -317,18 +317,21 @@ def EDMGo():
 		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbValue = pmtChannelValues.GetValue(("DB",))
-		if (dbValue < 8.4):
+		if (dbValue < 11):
 			print("Dodgy spot target rotation.")
-			hc.StepTarget(10)
+			for i in range(5):
+				hc.StepTarget(2)
+				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
+			# calibrate leakage monitors
 			hc.EnableEField( False )
 			System.Threading.Thread.Sleep(10000)
 			hc.EnableBleed( True )
-			System.Threading.Thread.Sleep(1000)
-			hc.EnableBleed( False )
 			System.Threading.Thread.Sleep(5000)
 			hc.CalibrateIMonitors()
+			hc.EnableBleed( False )
+			System.Threading.Thread.Sleep(500)
 			hc.EnableEField( True )
 
 	bh.StopPattern()
