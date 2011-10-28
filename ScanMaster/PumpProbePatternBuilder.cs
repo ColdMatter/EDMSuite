@@ -19,15 +19,20 @@ namespace ScanMaster.Acquire.Patterns
 		private const int Q_PULSE_LENGTH = 100;
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
 	
-		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
+		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
 			int aomStart2, int aomDuration2, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, bool modulation) 
 		{
-		
-			int time = startTime;
-            			
-		
+            int time;
+            if (padStart == 0)
+            {
+                time = startTime;
+            }
+            else
+            {
+                time = startTime + padStart;
+            }
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
 				

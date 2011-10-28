@@ -152,6 +152,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DAQMxTCL2012HelperExtTriggeredMultiRead.cs" />
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="Synth.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TransferCavity2012Lockable.cs" />
     <Compile Include="TransferCavityLockable.cs" />
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>

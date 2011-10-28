@@ -24,7 +24,10 @@ namespace DAQ.HAL
 
         public override double Amplitude
         {
-            set { } // do nothing
+            set 
+            {
+                if (!Environs.Debug) Write("PL" + value + "DM"); // the value is entered in MHz
+            } // do nothing
         }
 
         public override double DCFM
@@ -40,6 +43,18 @@ namespace DAQ.HAL
         public override bool Enabled
         {
             set { } // do nothing
+        }
+
+        public double PulseDuration
+        {
+            set
+            {
+                if (!Environs.Debug)
+                {
+                    Write("PM4");
+                    Write("PW" + value + "US");
+                }
+            }
         }
     }
 }

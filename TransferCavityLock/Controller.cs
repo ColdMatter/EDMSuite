@@ -223,7 +223,7 @@ namespace TransferCavityLock
         /// </summary>
         private CavityScanData scan(ScanParameters sp)
         {
-            CavityScanData scanData = new CavityScanData(sp.Steps);
+            CavityScanData scanData = new CavityScanData(sp.Steps, 2);
             scanData.parameters = sp;
 
             double[] voltages = sp.CalculateRampVoltages();
@@ -231,10 +231,10 @@ namespace TransferCavityLock
             tcl.ScanCavity(voltages, false);
             tcl.StartScan();
 
-            Thread.Sleep(100);
+            Thread.Sleep(1);
             tcl.SendScanTriggerAndWaitUntilDone();
 
-            scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps);
+            scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps); 
 
             tcl.StopScan();
 
@@ -258,13 +258,18 @@ namespace TransferCavityLock
 
             double[] masterDataFit;
             double[] slaveDataFit;
-
+            System.IO.StreamWriter file = new System.IO.StreamWriter("c:\\cavityData.txt");
             while (State != ControllerState.STOPPED)
             {
                 displayData(sp, scanData);
 
                 masterDataFit = CavityScanFitHelper.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
+                saveFitData(file, masterDataFit[1]);
                 displayMasterFit(sp, masterDataFit);
+                slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                saveFitData(file, slaveDataFit[1]);
+                displaySlaveFit(sp, slaveDataFit);
+                
                 switch (State)
                 {
                     case ControllerState.FREERUNNING:
@@ -275,8 +280,9 @@ namespace TransferCavityLock
                         ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
-                       
-                        engageLaser();
+                        
+                        
+                        setToLaserEngaged();
                         break;
 
                     case ControllerState.LASERLOCKING:
@@ -285,9 +291,6 @@ namespace TransferCavityLock
                         sp.Low = ScanOffset - scanWidth;
 
                        
-                        
-                        slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
-                        displaySlaveFit(sp, slaveDataFit);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
                         State = ControllerState.LASERLOCKED;
@@ -301,10 +304,9 @@ namespace TransferCavityLock
 
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
-                        slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
-                        displaySlaveFit(sp, slaveDataFit);
-                        Console.WriteLine("width=" + slaveDataFit[0].ToString() + ", centre =" + slaveDataFit[1].ToString()
-                            + ", amp=" + slaveDataFit[2].ToString() + ", offset=" + slaveDataFit[3].ToString());
+                        
+                        /*Console.WriteLine("width=" + slaveDataFit[0].ToString() + ", centre =" + slaveDataFit[1].ToString()
+                            + ", amp=" + slaveDataFit[2].ToString() + ", offset=" + slaveDataFit[3].ToString());*/
                        
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
@@ -319,8 +321,15 @@ namespace TransferCavityLock
 
                 scanData = scan(sp);
             }
-
+            file.Close();
             finalizeRamping();
+        }
+
+        private void saveFitData(System.IO.StreamWriter file, double param)
+        {
+            
+            file.WriteLine(param);
+            
         }
 
 
@@ -408,7 +417,7 @@ namespace TransferCavityLock
                 lState = LaserState.FREE;
             }
         }
-        private void engageLaser()
+        private void setToLaserEngaged()
         {
             if (lState == LaserState.FREE)
             {

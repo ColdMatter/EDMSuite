@@ -133,7 +133,7 @@ namespace DAQ.TransferCavityLock
                 double[] pds = photodiodesReader.ReadSingleSample();
                 pdData[0, i] = pds[0];
                 pdData[1, i] = pds[1];
-                Thread.Sleep(2);
+                //Thread.Sleep(2);
                 lock (scanStopLock)
                 {
                     if (scanStop) return;
