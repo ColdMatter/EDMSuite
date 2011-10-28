@@ -160,6 +160,7 @@
     <Compile Include="GaussianFitter.cs" />
     <Compile Include="Gigatronics7100Synth.cs" />
     <Compile Include="InterferenceFitter.cs" />
+    <Compile Include="Lab10PCFileSystem.cs" />
     <Compile Include="LorentzianFitter.cs" />
     <Compile Include="PeakFitter.cs" />
     <Compile Include="PHRHENDRIC0FileSystem.cs" />
