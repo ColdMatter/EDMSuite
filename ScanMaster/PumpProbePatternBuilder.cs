@@ -15,12 +15,12 @@ namespace ScanMaster.Acquire.Patterns
 		{
 		}
 
-		private const int FLASH_PULSE_LENGTH = 100;
+    //	private const int FLASH_PULSE_LENGTH = 100;
 		private const int Q_PULSE_LENGTH = 100;
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int padStart, int flashlampPulseInterval,
-			int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
+			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int aomStart1, int aomDuration1,
 			int aomStart2, int aomDuration2, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, bool modulation) 
 		{
@@ -39,32 +39,32 @@ namespace ScanMaster.Acquire.Patterns
 				int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort,ttlSwitchLine);
 				// first the pulse with the switch line high
 				Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
-              	Shot( time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger , "detector");
+                Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
 				{
-					FlashlampPulse(time, valveToQ, flashToQ);
+                    FlashlampPulse(time, valveToQ, flashToQ, flashlampPulseLength);
 					time += flashlampPulseInterval;
 				}
 				// now with the switch line low, if modulation is true (otherwise another with line high)
                 if (modulation)
                 {
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detectorprime");
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detectorprime");
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
                     {
-                        FlashlampPulse(time, valveToQ, flashToQ);
+                        FlashlampPulse(time, valveToQ, flashToQ, flashlampPulseLength);
                         time += flashlampPulseInterval;
                     }
                 }
                 else
                 {
                     Pulse(time, valveToQ + switchLineDelay, switchLineDuration, switchChannel);
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, aomStart1, aomDuration1, aomStart2, aomDuration2, delayToDetectorTrigger, "detector");
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
                     {
-                        FlashlampPulse(time, valveToQ, flashToQ);
+                        FlashlampPulse(time, valveToQ, flashToQ, flashlampPulseLength);
                         time += flashlampPulseInterval;
                     }
                 }
@@ -73,13 +73,13 @@ namespace ScanMaster.Acquire.Patterns
 			return time;
 		}
 
-		public int FlashlampPulse( int startTime, int valveToQ, int flashToQ )
+        public int FlashlampPulse(int startTime, int valveToQ, int flashToQ, int flashlampPulseLength)
 		{
-			return Pulse(startTime, valveToQ - flashToQ, FLASH_PULSE_LENGTH,
+            return Pulse(startTime, valveToQ - flashToQ, flashlampPulseLength,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 		}
 
-		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ, int aomStart1, int aomDuration1,
+		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int aomStart1, int aomDuration1,
             int aomStart2, int aomDuration2, int delayToDetectorTrigger, string detectorTriggerSource)  
 		{
 			int time = 0;
@@ -90,7 +90,7 @@ namespace ScanMaster.Acquire.Patterns
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["valve"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 			// Flash pulse
-			tempTime = Pulse(startTime, valveToQ - flashToQ, FLASH_PULSE_LENGTH, 
+            tempTime = Pulse(startTime, valveToQ - flashToQ, flashlampPulseLength, 
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 			// Q pulse
