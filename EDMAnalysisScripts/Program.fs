@@ -15,5 +15,9 @@ dq.Detector <- "top"
 dq.Channels <- [| "E.B"; "DB"; "RF1F" |]
 q.BlockQuery.DetectorQueries <- [| dq |]
 
-ignore(bs.processQuery(q))
+let qs = "{ \"BlockIDs\" : [1, 3, 4, 5], \"BlockQuery\" : { \"DetectorQueries\" : [{ \"Channels\"
+: [\"E.B\", \"DB\", \"RF1F\"], \"Detector\" : \"top\" }] } }"
+
+System.Console.WriteLine(bs.processJSONQuery(qs))
+ignore(System.Console.ReadKey())
 

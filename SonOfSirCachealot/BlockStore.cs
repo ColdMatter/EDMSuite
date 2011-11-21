@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using Analysis.EDM;
-using Data.EDM;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
+using Analysis.EDM;
+using Data.EDM;
 using EDMConfig;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+
 
 namespace SonOfSirCachealot
 {
@@ -31,18 +33,24 @@ namespace SonOfSirCachealot
             Monitor.UpdateProgressUntilFinished();
         }
 
+        public void AddBlocksJSON(string jsonPaths)
+        {
+            string[] paths = BsonSerializer.Deserialize<string[]>(jsonPaths);
+            AddBlocks(paths);
+        }
+
         private void AddBlock(string path, string normConfig)
         {
             Monitor.JobStarted();
             string fileName = path.Split('\\').Last();
             try
             {
-                Console.WriteLine("Adding block " + fileName);
+                Controller.log("Adding block " + fileName);
                 using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
                 {
                     BlockSerializer bls = new BlockSerializer();
                     Block b = bls.DeserializeBlockFromZippedXML(path, "block.xml");
-                    //Controller.log("Loaded " + fileName);
+                    Controller.log("Loaded " + fileName);
                     // at the moment the block data is normalized by dividing each "top" TOF through
                     // by the integral of the corresponding "norm" TOF over the gate in the function below.
                     // TODO: this could be improved!
@@ -90,18 +98,18 @@ namespace SonOfSirCachealot
                         t.FileID = Guid.NewGuid();
                         dbb.DBTOFChannelSets.Add(t);
                     }
-                    Console.WriteLine("Demodulated " + fileName);
+                    Controller.log("Demodulated " + fileName);
 
                     // add to the database
                     dc.DBBlocks.InsertOnSubmit(dbb);
                     dc.SubmitChanges();
-                    Console.WriteLine("Added " + fileName);
+                    Controller.log("Added " + fileName);
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error adding " + fileName);
-                Console.WriteLine("Error adding block " + path + "\n" + e.StackTrace);
+                Controller.errorLog("Error adding " + fileName);
+                Controller.errorLog("Error adding block " + path + "\n" + e.StackTrace);
             }
             finally
             {
@@ -142,6 +150,12 @@ namespace SonOfSirCachealot
 
         #region Querying
 
+        public string processJSONQuery(string jsonQuery)
+        {
+            BlockStoreQuery query = BsonSerializer.Deserialize<BlockStoreQuery>(jsonQuery);
+            return processQuery(query).ToJson<BlockStoreResponse>();
+        }
+
         public BlockStoreResponse processQuery(BlockStoreQuery query)
         {
             BlockStoreResponse bsr = new BlockStoreResponse();
@@ -150,15 +164,16 @@ namespace SonOfSirCachealot
             return bsr;
         }
 
+
         private BlockStoreBlockResponse processBlockQuery(BlockStoreBlockQuery query, int blockID)
         {
             BlockStoreBlockResponse br = new BlockStoreBlockResponse();
             br.BlockID = blockID;
-            br.DetectorResponses = new List<BlockStoreDetectorResponse>();
+            br.DetectorResponses = new Dictionary<string, BlockStoreDetectorResponse>();
             br.Settings = getBlockConfig(blockID);
 
             foreach (BlockStoreDetectorQuery q in query.DetectorQueries)
-                br.DetectorResponses.Add(processDetectorQuery(q, blockID));
+                br.DetectorResponses.Add(q.Detector, processDetectorQuery(q, blockID));
 
             return br;
         }
@@ -181,7 +196,6 @@ namespace SonOfSirCachealot
         private BlockStoreDetectorResponse processDetectorQuery(BlockStoreDetectorQuery query, int blockID)
         {
             BlockStoreDetectorResponse dr = new BlockStoreDetectorResponse();
-            dr.Detector = query.Detector;
             dr.Channels = new Dictionary<string, TOFChannel>();
             using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
             {
@@ -200,6 +214,57 @@ namespace SonOfSirCachealot
             return dr;
         }
 
+        #endregion
+
+        #region Querying (average)
+
+        // querying for average TOFs uses different code - this is because of the need to keep
+        // memory consumption under control, and the urge to re-use the old averaging code.
+        // The result is that the averaging must be done at the TOFChannelSet level.
+
+        public string processJSONQueryAverage(string jsonQuery)
+        {
+            BlockStoreQuery query = BsonSerializer.Deserialize<BlockStoreQuery>(jsonQuery);
+            return processBlockQueryAverage(query.BlockQuery, query.BlockIDs).ToJson<BlockStoreBlockResponse>();
+        }
+
+        private BlockStoreBlockResponse processBlockQueryAverage(BlockStoreBlockQuery query, int[] blockIDs)
+        {
+            BlockStoreBlockResponse br = new BlockStoreBlockResponse();
+            br.BlockID = -1;
+            br.DetectorResponses = new Dictionary<string, BlockStoreDetectorResponse>();
+            br.Settings = getBlockConfig(blockIDs[0]);
+
+            foreach (BlockStoreDetectorQuery q in query.DetectorQueries)
+                br.DetectorResponses.Add(q.Detector, processDetectorQueryAverage(q, blockIDs));
+
+            return br;
+        }
+
+        private BlockStoreDetectorResponse processDetectorQueryAverage(BlockStoreDetectorQuery query, int[] blockIDs)
+        {
+            BlockStoreDetectorResponse dr = new BlockStoreDetectorResponse();
+            dr.Channels = new Dictionary<string, TOFChannel>();
+            using (BlockDatabaseDataContext dc = new BlockDatabaseDataContext())
+            {
+                IEnumerable<DBTOFChannelSet> tcss = from DBTOFChannelSet tcs in dc.DBTOFChannelSets
+                                                    where (tcs.detector == query.Detector)
+                                                    && blockIDs.Contains(tcs.blockID)
+                                                    select tcs;
+                // accumulate the average TCS
+                TOFChannelSetAccumulator tcsa = new TOFChannelSetAccumulator();
+                foreach (DBTOFChannelSet dbTcs in tcss)
+                {
+                    TOFChannelSet t = deserializeTCS(dbTcs.tcsData.ToArray());
+                    tcsa.Add(t);
+                }
+                // TODO: Handle special channels
+                TOFChannelSet averageTCS = tcsa.GetResult();
+                foreach (string channel in query.Channels)
+                    dr.Channels.Add(channel, (TOFChannel)averageTCS.GetChannel(channel));
+            }
+            return dr;
+        }
         #endregion
 
 

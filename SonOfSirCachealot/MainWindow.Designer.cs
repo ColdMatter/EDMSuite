@@ -34,10 +34,10 @@ namespace SonOfSirCachealot
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.test2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.statsTextBox = new System.Windows.Forms.TextBox();
             this.errorLogTextBox = new System.Windows.Forms.TextBox();
-            this.test2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,7 +48,7 @@ namespace SonOfSirCachealot
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(519, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(887, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -79,19 +79,26 @@ namespace SonOfSirCachealot
             // test1ToolStripMenuItem
             // 
             this.test1ToolStripMenuItem.Name = "test1ToolStripMenuItem";
-            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.test1ToolStripMenuItem.Text = "Test1";
             this.test1ToolStripMenuItem.Click += new System.EventHandler(this.test1ToolStripMenuItem_Click);
+            // 
+            // test2ToolStripMenuItem
+            // 
+            this.test2ToolStripMenuItem.Name = "test2ToolStripMenuItem";
+            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.test2ToolStripMenuItem.Text = "Test2";
+            this.test2ToolStripMenuItem.Click += new System.EventHandler(this.test2ToolStripMenuItem_Click);
             // 
             // logTextBox
             // 
             this.logTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.logTextBox.Location = new System.Drawing.Point(274, 27);
+            this.logTextBox.Location = new System.Drawing.Point(12, 160);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(233, 199);
+            this.logTextBox.Size = new System.Drawing.Size(863, 292);
             this.logTextBox.TabIndex = 2;
             // 
             // statsTextBox
@@ -101,7 +108,7 @@ namespace SonOfSirCachealot
             this.statsTextBox.Multiline = true;
             this.statsTextBox.Name = "statsTextBox";
             this.statsTextBox.ReadOnly = true;
-            this.statsTextBox.Size = new System.Drawing.Size(256, 199);
+            this.statsTextBox.Size = new System.Drawing.Size(863, 127);
             this.statsTextBox.TabIndex = 3;
             // 
             // errorLogTextBox
@@ -109,27 +116,20 @@ namespace SonOfSirCachealot
             this.errorLogTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.errorLogTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorLogTextBox.ForeColor = System.Drawing.Color.Red;
-            this.errorLogTextBox.Location = new System.Drawing.Point(12, 232);
+            this.errorLogTextBox.Location = new System.Drawing.Point(12, 458);
             this.errorLogTextBox.Multiline = true;
             this.errorLogTextBox.Name = "errorLogTextBox";
             this.errorLogTextBox.ReadOnly = true;
             this.errorLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.errorLogTextBox.Size = new System.Drawing.Size(495, 238);
+            this.errorLogTextBox.Size = new System.Drawing.Size(863, 187);
             this.errorLogTextBox.TabIndex = 4;
             this.errorLogTextBox.Text = "Error log";
-            // 
-            // test2ToolStripMenuItem
-            // 
-            this.test2ToolStripMenuItem.Name = "test2ToolStripMenuItem";
-            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.test2ToolStripMenuItem.Text = "Test2";
-            this.test2ToolStripMenuItem.Click += new System.EventHandler(this.test2ToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 481);
+            this.ClientSize = new System.Drawing.Size(887, 657);
             this.Controls.Add(this.errorLogTextBox);
             this.Controls.Add(this.statsTextBox);
             this.Controls.Add(this.logTextBox);

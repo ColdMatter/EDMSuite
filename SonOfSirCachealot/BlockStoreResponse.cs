@@ -16,12 +16,11 @@ namespace SonOfSirCachealot
     {
         public int BlockID;
         public BlockConfig Settings;
-        public List<BlockStoreDetectorResponse> DetectorResponses;
+        public Dictionary<string, BlockStoreDetectorResponse> DetectorResponses;
     }
 
     public class BlockStoreDetectorResponse
     {
-        public string Detector;
         public Dictionary<string, TOFChannel> Channels;
     }
 }

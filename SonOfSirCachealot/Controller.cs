@@ -7,13 +7,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Threading;
+using System.Net;
+using System.Web;
 
 using Analysis;
 using Analysis.EDM;
 using Data;
 using Data.EDM;
 
-using SonOfSirCachealot.Database;
+using SonOfSirCachealot;
+using System.Collections.Specialized;
 
 namespace SonOfSirCachealot
 {
@@ -28,6 +31,8 @@ namespace SonOfSirCachealot
  
         // Database
         public BlockStore BlockStore;
+        HttpListener listener;
+        Thread requestHandlerThread;
  
         // This method is called before the main form is created.
         // Don't do any UI stuff here!
@@ -51,12 +56,15 @@ namespace SonOfSirCachealot
             mainWindow.Text += " (" + sharedCodeVersion.ToString() + ")";
             // start the status monitor
             statusMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateStatusMonitor), null, 500, 500);
+            // start the server
+            startServer();
         }
 
         // this method gets called by the main window menu exit item, and when
         // the form's close button is pressed.
         internal void Exit()
         {
+            stopServer();
             // not sure whether this is needed, or even helpful.
             statusMonitorTimer.Dispose();
         }
@@ -68,6 +76,73 @@ namespace SonOfSirCachealot
             b.AppendLine("");
             b.AppendLine(GetDatabaseStats());
             mainWindow.SetStatsText(b.ToString());
+        }
+
+        internal void startServer()
+        {
+            listener = new HttpListener();
+            // Add the prefixes.
+            listener.Prefixes.Add("http://localhost:8089/blockstore/");
+            log("Starting server ...");
+            listener.Start();
+            startRequestHandler();
+         }
+
+        internal void startRequestHandler()
+        {
+            requestHandlerThread = new Thread(() =>
+            {
+                for (; ; )
+                {
+                    HttpListenerContext context = listener.GetContext();
+                    log("Handling request ...");
+                    HttpListenerRequest request = context.Request;
+                    HttpListenerResponse response = context.Response;
+                    string responseString = "No valid action.";
+
+                    if (request.QueryString["action"].Equals("add"))
+                    {
+                        StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding);
+                        NameValueCollection nvc = HttpUtility.ParseQueryString(
+                            HttpUtility.UrlDecode(reader.ReadToEnd()), request.ContentEncoding);
+                        string b = nvc["b"];
+                        log("Processing add: " + b);
+                        BlockStore.AddBlocksJSON(b);
+                        responseString = "Blocks added.";
+                    }
+
+                    if (request.QueryString["action"].Equals("query"))
+                    {
+                        string q = request.QueryString["q"];
+                        log("Processing query: " + q);
+                        responseString = BlockStore.processJSONQuery(q);
+                    }
+
+                    if (request.QueryString["action"].Equals("queryAverage"))
+                    {
+                        string q = request.QueryString["q"];
+                        log("Processing query (average): " + q);
+                        responseString = BlockStore.processJSONQueryAverage(q);
+                    }
+
+                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                    response.ContentLength64 = buffer.Length;
+                    System.IO.Stream output = response.OutputStream;
+                    output.Write(buffer, 0, buffer.Length);
+                    output.Close();
+                    log("Request handled.");
+                }
+            });
+            requestHandlerThread.Start();
+            log("Server started.");
+        }
+
+        internal void stopServer()
+        {
+            log("Stopping server ...");
+            requestHandlerThread.Abort();
+            listener.Stop();
+            log("Server stopped.");
         }
 
         internal static void log(string txt)
