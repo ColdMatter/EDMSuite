@@ -24,74 +24,44 @@ namespace TransferCavityLock2012
     {
         public double[,] AIData;
         public ScanParameters parameters = new ScanParameters();
+        Dictionary<string, string> slaveLookupTable;
 
-        public CavityScanData(int steps, int numberOfChannels)
+        public CavityScanData(int steps, Dictionary<string, int> channels, Dictionary<string, string> lookupTable)
         {
-            AIData = new double[numberOfChannels, steps];
+            AIData = new double[channels.Count, steps];
             parameters.Steps = steps;
-            parameters.NumberOfAIChannels = numberOfChannels;
+            parameters.NumberOfAIChannels = channels.Count;
+            parameters.Channels = channels;
+            slaveLookupTable = lookupTable;
        }
-
-        public double[] MasterPhotodiodeData
+        public double[] GetCavityData()
         {
-            get
+            double[] temp = new double[AIData.GetLength(1)];
+            for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    temp[i] = AIData[0, i];
-                }
-                return temp;
+                temp[i] = AIData[parameters.Channels["cavity"], i];
             }
-            set
-            {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    AIData[0, i] = value[i];
-                }
-            }
+            return temp;
         }
-        public double[] SlavePhotodiodeData
+        public double[] GetMasterData()
         {
-            get
+            double[] temp = new double[AIData.GetLength(1)];
+            for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    temp[i] = AIData[1, i];
-                }
-                return temp;
+                temp[i] = AIData[parameters.Channels["master"], i];
             }
-            set
-            {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    AIData[1, i] = value[i];
-                }
-            }
+            return temp;
         }
-        public double[] CavityData
+        public double[] GetSlaveData(string name)
         {
-            get
+            double[] temp = new double[AIData.GetLength(1)];
+            int channel = parameters.Channels[slaveLookupTable[name]];
+            for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    temp[i] = AIData[2, i];
-                }
-                return temp;
+                temp[i] = AIData[channel, i];
             }
-            set
-            {
-                double[] temp = new double[AIData.GetLength(1)];
-                for (int i = 0; i < AIData.GetLength(1); i++)
-                {
-                    AIData[2, i] = value[i];
-                }
-            }
-        }
+            return temp;
+        }    
 
  
 

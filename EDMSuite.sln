@@ -188,7 +188,6 @@ Global
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.EDM|Any CPU.Build.0 = EDM|Any CPU
@@ -259,7 +258,6 @@ Global
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.EDM|Mixed Platforms.ActiveCfg = EDM|Any CPU
@@ -292,7 +290,6 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.EDM|Any CPU.Build.0 = EDM|Any CPU
@@ -327,7 +324,6 @@ Global
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.EDM|Any CPU.Build.0 = EDM|Any CPU
@@ -361,7 +357,6 @@ Global
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.EDM|Mixed Platforms.ActiveCfg = EDM|Any CPU
@@ -396,7 +391,6 @@ Global
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.EDM|Any CPU.Build.0 = EDM|Any CPU
@@ -432,7 +426,6 @@ Global
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{F91026E7-ED05-403E-923B-686806A0DF4F}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{F91026E7-ED05-403E-923B-686806A0DF4F}.EDM|Mixed Platforms.ActiveCfg = EDM|Any CPU
@@ -468,7 +461,6 @@ Global
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Mixed Platforms.Build.0 = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|x86.ActiveCfg = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDM|Any CPU.Build.0 = EDM|Any CPU
@@ -507,7 +499,6 @@ Global
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.Debug|x86.Build.0 = Debug|x86
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.Decelerator|Any CPU.ActiveCfg = Debug|x86
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.Decelerator|Mixed Platforms.ActiveCfg = Debug|x86
-		{C3B8C707-46FA-4533-9778-303710E01ABD}.Decelerator|Mixed Platforms.Build.0 = Debug|x86
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.Decelerator|x86.ActiveCfg = Debug|x86
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.Decelerator|x86.Build.0 = Debug|x86
 		{C3B8C707-46FA-4533-9778-303710E01ABD}.EDM|Any CPU.ActiveCfg = Release|x86

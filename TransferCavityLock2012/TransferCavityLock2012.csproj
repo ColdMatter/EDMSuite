@@ -64,13 +64,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=9.1.40.159, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Data" />
@@ -92,6 +92,16 @@
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LockControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LockControlPanel.Designer.cs">
+      <DependentUpon>LockControlPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SlaveLaser.cs" />
+    <EmbeddedResource Include="LockControlPanel.resx">
+      <DependentUpon>LockControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -130,10 +140,6 @@
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
       <Name>SharedCode</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SympatheticHardwareControl\SympatheticHardwareControl.csproj">
-      <Project>{B223A45D-2F25-437F-B7DF-CE6C8DF97451}</Project>
-      <Name>SympatheticHardwareControl</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

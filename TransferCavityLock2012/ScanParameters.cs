@@ -1,4 +1,4 @@
-﻿using NationalInstruments.DAQmx;
+﻿using System.Collections.Generic;
 
 namespace TransferCavityLock2012
 {
@@ -7,6 +7,7 @@ namespace TransferCavityLock2012
       
         public int Steps;
         public int NumberOfAIChannels;
+        public Dictionary<string, int> Channels = new Dictionary<string, int>();
         
     }
 }

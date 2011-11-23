@@ -18,7 +18,7 @@ namespace TransferCavityLock2012
     public partial class MainForm : Form
     {
         public Controller controller;
-
+        private Dictionary<string, LockControlPanel> slaveLasers = new Dictionary<string, LockControlPanel>();
 
         #region Setup
 
@@ -35,54 +35,52 @@ namespace TransferCavityLock2012
             controller.InitializeUI();
         }
         
+        public void AddSlaveLaser(string name)
+        {
+            string title = name;
+            TabPage newTab = new TabPage(title);
+            LockControlPanel panel = new LockControlPanel(name);
+            panel.controller = this.controller;
+            slaveLasersTab.TabPages.Add(newTab);
+            newTab.Controls.Add(panel);
+            slaveLasersTab.Enabled = true;
+            slaveLasers.Add(name, panel);
+        }
+
+        public void ShowAllTabPanels()
+        {
+            for (int i = 0; i < slaveLasersTab.TabPages.Count; i++)
+            {
+                slaveLasersTab.TabPages[i].Show();
+            }
+        }
         /// <summary>
         /// This controls which parts of the UI are enabled for a given machine state.
         /// </summary>
-        public void updateUIState(Controller.ControllerState state)
+        public void UpdateUIState(Controller.ControllerState state)
         {
             switch (state)
             {
                 case Controller.ControllerState.STOPPED:
                     rampStartButton.Enabled = true;
                     rampStopButton.Enabled = false;
-
-                    lockEnableCheck.Enabled = false;
-
-                    VoltageToLaserTextBox.Enabled = false;
-                    LaserSetPointTextBox.Enabled = false;
-                    GainTextbox.Enabled = false;
-
                     NumberOfScanpointsTextBox.Enabled = true;
-
                     rampLED.Value = false;
                     break;
 
-                case Controller.ControllerState.FREERUNNING:
+                case Controller.ControllerState.RUNNING:
                     rampStartButton.Enabled = false;
                     rampStopButton.Enabled = true;
-
-                    lockEnableCheck.Enabled = true;
-                    VoltageToLaserTextBox.Enabled = true;
-                    LaserSetPointTextBox.Enabled = false;
-                    GainTextbox.Enabled = true;
-                    
                     NumberOfScanpointsTextBox.Enabled = false;
-
                     rampLED.Value = true;
                     break;
-
-                case Controller.ControllerState.LASERLOCKING:
-                    VoltageToLaserTextBox.Enabled = false;
-                    GainTextbox.Enabled = false;
-                    break;
-
-                case Controller.ControllerState.LASERLOCKED:
-
-                    break;
-
             }
         }
-
+        
+        internal void UpdateUIState(string name, SlaveLaser.LaserState state)
+        {
+             slaveLasers[name].UpdateUIState(state);
+        }
         #endregion
 
         #region ThreadSafe wrappers
@@ -97,15 +95,6 @@ namespace TransferCavityLock2012
             box.Checked = state;
         }
 
-        public void SetRadioButton(RadioButton button, bool state)
-        {
-            button.Invoke(new SetRadioButtonDelegate(SetRadioButtonHelper), new object[] { button, state });
-        }
-        private delegate void SetRadioButtonDelegate(RadioButton button, bool state);
-        private void SetRadioButtonHelper(RadioButton button, bool state)
-        {
-            button.Checked = state;
-        }
 
         public void SetTextBox(TextBox box, string text)
         {
@@ -156,91 +145,33 @@ namespace TransferCavityLock2012
             graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] {plot, x, y });
         }
 
-        
-
-
-
-
-
         private void rampStartButton_Click(object sender, EventArgs e)
         {
-            controller.StartRamp();
+            controller.StartTCL();
         }
 
         private void rampStopButton_Click(object sender, EventArgs e)
         {
-            lockEnableCheck.Checked = false;
+            //lockEnableCheck.Checked = false;
             
             lock (controller.rampStopLock)
             {
-                controller.StopRamp();
+                controller.StopTCL();
             }
 
         }
 
-        private void setPointAdjustPlusButton_Click(object sender, EventArgs e)
+        private void stopAllLocking()
         {
-            lock (controller.tweakLock)
-            {
-                controller.Increments++;
-            }
-        }
-
-        private void setPointAdjustMinusButton_Click(object sender, EventArgs e)
-        {
-            lock (controller.tweakLock)
-            {
-                controller.Decrements++;
-            }
-        }
-
-
-        private void lockEnableCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (lockEnableCheck.CheckState == CheckState.Checked)
-            {
-                controller.EngageLock();
-            }
-            if (lockEnableCheck.CheckState == CheckState.Unchecked)
-            {
-                controller.DisengageLock();
-            }
 
         }
 
-
-        private void VoltageToLaserChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                controller.WindowVoltageToLaserChanged(Double.Parse(VoltageToLaserTextBox.Text));
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private void GainChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                controller.WindowGainChanged(Double.Parse(GainTextbox.Text));
-            }
-            catch (Exception)
-            {
-                
-            }
-        }
 
         
         #endregion
 
         #region Setting and getting parameter values from textboxes
-        
-        public void SetLaserVoltage(double value)
-        {
-            SetTextBox(VoltageToLaserTextBox, Convert.ToString(value));
-        }
+       
 
         public void SetNumberOfPoints(int value)
         {
@@ -250,49 +181,70 @@ namespace TransferCavityLock2012
         {
             return Int32.Parse(NumberOfScanpointsTextBox.Text);
         }
-
-        public void SetGain(double value)
-        {
-            SetTextBox(GainTextbox, Convert.ToString(value)); 
-        }
-        public double GetGain()
-        {
-            return Double.Parse(GainTextbox.Text);
-        }
-
-        public void SetSetPointIncrementSize(double value)
-        {
-            SetTextBox(setPointIncrementBox, Convert.ToString(value)); 
-        }
-
-        public double GetLaserSetPoint()
-        {
-            return Double.Parse(LaserSetPointTextBox.Text);
-        }
-        public void SetLaserSetPoint(double value)
-        {
-            SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
-        }
         #endregion
-
-        private void setPointIncrementBox_TextChanged(object sender, EventArgs e)
+    
+        #region Displaying Data
+        public void DisplayCavityData(double[] indeces, double[] cavityData)
         {
-            controller.setPointIncrementSize = Double.Parse(setPointIncrementBox.Text);
-        }
-
-        internal void DisplayData(double[] indeces, double[] masterData, double[] slaveData, double[] cavityData)
-        {
-            scatterGraphPlot(SlaveLaserIntensityScatterGraph,
-                SlaveDataPlot, cavityData,  slaveData);
-            scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot,
-                cavityData, masterData);
             scatterGraphPlot(CavityVoltageReadScatterGraph, cavityDataPlot, indeces, cavityData);
         }
-        public void DisplayFitData(double[] cavityData, double[] masterData, double[] slaveData)
+        public void DisplayMasterData(double[] cavityData, double[] masterData, double[] masterFitData)
         {
-            scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterFitPlot, cavityData, masterData);
-            scatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
+            scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, cavityData, masterData);
+            scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterFitPlot, cavityData, masterFitData);
         }
+        public void DisplaySlaveData(string name, double[] cavityData, double[] slaveData, double[] slaveFitData)
+        {
+            slaveLasers[name].DisplayData(cavityData, slaveData);
+            slaveLasers[name].DisplayFit(cavityData, slaveFitData);
+        }
+
+        #endregion
+
+        #region Panel Control
+
+        public void SetLaserVoltage(string name, double value)
+        {
+            slaveLasers[name].SetLaserVoltage(value);
+        }
+
+        public void SetGain(string name, double value)
+        {
+            slaveLasers[name].SetGain(value);
+        }
+        public double GetGain(string name)
+        {
+            return slaveLasers[name].GetGain();
+        }
+
+        public void SetSetPointIncrementSize(string name, double value)
+        {
+            slaveLasers[name].SetSetPointIncrementSize(value);
+        }
+
+        public double GetLaserSetPoint(string name)
+        {
+            return slaveLasers[name].GetLaserSetPoint();
+        }
+        public void SetLaserSetPoint(string name, double value)
+        {
+            slaveLasers[name].SetLaserSetPoint(value);
+        }
+
+        public void DisplayData(string name, double[] cavityData, double[] slaveData)
+        {
+            slaveLasers[name].DisplayData(cavityData, slaveData);
+        }
+        public void DisplayFit(string name, double[] cavityData, double[] slaveFitData)
+        {
+            slaveLasers[name].DisplayFit(cavityData, slaveFitData);
+        }
+
+        #endregion
+
+
+
+        
     }
 }
 

@@ -10,14 +10,8 @@ namespace DAQ.TransferCavityLock2012
     {
 
         void ConfigureReadAI(int numberOfMeasurements, bool autostart);
-        void ConfigureSetLaserVoltage(double voltage);
-
         double[,] ReadAI(int numberOfMeasurements);
-        void SetLaserVoltage(double voltage);
-
         void DisposeAITask();
-        void DisposeLaserTask();
-
     }
 
 

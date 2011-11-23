@@ -92,8 +92,8 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Common, Version=9.1.40.159, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=9.3.40.219, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.VisaNS, Version=9.0.40.156, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
@@ -152,13 +152,15 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DAQMxTCL2012HelperExtTriggeredMultiRead.cs" />
+    <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
+    <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />
     <Compile Include="Fitter.cs" />
     <Compile Include="GaussianFitter.cs" />
     <Compile Include="Gigatronics7100Synth.cs" />
+    <Compile Include="TransferCavityLock2012LaserControllable.cs" />
     <Compile Include="InterferenceFitter.cs" />
     <Compile Include="Lab10PCFileSystem.cs" />
     <Compile Include="LorentzianFitter.cs" />
