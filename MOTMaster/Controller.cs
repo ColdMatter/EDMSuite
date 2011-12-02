@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
-using System.Diagnostics;
 using Microsoft.CSharp;
 
 using DAQ.Environment;
@@ -20,7 +19,7 @@ using Data;
 using Data.Scans;
 
 using SympatheticHardwareControl;
-using SympatheticHardwareControl.CameraControl;
+using IMAQ;
 
 using System.Runtime.InteropServices;
 using System.CodeDom;

@@ -149,7 +149,9 @@
     </Compile>
     <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="Calibration.cs" />
-    <Compile Include="ExponentialCalibration.cs" />
+    <Compile Include="MechanicalTranslationStage.cs" />
+    <Compile Include="Parker404XR.cs" />
+    <Compile Include="PowerCalibration.cs" />
     <Compile Include="LinearCalibration.cs" />
     <Compile Include="LinearInterpolationCalibration.cs" />
     <Compile Include="LogarithmicCalibration.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="PXIEDMHardware.cs" />
     <Compile Include="RequiemFileSystem.cs" />
     <Compile Include="RFPower.cs" />
+    <Compile Include="RS232Instrument.cs" />
     <Compile Include="SealClubberFileSystem.cs" />
     <Compile Include="Agilent53131A.cs" />
     <Compile Include="FrequencyCounter.cs" />

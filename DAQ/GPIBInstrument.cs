@@ -11,7 +11,6 @@ namespace DAQ.HAL
 	/// </summary>
 	public class GPIBInstrument
 	{
-
 		GpibSession session;
 		string address;
 

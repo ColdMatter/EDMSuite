@@ -104,6 +104,21 @@ namespace SympatheticHardwareControl
                 controller.StopChamber1PressureMonitor();
             }
         }
+        public void SetChamber2Pressure(double value)
+        {
+            setTextBox(chamber2PressureTextBox, Convert.ToString(value));
+        }
+        private void chamber2PressureCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chamber2PressureCheckBox.Checked)
+            {
+                controller.StartChamber2PressureMonitor();
+            }
+            if (!chamber2PressureCheckBox.Checked)
+            {
+                controller.StopChamber2PressureMonitor();
+            }
+        }
 
         #endregion
         #region Menu
@@ -111,6 +126,7 @@ namespace SympatheticHardwareControl
         {
             laserErrorMonitorCheckBox.Checked = true;
             chamber1PressureCheckBox.Checked = true;
+            chamber2PressureCheckBox.Checked = true;
         }
 
         private void stopAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -121,6 +137,7 @@ namespace SympatheticHardwareControl
         {
             laserErrorMonitorCheckBox.Checked = false;
             chamber1PressureCheckBox.Checked = false;
+            chamber2PressureCheckBox.Checked = false;
         }
         #endregion
 
@@ -128,6 +145,7 @@ namespace SympatheticHardwareControl
         {
             stopAll();
         }
+
 
 
         

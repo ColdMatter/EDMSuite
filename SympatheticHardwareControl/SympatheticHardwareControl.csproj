@@ -61,9 +61,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="NationalInstruments.AxCWIMAQControlsLib.Interop, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4544464cdeaab541" />
     <Reference Include="NationalInstruments.Common, Version=8.7.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.CWIMAQIO.Interop, Version=2.3.0.1, Culture=neutral, PublicKeyToken=4544464cdeaab541" />
     <Reference Include="NationalInstruments.DAQmx, Version=8.9.35.210, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -74,8 +72,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.VisaNS, Version=8.9.35.108, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Vision.Acquisition.Imaqdx, Version=3.40.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Vision.Common, Version=9.0.35.45000, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -87,7 +83,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraControllable.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
@@ -102,13 +97,6 @@
       <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="HardwareReportable.cs" />
-    <Compile Include="ImageMaster.cs" />
-    <Compile Include="ImageViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImageViewerWindow.Designer.cs">
-      <DependentUpon>ImageViewerWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControlWindow.resx">
@@ -117,9 +105,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HardwareMonitorWindow.resx">
       <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImageViewerWindow.resx">
-      <DependentUpon>ImageViewerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -146,6 +131,10 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IMAQ\IMAQ.csproj">
+      <Project>{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}</Project>
+      <Name>IMAQ</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

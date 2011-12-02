@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.UI;
 
-using NationalInstruments.Vision;
-
 
 namespace SympatheticHardwareControl
 {
@@ -123,7 +121,6 @@ namespace SympatheticHardwareControl
             this.loadParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.loadImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -661,7 +658,6 @@ namespace SympatheticHardwareControl
             this.loadParametersToolStripMenuItem,
             this.saveParametersToolStripMenuItem,
             this.toolStripSeparator1,
-            this.loadImageToolStripMenuItem,
             this.saveImageToolStripMenuItem,
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
@@ -674,7 +670,6 @@ namespace SympatheticHardwareControl
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
             this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters";
-            this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
@@ -687,13 +682,6 @@ namespace SympatheticHardwareControl
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
-            // 
-            // loadImageToolStripMenuItem
-            // 
-            this.loadImageToolStripMenuItem.Name = "loadImageToolStripMenuItem";
-            this.loadImageToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.loadImageToolStripMenuItem.Text = "Load image";
-            this.loadImageToolStripMenuItem.Click += new System.EventHandler(this.loadImageToolStripMenuItem_Click);
             // 
             // saveImageToolStripMenuItem
             // 
@@ -945,7 +933,6 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem loadParametersToolStripMenuItem;
         private ToolStripMenuItem saveParametersToolStripMenuItem;
-        private ToolStripMenuItem loadImageToolStripMenuItem;
         private ToolStripMenuItem saveImageToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
@@ -958,20 +945,14 @@ namespace SympatheticHardwareControl
         private Button updateHardwareButton;
         private ToolStripMenuItem windowsToolStripMenuItem;
         private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
-
+        private RichTextBox consoleRichTextBox;
+        private ToolStripMenuItem openImageViewerToolStripMenuItem;
+        private Button streamButton;
+        private Button stopStreamButton;
 
         #endregion
 
         #region Click Handlers
-
-
-        private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (controller.HCState == Controller.SHCUIControlState.OFF)
-            {
-                controller.LoadParametersWithDialog();
-            }
-        }
 
         private void saveParametersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -983,21 +964,14 @@ namespace SympatheticHardwareControl
             controller.SaveImageWithDialog();
         }
 
-        private void loadImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            controller.LoadImagesWithDialog();
-        }
-
-       
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
-
-
-
-
+        private void updateHardwareButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateHardware();
+        }
         #endregion
 
         #region Public properties for controlling UI.
@@ -1008,8 +982,6 @@ namespace SympatheticHardwareControl
             
            
         }
-
-
         public double ReadAnalog(string channelName)
         {
             return double.Parse(AOTextBoxes[channelName].Text);
@@ -1029,30 +1001,19 @@ namespace SympatheticHardwareControl
         #endregion
 
         #region Camera Control
-        
 
         private void snapshotButton_Click(object sender, EventArgs e)
         {
-            controller.CameraSnapshot();
-            
+            controller.CameraSnapshot();         
         }
-
-        private Button streamButton;
-        private Button stopStreamButton;
-
         private void streamButton_Click(object sender, EventArgs e)
         {
-            
             controller.CameraStream();
         }
-
         private void stopStreamButton_Click(object sender, EventArgs e)
         {
-
-            
             controller.StopCameraStream();
         }
-
 
         #endregion
 
@@ -1097,25 +1058,21 @@ namespace SympatheticHardwareControl
         {
             controller.OpenNewHardwareMonitorWindow();
         }
-        #endregion
-
-
-
-        private void updateHardwareButton_Click(object sender, EventArgs e)
-        {
-            controller.UpdateHardware();
-        }
-
-        private RichTextBox consoleRichTextBox;
-        private ToolStripMenuItem openImageViewerToolStripMenuItem;
-
+        
         private void openImageViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.StartCameraControl();
         }
+        #endregion
 
-       
-      
+
+
+
+
+
+
+
+
 
 
 

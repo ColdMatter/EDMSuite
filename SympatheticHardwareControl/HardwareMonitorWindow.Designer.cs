@@ -44,6 +44,9 @@
             this.monitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chamber2PressureCheckBox = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chamber2PressureTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.laserErrorLED)).BeginInit();
@@ -55,9 +58,9 @@
             this.chamber1PressureCheckBox.AutoSize = true;
             this.chamber1PressureCheckBox.Location = new System.Drawing.Point(6, 19);
             this.chamber1PressureCheckBox.Name = "chamber1PressureCheckBox";
-            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(115, 17);
+            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(120, 17);
             this.chamber1PressureCheckBox.TabIndex = 0;
-            this.chamber1PressureCheckBox.Text = "Chamber 1 voltage";
+            this.chamber1PressureCheckBox.Text = "Chamber 1 pressure";
             this.chamber1PressureCheckBox.UseVisualStyleBackColor = true;
             this.chamber1PressureCheckBox.CheckedChanged += new System.EventHandler(this.chamber1PressureCheckBox_CheckedChanged);
             // 
@@ -80,6 +83,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chamber2PressureTextBox);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.chamber2PressureCheckBox);
             this.groupBox1.Controls.Add(this.chamber1PressureCheckBox);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.chamber1PressureTextBox);
@@ -201,6 +207,34 @@
             this.stopAllToolStripMenuItem.Text = "Stop All";
             this.stopAllToolStripMenuItem.Click += new System.EventHandler(this.stopAllToolStripMenuItem_Click);
             // 
+            // chamber2PressureCheckBox
+            // 
+            this.chamber2PressureCheckBox.AutoSize = true;
+            this.chamber2PressureCheckBox.Location = new System.Drawing.Point(6, 42);
+            this.chamber2PressureCheckBox.Name = "chamber2PressureCheckBox";
+            this.chamber2PressureCheckBox.Size = new System.Drawing.Size(120, 17);
+            this.chamber2PressureCheckBox.TabIndex = 3;
+            this.chamber2PressureCheckBox.Text = "Chamber 2 pressure";
+            this.chamber2PressureCheckBox.UseVisualStyleBackColor = true;
+            this.chamber2PressureCheckBox.CheckedChanged += new System.EventHandler(this.chamber2PressureCheckBox_CheckedChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(466, 43);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "mbar";
+            // 
+            // chamber2PressureTextBox
+            // 
+            this.chamber2PressureTextBox.Location = new System.Drawing.Point(155, 40);
+            this.chamber2PressureTextBox.Name = "chamber2PressureTextBox";
+            this.chamber2PressureTextBox.ReadOnly = true;
+            this.chamber2PressureTextBox.Size = new System.Drawing.Size(305, 20);
+            this.chamber2PressureTextBox.TabIndex = 5;
+            // 
             // HardwareMonitorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,5 +277,8 @@
         private System.Windows.Forms.ToolStripMenuItem monitorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopAllToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chamber2PressureCheckBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox chamber2PressureTextBox;
     }
 }

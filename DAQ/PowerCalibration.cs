@@ -5,32 +5,35 @@ using NationalInstruments.Analysis.Math;
 
 namespace DAQ.HAL
 {
-    public class ExponentialCalibration : Calibration
+    public class PowerCalibration : Calibration
     {
-        // a Exp[m(x-c)] + b
-        double a, m, b, c;
-        public ExponentialCalibration(double a, double b, double c, double m)
+        // a * bs^[m(x-c)] + b
+        double a, m, b, c, bs;
+        public PowerCalibration(double a, double b, double c, double m, double bs)
         {
             this.a = a;
             this.b = b;
             this.c = c;
             this.m = m;
+            this.bs = bs;
             this.rangeLow = 0.0;
             this.rangeHigh = 0.0;
         }
-        public ExponentialCalibration(double a, double b, double c, double m, double rangeLow, double rangeHigh)
+        public PowerCalibration(double a, double b, double c, double m, double bs, double rangeLow, double rangeHigh)
         {
             this.a = a;
             this.b = b;
             this.c = c;
             this.m = m;
+            this.bs = bs;
             this.rangeLow = rangeLow;
             this.rangeHigh = rangeHigh;
         }
         public override double Convert(double input)
         {
             CheckRange(input);
-            return a * Math.Exp(m * (input - c)) + b;
+            
+            return a * Math.Pow(bs, m * (input - c)) + b;
         }
     }
 }

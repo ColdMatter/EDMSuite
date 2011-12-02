@@ -18,12 +18,8 @@ using NationalInstruments.VisaNS;
 using DAQ.HAL;
 using DAQ.Environment;
 
-using NationalInstruments.Vision;
-using NationalInstruments.Vision.Acquisition.Imaqdx;
-using NationalInstruments.Vision.Internal;
-using NationalInstruments.Vision.WindowsForms.Internal;
+using IMAQ;
 
-using SympatheticHardwareControl.CameraControl;
 
 namespace SympatheticHardwareControl
 {
@@ -80,7 +76,7 @@ namespace SympatheticHardwareControl
         Hashtable digitalTasks = new Hashtable();
 
         //Cameras
-        public ImageMaster ImageController;
+        public CameraController ImageController;
         
 
         // Declare that there will be a controlWindow
@@ -145,6 +141,7 @@ namespace SympatheticHardwareControl
             
             CreateAnalogInputTask("laserLockErrorSignal", -10, 10);
             CreateAnalogInputTask("chamber1Pressure");
+            CreateAnalogInputTask("chamber2Pressure");
 
             // make the control controlWindow
             controlWindow = new ControlWindow();
@@ -162,13 +159,9 @@ namespace SympatheticHardwareControl
         // this method runs immediately after the GUI sets up
         internal void ControllerLoaded()
         {
-
-            StartCameraControl();
             stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
             setValuesDisplayedOnUI(stateRecord);
             ApplyRecordedStateToHardware();
-
-
         }
 
         public void ControllerStopping()
@@ -448,8 +441,6 @@ namespace SympatheticHardwareControl
         #region Controlling hardware and UI.
         //This gets/sets the values on the GUI panel
 
-        
-
         #region Updating the hardware
 
         public void ApplyRecordedStateToHardware()
@@ -626,11 +617,11 @@ namespace SympatheticHardwareControl
 
         #endregion
 
-        #region Remoting stuff
+        #region Remoting stuff 
 
         /// <summary>
         /// This is used when you want another program to take control of some/all of the hardware. The hc then just saves the
-        /// last hardware state, then prevents you from making any changes to the UI.
+        /// last hardware state, then prevents you from making any changes to the UI. Use this if your other program wants direct control of hardware.
         /// </summary>
         public void StartRemoteControl()
         {
@@ -674,9 +665,8 @@ namespace SympatheticHardwareControl
 
         /// <summary>
         /// These SetValue functions are for giving commands to the hc from another program, while keeping the hc in control of hardware.
+        /// Use this if you want the HC to keep control, but you want to control the HC from some other program
         /// </summary>
-        /// <param name="channel"></param>
-        /// <param name="value"></param>
         public void SetValue(string channel, double value)
         {
             HCState = SHCUIControlState.LOCAL;
@@ -709,20 +699,17 @@ namespace SympatheticHardwareControl
 
         #endregion
 
-        //camera stuff
-
         #region Local camera control
 
         public void StartCameraControl()
         {
             try
             {
-                ImageController = new ImageMaster("cam0", cameraAttributesPath);
-                ImageController.controller = this;
+                ImageController = new CameraController("cam0", cameraAttributesPath);
                 ImageController.Initialize();
-                PrintCameraAttributesToConsole();
+                ImageController.PrintCameraAttributesToConsole();
             }
-            catch (ImaqdxException e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Camera Initialization Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -732,90 +719,45 @@ namespace SympatheticHardwareControl
         }
         public void CameraStream()
         {
-            
-            ImageController.SetCameraAttributes(cameraAttributesPath);
-            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
-            PrintCameraAttributesToConsole();
-            controlWindow.WriteToConsole("Streaming from camera");
-            ImageController.Stream();
-                   
+            try
+            {
+                ImageController.Stream();
+            }
+            catch { }
         }
 
         public void StopCameraStream()
         {
-            ImageController.StopStream();
-            
-            controlWindow.WriteToConsole("Streaming stopped");
+            try
+            {
+                ImageController.StopStream();
+            }
+            catch { }
         }
 
         public void CameraSnapshot()
         {
-            controlWindow.WriteToConsole("Taking snapshot");
-            ImageController.SetCameraAttributes(cameraAttributesPath);
-            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
-            PrintCameraAttributesToConsole();
             try
             {
-                ImageController.Snapshot();
+                ImageController.SingleSnapshot();
             }
-            catch (TimeoutException)
-            {
-              
-            }
-
+            catch { }
         }
-
-
-        /// <summary>
-        /// This is cheezy. I'm channelling information from the camera to the console. The controller is the only bit that sees
-        /// both.
-        /// </summary>
-        public void PrintCameraAttributesToConsole()
-        {
-            controlWindow.WriteToConsole("Attributes loaded in camera:");
-            controlWindow.WriteToConsole(ImageController.ImaqdxSession.Attributes.WriteAttributesToString());
-            
-        }
+       
         #endregion
 
-        #region Saving and Loading Images
-
-        public void SaveImageWithDialog()
-        {
-            ImageController.SaveImageWithDialog();
-            controlWindow.WriteToConsole("Image saved");
-        }
-        public void LoadImagesWithDialog()
-        {
-            ImageController.LoadImagesWithDialog();
-            controlWindow.WriteToConsole("Image loaded");
-        }
-
-        #endregion
-
-        #region Remote Image Processing
+        #region Remote Camera Control
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
 
         public byte[,] GrabSingleImage(string cameraAttributesPath)
         {
-            ImageController.SetCameraAttributes(cameraAttributesPath);
-            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
-            PrintCameraAttributesToConsole();
-            
-            return ImageController.Snapshot();
-            
+            return ImageController.SingleSnapshot(cameraAttributesPath);
         }
         public byte[][,] GrabMultipleImages(string cameraAttributesPath, int numberOfShots)
         {
-            
-            ImageController.SetCameraAttributes(cameraAttributesPath);
-            controlWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesPath);
-            PrintCameraAttributesToConsole();
-            
             try
             {
-                byte[][,] images = ImageController.TriggeredSequence(numberOfShots);
-
+                byte[][,] images = ImageController.MultipleSnapshot(cameraAttributesPath, numberOfShots);
                 return images;
             }
 
@@ -824,11 +766,7 @@ namespace SympatheticHardwareControl
                 FinishRemoteCameraControl();
                 return null;
             }
-            
-        }
-        public void PrintIntervalInConsole(long interval)
-        {
-            controlWindow.WriteToConsole("Duration of acquisition: " + interval.ToString());
+
         }
 
         public bool IsReadyForAcquisition()
@@ -846,6 +784,20 @@ namespace SympatheticHardwareControl
         }
 
         #endregion
+
+        #region Saving Images
+
+        public void SaveImageWithDialog()
+        {
+            ImageController.SaveImageWithDialog();
+        }
+        public void SaveImage(string path)
+        {
+            ImageController.SaveImage(path);
+        }
+        #endregion
+
+        
 
         #region Hardware Monitor
 
@@ -946,7 +898,7 @@ namespace SympatheticHardwareControl
             Thread C1PThread = new Thread(new ThreadStart(chamber1PressureMonitorLoop));
             C1PThread.Start();
         }
-
+       
 
         private void chamber1PressureMonitorLoop()
         {
@@ -982,6 +934,56 @@ namespace SympatheticHardwareControl
         public void StopChamber1PressureMonitor()
         {
             monitorC1P = false;
+        }
+
+        #endregion
+        #region Chamber 2
+        private bool monitorC2P = false;
+        public object c2pStopLock = new object();
+
+
+        public void StartChamber2PressureMonitor()
+        {
+            monitorC2P = true;
+            Thread C2PThread = new Thread(new ThreadStart(chamber2PressureMonitorLoop));
+            C2PThread.Start();
+        }
+
+
+        private void chamber2PressureMonitorLoop()
+        {
+            while (monitorC2P)
+            {
+                Thread.Sleep(1000);
+                double pressure = ReadChannel2Pressure();
+                lock (c2pStopLock)
+                {
+                    monitorWindow.SetChamber2Pressure(pressure);
+                    if (!monitorC2P)
+                    {
+                        return;
+                    }
+                }
+
+            }
+        }
+
+        public double ReadChannel2Pressure()
+        {
+            double value = 10;
+            try
+            {
+                value = ReadAnalogInput("chamber2Pressure", true);
+            }
+            catch
+            {
+            }
+            return value;
+        }
+
+        public void StopChamber2PressureMonitor()
+        {
+            monitorC2P = false;
         }
 
         #endregion

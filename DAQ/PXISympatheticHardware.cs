@@ -19,9 +19,10 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("multiDAQ", "/PXI1Slot4");
+            Boards.Add("multiDAQ", "/PXI1Slot6");
             Boards.Add("aoBoard", "/PXI1Slot5");
             Boards.Add("usbDAQ", "/Dev1");
+            
 
             string multiDAQ = (string)Boards["multiDAQ"];
             string aoBoard = (string)Boards["aoBoard"];
@@ -75,8 +76,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("probepower", multiDAQ + "/ai9", AITerminalConfiguration.Rse); //Pin 66
 
             AddAnalogInputChannel("laserLockErrorSignal", multiDAQ + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("chamber1Pressure", usbDAQ + "/ai0", AITerminalConfiguration.Rse);
-
+            AddAnalogInputChannel("chamber1Pressure", usbDAQ + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("chamber2Pressure", usbDAQ + "/ai3", AITerminalConfiguration.Differential);
             // map the analog output channels
             // Control of atoms
             AddAnalogOutputChannel("aom0amplitude", aoBoard + "/ao16");
@@ -101,7 +102,8 @@ namespace DAQ.HAL
             AddCounterChannel("sample clock", multiDAQ + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
             //Calibrations
-            AddCalibration("chamber1Pressure", new ExponentialCalibration(1.01335 * Math.Pow(10,-6), 0, 5.0037, 2.30259));
+            AddCalibration("chamber1Pressure", new PowerCalibration(1, 0, 10.875, 1, 10));
+            AddCalibration("chamber2Pressure", new PowerCalibration(1, 0, 10.875, 1, 10));
             //AddCalibration("aom3frequency", new PolynomialCalibration
                 //(new double[] {-27.2757, 0.698297, -0.0075598, 0.000045057, -1.33872 * Math.Pow(10,-7), 1.57402* Math.Pow(10, -10)}));
             AddCalibration("aom0frequency", new PolynomialCalibration(new double[] 
@@ -117,11 +119,6 @@ namespace DAQ.HAL
             {1.21, 1.25}, {1.92, 1.5}, {3.32, 2}, {4.76, 2.5}, {6.19, 3}, {7.64, 3.5}, {9.08, 4}, {10.52, 4.5}, {11.97, 5}, {13.41, 5.5}, 
             {14.86, 6}, {16.3, 6.5}, {17.75, 7}, {18.48, 7.25}, {19.19, 7.5}, {19.92, 7.75}, {20.00, 8}, {20.00, 8.5}, {20.00, 9}, 
             {20.00, 9.5}, {20.00, 10}}));
-
-            //{{0.00, 0}, {0.00, 0.5}, {0.02, 0.75}, {0.53, 1}, 
-            //{1.21, 1.25}, {1.92, 1.5}, {3.32, 2}, {4.76, 2.5}, {6.19, 3}, {7.64, 3.5}, {9.08, 4}, {10.52, 4.5}, {11.97, 5}, {13.41, 5.5}, 
-            //{14.86, 6}, {16.3, 6.5}, {17.75, 7}, {18.48, 7.25}, {19.19, 7.5}, {19.92, 7.75}, {20.00, 8}, {20.00, 8.5}, {20.00, 9}, 
-            //{20.00, 9.5}, {20.00, 10}}));
         }
 
     }
