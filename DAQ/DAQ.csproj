@@ -149,6 +149,7 @@
     </Compile>
     <Compile Include="DAQmxAnalogPatternGenerator.cs" />
     <Compile Include="Calibration.cs" />
+    <Compile Include="ExperimentReportable.cs" />
     <Compile Include="MechanicalTranslationStage.cs" />
     <Compile Include="Parker404XR.cs" />
     <Compile Include="PowerCalibration.cs" />

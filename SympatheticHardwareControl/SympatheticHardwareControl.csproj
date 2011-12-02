@@ -96,7 +96,6 @@
     <Compile Include="HardwareMonitorWindow.Designer.cs">
       <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="HardwareReportable.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControlWindow.resx">

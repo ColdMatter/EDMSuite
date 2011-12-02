@@ -15,6 +15,7 @@ using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.VisaNS;
 
+using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
 
@@ -56,7 +57,7 @@ namespace SympatheticHardwareControl
     /// like: "what was the source chamber pressure when we took this data?". At the moment, the hardware state is also included in the report.
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject, CameraControllable, HardwareReportable
+    public class Controller : MarshalByRefObject, CameraControllable, ExperimentReportable
     {
         #region Constants
         //Put any constants and stuff here
@@ -991,11 +992,12 @@ namespace SympatheticHardwareControl
 
         #region Remote Access for Hardware Monitor
 
-        public Dictionary<String, Object> GetHardwareReport()
+        public Dictionary<String, Object> GetExperimentReport()
         {
             Dictionary<String, Object> report = new Dictionary<String, Object>();
             report["laserLockErrorSignal"] = ReadLaserErrorSignal();
             report["chamber1Pressure"] = ReadChannel1Pressure();
+            report["chamber2Pressure"] = ReadChannel2Pressure();
             foreach (KeyValuePair<string, double> pair in stateRecord.analogs)
             {
                 report[pair.Key] = pair.Value;

@@ -12,13 +12,14 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.CSharp;
 
+using DAQ;
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Analog;
 using Data;
 using Data.Scans;
 
-using SympatheticHardwareControl;
+
 using IMAQ;
 
 using System.Runtime.InteropServices;
@@ -68,7 +69,7 @@ namespace MOTMaster
         DAQmxAnalogPatternGenerator apg;
 
         CameraControllable camera;
-        HardwareReportable hardwareReporter;
+        ExperimentReportable experimentReporter;
 
         MMDataIOHelper ioHelper;
 
@@ -96,7 +97,7 @@ namespace MOTMaster
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1180/controller.rem");
 
-            hardwareReporter = (HardwareReportable)Activator.GetObject(typeof(HardwareReportable),
+            experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1180/controller.rem");
 
             
@@ -262,7 +263,7 @@ namespace MOTMaster
                         {
                             return;
                         }
-                        Dictionary<String, Object> report = GetHardwareReport();
+                        Dictionary<String, Object> report = GetExperimentReport();
                         save(script, scriptPath, imageData, report);
 
 
@@ -406,7 +407,7 @@ namespace MOTMaster
         /// It'll expect a byte[,] or byte[][,] (if there are several images) as a return value.
         /// 
         /// -At the moment MOTMaster won't run without a camera nor with 
-        /// more than one, and it can only take one photograph per run. In the long term, we might 
+        /// more than one. In the long term, we might 
         /// want to fix this.
         /// </summary>
         /// 
@@ -465,15 +466,15 @@ namespace MOTMaster
         }
         #endregion
 
-        #region Getting a Hardware Report
+        #region Getting an Experiment Report
         /// <summary>
         /// This is the mechanism for saving experimental parameters which MM doesn't control, but that the hardware controller can monitor
         /// (e.g. oven temperature, vacuum chamber pressure etc).
         /// </summary>
 
-        public Dictionary<String, Object> GetHardwareReport()
+        public Dictionary<String, Object> GetExperimentReport()
         {
-            return hardwareReporter.GetHardwareReport();
+            return experimentReporter.GetExperimentReport();
         }
 
         
