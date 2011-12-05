@@ -191,35 +191,35 @@ namespace Analysis.EDM
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
             // gate the special channels
-            TOFChannel edmDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMDB" });
+            TOFChannel edmDB = (TOFChannel)tcs.GetChannel("EDMDB" );
             double edmDBG = edmDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel corrDB = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB" });
+            TOFChannel corrDB = (TOFChannel)tcs.GetChannel( "CORRDB" );
             double corrDBG = corrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel edmCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB" });
+            TOFChannel edmCorrDB = (TOFChannel)tcs.GetChannel( "EDMCORRDB" );
             double edmCorrDBG = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel corrDB_old = (TOFChannel)tcs.GetChannel(new string[] { "CORRDB_OLD" });
+            TOFChannel corrDB_old = (TOFChannel)tcs.GetChannel( "CORRDB_OLD" );
             double corrDBG_old = corrDB_old.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel edmCorrDB_old = (TOFChannel)tcs.GetChannel(new string[] { "EDMCORRDB_OLD" });
+            TOFChannel edmCorrDB_old = (TOFChannel)tcs.GetChannel( "EDMCORRDB_OLD" );
             double edmCorrDBG_old = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel rf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF1FDB" });
+            TOFChannel rf1fDB = (TOFChannel)tcs.GetChannel( "RF1FDB" );
             double rf1fDBG = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel rf2fDB = (TOFChannel)tcs.GetChannel(new string[] { "RF2FDB" });
+            TOFChannel rf2fDB = (TOFChannel)tcs.GetChannel( "RF2FDB" );
             double rf2fDBG = rf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel rf1fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "RF1FDBDB" });
+            TOFChannel rf1fDBDB = (TOFChannel)tcs.GetChannel( "RF1FDBDB" );
             double rf1fDBDBG = rf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel rf2fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "RF2FDBDB" });
+            TOFChannel rf2fDBDB = (TOFChannel)tcs.GetChannel( "RF2FDBDB" );
             double rf2fDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel erf1fDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF1FDB" });
+            TOFChannel erf1fDB = (TOFChannel)tcs.GetChannel( "ERF1FDB" );
             double erf1fDBG = erf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel erf2fDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF2FDB" });
+            TOFChannel erf2fDB = (TOFChannel)tcs.GetChannel( "ERF2FDB" );
             double erf2fDBG = erf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel erf1fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF1FDBDB" });
+            TOFChannel erf1fDBDB = (TOFChannel)tcs.GetChannel( "ERF1FDBDB" );
             double erf1fDBDBG = erf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel erf2fDBDB = (TOFChannel)tcs.GetChannel(new string[] { "ERF2FDBDB" });
+            TOFChannel erf2fDBDB = (TOFChannel)tcs.GetChannel("ERF2FDBDB" );
             double erf2fDBDBG = erf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel brf1fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF1FCORRDB" });
+            TOFChannel brf1fCorrDB = (TOFChannel)tcs.GetChannel( "BRF1FCORRDB" );
             double brf1fCorrDBG = brf1fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel(new string[] { "BRF2FCORRDB" });
+            TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel( "BRF2FCORRDB" );
             double brf2fCorrDBG = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             // we bodge the errors, which aren't really used for much anyway

@@ -96,9 +96,9 @@ namespace Analysis.EDM
             //AddSliceConfig("vfast", -0.85, 0.5);
             //AddSliceConfig("vslow", 0.85, 0.5);
 
-            //// for testing out different centred-gate widths
-            //for (int i = 4; i < 15; i++)
-            //    AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
+            // for testing out different centred-gate widths
+            for (int i = 1; i < 10; i++)
+                AddFixedSliceConfig("wgate" + i, 2190, i * 20);
 
             //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
             //// is centred and +0.7 fwhm.
@@ -159,6 +159,10 @@ namespace Analysis.EDM
             AddFixedSliceConfig("nudgeGate7", 2208, 90);
             AddFixedSliceConfig("nudgeGate8", 2228, 90);
             AddFixedSliceConfig("wideNudgeGate1", 2198, 100);
+            AddFixedSliceConfig("narrowNudgeGate1", 2198, 75);
+            AddFixedSliceConfig("narrowNudgeGate2", 2198, 65);
+            AddFixedSliceConfig("narrowNudgeGate3", 2198, 55);
+            AddFixedSliceConfig("narrowNudgeGate4", 2198, 45);
 
             // these two are the fast and slow halves of the 1.1 sigma central gate.
             AddFixedSliceConfig("fastFixed", 2110, 45);

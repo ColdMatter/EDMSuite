@@ -56,7 +56,9 @@ namespace ScanMaster
 			if (File.Exists(paramFilePath))
 			{
 				BinaryFormatter s = new BinaryFormatter();
-				parameterTable = (DataTable)s.Deserialize(new FileStream(paramFilePath, FileMode.Open));
+                FileStream fs = new FileStream(paramFilePath, FileMode.Open);
+				parameterTable = (DataTable)s.Deserialize(fs);
+                fs.Close();
 			}
 			else
 			{

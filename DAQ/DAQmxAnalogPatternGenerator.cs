@@ -15,7 +15,7 @@ using NationalInstruments.DAQmx;
 
 namespace DAQ.Analog
 {
-    public class DAQmxAnalogPatternGenerator
+    public class DAQMxAnalogPatternGenerator
     {
         Task analogOutputTask;
 

@@ -22,12 +22,14 @@ namespace ScanMaster.Acquire.Patterns
         int attChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["attenuatorSelect"]).BitNumber;
         int piChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["piFlip"]).BitNumber;
         int scramblerChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["scramblerEnable"]).BitNumber;
+        int ampBlankingChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["rfAmpBlanking"]).BitNumber;
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
 			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipTime,
             int fmCentreTime, int fmLength, int attCentreTime, int attLength, int scramblerCentreTime,
-            int scramblerLength, bool modulateOn) 
+            int scramblerLength, int rf1BlankingCentreTime, int rf1BlankingLength, 
+            int rf2BlankingCentreTime, int rf2BlankingLength, bool modulateOn) 
 		{
 		
 			int time = startTime;
@@ -40,7 +42,8 @@ namespace ScanMaster.Acquire.Patterns
 			{
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
 						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, true );
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
+                        rf2BlankingCentreTime, rf2BlankingLength, true);
 				time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
                 {
@@ -51,13 +54,15 @@ namespace ScanMaster.Acquire.Patterns
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
                         rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, false);
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
+                        rf2BlankingCentreTime, rf2BlankingLength, false);
                 }
                 else
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
                         rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
-                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, true);
+                        attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
+                        rf2BlankingCentreTime, rf2BlankingLength, true);
                 }
                 time += flashlampPulseInterval;
                 for (int p = 0; p < padShots; p++)
@@ -78,7 +83,8 @@ namespace ScanMaster.Acquire.Patterns
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
 			int delayToDetectorTrigger, int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length,
             int piFlipTime, int fmCentreTime, int fmLength, int attCentreTime, int attLength,
-            int scramblerCentreTime, int scramblerLength, bool modulated)  
+            int scramblerCentreTime, int scramblerLength, int rf1BlankingCentreTime , int rf1BlankingLength,
+            int rf2BlankingCentreTime, int rf2BlankingLength, bool modulated)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -110,12 +116,24 @@ namespace ScanMaster.Acquire.Patterns
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
+            // pulse rf amp blanking for rf1
+            if (rf1BlankingLength != 0)
+            {
+                tempTime = Pulse(startTime, valveToQ + rf1BlankingCentreTime - (rf1BlankingLength / 2), rf1BlankingLength, ampBlankingChannel);
+                if (tempTime > time) time = tempTime;
+            }
 			// pulse rf1
 			if (rf1Length != 0)
 			{
 				tempTime = Pulse(startTime, valveToQ + rf1CentreTime - (rf1Length/2), rf1Length, rfSwitchChannel);
 				if (tempTime > time) time = tempTime;
 			}
+            // pulse rf amp blanking for rf2
+            if (rf2BlankingLength != 0)
+            {
+                tempTime = Pulse(startTime, valveToQ + rf2BlankingCentreTime - (rf2BlankingLength / 2), rf2BlankingLength, ampBlankingChannel);
+                if (tempTime > time) time = tempTime;
+            }
 			// pulse rf2
 			if (rf2Length != 0)
 			{

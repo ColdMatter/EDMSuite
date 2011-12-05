@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 
+using NationalInstruments.UI.WindowsForms;
+using NationalInstruments.UI;
+
 namespace TransferCavityLock
 {
     /// <summary>
@@ -14,18 +17,13 @@ namespace TransferCavityLock
     /// </summary>
     public partial class MainForm : Form
     {
-        public DeadBolt controller;
+        public Controller controller;
 
-        public object plotLock = new object();
-        private double lv;
-        public int NewStepNumber = 100;
-        public double ScanWidth = 0.3;
-        public double ScanOffset = 3;
 
-        #region load Mainform
+        #region Setup
 
         /// <summary>
-        /// Get everything warmed up
+        /// The UI for TransferCavityLock
         /// </summary>
         public MainForm()
         {
@@ -34,439 +32,301 @@ namespace TransferCavityLock
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            controller.RAMPING = false;
-            rampStartButton.Enabled = true;
-            rampStopButton.Enabled = false;
-            lockEnableCheck.Enabled = false;
-            setPointUpDownBox.Enabled = false;
-            setPointUpDownBox.Value = Convert.ToDecimal(0.0);
-            setPointUpDownBox.Maximum = Convert.ToDecimal(9.5);
-            setPointUpDownBox.Minimum = Convert.ToDecimal(-9.5);
-            setPointUpDownBox.Increment = Convert.ToDecimal(0.001);
-            setPointUpDownBox.DecimalPlaces = 3;
-            initLaserVoltageUpDownBox.Enabled = false;
-            initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
-            initLaserVoltageUpDownBox.Maximum = Convert.ToDecimal(9.5);
-            initLaserVoltageUpDownBox.Minimum = Convert.ToDecimal(-9.5);
-            initLaserVoltageUpDownBox.Increment = Convert.ToDecimal(0.001);
-            initLaserVoltageUpDownBox.DecimalPlaces = 3;
-            GainTrackBar.Minimum = 0;
-            GainTrackBar.Maximum = 30;
-            GainTrackBar.Value = 0;
-            this.SetLaserVoltage(0.0);
-            numberOfPointsTextBox.Text = Convert.ToString(NewStepNumber);
-            numberOfPointsTextBox.Enabled = true;
-            cavityScanWidthTextBox.Text = Convert.ToString(ScanWidth);
-            cavityScanWidthTextBox.Enabled = true;
-            cavityScanOffsetTextBox.Text = Convert.ToString(ScanOffset);
-            cavityScanOffsetTextBox.Enabled = true;
+            controller.InitializeUI();
         }
+        
+        /// <summary>
+        /// This controls which parts of the UI are enabled for a given machine state.
+        /// </summary>
+        public void updateUIState(Controller.ControllerState state)
+        {
+            switch (state)
+            {
+                case Controller.ControllerState.STOPPED:
+                    rampStartButton.Enabled = true;
+                    rampStopButton.Enabled = false;
+
+                    lockEnableCheck.Enabled = false;
+
+                    fitAndStabilizeEnableCheck.Enabled = false;
+
+                    VoltageToLaserTextBox.Enabled = false;
+                    LaserSetPointTextBox.Enabled = false;
+                    GainTextbox.Enabled = false;
+
+                    NumberOfScanpointsTextBox.Enabled = true;
+                    CavityScanWidthTextBox.Enabled = true;
+                    CavityScanOffsetTextBox.Enabled = true;
+
+                    rampLED.Value = false;
+                    break;
+
+                case Controller.ControllerState.FREERUNNING:
+                    rampStartButton.Enabled = false;
+                    rampStopButton.Enabled = true;
+
+                    fitAndStabilizeEnableCheck.Enabled = true;
+                    fitAndStabilizeEnableCheck.Checked = false;
+
+                    lockEnableCheck.Enabled = false;
+                    VoltageToLaserTextBox.Enabled = false;
+                    LaserSetPointTextBox.Enabled = false;
+                    GainTextbox.Enabled = false;
+
+                    NumberOfScanpointsTextBox.Enabled = false;
+                    CavityScanWidthTextBox.Enabled = false;
+                    CavityScanOffsetTextBox.Enabled = false;
+
+                    rampLED.Value = true;
+                    break;
+
+                case Controller.ControllerState.LASERLOCKING:
+                    VoltageToLaserTextBox.Enabled = false;
+                    GainTextbox.Enabled = false;
+                    break;
+
+                case Controller.ControllerState.LASERLOCKED:
+
+                    break;
+
+                case Controller.ControllerState.CAVITYSTABILIZED:
+                    VoltageToLaserTextBox.Enabled = true;
+                    LaserSetPointTextBox.Enabled = true;
+                    lockEnableCheck.Enabled = true;
+                    GainTextbox.Enabled = true;
+                    break;
+
+            }
+        }
+
         #endregion
 
-        #region passing values set by UI into program
-        /// <summary>
-        /// Various things you need to communicate from the front panel to the program.
-        /// </summary>
+        #region ThreadSafe wrappers
+
+        public void SetCheckBox(CheckBox box, bool state)
+        {
+            box.Invoke(new SetCheckDelegate(SetCheckHelper), new object[] { box, state });
+        }
+        private delegate void SetCheckDelegate(CheckBox box, bool state);
+        private void SetCheckHelper(CheckBox box, bool state)
+        {
+            box.Checked = state;
+        }
+
+        public void SetRadioButton(RadioButton button, bool state)
+        {
+            button.Invoke(new SetRadioButtonDelegate(SetRadioButtonHelper), new object[] { button, state });
+        }
+        private delegate void SetRadioButtonDelegate(RadioButton button, bool state);
+        private void SetRadioButtonHelper(RadioButton button, bool state)
+        {
+            button.Checked = state;
+        }
+
+        public void SetTextBox(TextBox box, string text)
+        {
+            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
+        }
+        private delegate void SetTextDelegate(TextBox box, string text);
+        private void SetTextHelper(TextBox box, string text)
+        {
+            box.Text = text;
+        }
+
+        public void SetLED(Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(Led led, bool val);
+        private void SetLedHelper(Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void EnableControl(Control control, bool enabled)
+        {
+            control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
+        }
+        private delegate void EnableControlDelegate(Control control, bool enabled);
+        private void EnableControlHelper(Control control, bool enabled)
+        {
+            control.Enabled = enabled;
+        }
 
 
-        /// <summary>
-        /// Write to a text box (for messages)
-        /// </summary>
-        private delegate void AppendToTextBoxDelegate(string text);
-        private delegate void ClearTextBoxDelegate();
-        public void AddToTextBox(String text)
+        private delegate void plotScatterGraphDelegate(ScatterPlot plot,
+            double[] x, double[] y);
+        private void plotScatterGraphHelper(ScatterPlot plot,
+            double[] x, double[] y)
         {
-            textBox.Invoke(new ClearTextBoxDelegate(textBox.Clear));
-            textBox.Invoke(new AppendToTextBoxDelegate(textBox.AppendText), text);
-        }
-        private delegate void AppendToMeasuredPeakDistanceTextBoxDelegate(string text);
-        private delegate void ClearMeasuredPeakDistanceTextBoxDelegate();
-        public void AddToMeasuredPeakDistanceTextBox(String text)
-        {
-            measuredPeakDistanceTextBox.Invoke(new ClearMeasuredPeakDistanceTextBoxDelegate(measuredPeakDistanceTextBox.Clear));
-            measuredPeakDistanceTextBox.Invoke(new AppendToMeasuredPeakDistanceTextBoxDelegate(measuredPeakDistanceTextBox.AppendText), text);
-        }
-        /// <summary>
-        /// Displays the voltage applied to the laser
-        /// </summary>
-        private delegate void WriteToVoltageToLaserBoxDelegate(string text);
-        private delegate void ClearVoltageToLaserBoxDelegate();
-        public void WriteToVoltageToLaserBox(String text)
-        {
-            voltageToLaserBox.Invoke(new ClearVoltageToLaserBoxDelegate(voltageToLaserBox.Clear));
-            voltageToLaserBox.Invoke(new WriteToVoltageToLaserBoxDelegate(voltageToLaserBox.AppendText), text);
-        }
-        
-        /// <summary>
-        /// Plots the cavity peaks from the laser 
-        /// </summary>
-        private delegate void clearP1Delegate();
-        public void clearP1()
-        {
-            p1Intensity.Invoke(new clearP1Delegate(p1Intensity.ClearData));
-        }
-        private delegate void PlotXYOnP1Delegate(double[] x, double[] y);
-        public void plotXYOnP1(double[] x, double[] y)
-        {
-            p1Intensity.Invoke(new PlotXYOnP1Delegate(p1Intensity.PlotXY), x,y);
-        }
-        public void PlotOnP1(double[,] data)
-        {
-            int i = 0;
-            double[] dx = new double[controller.CavityScanParameters.Steps];
-            double[] dy = new double[controller.CavityScanParameters.Steps];
-            for (i = controller.CavityScanParameters.Steps ; i <  controller.CavityScanParameters.Steps ; i++)
+            lock (this)
             {
-                dx[i] = data[0, i];
-                dy[i] = data[1, i];
+                plot.ClearData();
+                plot.PlotXY(x, y);
+                
+                
             }
-            clearP1();
-            plotXYOnP1(dx, dy);
+        }
+        public void ScatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
+        {
+            graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] {plot, x, y });
         }
 
-        /// <summary>
-        /// Plots the cavity peaks from the He Ne
-        /// </summary>
-        private delegate void clearP2Delegate();
-        public void clearP2()
-        {
-            p2Intensity.Invoke(new clearP2Delegate(p2Intensity.ClearData));
-        }
-        private delegate void PlotXYOnP2Delegate(double[] x, double[] y);
-        public void plotXYOnP2(double[] x, double[] y)
-        {
-            p2Intensity.Invoke(new PlotXYOnP2Delegate(p2Intensity.PlotXY), x,y);
-        }
-        public void PlotOnP2(double[,] data)
-        {
-            int i = 0;
-            double[] dx = new double[controller.CavityScanParameters.Steps];
-            double[] dy = new double[controller.CavityScanParameters.Steps];
-            for (i = controller.CavityScanParameters.Steps; i < controller.CavityScanParameters.Steps; i++)
-            {
-                dx[i] = data[0, i];
-                dy[i] = data[1, i];
-            }
-            clearP2();
-            plotXYOnP2(dx, dy);
-        }
 
-        /// <summary>
-        /// threading for the laser voltage. GetLaserVoltage returns the value stored in the updown box, while SetLaserVoltage sets it.
-        /// </summary>
-        private delegate double getLaserVoltageDelegate();
-        private double getLaserVoltage()
-        {
-            return laserVoltage;
-        }
-        public double GetLaserVoltage()
-        {
-            return Convert.ToDouble(Invoke(new getLaserVoltageDelegate(getLaserVoltage)));
-        }
 
-        private delegate void setLaserVoltageDelegate(double laserVoltage);
-        private void setLaserVoltage(double lV)
-        {
-            laserVoltage = lV;
-        }
-        public void SetLaserVoltage(double lV)
-        {
-            Invoke(new setLaserVoltageDelegate(setLaserVoltage), lV);
-        }
-        /// <summary>
-        /// reads the value in the box and returns it
-        /// </summary>
-        private delegate double getSetPointDelegate();
-        private double getSetPoint()
-        {
-            return setPoint;
-        }
-        public double GetSetPoint()
-        {
-            return Convert.ToDouble(Invoke(new getSetPointDelegate(getSetPoint)));
-        }
-        /// <summary>
-        /// set the setPoint (I think, only used during the first run of the lock)
-        /// </summary>
-        private delegate void setSetPointDelegate(double point);
-        private void setSetPoint(double point)
-        {
-            setPoint = point;    
-        }
-        public void SetSetPoint(double point)
-        {
-            Invoke(new setSetPointDelegate(setSetPoint), point);
-        }
-        
 
-        private double setPoint
-        {
-            get { return Convert.ToDouble(setPointUpDownBox.Value); }
-            set { setPointUpDownBox.Value = Convert.ToDecimal(value); }
-        }
-        private int gain
-        {
-            get { return GainTrackBar.Value; }
-            set { GainTrackBar.Value = value; }
-        }
 
-        private double laserVoltage
-        {
-            get { return /*Convert.ToDouble(initLaserVoltageUpDownBox.Value)*/ lv; }
-            set { /*initLaserVoltageUpDownBox.Value = Convert.ToDecimal(value)*/ lv = value; }
-        }
-        /// <summary>
-        /// Get and set the Gain on the laser lock
-        /// </summary>
-        private delegate void setGainDelegate(int point);
-        private void setGain(int point)
-        {
-            gain = point;
-        }
-        public void SetGain(int point)
-        {
-            Invoke(new setGainDelegate(setGain), point);
-        }
-        private delegate int getGainDelegate();
-        private int getGain()
-        {
-            return gain;
-        }
-        public int GetGain()
-        {
-            return Convert.ToInt32(Invoke(new getGainDelegate(getGain)));
-        }
-
-        /// <summary>
-        /// checks to see if the lock tick is engaged.
-        /// </summary>
-        public bool checkLockEnableCheck()
-        {
-            bool lockEnabled = false;
-            if (lockEnableCheck.CheckState == CheckState.Checked)
-            {
-                lockEnabled = true;
-            }
-            if (lockEnableCheck.CheckState == CheckState.Unchecked)
-            {
-                lockEnabled = false;
-            }
-            else { }
-            return lockEnabled;
-        }
-
-        /// <summary>
-        /// checks to see if the fit tick is engaged.
-        /// </summary>
-        public bool checkFitEnableCheck()
-        {
-            bool fitEnabled = false;
-            if (fitEnableCheck.CheckState == CheckState.Checked)
-            {
-                fitEnabled = true;
-            }
-            if (fitEnableCheck.CheckState == CheckState.Unchecked)
-            {
-
-            }
-            else { }
-            return fitEnabled;
-        }
-        
-        #endregion
-
-        #region controls
-
-        private void voltageRampControl_Enter(object sender, EventArgs e)
-        {
-
-        }
-        
         private void rampStartButton_Click(object sender, EventArgs e)
         {
-            this.AddToTextBox("Start button pressed.");
-            controller.RAMPING = true;
-            this.rampLED.Value = true;
-            controller.startRamp();
-            this.rampStartButton.Enabled = false;
-            this.rampStopButton.Enabled = true;
-            this.numberOfPointsTextBox.Enabled = false;
-            this.cavityScanWidthTextBox.Enabled = false;
-            this.cavityScanOffsetTextBox.Enabled = false;
-            this.initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
+            controller.StartRamp();
         }
 
         private void rampStopButton_Click(object sender, EventArgs e)
         {
+            lockEnableCheck.Checked = false;
+            fitAndStabilizeEnableCheck.Checked = false;
+            
             lock (controller.rampStopLock)
             {
-                this.AddToTextBox("Stop button pressed.");
-                controller.RAMPING = false;
+                controller.StopRamp();
             }
-            this.numberOfPointsTextBox.Enabled = true;
-            rampStartButton.Enabled = true;
-            rampStopButton.Enabled = false;
-            this.rampLED.Value = false;
-            this.cavityScanWidthTextBox.Enabled = true;
-            this.cavityScanOffsetTextBox.Enabled = true;
-            this.initLaserVoltageUpDownBox.Value = Convert.ToDecimal(0.0);
-        }
-
-        private void rampLED_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
-        {
 
         }
 
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void setPointAdjustPlusButton_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void p1Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-           
-        }
-
-        private void p2Intensity_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
-        {
-            
-        }
-
-        private void lockParams_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void voltageToLaserBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void setPointUpDownBox_ValueChanged(object sender, EventArgs e)
-        {
-            this.setPoint = Convert.ToDouble(setPointUpDownBox.Value);
-        }
-
-        private void fitEnableCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (fitEnableCheck.CheckState == CheckState.Checked)
+            lock (controller.tweakLock)
             {
-                this.initLaserVoltageUpDownBox.Enabled = true;
-                this.lockEnableCheck.Enabled = true;
-            }
-            if (fitEnableCheck.CheckState == CheckState.Unchecked)
-            {
-                this.initLaserVoltageUpDownBox.Enabled = false;
-                this.lockEnableCheck.Enabled = false;
+                controller.Increments++;
             }
         }
+
+        private void setPointAdjustMinusButton_Click(object sender, EventArgs e)
+        {
+            lock (controller.tweakLock)
+            {
+                controller.Decrements++;
+            }
+        }
+
+
+        private void fitAndStabilizeEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (fitAndStabilizeEnableCheck.CheckState == CheckState.Checked)
+            {
+                controller.StabilizeCavity();
+            }
+            if (fitAndStabilizeEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                controller.UnlockCavity();
+            }
+        }
+
         private void lockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
-                this.setPointUpDownBox.Value = Convert.ToDecimal(0.0);
-                this.measuredPeakDistanceTextBox.Text = "0.0";
-                this.initLaserVoltageUpDownBox.Enabled = false;
-                this.setPointUpDownBox.Enabled = true;
-                this.GainTrackBar.Enabled = false;
+                controller.EngageLock();
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
-                this.setPointUpDownBox.Value = Convert.ToDecimal(0.0);
-                this.measuredPeakDistanceTextBox.Text = "0.0";
-                this.initLaserVoltageUpDownBox.Enabled = true;
-                this.setPointUpDownBox.Enabled = false;
-                controller.FirstLock = true;
-               // controller.StepToNewSetPoint(controller.LaserScanParameters, 0);
-                WriteToVoltageToLaserBox(Convert.ToString(GetLaserVoltage()));
-                this.GainTrackBar.Enabled = true;
+                controller.DisengageLock();
+            }
+
+        }
+
+
+        private void VoltageToLaserChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                controller.WindowVoltageToLaserChanged(Double.Parse(VoltageToLaserTextBox.Text));
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void GainChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                controller.WindowGainChanged(Double.Parse(GainTextbox.Text));
+            }
+            catch (Exception)
+            {
                 
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void initLaserVoltageUpDownBox_ValueChanged(object sender, EventArgs e)
-        {
-            lv = Convert.ToDouble(initLaserVoltageUpDownBox.Value);
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GainTrackBar_Scroll(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void numberOfPointsTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                NewStepNumber = Convert.ToInt32(numberOfPointsTextBox.Text);
-            }
-            catch (FormatException f)
-            { }
-        }
-
-        private void cavityScanWidthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ScanWidth = Convert.ToDouble(cavityScanWidthTextBox.Text);
-            }
-            catch (FormatException f)
-            { }
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cavityScanOffsetTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ScanOffset = Convert.ToDouble(cavityScanOffsetTextBox.Text);
-            }
-            catch (FormatException f)
-            { }
-        }
-        private void measuredPeakDistanceTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        
         #endregion
 
-     
+        #region Setting and getting parameter values from textboxes
+        
+        public void SetLaserVoltage(double value)
+        {
+            SetTextBox(VoltageToLaserTextBox, Convert.ToString(value));
+        }
+
+        public void SetNumberOfPoints(int value)
+        {
+            SetTextBox(NumberOfScanpointsTextBox, Convert.ToString(value));
+        }
+        public int GetNumberOfPoints()
+        {
+            return Int32.Parse(NumberOfScanpointsTextBox.Text);
+        }
+
+        public void SetGain(double value)
+        {
+            SetTextBox(GainTextbox, Convert.ToString(value)); 
+        }
+        public double GetGain()
+        {
+            return Double.Parse(GainTextbox.Text);
+        }
+
+        public double GetScanWidth()
+        {
+            return Double.Parse(CavityScanWidthTextBox.Text);
+        }
+        
+        public void SetScanWidth(double value)
+        {           
+            SetTextBox(CavityScanWidthTextBox, Convert.ToString(value)); 
+        }
+
+        public void SetSetPointIncrementSize(double value)
+        {
+            SetTextBox(setPointIncrementBox, Convert.ToString(value)); 
+        }
+
+        public double GetScanOffset()
+        {
+            return Double.Parse(CavityScanOffsetTextBox.Text);
+        }
+        public void SetScanOffset(double value)
+        {
+            SetTextBox(CavityScanOffsetTextBox, Convert.ToString(value)); 
+        }
+        public double GetLaserSetPoint()
+        {
+            return Double.Parse(LaserSetPointTextBox.Text);
+        }
+        public void SetLaserSetPoint(double value)
+        {
+            SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
+        }
+        #endregion
+
+        private void setPointIncrementBox_TextChanged(object sender, EventArgs e)
+        {
+            controller.setPointIncrementSize = Double.Parse(setPointIncrementBox.Text);
+        }
+
 
         
-
-
-        
-
     }
-    
 }
+

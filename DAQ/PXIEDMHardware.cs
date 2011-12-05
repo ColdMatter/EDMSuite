@@ -42,12 +42,19 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
+
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
+            // rf counter switch control seq
+            Info.Add("IodineFreqMon", new bool[] { false, false }); // IN 1
+            Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
+            Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
+
+           
 
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
@@ -79,6 +86,11 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
             // will switch if it's switch scanning.
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
+            //RF Counter Control (single pole 4 throw)
+            AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
+            AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            // new rf amp blanking
+            AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
 
             // these channel are usually software switched - they should not be in
             // the lower half of the pattern generator
@@ -97,12 +109,22 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
-            AddDigitalOutputChannel("pumpAOMFreqMon", pgBoard, 2, 4);
+           
+
+
+            AddDigitalOutputChannel("fibreAmpEnable", aoBoard, 0, 0);
+
+            // Map the digital input channels
+            AddDigitalInputChannel("fibreAmpMasterErr", aoBoard, 0, 1);
+            AddDigitalInputChannel("fibreAmpSeedErr", aoBoard, 0, 2);
+            AddDigitalInputChannel("fibreAmpBackFeflectErr", aoBoard, 0, 3);
+            AddDigitalInputChannel("fibreAmpTempErr", aoBoard, 0, 4);
+            AddDigitalInputChannel("fibreAmpPowerSupplyErr", aoBoard, 0, 5);
 
             // map the analog channels
-
             // These channels are on the daq board. Used mainly for diagnostic purposes.
             // On no account should they switch during the edm acquisition pattern.
+            AddAnalogInputChannel("diodeLaserCurrent", daqBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
@@ -113,6 +135,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
 
 
             // high quality analog inputs (will be) on the S-series analog in board
@@ -126,6 +149,8 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
             AddAnalogOutputChannel("b", aoBoard + "/ao1");
+            AddAnalogOutputChannel("diodeRefCavity", aoBoard + "/ao2");
+            AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
 
             // rf rack control
             //AddAnalogInputChannel("rfPower", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);

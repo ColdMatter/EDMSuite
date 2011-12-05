@@ -237,7 +237,7 @@ namespace ScanMaster.GUI
             this.pmtLowCursor.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
             this.pmtLowCursor.LabelVisible = true;
             this.pmtLowCursor.Plot = this.pmtOnAvgPlot;
-            this.pmtLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
+            this.pmtLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             this.pmtLowCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.PMTCursorMoved);
             // 
             // pmtOnAvgPlot
@@ -256,7 +256,7 @@ namespace ScanMaster.GUI
             this.pmtHighCursor.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
             this.pmtHighCursor.LabelVisible = true;
             this.pmtHighCursor.Plot = this.pmtOnAvgPlot;
-            this.pmtHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
+            this.pmtHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             this.pmtHighCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.PMTCursorMoved);
             // 
             // pmtOnPlot
@@ -366,7 +366,7 @@ namespace ScanMaster.GUI
             this.tofLowCursor.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofLowCursor.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofLowCursor.Plot = this.tofOnAveragePlot;
-            this.tofLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
+            this.tofLowCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             this.tofLowCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.TOFCursorMoved);
             // 
             // tofOnAveragePlot
@@ -387,7 +387,7 @@ namespace ScanMaster.GUI
             this.tofHighCursor.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofHighCursor.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.tofHighCursor.Plot = this.tofOnAveragePlot;
-            this.tofHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.NearestPoint;
+            this.tofHighCursor.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             this.tofHighCursor.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.TOFCursorMoved);
             // 
             // tofOnPlot
@@ -821,6 +821,16 @@ namespace ScanMaster.GUI
 		{
 			label.Text = text;
 		}
+
+        public void SetStatus(string text)
+        {
+            this.Invoke(new SetStatusDelegate(SetStatusHelper), new object[] { text });
+        }
+        private delegate void SetStatusDelegate(string text);
+        private void SetStatusHelper(string text)
+        {
+            statusBar1.Text = text;
+        }
 
         private void TofFitComboHelper(bool state)
         {

@@ -7,19 +7,8 @@ using Data;
 namespace Analysis.EDM
 {
     [Serializable]
-    public class TOFChannel : Channel<TOFWithError>
+    public class TOFChannel : Channel<TOF>
     {
-        public double DifferenceChiSquared
-        {
-            get
-            {
-                double d = 0;
-                for (int i = 0; i < Difference.Length; i++)
-                    d += Math.Pow(Difference.Data[i] / Difference.Errors[i], 2);
-                return d / ((double)Difference.Length);
-            }
-        }
-
         static public TOFChannel operator +(TOFChannel t1, TOFChannel t2)
         {
             TOFChannel temp = new TOFChannel();
@@ -73,6 +62,19 @@ namespace Analysis.EDM
             temp.Off = t1.Off * t2.Off;
             temp.Difference = t1.Difference * t2.Difference;
             return temp;
+        }
+
+        // makes a random TOFChannel, by making random TOFs
+        public static TOFChannel Random()
+        {
+            TOFChannel tc = new TOFChannel();
+            TOF on = TOF.Random();
+            TOF off = TOF.Random();
+            tc.On = on;
+            tc.Off = off;
+            tc.Difference = on - off;
+
+            return tc;
         }
     }
 }

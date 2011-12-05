@@ -11,7 +11,7 @@ namespace Analysis
     /// the mean and standard error for each point on the TOF. It keeps a running average
     /// and variance, so adding a TOF does not increase the memory usage.
     /// </summary>
-    public class TOFAccumulator : IAccumulator<TOFWithError>
+    public class TOFAccumulator
     {
         private RunningStatistics[] stats;
         private int gateStartTime;
@@ -19,10 +19,7 @@ namespace Analysis
         private double calibration;
         private bool initialised = false;
 
-        // Note well that the incoming errors are ignored by the accumulator. The reason it
-        // doesn't take a simple TOF is to keep the code structure more uniform (in
-        // particular it allows this class to implement IAccumulator).
-        public void Add(TOFWithError t)
+        public void Add(TOF t)
         {
             if (!initialised)
             {

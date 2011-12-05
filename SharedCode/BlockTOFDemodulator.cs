@@ -65,7 +65,6 @@ namespace Analysis.EDM
             }
 
             TOFChannelSet tcs = new TOFChannelSet();
-            tcs.Config = b.Config;
             // By setting all channels to false only a limited number of channels are analysed,
             // namely those required to extract the edm (and the correction term). This speeds
             // up the execution enormously when the BlockTOFDemodulator is used by the
@@ -122,8 +121,8 @@ namespace Analysis.EDM
                 }
                 tOn /= (blockLength / 2);
                 tOff /= (blockLength / 2);
-                tc.On = new TOFWithError(tOn);
-                tc.Off = new TOFWithError(tOff);
+                tc.On = tOn;
+                tc.Off = tOff;
                 // This "if" is to take care of the case of the "SIG" channel, for which there
                 // is no off TOF.
                 if (tc.Off.Length != 0) tc.Difference = tc.On - tc.Off;

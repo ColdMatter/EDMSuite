@@ -18,6 +18,7 @@ using NationalInstruments.VisaNS;
 using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
+using DAQ.TransferCavityLock;
 
 using IMAQ;
 

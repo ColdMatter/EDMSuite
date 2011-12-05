@@ -68,6 +68,7 @@ namespace EDMHardwareControl
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
         HP438A rfPower = (HP438A)Environs.Hardware.GPIBInstruments["rfPower"];
         Hashtable digitalTasks = new Hashtable();
+        Hashtable digitalInputTasks = new Hashtable();
         //LeakageMonitor northLeakageMonitor =
         //   new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["northLeakage"], northSlope, northOffset, currentMonitorMeasurementTime);
         //LeakageMonitor southLeakageMonitor =
@@ -94,8 +95,10 @@ namespace EDMHardwareControl
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
         Task piMonitorTask;
-        //Task northLeakageInputTask;
-        //Task southLeakageInputTask;
+        Task diodeRefCavInputTask;
+        Task diodeCurrentMonInputTask;
+        Task diodeRefCavOutputTask;
+        Task fibreAmpOutputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -132,7 +135,16 @@ namespace EDMHardwareControl
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
-            CreateDigitalTask("pumpAOMFreqMon");
+            CreateDigitalTask("rfCountSwBit1");
+            CreateDigitalTask("rfCountSwBit2");
+            CreateDigitalTask("fibreAmpEnable");
+
+            // digitial input tasks
+            CreateDigitalInputTask("fibreAmpMasterErr");
+            CreateDigitalInputTask("fibreAmpSeedErr");
+            CreateDigitalInputTask("fibreAmpBackFeflectErr");
+            CreateDigitalInputTask("fibreAmpTempErr");
+            CreateDigitalInputTask("fibreAmpPowerSupplyErr");
 
             // initialise the current leakage monitors
             northLeakageMonitor.Initialize();
@@ -150,6 +162,8 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
+            diodeRefCavOutputTask = CreateAnalogOutputTask("diodeRefCavity");
+            fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -163,6 +177,8 @@ namespace EDMHardwareControl
             piMonitorTask = CreateAnalogInputTask("piMonitor");
             //northLeakageInputTask = CreateAnalogInputTask("northLeakage");
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
+            diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
+            diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
 
             // make the control window
             window = new ControlWindow();
@@ -286,6 +302,14 @@ namespace EDMHardwareControl
             digitalTasks.Add(name, digitalTask);
         }
 
+        private void CreateDigitalInputTask(String name)
+        {
+            Task digitalInputTask = new Task(name);
+            ((DigitalInputChannel)Environs.Hardware.DigitalInputChannels[name]).AddToTask(digitalInputTask);
+            digitalInputTask.Control(TaskAction.Verify);
+            digitalInputTasks.Add(name, digitalInputTask);
+        }
+
         private void SetDigitalLine(string name, bool value)
         {
             Task digitalTask = ((Task)digitalTasks[name]);
@@ -293,6 +317,16 @@ namespace EDMHardwareControl
             writer.WriteSingleSampleSingleLine(true, value);
             digitalTask.Control(TaskAction.Unreserve);
         }
+
+        bool ReadDigitalLine(string name)
+        {
+            Task digitalInputTask = ((Task)digitalInputTasks[name]);
+            DigitalSingleChannelReader reader = new DigitalSingleChannelReader(digitalInputTask.Stream);
+            bool digSample = reader.ReadSingleSampleSingleLine();
+            digitalInputTask.Control(TaskAction.Unreserve);
+            return digSample;
+        }
+            
 
         // this isn't really very classy, but it works
         [Serializable]
@@ -534,7 +568,7 @@ namespace EDMHardwareControl
             {
                 window.SetCheckBox(window.attenuatorSelectCheck, value);
             }
-        }
+        }       
 
         public bool EFieldEnabled
         {
@@ -1349,7 +1383,6 @@ namespace EDMHardwareControl
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
             }
-
         }
 
         public void UpdateRFFrequencyMonitor()
@@ -1731,7 +1764,124 @@ namespace EDMHardwareControl
             SetPhaseFlip2(false);
             if (true) window.AddAlert("Pi-flip - V1: " + piMonitorV1 + "; V2: " + piMonitorV1 + " .");
         }
-        
+
+        public void UpdateDiodeRefCavMonitor()
+        {
+            double diodeRefCavMonValue = ReadAnalogInput(diodeRefCavInputTask);
+            window.SetTextBox(window.diodeRefCavMonTextBox, diodeRefCavMonValue.ToString());
+        }
+
+        public void UpdateDiodeCurrentMonitor()
+        {
+            double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
+            window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
+        }
+
+        public void UpdateDiodeCurrentGraphAndMonitor()
+        {
+            double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
+            window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
+            window.PlotYAppend(window.diodeCurrentGraph, window.diodeCurrentPlot,
+                                    new double[] { diodeCurrentMonValue });
+        }
+
+        public void UpdateFibreAmpFaults()
+        {
+            window.fibreAmpMasterFaultLED.Value =! ReadDigitalLine("fibreAmpMasterErr");
+            window.fibreAmpSeedFaultLED.Value =! ReadDigitalLine("fibreAmpSeedErr");
+            window.fibreAmpBackReflectFaultLED.Value =! ReadDigitalLine("fibreAmpBackFeflectErr");
+            window.fibreAmpTempFaultLED.Value =! ReadDigitalLine("fibreAmpTempErr");
+            window.fibreAmpPowerFaultLED.Value =! ReadDigitalLine("fibreAmpPowerSupplyErr");
+        }
+
+        private Thread diodeCurrentMonitorPollThread;
+        private object diodeCurrentMonitorLock = new object();
+        private bool diodeCurrentMonitorStopFlag = false;
+        private int diodeCurrentMonitorPollPeriod = 200;
+        internal void StartDiodeCurrentPoll()
+        {
+            lock (diodeCurrentMonitorLock)
+            {
+                diodeCurrentMonitorPollThread = new Thread(new ThreadStart(DiodeCurrentMonitorPollWorker));
+                window.EnableControl(window.startDiodeCurrentPollButton, false);
+                window.EnableControl(window.stopDiodeCurrentPollButton, true);
+                diodeCurrentMonitorPollPeriod = Int32.Parse(window.diodeCurrentPollTextBox.Text);
+                diodeCurrentMonitorPollThread.Start();
+            }
+
+        }
+
+        internal void StopDiodeCurrentPoll()
+        {
+            lock (diodeCurrentMonitorLock) diodeCurrentMonitorStopFlag = true;
+        }
+
+        private void DiodeCurrentMonitorPollWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(diodeCurrentMonitorPollPeriod);
+                UpdateDiodeCurrentGraphAndMonitor();
+                lock (diodeCurrentMonitorLock)
+                {
+                    if (diodeCurrentMonitorStopFlag)
+                    {
+                        diodeCurrentMonitorStopFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startDiodeCurrentPollButton, true);
+            window.EnableControl(window.stopDiodeCurrentPollButton, false);
+        }
+
+        public void SetDiodeRefCav()
+        {
+            double refCavVoltage = Double.Parse(window.diodeRefCavTextBox.Text);
+            // HV supply must not go below 0V
+            if (refCavVoltage < 0)
+            {
+                SetAnalogOutput(diodeRefCavOutputTask, 0.0);
+                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
+                UpdateDiodeRefCavMonitor();
+            }
+            else if (refCavVoltage > 5)
+            {
+                SetAnalogOutput(diodeRefCavOutputTask, 5.0);
+                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
+                UpdateDiodeRefCavMonitor();
+            }
+            else
+            {
+                SetAnalogOutput(diodeRefCavOutputTask, refCavVoltage);
+                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.LimeGreen;
+                UpdateDiodeRefCavMonitor();
+            }
+            
+        }
+
+        public void SetFibreAmpPwr()
+        {
+            double fibreAmpVoltage = Double.Parse(window.fibreAmpPwrTextBox.Text);
+            // supply must not go below 0V
+            if (fibreAmpVoltage < 0)
+            {
+                SetAnalogOutput(fibreAmpOutputTask, 0.0);
+                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.Red;
+            }
+            else if (fibreAmpVoltage > 5)
+            {
+                SetAnalogOutput(fibreAmpOutputTask, 5.0);
+                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.Red;
+            }
+            else
+            {
+                SetAnalogOutput(fibreAmpOutputTask, fibreAmpVoltage);
+                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.LimeGreen;
+            }
+
+        }      
+
         // TODO: I'm not sure whether these button enabling properties are threadsafe.
         // Probably had better wrap them.
         public void StartYAGFlashlamps()
@@ -1794,8 +1944,11 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.FLPZTStepPlusButton, true);
             UpdateFLPZTV();
             Thread.Sleep(10);
-            // The I2 VCO is connected to channel two
-            rfCounter.Channel = 2;
+            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("IodineFreqMon");
+            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
+            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
+            rfCounter.Channel = 2; 
             double I2PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.I2AOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
 
@@ -1810,18 +1963,15 @@ namespace EDMHardwareControl
 
         public void UpdatePumpAOMFreqMonitor()
         {
-            // The Pump AOM VCO is also connected to channel 2 on the counter
-            // A relay is connected to a digital channel which switches
-            // the rf counter input between the I2 VCO and the Pump VCO
 
-            // Energise the relay
-            SetDigitalLine("pumpAOMFreqMon", true);
+            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("pumpAOMFreqMon");
+            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
             Thread.Sleep(10);
+            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
             rfCounter.Channel = 2;
             double PumpAOMFreq = rfCounter.Frequency;
             window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
-            // De-energise relay
-            SetDigitalLine("pumpAOMFreqMon", false);
         }
 
         internal void UpdateProbePolarizerAngle()
@@ -1971,6 +2121,12 @@ namespace EDMHardwareControl
             SetDigitalLine("argonShutter", enable);
         }
 
+        internal void SetFibreAmpPowerSwitch(bool enable)
+        {
+            SetDigitalLine("fibreAmpEnable", enable);
+            window.fibreAmpEnableLED.Value = enable;
+        }
+
         public void SetScanningBVoltage()
         {
             double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
@@ -2017,6 +2173,13 @@ namespace EDMHardwareControl
             if (window.FLPZTStepPlusButton.Checked) pztVoltage += Double.Parse(window.FLPZTStepTextBox.Text);
             pztVoltage = windowVoltage(pztVoltage, 0, 5);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
+            window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
+        }
+
+        public void UpdateFLPZTV(double pztVoltage)
+        {
+            SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
+            window.FLPZTVTextBox.Text = pztVoltage.ToString();
         }
 
         public void SetFLPZTVoltage(double v)
@@ -2087,7 +2250,6 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
-
         #endregion
 
     }

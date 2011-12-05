@@ -45,6 +45,8 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
             patternPlugins.Add("Dual valve", typeof(DualValvePatternPlugin));
             patternPlugins.Add("Basic beam", typeof(BasicBeamPatternPlugin));
+            patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
+            patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

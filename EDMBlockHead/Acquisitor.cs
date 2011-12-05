@@ -287,6 +287,12 @@ namespace EDMBlockHead.Acquire
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 
+            //ESwitchRFChannel eChan = new ESwitchRFChannel();
+            //eChan.Invert = false;
+            //eChan.Modulation = config.GetModulationByName("E");
+            //eChan.stepSizeRF = +0.25;
+            //switchedChannels.Add(eChan);
+
             AnalogSwitchedChannel rf1AChannel = new AnalogSwitchedChannel();
             rf1AChannel.Channel = "rf1Attenuator";
             rf1AChannel.Modulation = config.GetModulationByName("RF1A");

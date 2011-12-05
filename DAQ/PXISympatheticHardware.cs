@@ -2,7 +2,6 @@
 using System.Collections;
 
 using NationalInstruments.DAQmx;
-using NationalInstruments.Analysis.Math;
 
 using DAQ.Pattern;
 
@@ -90,18 +89,20 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("aom3frequency", aoBoard + "/ao15");
             AddAnalogOutputChannel("coil0current", aoBoard + "/ao8");
             AddAnalogOutputChannel("coil1current", aoBoard + "/ao17");
+            AddAnalogOutputChannel("laser", aoBoard + "/ao1");
+            AddAnalogOutputChannel("cavity", multiDAQ + "/ao1");
 
 
             //Control of molecules
-            AddAnalogOutputChannel("laser", aoBoard + "/ao0"); // Pin 22
-            AddAnalogOutputChannel("highvoltage", aoBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
-            AddAnalogOutputChannel("cavity", aoBoard + "/ao1"); // Pin 21
+            //AddAnalogOutputChannel("laser", aoBoard + "/ao0"); // Pin 22
+            //AddAnalogOutputChannel("highvoltage", aoBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
+            //AddAnalogOutputChannel("cavity", aoBoard + "/ao1"); // Pin 21
 
             // map the counter channels
             AddCounterChannel("pmt", multiDAQ + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", multiDAQ + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
-            //Calibrations
+            // Calibrations
             AddCalibration("chamber1Pressure", new PowerCalibration(1, 0, 10.875, 1, 10));
             AddCalibration("chamber2Pressure", new PowerCalibration(1, 0, 10.875, 1, 10));
             //AddCalibration("aom3frequency", new PolynomialCalibration

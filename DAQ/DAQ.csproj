@@ -1,7 +1,8 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -25,7 +26,9 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,14 +89,17 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.6.35.465, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.Common, Version=8.7.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=8.9.35.210, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
+    <Reference Include="alglibnet2">
+      <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=8.9.35.108, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=9.1.40.159, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=9.3.40.219, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.VisaNS, Version=9.0.40.156, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -138,6 +144,7 @@
     <Compile Include="BufferGasHardware.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Calibration.cs" />
     <Compile Include="CarmeliteFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -147,17 +154,29 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DAQmxAnalogPatternGenerator.cs" />
-    <Compile Include="Calibration.cs" />
+    <Compile Include="DAQMxAnalogPatternGenerator.cs" />
+    <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
+    <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
+    <Compile Include="DAQMxTCLHelperSWTimed.cs" />
+    <Compile Include="DAQMxTransferCavityLockHelper.cs" />
+    <Compile Include="DigitalOutputChannel.cs" />
     <Compile Include="ExperimentReportable.cs" />
-    <Compile Include="MechanicalTranslationStage.cs" />
-    <Compile Include="Parker404XR.cs" />
-    <Compile Include="PowerCalibration.cs" />
+    <Compile Include="Fitter.cs" />
+    <Compile Include="GaussianFitter.cs" />
+    <Compile Include="Gigatronics7100Synth.cs" />
     <Compile Include="LinearCalibration.cs" />
     <Compile Include="LinearInterpolationCalibration.cs" />
     <Compile Include="LogarithmicCalibration.cs" />
     <Compile Include="PolynomialCalibration.cs" />
+    <Compile Include="PowerCalibration.cs" />
+    <Compile Include="TransferCavityLock2012LaserControllable.cs" />
+    <Compile Include="InterferenceFitter.cs" />
+    <Compile Include="Lab10PCFileSystem.cs" />
+    <Compile Include="LorentzianFitter.cs" />
+    <Compile Include="PeakFitter.cs" />
+    <Compile Include="PHRHENDRIC0FileSystem.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
+    <Compile Include="RagnarokFileSystem.cs" />
     <Compile Include="RainbowFileSystem.cs" />
     <Compile Include="RainbowHardware.cs" />
     <Compile Include="HP438A.cs" />
@@ -190,7 +209,7 @@
     <Compile Include="DecelerationHardware.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DigitalOutputChannel.cs">
+    <Compile Include="DigitalInputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PHJKiteFileSystem.cs">
@@ -239,6 +258,7 @@
     <Compile Include="LeakageMonitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SincFitter.cs" />
     <Compile Include="SunshineFileSystem.cs" />
     <Compile Include="SympatheticHardware.cs">
       <SubType>Code</SubType>
@@ -277,6 +297,8 @@
     <Compile Include="Synth.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TransferCavity2012Lockable.cs" />
+    <Compile Include="TransferCavityLockable.cs" />
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>

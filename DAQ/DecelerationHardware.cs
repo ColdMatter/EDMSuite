@@ -25,7 +25,14 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
+            Boards.Add("usbDev", "/dev3");
+            Boards.Add("PXI6", "/PXI1Slot6");
+            Boards.Add("PXI4", "/PXI1Slot4");
             string pgBoard = (string)Boards["pg"];
+            string usbBoard = (string)Boards["usbDev"];
+            string daqBoard = (string)Boards["daq"];
+            string PXIBoard = (string)Boards["PXI6"];
+            string TCLBoard = (string)Boards["PXI4"];
 
 
             // add things to the info
@@ -33,9 +40,20 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
 
+            //TCL Lockable lasers
+            Info.Add("TCLLockableLasers", new string[] {"laser", "laser2"});
+            Info.Add("TCLPhotodiodes", new string[] {"cavity", "master", "p1" ,"p2"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            // Some matching up for TCL
+            Info.Add("laser", "p1");
+            Info.Add("laser2", "p2");
+
+
             // the analog triggers
-            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");
-            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");
+            Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");// pin 10
+            Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");// pin 11
+            Info.Add("TCLTrigger", (string)Boards["PXI4"] + "/PFI0");
+            //Info.Add("analogTrigger2", (string)Boards["usbDev"] + "/PFI0"); //Pin 29
+            Info.Add("analogTrigger3", (string)Boards["daq"] + "/PFI6"); //Pin 5 - breakout 31
             //distance information
             Info.Add("sourceToDetect", 0.81); //in m
             Info.Add("sourceToSoftwareDecelerator", 0.12); //in m
@@ -79,20 +97,28 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
+            AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
+            AddDigitalOutputChannel("ttl1", pgBoard, 2, 0); //Pin 23
+            AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
 
 			// map the analog channels
-			string daqBoard = (string)Boards["daq"];
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt2", daqBoard + "/ai8", AITerminalConfiguration.Rse);
 			AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p1", daqBoard + "/ai1", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p2", daqBoard + "/ai2", AITerminalConfiguration.Rse);
+            
+            AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p1", TCLBoard + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cavity", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p2", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
 
-			AddAnalogOutputChannel("laser", daqBoard + "/ao0");
-			//AddAnalogOutputChannel("cavity", daqBoard + "/ao1");
-            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");
+            AddAnalogOutputChannel("laser", PXIBoard + "/ao13");
+            //AddAnalogOutputChannel("cavity", daqBoard + "/ao0");
+           // AddAnalogOutputChannel("cavity", PXIBoard + "/ao5");
+            AddAnalogOutputChannel("laser2", PXIBoard + "/ao25");
+           
+            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
             
 
             // map the counter channels

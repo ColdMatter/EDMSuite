@@ -43,7 +43,7 @@ namespace DecelerationLaserLock
         private double integratedDeviation;
                 
         private ScanMaster.Controller scanMaster;
-        private ScanMaster.Analyze.GaussianFitter fitter;
+        private DAQ.Analyze.GaussianFitter fitter;
         private DecelerationHardwareControl.Controller hardwareControl;
         
         private MainForm ui;
@@ -95,7 +95,7 @@ namespace DecelerationLaserLock
 
             scanMaster = new ScanMaster.Controller();
             hardwareControl = new DecelerationHardwareControl.Controller();
-            fitter = new ScanMaster.Analyze.GaussianFitter();
+            fitter = new DAQ.Analyze.GaussianFitter();
 
            
             if (!Environs.Debug)

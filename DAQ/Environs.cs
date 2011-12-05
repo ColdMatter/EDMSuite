@@ -114,7 +114,7 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
-                case "SEALCLUBBER":
+                case "TURTLETAMER":
                     Hardware = new EDMHardware();
                     FileSystem = new SealClubberFileSystem();
                     Debug = true;
@@ -166,6 +166,24 @@ namespace DAQ.Environment
                 case "PH-REQUIEM":
                     Hardware = new PXISympatheticHardware();
                     FileSystem = new RequiemFileSystem();
+                    Debug = false;
+                    break;
+
+                case "PH-RAGNAROK":
+                    Hardware = new SympatheticHardware();
+                    FileSystem = new RagnarokFileSystem();
+                    Debug = false;
+                    break;
+
+                case "PH-RHENDRIC0":
+                    Hardware = new BufferGasHardware();
+                    FileSystem = new PHRHENDRIC0FileSystem();
+                    Debug = false;
+                    break;
+
+                case "PH-LAB10PC":
+                    Hardware = new SympatheticHardware();
+                    FileSystem = new Lab10PCFileSystem();
                     Debug = false;
                     break;
 

@@ -592,9 +592,17 @@ namespace ScanMaster.GUI
         private void ReallyUpdateUI()
         {
             profileListBox.Items.Clear();
-            foreach (Profile p in manager.Profiles) profileListBox.Items.Add(p.Name);
-            if (manager.CurrentProfile == null) currentProfileLabel.Text = "Current profile: ";
-            else currentProfileLabel.Text = "Current profile: " + manager.CurrentProfile.Name;
+            if (manager.Profiles.Count != 0)
+            {
+                foreach (Profile p in manager.Profiles) profileListBox.Items.Add(p.Name);
+                if (manager.CurrentProfile == null) currentProfileLabel.Text = "Current profile: ";
+                else currentProfileLabel.Text = "Current profile: " + manager.CurrentProfile.Name;
+            }
+            else
+            {
+                // this works around a bug in visual studio/winforms!
+                profileListBox.Items.Add("Dummy profile (do not select!)");
+            }
 
         }
 

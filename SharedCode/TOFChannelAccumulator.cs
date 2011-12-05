@@ -6,7 +6,7 @@ using Analysis;
 
 namespace Analysis.EDM
 {
-    public class TOFChannelAccumulator : Channel<TOFAccumulator>, IAccumulator<TOFChannel>
+    public class TOFChannelAccumulator : Channel<TOFAccumulator>
     {
         public TOFChannelAccumulator()
         {

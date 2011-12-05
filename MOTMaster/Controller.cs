@@ -66,7 +66,7 @@ namespace MOTMaster
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
-        DAQmxAnalogPatternGenerator apg;
+        DAQMxAnalogPatternGenerator apg;
 
         CameraControllable camera;
         ExperimentReportable experimentReporter;
@@ -92,7 +92,7 @@ namespace MOTMaster
             controllerWindow.controller = this;
 
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
-            apg = new DAQmxAnalogPatternGenerator();
+            apg = new DAQMxAnalogPatternGenerator();
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1180/controller.rem");
