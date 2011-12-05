@@ -87,11 +87,11 @@ namespace EDMBlockHead
             this.rf1aScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis11 = new NationalInstruments.UI.XAxis();
             this.yAxis11 = new NationalInstruments.UI.YAxis();
+            this.rf2aScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.rfFreqScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.rf1fScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis12 = new NationalInstruments.UI.XAxis();
             this.yAxis12 = new NationalInstruments.UI.YAxis();
-            this.rf2aScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.rf2fScatterPlot = new NationalInstruments.UI.ScatterPlot();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
@@ -665,6 +665,14 @@ namespace EDMBlockHead
             // 
             this.yAxis11.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
+            // rf2aScatterPlot
+            // 
+            this.rf2aScatterPlot.LineColor = System.Drawing.Color.Green;
+            this.rf2aScatterPlot.PointColor = System.Drawing.Color.Green;
+            this.rf2aScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.EmptyDiamond;
+            this.rf2aScatterPlot.XAxis = this.xAxis11;
+            this.rf2aScatterPlot.YAxis = this.yAxis11;
+            // 
             // rfFreqScatterGraph
             // 
             this.rfFreqScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
@@ -705,14 +713,6 @@ namespace EDMBlockHead
             // 
             this.yAxis12.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
-            // rf2aScatterPlot
-            // 
-            this.rf2aScatterPlot.LineColor = System.Drawing.Color.Green;
-            this.rf2aScatterPlot.PointColor = System.Drawing.Color.Green;
-            this.rf2aScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.EmptyDiamond;
-            this.rf2aScatterPlot.XAxis = this.xAxis11;
-            this.rf2aScatterPlot.YAxis = this.yAxis11;
-            // 
             // rf2fScatterPlot
             // 
             this.rf2fScatterPlot.LineColor = System.Drawing.Color.Green;
@@ -726,7 +726,7 @@ namespace EDMBlockHead
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(878, 895);
+            this.ClientSize = new System.Drawing.Size(878, 897);
             this.Controls.Add(this.rfFreqScatterGraph);
             this.Controls.Add(this.rfAmpScatterGraph);
             this.Controls.Add(this.lf1NoiseScatterGraph);

@@ -196,6 +196,7 @@
     </Compile>
     <Compile Include="BasicBeamPatternBuilder.cs" />
     <Compile Include="BasicBeamPatternPlugin.cs" />
+    <Compile Include="PulsedRFScanPatternBuilder2.cs" />
     <Compile Include="DAQMxAnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>

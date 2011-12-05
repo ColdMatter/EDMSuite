@@ -139,6 +139,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("rfCountSwBit1");
             CreateDigitalTask("rfCountSwBit2");
             CreateDigitalTask("fibreAmpEnable");
+            CreateDigitalTask("ttlSwitch");
 
             // digitial input tasks
             CreateDigitalInputTask("fibreAmpMasterErr");
@@ -2151,6 +2152,12 @@ namespace EDMHardwareControl
         {
             SetDigitalLine("fibreAmpEnable", enable);
             window.fibreAmpEnableLED.Value = enable;
+        }
+
+        public void SetSwitchTTL(bool enable)
+        {
+            SetDigitalLine("ttlSwitch", enable);
+            window.switchScanTTLSwitch.Value = enable;
         }
 
         public void SetScanningBVoltage()

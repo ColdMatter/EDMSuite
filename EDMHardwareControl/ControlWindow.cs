@@ -81,7 +81,7 @@ namespace EDMHardwareControl
         private System.Windows.Forms.Button updateBCurrentMonitorButton;
         public System.Windows.Forms.TextBox southIMonitorTextBox;
         public System.Windows.Forms.TextBox northIMonitorTextBox;
-		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.TabPage tabPage5;
 		private System.Windows.Forms.GroupBox groupBox10;
@@ -375,6 +375,9 @@ namespace EDMHardwareControl
         public RadioButton radioButton4;
         public RadioButton radioButton5;
         public RadioButton radioButton6;
+        private TabPage tabPage9;
+        private Label label97;
+        public Switch switchScanTTLSwitch;
 
 
 		public Controller controller;
@@ -451,7 +454,7 @@ namespace EDMHardwareControl
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.calFlipCheck = new System.Windows.Forms.CheckBox();
             this.bFlipCheck = new System.Windows.Forms.CheckBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
@@ -746,6 +749,8 @@ namespace EDMHardwareControl
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.clearAlertButton = new System.Windows.Forms.Button();
             this.alertTextBox = new System.Windows.Forms.TextBox();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.label97 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -761,13 +766,14 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.switchScanTTLSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
@@ -823,7 +829,9 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
+            this.tabPage9.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1243,21 +1251,22 @@ namespace EDMHardwareControl
             this.bFlipCheck.Text = "DB";
             this.bFlipCheck.CheckedChanged += new System.EventHandler(this.bFlipCheck_CheckedChanged);
             // 
-            // tabControl1
+            // tabControl
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPage8);
-            this.tabControl1.Controls.Add(this.tabPage5);
-            this.tabControl1.Controls.Add(this.tabPage6);
-            this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Location = new System.Drawing.Point(12, 27);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(705, 601);
-            this.tabControl1.TabIndex = 25;
+            this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPage4);
+            this.tabControl.Controls.Add(this.tabPage8);
+            this.tabControl.Controls.Add(this.tabPage5);
+            this.tabControl.Controls.Add(this.tabPage6);
+            this.tabControl.Controls.Add(this.tabPage7);
+            this.tabControl.Controls.Add(this.tabPage9);
+            this.tabControl.Location = new System.Drawing.Point(12, 27);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(705, 601);
+            this.tabControl.TabIndex = 25;
             // 
             // tabPage1
             // 
@@ -4225,6 +4234,27 @@ namespace EDMHardwareControl
             this.alertTextBox.Size = new System.Drawing.Size(654, 512);
             this.alertTextBox.TabIndex = 0;
             // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.switchScanTTLSwitch);
+            this.tabPage9.Controls.Add(this.label97);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(697, 575);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Misc";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // label97
+            // 
+            this.label97.AutoSize = true;
+            this.label97.Location = new System.Drawing.Point(76, 53);
+            this.label97.Name = "label97";
+            this.label97.Size = new System.Drawing.Size(90, 13);
+            this.label97.TabIndex = 1;
+            this.label97.Text = "Switch Scan TTL";
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -4363,11 +4393,20 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
+            // switchScanTTLSwitch
+            // 
+            this.switchScanTTLSwitch.Location = new System.Drawing.Point(6, 6);
+            this.switchScanTTLSwitch.Name = "switchScanTTLSwitch";
+            this.switchScanTTLSwitch.Size = new System.Drawing.Size(64, 96);
+            this.switchScanTTLSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
+            this.switchScanTTLSwitch.TabIndex = 2;
+            this.switchScanTTLSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.switch1_StateChanged);
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(726, 626);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -4385,7 +4424,7 @@ namespace EDMHardwareControl
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox5.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
@@ -4468,8 +4507,11 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4889,6 +4931,13 @@ namespace EDMHardwareControl
         {
             controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value/100.0);
         }
+
+        private void switch1_StateChanged(object sender, ActionEventArgs e)
+        {
+            controller.SetSwitchTTL(switchScanTTLSwitch.Value);
+        }
+
+
 
 
 
