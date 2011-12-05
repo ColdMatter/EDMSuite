@@ -129,8 +129,6 @@ namespace SympatheticHardwareControl
             this.openImageViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.localControlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
             this.shcTabs.SuspendLayout();
@@ -145,7 +143,6 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.localControlLED)).BeginInit();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -670,6 +667,7 @@ namespace SympatheticHardwareControl
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
             this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadParametersToolStripMenuItem.Text = "Load parameters";
+            this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
@@ -728,7 +726,7 @@ namespace SympatheticHardwareControl
             // remoteControlLED
             // 
             this.remoteControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.remoteControlLED.Location = new System.Drawing.Point(761, 76);
+            this.remoteControlLED.Location = new System.Drawing.Point(761, 32);
             this.remoteControlLED.Name = "remoteControlLED";
             this.remoteControlLED.Size = new System.Drawing.Size(25, 24);
             this.remoteControlLED.TabIndex = 16;
@@ -736,32 +734,15 @@ namespace SympatheticHardwareControl
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(675, 81);
+            this.label1.Location = new System.Drawing.Point(675, 36);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 18;
             this.label1.Text = "Remote Control";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(675, 55);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 20;
-            this.label2.Text = "Local Control";
-            // 
-            // localControlLED
-            // 
-            this.localControlLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.localControlLED.Location = new System.Drawing.Point(761, 50);
-            this.localControlLED.Name = "localControlLED";
-            this.localControlLED.Size = new System.Drawing.Size(25, 24);
-            this.localControlLED.TabIndex = 19;
-            // 
             // updateHardwareButton
             // 
-            this.updateHardwareButton.Location = new System.Drawing.Point(680, 109);
+            this.updateHardwareButton.Location = new System.Drawing.Point(678, 62);
             this.updateHardwareButton.Name = "updateHardwareButton";
             this.updateHardwareButton.Size = new System.Drawing.Size(102, 23);
             this.updateHardwareButton.TabIndex = 21;
@@ -786,8 +767,6 @@ namespace SympatheticHardwareControl
             this.ClientSize = new System.Drawing.Size(794, 419);
             this.Controls.Add(this.consoleRichTextBox);
             this.Controls.Add(this.updateHardwareButton);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.localControlLED);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.remoteControlLED);
             this.Controls.Add(this.shcTabs);
@@ -796,8 +775,8 @@ namespace SympatheticHardwareControl
             this.Name = "ControlWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sympathetic Hardware Control";
-            this.Load += new System.EventHandler(this.WindowLoaded);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
+            this.Load += new System.EventHandler(this.WindowLoaded);
             this.shcTabs.ResumeLayout(false);
             this.tabCamera.ResumeLayout(false);
             this.tabLasers.ResumeLayout(false);
@@ -817,7 +796,6 @@ namespace SympatheticHardwareControl
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.localControlLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -940,8 +918,6 @@ namespace SympatheticHardwareControl
         private Button snapshotButton;
         private Led remoteControlLED;
         private Label label1;
-        private Label label2;
-        private Led localControlLED;
         private Button updateHardwareButton;
         private ToolStripMenuItem windowsToolStripMenuItem;
         private ToolStripMenuItem hardwareMonitorToolStripMenuItem;
@@ -972,6 +948,11 @@ namespace SympatheticHardwareControl
         {
             controller.UpdateHardware();
         }
+        private void loadParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadParametersWithDialog();
+        }
+
         #endregion
 
         #region Public properties for controlling UI.
@@ -1065,6 +1046,7 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
+    
 
 
 
