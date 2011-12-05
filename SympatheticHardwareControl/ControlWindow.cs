@@ -1007,7 +1007,6 @@ namespace SympatheticHardwareControl
                 case Controller.SHCUIControlState.OFF:
 
                     setLED(remoteControlLED, false);
-                    setLED(localControlLED, false);
                     setTabEnable(shcTabs, true);
 
                     break;
@@ -1015,14 +1014,12 @@ namespace SympatheticHardwareControl
                 case Controller.SHCUIControlState.LOCAL:
 
                     setLED(remoteControlLED, false);
-                    setLED(localControlLED, true);
                     setTabEnable(shcTabs, true);
                     break;
 
                 case Controller.SHCUIControlState.REMOTE:
 
                     setLED(remoteControlLED, true);
-                    setLED(localControlLED, false);
                     setTabEnable(shcTabs, false) ;
 
                     break;
