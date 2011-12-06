@@ -96,9 +96,9 @@ namespace Analysis.EDM
             //AddSliceConfig("vfast", -0.85, 0.5);
             //AddSliceConfig("vslow", 0.85, 0.5);
 
-            //// for testing out different centred-gate widths
-            //for (int i = 4; i < 15; i++)
-            //    AddSliceConfig("cgate" + i, 0, ((double)i) / 10.0);
+            // for testing out different centred-gate widths
+            for (int i = 1; i < 10; i++)
+                AddFixedSliceConfig("wgate" + i, 2190, i * 20);
 
             //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
             //// is centred and +0.7 fwhm.

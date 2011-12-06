@@ -11,10 +11,12 @@ namespace Data.EDM
 	[Serializable]
 	public class Block : MarshalByRefObject
 	{
-		public int Version = 2;
+		public int Version = 3;
 		private ArrayList points = new ArrayList();
 		private DateTime timeStamp = DateTime.Now;
 		private BlockConfig config = new BlockConfig();
+
+        public List<string> detectors = new List<string>() {"top", "norm", "magnetometer", "gnd", "battery"};
 
 		public void SetTimeStamp()
 		{
@@ -191,7 +193,27 @@ namespace Data.EDM
                 TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
                 shot.TOFs.Add(normedTOF);
             }
+            // give these data a name
+            detectors.Add("topNormed");
+        }
 
+        // this function takes some of the single point data and adds it to the block shots as TOFs
+        // with one data point in them. This allows us to use the same code to break all of the data
+        // into channels.
+        public void TOFuliseSinglePointData(string[] channelsToTOFulise)
+        {
+            foreach (string spv in channelsToTOFulise)
+            {
+                for (int i = 0; i < points.Count; i++)
+                {
+                    EDMPoint point = (EDMPoint)points[i];
+                    Shot shot = point.Shot;
+                    TOF spvTOF = new TOF((double)point.SinglePointData[spv]);
+                    shot.TOFs.Add(spvTOF);
+                }
+                // give these data a name
+                detectors.Add(spv);
+            }
         }
     }
 }

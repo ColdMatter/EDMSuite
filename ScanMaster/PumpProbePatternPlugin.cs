@@ -37,6 +37,8 @@ namespace ScanMaster.Acquire.Plugins
             settings["sequenceLength"] = 2;
             settings["switchLineDuration"] = 1000;
             settings["switchLineDelay"] = 0;
+            settings["padStart"] = 0;
+            settings["flashlampPulseLength"] = 100;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -51,10 +53,12 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["padStart"],
 				(int)settings["sequenceLength"],
 				(int)settings["padShots"],
+                (int)settings["padStart"],
 				(int)settings["flashlampPulseInterval"],
 				(int)settings["valvePulseLength"],
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
+                (int)settings["flashlampPulseLength"],
 				(int)settings["aomOnStart"],
 				(int)settings["aomOffStart"] - (int)settings["aomOnStart"],
 				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 

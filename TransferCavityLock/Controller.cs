@@ -5,7 +5,6 @@ using DAQ.TransferCavityLock;
 using DAQ.Environment;
 using DAQ.HAL;
 using System.Windows.Forms;
-using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {
@@ -224,7 +223,7 @@ namespace TransferCavityLock
         /// </summary>
         private CavityScanData scan(ScanParameters sp)
         {
-            CavityScanData scanData = new CavityScanData(sp.Steps);
+            CavityScanData scanData = new CavityScanData(sp.Steps, 2);
             scanData.parameters = sp;
 
             double[] voltages = sp.CalculateRampVoltages();
@@ -232,10 +231,10 @@ namespace TransferCavityLock
             tcl.ScanCavity(voltages, false);
             tcl.StartScan();
 
-            Thread.Sleep(100);
+            Thread.Sleep(1);
             tcl.SendScanTriggerAndWaitUntilDone();
 
-            scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps);
+            scanData.PhotodiodeData = tcl.ReadPhotodiodes(sp.Steps); 
 
             tcl.StopScan();
 
@@ -259,13 +258,18 @@ namespace TransferCavityLock
 
             double[] masterDataFit;
             double[] slaveDataFit;
-
+            System.IO.StreamWriter file = new System.IO.StreamWriter("c:\\cavityData.txt");
             while (State != ControllerState.STOPPED)
             {
                 displayData(sp, scanData);
 
-                masterDataFit = CavityScanFitter.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
-             
+                masterDataFit = CavityScanFitHelper.FitLorenzianToMasterData(scanData, sp.Low, sp.High);
+                saveFitData(file, masterDataFit[1]);
+                displayMasterFit(sp, masterDataFit);
+                slaveDataFit = CavityScanFitHelper.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                saveFitData(file, slaveDataFit[1]);
+                displaySlaveFit(sp, slaveDataFit);
+                
                 switch (State)
                 {
                     case ControllerState.FREERUNNING:
@@ -276,18 +280,17 @@ namespace TransferCavityLock
                         ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
-                       
-                        engageLaser();
+                        
+                        
+                        setToLaserEngaged();
                         break;
 
                     case ControllerState.LASERLOCKING:
-                            ScanOffset = calculateNewScanCentre(sp, masterDataFit);
+                        ScanOffset = calculateNewScanCentre(sp, masterDataFit);
                         sp.High = ScanOffset + scanWidth;
                         sp.Low = ScanOffset - scanWidth;
 
                        
-                        
-                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
                         LaserSetPoint = CalculateLaserSetPoint(masterDataFit, slaveDataFit);
 
                         State = ControllerState.LASERLOCKED;
@@ -301,7 +304,9 @@ namespace TransferCavityLock
 
                         LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
 
-                        slaveDataFit = CavityScanFitter.FitLorenzianToSlaveData(scanData, sp.Low, sp.High);
+                        
+                        /*Console.WriteLine("width=" + slaveDataFit[0].ToString() + ", centre =" + slaveDataFit[1].ToString()
+                            + ", amp=" + slaveDataFit[2].ToString() + ", offset=" + slaveDataFit[3].ToString());*/
                        
                         double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterDataFit, slaveDataFit);
                         VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
@@ -316,17 +321,60 @@ namespace TransferCavityLock
 
                 scanData = scan(sp);
             }
-
+            file.Close();
             finalizeRamping();
+        }
+
+        private void saveFitData(System.IO.StreamWriter file, double param)
+        {
+            
+            file.WriteLine(param);
+            
         }
 
 
         private void displayData(ScanParameters sp, CavityScanData data)
         {
-            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph, sp.CalculateRampVoltages(), data.SlavePhotodiodeData);
-            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph, sp.CalculateRampVoltages(), data.MasterPhotodiodeData);
+            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph,
+                ui.SlaveDataPlot, sp.CalculateRampVoltages(),  data.SlavePhotodiodeData);
+            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph, ui.MasterDataPlot,
+                sp.CalculateRampVoltages(), data.MasterPhotodiodeData);
         }
+        private void displayMasterFit(ScanParameters sp, double[] fitCoefficients)
+        {
+            double[] fitPoints = new double[sp.Steps];
+            double[] ramp = sp.CalculateRampVoltages();
+            double n = fitCoefficients[3];
+            double q = fitCoefficients[2];
+            double c = fitCoefficients[1];
+            double w = fitCoefficients[0];
+            for (int i = 0; i < sp.Steps; i++)
+            {
+                if (w == 0) w = 0.001; // watch out for divide by zero
+                fitPoints[i] = n + q * (1 / (1 + (((ramp[i] - c) * (ramp[i] - c)) / ((w / 2) * (w / 2)))));
+            }
+            ui.ScatterGraphPlot(ui.MasterLaserIntensityScatterGraph,
+                ui.MasterFitPlot, ramp, fitPoints);
 
+        }
+        
+        private void displaySlaveFit(ScanParameters sp, double[] fitCoefficients)
+        {
+            double[] fitPoints = new double[sp.Steps];
+            double[] ramp = sp.CalculateRampVoltages();
+            double n = fitCoefficients[3];
+            double q = fitCoefficients[2];
+            double c = fitCoefficients[1];
+            double w = fitCoefficients[0];
+            for (int i = 0; i < sp.Steps; i++)
+            {
+                if (w == 0) w = 0.001; // watch out for divide by zero
+                fitPoints[i] = n + q * (1 / (1 + (((ramp[i] - c) * (ramp[i] - c)) / ((w / 2) * (w / 2)))));
+            }
+            ui.ScatterGraphPlot(ui.SlaveLaserIntensityScatterGraph,
+                ui.SlaveFitPlot, ramp, fitPoints);
+
+        }
         /// <summary>
         /// Gets some parameters from the UI and stores them on the controller.
         /// </summary>
@@ -369,7 +417,7 @@ namespace TransferCavityLock
                 lState = LaserState.FREE;
             }
         }
-        private void engageLaser()
+        private void setToLaserEngaged()
         {
             if (lState == LaserState.FREE)
             {

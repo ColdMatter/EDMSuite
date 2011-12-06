@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -24,7 +25,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -40,7 +41,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,22 +98,16 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=8.6.35.465, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
+    <Reference Include="alglibnet2">
+      <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=8.7.35.131, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=8.9.35.210, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
+    <Reference Include="NationalInstruments.Common, Version=9.0.40.362, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Net, Version=8.6.35.465, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.UI, Version=8.6.35.465, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=8.6.35.465, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -221,22 +217,17 @@
     <Compile Include="DualAblationPatternPlugin.cs" />
     <Compile Include="DualValvePatternBuilder.cs" />
     <Compile Include="DualValvePatternPlugin.cs" />
-    <Compile Include="Fitter.cs">
+    <Compile Include="OldFitter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FlashampPatternBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GaussianFitter.cs" />
     <Compile Include="GUIConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GuidePatternBuilder.cs" />
     <Compile Include="GuidePatternPlugin.cs" />
-    <Compile Include="InterferenceFitter.cs" />
-    <Compile Include="LorentzianFitter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -273,7 +264,6 @@
     <Compile Include="PatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PeakFitter.cs" />
     <Compile Include="PGOutputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -311,9 +301,7 @@
     <Compile Include="RollViewer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RollViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="RollViewerWindow.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="ScanOutputPlugin.cs">
       <SubType>Code</SubType>
@@ -324,7 +312,6 @@
     <Compile Include="ShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SincFitter.cs" />
     <Compile Include="StandardViewer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -334,9 +321,7 @@
     <Compile Include="StatisticsViewer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="StatisticsViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="StatisticsViewerWindow.cs" />
     <Compile Include="SupersonicPGPluginBase.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,5 +1,4 @@
 using System;
-using NationalInstruments.Analysis.Math;
 using DAQ.Environment;
 
 namespace ScanMaster.Analyze
@@ -9,12 +8,12 @@ namespace ScanMaster.Analyze
     /// to return a mean speed and translational temperature in the ParameterReport.
     /// Requires a "sourceToDetect" and a "moleculeMass" in the Hardware.Info.
     /// </summary>
-    class TofFitter : ScanMaster.Analyze.GaussianFitter
+    class TofFitter : DAQ.Analyze.GaussianFitter
     {
         public TofFitter()
         {
             Name = "TOF";
-            model = new ModelFunctionCallback(gaussian);
+            model = gaussian;
         }
 
         public override string ParameterReport

@@ -13,6 +13,7 @@ namespace TransferCavityLock
         public int Steps;
         public int SleepTime;
         private double stepSize;
+        public int numberOfReadChannels;
 
         public double GetStepSize()
         {

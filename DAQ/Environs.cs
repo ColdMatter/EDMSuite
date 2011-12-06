@@ -176,6 +176,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-LAB10PC":
+                    Hardware = new SympatheticHardware();
+                    FileSystem = new Lab10PCFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

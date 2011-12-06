@@ -66,5 +66,5 @@ namespace EDMConfig
 			}
 			return null;
 		}
-	}
+    }
 }

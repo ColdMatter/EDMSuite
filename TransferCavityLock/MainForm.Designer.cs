@@ -35,15 +35,17 @@
             this.rampStopButton = new System.Windows.Forms.Button();
             this.rampStartButton = new System.Windows.Forms.Button();
             this.lockEnableCheck = new System.Windows.Forms.CheckBox();
-            this.MasterLaserIntensityScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
+            this.SlaveLaserIntensityScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.SlaveDataPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.SlaveLaserIntensityScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.MasterLaserIntensityScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.MasterDataPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.lockParams = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.setPointIncrementBox = new System.Windows.Forms.TextBox();
             this.GainTextbox = new System.Windows.Forms.TextBox();
             this.VoltageToLaserTextBox = new System.Windows.Forms.TextBox();
             this.setPointAdjustMinusButton = new System.Windows.Forms.Button();
@@ -60,12 +62,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.setPointIncrementBox = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.SlaveFitPlot = new NationalInstruments.UI.ScatterPlot();
+            this.MasterFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
             this.lockParams.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -143,41 +145,49 @@
             this.lockEnableCheck.UseVisualStyleBackColor = true;
             this.lockEnableCheck.CheckedChanged += new System.EventHandler(this.lockEnableCheck_CheckedChanged);
             // 
-            // MasterLaserIntensityScatterGraph
-            // 
-            this.MasterLaserIntensityScatterGraph.Location = new System.Drawing.Point(0, 19);
-            this.MasterLaserIntensityScatterGraph.Name = "MasterLaserIntensityScatterGraph";
-            this.MasterLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1});
-            this.MasterLaserIntensityScatterGraph.Size = new System.Drawing.Size(548, 132);
-            this.MasterLaserIntensityScatterGraph.TabIndex = 4;
-            this.MasterLaserIntensityScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis1});
-            this.MasterLaserIntensityScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis1});
-            // 
-            // scatterPlot1
-            // 
-            this.scatterPlot1.XAxis = this.xAxis1;
-            this.scatterPlot1.YAxis = this.yAxis1;
-            // 
             // SlaveLaserIntensityScatterGraph
             // 
-            this.SlaveLaserIntensityScatterGraph.Location = new System.Drawing.Point(3, 168);
+            this.SlaveLaserIntensityScatterGraph.Location = new System.Drawing.Point(0, 19);
             this.SlaveLaserIntensityScatterGraph.Name = "SlaveLaserIntensityScatterGraph";
             this.SlaveLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot2});
-            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(548, 130);
-            this.SlaveLaserIntensityScatterGraph.TabIndex = 5;
+            this.SlaveDataPlot,
+            this.SlaveFitPlot});
+            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(548, 132);
+            this.SlaveLaserIntensityScatterGraph.TabIndex = 4;
             this.SlaveLaserIntensityScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis2});
+            this.xAxis1});
             this.SlaveLaserIntensityScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis1});
+            // 
+            // SlaveDataPlot
+            // 
+            this.SlaveDataPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.SlaveDataPlot.PointSize = new System.Drawing.Size(3, 3);
+            this.SlaveDataPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
+            this.SlaveDataPlot.XAxis = this.xAxis1;
+            this.SlaveDataPlot.YAxis = this.yAxis1;
+            // 
+            // MasterLaserIntensityScatterGraph
+            // 
+            this.MasterLaserIntensityScatterGraph.Location = new System.Drawing.Point(3, 168);
+            this.MasterLaserIntensityScatterGraph.Name = "MasterLaserIntensityScatterGraph";
+            this.MasterLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.MasterDataPlot,
+            this.MasterFitPlot});
+            this.MasterLaserIntensityScatterGraph.Size = new System.Drawing.Size(548, 130);
+            this.MasterLaserIntensityScatterGraph.TabIndex = 5;
+            this.MasterLaserIntensityScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.MasterLaserIntensityScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
             // 
-            // scatterPlot2
+            // MasterDataPlot
             // 
-            this.scatterPlot2.XAxis = this.xAxis2;
-            this.scatterPlot2.YAxis = this.yAxis2;
+            this.MasterDataPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.MasterDataPlot.PointSize = new System.Drawing.Size(2, 2);
+            this.MasterDataPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
+            this.MasterDataPlot.XAxis = this.xAxis2;
+            this.MasterDataPlot.YAxis = this.yAxis2;
             // 
             // lockParams
             // 
@@ -204,6 +214,23 @@
             this.lockParams.TabIndex = 10;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 90);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(123, 13);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Set Point Increment Size";
+            // 
+            // setPointIncrementBox
+            // 
+            this.setPointIncrementBox.Location = new System.Drawing.Point(168, 87);
+            this.setPointIncrementBox.Name = "setPointIncrementBox";
+            this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
+            this.setPointIncrementBox.TabIndex = 32;
+            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
             // 
             // GainTextbox
             // 
@@ -344,23 +371,15 @@
             this.label9.TabIndex = 12;
             this.label9.Text = "He-Ne";
             // 
-            // setPointIncrementBox
+            // SlaveFitPlot
             // 
-            this.setPointIncrementBox.Location = new System.Drawing.Point(168, 87);
-            this.setPointIncrementBox.Name = "setPointIncrementBox";
-            this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
-            this.setPointIncrementBox.TabIndex = 32;
-            
-            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
+            this.SlaveFitPlot.XAxis = this.xAxis1;
+            this.SlaveFitPlot.YAxis = this.yAxis1;
             // 
-            // label10
+            // MasterFitPlot
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 90);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(123, 13);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "Set Point Increment Size";
+            this.MasterFitPlot.XAxis = this.xAxis2;
+            this.MasterFitPlot.YAxis = this.yAxis2;
             // 
             // MainForm
             // 
@@ -370,8 +389,8 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lockParams);
-            this.Controls.Add(this.SlaveLaserIntensityScatterGraph);
             this.Controls.Add(this.MasterLaserIntensityScatterGraph);
+            this.Controls.Add(this.SlaveLaserIntensityScatterGraph);
             this.Controls.Add(this.voltageRampControl);
             this.Name = "MainForm";
             this.Text = "Transfer Cavity Lock";
@@ -379,8 +398,8 @@
             this.voltageRampControl.ResumeLayout(false);
             this.voltageRampControl.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).EndInit();
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
             this.ResumeLayout(false);
@@ -394,12 +413,12 @@
         private System.Windows.Forms.Button rampStartButton;
         private System.Windows.Forms.Button rampStopButton;
         private NationalInstruments.UI.WindowsForms.Led rampLED;
-        public NationalInstruments.UI.WindowsForms.ScatterGraph MasterLaserIntensityScatterGraph;
-        private NationalInstruments.UI.ScatterPlot scatterPlot1;
+        public NationalInstruments.UI.WindowsForms.ScatterGraph SlaveLaserIntensityScatterGraph;
+        public NationalInstruments.UI.ScatterPlot SlaveDataPlot;
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
-        public NationalInstruments.UI.WindowsForms.ScatterGraph SlaveLaserIntensityScatterGraph;
-        private NationalInstruments.UI.ScatterPlot scatterPlot2;
+        public NationalInstruments.UI.WindowsForms.ScatterGraph MasterLaserIntensityScatterGraph;
+        public NationalInstruments.UI.ScatterPlot MasterDataPlot;
         private NationalInstruments.UI.XAxis xAxis2;
         private NationalInstruments.UI.YAxis yAxis2;
         private System.Windows.Forms.CheckBox lockEnableCheck;
@@ -424,6 +443,8 @@
         private System.Windows.Forms.TextBox VoltageToLaserTextBox;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox setPointIncrementBox;
+        public NationalInstruments.UI.ScatterPlot SlaveFitPlot;
+        public NationalInstruments.UI.ScatterPlot MasterFitPlot;
     }
 }
 

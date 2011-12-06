@@ -27,10 +27,12 @@ namespace DAQ.HAL
 			Boards.Add("pg", "/dev1");
             Boards.Add("usbDev", "/dev3");
             Boards.Add("PXI6", "/PXI1Slot6");
+            Boards.Add("PXI4", "/PXI1Slot4");
             string pgBoard = (string)Boards["pg"];
             string usbBoard = (string)Boards["usbDev"];
             string daqBoard = (string)Boards["daq"];
             string PXIBoard = (string)Boards["PXI6"];
+            string TCLBoard = (string)Boards["PXI4"];
 
 
             // add things to the info
@@ -38,10 +40,19 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
 
+            //TCL Lockable lasers
+            Info.Add("TCLLockableLasers", new string[] {"laser", "laser2"});
+            Info.Add("TCLPhotodiodes", new string[] {"cavity", "master", "p1" ,"p2"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            // Some matching up for TCL
+            Info.Add("laser", "p1");
+            Info.Add("laser2", "p2");
+
+
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");// pin 10
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1");// pin 11
-            Info.Add("analogTrigger2", (string)Boards["usbDev"] + "/PFI0"); //Pin 29
+            Info.Add("TCLTrigger", (string)Boards["PXI4"] + "/PFI0");
+            //Info.Add("analogTrigger2", (string)Boards["usbDev"] + "/PFI0"); //Pin 29
             Info.Add("analogTrigger3", (string)Boards["daq"] + "/PFI6"); //Pin 5 - breakout 31
             //distance information
             Info.Add("sourceToDetect", 0.81); //in m
@@ -96,11 +107,14 @@ namespace DAQ.HAL
 			AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("p1", usbBoard + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("p2", usbBoard + "/ai1", AITerminalConfiguration.Rse);
+            
+            AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p1", TCLBoard + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cavity", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p2", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("laser", PXIBoard + "/ao13");
-            AddAnalogOutputChannel("cavity", daqBoard + "/ao0");
+            //AddAnalogOutputChannel("cavity", daqBoard + "/ao0");
            // AddAnalogOutputChannel("cavity", PXIBoard + "/ao5");
             AddAnalogOutputChannel("laser2", PXIBoard + "/ao25");
            

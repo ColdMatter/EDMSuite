@@ -11,7 +11,6 @@ using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.Remoting;
 using System.Windows.Forms;
-using NationalInstruments.Analysis.Math;
 
 namespace TransferCavityLock
 {
@@ -26,9 +25,9 @@ namespace TransferCavityLock
         public double[,] PhotodiodeData;
         public ScanParameters parameters = new ScanParameters();
 
-        public CavityScanData(int Steps)
+        public CavityScanData(int Steps, int numberOfDatasets)
         {
-            PhotodiodeData = new double[2, Steps];
+            PhotodiodeData = new double[numberOfDatasets, Steps];
             parameters.Steps = Steps;
        }
 
@@ -69,6 +68,26 @@ namespace TransferCavityLock
                 for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
                 {
                     PhotodiodeData[1, i] = value[i];
+                }
+            }
+        }
+        public double[] CavityData
+        {
+            get
+            {
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    temp[i] = PhotodiodeData[2, i];
+                }
+                return temp;
+            }
+            set
+            {
+                double[] temp = new double[PhotodiodeData.GetLength(1)];
+                for (int i = 0; i < PhotodiodeData.GetLength(1); i++)
+                {
+                    PhotodiodeData[2, i] = value[i];
                 }
             }
         }
