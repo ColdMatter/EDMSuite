@@ -194,6 +194,15 @@ namespace EDMBlockHead
             lf1.Step = 0.05;
             config.AnalogModulations.Add(lf1);
 
+            //AnalogModulation lf2 = new AnalogModulation();
+            //lf2.Name = "LF2";
+            //lf2.Waveform = new Waveform("laser frequency 2 modulation", CODE_LENGTH);
+            //lf2.Waveform.Code = new bool[] { false, true, true, true, false, false, false, false, false, false, false, false };
+            //lf2.DelayAfterSwitch = 0;
+            //lf2.Centre = 1.0;
+            //lf2.Step = 0.01;
+            //config.AnalogModulations.Add(lf2);
+
             config.Settings["codeLength"] = CODE_LENGTH;
             config.Settings["numberOfPoints"] = 4096;
             config.Settings["pgClockFrequency"] = 1000000;

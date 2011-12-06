@@ -62,9 +62,9 @@ namespace DAQ.HAL
             Info.Add("mapResolution", 0.0001);
 
             // map the GPIB instruments
-            GPIBInstruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
-            GPIBInstruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));
-            GPIBInstruments.Add("gigatronics", new Gigatronics7100Synth("GPIB0::6::INSTR"));
+            Instruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));
+            Instruments.Add("agilent", new Agilent33250Synth("GPIB0::10::INSTR"));
+            Instruments.Add("gigatronics", new Gigatronics7100Synth("GPIB0::6::INSTR"));
 
             // map the digital channels
             // these channels are to be part of the "pattern" and shoud all be on the low half of the board
