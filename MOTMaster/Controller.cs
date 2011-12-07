@@ -95,10 +95,10 @@ namespace MOTMaster
             apg = new DAQMxAnalogPatternGenerator();
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
-                "tcp://localhost:1180/controller.rem");
+                "tcp://localhost:1172/controller.rem");
 
             experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1180/controller.rem");
+                "tcp://localhost:1172/controller.rem");
 
             
             ioHelper = new MMDataIOHelper(motMasterDataPath, 

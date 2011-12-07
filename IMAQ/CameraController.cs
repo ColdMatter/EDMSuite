@@ -38,9 +38,8 @@ namespace IMAQ
         private object streamStopLock = new object();
 
 
-        public CameraController(string cameraName, string attributesFile)
+        public CameraController(string cameraName)
         {
-            cameraAttributesFilePath = attributesFile;
             this.cameraName = cameraName;
             windowShowing = false;
             image = new VisionImage();
@@ -67,7 +66,7 @@ namespace IMAQ
             closeViewerWindow();
         }
 
-        public bool Stream()
+        public bool Stream(string cameraAttributesFilePath)
         {
             SetCameraAttributes(cameraAttributesFilePath);
             imageWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesFilePath);
@@ -94,13 +93,10 @@ namespace IMAQ
             imageWindow.WriteToConsole("Streaming stopped");
         }
 
-        public byte[,] SingleSnapshot()
-        {
-            return SingleSnapshot(cameraAttributesFilePath);
-        }
         public byte[,] SingleSnapshot(string attributesPath)
         {
             imageWindow.WriteToConsole("Taking snapshot");
+            imageWindow.WriteToConsole("Applied camera attributes from " + attributesPath);
             SetCameraAttributes(attributesPath);
             try
             {
@@ -140,10 +136,6 @@ namespace IMAQ
             }
         }
 
-        public byte[][,] MultipleSnapshot(int numberOfShots)
-        {
-            return MultipleSnapshot(cameraAttributesFilePath, numberOfShots);
-        }
         public byte[][,] MultipleSnapshot(string attributesPath, int numberOfShots)
         {
             SetCameraAttributes(attributesPath);
@@ -215,10 +207,7 @@ namespace IMAQ
         {
             lock (this)
             {
-                cameraAttributesFilePath = newPath;
-
                 imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
-
             }
             return newPath;
         }
@@ -228,7 +217,6 @@ namespace IMAQ
         #region imaqdxSession (Camera Control. Should be all private)
 
         private string cameraName;
-        private string cameraAttributesFilePath;
         private ImaqdxSession imaqdxSession;
 
         private void initializeCamera()

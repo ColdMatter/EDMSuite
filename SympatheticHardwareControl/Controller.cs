@@ -707,7 +707,7 @@ namespace SympatheticHardwareControl
         {
             try
             {
-                ImageController = new CameraController("cam0", cameraAttributesPath);
+                ImageController = new CameraController("cam0");
                 ImageController.Initialize();
                 ImageController.PrintCameraAttributesToConsole();
             }
@@ -723,7 +723,7 @@ namespace SympatheticHardwareControl
         {
             try
             {
-                ImageController.Stream();
+                ImageController.Stream(cameraAttributesPath);
             }
             catch { }
         }
@@ -741,7 +741,7 @@ namespace SympatheticHardwareControl
         {
             try
             {
-                ImageController.SingleSnapshot();
+                ImageController.SingleSnapshot(cameraAttributesPath);
             }
             catch { }
         }

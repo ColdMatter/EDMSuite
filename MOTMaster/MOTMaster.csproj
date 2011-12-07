@@ -170,7 +170,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Clipboard01.ico" />
     <Content Include="ICSharpCode.SharpZipLib.dll" />
   </ItemGroup>
   <ItemGroup>
