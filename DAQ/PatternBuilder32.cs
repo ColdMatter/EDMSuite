@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Text;
 
+using DAQ.HAL;
+using DAQ.Environment;
+
 namespace DAQ.Pattern
 {
 	/// <summary>
@@ -9,14 +12,19 @@ namespace DAQ.Pattern
 	/// To use this class, subclass it, and add your own structure. This class provides
 	/// the primitives edge and pulse. Everything else is up to you.
 	/// </summary>
+    /// 
+    [Serializable]
 	public class PatternBuilder32 : IPatternSource
 	{
-		private bool timeOrdered = true;
-		private Layout layout;
+        [NonSerialized]
+        private bool timeOrdered = true;
+        [NonSerialized]
+        private Layout layout;
 		private UInt32[] pattern;
-		private Int16[] patternInt16;
-		private byte[] bytePattern;
-		private int[] latestTimes;
+        private Int16[] patternInt16;
+        private byte[] bytePattern;
+        [NonSerialized]
+        private int[] latestTimes;
 
 		// Build a table of bit -> int conversions
 		private UInt32[] bitValues = new UInt32[32];
@@ -45,7 +53,11 @@ namespace DAQ.Pattern
 			// add the edge
 			layout.AddEdge(channel, time, sense);
 		}
-
+        public void AddEdge(string channel, int time, bool sense)
+        {
+            AddEdge(((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channel]).BitNumber
+                , time, sense);
+        }
 		/** Convenience method to add two edges. */
 		public int Pulse(int startTime, int delay, int duration, int channel )
 		{
@@ -54,17 +66,25 @@ namespace DAQ.Pattern
 		
 			return delay + duration;
 		}
-
+        public int Pulse(int startTime, int delay, int duration, string channel)
+        {
+            return Pulse(startTime,delay,duration,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channel]).BitNumber);
+        }
 		/** Adds a downward going pulse **/
 		public int DownPulse(int startTime, int delay, int duration, int channel )
 		{
-			AddEdge(channel, startTime, true);
+			//AddEdge(channel, startTime, true);
 			AddEdge(channel, startTime + delay, false );
 			AddEdge(channel, startTime + delay + duration, true );
 		
 			return delay + duration;
 		}
-
+        public int DownPulse(int startTime, int delay, int duration, string channel)
+        {
+            return DownPulse(startTime, delay, duration,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channel]).BitNumber);
+        }
 		/** Convenience method to determine the channel number from a NI port/line spec. */
 		public static int ChannelFromNIPort(int port, int line) 
 		{

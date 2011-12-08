@@ -57,5 +57,21 @@ namespace DAQ.Remoting
                     );
         }
 
+        public static void ConnectSympatheticHardwareControl()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("SympatheticHardwareControl.Controller, SympatheticHardwareControl"),
+                    "tcp://localhost:1180/controller.rem"
+                    );
+        }
+
+        public static void ConnectMOTMaster()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("MOTMaster.Controller, MOTMaster"),
+                    "tcp://localhost:1181/controller.rem"
+                    );
+        }
+
     }
 }

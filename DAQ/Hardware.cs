@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-
+using System.Collections.Generic;
 using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
@@ -64,6 +64,11 @@ namespace DAQ.HAL
 			get {return instruments;}
 		}
 
+        private Hashtable calibrations = new Hashtable();
+        public Hashtable Calibrations
+        {
+            get { return calibrations; }
+        }
         // You can dump anything you like in here that's specific to your experiment.
         // You can only add to it from within the Hardware subclass, but can access
         // from anywhere.
@@ -108,6 +113,10 @@ namespace DAQ.HAL
 			counterChannels.Add(name, new CounterChannel(name, physicalChannel));
 		}
 
+        protected void AddCalibration(String channelName, Calibration calibration)
+        {
+            calibrations.Add(channelName, calibration);
+        }
         public virtual void ConnectApplications()
         {
             // default is - do nothing
