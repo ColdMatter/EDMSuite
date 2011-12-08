@@ -22,17 +22,17 @@ namespace MOTMaster.SnippetLibrary
 
         public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
-            p.AddEdge("aom0enable", 0, true);
-            p.AddEdge("aom1enable", 0, true);
-            p.AddEdge("aom2enable", 0, true);
-            p.AddEdge("aom3enable", 0, true);
+            p.AddEdge("aom0enable", (int)parameters["MOTStartTime"], true);
+            p.AddEdge("aom1enable", (int)parameters["MOTStartTime"], true);
+            p.AddEdge("aom2enable", (int)parameters["MOTStartTime"], true);
+            p.AddEdge("aom3enable", (int)parameters["MOTStartTime"], true);
         }
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             p.AddChannel("coil0current");
 
-            p.AddAnalogValue("coil0current", 0, (double)parameters["MOTCoilsCurrent"]);
+            p.AddAnalogValue("coil0current", (int)parameters["MOTStartTime"], (double)parameters["MOTCoilsCurrent"]);
 
         }
 

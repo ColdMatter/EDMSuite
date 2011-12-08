@@ -89,6 +89,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="MOTLoadingTime.cs" />
     <Compile Include="MOTPattern.cs" />
   </ItemGroup>
   <ItemGroup>

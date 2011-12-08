@@ -32,6 +32,9 @@
             this.chamber1PressureTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chamber2PressureTextBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chamber2PressureCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -44,9 +47,6 @@
             this.monitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chamber2PressureCheckBox = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.chamber2PressureTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.laserErrorLED)).BeginInit();
@@ -58,9 +58,9 @@
             this.chamber1PressureCheckBox.AutoSize = true;
             this.chamber1PressureCheckBox.Location = new System.Drawing.Point(6, 19);
             this.chamber1PressureCheckBox.Name = "chamber1PressureCheckBox";
-            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(120, 17);
+            this.chamber1PressureCheckBox.Size = new System.Drawing.Size(140, 17);
             this.chamber1PressureCheckBox.TabIndex = 0;
-            this.chamber1PressureCheckBox.Text = "Chamber 1 pressure";
+            this.chamber1PressureCheckBox.Text = "Oven Chamber pressure";
             this.chamber1PressureCheckBox.UseVisualStyleBackColor = true;
             this.chamber1PressureCheckBox.CheckedChanged += new System.EventHandler(this.chamber1PressureCheckBox_CheckedChanged);
             // 
@@ -95,6 +95,34 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pressure Gauges";
+            // 
+            // chamber2PressureTextBox
+            // 
+            this.chamber2PressureTextBox.Location = new System.Drawing.Point(155, 40);
+            this.chamber2PressureTextBox.Name = "chamber2PressureTextBox";
+            this.chamber2PressureTextBox.ReadOnly = true;
+            this.chamber2PressureTextBox.Size = new System.Drawing.Size(305, 20);
+            this.chamber2PressureTextBox.TabIndex = 5;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(466, 43);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "mbar";
+            // 
+            // chamber2PressureCheckBox
+            // 
+            this.chamber2PressureCheckBox.AutoSize = true;
+            this.chamber2PressureCheckBox.Location = new System.Drawing.Point(6, 42);
+            this.chamber2PressureCheckBox.Name = "chamber2PressureCheckBox";
+            this.chamber2PressureCheckBox.Size = new System.Drawing.Size(138, 17);
+            this.chamber2PressureCheckBox.TabIndex = 3;
+            this.chamber2PressureCheckBox.Text = "MOT Chamber pressure";
+            this.chamber2PressureCheckBox.UseVisualStyleBackColor = true;
+            this.chamber2PressureCheckBox.CheckedChanged += new System.EventHandler(this.chamber2PressureCheckBox_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -206,34 +234,6 @@
             this.stopAllToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.stopAllToolStripMenuItem.Text = "Stop All";
             this.stopAllToolStripMenuItem.Click += new System.EventHandler(this.stopAllToolStripMenuItem_Click);
-            // 
-            // chamber2PressureCheckBox
-            // 
-            this.chamber2PressureCheckBox.AutoSize = true;
-            this.chamber2PressureCheckBox.Location = new System.Drawing.Point(6, 42);
-            this.chamber2PressureCheckBox.Name = "chamber2PressureCheckBox";
-            this.chamber2PressureCheckBox.Size = new System.Drawing.Size(120, 17);
-            this.chamber2PressureCheckBox.TabIndex = 3;
-            this.chamber2PressureCheckBox.Text = "Chamber 2 pressure";
-            this.chamber2PressureCheckBox.UseVisualStyleBackColor = true;
-            this.chamber2PressureCheckBox.CheckedChanged += new System.EventHandler(this.chamber2PressureCheckBox_CheckedChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(466, 43);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "mbar";
-            // 
-            // chamber2PressureTextBox
-            // 
-            this.chamber2PressureTextBox.Location = new System.Drawing.Point(155, 40);
-            this.chamber2PressureTextBox.Name = "chamber2PressureTextBox";
-            this.chamber2PressureTextBox.ReadOnly = true;
-            this.chamber2PressureTextBox.Size = new System.Drawing.Size(305, 20);
-            this.chamber2PressureTextBox.TabIndex = 5;
             // 
             // HardwareMonitorWindow
             // 

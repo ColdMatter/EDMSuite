@@ -76,7 +76,7 @@ namespace DAQ.HAL
 
             AddAnalogInputChannel("laserLockErrorSignal", multiDAQ + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("chamber1Pressure", usbDAQ + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("chamber2Pressure", usbDAQ + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("chamber2Pressure", usbDAQ + "/ai1", AITerminalConfiguration.Differential);
             // map the analog output channels
             // Control of atoms
             AddAnalogOutputChannel("aom0amplitude", aoBoard + "/ao16");

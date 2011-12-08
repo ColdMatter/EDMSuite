@@ -17,16 +17,17 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         Parameters["MOTLoadDuration"] = 100000;
+        Parameters["MOTStartTime"] = 0;
         Parameters["PatternLength"] = 200000;
         Parameters["NumberOfFrames"] = 3;
         Parameters["ReleaseTime"] = 1;
-        Parameters["Frame0TriggerDuration"] = 10;
+        Parameters["Frame0TriggerDuration"] = 100;
         Parameters["Frame0Trigger"] = 95000;
-        Parameters["Frame1TriggerDuration"] = 10;
+        Parameters["Frame1TriggerDuration"] = 100;
         Parameters["Frame1Trigger"] = 100002;
-        Parameters["Frame2TriggerDuration"] = 10;
+        Parameters["Frame2TriggerDuration"] = 100;
         Parameters["Frame2Trigger"] = 115000;
-        Parameters["MOTCoilsCurrent"] = 15.0;
+        Parameters["MOTCoilsCurrent"] = 17.0;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
