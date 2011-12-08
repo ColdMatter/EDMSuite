@@ -32,7 +32,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionStarting()
 		{
-			synth = (Synth)Environs.Hardware.GPIBInstruments[(string)settings["synth"]];
+			synth = (Synth)Environs.Hardware.Instruments[(string)settings["synth"]];
 			synth.Connect();
 			synth.Amplitude = (double)settings["scanOnAmplitude"];
 			synth.DCFMEnabled = false;

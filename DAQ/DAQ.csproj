@@ -157,6 +157,8 @@
     <Compile Include="DAQMxAnalogPatternGenerator.cs" />
     <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
     <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
+    <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
+    <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Lab10PCFileSystem.cs" />
     <Compile Include="LorentzianFitter.cs" />
     <Compile Include="PeakFitter.cs" />
+    <Compile Include="Instrument.cs" />
     <Compile Include="PHRHENDRIC0FileSystem.cs" />
     <Compile Include="PXISympatheticHardware.cs" />
     <Compile Include="RagnarokFileSystem.cs" />
@@ -259,6 +262,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SincFitter.cs" />
+    <Compile Include="SerialInstrument.cs" />
     <Compile Include="SunshineFileSystem.cs" />
     <Compile Include="SympatheticHardware.cs">
       <SubType>Code</SubType>

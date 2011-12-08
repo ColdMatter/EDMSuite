@@ -58,10 +58,10 @@ namespace DAQ.HAL
 			get {return yag;}
 		}
 		
-		private Hashtable gpibInstruments = new Hashtable();
-		public Hashtable GPIBInstruments
+		private Hashtable instruments = new Hashtable();
+		public Hashtable Instruments
 		{
-			get {return gpibInstruments;}
+			get {return instruments;}
 		}
 
         private Hashtable calibrations = new Hashtable();

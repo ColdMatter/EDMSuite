@@ -61,12 +61,13 @@ namespace EDMHardwareControl
         #region Setup
 
         // hardware
-        HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.GPIBInstruments["green"];
-        Synth redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
-        ICS4861A voltageController = (ICS4861A)Environs.Hardware.GPIBInstruments["4861"];
-        HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.GPIBInstruments["bCurrentMeter"];
-        Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.GPIBInstruments["rfCounter"];
-        HP438A rfPower = (HP438A)Environs.Hardware.GPIBInstruments["rfPower"];
+        HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
+        Synth redSynth = (Synth)Environs.Hardware.Instruments["red"];
+        ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
+        HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
+        Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
+        Agilent53131A rfCounter2 = (Agilent53131A)Environs.Hardware.Instruments["rfCounter2"];
+        HP438A rfPower = (HP438A)Environs.Hardware.Instruments["rfPower"];
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
         //LeakageMonitor northLeakageMonitor =
@@ -138,6 +139,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("rfCountSwBit1");
             CreateDigitalTask("rfCountSwBit2");
             CreateDigitalTask("fibreAmpEnable");
+            CreateDigitalTask("ttlSwitch");
 
             // digitial input tasks
             CreateDigitalInputTask("fibreAmpMasterErr");
@@ -953,6 +955,29 @@ namespace EDMHardwareControl
             }
         }
 
+        public double diodeRefCavVoltage
+        {
+            get
+            {
+                return Double.Parse(window.diodeRefCavTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.diodeRefCavTextBox, value.ToString());
+            }
+        }
+
+        public double diodeRefCavStep
+        {
+            get
+            {
+                return Double.Parse(window.diodeRefCavStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.diodeRefCavStepTextBox, value.ToString());
+            }
+        }
         public double LeakageMonitorMeasurementTime
         {
             set
@@ -1396,8 +1421,8 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.rf1FMPlusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
-            // The synth is connected to channel one
-            rfCounter.Channel = 1;
+            // The synth is connected to channel three
+            rfCounter.Channel = 3;
             double rf1PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1PlusFreqMon, String.Format("{0:F0}", rf1PlusFreq));
             window.SetRadioButton(window.rf1FMMinusRB, true);
@@ -1838,6 +1863,8 @@ namespace EDMHardwareControl
         public void SetDiodeRefCav()
         {
             double refCavVoltage = Double.Parse(window.diodeRefCavTextBox.Text);
+            if (window.diodeRefCavStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.diodeRefCavStepTextBox.Text);
+            if (window.diodeRefCavStepPlusButton.Checked) refCavVoltage += Double.Parse(window.diodeRefCavStepTextBox.Text);
             // HV supply must not go below 0V
             if (refCavVoltage < 0)
             {
@@ -1944,9 +1971,9 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.FLPZTStepPlusButton, true);
             UpdateFLPZTV();
             Thread.Sleep(10);
-            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("IodineFreqMon");
-            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
-            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
+            //bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("IodineFreqMon");
+            //SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            //SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
             // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
             rfCounter.Channel = 2; 
             double I2PlusFreq = rfCounter.Frequency;
@@ -1964,13 +1991,13 @@ namespace EDMHardwareControl
         public void UpdatePumpAOMFreqMonitor()
         {
 
-            bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("pumpAOMFreqMon");
-            SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
-            SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
+            //bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("pumpAOMFreqMon");
+            //SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
+            //SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
             Thread.Sleep(10);
-            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
-            rfCounter.Channel = 2;
-            double PumpAOMFreq = rfCounter.Frequency;
+            // The VCO is connected to channel one (should put this line in PXIEDMHardware.cs)
+            rfCounter2.Channel = 1;
+            double PumpAOMFreq = rfCounter2.Frequency;
             window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
         }
 
@@ -2125,6 +2152,12 @@ namespace EDMHardwareControl
         {
             SetDigitalLine("fibreAmpEnable", enable);
             window.fibreAmpEnableLED.Value = enable;
+        }
+
+        public void SetSwitchTTL(bool enable)
+        {
+            SetDigitalLine("ttlSwitch", enable);
+            window.switchScanTTLSwitch.Value = enable;
         }
 
         public void SetScanningBVoltage()

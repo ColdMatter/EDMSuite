@@ -389,7 +389,7 @@ namespace EDMPhaseLock
 
             if (cm == ControlMethod.synth)
             {
-                redSynth = (Synth)Environs.Hardware.GPIBInstruments["red"];
+                redSynth = (Synth)Environs.Hardware.Instruments["red"];
                 redSynth.Connect();
             }
             else redSynth = null;

@@ -9,7 +9,7 @@ namespace DAQ.HAL
 	/// <summary>
 	/// 
 	/// </summary>
-	public class GPIBInstrument
+	public class GPIBInstrument : Instrument
 	{
 		GpibSession session;
 		string address;
@@ -19,7 +19,7 @@ namespace DAQ.HAL
 			this.address = visaAddress;
 		}
 
-		public void Connect()
+		public override void Connect()
 		{
 			if (!Environs.Debug) 
 			{
@@ -28,7 +28,7 @@ namespace DAQ.HAL
 			}
 		}
 
-		public void Disconnect()
+        public override void Disconnect()
 		{
 			if (!Environs.Debug)
 			{
@@ -38,12 +38,12 @@ namespace DAQ.HAL
 			}
 		}
 
-		protected void Write(String command)
+        protected override void Write(String command)
 		{
 			session.Write(command);
 		}
 
-		protected string Read()
+        protected override string Read()
 		{
 			return session.ReadString();
 		}

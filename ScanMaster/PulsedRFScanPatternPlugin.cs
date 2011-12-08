@@ -18,7 +18,7 @@ namespace ScanMaster.Acquire.Plugins
 	{
 
 		[NonSerialized]
-		private PulsedRFScanPatternBuilder scanPatternBuilder;
+		private PulsedRFScanPatternBuilder2 scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
@@ -43,13 +43,13 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new PulsedRFScanPatternBuilder();
+			scanPatternBuilder = new PulsedRFScanPatternBuilder2();
 		}
 
 		protected override IPatternSource GetScanPattern()
 		{
 			// switch over to the scan pattern
-			scanPatternBuilder = new PulsedRFScanPatternBuilder();
+			scanPatternBuilder = new PulsedRFScanPatternBuilder2();
 			scanPatternBuilder.Clear();
 			scanPatternBuilder.ShotSequence(
 				(int)settings["padStart"],

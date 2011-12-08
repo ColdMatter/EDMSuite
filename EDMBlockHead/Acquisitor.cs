@@ -318,6 +318,11 @@ namespace EDMBlockHead.Acquire
             lf1Channel.Modulation = config.GetModulationByName("LF1");
             switchedChannels.Add(lf1Channel);
 
+            //AnalogSwitchedChannel lf2Channel = new AnalogSwitchedChannel();
+            //lf2Channel.Channel = "diodeRefCavity";
+            //lf2Channel.Modulation = config.GetModulationByName("LF2");
+            //switchedChannels.Add(lf2Channel);
+
         }
 
         #region Map Inputs
