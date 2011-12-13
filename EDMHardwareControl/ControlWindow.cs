@@ -750,6 +750,7 @@ namespace EDMHardwareControl
             this.clearAlertButton = new System.Windows.Forms.Button();
             this.alertTextBox = new System.Windows.Forms.TextBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.switchScanTTLSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.label97 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -766,7 +767,6 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.switchScanTTLSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -830,8 +830,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.tabPage9.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1609,6 +1609,7 @@ namespace EDMHardwareControl
             this.northLeakagePlot.AntiAliased = true;
             this.northLeakagePlot.HistoryCapacity = 10000;
             this.northLeakagePlot.LineColor = System.Drawing.Color.Crimson;
+            this.northLeakagePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.northLeakagePlot.LineWidth = 2F;
             this.northLeakagePlot.XAxis = this.xAxis1;
             this.northLeakagePlot.YAxis = this.yAxis1;
@@ -1616,13 +1617,13 @@ namespace EDMHardwareControl
             // xAxis1
             // 
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 500);
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0D, 500D);
             // 
             // yAxis1
             // 
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis1.OriginLineVisible = true;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(-20, 20);
+            this.yAxis1.Range = new NationalInstruments.UI.Range(-20D, 20D);
             // 
             // SouthLegendItem
             // 
@@ -1633,6 +1634,7 @@ namespace EDMHardwareControl
             // 
             this.southLeakagePlot.HistoryCapacity = 10000;
             this.southLeakagePlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southLeakagePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.southLeakagePlot.LineWidth = 2F;
             this.southLeakagePlot.XAxis = this.xAxis1;
             this.southLeakagePlot.YAxis = this.yAxis1;
@@ -3935,7 +3937,7 @@ namespace EDMHardwareControl
             // xAxis2
             // 
             this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis2.Range = new NationalInstruments.UI.Range(0, 500);
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
             // 
             // yAxis2
             // 
@@ -4246,6 +4248,15 @@ namespace EDMHardwareControl
             this.tabPage9.Text = "Misc";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
+            // switchScanTTLSwitch
+            // 
+            this.switchScanTTLSwitch.Location = new System.Drawing.Point(6, 6);
+            this.switchScanTTLSwitch.Name = "switchScanTTLSwitch";
+            this.switchScanTTLSwitch.Size = new System.Drawing.Size(64, 96);
+            this.switchScanTTLSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
+            this.switchScanTTLSwitch.TabIndex = 2;
+            this.switchScanTTLSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.switch1_StateChanged);
+            // 
             // label97
             // 
             this.label97.AutoSize = true;
@@ -4393,15 +4404,6 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
-            // switchScanTTLSwitch
-            // 
-            this.switchScanTTLSwitch.Location = new System.Drawing.Point(6, 6);
-            this.switchScanTTLSwitch.Name = "switchScanTTLSwitch";
-            this.switchScanTTLSwitch.Size = new System.Drawing.Size(64, 96);
-            this.switchScanTTLSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
-            this.switchScanTTLSwitch.TabIndex = 2;
-            this.switchScanTTLSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.switch1_StateChanged);
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -4413,8 +4415,8 @@ namespace EDMHardwareControl
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ControlWindow";
             this.Text = "EDM Hardware Control";
-            this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WindowClosing);
+            this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
@@ -4509,9 +4511,9 @@ namespace EDMHardwareControl
             this.tabPage7.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

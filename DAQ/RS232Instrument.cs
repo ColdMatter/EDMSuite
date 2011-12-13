@@ -11,39 +11,45 @@ namespace DAQ.HAL
     /// </summary>
     public class RS232Instrument
     {
-        SerialSession session;
-        string address;
+        protected SerialSession serial;
+        private string address;
+        protected bool connected = false;
 
         public RS232Instrument(String visaAddress)
         {
             this.address = visaAddress;
         }
 
-        public void Connect()
+        protected void Connect()
         {
             if (!Environs.Debug)
             {
-                session = new SerialSession(address);
-
+                if (!Environs.Debug)
+                {
+                    serial = new SerialSession(address);
+                    serial.BaudRate = 9600;
+                    serial.DataBits = 8;
+                    serial.StopBits = StopBitType.One;
+                    serial.ReadTermination = SerialTerminationMethod.LastBit;
+                }
+                connected = true;
             }
         }
 
-        public void Disconnect()
+        protected void Disconnect()
         {
-            if (!Environs.Debug)
-            {
-                session.Dispose();
-            }
+            if (!Environs.Debug) serial.Dispose();
+            connected = false;
         }
 
         protected void Write(String command)
         {
-            session.Write(command);
+            serial.Write(command);
         }
 
         protected string Read()
         {
-            return session.ReadString();
+            return serial.ReadString();
         }
     }
 }

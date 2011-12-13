@@ -54,12 +54,10 @@ namespace DAQ.HAL
             Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
-           
-
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
 
-            // add the GPIB instruments
+            // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
@@ -67,6 +65,7 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL2::INSTR"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
@@ -165,8 +164,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -5, 0);
-            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -10, 0);
+            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
 
             // B field control
             AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);

@@ -68,6 +68,7 @@ namespace EDMHardwareControl
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
         Agilent53131A rfCounter2 = (Agilent53131A)Environs.Hardware.Instruments["rfCounter2"];
         HP438A rfPower = (HP438A)Environs.Hardware.Instruments["rfPower"];
+        SerialDAQ bfieldCntrl = (SerialDAQ)Environs.Hardware.Instruments["BfieldController"];
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
         //LeakageMonitor northLeakageMonitor =
@@ -2173,17 +2174,28 @@ namespace EDMHardwareControl
             SetAnalogOutput(bBoxAnalogOutputTask, v);
         }
 
+        //public void SetSteppingBBiasVoltage()
+        //{
+        //    double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
+        //    SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
+        //}
+
         public void SetSteppingBBiasVoltage()
         {
             double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
-            SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
+            bfieldCntrl.SetOut1(bBoxVoltage);
         }
 
+        //public void SetSteppingBBiasVoltage(double v)
+        //{
+        //    window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
+        //    SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
+        //}
 
         public void SetSteppingBBiasVoltage(double v)
         {
             window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
-            SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
+            bfieldCntrl.SetOut1(v);
         }
 
         public void SetScramblerVoltage()
