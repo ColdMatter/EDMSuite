@@ -89,8 +89,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="LoadMagTrap.cs" />
     <Compile Include="MOTLoadingTime.cs" />
-    <Compile Include="MOTPattern.cs" />
+    <Compile Include="ReleaseRecapture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

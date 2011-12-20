@@ -15,20 +15,21 @@ from MOTMaster import*
 def run_script():
 	return 0
 
-def ScanLoadTime(initial, final, interval):
+def ScanReleaseTime(initial,final,interval):
 	count = 0
 	endcount = (final-initial)/interval
-	dic = Dictionary[String, Object]()
-	mm.SetScriptPath("C:\\Experiment Control\\EDMSuiteTrunk\\SympatheticMOTMasterScripts\\MOTLoadingTime.cs")
+	dic = Dictionary[String,Object]()
+	mm.SetScriptPath("C:\\Experiment Control\\EDMSuiteTrunk\\SympatheticMOTMasterScripts\\ReleaseRecapture.cs")
 	while(count < endcount+1):
-		dic["Frame0Trigger"] = initial + (count*interval)
+		dic["ReleaseTime"] = (count*interval)+initial
+		dic["Frame1Trigger"] = 100001 + (count*interval)+initial
 		mm.Run(dic)
-		count=count + 1
+		count = count + 1
 	return 0
 
 def RepeatScans(initial, final, interval, numberofrepeats):
 	j = 0
 	while(j < numberofrepeats):
-		ScanLoadTime(initial,final,interval)
+		ScanReleaseTime(initial,final,interval)
 		j = j+1
 	return 0

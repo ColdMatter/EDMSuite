@@ -21,7 +21,7 @@ namespace DAQ
                 "C:\\Experiment Control\\EDMSuiteTrunk\\MOTMaster\\bin\\Sympathetic\\");
             Paths.Add("UntriggeredCameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\SHCCameraAttributes.txt");
             Paths.Add("CameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\MOTMasterCameraAttributes.txt");
-            Paths.Add("HardwareClassPath", "C:\\Experiment Control\\EDMSuite\\DAQ\\PXISympatheticHardware.cs");
+            Paths.Add("HardwareClassPath", "C:\\Experiment Control\\EDMSuiteTrunk\\DAQ\\PXISympatheticHardware.cs");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
