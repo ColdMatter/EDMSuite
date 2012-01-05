@@ -98,7 +98,7 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
-            AddDigitalOutputChannel("ttl1", pgBoard, 2, 0); //Pin 23
+            AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58
             AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
 
 			// map the analog channels
