@@ -159,6 +159,8 @@ namespace SympatheticHardwareControl
             this.label9 = new System.Windows.Forms.Label();
             this.AutoTriggerCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.TSConnectButton = new System.Windows.Forms.Button();
+            this.RS232GroupBox = new System.Windows.Forms.GroupBox();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -177,6 +179,7 @@ namespace SympatheticHardwareControl
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.RS232GroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -648,6 +651,7 @@ namespace SympatheticHardwareControl
             // tabTranslationStage
             // 
             this.tabTranslationStage.Controls.Add(this.groupBox4);
+            this.tabTranslationStage.Controls.Add(this.RS232GroupBox);
             this.tabTranslationStage.Controls.Add(this.groupBox3);
             this.tabTranslationStage.Controls.Add(this.groupBox2);
             this.tabTranslationStage.Controls.Add(this.groupBox1);
@@ -661,6 +665,7 @@ namespace SympatheticHardwareControl
             // 
             // initParamsBox
             // 
+            this.initParamsBox.Controls.Add(this.TSInitButton);
             this.initParamsBox.Controls.Add(this.label9);
             this.initParamsBox.Controls.Add(this.label8);
             this.initParamsBox.Controls.Add(this.label7);
@@ -673,17 +678,16 @@ namespace SympatheticHardwareControl
             this.initParamsBox.Controls.Add(this.TSStepsTextBox);
             this.initParamsBox.Controls.Add(this.TSDecTextBox);
             this.initParamsBox.Controls.Add(this.TSAccTextBox);
-            this.initParamsBox.Controls.Add(this.TSInitButton);
-            this.initParamsBox.Location = new System.Drawing.Point(5, 10);
+            this.initParamsBox.Location = new System.Drawing.Point(5, 63);
             this.initParamsBox.Name = "initParamsBox";
-            this.initParamsBox.Size = new System.Drawing.Size(260, 158);
+            this.initParamsBox.Size = new System.Drawing.Size(260, 143);
             this.initParamsBox.TabIndex = 9;
             this.initParamsBox.TabStop = false;
             this.initParamsBox.Text = "Initialize parameters";
             // 
             // TSVelTextBox
             // 
-            this.TSVelTextBox.Location = new System.Drawing.Point(115, 97);
+            this.TSVelTextBox.Location = new System.Drawing.Point(115, 92);
             this.TSVelTextBox.Name = "TSVelTextBox";
             this.TSVelTextBox.Size = new System.Drawing.Size(100, 20);
             this.TSVelTextBox.TabIndex = 4;
@@ -691,7 +695,7 @@ namespace SympatheticHardwareControl
             // 
             // TSStepsTextBox
             // 
-            this.TSStepsTextBox.Location = new System.Drawing.Point(115, 71);
+            this.TSStepsTextBox.Location = new System.Drawing.Point(115, 67);
             this.TSStepsTextBox.Name = "TSStepsTextBox";
             this.TSStepsTextBox.Size = new System.Drawing.Size(100, 20);
             this.TSStepsTextBox.TabIndex = 3;
@@ -699,7 +703,7 @@ namespace SympatheticHardwareControl
             // 
             // TSDecTextBox
             // 
-            this.TSDecTextBox.Location = new System.Drawing.Point(115, 45);
+            this.TSDecTextBox.Location = new System.Drawing.Point(115, 41);
             this.TSDecTextBox.Name = "TSDecTextBox";
             this.TSDecTextBox.Size = new System.Drawing.Size(100, 20);
             this.TSDecTextBox.TabIndex = 2;
@@ -707,7 +711,7 @@ namespace SympatheticHardwareControl
             // 
             // TSAccTextBox
             // 
-            this.TSAccTextBox.Location = new System.Drawing.Point(115, 19);
+            this.TSAccTextBox.Location = new System.Drawing.Point(115, 15);
             this.TSAccTextBox.Name = "TSAccTextBox";
             this.TSAccTextBox.Size = new System.Drawing.Size(100, 20);
             this.TSAccTextBox.TabIndex = 1;
@@ -715,7 +719,7 @@ namespace SympatheticHardwareControl
             // 
             // TSInitButton
             // 
-            this.TSInitButton.Location = new System.Drawing.Point(12, 124);
+            this.TSInitButton.Location = new System.Drawing.Point(115, 114);
             this.TSInitButton.Name = "TSInitButton";
             this.TSInitButton.Size = new System.Drawing.Size(100, 23);
             this.TSInitButton.TabIndex = 0;
@@ -765,12 +769,13 @@ namespace SympatheticHardwareControl
             // 
             // disposeButton
             // 
-            this.disposeButton.Location = new System.Drawing.Point(6, 53);
+            this.disposeButton.Location = new System.Drawing.Point(115, 22);
             this.disposeButton.Name = "disposeButton";
-            this.disposeButton.Size = new System.Drawing.Size(75, 23);
+            this.disposeButton.Size = new System.Drawing.Size(100, 23);
             this.disposeButton.TabIndex = 4;
-            this.disposeButton.Text = "Dispose";
+            this.disposeButton.Text = "Disconnect";
             this.disposeButton.UseVisualStyleBackColor = true;
+            this.disposeButton.Click += new System.EventHandler(this.disposeButton_Click);
             // 
             // TSOffButton
             // 
@@ -957,7 +962,7 @@ namespace SympatheticHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 22);
+            this.label2.Location = new System.Drawing.Point(9, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 5;
@@ -966,7 +971,7 @@ namespace SympatheticHardwareControl
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 48);
+            this.label3.Location = new System.Drawing.Point(8, 46);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(67, 13);
             this.label3.TabIndex = 6;
@@ -975,7 +980,7 @@ namespace SympatheticHardwareControl
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 74);
+            this.label4.Location = new System.Drawing.Point(8, 72);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(90, 13);
             this.label4.TabIndex = 7;
@@ -984,7 +989,7 @@ namespace SympatheticHardwareControl
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 103);
+            this.label5.Location = new System.Drawing.Point(9, 98);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 13);
             this.label5.TabIndex = 8;
@@ -995,7 +1000,6 @@ namespace SympatheticHardwareControl
             this.groupBox1.Controls.Add(this.TSRestartButton);
             this.groupBox1.Controls.Add(this.TSOnButton);
             this.groupBox1.Controls.Add(this.TSOffButton);
-            this.groupBox1.Controls.Add(this.disposeButton);
             this.groupBox1.Location = new System.Drawing.Point(271, 10);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(174, 87);
@@ -1028,7 +1032,7 @@ namespace SympatheticHardwareControl
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(221, 24);
+            this.label6.Location = new System.Drawing.Point(221, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(31, 13);
             this.label6.TabIndex = 12;
@@ -1037,7 +1041,7 @@ namespace SympatheticHardwareControl
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(221, 48);
+            this.label7.Location = new System.Drawing.Point(221, 45);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(31, 13);
             this.label7.TabIndex = 13;
@@ -1046,7 +1050,7 @@ namespace SympatheticHardwareControl
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(221, 74);
+            this.label8.Location = new System.Drawing.Point(221, 72);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(15, 13);
             this.label8.TabIndex = 14;
@@ -1055,7 +1059,7 @@ namespace SympatheticHardwareControl
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(221, 100);
+            this.label9.Location = new System.Drawing.Point(221, 96);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(25, 13);
             this.label9.TabIndex = 15;
@@ -1083,6 +1087,27 @@ namespace SympatheticHardwareControl
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Triggering";
+            // 
+            // TSConnectButton
+            // 
+            this.TSConnectButton.Location = new System.Drawing.Point(9, 22);
+            this.TSConnectButton.Name = "TSConnectButton";
+            this.TSConnectButton.Size = new System.Drawing.Size(100, 23);
+            this.TSConnectButton.TabIndex = 16;
+            this.TSConnectButton.Text = "Connect";
+            this.TSConnectButton.UseVisualStyleBackColor = true;
+            this.TSConnectButton.Click += new System.EventHandler(this.TSConnectButton_Click);
+            // 
+            // RS232GroupBox
+            // 
+            this.RS232GroupBox.Controls.Add(this.TSConnectButton);
+            this.RS232GroupBox.Controls.Add(this.disposeButton);
+            this.RS232GroupBox.Location = new System.Drawing.Point(5, 3);
+            this.RS232GroupBox.Name = "RS232GroupBox";
+            this.RS232GroupBox.Size = new System.Drawing.Size(257, 55);
+            this.RS232GroupBox.TabIndex = 16;
+            this.RS232GroupBox.TabStop = false;
+            this.RS232GroupBox.Text = "RS232";
             // 
             // ControlWindow
             // 
@@ -1126,6 +1151,7 @@ namespace SympatheticHardwareControl
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.RS232GroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1255,6 +1281,35 @@ namespace SympatheticHardwareControl
         private ToolStripMenuItem openImageViewerToolStripMenuItem;
         private Button streamButton;
         private Button stopStreamButton;
+        private TabPage tabTranslationStage;
+        private Button TSOnButton;
+        private Button TSInitButton;
+        private Button TSOffButton;
+        private Button TSGoButton;
+        private Button disposeButton;
+        private Button read;
+        private Button TSReturnButton;
+        private Button TSClearButton;
+        private Button TSRestartButton;
+        private GroupBox initParamsBox;
+        private TextBox TSVelTextBox;
+        private TextBox TSStepsTextBox;
+        private TextBox TSDecTextBox;
+        private TextBox TSAccTextBox;
+        private GroupBox groupBox3;
+        private GroupBox groupBox2;
+        private GroupBox groupBox1;
+        private Label label5;
+        private Label label4;
+        private Label label3;
+        private Label label2;
+        private Label label9;
+        private Label label8;
+        private Label label7;
+        private Label label6;
+        private GroupBox groupBox4;
+        private CheckBox AutoTriggerCheckBox;
+        private Button TSConnectButton;
 
         #endregion
 
@@ -1282,7 +1337,69 @@ namespace SympatheticHardwareControl
         {
             controller.LoadParametersWithDialog();
         }
+        private void TSInitButton_Click(object sender, EventArgs e)
+        {
+            controller.TSInitialize(double.Parse(TSAccTextBox.Text), double.Parse(TSDecTextBox.Text),
+                double.Parse(TSStepsTextBox.Text), double.Parse(TSVelTextBox.Text));
+        }
 
+        private void TSOnButton_Click(object sender, EventArgs e)
+        {
+
+            controller.TSOn();
+        }
+
+        private void TSGoButton_Click(object sender, EventArgs e)
+        {
+            controller.TSGo();
+        }
+
+        private void TSOffButton_Click(object sender, EventArgs e)
+        {
+            controller.TSOff();
+        }
+
+        private void read_Click(object sender, EventArgs e)
+        {
+            controller.TSRead();
+        }
+
+        private void TSReturnButton_Click(object sender, EventArgs e)
+        {
+            controller.TSReturn();
+        }
+
+
+
+        private void TSRestartButton_Click(object sender, EventArgs e)
+        {
+            controller.TSRestart();
+        }
+
+        private void TSClearButton_Click(object sender, EventArgs e)
+        {
+            controller.TSClear();
+        }
+        private void disposeButton_Click(object sender, EventArgs e)
+        {
+            controller.TSDisconnect();
+        }
+
+        private void TSConnectButton_Click(object sender, EventArgs e)
+        {
+            controller.TSConnect();
+        }
+        private void AutoTriggerCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AutoTriggerCheckBox.Checked)
+            {
+                controller.TSAutoTriggerEnable();
+            }
+            if (!AutoTriggerCheckBox.Checked)
+            {
+                controller.TSAutoTriggerDisable();
+            }
+        }
         #endregion
 
         #region Public properties for controlling UI.
@@ -1373,91 +1490,10 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        private TabPage tabTranslationStage;
-        private Button TSOnButton;
-        private Button TSInitButton;
-        private Button TSOffButton;
-        private Button TSGoButton;
-        private Button disposeButton;
-        private Button read;
-        private Button TSReturnButton;
+        private GroupBox RS232GroupBox;
+
+
         
-        private void TSInitButton_Click(object sender, EventArgs e)
-        {
-            controller.TSInitialize(double.Parse(TSAccTextBox.Text), double.Parse(TSDecTextBox.Text), 
-                double.Parse(TSStepsTextBox.Text), double.Parse(TSVelTextBox.Text));
-        }
-
-        private void TSOnButton_Click(object sender, EventArgs e)
-        {
-
-            controller.TSOn();
-        }
-
-        private void TSGoButton_Click(object sender, EventArgs e)
-        {
-            controller.TSGo();
-        }
-
-        private void TSOffButton_Click(object sender, EventArgs e)
-        {
-            controller.TSOff();
-        }
-
-        private void read_Click(object sender, EventArgs e)
-        {
-            controller.TSRead();
-        }
-        
-        private void TSReturnButton_Click(object sender, EventArgs e)
-        {
-            controller.TSReturn();
-        }
-
-       
-
-        private void TSRestartButton_Click(object sender, EventArgs e)
-        {
-            controller.TSRestart();
-        }
-
-        private void TSClearButton_Click(object sender, EventArgs e)
-        {
-            controller.TSClear();
-        }
-
-        private Button TSClearButton;
-        private Button TSRestartButton;
-        private GroupBox initParamsBox;
-        private TextBox TSVelTextBox;
-        private TextBox TSStepsTextBox;
-        private TextBox TSDecTextBox;
-        private TextBox TSAccTextBox;
-        private GroupBox groupBox3;
-        private GroupBox groupBox2;
-        private GroupBox groupBox1;
-        private Label label5;
-        private Label label4;
-        private Label label3;
-        private Label label2;
-        private Label label9;
-        private Label label8;
-        private Label label7;
-        private Label label6;
-        private GroupBox groupBox4;
-        private CheckBox AutoTriggerCheckBox;
-
-        private void AutoTriggerCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (AutoTriggerCheckBox.Checked)
-            {
-                controller.TSAutoTriggerEnable();
-            }
-            if (!AutoTriggerCheckBox.Checked)
-            {
-                controller.TSAutoTriggerDisable();
-            }
-        }
 
     
 

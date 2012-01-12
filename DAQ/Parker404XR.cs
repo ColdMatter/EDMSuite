@@ -10,13 +10,16 @@ namespace DAQ.HAL
         bool autoTrigger;
         public Parker404XR(String visaAddress, String initFile): base(visaAddress)
         {
-            this.initFile = initFile;
+            this.initFile = initFile; 
+        }
+        public void Connect()
+        {
             base.Connect(SerialTerminationMethod.TerminationCharacter);
             autoTrigger = true;
         }
-
         public void Initialize(double acceleration, double deceleration, double distance, double velocity)
         {
+            
             //I just hacked the example program built using EASY-V, and examples . I don't know what most of these do. A command reference can be found in the manual for the VIX500.
             base.Write("1K\r\n");
             base.Write("1CLEAR(ALL)\r\n");
@@ -146,7 +149,7 @@ namespace DAQ.HAL
             autoTrigger = false;
             
         }
-        public void Dispose()
+        public void Disconnect()
         {
             base.Disconnect();
         }

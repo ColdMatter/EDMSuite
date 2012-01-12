@@ -304,6 +304,7 @@
     </Compile>
     <Compile Include="TransferCavity2012Lockable.cs" />
     <Compile Include="TransferCavityLockable.cs" />
+    <Compile Include="TranslationStageControllable.cs" />
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -69,6 +69,7 @@ namespace MOTMaster
         DAQMxAnalogPatternGenerator apg;
 
         CameraControllable camera;
+        TranslationStageControllable tstage;
         ExperimentReportable experimentReporter;
 
         MMDataIOHelper ioHelper;
@@ -95,6 +96,9 @@ namespace MOTMaster
             apg = new DAQMxAnalogPatternGenerator();
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+                "tcp://localhost:1172/controller.rem");
+
+            tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
 
             experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
@@ -242,6 +246,8 @@ namespace MOTMaster
                 {
                     prepareCameraControl();
 
+                    armTranslationStageForTimedMotion(script);
+
                     GrabImage((int)script.Parameters["NumberOfFrames"]);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
@@ -269,6 +275,7 @@ namespace MOTMaster
 
                     }
                     finishCameraControl();
+                    disarmAndReturnTranslationStage();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -478,6 +485,30 @@ namespace MOTMaster
         }
 
         
+        #endregion
+
+        #region Translation stage
+        private void armTranslationStageForTimedMotion(MOTMasterScript script)
+        {
+            tstage.TSConnect();
+            Thread.Sleep(50);
+            tstage.TSInitialize((double)script.Parameters["TSAcceleration"], (double)script.Parameters["TSDeceleration"],
+                (double)script.Parameters["TSDistance"], (double)script.Parameters["TSVelocity"]);
+            Thread.Sleep(50);
+            tstage.TSOn();
+            Thread.Sleep(50);
+            tstage.TSAutoTriggerDisable();
+            Thread.Sleep(50);
+            tstage.TSGo();
+        }
+        private void disarmAndReturnTranslationStage()
+        {
+            tstage.TSAutoTriggerEnable();
+            Thread.Sleep(50);
+            tstage.TSReturn();
+            Thread.Sleep(50);
+            tstage.TSDisconnect();
+        }
         #endregion
 
         #region Re-Running a script (intended for reloading old scripts)

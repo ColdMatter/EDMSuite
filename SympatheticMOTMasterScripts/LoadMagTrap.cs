@@ -32,6 +32,11 @@ public class Patterns : MOTMasterScript
         Parameters["CameraExposure"] = 20; // NOTE this does not change the camera exposure time, you have to change the 
                                            // value in the camera attributes file, this is used to switch the Zeeman light
                                            // when an image is taken. 
+        Parameters["TSAcceleration"] = 50.0;
+        Parameters["TSDeceleration"] = 50.0;
+        Parameters["TSDistance"] = 100000.0;
+        Parameters["TSVelocity"] = 50.0;
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -41,6 +46,8 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);  // This is how you load "preset" patterns.
 
         p.Pulse(0, 0, 1, "AnalogPatternTrigger");  //NEVER CHANGE THIS!!!! IT TRIGGERS THE ANALOG PATTERN!
+
+        p.Pulse(40000, 0, 100000, "TranslationStageTrigger");
 
         p.AddEdge("CameraTrigger", 0, true);
         p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["Frame0TriggerDuration"], "CameraTrigger");

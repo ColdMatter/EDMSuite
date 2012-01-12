@@ -49,9 +49,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("aom2enable", multiDAQ, 0, 2);
             AddDigitalOutputChannel("aom3enable", multiDAQ, 0, 3);
 
+            
             AddDigitalOutputChannel("CameraTrigger", multiDAQ, 0, 4);
             AddDigitalOutputChannel("AnalogPatternTrigger", multiDAQ, 0, 5);
-
+            AddDigitalOutputChannel("TranslationStageTrigger", multiDAQ, 0, 6);
             
             /*
             //Control of molecules

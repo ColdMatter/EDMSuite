@@ -58,7 +58,7 @@ namespace SympatheticHardwareControl
     /// like: "what was the source chamber pressure when we took this data?". At the moment, the hardware state is also included in the report.
     /// 
     /// </summary>
-    public class Controller : MarshalByRefObject, CameraControllable, ExperimentReportable
+    public class Controller : MarshalByRefObject, CameraControllable, ExperimentReportable, TranslationStageControllable
     {
         #region Constants
         //Put any constants and stuff here
@@ -801,6 +801,10 @@ namespace SympatheticHardwareControl
 
         #region Translation Stage
 
+        public void TSConnect()
+        {
+            tstage.Connect();
+        }
         public void TSInitialize(double acceleration, double deceleration, double distance, double velocity)
         {
             tstage.Initialize(acceleration, deceleration, distance, velocity);
@@ -847,6 +851,10 @@ namespace SympatheticHardwareControl
         public void TSAutoTriggerDisable()
         {
             tstage.AutoTriggerDisable();
+        }
+        public void TSDisconnect()
+        {
+            tstage.Disconnect();
         }
         #endregion
 
