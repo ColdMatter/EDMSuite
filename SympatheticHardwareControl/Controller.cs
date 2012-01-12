@@ -83,7 +83,7 @@ namespace SympatheticHardwareControl
 
         // Declare that there will be a controlWindow
         ControlWindow controlWindow;
-        
+        Parker404XR tstage;
         HardwareMonitorWindow monitorWindow;
 
         //private bool sHCUIControl;
@@ -119,8 +119,8 @@ namespace SympatheticHardwareControl
             stateRecord = new hardwareState();
             stateRecord.analogs = new Dictionary<string, double>();
             stateRecord.digitals = new Dictionary<string, bool>();
-            
 
+            tstage = new Parker404XR("ASRL1::INSTR", profilesPath + "TranslationStageInitFile.txt");
             CreateDigitalTask("aom0enable");
             CreateDigitalTask("aom1enable");
             CreateDigitalTask("aom2enable");
@@ -799,7 +799,56 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        
+        #region Translation Stage
+
+        public void TSInitialize(double acceleration, double deceleration, double distance, double velocity)
+        {
+            tstage.Initialize(acceleration, deceleration, distance, velocity);
+        }
+
+        public void TSOn()
+        {
+            tstage.On();
+        }
+
+        public void TSGo()
+        {
+            tstage.Move();
+        }
+
+        public void TSOff()
+        {
+            tstage.DisarmMove();
+        }
+
+        public void TSRead()
+        {
+            controlWindow.WriteToConsole(tstage.Read());
+        }
+
+        public void TSReturn()
+        {
+            tstage.Return();
+        }
+
+        public void TSRestart()
+        {
+            tstage.Restart();
+        }
+
+        public void TSClear()
+        {
+            tstage.Clear();
+        }
+        public void TSAutoTriggerEnable()
+        {
+            tstage.AutoTriggerEnable();
+        }
+        public void TSAutoTriggerDisable()
+        {
+            tstage.AutoTriggerDisable();
+        }
+        #endregion
 
         #region Hardware Monitor
 

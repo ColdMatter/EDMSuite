@@ -22,6 +22,10 @@ namespace DAQ.HAL
 
         protected void Connect()
         {
+            Connect(SerialTerminationMethod.LastBit);
+        }
+        protected void Connect(SerialTerminationMethod method)
+        {
             if (!Environs.Debug)
             {
                 if (!Environs.Debug)
@@ -30,7 +34,7 @@ namespace DAQ.HAL
                     serial.BaudRate = 9600;
                     serial.DataBits = 8;
                     serial.StopBits = StopBitType.One;
-                    serial.ReadTermination = SerialTerminationMethod.LastBit;
+                    serial.ReadTermination = method;
                 }
                 connected = true;
             }
@@ -49,7 +53,19 @@ namespace DAQ.HAL
 
         protected string Read()
         {
-            return serial.ReadString();
+            string str = "Read failed";
+            try
+            {
+                str = serial.ReadString();
+            }
+            catch 
+            {
+            }
+            return str;
+        }
+        protected void Clear()
+        {
+            serial.Clear();
         }
     }
 }
