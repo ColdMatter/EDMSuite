@@ -155,6 +155,7 @@
     <Compile Include="BrilliantLaser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BufferClassicHardware.cs" />
     <Compile Include="BufferGasHardware.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +170,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Parker404XR.cs" />
+    <Compile Include="PHRHENDRIC02FileSystem.cs" />
     <Compile Include="SerialDAQ.cs" />
     <Compile Include="DAQMxAnalogPatternGenerator.cs" />
     <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />

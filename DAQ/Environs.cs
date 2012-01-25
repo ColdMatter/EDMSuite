@@ -181,6 +181,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-RHENDRIC-02":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new PHRHENDRIC02FileSystem();
+                    Debug = false;
+                    break;
+
                 case "PH-LAB10PC":
                     Hardware = new SympatheticHardware();
                     FileSystem = new Lab10PCFileSystem();
