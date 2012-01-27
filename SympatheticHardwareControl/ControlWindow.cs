@@ -113,20 +113,35 @@ namespace SympatheticHardwareControl
             this.coil0CurrentTextBox = new System.Windows.Forms.TextBox();
             this.coil0Label0 = new System.Windows.Forms.Label();
             this.tabTranslationStage = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.AutoTriggerCheckBox = new System.Windows.Forms.CheckBox();
+            this.RS232GroupBox = new System.Windows.Forms.GroupBox();
+            this.TSConnectButton = new System.Windows.Forms.Button();
+            this.disposeButton = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.read = new System.Windows.Forms.Button();
+            this.TSClearButton = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.TSGoButton = new System.Windows.Forms.Button();
+            this.TSReturnButton = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TSRestartButton = new System.Windows.Forms.Button();
+            this.TSOnButton = new System.Windows.Forms.Button();
+            this.TSOffButton = new System.Windows.Forms.Button();
             this.initParamsBox = new System.Windows.Forms.GroupBox();
+            this.TSInitButton = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.TSVelTextBox = new System.Windows.Forms.TextBox();
             this.TSStepsTextBox = new System.Windows.Forms.TextBox();
             this.TSDecTextBox = new System.Windows.Forms.TextBox();
             this.TSAccTextBox = new System.Windows.Forms.TextBox();
-            this.TSInitButton = new System.Windows.Forms.Button();
-            this.TSClearButton = new System.Windows.Forms.Button();
-            this.TSRestartButton = new System.Windows.Forms.Button();
-            this.TSReturnButton = new System.Windows.Forms.Button();
-            this.read = new System.Windows.Forms.Button();
-            this.disposeButton = new System.Windows.Forms.Button();
-            this.TSOffButton = new System.Windows.Forms.Button();
-            this.TSGoButton = new System.Windows.Forms.Button();
-            this.TSOnButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -146,21 +161,8 @@ namespace SympatheticHardwareControl
             this.label1 = new System.Windows.Forms.Label();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.AutoTriggerCheckBox = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.TSConnectButton = new System.Windows.Forms.Button();
-            this.RS232GroupBox = new System.Windows.Forms.GroupBox();
+            this.TSHomeButton = new System.Windows.Forms.Button();
+            this.checkStatusButton = new System.Windows.Forms.Button();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -172,14 +174,14 @@ namespace SympatheticHardwareControl
             this.coil1GroupBox.SuspendLayout();
             this.coil0GroupBox.SuspendLayout();
             this.tabTranslationStage.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.RS232GroupBox.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.initParamsBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.RS232GroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -663,6 +665,166 @@ namespace SympatheticHardwareControl
             this.tabTranslationStage.Text = "Translation Stage Control";
             this.tabTranslationStage.UseVisualStyleBackColor = true;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.AutoTriggerCheckBox);
+            this.groupBox4.Location = new System.Drawing.Point(558, 7);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(90, 46);
+            this.groupBox4.TabIndex = 13;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Triggering";
+            // 
+            // AutoTriggerCheckBox
+            // 
+            this.AutoTriggerCheckBox.AutoSize = true;
+            this.AutoTriggerCheckBox.Checked = true;
+            this.AutoTriggerCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.AutoTriggerCheckBox.Location = new System.Drawing.Point(6, 22);
+            this.AutoTriggerCheckBox.Name = "AutoTriggerCheckBox";
+            this.AutoTriggerCheckBox.Size = new System.Drawing.Size(81, 17);
+            this.AutoTriggerCheckBox.TabIndex = 12;
+            this.AutoTriggerCheckBox.Text = "AutoTrigger";
+            this.AutoTriggerCheckBox.UseVisualStyleBackColor = true;
+            this.AutoTriggerCheckBox.CheckedChanged += new System.EventHandler(this.AutoTriggerCheckBox_CheckedChanged);
+            // 
+            // RS232GroupBox
+            // 
+            this.RS232GroupBox.Controls.Add(this.TSConnectButton);
+            this.RS232GroupBox.Controls.Add(this.disposeButton);
+            this.RS232GroupBox.Location = new System.Drawing.Point(5, 3);
+            this.RS232GroupBox.Name = "RS232GroupBox";
+            this.RS232GroupBox.Size = new System.Drawing.Size(260, 55);
+            this.RS232GroupBox.TabIndex = 16;
+            this.RS232GroupBox.TabStop = false;
+            this.RS232GroupBox.Text = "RS232";
+            // 
+            // TSConnectButton
+            // 
+            this.TSConnectButton.Location = new System.Drawing.Point(9, 22);
+            this.TSConnectButton.Name = "TSConnectButton";
+            this.TSConnectButton.Size = new System.Drawing.Size(100, 23);
+            this.TSConnectButton.TabIndex = 16;
+            this.TSConnectButton.Text = "Connect";
+            this.TSConnectButton.UseVisualStyleBackColor = true;
+            this.TSConnectButton.Click += new System.EventHandler(this.TSConnectButton_Click);
+            // 
+            // disposeButton
+            // 
+            this.disposeButton.Location = new System.Drawing.Point(115, 22);
+            this.disposeButton.Name = "disposeButton";
+            this.disposeButton.Size = new System.Drawing.Size(100, 23);
+            this.disposeButton.TabIndex = 4;
+            this.disposeButton.Text = "Disconnect";
+            this.disposeButton.UseVisualStyleBackColor = true;
+            this.disposeButton.Click += new System.EventHandler(this.disposeButton_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.checkStatusButton);
+            this.groupBox3.Controls.Add(this.read);
+            this.groupBox3.Controls.Add(this.TSClearButton);
+            this.groupBox3.Location = new System.Drawing.Point(271, 132);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(278, 46);
+            this.groupBox3.TabIndex = 7;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Console";
+            // 
+            // read
+            // 
+            this.read.Location = new System.Drawing.Point(6, 17);
+            this.read.Name = "read";
+            this.read.Size = new System.Drawing.Size(83, 23);
+            this.read.TabIndex = 5;
+            this.read.Text = "Read";
+            this.read.UseVisualStyleBackColor = true;
+            this.read.Click += new System.EventHandler(this.read_Click);
+            // 
+            // TSClearButton
+            // 
+            this.TSClearButton.Location = new System.Drawing.Point(183, 17);
+            this.TSClearButton.Name = "TSClearButton";
+            this.TSClearButton.Size = new System.Drawing.Size(83, 23);
+            this.TSClearButton.TabIndex = 8;
+            this.TSClearButton.Text = "Clear";
+            this.TSClearButton.UseVisualStyleBackColor = true;
+            this.TSClearButton.Click += new System.EventHandler(this.TSClearButton_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.TSHomeButton);
+            this.groupBox2.Controls.Add(this.TSGoButton);
+            this.groupBox2.Controls.Add(this.TSReturnButton);
+            this.groupBox2.Location = new System.Drawing.Point(271, 70);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(278, 54);
+            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Motion";
+            // 
+            // TSGoButton
+            // 
+            this.TSGoButton.Location = new System.Drawing.Point(6, 19);
+            this.TSGoButton.Name = "TSGoButton";
+            this.TSGoButton.Size = new System.Drawing.Size(83, 23);
+            this.TSGoButton.TabIndex = 2;
+            this.TSGoButton.Text = "Go";
+            this.TSGoButton.UseVisualStyleBackColor = true;
+            this.TSGoButton.Click += new System.EventHandler(this.TSGoButton_Click);
+            // 
+            // TSReturnButton
+            // 
+            this.TSReturnButton.Location = new System.Drawing.Point(95, 19);
+            this.TSReturnButton.Name = "TSReturnButton";
+            this.TSReturnButton.Size = new System.Drawing.Size(83, 23);
+            this.TSReturnButton.TabIndex = 6;
+            this.TSReturnButton.Text = "Return";
+            this.TSReturnButton.UseVisualStyleBackColor = true;
+            this.TSReturnButton.Click += new System.EventHandler(this.TSReturnButton_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.TSRestartButton);
+            this.groupBox1.Controls.Add(this.TSOnButton);
+            this.groupBox1.Controls.Add(this.TSOffButton);
+            this.groupBox1.Location = new System.Drawing.Point(271, 7);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(277, 56);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Enable";
+            // 
+            // TSRestartButton
+            // 
+            this.TSRestartButton.Location = new System.Drawing.Point(183, 19);
+            this.TSRestartButton.Name = "TSRestartButton";
+            this.TSRestartButton.Size = new System.Drawing.Size(83, 23);
+            this.TSRestartButton.TabIndex = 7;
+            this.TSRestartButton.Text = "Restart";
+            this.TSRestartButton.UseVisualStyleBackColor = true;
+            this.TSRestartButton.Click += new System.EventHandler(this.TSRestartButton_Click);
+            // 
+            // TSOnButton
+            // 
+            this.TSOnButton.Location = new System.Drawing.Point(6, 19);
+            this.TSOnButton.Name = "TSOnButton";
+            this.TSOnButton.Size = new System.Drawing.Size(83, 23);
+            this.TSOnButton.TabIndex = 1;
+            this.TSOnButton.Text = "On";
+            this.TSOnButton.UseVisualStyleBackColor = true;
+            this.TSOnButton.Click += new System.EventHandler(this.TSOnButton_Click);
+            // 
+            // TSOffButton
+            // 
+            this.TSOffButton.Location = new System.Drawing.Point(95, 19);
+            this.TSOffButton.Name = "TSOffButton";
+            this.TSOffButton.Size = new System.Drawing.Size(83, 23);
+            this.TSOffButton.TabIndex = 3;
+            this.TSOffButton.Text = "Off";
+            this.TSOffButton.UseVisualStyleBackColor = true;
+            this.TSOffButton.Click += new System.EventHandler(this.TSOffButton_Click);
+            // 
             // initParamsBox
             // 
             this.initParamsBox.Controls.Add(this.TSInitButton);
@@ -684,6 +846,89 @@ namespace SympatheticHardwareControl
             this.initParamsBox.TabIndex = 9;
             this.initParamsBox.TabStop = false;
             this.initParamsBox.Text = "Initialize parameters";
+            // 
+            // TSInitButton
+            // 
+            this.TSInitButton.Location = new System.Drawing.Point(115, 114);
+            this.TSInitButton.Name = "TSInitButton";
+            this.TSInitButton.Size = new System.Drawing.Size(100, 23);
+            this.TSInitButton.TabIndex = 0;
+            this.TSInitButton.Text = "Initialize";
+            this.TSInitButton.UseVisualStyleBackColor = true;
+            this.TSInitButton.Click += new System.EventHandler(this.TSInitButton_Click);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(218, 98);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "mm/s";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(218, 72);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(23, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "mm";
+            this.label8.Click += new System.EventHandler(this.label8_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(218, 46);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(39, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "mm/s2";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(218, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(39, 13);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "mm/s2";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 98);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(44, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Velocity";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 72);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Distance to travel";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 46);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Deceleration";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Acceleration";
             // 
             // TSVelTextBox
             // 
@@ -716,96 +961,6 @@ namespace SympatheticHardwareControl
             this.TSAccTextBox.Size = new System.Drawing.Size(100, 20);
             this.TSAccTextBox.TabIndex = 1;
             this.TSAccTextBox.Text = "50";
-            // 
-            // TSInitButton
-            // 
-            this.TSInitButton.Location = new System.Drawing.Point(115, 114);
-            this.TSInitButton.Name = "TSInitButton";
-            this.TSInitButton.Size = new System.Drawing.Size(100, 23);
-            this.TSInitButton.TabIndex = 0;
-            this.TSInitButton.Text = "Initialize";
-            this.TSInitButton.UseVisualStyleBackColor = true;
-            this.TSInitButton.Click += new System.EventHandler(this.TSInitButton_Click);
-            // 
-            // TSClearButton
-            // 
-            this.TSClearButton.Location = new System.Drawing.Point(87, 17);
-            this.TSClearButton.Name = "TSClearButton";
-            this.TSClearButton.Size = new System.Drawing.Size(75, 23);
-            this.TSClearButton.TabIndex = 8;
-            this.TSClearButton.Text = "Clear";
-            this.TSClearButton.UseVisualStyleBackColor = true;
-            this.TSClearButton.Click += new System.EventHandler(this.TSClearButton_Click);
-            // 
-            // TSRestartButton
-            // 
-            this.TSRestartButton.Location = new System.Drawing.Point(6, 19);
-            this.TSRestartButton.Name = "TSRestartButton";
-            this.TSRestartButton.Size = new System.Drawing.Size(75, 23);
-            this.TSRestartButton.TabIndex = 7;
-            this.TSRestartButton.Text = "Restart";
-            this.TSRestartButton.UseVisualStyleBackColor = true;
-            this.TSRestartButton.Click += new System.EventHandler(this.TSRestartButton_Click);
-            // 
-            // TSReturnButton
-            // 
-            this.TSReturnButton.Location = new System.Drawing.Point(87, 19);
-            this.TSReturnButton.Name = "TSReturnButton";
-            this.TSReturnButton.Size = new System.Drawing.Size(75, 23);
-            this.TSReturnButton.TabIndex = 6;
-            this.TSReturnButton.Text = "Return";
-            this.TSReturnButton.UseVisualStyleBackColor = true;
-            this.TSReturnButton.Click += new System.EventHandler(this.TSReturnButton_Click);
-            // 
-            // read
-            // 
-            this.read.Location = new System.Drawing.Point(6, 17);
-            this.read.Name = "read";
-            this.read.Size = new System.Drawing.Size(75, 23);
-            this.read.TabIndex = 5;
-            this.read.Text = "Read";
-            this.read.UseVisualStyleBackColor = true;
-            this.read.Click += new System.EventHandler(this.read_Click);
-            // 
-            // disposeButton
-            // 
-            this.disposeButton.Location = new System.Drawing.Point(115, 22);
-            this.disposeButton.Name = "disposeButton";
-            this.disposeButton.Size = new System.Drawing.Size(100, 23);
-            this.disposeButton.TabIndex = 4;
-            this.disposeButton.Text = "Disconnect";
-            this.disposeButton.UseVisualStyleBackColor = true;
-            this.disposeButton.Click += new System.EventHandler(this.disposeButton_Click);
-            // 
-            // TSOffButton
-            // 
-            this.TSOffButton.Location = new System.Drawing.Point(87, 53);
-            this.TSOffButton.Name = "TSOffButton";
-            this.TSOffButton.Size = new System.Drawing.Size(75, 23);
-            this.TSOffButton.TabIndex = 3;
-            this.TSOffButton.Text = "Off";
-            this.TSOffButton.UseVisualStyleBackColor = true;
-            this.TSOffButton.Click += new System.EventHandler(this.TSOffButton_Click);
-            // 
-            // TSGoButton
-            // 
-            this.TSGoButton.Location = new System.Drawing.Point(6, 19);
-            this.TSGoButton.Name = "TSGoButton";
-            this.TSGoButton.Size = new System.Drawing.Size(75, 23);
-            this.TSGoButton.TabIndex = 2;
-            this.TSGoButton.Text = "Go";
-            this.TSGoButton.UseVisualStyleBackColor = true;
-            this.TSGoButton.Click += new System.EventHandler(this.TSGoButton_Click);
-            // 
-            // TSOnButton
-            // 
-            this.TSOnButton.Location = new System.Drawing.Point(87, 19);
-            this.TSOnButton.Name = "TSOnButton";
-            this.TSOnButton.Size = new System.Drawing.Size(75, 23);
-            this.TSOnButton.TabIndex = 1;
-            this.TSOnButton.Text = "On";
-            this.TSOnButton.UseVisualStyleBackColor = true;
-            this.TSOnButton.Click += new System.EventHandler(this.TSOnButton_Click);
             // 
             // button1
             // 
@@ -959,155 +1114,25 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
             // 
-            // label2
+            // TSHomeButton
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 20);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Acceleration";
+            this.TSHomeButton.Location = new System.Drawing.Point(183, 19);
+            this.TSHomeButton.Name = "TSHomeButton";
+            this.TSHomeButton.Size = new System.Drawing.Size(83, 23);
+            this.TSHomeButton.TabIndex = 17;
+            this.TSHomeButton.Text = "Home";
+            this.TSHomeButton.UseVisualStyleBackColor = true;
+            this.TSHomeButton.Click += new System.EventHandler(this.TSHomeButton_Click);
             // 
-            // label3
+            // checkStatusButton
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 46);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Deceleration";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 72);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Distance to travel";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 98);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Velocity";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.TSRestartButton);
-            this.groupBox1.Controls.Add(this.TSOnButton);
-            this.groupBox1.Controls.Add(this.TSOffButton);
-            this.groupBox1.Location = new System.Drawing.Point(271, 10);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(174, 87);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Enable";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.TSGoButton);
-            this.groupBox2.Controls.Add(this.TSReturnButton);
-            this.groupBox2.Location = new System.Drawing.Point(271, 103);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(174, 54);
-            this.groupBox2.TabIndex = 11;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Motion";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.read);
-            this.groupBox3.Controls.Add(this.TSClearButton);
-            this.groupBox3.Location = new System.Drawing.Point(271, 160);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(174, 46);
-            this.groupBox3.TabIndex = 7;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Console";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(221, 20);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(31, 13);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "m/s2";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(221, 45);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 13);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "m/s2";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(221, 72);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(15, 13);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "m";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(221, 96);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(25, 13);
-            this.label9.TabIndex = 15;
-            this.label9.Text = "m/s";
-            // 
-            // AutoTriggerCheckBox
-            // 
-            this.AutoTriggerCheckBox.AutoSize = true;
-            this.AutoTriggerCheckBox.Checked = true;
-            this.AutoTriggerCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AutoTriggerCheckBox.Location = new System.Drawing.Point(6, 22);
-            this.AutoTriggerCheckBox.Name = "AutoTriggerCheckBox";
-            this.AutoTriggerCheckBox.Size = new System.Drawing.Size(81, 17);
-            this.AutoTriggerCheckBox.TabIndex = 12;
-            this.AutoTriggerCheckBox.Text = "AutoTrigger";
-            this.AutoTriggerCheckBox.UseVisualStyleBackColor = true;
-            this.AutoTriggerCheckBox.CheckedChanged += new System.EventHandler(this.AutoTriggerCheckBox_CheckedChanged);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.AutoTriggerCheckBox);
-            this.groupBox4.Location = new System.Drawing.Point(451, 10);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(200, 46);
-            this.groupBox4.TabIndex = 13;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Triggering";
-            // 
-            // TSConnectButton
-            // 
-            this.TSConnectButton.Location = new System.Drawing.Point(9, 22);
-            this.TSConnectButton.Name = "TSConnectButton";
-            this.TSConnectButton.Size = new System.Drawing.Size(100, 23);
-            this.TSConnectButton.TabIndex = 16;
-            this.TSConnectButton.Text = "Connect";
-            this.TSConnectButton.UseVisualStyleBackColor = true;
-            this.TSConnectButton.Click += new System.EventHandler(this.TSConnectButton_Click);
-            // 
-            // RS232GroupBox
-            // 
-            this.RS232GroupBox.Controls.Add(this.TSConnectButton);
-            this.RS232GroupBox.Controls.Add(this.disposeButton);
-            this.RS232GroupBox.Location = new System.Drawing.Point(5, 3);
-            this.RS232GroupBox.Name = "RS232GroupBox";
-            this.RS232GroupBox.Size = new System.Drawing.Size(257, 55);
-            this.RS232GroupBox.TabIndex = 16;
-            this.RS232GroupBox.TabStop = false;
-            this.RS232GroupBox.Text = "RS232";
+            this.checkStatusButton.Location = new System.Drawing.Point(95, 17);
+            this.checkStatusButton.Name = "checkStatusButton";
+            this.checkStatusButton.Size = new System.Drawing.Size(83, 23);
+            this.checkStatusButton.TabIndex = 18;
+            this.checkStatusButton.Text = "Check status";
+            this.checkStatusButton.UseVisualStyleBackColor = true;
+            this.checkStatusButton.Click += new System.EventHandler(this.checkStatusButton_Click);
             // 
             // ControlWindow
             // 
@@ -1141,17 +1166,17 @@ namespace SympatheticHardwareControl
             this.coil0GroupBox.ResumeLayout(false);
             this.coil0GroupBox.PerformLayout();
             this.tabTranslationStage.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.RS232GroupBox.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.initParamsBox.ResumeLayout(false);
             this.initParamsBox.PerformLayout();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.RS232GroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1369,8 +1394,6 @@ namespace SympatheticHardwareControl
             controller.TSReturn();
         }
 
-
-
         private void TSRestartButton_Click(object sender, EventArgs e)
         {
             controller.TSRestart();
@@ -1380,6 +1403,7 @@ namespace SympatheticHardwareControl
         {
             controller.TSClear();
         }
+
         private void disposeButton_Click(object sender, EventArgs e)
         {
             controller.TSDisconnect();
@@ -1389,6 +1413,7 @@ namespace SympatheticHardwareControl
         {
             controller.TSConnect();
         }
+
         private void AutoTriggerCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (AutoTriggerCheckBox.Checked)
@@ -1400,6 +1425,21 @@ namespace SympatheticHardwareControl
                 controller.TSAutoTriggerDisable();
             }
         }
+
+        private Button TSHomeButton;
+
+        private void TSHomeButton_Click(object sender, EventArgs e)
+        {
+            controller.TSHome();
+        }
+
+        private Button checkStatusButton;
+
+        private void checkStatusButton_Click(object sender, EventArgs e)
+        {
+            controller.TSCheckStatus();
+        }
+
         #endregion
 
         #region Public properties for controlling UI.
@@ -1492,6 +1532,12 @@ namespace SympatheticHardwareControl
 
         private GroupBox RS232GroupBox;
 
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+      
 
         
 

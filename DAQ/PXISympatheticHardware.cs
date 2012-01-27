@@ -116,7 +116,6 @@ namespace DAQ.HAL
             { 0.471968, -0.139565, 0.00173958, -6.18839 * Math.Pow(10, -6), 7.4987 * Math.Pow(10, -9), 8.99272 * Math.Pow(10, -13) }, 130,260));
             AddCalibration("aom3frequency", new PolynomialCalibration(new double[] 
             {0.879515, -0.143097, 0.00170292, -5.6672*Math.Pow(10,-6), 5.44491*Math.Pow(10,-9), 3.56736*Math.Pow(10,-12)},130,260));
-            //AddCalibration("aom3amplitude", new ExponentialAndPolynomialCalibration(1, 2, 3, new double[] {}));
             AddCalibration("coil0current", new LinearInterpolationCalibration(new double[,] {{0.0, 0.0}, {0.0, 0.5}, {0.23, 0.75}, {0.82, 1}, {1.44, 1.25}, 
             {2.1, 1.5}, {2.75, 1.75}, {3.41, 2}, {4.73, 2.5}, {6.08, 3}, {7.4, 3.5}, {8.76, 4}, {10.08, 4.5}, {11.45, 5}, {12.77, 5.5}, {14.14, 6}, 
             {15.46, 6.5}, {16.83, 7}, {17.48, 7.25}, {18.15, 7.5}, {18.83, 7.75}, {19.53, 8}, {19.98, 8.5}, {19.98, 9}, {19.98, 9.5}, {19.98, 10}}));

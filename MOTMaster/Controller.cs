@@ -505,7 +505,7 @@ namespace MOTMaster
         {
             tstage.TSAutoTriggerEnable();
             Thread.Sleep(50);
-            tstage.TSReturn();
+            tstage.TSReturn(); // This is the hard coded return of the translation stage at the end of running a MM script
             Thread.Sleep(50);
             tstage.TSDisconnect();
         }

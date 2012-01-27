@@ -26,26 +26,36 @@ namespace DAQ.HAL
 
             base.Write("1START:\r\n");
             base.Write("1DECLARE(MOVE)\r\n");
+            base.Write("1DECLARE(MOVE2)\r\n");
             base.Write("1DECLARE(INIT)\r\n");
             base.Write("1DECLARE(ALPHA)\r\n");
             base.Write("1DECLARE(BETA)\r\n");
+            base.Write("1DECLARE(GAMMA)\r\n");
             base.Write("1END\r\n");
 
             //The first move
             //20,20,52580,40
+            //Note conversion factors for accleration/ distance etc. using 1 step = 5*10^(-3)mm and 1 revolution = 4000 steps
             base.Write("1ALPHA:\r\n");
             base.Write("1O(000)\r\n");
-            base.Write("1PROFILE1(" + acceleration.ToString() + "," + deceleration.ToString() + "," + distance.ToString() + "," + velocity.ToString() + ")\r\n");
+            base.Write("1PROFILE1(" + (acceleration / 20).ToString() + "," + (deceleration / 20).ToString() + "," + (distance / (5 * Math.Pow(10, -3))).ToString() + "," + (velocity / 20).ToString() + ")\r\n");
             base.Write("1USE(1)\r\n");
             base.Write("1GOTO(MOVE)\r\n");
             base.Write("1END\r\n");
 
-            //the return
+            //The return
             base.Write("1BETA:\r\n");
             base.Write("1O(000)\r\n");
-            base.Write("1PROFILE1(" + acceleration.ToString() + "," + deceleration.ToString() + ",-" + distance.ToString() + "," + velocity.ToString() + ")\r\n");
+            base.Write("1PROFILE1(" + (acceleration / 20).ToString() + "," + (deceleration / 20).ToString() + ",-" + (distance / (5 * Math.Pow(10, -3))).ToString() + "," + (velocity / 20).ToString() + ")\r\n");
             base.Write("1USE(1)\r\n");
             base.Write("1GOTO(MOVE)\r\n");
+            base.Write("1END\r\n");
+
+            //Homing routine
+            base.Write("1GAMMA:\r\n");
+            base.Write("1O(000)\r\n");
+            base.Write("1HOME1(+,0,-15,100,1)\r\n");
+            base.Write("1GOTO(MOVE2)\r\n");
             base.Write("1END\r\n");
 
             //What to do in case of an error
@@ -88,6 +98,10 @@ namespace DAQ.HAL
             base.Write("1T1\r\n");
             base.Write("1END\r\n");
 
+            base.Write("1MOVE2:\r\n");
+            base.Write("1O(0)\r\n");
+            base.Write("1GH\r\n");
+            base.Write("1END\r\n");
 
             base.Write("1ARM01\r\n");
             base.Write("1GOTO(INIT)\r\n");
@@ -114,6 +128,7 @@ namespace DAQ.HAL
                 base.Write("1TR(IN,=,1XXXX)\r\n");
             }
             base.Write("1GOTO(ALPHA)\r\n");
+            base.Write("1R(ST)\r\n");
         }
         public void Return()
         {
@@ -126,6 +141,7 @@ namespace DAQ.HAL
                 base.Write("1TR(IN,=,1XXXX)\r\n");
             }
             base.Write("1GOTO(BETA)\r\n");
+            base.Write("1R(ST)\r\n");
         }
         public void DisarmMove()
         {
@@ -152,6 +168,23 @@ namespace DAQ.HAL
         public void Disconnect()
         {
             base.Disconnect();
+        }
+        public void Home()
+        {
+            if (autoTrigger)
+            {
+                base.Write("1TR(IN,=,XXXXX)\r\n");
+            }
+            else
+            {
+                base.Write("1TR(IN,=,1XXXX)\r\n");
+            }
+            base.Write("1GOTO(GAMMA)\r\n");
+            base.Write("1R(ST)\r\n");
+        }
+        public void CheckStatus()
+        {
+            base.Write("1R(ST)\r\n");
         }
     }
 }

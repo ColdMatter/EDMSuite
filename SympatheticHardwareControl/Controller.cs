@@ -680,7 +680,6 @@ namespace SympatheticHardwareControl
         }
         public void SetValue(string channel, double value, bool useCalibration)
         {
-
             stateRecord.analogs[channel] = value;
             HCState = SHCUIControlState.LOCAL;
             SetAnalogOutput(channel, value, useCalibration);
@@ -804,15 +803,36 @@ namespace SympatheticHardwareControl
         public void TSConnect()
         {
             tstage.Connect();
+            controlWindow.WriteToConsole("Translation stage connected");
         }
         public void TSInitialize(double acceleration, double deceleration, double distance, double velocity)
         {
-            tstage.Initialize(acceleration, deceleration, distance, velocity);
+            // limits for the safe operation of the translation stage (set values in mm/s^n units)
+            double minRange = 0;
+            double maxDistance = 500; //full table travel = 600 mm
+            double maxVelocity = 900; //max screw speed = 54 rev/sec = 1080 mm/s
+            double maxAcc = 5000; //max acceleration = 1000 rev/s^2 = 20 m/s^2 = 20000 mm/s^2
+
+            if (distance < minRange || distance > maxDistance || acceleration < minRange || acceleration > maxAcc || deceleration < minRange || deceleration > maxAcc || velocity < minRange || velocity > maxVelocity)
+            {
+                distance = 0;
+                acceleration = 0;
+                deceleration = 0;
+                velocity = 0;
+                MessageBox.Show("Value set is out of the calibrated range! \n Try typing something more sensible.");
+            }
+            else
+            {
+                tstage.Initialize(acceleration, deceleration, distance, velocity);
+                controlWindow.WriteToConsole("Values initialized to: \n Acceleration = " + acceleration.ToString() + " mm/s^2 \n Deceleration = " + deceleration.ToString() +
+                    " mm/s^2 \n Distance = " + distance.ToString() + " mm \n Velocity = " + velocity.ToString() + " mm/s");
+            }
         }
 
         public void TSOn()
         {
             tstage.On();
+            controlWindow.WriteToConsole("Translation stage on");
         }
 
         public void TSGo()
@@ -823,6 +843,7 @@ namespace SympatheticHardwareControl
         public void TSOff()
         {
             tstage.DisarmMove();
+            controlWindow.WriteToConsole("Translation stage off");
         }
 
         public void TSRead()
@@ -838,6 +859,7 @@ namespace SympatheticHardwareControl
         public void TSRestart()
         {
             tstage.Restart();
+            controlWindow.WriteToConsole("Translation stage restarted");
         }
 
         public void TSClear()
@@ -855,7 +877,19 @@ namespace SympatheticHardwareControl
         public void TSDisconnect()
         {
             tstage.Disconnect();
+            controlWindow.WriteToConsole("Translation stage disconnected");
         }
+
+        public void TSHome()
+        {
+            tstage.Home();
+        }
+
+        public void TSCheckStatus()
+        {
+            tstage.CheckStatus();
+        }
+
         #endregion
 
         #region Hardware Monitor
