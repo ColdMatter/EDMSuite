@@ -118,8 +118,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.UI, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -171,6 +171,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ImageGrabbingAnalogShotGathererPlugin.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,6 +205,8 @@
     </Compile>
     <Compile Include="BasicBeamPatternBuilder.cs" />
     <Compile Include="BasicBeamPatternPlugin.cs" />
+    <Compile Include="ImagingPatternBuilder.cs" />
+    <Compile Include="ImagingPatternPlugin.cs" />
     <Compile Include="PulsedRFScanPatternBuilder2.cs" />
     <Compile Include="DAQMxAnalogInputPlugin.cs">
       <SubType>Code</SubType>
@@ -347,6 +350,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TofFitter.cs" />
+    <Compile Include="TTLSwitchPlugin.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -203,7 +203,7 @@ namespace MOTMaster
         public void SetBatchNumber(Int32 number)
         {
             batchNumber = number;
-            controllerWindow.WriteToSaveBatchTextBox(number);
+            controllerWindow.WriteToSaveBatchTextBox(number);  
         }
         private string scriptPath = "";
         public void SetScriptPath(String path)

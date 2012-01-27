@@ -59,6 +59,17 @@ namespace IMAQ
         {
             attachToViewer(imageViewer, image);
         }
+
+        private VisionImage disImage =new VisionImage();
+        public void AttachImagesToViewer(List<VisionImage> images, int frame)
+        {
+           
+             disImage=images[frame];
+             attachToViewer(imageViewer, disImage);
+            
+
+        }
+
         /*
         public VisionImage Image
         {
@@ -75,7 +86,6 @@ namespace IMAQ
         {
             setRichTextBox(consoleRichTextBox, ">> " + text + "\n");
 
-
         }
         #endregion
 
@@ -83,6 +93,24 @@ namespace IMAQ
         {
             IM.Dispose();
         }
+
+           private void hScrollBar_Change(int newScrollValue)
+        {
+            AttachImagesToViewer(IM.imageList, newScrollValue);
+
+            hScrollBar.Maximum = IM.imageList.Count-1;
+
+        }
+
+
+
+        private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+           
+            hScrollBar_Change(e.NewValue);
+        }
+
+      
 
 
         

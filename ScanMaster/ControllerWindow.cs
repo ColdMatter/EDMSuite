@@ -415,8 +415,8 @@ namespace ScanMaster.GUI
             this.Menu = this.mainMenu1;
             this.Name = "ControllerWindow";
             this.Text = "ScanMaster 2k8";
-            this.Load += new System.EventHandler(this.ControllerWindow_Load);
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ControllerWindow_Closing);
+            this.Load += new System.EventHandler(this.ControllerWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -682,6 +682,8 @@ namespace ScanMaster.GUI
         {
             Text = text;
         }
+
+        
 
 	}
 }

@@ -35,6 +35,7 @@ namespace ScanMaster.Acquire.Plugin
 #endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
+            switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));
 			// patternPlugins
 			patternPlugins.Add("No pattern", typeof(NullPGPlugin));
 			patternPlugins.Add("Pulsed rf scan", typeof(PulsedRFScanPatternPlugin));
@@ -47,6 +48,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Basic beam", typeof(BasicBeamPatternPlugin));
             patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
+            patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -57,6 +59,7 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
+            shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));

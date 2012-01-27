@@ -8,6 +8,9 @@ using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
 
 using DAQ.HAL;
 using DAQ.Environment;
@@ -32,10 +35,11 @@ namespace IMAQ
     public class CameraController
     {
         #region Setup
-        private VisionImage image;
+        public VisionImage image;
         public enum CameraState { FREE, BUSY, READY_FOR_ACQUISITION, STREAMING, ACQUISITION_TERMINATED };
         private CameraState state = new CameraState();
         private object streamStopLock = new object();
+        public List<VisionImage> imageList = new List<VisionImage>();
 
 
         public CameraController(string cameraName)
@@ -95,6 +99,11 @@ namespace IMAQ
 
         public byte[,] SingleSnapshot(string attributesPath)
         {
+            return SingleSnapshot(attributesPath, false);
+        }
+
+        public byte[,] SingleSnapshot(string attributesPath, bool addToImageList)
+        {
             imageWindow.WriteToConsole("Taking snapshot");
             imageWindow.WriteToConsole("Applied camera attributes from " + attributesPath);
             SetCameraAttributes(attributesPath);
@@ -111,6 +120,10 @@ namespace IMAQ
                         if (windowShowing)
                         {
                             imageWindow.AttachToViewer(image);
+                        }
+                        if (addToImageList)
+                        {
+                            imageList.Add(image);
                         }
                         PixelValue2D pval = image.ImageToArray();
                         state = CameraState.FREE;
@@ -136,6 +149,8 @@ namespace IMAQ
             }
         }
 
+      
+        
         public byte[][,] MultipleSnapshot(string attributesPath, int numberOfShots)
         {
             SetCameraAttributes(attributesPath);
@@ -159,10 +174,19 @@ namespace IMAQ
                 foreach (VisionImage i in images)
                 {
                     byteList.Add((i.ImageToArray()).U8);
+
+                   // if (windowShowing)
+                    //{
+                      //  imageWindow.AttachToViewer(i);
+
+                   // }
+
                 }
                 state = CameraState.FREE;
 
                 return byteList.ToArray();
+                
+                
             }
             catch (ImaqdxException e)
             {
@@ -330,6 +354,38 @@ namespace IMAQ
             }
         }
 
+      
+
+        public string GetSaveDialogFilename()
+        {
+            string file = "";
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Title = "Save image data";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        file = saveFileDialog1.FileName;
+                    }
+                }
+            }
+            return file;
+        }
+
+        public void StoreImageListWithDialog()
+        {
+            string filepath = GetSaveDialogFilename();
+            string filetext = Path.GetFileName(filepath);
+            Directory.CreateDirectory(filepath);
+            string filed = filepath+"\\"+filetext;
+            StoreImageList(filed);
+            imageWindow.WriteToConsole(filed);
+        }
+
+
+
         // Quietly.
         public void SaveImage()
         {
@@ -345,6 +401,104 @@ namespace IMAQ
             image.WritePngFile(dataStoreFilePath);
             imageWindow.WriteToConsole("Image saved");
         }
+
+        //public void storeImage(string savePath, byte[][,] imageData)
+        //{
+        //    for (int i = 0; i < imageData.Length; i++)
+        //    {
+        //        storeImage(savePath + "_" + i.ToString(), imageData[i]);
+        //    }
+        //    imageWindow.WriteToConsole("Imagedata saved");
+        //}
+
+        //public void storeImage(string savePath, byte[,] imageData)
+        //{
+        //    int width = imageData.GetLength(1);
+        //    int height = imageData.GetLength(0);
+        //    byte[] pixels = new byte[width * height];
+        //    for (int j = 0; j < height; j++)
+        //    {
+        //        for (int i = 0; i < width; i++)
+        //        {
+        //            pixels[(width * j) + i] = imageData[j, i];
+        //        }
+        //    }
+        //    // Define the image palette
+        //    BitmapPalette myPalette = BitmapPalettes.Gray256Transparent;
+
+        //    // Creates a new empty image with the pre-defined palette
+
+        //    BitmapSource image = BitmapSource.Create(
+        //      width,
+        //     height,
+        //     96,
+        //     96,
+        //     PixelFormats.Indexed8,
+        //     myPalette,
+        //    pixels,
+        //     width);
+
+        //    FileStream stream = new FileStream(savePath + ".dat", FileMode.Create);
+        //    stream.Write(pixels, 0, width * height);
+
+        //    PngBitmapEncoder encoder = new PngBitmapEncoder();
+        //    encoder.Interlace = PngInterlaceOption.On;
+        //    encoder.Frames.Add(BitmapFrame.Create(image));
+        //    encoder.Save(stream);
+
+        //    stream.Dispose();
+
+        //}
+
+
+
+        
+        
+
+        public void StoreImageList(string savePath)
+        {
+            
+            for (int i = 0; i < imageList.Count; i++)
+            {
+                PixelValue2D pval = imageList[i].ImageToArray(); 
+                StoreImageData(savePath+"_" + i.ToString(), pval.U8);
+            }
+            imageWindow.WriteToConsole("List of"+ imageList.Count.ToString() +"images saved");
+        }
+
+       public void StoreImageData(string savePath, byte[,] imageData)
+        {
+            int width = imageData.GetLength(1);
+            int height = imageData.GetLength(0);
+            byte[] pixels = new byte[width * height];
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    pixels[(width * j) + i] = imageData[j, i];
+                }
+            }
+         
+
+            FileStream stream = new FileStream(savePath + ".dat", FileMode.Create);
+            stream.Write(pixels,0,width*height);
+            stream.Dispose();
+
+        }
+
+
+
+       public void DisposeImages()
+       {
+           imageList.Clear();
+
+       }
+
+     
+
+
+
+
 
         //Load image when opening the controller
         

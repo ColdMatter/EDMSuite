@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IMAQ
+namespace DAQ
 {
     /// <summary>
     /// An interface for something that can control a camera.
-    /// Used so that MOTMaster can tell the HC to take images.
+    /// 
     /// </summary>
     public interface CameraControllable
     {

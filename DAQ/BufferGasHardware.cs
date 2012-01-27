@@ -4,6 +4,7 @@ using System.Collections;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using DAQ.Remoting;
 
 namespace DAQ.HAL
 
@@ -23,7 +24,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("aom", pgBoard, 1, 1);//
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
             //(0,3) pin 12 is unconnected
-            AddDigitalOutputChannel("shutterTrig1", pgBoard, 1, 6);// Pin 21, triggers camera for on-shots (not wired up)
+            AddDigitalOutputChannel("shutterTrig1", pgBoard, 1, 6);// Pin 21, triggers camera for on-shots 
             AddDigitalOutputChannel("shutterTrig2", pgBoard, 1, 7);// Pin 22, triggers camera for off-shots (not wired up)
             AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
 
@@ -67,5 +68,6 @@ namespace DAQ.HAL
             AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter
             AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
         }
+        
     }
 }

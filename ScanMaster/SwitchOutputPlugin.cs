@@ -10,7 +10,9 @@ namespace ScanMaster.Acquire.Plugin
 	/// (like an rf amplitude, ttl line).
 	/// </summary>
 	[Serializable]
-	[XmlInclude(typeof(NullSwitchPlugin))]
+    [XmlInclude(typeof(NullSwitchPlugin)), 
+    XmlInclude(typeof(TTLSwitchPlugin))]
+   
 	public abstract class SwitchOutputPlugin : AcquisitorPlugin
 	{
 		protected override void InitialiseBaseSettings()
@@ -22,6 +24,7 @@ namespace ScanMaster.Acquire.Plugin
 		/// Setting this parameter should update the hardware.
 		/// Reading should return the current state (quickly).
 		/// </summary>
+        [XmlIgnore]
 		public abstract bool State
 		{
 			get;

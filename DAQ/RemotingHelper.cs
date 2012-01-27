@@ -33,6 +33,14 @@ namespace DAQ.Remoting
                     );
         }
 
+        public static void ConnectBufferGasHardwareControl()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("BuffergasHardwareControl.Controller, BuffergasHardwareControl"),
+                    "tcp://localhost:1178/controller.rem"
+                    );
+        }
+
         public static void ConnectPhaseLock()
         {
             RemotingConfiguration.RegisterWellKnownClientType(
