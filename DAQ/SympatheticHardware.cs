@@ -60,6 +60,13 @@ namespace DAQ.HAL
             Info.Add("mapPoints", 121);
             Info.Add("mapStartPoint", 0.0);
             Info.Add("mapResolution", 0.0001);
+            //TCL Lockable lasers
+            Info.Add("TCLLockableLasers", new string[] { "laser" });
+            Info.Add("TCLPhotodiodes", new string[] { "cavity", "master", "p1" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //volts: Laser control
+            Info.Add("TCL_Slave_Voltage_Limit_Lower", -10.0); //volts: Laser control
+            Info.Add("TCL_Default_Gain", 0.5);
+            Info.Add("TCL_Default_VoltageToLaser", 0.0);
 
             // map the GPIB instruments
             Instruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));

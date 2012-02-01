@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using DAQ.Environment;
 using DAQ.TransferCavityLock2012;
 
 namespace TransferCavityLock2012
@@ -23,15 +23,11 @@ namespace TransferCavityLock2012
         }
 
         public string Name;
-        public const double UPPER_LC_VOLTAGE_LIMIT = 10.0; //volts LC: Laser control
-        public const double LOWER_LC_VOLTAGE_LIMIT = -10.0; //volts LC: Laser control
-
+       
         private int increments = 0;          // for tweaking the laser set point
         private int decrements = 0;
         public double SetPointIncrementSize = 0.01;
         
-        public const double default_Gain = 0.5;
-        public const double default_VoltageToLaser = 0.0;
 
         public Controller controller;
         private TransferCavityLock2012LaserControllable laser;
@@ -69,7 +65,7 @@ namespace TransferCavityLock2012
             laser.SetLaserVoltage(VoltageToLaser);
         }
 
-        private double voltageToLaser = default_VoltageToLaser;
+        private double voltageToLaser = (double)Environs.Hardware.GetInfo("TCL_Default_VoltageToLaser");
         public double VoltageToLaser
         {
             get
@@ -81,7 +77,7 @@ namespace TransferCavityLock2012
                 voltageToLaser = value;
             }
         }
-        private double gain = default_Gain;
+        private double gain = (double)Environs.Hardware.GetInfo("TCL_Default_Gain");
         public double Gain
         {
             get
@@ -160,9 +156,9 @@ namespace TransferCavityLock2012
         {
             double newVoltage;
             if (vtolaser
-                + Gain * measuredVoltageChange > UPPER_LC_VOLTAGE_LIMIT
+                + Gain * measuredVoltageChange > (double)Environs.Hardware.GetInfo("TCL_Slave_Voltage_Limit_Upper")
                 || vtolaser
-                + Gain * measuredVoltageChange < LOWER_LC_VOLTAGE_LIMIT)
+                + Gain * measuredVoltageChange < (double)Environs.Hardware.GetInfo("TCL_Slave_Voltage_Limit_Upper"))
             {
                 newVoltage = vtolaser;
             }

@@ -38,6 +38,10 @@ namespace DAQ.HAL
             //TCL Lockable lasers
             Info.Add("TCLLockableLasers", new string[] { "laser"});
             Info.Add("TCLPhotodiodes", new string[] { "cavity", "master", "p1" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
+            Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //volts: Laser control
+            Info.Add("TCL_Default_Gain", -0.01);
+            Info.Add("TCL_Default_VoltageToLaser", 1.0);
             // Some matching up for TCL
             Info.Add("laser", "p1");
            // Info.Add("laser2", "p2");
