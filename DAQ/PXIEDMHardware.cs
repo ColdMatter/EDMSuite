@@ -65,7 +65,7 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
-            Instruments.Add("BfieldController", new SerialDAQ("ASRL2::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL4::INSTR"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
@@ -164,7 +164,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -10, 0);
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", 0, 10);
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
 
             // B field control

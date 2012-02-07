@@ -9,7 +9,7 @@ namespace DAQ.HAL
     /// <summary>
     /// 
     /// </summary>
-    public class RS232Instrument
+    public class RS232Instrument : Instrument
     {
         protected SerialSession serial;
         private string address;
@@ -20,7 +20,7 @@ namespace DAQ.HAL
             this.address = visaAddress;
         }
 
-        protected void Connect()
+        public override void Connect()
         {
             Connect(SerialTerminationMethod.LastBit);
         }
@@ -40,32 +40,36 @@ namespace DAQ.HAL
             }
         }
 
-        protected void Disconnect()
+        public override void Disconnect()
         {
             if (!Environs.Debug) serial.Dispose();
             connected = false;
         }
 
-        protected void Write(String command)
+        protected override void Write(string command)
         {
-            serial.Write(command);
+            if (!connected) Connect();
+            if (!Environs.Debug) serial.Write(command);
+            Disconnect();
         }
 
-        protected string Read()
+        protected string Query(string q)
         {
-            string str = "Read failed";
-            try
-            {
-                str = serial.ReadString();
-            }
-            catch 
-            {
-            }
-            return str;
+            return serial.Query(q);
         }
-        protected void Clear()
+
+        protected override string Read()
         {
-            serial.Clear();
+            return serial.ReadString();
+        }
+
+        protected double QueryDouble(string q)
+        {
+            double d = 0.0;
+            if (!connected) Connect();
+            if (!Environs.Debug) d = Convert.ToDouble(Query(q));
+            Disconnect();
+            return d;
         }
     }
 }
