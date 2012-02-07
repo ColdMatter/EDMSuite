@@ -207,6 +207,8 @@ namespace BuffergasHardwareControl
         {
             controller.StoreImageDataWithDialog();
             WriteToConsole("ImageData saved");
+
+
         }
 
         #endregion
@@ -234,6 +236,7 @@ namespace BuffergasHardwareControl
         {
             controller.DisposeImages();
             WriteToConsole("Images deleted");
+
         }
 
 

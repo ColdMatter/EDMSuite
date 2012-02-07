@@ -99,7 +99,7 @@ namespace IMAQ
             AttachImagesToViewer(IM.imageList, newScrollValue);
 
             hScrollBar.Maximum = IM.imageList.Count-1;
-
+            
         }
 
 
@@ -107,8 +107,26 @@ namespace IMAQ
         private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
            
+            if(IM.imageList.Count == 0)
+
+            {
+                hScrollBar.Update();
+                hScrollBar.Maximum = 1;
+                
+
+            }
+
+
+            else
+            {
+           
             hScrollBar_Change(e.NewValue);
+            }
+           
+           
+
         }
+
 
       
 

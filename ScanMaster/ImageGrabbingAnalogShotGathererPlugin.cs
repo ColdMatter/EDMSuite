@@ -30,6 +30,8 @@ namespace ScanMaster.Acquire.Plugins
         private AnalogMultiChannelReader reader2;
         [NonSerialized]
         private double[,] latestData;
+        [NonSerialized]
+        private string cameraInfo = null;
 
         [NonSerialized]
         private CameraControllable camera;
@@ -130,11 +132,12 @@ namespace ScanMaster.Acquire.Plugins
             {
                 if (!Environs.Debug)
                 {
+                    cameraInfo = "Switch state:" + config.switchPlugin.State.ToString() + ", Scan parameter:" + config.outputPlugin.ScanParameter.ToString();
                     if (config.switchPlugin.State == true)
                     {
                         
                         inputTask1.Start();
-                        camera.GrabSingleImage(null);
+                        camera.GrabSingleImage(cameraInfo);
                         latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
                         inputTask1.Stop();
                     }
@@ -142,7 +145,7 @@ namespace ScanMaster.Acquire.Plugins
                     {
                         
                         inputTask2.Start();
-                        camera.GrabSingleImage(null);
+                        camera.GrabSingleImage(cameraInfo);
                         latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
                         inputTask2.Stop();
                     }
