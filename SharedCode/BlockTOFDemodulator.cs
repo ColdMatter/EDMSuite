@@ -85,6 +85,9 @@ namespace Analysis.EDM
                 int eIndex = modNames.IndexOf("E");
                 int rf1fIndex = modNames.IndexOf("RF1F");
                 int rf2fIndex = modNames.IndexOf("RF2F");
+                int rf1aIndex = modNames.IndexOf("RF1A"); 
+                int rf2aIndex = modNames.IndexOf("RF2A");
+                int lf1Index = modNames.IndexOf("LF1");
 
                 int bChannel = (1 << bIndex);
                 int dbChannel = (1 << dbIndex);
@@ -101,10 +104,17 @@ namespace Analysis.EDM
                 int rf2fChannel = (1 << rf2fIndex);
                 int erf1fChannel = (1 << eIndex) + (1 << rf1fIndex);
                 int erf2fChannel = (1 << eIndex) + (1 << rf2fIndex);
+                int rf1aChannel = (1 << rf1aIndex); 
+                int rf2aChannel = (1 << rf2aIndex); 
+                int dbrf1aChannel = (1 << dbIndex) + (1 << rf1aIndex);
+                int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
+                int lf1Channel = (1 << lf1Index);
+                int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
 
                 channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
                     dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
-                    rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel
+                    rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
+                    dbrf2aChannel, lf1Channel, dblf1Channel
                 };
             }
 
@@ -157,6 +167,15 @@ namespace Analysis.EDM
 
             TOFChannel c_erf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF1F" });
             TOFChannel c_erf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF2F" });
+
+            TOFChannel c_rf1a = (TOFChannel)tcs.GetChannel(new string[] { "RF1A" }); 
+            TOFChannel c_rf2a = (TOFChannel)tcs.GetChannel(new string[] { "RF2A" }); 
+            TOFChannel c_dbrf1a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF1A" }); 
+            TOFChannel c_dbrf2a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2A" });
+
+            TOFChannel c_lf1 = (TOFChannel)tcs.GetChannel(new string[] { "LF1" });
+            TOFChannel c_dblf1 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
+
 
             // work out some intermediate terms for the full, corrected edm. The names
             // refer to the joint power of c_db and c_b in the term.
@@ -216,6 +235,21 @@ namespace Analysis.EDM
             TOFChannel rf2fDBDB = c_dbrf2f / c_db;
             tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
 
+            // Normalised RFxAchannels.
+            TOFChannel rf1aDB = c_rf1a / c_db;
+            tcs.AddChannel(new string[] { "RF1ADB" }, rf1aDB);
+
+            TOFChannel rf2aDB = c_rf2a / c_db;
+            tcs.AddChannel(new string[] { "RF2ADB" }, rf2aDB);
+
+            // And RFxA.DB channels, again normalised to DB. The naming of these channels is quite
+            // unfortunate, but it's just tough.
+            TOFChannel rf1aDBDB = c_dbrf1a / c_db;
+            tcs.AddChannel(new string[] { "RF1ADBDB" }, rf1aDBDB);
+
+            TOFChannel rf2aDBDB = c_dbrf2a / c_db;
+            tcs.AddChannel(new string[] { "RF2ADBDB" }, rf2aDBDB);
+
             // the E.RFxF channels, normalized to DB
             TOFChannel erf1fDB = c_erf1f / c_db;
             tcs.AddChannel(new string[] { "ERF1FDB" }, erf1fDB);
@@ -229,7 +263,13 @@ namespace Analysis.EDM
 
             TOFChannel erf2fDBDB = c_edbrf2f / c_db;
             tcs.AddChannel(new string[] { "ERF2FDBDB" }, erf2fDBDB);
-           
+
+            // the LF1 channel, normalized to DB
+            TOFChannel lf1DB = c_lf1 / c_db;
+            tcs.AddChannel(new string[] { "LF1DB" }, lf1DB);
+
+            TOFChannel lf1DBDB = c_dblf1 / c_db;
+            tcs.AddChannel(new string[] { "LF1DBDB" }, lf1DBDB);
 
             // we also need to extract the rf-step induced phase shifts. These come out in the
             // B.RFxF channels, but like the edm, need to be corrected. I'm going to use just the

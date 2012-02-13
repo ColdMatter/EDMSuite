@@ -209,6 +209,20 @@ namespace Analysis.EDM
             double rf1fDBDBG = rf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2fDBDB = (TOFChannel)tcs.GetChannel( "RF2FDBDB" );
             double rf2fDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            // new insert
+            TOFChannel rf1aDB = (TOFChannel)tcs.GetChannel("RF1ADB");
+            double rf1aDBG = rf1aDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2aDB = (TOFChannel)tcs.GetChannel("RF2ADB");
+            double rf2aDBG = rf2aDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1aDBDB = (TOFChannel)tcs.GetChannel("RF1ADBDB");
+            double rf1aDBDBG = rf1aDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2aDBDB = (TOFChannel)tcs.GetChannel("RF2ADBDB");
+            double rf2aDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf1DB = (TOFChannel)tcs.GetChannel("LF1DB");
+            double lf1DBG = lf1DB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf1DBDB = (TOFChannel)tcs.GetChannel("LF1DBDB");
+            double lf1DBDBG = lf1DBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            // new insert end
             TOFChannel erf1fDB = (TOFChannel)tcs.GetChannel( "ERF1FDB" );
             double erf1fDBG = erf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel erf2fDB = (TOFChannel)tcs.GetChannel( "ERF2FDB" );
@@ -233,16 +247,28 @@ namespace Analysis.EDM
                 Math.Pow(dcv.GetValue(new string[] { "B" }) * dcv.GetError(new string[] { "E", "DB" }), 2) )
                 / Math.Pow(dcv.GetValue(new string[] { "DB" }), 2);
             double edmCorrDBE = Math.Sqrt( Math.Pow(edmDBE, 2) + Math.Pow(corrDBE, 2));
+
             double rf1fDBE = dcv.GetError(new string[] { "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double rf2fDBE = dcv.GetError(new string[] { "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double rf1fDBDBE = dcv.GetError(new string[] { "DB", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double rf2fDBDBE = dcv.GetError(new string[] { "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
+
+            double rf1aDBE = dcv.GetError(new string[] { "RF1A" }) / dcv.GetValue(new string[] { "DB" });
+            double rf2aDBE = dcv.GetError(new string[] { "RF2A" }) / dcv.GetValue(new string[] { "DB" });
+            double rf1aDBDBE = dcv.GetError(new string[] { "DB", "RF1A" }) / dcv.GetValue(new string[] { "DB" });
+            double rf2aDBDBE = dcv.GetError(new string[] { "DB", "RF2A" }) / dcv.GetValue(new string[] { "DB" });
+
+            double lf1DBE = dcv.GetError(new string[] { "LF1" }) / dcv.GetValue(new string[] { "DB" });
+            double lf1DBDBE = dcv.GetError(new string[] { "DB", "LF1" }) / dcv.GetValue(new string[] { "DB" });
+
             double brf1fDBE = dcv.GetError(new string[] { "B", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double brf2fDBE = dcv.GetError(new string[] { "B", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double erf1fDBE = dcv.GetError(new string[] { "E", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double erf2fDBE = dcv.GetError(new string[] { "E", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double erf1fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
+
+
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -254,12 +280,18 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["RF2FDB"] = new double[] { rf2fDBG, rf2fDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF1FDBDB"] = new double[] { rf1fDBDBG, rf1fDBDBE };
             dblock.ChannelValues[tndi].SpecialValues["RF2FDBDB"] = new double[] { rf2fDBDBG, rf2fDBDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF1ADB"] = new double[] { rf1aDBG, rf1aDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF2ADB"] = new double[] { rf2aDBG, rf2aDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF1ADBDB"] = new double[] { rf1aDBDBG, rf1aDBDBE };
+            dblock.ChannelValues[tndi].SpecialValues["RF2ADBDB"] = new double[] { rf2aDBDBG, rf2aDBDBE };
             dblock.ChannelValues[tndi].SpecialValues["BRF1FCORRDB"] = new double[] { brf1fCorrDBG, brf1fDBE };
             dblock.ChannelValues[tndi].SpecialValues["BRF2FCORRDB"] = new double[] { brf2fCorrDBG, brf2fDBE };
             dblock.ChannelValues[tndi].SpecialValues["ERF1FDB"] = new double[] { erf1fDBG, erf1fDBE };
             dblock.ChannelValues[tndi].SpecialValues["ERF2FDB"] = new double[] { erf2fDBG, erf2fDBE };
             dblock.ChannelValues[tndi].SpecialValues["ERF1FDBDB"] = new double[] { erf1fDBDBG, erf1fDBDBE };
             dblock.ChannelValues[tndi].SpecialValues["ERF2FDBDB"] = new double[] { erf2fDBDBG, erf2fDBDBE };
+            dblock.ChannelValues[tndi].SpecialValues["LF1DB"] = new double[] { lf1DBG, lf1DBE };
+            dblock.ChannelValues[tndi].SpecialValues["LF1DBDB"] = new double[] { lf1DBDBG, lf1DBDBE };
 
             return dblock;
         }

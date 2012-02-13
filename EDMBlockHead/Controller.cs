@@ -325,8 +325,8 @@ namespace EDMBlockHead
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
             // "cgate11Fixed" for Ar, "centreFixedKr" for Kr
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("cgate11Fixed", b);
-            DBlock = blockDemodulator.DemodulateBlock(b, dc);
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate5", b); // was cgate11fixed
+            DBlock = blockDemodulator.DemodulateBlockNL(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
             liveViewer.AddDBlock(DBlock);
                      
             //config.g

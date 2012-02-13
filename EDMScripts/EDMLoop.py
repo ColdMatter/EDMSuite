@@ -54,7 +54,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
-	hc.UpdatePumpAOMFreqMonitor()
+	#hc.UpdatePumpAOMFreqMonitor()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -72,7 +72,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq
+	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -144,7 +144,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 
 # lock gains
 # microamps of current per volt of control input
-kSteppingBiasCurrentPerVolt = 1000.0
+kSteppingBiasCurrentPerVolt = 2453.06
 # max change in the b-bias voltage per block
 kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
@@ -177,10 +177,10 @@ def updateLocks(bState):
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = - (1.0/8.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = - (1.0/20.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
-	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, 0, 5)
+	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
 	deltaRF1A = - (6.0/3.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
@@ -195,13 +195,13 @@ def updateLocks(bState):
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
 	# RFF  locks
-	deltaRF1F = - (5.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF1F = - (10.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (5.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+	deltaRF2F = - (10.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
@@ -213,6 +213,73 @@ def updateLocks(bState):
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
 
+def updateLocksNL(bState):
+	pmtChannelValues = bh.DBlock.ChannelValues[0]
+	normedpmtChannelValues = bh.DBlock.ChannelValues[5]
+	# note the weird python syntax for a one element list
+	sigValue = pmtChannelValues.GetValue(("SIG",))
+	bValue = pmtChannelValues.GetValue(("B",))
+	dbValue = pmtChannelValues.GetValue(("DB",))
+	rf1aValue = pmtChannelValues.GetValue(("RF1A",))
+	rf1adbdbValue = normedpmtChannelValues.GetSpecialValue("RF1ADBDB")
+	rf2aValue = pmtChannelValues.GetValue(("RF2A",))
+	rf2adbdbValue = normedpmtChannelValues.GetSpecialValue("RF2ADBDB")
+	rf1fValue = pmtChannelValues.GetValue(("RF1F",))
+	rf1fdbdbValue = normedpmtChannelValues.GetSpecialValue("RF1FDBDB")
+	rf2fValue = pmtChannelValues.GetValue(("RF2F",))
+	rf2fdbdbValue = normedpmtChannelValues.GetSpecialValue("RF2FDBDB")
+	lf1Value = pmtChannelValues.GetValue(("LF1",))
+	lf1dbdbValue = normedpmtChannelValues.GetSpecialValue("LF1DBDB")
+
+	print "SIG: " + str(sigValue)
+	print "B: " + str(bValue) + " DB: " + str(dbValue)
+	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
+	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
+	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
+	print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
+	
+	
+	# B bias lock
+	# the sign of the feedback depends on the b-state
+	if bState: 
+		feedbackSign = 1
+	else: 
+		feedbackSign = -1
+	deltaBias = - (1.0/20.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
+	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
+	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
+	hc.SetSteppingBBiasVoltage( newBiasVoltage )
+	# RFA  locks
+	deltaRF1A = - (6.0/3.0) * rf1adbdbValue * kRFAVoltsPerCal
+	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
+	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
+	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
+	hc.SetRF1AttCentre( newRF1A )
+	#
+	deltaRF2A = - (6.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
+	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
+	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
+	hc.SetRF2AttCentre( newRF2A )
+	# RFF  locks
+	deltaRF1F = - (10.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
+	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
+	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+	hc.SetRF1FMCentre( newRF1F )
+	#
+	deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
+	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
+	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+	hc.SetRF2FMCentre( newRF2F )
+	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
+	deltaLF1 = -1.25 * lf1dbdbValue 
+	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
+	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
+	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
+	hc.SetFLPZTVoltage( newLF1 )
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):
@@ -253,13 +320,13 @@ def EDMGo():
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase
-	scramblerV = 0.724774 * r.NextDouble()
+	scramblerV = 0.799718 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
 	# randomise polarizations
 	probePolAngle = 360.0 * r.NextDouble()
 	hc.SetProbePolarizerAngle(probePolAngle)
 	pumpPolAngle = 360.0 * r.NextDouble()
-	#hc.SetPumpPolarizerAngle(pumpPolAngle) # TEMPORARILY REMOVED WHILST BROKEN!
+	hc.SetPumpPolarizerAngle(pumpPolAngle)
 	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 	# calibrate leakage monitors
 	hc.EnableEField( False )
@@ -300,15 +367,15 @@ def EDMGo():
 		File.Delete(tempConfigFile)
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
-		updateLocks(bState)
+		updateLocksNL(bState)
 		# randomise Ramsey phase
-		scramblerV = 1.18787 * r.NextDouble()
+		scramblerV = 0.799718 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
 		probePolAngle = 360.0 * r.NextDouble()
 		hc.SetProbePolarizerAngle(probePolAngle)
 		pumpPolAngle = 360.0 * r.NextDouble()
-		#hc.SetPumpPolarizerAngle(pumpPolAngle) !Temporarily disabled
+		hc.SetPumpPolarizerAngle(pumpPolAngle)
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 		hc.StepTarget(1)
 		# do things that need periodically doing
