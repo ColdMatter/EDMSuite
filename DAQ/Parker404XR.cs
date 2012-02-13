@@ -147,27 +147,13 @@ namespace DAQ.HAL
         {
             base.Write("1OFF\r\n");
         }
-        public string Read()
-        {
-            return base.Read();
-        }
-        public void Clear()
-        {
-            base.Clear();
-        }
         public void AutoTriggerEnable()
         {
-            autoTrigger = true;
-            
+            autoTrigger = true;     
         }
         public void AutoTriggerDisable()
         {
             autoTrigger = false;
-            
-        }
-        public void Disconnect()
-        {
-            base.Disconnect();
         }
         public void Home()
         {
