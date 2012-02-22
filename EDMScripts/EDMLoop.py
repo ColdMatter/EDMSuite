@@ -220,6 +220,7 @@ def updateLocksNL(bState):
 	sigValue = pmtChannelValues.GetValue(("SIG",))
 	bValue = pmtChannelValues.GetValue(("B",))
 	dbValue = pmtChannelValues.GetValue(("DB",))
+	bDBValue = normedpmtChannelValues.GetSpecialValue("BDB")
 	rf1aValue = pmtChannelValues.GetValue(("RF1A",))
 	rf1adbdbValue = normedpmtChannelValues.GetSpecialValue("RF1ADBDB")
 	rf2aValue = pmtChannelValues.GetValue(("RF2A",))
@@ -245,7 +246,7 @@ def updateLocksNL(bState):
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = - (1.0/20.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = - (1.0/25.0) * feedbackSign * (hc.CalStepCurrent * bDBValue)) / kSteppingBiasCurrentPerVolt 
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)

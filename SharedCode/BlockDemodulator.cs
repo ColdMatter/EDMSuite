@@ -209,7 +209,6 @@ namespace Analysis.EDM
             double rf1fDBDBG = rf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2fDBDB = (TOFChannel)tcs.GetChannel( "RF2FDBDB" );
             double rf2fDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            // new insert
             TOFChannel rf1aDB = (TOFChannel)tcs.GetChannel("RF1ADB");
             double rf1aDBG = rf1aDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2aDB = (TOFChannel)tcs.GetChannel("RF2ADB");
@@ -222,7 +221,8 @@ namespace Analysis.EDM
             double lf1DBG = lf1DB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel lf1DBDB = (TOFChannel)tcs.GetChannel("LF1DBDB");
             double lf1DBDBG = lf1DBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
-            // new insert end
+            TOFChannel BDB = (TOFChannel)tcs.GetChannel("BDB");
+            double BDBG = BDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel erf1fDB = (TOFChannel)tcs.GetChannel( "ERF1FDB" );
             double erf1fDBG = erf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel erf2fDB = (TOFChannel)tcs.GetChannel( "ERF2FDB" );
@@ -267,7 +267,7 @@ namespace Analysis.EDM
             double erf2fDBE = dcv.GetError(new string[] { "E", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double erf1fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
-
+            double BDBE = dcv.GetError(new string[] { "B" }) / dcv.GetValue(new string[] { "DB" });
 
 
             // stuff the data into the dblock
@@ -292,6 +292,7 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["ERF2FDBDB"] = new double[] { erf2fDBDBG, erf2fDBDBE };
             dblock.ChannelValues[tndi].SpecialValues["LF1DB"] = new double[] { lf1DBG, lf1DBE };
             dblock.ChannelValues[tndi].SpecialValues["LF1DBDB"] = new double[] { lf1DBDBG, lf1DBDBE };
+            dblock.ChannelValues[tndi].SpecialValues["BDB"] = new double[] { BDBG, BDBE };
 
             return dblock;
         }
