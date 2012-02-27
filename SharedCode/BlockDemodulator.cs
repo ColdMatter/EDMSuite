@@ -216,7 +216,7 @@ namespace Analysis.EDM
             TOFChannel rf1aDBDB = (TOFChannel)tcs.GetChannel("RF1ADBDB");
             double rf1aDBDBG = rf1aDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel rf2aDBDB = (TOFChannel)tcs.GetChannel("RF2ADBDB");
-            double rf2aDBDBG = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            double rf2aDBDBG = rf2aDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel lf1DB = (TOFChannel)tcs.GetChannel("LF1DB");
             double lf1DBG = lf1DB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel lf1DBDB = (TOFChannel)tcs.GetChannel("LF1DBDB");
