@@ -9,9 +9,9 @@ namespace DAQ.Environment
     {
         public PHRHENDRIC02FileSystem()
         {
-            Paths.Add("settingsPath", "d:\\data\\settings\\");
+            Paths.Add("settingsPath", "d:\\scanmaster\\settings\\");
             Paths.Add("scanMasterDataPath", "d:\\data\\");
-            Paths.Add("fakeData", "d:\\data\\examples\\");
+            Paths.Add("fakeData", "d:\\scanmaster\\examples\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
