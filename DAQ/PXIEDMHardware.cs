@@ -55,7 +55,7 @@ namespace DAQ.HAL
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL3::INSTR");
+            yag = new BrilliantLaser("ASRL2::INSTR");
 
             // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
@@ -65,7 +65,7 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
-            Instruments.Add("BfieldController", new SerialDAQ("ASRL4::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
@@ -136,6 +136,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
+            
 
 
             // high quality analog inputs (will be) on the S-series analog in board
@@ -145,7 +146,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
-
+            AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
             AddAnalogOutputChannel("b", aoBoard + "/ao1");
