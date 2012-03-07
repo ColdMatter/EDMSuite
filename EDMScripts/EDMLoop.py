@@ -72,7 +72,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq
+	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
+	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -246,38 +247,44 @@ def updateLocksNL(bState):
 		feedbackSign = 1
 	else: 
 		feedbackSign = -1
-	deltaBias = - (1.0/25.0) * feedbackSign * (hc.CalStepCurrent * bDBValue)) / kSteppingBiasCurrentPerVolt 
+	deltaBias = - (1.0/25.0) * feedbackSign * (hc.CalStepCurrent * bDBValue) / kSteppingBiasCurrentPerVolt 
 	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
+	#deltaBias = 0
 	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = - (6.0/3.0) * rf1adbdbValue * kRFAVoltsPerCal
+	deltaRF1A = - (18.0/3.0) * rf1adbdbValue * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
+	#deltaRF1A = 0
 	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
 	hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (6.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = - (18.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
+	#deltaRF2A = 0
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 	hc.SetRF2AttCentre( newRF2A )
 	# RFF  locks
 	deltaRF1F = - (10.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
+	#deltaRF1F = 0
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
 	deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
+	#deltaRF2F = 0
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -1.25 * lf1dbdbValue 
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
+	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
@@ -330,6 +337,8 @@ def EDMGo():
 	hc.SetPumpPolarizerAngle(pumpPolAngle)
 	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
 	# calibrate leakage monitors
+	print("calibrating leakage monitors..")
+	print("E-field off")
 	hc.EnableEField( False )
 	System.Threading.Thread.Sleep(10000)
 	hc.EnableBleed( True )
@@ -337,7 +346,9 @@ def EDMGo():
 	hc.CalibrateIMonitors()
 	hc.EnableBleed( False )
 	System.Threading.Thread.Sleep(500)
+	print("E-field on")
 	hc.EnableEField( True )
+	print("leakage monitors calibrated")
 
 	# loop and take data
 	blockIndex = 0
@@ -378,7 +389,6 @@ def EDMGo():
 		pumpPolAngle = 360.0 * r.NextDouble()
 		hc.SetPumpPolarizerAngle(pumpPolAngle)
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle)
-		hc.StepTarget(1)
 		# do things that need periodically doing
 	#	if ((blockIndex % kTargetRotationPeriod) == 0):
 		#	print("Rotating target.")
@@ -393,6 +403,8 @@ def EDMGo():
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			# calibrate leakage monitors
+			print("calibrating leakage monitors..")
+			print("E-field off")
 			hc.EnableEField( False )
 			System.Threading.Thread.Sleep(10000)
 			hc.EnableBleed( True )
@@ -400,7 +412,9 @@ def EDMGo():
 			hc.CalibrateIMonitors()
 			hc.EnableBleed( False )
 			System.Threading.Thread.Sleep(500)
+			print("E-field on")
 			hc.EnableEField( True )
+			print("leakage monitors calibrated")
 
 	bh.StopPattern()
 
