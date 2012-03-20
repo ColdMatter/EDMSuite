@@ -96,14 +96,16 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
-			AddDigitalOutputChannel("aom", pgBoard, 0, 4);
+		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
 			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
 			AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
-            AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58
-            AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
+            //AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58 Used to be used with AomLevelControlPlugin.
+            //AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
+           // AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
+            // will switch if it's switch scanning.
 
 			// map the analog channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);

@@ -29,8 +29,11 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			settings["channel"] = "laser";
 			settings["rampToZero"] = true;
+            settings["flyback"] = "normal";
 			settings["rampSteps"] = 50;
 			settings["rampDelay"] = 20;
+            settings["overshootVoltage"] = 0.0;
+           
 		}
 
 
@@ -48,10 +51,16 @@ namespace ScanMaster.Acquire.Plugins
 			}
 			scanParameter = 0;
 			//go gently to the correct start position
-			if ((string)settings["scanMode"] == "up" || (string)settings["scanMode"] == "updown")
-				rampOutputToVoltage((double)settings["start"]);
-			if ((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup")
-				rampOutputToVoltage((double)settings["end"]);
+            if ((string)settings["scanMode"] == "up" || (string)settings["scanMode"] == "updown")
+            {
+                if ((string)settings["flyback"] == "overshoot") rampOutputToVoltage((double)settings["overshootVoltage"]);
+                rampOutputToVoltage((double)settings["start"]);                
+            }
+            if ((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup")
+            {
+                if ((string)settings["flyback"] == "overshoot") rampOutputToVoltage((double)settings["overshootVoltage"]);
+                rampOutputToVoltage((double)settings["end"]);
+            }
 		}
 
 		public override void ScanStarting()
@@ -61,8 +70,16 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void ScanFinished()
 		{
-			if ((string)settings["scanMode"] == "up") rampOutputToVoltage((double)settings["start"]);
-			if ((string)settings["scanMode"] == "down") rampOutputToVoltage((double)settings["end"]);
+            if ((string)settings["scanMode"] == "up")
+            {
+                if ((string)settings["flyback"] == "overshoot") rampOutputToVoltage((double)settings["overshootVoltage"]);
+                rampOutputToVoltage((double)settings["start"]);
+            }
+            if ((string)settings["scanMode"] == "down")
+            {
+                if ((string)settings["flyback"] == "overshoot") rampOutputToVoltage((double)settings["overshootVoltage"]);
+                rampOutputToVoltage((double)settings["end"]);
+            }
 			// all other cases, do nothing
 		}
 
