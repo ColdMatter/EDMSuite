@@ -97,7 +97,11 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="AbsTesting.cs" />
+    <Compile Include="MagTrapAbsImage.cs" />
     <Compile Include="LoadMagTrap.cs" />
+    <Compile Include="MagTrapAbsImageTesting.cs" />
+    <Compile Include="MOTimaging.cs" />
     <Compile Include="MOTLoadingTime.cs" />
     <Compile Include="ReleaseRecapture.cs" />
   </ItemGroup>

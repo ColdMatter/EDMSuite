@@ -125,6 +125,7 @@ namespace SympatheticHardwareControl
             CreateDigitalTask("aom1enable");
             CreateDigitalTask("aom2enable");
             CreateDigitalTask("aom3enable");
+            CreateDigitalTask("shutterenable");
 
             // make the analog output analogTasks. The function "CreateAnalogOutputTask" is defined later
             //e.g.  bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
@@ -161,7 +162,16 @@ namespace SympatheticHardwareControl
         // this method runs immediately after the GUI sets up
         internal void ControllerLoaded()
         {
-            stateRecord = loadParameters(profilesPath + "StoppedParameters.bin");
+            hardwareState loadedState = new hardwareState();
+            loadedState = loadParameters(profilesPath + "StoppedParameters.bin");
+            foreach (KeyValuePair<string, double> pair in loadedState.analogs)
+            {
+                stateRecord.analogs[pair.Key] = pair.Value;
+            }
+            foreach (KeyValuePair<string, bool> pair in loadedState.digitals)
+            {
+                stateRecord.digitals[pair.Key] = pair.Value;
+            }
             setValuesDisplayedOnUI(stateRecord);
             ApplyRecordedStateToHardware();
         }
@@ -807,43 +817,93 @@ namespace SympatheticHardwareControl
         }
         public void TSInitialize(double acceleration, double deceleration, double distance, double velocity)
         {
-            // limits for the safe operation of the translation stage (set values in mm/s^n units)
-            double minRange = 0;
-            double maxDistance = 500; //full table travel = 600 mm
-            double maxVelocity = 900; //max screw speed = 54 rev/sec = 1080 mm/s
-            double maxAcc = 5000; //max acceleration = 1000 rev/s^2 = 20 m/s^2 = 20000 mm/s^2
-
-            if (distance < minRange || distance > maxDistance || acceleration < minRange || acceleration > maxAcc || deceleration < minRange || deceleration > maxAcc || velocity < minRange || velocity > maxVelocity)
+            try
             {
-                distance = 0;
-                acceleration = 0;
-                deceleration = 0;
-                velocity = 0;
+                // limits for the safe operation of the translation stage (set values in mm/s^n units) using calibration 1 step = 5 microns, 1 rev/s = 4000 steps/s = 20mm/s
+                double minDistance = 0;
+                double minVelocity = 0.5; //set as 0.5mm/s = 0.025 rev/s
+                double minAcc = 0.5; //set as 0.5mm/s^2 = 0.025 rev/s^2
+                double maxDistance = 500; //full table travel = 600 mm
+                double maxVelocity = 900; //max screw speed = 54 rev/sec = 1080 mm/s
+                double maxAcc = 5000; //max acceleration = 1000 rev/s^2 = 20 m/s^2 = 20000 mm/s^2
+
+                if (distance < minDistance || distance > maxDistance || acceleration < minAcc || acceleration > maxAcc || deceleration < minAcc || deceleration > maxAcc || velocity < minVelocity || velocity > maxVelocity)
+                {
+                    distance = minDistance;
+                    acceleration = minAcc;
+                    deceleration = minAcc;
+                    velocity = minVelocity;
+                    throw new ArgumentOutOfRangeException();
+                }
+                else
+                {
+                    tstage.Initialize(acceleration, deceleration, distance, velocity);
+                    controlWindow.WriteToConsole("Values initialized to: \n Acceleration = " + acceleration.ToString() + " mm/s^2 \n Deceleration = " + deceleration.ToString() +
+                        " mm/s^2 \n Distance = " + distance.ToString() + " mm \n Velocity = " + velocity.ToString() + " mm/s");
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 MessageBox.Show("Value set is out of the calibrated range! \n Try typing something more sensible.");
             }
-            else
+            catch (NullReferenceException)
             {
-                tstage.Initialize(acceleration, deceleration, distance, velocity);
-                controlWindow.WriteToConsole("Values initialized to: \n Acceleration = " + acceleration.ToString() + " mm/s^2 \n Deceleration = " + deceleration.ToString() +
-                    " mm/s^2 \n Distance = " + distance.ToString() + " mm \n Velocity = " + velocity.ToString() + " mm/s");
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button before initializing.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
             }
         }
 
         public void TSOn()
         {
-            tstage.On();
-            controlWindow.WriteToConsole("Translation stage on");
+            try
+            {
+                tstage.On();
+                controlWindow.WriteToConsole("Translation stage on");
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSGo()
         {
-            tstage.Move();
+            try
+            {
+                tstage.Move();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSOff()
         {
-            tstage.DisarmMove();
-            controlWindow.WriteToConsole("Translation stage off");
+            try
+            {
+                tstage.DisarmMove();
+                controlWindow.WriteToConsole("Translation stage off");
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSRead()
@@ -853,27 +913,65 @@ namespace SympatheticHardwareControl
 
         public void TSReturn()
         {
-            tstage.Return();
+            try
+            {
+                tstage.Return();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSRestart()
         {
-            tstage.Restart();
-            controlWindow.WriteToConsole("Translation stage restarted");
+            try
+            {
+                tstage.Restart();
+                Thread.Sleep(2000);
+                tstage.CommsDisable();
+                controlWindow.WriteToConsole("Translation stage restarted");
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSClear()
         {
-            tstage.Clear();
+            try
+            {
+                tstage.Clear();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
+
         public void TSAutoTriggerEnable()
         {
             tstage.AutoTriggerEnable();
         }
+
         public void TSAutoTriggerDisable()
         {
             tstage.AutoTriggerDisable();
         }
+
         public void TSDisconnect()
         {
             tstage.Disconnect();
@@ -882,14 +980,51 @@ namespace SympatheticHardwareControl
 
         public void TSHome()
         {
-            tstage.Home();
+            try
+            {
+                tstage.Home();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
         public void TSCheckStatus()
         {
-            tstage.CheckStatus();
+            try
+            {
+                tstage.CheckStatus();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
         }
 
+        public void TSListAll()
+        {
+            try
+            {
+                tstage.ListAll();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Translation stage is not connected.\nPress Connect button first.");
+            }
+            catch (ObjectDisposedException)
+            {
+                MessageBox.Show("Translation stage has been disconnected.\nPress the Connect button to reconnect.");
+            }
+        }
         #endregion
 
         #region Hardware Monitor

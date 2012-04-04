@@ -43,6 +43,7 @@ namespace SympatheticHardwareControl
             DOCheckBoxes["aom1enable"] = aom1CheckBox;
             DOCheckBoxes["aom2enable"] = aom2CheckBox;
             DOCheckBoxes["aom3enable"] = aom3CheckBox;
+            DOCheckBoxes["shutterenable"] = shutterCheckBox;
         }
 
         private void WindowClosing(object sender, FormClosingEventArgs e)
@@ -119,9 +120,12 @@ namespace SympatheticHardwareControl
             this.TSConnectButton = new System.Windows.Forms.Button();
             this.disposeButton = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.TSListAllButton = new System.Windows.Forms.Button();
+            this.checkStatusButton = new System.Windows.Forms.Button();
             this.read = new System.Windows.Forms.Button();
             this.TSClearButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.TSHomeButton = new System.Windows.Forms.Button();
             this.TSGoButton = new System.Windows.Forms.Button();
             this.TSReturnButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -161,8 +165,8 @@ namespace SympatheticHardwareControl
             this.label1 = new System.Windows.Forms.Label();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.TSHomeButton = new System.Windows.Forms.Button();
-            this.checkStatusButton = new System.Windows.Forms.Button();
+            this.shutterCheckBox = new System.Windows.Forms.CheckBox();
+            this.ShutterControlBox = new System.Windows.Forms.GroupBox();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
@@ -182,6 +186,7 @@ namespace SympatheticHardwareControl
             this.initParamsBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
+            this.ShutterControlBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -243,6 +248,7 @@ namespace SympatheticHardwareControl
             // tabLasers
             // 
             this.tabLasers.AutoScroll = true;
+            this.tabLasers.Controls.Add(this.ShutterControlBox);
             this.tabLasers.Controls.Add(this.aom3ControlBox);
             this.tabLasers.Controls.Add(this.aom2ControlBox);
             this.tabLasers.Controls.Add(this.aom1ControlBox);
@@ -266,7 +272,7 @@ namespace SympatheticHardwareControl
             this.aom3ControlBox.Controls.Add(this.aom3Label0);
             this.aom3ControlBox.Location = new System.Drawing.Point(3, 156);
             this.aom3ControlBox.Name = "aom3ControlBox";
-            this.aom3ControlBox.Size = new System.Drawing.Size(549, 45);
+            this.aom3ControlBox.Size = new System.Drawing.Size(541, 45);
             this.aom3ControlBox.TabIndex = 19;
             this.aom3ControlBox.TabStop = false;
             this.aom3ControlBox.Text = "AOM 3 (Absorption)";
@@ -343,7 +349,7 @@ namespace SympatheticHardwareControl
             this.aom2ControlBox.Controls.Add(this.aom2Label0);
             this.aom2ControlBox.Location = new System.Drawing.Point(3, 105);
             this.aom2ControlBox.Name = "aom2ControlBox";
-            this.aom2ControlBox.Size = new System.Drawing.Size(549, 45);
+            this.aom2ControlBox.Size = new System.Drawing.Size(541, 45);
             this.aom2ControlBox.TabIndex = 20;
             this.aom2ControlBox.TabStop = false;
             this.aom2ControlBox.Text = "AOM 2 (Zeeman)";
@@ -420,7 +426,7 @@ namespace SympatheticHardwareControl
             this.aom1ControlBox.Controls.Add(this.aom1Label0);
             this.aom1ControlBox.Location = new System.Drawing.Point(3, 54);
             this.aom1ControlBox.Name = "aom1ControlBox";
-            this.aom1ControlBox.Size = new System.Drawing.Size(549, 45);
+            this.aom1ControlBox.Size = new System.Drawing.Size(541, 45);
             this.aom1ControlBox.TabIndex = 19;
             this.aom1ControlBox.TabStop = false;
             this.aom1ControlBox.Text = "AOM 1 (MOT Repump)";
@@ -497,7 +503,7 @@ namespace SympatheticHardwareControl
             this.aom0ControlBox.Controls.Add(this.aom0Label0);
             this.aom0ControlBox.Location = new System.Drawing.Point(3, 3);
             this.aom0ControlBox.Name = "aom0ControlBox";
-            this.aom0ControlBox.Size = new System.Drawing.Size(549, 45);
+            this.aom0ControlBox.Size = new System.Drawing.Size(541, 45);
             this.aom0ControlBox.TabIndex = 12;
             this.aom0ControlBox.TabStop = false;
             this.aom0ControlBox.Text = "AOM 0 (MOT AOM)";
@@ -721,15 +727,36 @@ namespace SympatheticHardwareControl
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.TSListAllButton);
             this.groupBox3.Controls.Add(this.checkStatusButton);
             this.groupBox3.Controls.Add(this.read);
             this.groupBox3.Controls.Add(this.TSClearButton);
             this.groupBox3.Location = new System.Drawing.Point(271, 132);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(278, 46);
+            this.groupBox3.Size = new System.Drawing.Size(365, 54);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Console";
+            // 
+            // TSListAllButton
+            // 
+            this.TSListAllButton.Location = new System.Drawing.Point(184, 17);
+            this.TSListAllButton.Name = "TSListAllButton";
+            this.TSListAllButton.Size = new System.Drawing.Size(83, 23);
+            this.TSListAllButton.TabIndex = 17;
+            this.TSListAllButton.Text = "List all";
+            this.TSListAllButton.UseVisualStyleBackColor = true;
+            this.TSListAllButton.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // checkStatusButton
+            // 
+            this.checkStatusButton.Location = new System.Drawing.Point(95, 17);
+            this.checkStatusButton.Name = "checkStatusButton";
+            this.checkStatusButton.Size = new System.Drawing.Size(83, 23);
+            this.checkStatusButton.TabIndex = 18;
+            this.checkStatusButton.Text = "Check status";
+            this.checkStatusButton.UseVisualStyleBackColor = true;
+            this.checkStatusButton.Click += new System.EventHandler(this.checkStatusButton_Click);
             // 
             // read
             // 
@@ -743,7 +770,7 @@ namespace SympatheticHardwareControl
             // 
             // TSClearButton
             // 
-            this.TSClearButton.Location = new System.Drawing.Point(183, 17);
+            this.TSClearButton.Location = new System.Drawing.Point(273, 17);
             this.TSClearButton.Name = "TSClearButton";
             this.TSClearButton.Size = new System.Drawing.Size(83, 23);
             this.TSClearButton.TabIndex = 8;
@@ -762,6 +789,16 @@ namespace SympatheticHardwareControl
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Motion";
+            // 
+            // TSHomeButton
+            // 
+            this.TSHomeButton.Location = new System.Drawing.Point(183, 19);
+            this.TSHomeButton.Name = "TSHomeButton";
+            this.TSHomeButton.Size = new System.Drawing.Size(83, 23);
+            this.TSHomeButton.TabIndex = 17;
+            this.TSHomeButton.Text = "Home";
+            this.TSHomeButton.UseVisualStyleBackColor = true;
+            this.TSHomeButton.Click += new System.EventHandler(this.TSHomeButton_Click);
             // 
             // TSGoButton
             // 
@@ -1114,25 +1151,24 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
             // 
-            // TSHomeButton
+            // shutterCheckBox
             // 
-            this.TSHomeButton.Location = new System.Drawing.Point(183, 19);
-            this.TSHomeButton.Name = "TSHomeButton";
-            this.TSHomeButton.Size = new System.Drawing.Size(83, 23);
-            this.TSHomeButton.TabIndex = 17;
-            this.TSHomeButton.Text = "Home";
-            this.TSHomeButton.UseVisualStyleBackColor = true;
-            this.TSHomeButton.Click += new System.EventHandler(this.TSHomeButton_Click);
+            this.shutterCheckBox.AutoSize = true;
+            this.shutterCheckBox.Location = new System.Drawing.Point(46, 21);
+            this.shutterCheckBox.Name = "shutterCheckBox";
+            this.shutterCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.shutterCheckBox.TabIndex = 21;
+            this.shutterCheckBox.UseVisualStyleBackColor = true;
             // 
-            // checkStatusButton
+            // ShutterControlBox
             // 
-            this.checkStatusButton.Location = new System.Drawing.Point(95, 17);
-            this.checkStatusButton.Name = "checkStatusButton";
-            this.checkStatusButton.Size = new System.Drawing.Size(83, 23);
-            this.checkStatusButton.TabIndex = 18;
-            this.checkStatusButton.Text = "Check status";
-            this.checkStatusButton.UseVisualStyleBackColor = true;
-            this.checkStatusButton.Click += new System.EventHandler(this.checkStatusButton_Click);
+            this.ShutterControlBox.Controls.Add(this.shutterCheckBox);
+            this.ShutterControlBox.Location = new System.Drawing.Point(549, 3);
+            this.ShutterControlBox.Name = "ShutterControlBox";
+            this.ShutterControlBox.Size = new System.Drawing.Size(104, 45);
+            this.ShutterControlBox.TabIndex = 22;
+            this.ShutterControlBox.TabStop = false;
+            this.ShutterControlBox.Text = "Zeeman repump";
             // 
             // ControlWindow
             // 
@@ -1177,6 +1213,8 @@ namespace SympatheticHardwareControl
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
+            this.ShutterControlBox.ResumeLayout(false);
+            this.ShutterControlBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1316,6 +1354,9 @@ namespace SympatheticHardwareControl
         private Button TSReturnButton;
         private Button TSClearButton;
         private Button TSRestartButton;
+        private Button TSHomeButton;
+        private Button checkStatusButton;
+        private Button TSListAllButton;
         private GroupBox initParamsBox;
         private TextBox TSVelTextBox;
         private TextBox TSStepsTextBox;
@@ -1335,6 +1376,8 @@ namespace SympatheticHardwareControl
         private GroupBox groupBox4;
         private CheckBox AutoTriggerCheckBox;
         private Button TSConnectButton;
+        private GroupBox RS232GroupBox;
+        public CheckBox shutterCheckBox;
 
         #endregion
 
@@ -1426,18 +1469,19 @@ namespace SympatheticHardwareControl
             }
         }
 
-        private Button TSHomeButton;
-
         private void TSHomeButton_Click(object sender, EventArgs e)
         {
             controller.TSHome();
         }
 
-        private Button checkStatusButton;
-
         private void checkStatusButton_Click(object sender, EventArgs e)
         {
             controller.TSCheckStatus();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            controller.TSListAll();
         }
 
         #endregion
@@ -1530,12 +1574,14 @@ namespace SympatheticHardwareControl
         }
         #endregion
 
-        private GroupBox RS232GroupBox;
-
         private void label8_Click(object sender, EventArgs e)
         {
 
         }
+
+        private GroupBox ShutterControlBox;
+
+        
 
       
 

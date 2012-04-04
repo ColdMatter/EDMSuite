@@ -16,11 +16,13 @@ namespace DAQ.HAL
         {
             base.Connect(SerialTerminationMethod.TerminationCharacter);
             autoTrigger = true;
+            base.Write("1E0\r\n"); 
         }
         public void Initialize(double acceleration, double deceleration, double distance, double velocity)
         {
             
             //I just hacked the example program built using EASY-V, and examples . I don't know what most of these do. A command reference can be found in the manual for the VIX500.
+            base.Write("1E1\r\n");
             base.Write("1K\r\n");
             base.Write("1CLEAR(ALL)\r\n");
 
@@ -54,7 +56,7 @@ namespace DAQ.HAL
             //Homing routine
             base.Write("1GAMMA:\r\n");
             base.Write("1O(000)\r\n");
-            base.Write("1HOME1(+,0,-15,100,1)\r\n");
+            base.Write("1HOME1(-,0,15,100,1)\r\n");
             base.Write("1GOTO(MOVE2)\r\n");
             base.Write("1END\r\n");
 
@@ -105,7 +107,7 @@ namespace DAQ.HAL
 
             base.Write("1ARM01\r\n");
             base.Write("1GOTO(INIT)\r\n");
-            base.Write("1SV\r\n");
+            //base.Write("1SV\r\n"); This line isn't really needed for immediate control, it saves your TS script into memory.
         }
 
         public void Restart()
@@ -147,6 +149,15 @@ namespace DAQ.HAL
         {
             base.Write("1OFF\r\n");
         }
+        public string Read()
+        {
+            return base.Read();
+        }
+        public void Clear()
+        {
+            base.Clear();
+            base.Write("1CLEAR(ALL)");
+        }
         public void AutoTriggerEnable()
         {
             autoTrigger = true;     
@@ -171,6 +182,16 @@ namespace DAQ.HAL
         public void CheckStatus()
         {
             base.Write("1R(ST)\r\n");
+        }
+
+        public void ListAll()
+        {
+            base.Write("1LIST(ALL)\r\n");
+        }
+
+        public void CommsDisable()
+        {
+            base.Write("1E0\r\n");
         }
     }
 }

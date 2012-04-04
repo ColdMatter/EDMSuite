@@ -19,7 +19,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 200000;
         Parameters["MOTStartTime"] = 1000;
-        Parameters["MOTCoilsCurrent"] = 17.0;
+        Parameters["MOTCoilsCurrent"] = 10.0;
         Parameters["MOTLoadDuration"] = 100000;
         Parameters["MagTrapDuration"] = 100;
         Parameters["NumberOfFrames"] = 3;
@@ -28,14 +28,18 @@ public class Patterns : MOTMasterScript
         Parameters["Frame1TriggerDuration"] = 100;
         Parameters["Frame1Trigger"] = 100100;
         Parameters["Frame2TriggerDuration"] = 100;
-        Parameters["Frame2Trigger"] = 160000;
-        Parameters["CameraExposure"] = 20; // NOTE this does not change the camera exposure time, you have to change the 
+        Parameters["Frame2Trigger"] = 140000;
+        Parameters["CameraExposure"] = 100; // NOTE this does not change the camera exposure time, you have to change the 
                                            // value in the camera attributes file, this is used to switch the Zeeman light
                                            // when an image is taken. 
-        Parameters["TSAcceleration"] = 50.0;
-        Parameters["TSDeceleration"] = 50.0;
-        Parameters["TSDistance"] = 100000.0;
-        Parameters["TSVelocity"] = 50.0;
+        Parameters["aom2Detuning"] = 190.875;
+        Parameters["aom3Detuning"] = 210.875;
+        Parameters["MagRampTime"] = 99900;
+        Parameters["MagTrapCurrent"] = 10.0;
+        Parameters["TSAcceleration"] = 10.0;
+        Parameters["TSDeceleration"] = 10.0;
+        Parameters["TSDistance"] = 0.0;
+        Parameters["TSVelocity"] = 10.0;
 
     }
 
@@ -52,19 +56,20 @@ public class Patterns : MOTMasterScript
         p.AddEdge("CameraTrigger", 0, true);
         p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["Frame0TriggerDuration"], "CameraTrigger");
         p.DownPulse((int)Parameters["Frame1Trigger"], 0, (int)Parameters["Frame1TriggerDuration"], "CameraTrigger");
-        p.DownPulse((int)Parameters["Frame2Trigger"], 0, (int)Parameters["Frame1TriggerDuration"], "CameraTrigger");
+        p.DownPulse((int)Parameters["Frame2Trigger"], 0, (int)Parameters["Frame2TriggerDuration"], "CameraTrigger");
 
         p.DownPulse(190000, 0, 50, "CameraTrigger");
         p.DownPulse(195000, 0, 50, "CameraTrigger");
 
-        // switches off the Zeeman slowing light to avoid reloading the MOT whilst imaging the MOT
-        p.DownPulse((int)Parameters["Frame0Trigger"] - 10, 0, (int)Parameters["CameraExposure"] + 20, "aom2enable");
+        // switches off the Zeeman and absorption beams to avoid reloading the MOT whilst imaging, and to allow fluorescence images to be obtained
+        p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["CameraExposure"], "aom2enable");
+        p.DownPulse((int)Parameters["Frame0Trigger"], 0, (int)Parameters["CameraExposure"], "aom3enable");
 
         // loads the mag trap, Zeeman light is not switched back on again to avoid MOT reloading
         p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["MagTrapDuration"], "aom0enable");
         p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["MagTrapDuration"], "aom1enable");
-        p.DownPulse((int)Parameters["MOTLoadDuration"], 0, (int)Parameters["MagTrapDuration"], "aom3enable");
         p.AddEdge("aom2enable", (int)Parameters["MOTLoadDuration"], false);
+        p.AddEdge("aom3enable", (int)Parameters["MOTLoadDuration"], false);
 
         return p;
     }
@@ -75,8 +80,14 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
+        p.AddChannel("aom2frequency");
+        p.AddChannel("aom3frequency");
+
         p.AddAnalogValue("coil0current", 0, 0);
-        p.AddAnalogValue("coil0current", 150000, 0);
+        p.AddAnalogValue("aom2frequency", 0, (double)Parameters["aom2Detuning"]);
+        p.AddAnalogValue("aom3frequency", 0, (double)Parameters["aom3Detuning"]);
+        //p.AddAnalogValue("coil0current", (int)Parameters["MagRampTime"], (double)Parameters["MagTrapCurrent"]);
+        p.AddAnalogValue("coil0current", 130000, 0);
 
         p.SwitchAllOffAtEndOfPattern();
         return p;

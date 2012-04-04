@@ -15,21 +15,26 @@ from MOTMaster import*
 def run_script():
 	return 0
 
-def ScanReleaseTime(initial,final,interval):
+def SwitchCoils(maxCurrent,minCurrent):
 	count = 0
-	endcount = (final-initial)/interval
+	endcount = 2
 	dic = Dictionary[String,Object]()
-	mm.SetScriptPath("C:\\Experiment Control\\EDMSuiteTrunk\\SympatheticMOTMasterScripts\\ReleaseRecapture.cs")
-	while(count < endcount+1):
-		dic["ReleaseTime"] = (count*interval)+initial
-		dic["Frame1Trigger"] = 100001 + (count*interval)+initial
-		mm.Run(dic)
-		count = count + 1
+	mm.SetScriptPath("C:\\Experiment Control\\EDMSuiteTrunk\\SympatheticMOTMasterScripts\\MagTrapAbsImage.cs")
+	while(count < endcount):
+		if count == 0:
+			dic["MOTCoilsCurrent"] = maxCurrent
+			mm.Run(dic)
+			count = count + 1
+		elif count == 1:
+			dic["MOTCoilsCurrent"] = minCurrent
+			mm.Run(dic)
+			count = count + 1
+	
 	return 0
 
-def RepeatScansRT(initial, final, interval, numberofrepeats):
+def RepeatScansSWC(maxCurrent,minCurrent,numberofrepeats):
 	j = 0
 	while(j < numberofrepeats):
-		ScanReleaseTime(initial,final,interval)
+		SwitchCoils(maxCurrent,minCurrent)
 		j = j+1
 	return 0

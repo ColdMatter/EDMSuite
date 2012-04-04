@@ -32,6 +32,10 @@ public class Patterns : MOTMasterScript
         Parameters["Frame3TriggerDuration"] = 100;
         Parameters["Frame3Trigger"] = 130000;
         Parameters["MOTCoilsCurrent"] = 17.0;
+        Parameters["TSAcceleration"] = 10.0;
+        Parameters["TSDeceleration"] = 10.0;
+        Parameters["TSDistance"] = 0.0;
+        Parameters["TSVelocity"] = 10.0;
     }
 
     public override PatternBuilder32 GetDigitalPattern()

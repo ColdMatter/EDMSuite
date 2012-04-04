@@ -18,12 +18,16 @@ using DAQ.Analog;
             Parameters = new Dictionary<string, object>();
             Parameters["PatternLength"] = 170000;
             Parameters["MOTStartTime"] = 1000;
-            Parameters["MOTCoilsCurrent"] = 17.0;
+            Parameters["MOTCoilsCurrent"] = 10.0;
             Parameters["NumberOfFrames"] = 2;
             Parameters["Frame0TriggerDuration"] = 100;
-            Parameters["Frame0Trigger"] = 5000;
+            Parameters["Frame0Trigger"] = 110000;
             Parameters["Frame1TriggerDuration"] = 100;
             Parameters["Frame1Trigger"] = 125000;
+            Parameters["TSAcceleration"] = 10.0;
+            Parameters["TSDeceleration"] = 10.0;
+            Parameters["TSDistance"] = 0.0;
+            Parameters["TSVelocity"] = 10.0;
         }
 
         public override PatternBuilder32 GetDigitalPattern()
@@ -50,7 +54,12 @@ using DAQ.Analog;
 
             MOTMasterScriptSnippet lm = new SHLoadMOT(p, Parameters);
 
+            //p.AddChannel("aom2frequency");
+            //p.AddChannel("aom3frequency");
+
             p.AddAnalogValue("coil0current", 0, 0);
+            //p.AddAnalogValue("aom2frequency", 0, 190.875);
+            //p.AddAnalogValue("aom3frequency", 0, 210.875);
             p.AddAnalogValue("coil0current", 120000, 0);
 
             p.SwitchAllOffAtEndOfPattern();

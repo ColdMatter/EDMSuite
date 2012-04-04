@@ -26,7 +26,7 @@ def ScanLoadTime(initial, final, interval):
 		count=count + 1
 	return 0
 
-def RepeatScans(initial, final, interval, numberofrepeats):
+def RepeatScansLT(initial, final, interval, numberofrepeats):
 	j = 0
 	while(j < numberofrepeats):
 		ScanLoadTime(initial,final,interval)
