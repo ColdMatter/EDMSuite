@@ -74,6 +74,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
 	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
 	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
+	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
+	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
+	bc.Settings["greenFreq"] = hc.GreenSynthOnFrequency
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -397,7 +400,7 @@ def EDMGo():
 		dbValue = pmtChannelValues.GetValue(("DB",))
 		if (dbValue < 11):
 			print("Dodgy spot target rotation.")
-			for i in range(5):
+			for i in range(3):
 				hc.StepTarget(2)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
