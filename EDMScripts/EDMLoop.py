@@ -54,7 +54,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
-	#hc.UpdatePumpAOMFreqMonitor()
+	hc.UpdatePumpAOMFreqMonitor()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -72,7 +72,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
+	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
 	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
