@@ -155,7 +155,7 @@ namespace DAQ.HAL
         }
         public void Clear()
         {
-            base.Clear();
+            base.serial.Clear();
             base.Write("1CLEAR(ALL)");
         }
         public void AutoTriggerEnable()
