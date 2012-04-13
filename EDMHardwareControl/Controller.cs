@@ -972,11 +972,11 @@ namespace EDMHardwareControl
         {
             get
             {
-                return Double.Parse(window.diodeRefCavStepTextBox.Text);
+            return Double.Parse(window.diodeRefCavStepTextBox.Text);
             }
             set
-            {
-                window.SetTextBox(window.diodeRefCavStepTextBox, value.ToString());
+           {
+               window.SetTextBox(window.diodeRefCavStepTextBox, value.ToString());
             }
         }
         public double LeakageMonitorMeasurementTime
@@ -1861,31 +1861,36 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopDiodeCurrentPollButton, false);
         }
 
-        public void SetDiodeRefCav()
+        public void SetDiodeRefCav(double value)
         {
-            double refCavVoltage = Double.Parse(window.diodeRefCavTextBox.Text);
-            if (window.diodeRefCavStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.diodeRefCavStepTextBox.Text);
-            if (window.diodeRefCavStepPlusButton.Checked) refCavVoltage += Double.Parse(window.diodeRefCavStepTextBox.Text);
-            // HV supply must not go below 0V
-            if (refCavVoltage < 0)
+            if (value < 0)
             {
                 SetAnalogOutput(diodeRefCavOutputTask, 0.0);
+                window.diodeRefCavTextBox.Text = value.ToString();
                 window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
-                UpdateDiodeRefCavMonitor();
             }
-            else if (refCavVoltage > 5)
+            else if (value > 10)
             {
-                SetAnalogOutput(diodeRefCavOutputTask, 5.0);
+                SetAnalogOutput(diodeRefCavOutputTask, 10.0);
+                window.diodeRefCavTextBox.Text = value.ToString();
                 window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
-                UpdateDiodeRefCavMonitor();
             }
             else
             {
-                SetAnalogOutput(diodeRefCavOutputTask, refCavVoltage);
+                SetAnalogOutput(diodeRefCavOutputTask, value);
+                window.diodeRefCavTextBox.Text = value.ToString();
                 window.diodeRefCavTextBox.BackColor = System.Drawing.Color.LimeGreen;
-                UpdateDiodeRefCavMonitor();
             }
-            
+        }
+
+        public void UpdateDiodeRefCav()
+        {
+            double refCavVoltage = Double.Parse(window.diodeRefCavTextBox.Text);
+            window.diodeRefCavTrackBar.Value = (int) (100 * refCavVoltage);
+            if (window.diodeRefCavStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.diodeRefCavStepTextBox.Text);
+            if (window.diodeRefCavStepPlusButton.Checked) refCavVoltage += Double.Parse(window.diodeRefCavStepTextBox.Text);
+
+            SetDiodeRefCav(refCavVoltage);
         }
 
         public void SetFibreAmpPwr()
