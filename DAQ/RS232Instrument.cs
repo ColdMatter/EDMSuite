@@ -63,6 +63,16 @@ namespace DAQ.HAL
             return serial.ReadString();
         }
 
+        protected string Read(int bytes)
+        {
+            return serial.ReadString(bytes);
+        }
+
+        protected void Clear()
+        {
+            serial.Clear();
+        }
+
         protected double QueryDouble(string q)
         {
             double d = 0.0;

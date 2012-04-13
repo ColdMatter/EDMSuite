@@ -66,7 +66,7 @@ namespace EDMHardwareControl
         ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
-        Agilent53131A rfCounter2 = (Agilent53131A)Environs.Hardware.Instruments["rfCounter2"];
+        SerialAgilent53131A rfCounter2 = (SerialAgilent53131A)Environs.Hardware.Instruments["rfCounter2"];
         HP438A rfPower = (HP438A)Environs.Hardware.Instruments["rfPower"];
         SerialDAQ bfieldCntrl = (SerialDAQ)Environs.Hardware.Instruments["BfieldController"];
         Hashtable digitalTasks = new Hashtable();
@@ -1996,14 +1996,7 @@ namespace EDMHardwareControl
 
         public void UpdatePumpAOMFreqMonitor()
         {
-
-            //bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("pumpAOMFreqMon");
-            //SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
-            //SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
-            Thread.Sleep(10);
-            // The VCO is connected to channel one (should put this line in PXIEDMHardware.cs)
-            rfCounter2.Channel = 1;
-            double PumpAOMFreq = rfCounter2.Frequency;
+            double PumpAOMFreq = rfCounter2.Frequency();
             window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
         }
 

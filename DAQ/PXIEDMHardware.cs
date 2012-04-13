@@ -63,9 +63,10 @@ namespace DAQ.HAL
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
-            Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
+            //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
             Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
+            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL3::INSTR"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
