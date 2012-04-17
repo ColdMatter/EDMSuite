@@ -158,7 +158,7 @@ namespace TransferCavityLock2012
             if (vtolaser
                 + Gain * measuredVoltageChange > (double)Environs.Hardware.GetInfo("TCL_Slave_Voltage_Limit_Upper")
                 || vtolaser
-                + Gain * measuredVoltageChange < (double)Environs.Hardware.GetInfo("TCL_Slave_Voltage_Limit_Upper"))
+                + Gain * measuredVoltageChange < (double)Environs.Hardware.GetInfo("TCL_Slave_Voltage_Limit_Lower"))
             {
                 newVoltage = vtolaser;
             }
@@ -166,7 +166,8 @@ namespace TransferCavityLock2012
             {
                 newVoltage = vtolaser + Gain * measuredVoltageChange; //Feedback 
             }
-            return Math.Round(newVoltage, 4);
+            double r = Math.Round(newVoltage, 4);
+            return r;
         }
 
         #endregion
