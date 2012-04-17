@@ -3,7 +3,7 @@
 from DAQ.Environment import *
 from System.Threading import *
 
-def Run(interval, numScans):
+def Run(interval, numScans, scansperEstate):
 	# setup
 	fileSystem = Environs.FileSystem
 	file = \
@@ -18,13 +18,12 @@ def Run(interval, numScans):
 	r = list
 	for i in range(numScans):
 		print str(i)+"th scan of B"
-		sm.AcquireAndWait(1)
+		sm.AcquireAndWait(4)
 		scanPath = file + "_" + str(i) + ".zip"
 		sm.SaveAverageData(scanPath)
-		
-		System.Threading.Thread.Sleep(interval*1000)
-
+		System.Threading.Thread.Sleep(interval*1000)	
 
 def run_script():
-	print "Use Run(interval (s), numScans)"
+	print "Use Run(interval (s), numScans, scansperEstate)"
+
 
