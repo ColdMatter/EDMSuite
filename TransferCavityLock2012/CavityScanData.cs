@@ -25,21 +25,24 @@ namespace TransferCavityLock2012
         public double[,] AIData;
         public ScanParameters parameters = new ScanParameters();
         Dictionary<string, string> slaveLookupTable;
+        string cavityMonitorName, masterName;
 
-        public CavityScanData(int steps, Dictionary<string, int> channels, Dictionary<string, string> lookupTable)
+        public CavityScanData(int steps, Dictionary<string, int> channels, Dictionary<string, string> lookupTable, string cavityMonitorName, string masterName)
         {
             AIData = new double[channels.Count, steps];
             parameters.Steps = steps;
             parameters.NumberOfAIChannels = channels.Count;
             parameters.Channels = channels;
             slaveLookupTable = lookupTable;
+            this.cavityMonitorName = cavityMonitorName;
+            this.masterName = masterName;
        }
         public double[] GetCavityData()
         {
             double[] temp = new double[AIData.GetLength(1)];
             for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                temp[i] = AIData[parameters.Channels["cavity"], i];
+                temp[i] = AIData[parameters.Channels[cavityMonitorName], i];
             }
             return temp;
         }
@@ -48,7 +51,7 @@ namespace TransferCavityLock2012
             double[] temp = new double[AIData.GetLength(1)];
             for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                temp[i] = AIData[parameters.Channels["master"], i];
+                temp[i] = AIData[parameters.Channels[masterName], i];
             }
             return temp;
         }

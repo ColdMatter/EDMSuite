@@ -37,7 +37,7 @@ namespace TransferCavityLock2012
         public Dictionary<string, SlaveLaser> SlaveLasers;      //Stores all the slave laser classes.
         private Dictionary<string, int> aiChannels;             //All ai channels, including the cavity and the master.
         private Dictionary<string, string> lookupAI;            //This is how to tell TCL which photodiode corresponds to which slave laser.
-
+        string[] photodiodes;
         
         
         TransferCavity2012Lockable tcl;
@@ -69,7 +69,7 @@ namespace TransferCavityLock2012
             ui.controller = this;
             
             string[] lockableLasers = (string[])Environs.Hardware.GetInfo("TCLLockableLasers");
-            string[] photodiodes = (string[])Environs.Hardware.GetInfo("TCLPhotodiodes");
+            photodiodes = (string[])Environs.Hardware.GetInfo("TCLPhotodiodes");
 
             initializeSlaveLaserControl(lockableLasers);
             initializeAIs(photodiodes);
@@ -219,7 +219,7 @@ namespace TransferCavityLock2012
         /// </summary>
         private CavityScanData acquireAI(ScanParameters sp)
         {
-            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, lookupAI); //How many channels we expect. one pd for each slave, the He-Ne and the cavity voltage.
+            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, lookupAI, photodiodes[0], photodiodes[1]); //How many channels we expect. one pd for each slave, the He-Ne and the cavity voltage.
             scanData.AIData = tcl.ReadAI(sp.Steps);
             return scanData;
         }
