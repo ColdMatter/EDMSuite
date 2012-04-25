@@ -54,6 +54,8 @@ namespace DAQ.HAL
             Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
+            Info.Add("PGTrigger", pgBoard + "/PFI0");
+
             // YAG laser
             yag = new BrilliantLaser("ASRL2::INSTR");
 

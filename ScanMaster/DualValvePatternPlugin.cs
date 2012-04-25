@@ -59,7 +59,8 @@ namespace ScanMaster.Acquire.Plugins
                 (bool)settings["fullWidth"],
                 (bool)settings["lowGroup"],
                 patternLength,
-                (bool)settings["internalClock"]
+                (bool)settings["internalClock"],
+                false
                 );
         }
 

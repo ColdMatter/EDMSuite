@@ -57,7 +57,7 @@ namespace DAQ.HAL
 		}
 
 		public void Configure( double clockFrequency, bool loop, bool fullWidth,
-                                    bool lowGroup, int length, bool internalClock)
+                                    bool lowGroup, int length, bool internalClock, bool triggered)
 		{	
 			this.clockFrequency = clockFrequency;
 			this.length = length;
@@ -163,6 +163,14 @@ namespace DAQ.HAL
                 // note that 6229 type integrated PGs only have 2kB buffer, so this isn't needed for them (or allowed, in fact)
                 pgTask.Stream.Buffer.OutputBufferSize = length;
                 pgTask.Stream.Buffer.OutputOnBoardBufferSize = length;
+            }
+
+            /**** Configure triggering ****/
+            if (triggered)
+            {
+                pgTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                    (string)Environs.Hardware.GetInfo("PGTrigger"),
+                    DigitalEdgeStartTriggerEdge.Rising);
             }
 
             /**** Write configuration to board ****/
