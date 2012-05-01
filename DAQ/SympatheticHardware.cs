@@ -67,6 +67,7 @@ namespace DAQ.HAL
             Info.Add("TCL_Slave_Voltage_Limit_Lower", -10.0); //volts: Laser control
             Info.Add("TCL_Default_Gain", 0.5);
             Info.Add("TCL_Default_VoltageToLaser", 0.0);
+            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
 
             // map the GPIB instruments
             Instruments.Add("microwave", new EIP578Synth("GPIB0::19::INSTR"));

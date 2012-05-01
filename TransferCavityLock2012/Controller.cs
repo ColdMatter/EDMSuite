@@ -28,9 +28,8 @@ namespace TransferCavityLock2012
 
         #region Declarations
 
-        public const int default_ScanPoints = 200;
-
-
+        public const int default_ScanPoints = 700;
+        
         private MainForm ui;
         
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
@@ -243,38 +242,47 @@ namespace TransferCavityLock2012
             {
                 
                 scanData = acquireAI(sp);
-
+                
                 if (scanData != null)
                 {
                     plotCavity(scanData);
 
-                    fits["masterFits"] = fitMaster(scanData);
-                    plotMaster(scanData, fits["masterFits"]);
-
-                    foreach (KeyValuePair<string, SlaveLaser> pair in SlaveLasers)
+                    if ((scanData.GetCavityData())[sp.Steps - 1] < (double)Environs.Hardware.GetInfo("TCL_MAX_INPUT_VOLTAGE")) // if the cavity ramp voltage exceeds the input voltage - do nothing
                     {
-                        string slName = pair.Key;
-                        SlaveLaser sl = pair.Value;
 
-                        fits[slName + "Fits"] = fitSlave(slName, scanData);
-                        plotSlave(slName, scanData, fits[slName + "Fits"]);
+                        fits["masterFits"] = fitMaster(scanData);
+                        plotMaster(scanData, fits["masterFits"]);
 
-                        switch (sl.lState)
+                        foreach (KeyValuePair<string, SlaveLaser> pair in SlaveLasers)
                         {
-                            case SlaveLaser.LaserState.FREE:
-                                break;
+                            string slName = pair.Key;
+                            SlaveLaser sl = pair.Value;
 
-                            case SlaveLaser.LaserState.LOCKING:
-                                sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
-                                sl.Lock();
-                                break;
+                            fits[slName + "Fits"] = fitSlave(slName, scanData);
+                            plotSlave(slName, scanData, fits[slName + "Fits"]);
 
-                            case SlaveLaser.LaserState.LOCKED:
-                                sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
-                                RefreshLockParametersOnUI(sl.Name);
-                                break;
+                            switch (sl.lState)
+                            {
+                                case SlaveLaser.LaserState.FREE:
+                                    break;
+
+                                case SlaveLaser.LaserState.LOCKING:
+                                    sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
+                                    sl.Lock();
+                                    break;
+
+                                case SlaveLaser.LaserState.LOCKED:
+                                    sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
+                                    RefreshLockParametersOnUI(sl.Name);
+                                    break;
+                            }
+
                         }
-                        
+                    }
+                    else 
+                    { 
+                        Console.WriteLine("Cavity ramp voltage out of range");
+                        Thread.Sleep(100);
                     }
                     
                 }

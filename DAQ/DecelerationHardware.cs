@@ -47,6 +47,7 @@ namespace DAQ.HAL
             Info.Add("TCL_Slave_Voltage_Limit_Lower", -10.0); //volts: Laser control
             Info.Add("TCL_Default_Gain", 0.5);
             Info.Add("TCL_Default_VoltageToLaser", 0.0);
+            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
             // Some matching up for TCL
             Info.Add("laser", "p1");
             Info.Add("laser2", "p2");
