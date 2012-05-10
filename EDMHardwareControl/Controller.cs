@@ -99,7 +99,7 @@ namespace EDMHardwareControl
         Task piMonitorTask;
         Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
-        Task diodeRefCavOutputTask;
+        Task flPZT2OutputTask;
         Task fibreAmpOutputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
@@ -165,7 +165,7 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
-            diodeRefCavOutputTask = CreateAnalogOutputTask("diodeRefCavity");
+            flPZT2OutputTask = CreateAnalogOutputTask("flPZT2");
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
 
             // analog inputs
@@ -180,7 +180,7 @@ namespace EDMHardwareControl
             piMonitorTask = CreateAnalogInputTask("piMonitor");
             //northLeakageInputTask = CreateAnalogInputTask("northLeakage");
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
-            diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
+            //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
             diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
 
             // make the control window
@@ -960,11 +960,11 @@ namespace EDMHardwareControl
         {
             get
             {
-                return Double.Parse(window.diodeRefCavTextBox.Text);
+                return Double.Parse(window.flPZT2TextBox.Text);
             }
             set
             {
-                window.SetTextBox(window.diodeRefCavTextBox, value.ToString());
+                window.SetTextBox(window.flPZT2TextBox, value.ToString());
             }
         }
 
@@ -972,11 +972,11 @@ namespace EDMHardwareControl
         {
             get
             {
-            return Double.Parse(window.diodeRefCavStepTextBox.Text);
+            return Double.Parse(window.flPZT2StepTextBox.Text);
             }
             set
            {
-               window.SetTextBox(window.diodeRefCavStepTextBox, value.ToString());
+               window.SetTextBox(window.flPZT2StepTextBox, value.ToString());
             }
         }
         public double LeakageMonitorMeasurementTime
@@ -1791,12 +1791,6 @@ namespace EDMHardwareControl
             if (true) window.AddAlert("Pi-flip - V1: " + piMonitorV1 + "; V2: " + piMonitorV1 + " .");
         }
 
-        public void UpdateDiodeRefCavMonitor()
-        {
-            double diodeRefCavMonValue = ReadAnalogInput(diodeRefCavInputTask);
-            window.SetTextBox(window.diodeRefCavMonTextBox, diodeRefCavMonValue.ToString());
-        }
-
         public void UpdateDiodeCurrentMonitor()
         {
             double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
@@ -1861,36 +1855,36 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopDiodeCurrentPollButton, false);
         }
 
-        public void SetDiodeRefCav(double value)
+        public void SetflPZT2(double value)
         {
             if (value < 0)
             {
-                SetAnalogOutput(diodeRefCavOutputTask, 0.0);
-                window.diodeRefCavTextBox.Text = value.ToString();
-                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
+                SetAnalogOutput(flPZT2OutputTask, 0.0);
+                window.flPZT2TextBox.Text = value.ToString();
+                window.flPZT2TextBox.BackColor = System.Drawing.Color.Red;
             }
             else if (value > 10)
             {
-                SetAnalogOutput(diodeRefCavOutputTask, 10.0);
-                window.diodeRefCavTextBox.Text = value.ToString();
-                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.Red;
+                SetAnalogOutput(flPZT2OutputTask, 10.0);
+                window.flPZT2TextBox.Text = value.ToString();
+                window.flPZT2TextBox.BackColor = System.Drawing.Color.Red;
             }
             else
             {
-                SetAnalogOutput(diodeRefCavOutputTask, value);
-                window.diodeRefCavTextBox.Text = value.ToString();
-                window.diodeRefCavTextBox.BackColor = System.Drawing.Color.LimeGreen;
+                SetAnalogOutput(flPZT2OutputTask, value);
+                window.flPZT2TextBox.Text = value.ToString();
+                window.flPZT2TextBox.BackColor = System.Drawing.Color.LimeGreen;
             }
         }
 
-        public void UpdateDiodeRefCav()
+        public void UpdateflPZT2()
         {
-            double refCavVoltage = Double.Parse(window.diodeRefCavTextBox.Text);
-            window.diodeRefCavTrackBar.Value = (int) (100 * refCavVoltage);
-            if (window.diodeRefCavStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.diodeRefCavStepTextBox.Text);
-            if (window.diodeRefCavStepPlusButton.Checked) refCavVoltage += Double.Parse(window.diodeRefCavStepTextBox.Text);
+            double refCavVoltage = Double.Parse(window.flPZT2TextBox.Text);
+            window.flPZT2TrackBar.Value = (int) (100 * refCavVoltage);
+            if (window.flPZT2StepMinusButton.Checked) refCavVoltage -= Double.Parse(window.flPZT2StepTextBox.Text);
+            if (window.flPZT2StepPlusButton.Checked) refCavVoltage += Double.Parse(window.flPZT2StepTextBox.Text);
 
-            SetDiodeRefCav(refCavVoltage);
+            SetflPZT2(refCavVoltage);
         }
 
         public void SetFibreAmpPwr()
@@ -2214,7 +2208,7 @@ namespace EDMHardwareControl
             double pztVoltage = Double.Parse(window.FLPZTVTextBox.Text);
             if (window.FLPZTStepMinusButton.Checked) pztVoltage -= Double.Parse(window.FLPZTStepTextBox.Text);
             if (window.FLPZTStepPlusButton.Checked) pztVoltage += Double.Parse(window.FLPZTStepTextBox.Text);
-            pztVoltage = windowVoltage(pztVoltage, 0, 5);
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
             window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
         }
@@ -2287,9 +2281,11 @@ namespace EDMHardwareControl
             double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
             if (window.rf1FMMinusRB.Checked) rf1FMVoltage -= Double.Parse(window.rf1FMIncTextBox.Text);
             if (window.rf1FMPlusRB.Checked) rf1FMVoltage += Double.Parse(window.rf1FMIncTextBox.Text);
+            if (rf1FMVoltage > 1.2) rf1FMVoltage = 1.2;
             double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
             if (window.rf2FMMinusRB.Checked) rf2FMVoltage -= Double.Parse(window.rf2FMIncTextBox.Text);
             if (window.rf2FMPlusRB.Checked) rf2FMVoltage += Double.Parse(window.rf2FMIncTextBox.Text);
+            if (rf2FMVoltage > 1.2) rf2FMVoltage = 1.2;
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }

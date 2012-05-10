@@ -336,9 +336,7 @@ namespace EDMHardwareControl
         public TextBox diodeCurrentTextBox;
         public Button stopDiodeCurrentPollButton;
         public Button startDiodeCurrentPollButton;
-        public TextBox diodeRefCavMonTextBox;
-        private Label label88;
-        public TextBox diodeRefCavTextBox;
+        public TextBox flPZT2TextBox;
         private Label label87;
         private GroupBox groupBox29;
         private Label label93;
@@ -349,8 +347,7 @@ namespace EDMHardwareControl
         public Button updateFibreAmpPwrButton;
         private GroupBox groupBox31;
         public TextBox fibreAmpPwrTextBox;
-        public Button updateDiodeRefCavButton;
-        public Button updateDiodeRefCavMonitorButton;
+        public Button updateflPZTButton;
         public Button updateDiodeCurrentMonButton;
         private GroupBox groupBox30;
         public Led fibreAmpEnableLED;
@@ -369,12 +366,12 @@ namespace EDMHardwareControl
         private Label label97;
         public Switch switchScanTTLSwitch;
         private Panel panel6;
-        public RadioButton diodeRefCavStepZeroButton;
-        public RadioButton diodeRefCavStepPlusButton;
-        public RadioButton diodeRefCavStepMinusButton;
+        public RadioButton flPZT2StepZeroButton;
+        public RadioButton flPZT2StepPlusButton;
+        public RadioButton flPZT2StepMinusButton;
         private Label label94;
-        public TextBox diodeRefCavStepTextBox;
-        public TrackBar diodeRefCavTrackBar;
+        public TextBox flPZT2StepTextBox;
+        public TrackBar flPZT2TrackBar;
 
 
 		public Controller controller;
@@ -690,18 +687,15 @@ namespace EDMHardwareControl
             this.label90 = new System.Windows.Forms.Label();
             this.label89 = new System.Windows.Forms.Label();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
-            this.diodeRefCavTrackBar = new System.Windows.Forms.TrackBar();
+            this.flPZT2TrackBar = new System.Windows.Forms.TrackBar();
             this.label94 = new System.Windows.Forms.Label();
-            this.diodeRefCavStepTextBox = new System.Windows.Forms.TextBox();
+            this.flPZT2StepTextBox = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.diodeRefCavStepZeroButton = new System.Windows.Forms.RadioButton();
-            this.diodeRefCavStepPlusButton = new System.Windows.Forms.RadioButton();
-            this.diodeRefCavStepMinusButton = new System.Windows.Forms.RadioButton();
-            this.updateDiodeRefCavButton = new System.Windows.Forms.Button();
-            this.updateDiodeRefCavMonitorButton = new System.Windows.Forms.Button();
-            this.diodeRefCavMonTextBox = new System.Windows.Forms.TextBox();
-            this.label88 = new System.Windows.Forms.Label();
-            this.diodeRefCavTextBox = new System.Windows.Forms.TextBox();
+            this.flPZT2StepZeroButton = new System.Windows.Forms.RadioButton();
+            this.flPZT2StepPlusButton = new System.Windows.Forms.RadioButton();
+            this.flPZT2StepMinusButton = new System.Windows.Forms.RadioButton();
+            this.updateflPZTButton = new System.Windows.Forms.Button();
+            this.flPZT2TextBox = new System.Windows.Forms.TextBox();
             this.label87 = new System.Windows.Forms.Label();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.updateDiodeCurrentMonButton = new System.Windows.Forms.Button();
@@ -734,11 +728,11 @@ namespace EDMHardwareControl
             this.label81 = new System.Windows.Forms.Label();
             this.pumpPolarizerUpdateButton = new System.Windows.Forms.Button();
             this.pumpPolarizerAngleTextBox = new System.Windows.Forms.TextBox();
-            this.motorController2 = new AxMG17MotorLib.AxMG17Motor();
-            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.label80 = new System.Windows.Forms.Label();
             this.probePolarizerUpdateButton = new System.Windows.Forms.Button();
             this.probePolarizerAngleTextBox = new System.Windows.Forms.TextBox();
+            this.motorController2 = new AxMG17MotorLib.AxMG17Motor();
+            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
             this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.clearAlertButton = new System.Windows.Forms.Button();
@@ -812,7 +806,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpSeedFaultLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).BeginInit();
             this.groupBox27.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.diodeRefCavTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.flPZT2TrackBar)).BeginInit();
             this.panel6.SuspendLayout();
             this.groupBox26.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).BeginInit();
@@ -3660,31 +3654,28 @@ namespace EDMHardwareControl
             // 
             // groupBox27
             // 
-            this.groupBox27.Controls.Add(this.diodeRefCavTrackBar);
+            this.groupBox27.Controls.Add(this.flPZT2TrackBar);
             this.groupBox27.Controls.Add(this.label94);
-            this.groupBox27.Controls.Add(this.diodeRefCavStepTextBox);
+            this.groupBox27.Controls.Add(this.flPZT2StepTextBox);
             this.groupBox27.Controls.Add(this.panel6);
-            this.groupBox27.Controls.Add(this.updateDiodeRefCavButton);
-            this.groupBox27.Controls.Add(this.updateDiodeRefCavMonitorButton);
-            this.groupBox27.Controls.Add(this.diodeRefCavMonTextBox);
-            this.groupBox27.Controls.Add(this.label88);
-            this.groupBox27.Controls.Add(this.diodeRefCavTextBox);
+            this.groupBox27.Controls.Add(this.updateflPZTButton);
+            this.groupBox27.Controls.Add(this.flPZT2TextBox);
             this.groupBox27.Controls.Add(this.label87);
             this.groupBox27.Location = new System.Drawing.Point(9, 218);
             this.groupBox27.Name = "groupBox27";
-            this.groupBox27.Size = new System.Drawing.Size(393, 177);
+            this.groupBox27.Size = new System.Drawing.Size(393, 140);
             this.groupBox27.TabIndex = 1;
             this.groupBox27.TabStop = false;
             this.groupBox27.Text = "Fibre Laser Piezo";
             // 
-            // diodeRefCavTrackBar
+            // flPZT2TrackBar
             // 
-            this.diodeRefCavTrackBar.Location = new System.Drawing.Point(7, 51);
-            this.diodeRefCavTrackBar.Maximum = 1000;
-            this.diodeRefCavTrackBar.Name = "diodeRefCavTrackBar";
-            this.diodeRefCavTrackBar.Size = new System.Drawing.Size(373, 45);
-            this.diodeRefCavTrackBar.TabIndex = 50;
-            this.diodeRefCavTrackBar.Scroll += new System.EventHandler(this.diodeRefCavtrackBar_Scroll);
+            this.flPZT2TrackBar.Location = new System.Drawing.Point(7, 51);
+            this.flPZT2TrackBar.Maximum = 1000;
+            this.flPZT2TrackBar.Name = "flPZT2TrackBar";
+            this.flPZT2TrackBar.Size = new System.Drawing.Size(373, 45);
+            this.flPZT2TrackBar.TabIndex = 50;
+            this.flPZT2TrackBar.Scroll += new System.EventHandler(this.diodeRefCavtrackBar_Scroll);
             // 
             // label94
             // 
@@ -3694,104 +3685,75 @@ namespace EDMHardwareControl
             this.label94.TabIndex = 73;
             this.label94.Text = "Piezo Control Step (V)";
             // 
-            // diodeRefCavStepTextBox
+            // flPZT2TextBox
             // 
-            this.diodeRefCavStepTextBox.BackColor = System.Drawing.Color.White;
-            this.diodeRefCavStepTextBox.Location = new System.Drawing.Point(164, 110);
-            this.diodeRefCavStepTextBox.Name = "diodeRefCavStepTextBox";
-            this.diodeRefCavStepTextBox.Size = new System.Drawing.Size(64, 20);
-            this.diodeRefCavStepTextBox.TabIndex = 72;
-            this.diodeRefCavStepTextBox.Text = "0";
+            this.flPZT2StepTextBox.BackColor = System.Drawing.Color.White;
+            this.flPZT2StepTextBox.Location = new System.Drawing.Point(127, 110);
+            this.flPZT2StepTextBox.Name = "flPZT2TextBox";
+            this.flPZT2StepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.flPZT2StepTextBox.TabIndex = 72;
+            this.flPZT2StepTextBox.Text = "0";
             // 
             // panel6
             // 
-            this.panel6.Controls.Add(this.diodeRefCavStepZeroButton);
-            this.panel6.Controls.Add(this.diodeRefCavStepPlusButton);
-            this.panel6.Controls.Add(this.diodeRefCavStepMinusButton);
+            this.panel6.Controls.Add(this.flPZT2StepZeroButton);
+            this.panel6.Controls.Add(this.flPZT2StepPlusButton);
+            this.panel6.Controls.Add(this.flPZT2StepMinusButton);
             this.panel6.Location = new System.Drawing.Point(194, 16);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(108, 29);
             this.panel6.TabIndex = 71;
             // 
-            // diodeRefCavStepZeroButton
+            // flPZT2StepZeroButton
             // 
-            this.diodeRefCavStepZeroButton.AutoSize = true;
-            this.diodeRefCavStepZeroButton.Checked = true;
-            this.diodeRefCavStepZeroButton.Location = new System.Drawing.Point(74, 7);
-            this.diodeRefCavStepZeroButton.Name = "diodeRefCavStepZeroButton";
-            this.diodeRefCavStepZeroButton.Size = new System.Drawing.Size(31, 17);
-            this.diodeRefCavStepZeroButton.TabIndex = 32;
-            this.diodeRefCavStepZeroButton.TabStop = true;
-            this.diodeRefCavStepZeroButton.Text = "0";
-            this.diodeRefCavStepZeroButton.UseVisualStyleBackColor = true;
+            this.flPZT2StepZeroButton.AutoSize = true;
+            this.flPZT2StepZeroButton.Checked = true;
+            this.flPZT2StepZeroButton.Location = new System.Drawing.Point(74, 7);
+            this.flPZT2StepZeroButton.Name = "flPZT2StepZeroButton";
+            this.flPZT2StepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.flPZT2StepZeroButton.TabIndex = 32;
+            this.flPZT2StepZeroButton.TabStop = true;
+            this.flPZT2StepZeroButton.Text = "0";
+            this.flPZT2StepZeroButton.UseVisualStyleBackColor = true;
             // 
-            // diodeRefCavStepPlusButton
+            // flPZT2StepPlusButton
             // 
-            this.diodeRefCavStepPlusButton.AutoSize = true;
-            this.diodeRefCavStepPlusButton.Location = new System.Drawing.Point(3, 6);
-            this.diodeRefCavStepPlusButton.Name = "diodeRefCavStepPlusButton";
-            this.diodeRefCavStepPlusButton.Size = new System.Drawing.Size(31, 17);
-            this.diodeRefCavStepPlusButton.TabIndex = 32;
-            this.diodeRefCavStepPlusButton.Text = "+";
-            this.diodeRefCavStepPlusButton.UseVisualStyleBackColor = true;
+            this.flPZT2StepPlusButton.AutoSize = true;
+            this.flPZT2StepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.flPZT2StepPlusButton.Name = "flPZT2StepPlusButton";
+            this.flPZT2StepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.flPZT2StepPlusButton.TabIndex = 32;
+            this.flPZT2StepPlusButton.Text = "+";
+            this.flPZT2StepPlusButton.UseVisualStyleBackColor = true;
             // 
-            // diodeRefCavStepMinusButton
+            // flPZT2StepMinusButton
             // 
-            this.diodeRefCavStepMinusButton.AutoSize = true;
-            this.diodeRefCavStepMinusButton.Location = new System.Drawing.Point(40, 7);
-            this.diodeRefCavStepMinusButton.Name = "diodeRefCavStepMinusButton";
-            this.diodeRefCavStepMinusButton.Size = new System.Drawing.Size(28, 17);
-            this.diodeRefCavStepMinusButton.TabIndex = 32;
-            this.diodeRefCavStepMinusButton.Text = "-";
-            this.diodeRefCavStepMinusButton.UseVisualStyleBackColor = true;
+            this.flPZT2StepMinusButton.AutoSize = true;
+            this.flPZT2StepMinusButton.Location = new System.Drawing.Point(40, 7);
+            this.flPZT2StepMinusButton.Name = "flPZT2StepMinusButton";
+            this.flPZT2StepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.flPZT2StepMinusButton.TabIndex = 32;
+            this.flPZT2StepMinusButton.Text = "-";
+            this.flPZT2StepMinusButton.UseVisualStyleBackColor = true;
             // 
-            // updateDiodeRefCavButton
+            // updateflPZTButton
             // 
-            this.updateDiodeRefCavButton.Location = new System.Drawing.Point(308, 19);
-            this.updateDiodeRefCavButton.Name = "updateDiodeRefCavButton";
-            this.updateDiodeRefCavButton.Size = new System.Drawing.Size(72, 23);
-            this.updateDiodeRefCavButton.TabIndex = 64;
-            this.updateDiodeRefCavButton.Text = "Update";
-            this.updateDiodeRefCavButton.UseVisualStyleBackColor = true;
-            this.updateDiodeRefCavButton.Click += new System.EventHandler(this.updateDiodeRefCavButton_Click);
-            // 
-            // updateDiodeRefCavMonitorButton
-            // 
-            this.updateDiodeRefCavMonitorButton.Location = new System.Drawing.Point(234, 140);
-            this.updateDiodeRefCavMonitorButton.Name = "updateDiodeRefCavMonitorButton";
-            this.updateDiodeRefCavMonitorButton.Size = new System.Drawing.Size(72, 23);
-            this.updateDiodeRefCavMonitorButton.TabIndex = 63;
-            this.updateDiodeRefCavMonitorButton.Text = "Update";
-            this.updateDiodeRefCavMonitorButton.UseVisualStyleBackColor = true;
-            this.updateDiodeRefCavMonitorButton.Click += new System.EventHandler(this.updateDiodeRefCavMonitorButton_Click);
-            // 
-            // diodeRefCavMonTextBox
-            // 
-            this.diodeRefCavMonTextBox.BackColor = System.Drawing.Color.Black;
-            this.diodeRefCavMonTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.diodeRefCavMonTextBox.Location = new System.Drawing.Point(164, 142);
-            this.diodeRefCavMonTextBox.Name = "diodeRefCavMonTextBox";
-            this.diodeRefCavMonTextBox.ReadOnly = true;
-            this.diodeRefCavMonTextBox.Size = new System.Drawing.Size(64, 20);
-            this.diodeRefCavMonTextBox.TabIndex = 47;
-            this.diodeRefCavMonTextBox.Text = "0";
-            // 
-            // label88
-            // 
-            this.label88.Location = new System.Drawing.Point(7, 142);
-            this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(92, 18);
-            this.label88.TabIndex = 46;
-            this.label88.Text = "Piezo Monitor (V)";
+            this.updateflPZTButton.Location = new System.Drawing.Point(308, 19);
+            this.updateflPZTButton.Name = "updateflPZTButton";
+            this.updateflPZTButton.Size = new System.Drawing.Size(72, 23);
+            this.updateflPZTButton.TabIndex = 64;
+            this.updateflPZTButton.Text = "Update";
+            this.updateflPZTButton.UseVisualStyleBackColor = true;
+            this.updateflPZTButton.Click += new System.EventHandler(this.updateflPZTButton_Click);
             // 
             // diodeRefCavTextBox
             // 
-            this.diodeRefCavTextBox.BackColor = System.Drawing.Color.LimeGreen;
-            this.diodeRefCavTextBox.Location = new System.Drawing.Point(127, 22);
-            this.diodeRefCavTextBox.Name = "diodeRefCavTextBox";
-            this.diodeRefCavTextBox.Size = new System.Drawing.Size(64, 20);
-            this.diodeRefCavTextBox.TabIndex = 45;
-            this.diodeRefCavTextBox.Text = "0";
+            this.flPZT2TextBox.BackColor = System.Drawing.Color.LimeGreen;
+            this.flPZT2TextBox.Location = new System.Drawing.Point(127, 22);
+            this.flPZT2TextBox.Name = "diodeRefCavTextBox";
+            this.flPZT2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.flPZT2TextBox.TabIndex = 45;
+            this.flPZT2TextBox.Text = "0";
             // 
             // label87
             // 
@@ -4079,11 +4041,11 @@ namespace EDMHardwareControl
             this.tabPage6.Controls.Add(this.label81);
             this.tabPage6.Controls.Add(this.pumpPolarizerUpdateButton);
             this.tabPage6.Controls.Add(this.pumpPolarizerAngleTextBox);
-            this.tabPage6.Controls.Add(this.motorController2);
-            this.tabPage6.Controls.Add(this.axMG17Logger1);
             this.tabPage6.Controls.Add(this.label80);
             this.tabPage6.Controls.Add(this.probePolarizerUpdateButton);
             this.tabPage6.Controls.Add(this.probePolarizerAngleTextBox);
+            this.tabPage6.Controls.Add(this.motorController2);
+            this.tabPage6.Controls.Add(this.axMG17Logger1);
             this.tabPage6.Controls.Add(this.motorController1);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
@@ -4120,23 +4082,6 @@ namespace EDMHardwareControl
             this.pumpPolarizerAngleTextBox.TabIndex = 8;
             this.pumpPolarizerAngleTextBox.Text = "10";
             // 
-            // motorController2
-            // 
-            this.motorController2.Enabled = true;
-            this.motorController2.Location = new System.Drawing.Point(373, 69);
-            this.motorController2.Name = "motorController2";
-            this.motorController2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController2.OcxState")));
-            this.motorController2.Size = new System.Drawing.Size(294, 205);
-            this.motorController2.TabIndex = 7;
-            // 
-            // axMG17Logger1
-            // 
-            this.axMG17Logger1.Location = new System.Drawing.Point(14, 280);
-            this.axMG17Logger1.Name = "axMG17Logger1";
-            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
-            this.axMG17Logger1.Size = new System.Drawing.Size(664, 260);
-            this.axMG17Logger1.TabIndex = 6;
-            // 
             // label80
             // 
             this.label80.AutoSize = true;
@@ -4163,6 +4108,23 @@ namespace EDMHardwareControl
             this.probePolarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
             this.probePolarizerAngleTextBox.TabIndex = 3;
             this.probePolarizerAngleTextBox.Text = "10";
+            // 
+            // motorController2
+            // 
+            this.motorController2.Enabled = true;
+            this.motorController2.Location = new System.Drawing.Point(373, 69);
+            this.motorController2.Name = "motorController2";
+            this.motorController2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController2.OcxState")));
+            this.motorController2.Size = new System.Drawing.Size(294, 205);
+            this.motorController2.TabIndex = 7;
+            // 
+            // axMG17Logger1
+            // 
+            this.axMG17Logger1.Location = new System.Drawing.Point(14, 280);
+            this.axMG17Logger1.Name = "axMG17Logger1";
+            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
+            this.axMG17Logger1.Size = new System.Drawing.Size(664, 260);
+            this.axMG17Logger1.TabIndex = 6;
             // 
             // motorController1
             // 
@@ -4461,7 +4423,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.fibreAmpMasterFaultLED)).EndInit();
             this.groupBox27.ResumeLayout(false);
             this.groupBox27.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.diodeRefCavTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.flPZT2TrackBar)).EndInit();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.groupBox26.ResumeLayout(false);
@@ -4771,11 +4733,6 @@ namespace EDMHardwareControl
             controller.UpdatePiMonitor();
         }
 
-        private void updateDiodeRefCavMonitorButton_Click(object sender, EventArgs e)
-        {
-            controller.UpdateDiodeRefCavMonitor();
-        }
-
         private void updateDiodeCurrentMonButton_Click(object sender, EventArgs e)
         {
             controller.UpdateDiodeCurrentMonitor();
@@ -4791,9 +4748,9 @@ namespace EDMHardwareControl
             controller.StopDiodeCurrentPoll();
         }
 
-        private void updateDiodeRefCavButton_Click(object sender, EventArgs e)
+        private void updateflPZTButton_Click(object sender, EventArgs e)
         {
-            controller.UpdateDiodeRefCav();
+            controller.UpdateflPZT2();
         }
         
         private void fibreAmpEnableSwitch_StateChanged(object sender, ActionEventArgs e)
@@ -4911,7 +4868,7 @@ namespace EDMHardwareControl
 
         private void diodeRefCavtrackBar_Scroll(object sender, EventArgs e)
         {
-            controller.SetDiodeRefCav((Double) diodeRefCavTrackBar.Value / 100.0);
+            controller.SetflPZT2((Double) flPZT2TrackBar.Value / 100.0);
         }
 
         
