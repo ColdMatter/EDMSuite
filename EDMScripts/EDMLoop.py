@@ -285,7 +285,7 @@ def updateLocksNL(bState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	deltaLF1 = -1.25 * ( lf1dbdbValue  + 0.03 )
+	deltaLF1 = -1.25 * ( lf1dbdbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
