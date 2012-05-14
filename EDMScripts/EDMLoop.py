@@ -44,7 +44,6 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-double convFrac = 0
 def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
@@ -74,7 +73,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
+	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
 	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
@@ -106,13 +105,10 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.GetModulationByName("LF1").Step = hc.FLPZTStep
 	bc.GetModulationByName("LF1").PhysicalCentre = hc.I2LockAOMFrequencyCentre
 	bc.GetModulationByName("LF1").PhysicalStep = hc.I2LockAOMFrequencyStep
-	bc.GetModulationByName("LF2").Centre = hc.PumpAOMCentre
+	bc.GetModulationByName("LF2").Centre = hc.PumpAOMVoltage
 	bc.GetModulationByName("LF2").Centre = hc.PumpAOMStep
 	bc.GetModulationByName("LF2").PhysicalCentre = hc.PumpAOMFrequencyCentre
 	bc.GetModulationByName("LF2").PhysicalStep = hc.PumpAOMFrequencyStep
-	alphaI2 = hc.I2LockAOMFrequencyStep / hc.FLPZTStep
-	alphaAOM = hc.PumpAOMFrequencyCentre / hc.PumpAOMVolgateStep
-	convFrac = alphaI2/aphaAOM
 
 	# generate the waveform codes
 	print("Generating waveform codes ...")
@@ -141,8 +137,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	# printWaveformCode(bc, "RF2A")
 	# printWaveformCode(bc, "RF1F")
 	# printWaveformCode(bc, "RF2F")
-	printWaveformCode(bc, "LF1")
-	printWaveformCode(bc, "LF2")
+	# printWaveformCode(bc, "LF1")
+	# printWaveformCode(bc, "LF2")
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
@@ -307,9 +303,9 @@ def updateLocksNL(bState):
 	hc.SetFLPZTVoltage( newLF1 )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
-	deltaLF2 = hc.VCOConvFrac() * deltaLF1 - 1.25 * lf2dbdbValue
+	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 1.25 * lf2dbdbValue
 	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
-	deltaLF2 = 0
+	#deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
 	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
 	hc.SetPumpAOMVoltage( newLF2 )
@@ -422,7 +418,7 @@ def EDMGo():
 		dbValue = pmtChannelValues.GetValue(("DB",))
 		if (dbValue < 11):
 			print("Dodgy spot target rotation.")
-			for i in range(3):
+			for i in range(2):
 				hc.StepTarget(2)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
