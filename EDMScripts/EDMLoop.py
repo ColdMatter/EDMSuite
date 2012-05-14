@@ -44,6 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
+double convFrac = 0
 def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, probePolAngle, pumpPolAngle):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
@@ -55,6 +56,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
 	hc.UpdatePumpAOMFreqMonitor()
+	hc.UpdateVCOFraction()
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -104,13 +106,21 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.GetModulationByName("LF1").Step = hc.FLPZTStep
 	bc.GetModulationByName("LF1").PhysicalCentre = hc.I2LockAOMFrequencyCentre
 	bc.GetModulationByName("LF1").PhysicalStep = hc.I2LockAOMFrequencyStep
+	bc.GetModulationByName("LF2").Centre = hc.PumpAOMCentre
+	bc.GetModulationByName("LF2").Centre = hc.PumpAOMStep
+	bc.GetModulationByName("LF2").PhysicalCentre = hc.PumpAOMFrequencyCentre
+	bc.GetModulationByName("LF2").PhysicalStep = hc.PumpAOMFrequencyStep
+	alphaI2 = hc.I2LockAOMFrequencyStep / hc.FLPZTStep
+	alphaAOM = hc.PumpAOMFrequencyCentre / hc.PumpAOMVolgateStep
+	convFrac = alphaI2/aphaAOM
+
 	# generate the waveform codes
 	print("Generating waveform codes ...")
 	eWave = bc.GetModulationByName("E").Waveform
 	eWave.Name = "E"
 	lf1Wave = bc.GetModulationByName("LF1").Waveform
 	lf1Wave.Name = "LF1"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F","LF2") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -118,6 +128,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	bc.GetModulationByName("RF2A").Waveform = ws["RF2A"]
 	bc.GetModulationByName("RF1F").Waveform = ws["RF1F"]
 	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
+	bc.GetModulationByName("LF2").Waveform = ws["LF2"]
 	# change the inversions of the static codes E and LF1
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	bc.GetModulationByName("LF1").Waveform.Inverted = WaveformSetGenerator.RandomBool()
@@ -130,7 +141,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, pro
 	# printWaveformCode(bc, "RF2A")
 	# printWaveformCode(bc, "RF1F")
 	# printWaveformCode(bc, "RF2F")
-	# printWaveformCode(bc, "LF1")
+	printWaveformCode(bc, "LF1")
+	printWaveformCode(bc, "LF2")
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
 	bc.Settings["eRampDownTime"] = hc.ERampDownTime
@@ -235,6 +247,8 @@ def updateLocksNL(bState):
 	rf2fdbdbValue = normedpmtChannelValues.GetSpecialValue("RF2FDBDB")
 	lf1Value = pmtChannelValues.GetValue(("LF1",))
 	lf1dbdbValue = normedpmtChannelValues.GetSpecialValue("LF1DBDB")
+	lf2Value = pmtChannelValues.GetValue(("LF2",))
+	lf2dbdbValue = normedpmtChannelValues.GetSpecialValue("LF2DBDB")
 
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
@@ -242,7 +256,7 @@ def updateLocksNL(bState):
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
 	print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
-	
+	print "LF2: " + str(lf2Value) + " LF2.DB/DB: " + str(lf2dbdbValue)
 	
 	# B bias lock
 	# the sign of the feedback depends on the b-state
@@ -287,10 +301,18 @@ def updateLocksNL(bState):
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -1.25 * ( lf1dbdbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
-	deltaLF1 = 0
+	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
+	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
+	# first cancel the overal movement of the laser
+	deltaLF2 = hc.VCOConvFrac() * deltaLF1 - 1.25 * lf2dbdbValue
+	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
+	deltaLF2 = 0
+	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
+	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
+	hc.SetPumpAOMVoltage( newLF2 )
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):

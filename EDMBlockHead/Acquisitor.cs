@@ -282,10 +282,10 @@ namespace EDMBlockHead.Acquire
             notPIChan.Modulation = config.GetModulationByName("PI");
             switchedChannels.Add(notPIChan);
 
-            ESwitchChannel eChan = new ESwitchChannel();
-            eChan.Invert = false;
-            eChan.Modulation = config.GetModulationByName("E");
-            switchedChannels.Add(eChan);
+            //ESwitchChannel eChan = new ESwitchChannel();
+            //eChan.Invert = false;
+            //eChan.Modulation = config.GetModulationByName("E");
+            //switchedChannels.Add(eChan);
 
             //ESwitchRFChannel eChan = new ESwitchRFChannel();
             //eChan.Invert = false;
@@ -313,15 +313,30 @@ namespace EDMBlockHead.Acquire
             rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             switchedChannels.Add(rf2FChannel);
 
-            AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
+            HardwareControllerSwitchChannel eChan = new HardwareControllerSwitchChannel();
+            eChan.Channel = "eChan";
+            eChan.Modulation = config.GetModulationByName("E");
+            switchedChannels.Add(eChan);
+
+            //AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
+            //lf1Channel.Channel = "flPZT";
+            //lf1Channel.Modulation = config.GetModulationByName("LF1");
+            //switchedChannels.Add(lf1Channel);
+
+            HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
             lf1Channel.Channel = "flPZT";
             lf1Channel.Modulation = config.GetModulationByName("LF1");
             switchedChannels.Add(lf1Channel);
 
-            //AnalogSwitchedChannel lf2Channel = new AnalogSwitchedChannel();
-            //lf2Channel.Channel = "diodeRefCavity";
-            //lf2Channel.Modulation = config.GetModulationByName("LF2");
-            //switchedChannels.Add(lf2Channel);
+            HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
+            lf1Channel.Channel = "pumpAOM";
+            lf2Channel.Modulation = config.GetModulationByName("LF2");
+            switchedChannels.Add(lf2Channel);
+
+            //AnalogSwitchedChannel lf3Channel = new HardwareControllerSwitchChannel();
+            //lf3Channel.Channel = "LF3";
+            //lf3Channel.Modulation = config.GetModulationByName("LF3");
+            //switchedChannels.Add(lf3Channel);
 
         }
 
@@ -584,14 +599,14 @@ namespace EDMBlockHead.Acquire
 			foreach(SwitchedChannel s in switchedChannels)
 			{
 				bool[] bits = s.Modulation.Waveform.Bits;
-				if (point != 0)
-				{
-					if ( bits[point] != bits[point - 1] ) s.State = bits[point];
-				}
-				else
-				{
-					s.State = bits[point];
-				}	
+                if (point != 0)
+                {
+                    if (bits[point] != bits[point - 1]) s.State = bits[point];
+                }
+                else
+                {
+                    s.State = bits[point];
+                }
 			}
 
 			// calculate and impose the post switching delays

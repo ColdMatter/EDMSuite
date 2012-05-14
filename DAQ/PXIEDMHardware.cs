@@ -70,7 +70,7 @@ namespace DAQ.HAL
             //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
             Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
-            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL3::INSTR"));
+            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL8::INSTR"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
@@ -197,11 +197,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p1", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
 
-            // FL control
+            // Laser control
             AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2");
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
-
+            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10); 
         }
 
     }

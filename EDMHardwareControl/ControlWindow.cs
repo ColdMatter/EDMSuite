@@ -320,9 +320,6 @@ namespace EDMHardwareControl
         private Label label85;
         private Label label84;
         private GroupBox groupBox25;
-        private Label label83;
-        public TextBox PumpAOMFreqTextBox;
-        private Button PumpAOMFreqUpdateButton;
         private TabPage tabPage8;
         private GroupBox groupBox27;
         private GroupBox groupBox26;
@@ -372,6 +369,28 @@ namespace EDMHardwareControl
         private Label label94;
         public TextBox flPZT2StepTextBox;
         public TrackBar flPZT2TrackBar;
+        public TrackBar pumpAOMTrackBar;
+        private Panel panel7;
+        public RadioButton pumpAOMStepZeroButton;
+        public RadioButton pumpAOMStepPlusButton;
+        public RadioButton pumpAOMStepMinusButton;
+        public TextBox pumpAOMStepTextBox;
+        private Label label99;
+        public TextBox pumpAOMVoltageTextBox;
+        private Button updatePumpAOMButton;
+        private Label label100;
+        public TextBox pumpAOMFreqStepTextBox;
+        private Label label88;
+        public TextBox pumpAOMFreqPlusTextBox;
+        public TextBox pumpAOMFreqCentreTextBox;
+        private Label label95;
+        public TextBox pumpAOMFreqMinusTextBox;
+        private Label label96;
+        private Button pumpAOMFreqUpdateButton;
+        private Label label98;
+        private Button UpdateVCOConversionFractionButton;
+        public TextBox vcoConversionFractionTextBox;
+        private Label label83;
 
 
 		public Controller controller;
@@ -628,10 +647,29 @@ namespace EDMHardwareControl
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.groupBox25 = new System.Windows.Forms.GroupBox();
-            this.PumpAOMFreqUpdateButton = new System.Windows.Forms.Button();
+            this.UpdateVCOConversionFractionButton = new System.Windows.Forms.Button();
+            this.vcoConversionFractionTextBox = new System.Windows.Forms.TextBox();
             this.label83 = new System.Windows.Forms.Label();
-            this.PumpAOMFreqTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.pumpAOMTrackBar = new System.Windows.Forms.TrackBar();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.pumpAOMStepZeroButton = new System.Windows.Forms.RadioButton();
+            this.pumpAOMStepPlusButton = new System.Windows.Forms.RadioButton();
+            this.pumpAOMStepMinusButton = new System.Windows.Forms.RadioButton();
+            this.pumpAOMStepTextBox = new System.Windows.Forms.TextBox();
+            this.label99 = new System.Windows.Forms.Label();
+            this.pumpAOMVoltageTextBox = new System.Windows.Forms.TextBox();
+            this.updatePumpAOMButton = new System.Windows.Forms.Button();
+            this.label100 = new System.Windows.Forms.Label();
+            this.pumpAOMFreqStepTextBox = new System.Windows.Forms.TextBox();
+            this.label88 = new System.Windows.Forms.Label();
+            this.pumpAOMFreqPlusTextBox = new System.Windows.Forms.TextBox();
+            this.pumpAOMFreqCentreTextBox = new System.Windows.Forms.TextBox();
+            this.label95 = new System.Windows.Forms.Label();
+            this.pumpAOMFreqMinusTextBox = new System.Windows.Forms.TextBox();
+            this.label96 = new System.Windows.Forms.Label();
+            this.pumpAOMFreqUpdateButton = new System.Windows.Forms.Button();
+            this.label98 = new System.Windows.Forms.Label();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.I2AOMFreqStepTextBox = new System.Windows.Forms.TextBox();
             this.label73 = new System.Windows.Forms.Label();
@@ -787,6 +825,8 @@ namespace EDMHardwareControl
             this.groupBox8.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox25.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pumpAOMTrackBar)).BeginInit();
+            this.panel7.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox18.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FLPZTVtrackBar)).BeginInit();
@@ -1271,7 +1311,6 @@ namespace EDMHardwareControl
             this.tabPage1.Size = new System.Drawing.Size(697, 575);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // groupBox21
             // 
@@ -1788,6 +1827,7 @@ namespace EDMHardwareControl
             // 
             // tabPage2
             // 
+            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
             this.tabPage2.Controls.Add(this.groupBox24);
             this.tabPage2.Controls.Add(this.groupBox22);
             this.tabPage2.Controls.Add(this.groupBox4);
@@ -1799,7 +1839,6 @@ namespace EDMHardwareControl
             this.tabPage2.Size = new System.Drawing.Size(697, 575);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synths";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // groupBox24
             // 
@@ -2680,6 +2719,7 @@ namespace EDMHardwareControl
             // 
             // tabPage3
             // 
+            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
             this.tabPage3.Controls.Add(this.groupBox23);
             this.tabPage3.Controls.Add(this.groupBox20);
             this.tabPage3.Controls.Add(this.groupBox9);
@@ -2691,7 +2731,6 @@ namespace EDMHardwareControl
             this.tabPage3.Size = new System.Drawing.Size(697, 575);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
-            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // groupBox23
             // 
@@ -3055,6 +3094,10 @@ namespace EDMHardwareControl
             // 
             // tabPage4
             // 
+            this.tabPage4.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage4.Controls.Add(this.UpdateVCOConversionFractionButton);
+            this.tabPage4.Controls.Add(this.vcoConversionFractionTextBox);
+            this.tabPage4.Controls.Add(this.label83);
             this.tabPage4.Controls.Add(this.groupBox25);
             this.tabPage4.Controls.Add(this.groupBox19);
             this.tabPage4.Controls.Add(this.groupBox18);
@@ -3065,47 +3108,236 @@ namespace EDMHardwareControl
             this.tabPage4.Size = new System.Drawing.Size(697, 575);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Dye Laser";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // UpdateVCOConversionFractionButton
+            // 
+            this.UpdateVCOConversionFractionButton.Location = new System.Drawing.Point(290, 531);
+            this.UpdateVCOConversionFractionButton.Name = "UpdateVCOConversionFractionButton";
+            this.UpdateVCOConversionFractionButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdateVCOConversionFractionButton.TabIndex = 65;
+            this.UpdateVCOConversionFractionButton.Text = "Update";
+            this.UpdateVCOConversionFractionButton.Click += new System.EventHandler(this.UpdateVCOConversionFractionButton_Click);
+            // 
+            // vcoConversionFractionTextBox
+            // 
+            this.vcoConversionFractionTextBox.BackColor = System.Drawing.Color.Black;
+            this.vcoConversionFractionTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.vcoConversionFractionTextBox.Location = new System.Drawing.Point(142, 533);
+            this.vcoConversionFractionTextBox.Name = "vcoConversionFractionTextBox";
+            this.vcoConversionFractionTextBox.ReadOnly = true;
+            this.vcoConversionFractionTextBox.Size = new System.Drawing.Size(136, 20);
+            this.vcoConversionFractionTextBox.TabIndex = 64;
+            this.vcoConversionFractionTextBox.Text = "0";
+            // 
+            // label83
+            // 
+            this.label83.Location = new System.Drawing.Point(9, 536);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(127, 23);
+            this.label83.TabIndex = 63;
+            this.label83.Text = "VCO conversion fraction";
             // 
             // groupBox25
             // 
-            this.groupBox25.Controls.Add(this.PumpAOMFreqUpdateButton);
-            this.groupBox25.Controls.Add(this.label83);
-            this.groupBox25.Controls.Add(this.PumpAOMFreqTextBox);
+            this.groupBox25.Controls.Add(this.pumpAOMTrackBar);
+            this.groupBox25.Controls.Add(this.panel7);
+            this.groupBox25.Controls.Add(this.pumpAOMStepTextBox);
+            this.groupBox25.Controls.Add(this.label99);
+            this.groupBox25.Controls.Add(this.pumpAOMVoltageTextBox);
+            this.groupBox25.Controls.Add(this.updatePumpAOMButton);
+            this.groupBox25.Controls.Add(this.label100);
+            this.groupBox25.Controls.Add(this.pumpAOMFreqStepTextBox);
+            this.groupBox25.Controls.Add(this.label88);
+            this.groupBox25.Controls.Add(this.pumpAOMFreqPlusTextBox);
+            this.groupBox25.Controls.Add(this.pumpAOMFreqCentreTextBox);
+            this.groupBox25.Controls.Add(this.label95);
+            this.groupBox25.Controls.Add(this.pumpAOMFreqMinusTextBox);
+            this.groupBox25.Controls.Add(this.label96);
+            this.groupBox25.Controls.Add(this.pumpAOMFreqUpdateButton);
+            this.groupBox25.Controls.Add(this.label98);
             this.groupBox25.Location = new System.Drawing.Point(8, 353);
             this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(529, 61);
+            this.groupBox25.Size = new System.Drawing.Size(529, 174);
             this.groupBox25.TabIndex = 56;
             this.groupBox25.TabStop = false;
             this.groupBox25.Text = "Pump AOM";
             // 
-            // PumpAOMFreqUpdateButton
+            // pumpAOMTrackBar
             // 
-            this.PumpAOMFreqUpdateButton.Location = new System.Drawing.Point(426, 17);
-            this.PumpAOMFreqUpdateButton.Name = "PumpAOMFreqUpdateButton";
-            this.PumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
-            this.PumpAOMFreqUpdateButton.TabIndex = 57;
-            this.PumpAOMFreqUpdateButton.Text = "Update";
-            this.PumpAOMFreqUpdateButton.Click += new System.EventHandler(this.PumpAOMFreqUpdateButton_Click);
+            this.pumpAOMTrackBar.Location = new System.Drawing.Point(9, 128);
+            this.pumpAOMTrackBar.Maximum = 1000;
+            this.pumpAOMTrackBar.Name = "pumpAOMTrackBar";
+            this.pumpAOMTrackBar.Size = new System.Drawing.Size(215, 45);
+            this.pumpAOMTrackBar.TabIndex = 73;
+            this.pumpAOMTrackBar.Scroll += new System.EventHandler(this.pumpAOMTrackBar_Scroll);
             // 
-            // label83
+            // panel7
             // 
-            this.label83.Location = new System.Drawing.Point(95, 22);
-            this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(111, 23);
-            this.label83.TabIndex = 57;
-            this.label83.Text = "AOM frequency (Hz)";
+            this.panel7.Controls.Add(this.pumpAOMStepZeroButton);
+            this.panel7.Controls.Add(this.pumpAOMStepPlusButton);
+            this.panel7.Controls.Add(this.pumpAOMStepMinusButton);
+            this.panel7.Location = new System.Drawing.Point(9, 76);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(116, 32);
+            this.panel7.TabIndex = 72;
             // 
-            // PumpAOMFreqTextBox
+            // pumpAOMStepZeroButton
             // 
-            this.PumpAOMFreqTextBox.BackColor = System.Drawing.Color.Black;
-            this.PumpAOMFreqTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.PumpAOMFreqTextBox.Location = new System.Drawing.Point(212, 19);
-            this.PumpAOMFreqTextBox.Name = "PumpAOMFreqTextBox";
-            this.PumpAOMFreqTextBox.ReadOnly = true;
-            this.PumpAOMFreqTextBox.Size = new System.Drawing.Size(178, 20);
-            this.PumpAOMFreqTextBox.TabIndex = 55;
-            this.PumpAOMFreqTextBox.Text = "0";
+            this.pumpAOMStepZeroButton.AutoSize = true;
+            this.pumpAOMStepZeroButton.Checked = true;
+            this.pumpAOMStepZeroButton.Location = new System.Drawing.Point(77, 7);
+            this.pumpAOMStepZeroButton.Name = "pumpAOMStepZeroButton";
+            this.pumpAOMStepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.pumpAOMStepZeroButton.TabIndex = 32;
+            this.pumpAOMStepZeroButton.TabStop = true;
+            this.pumpAOMStepZeroButton.Text = "0";
+            this.pumpAOMStepZeroButton.UseVisualStyleBackColor = true;
+            // 
+            // pumpAOMStepPlusButton
+            // 
+            this.pumpAOMStepPlusButton.AutoSize = true;
+            this.pumpAOMStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.pumpAOMStepPlusButton.Name = "pumpAOMStepPlusButton";
+            this.pumpAOMStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.pumpAOMStepPlusButton.TabIndex = 32;
+            this.pumpAOMStepPlusButton.Text = "+";
+            this.pumpAOMStepPlusButton.UseVisualStyleBackColor = true;
+            // 
+            // pumpAOMStepMinusButton
+            // 
+            this.pumpAOMStepMinusButton.AutoSize = true;
+            this.pumpAOMStepMinusButton.Location = new System.Drawing.Point(42, 7);
+            this.pumpAOMStepMinusButton.Name = "pumpAOMStepMinusButton";
+            this.pumpAOMStepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.pumpAOMStepMinusButton.TabIndex = 32;
+            this.pumpAOMStepMinusButton.Text = "-";
+            this.pumpAOMStepMinusButton.UseVisualStyleBackColor = true;
+            // 
+            // pumpAOMStepTextBox
+            // 
+            this.pumpAOMStepTextBox.Location = new System.Drawing.Point(131, 45);
+            this.pumpAOMStepTextBox.Name = "pumpAOMStepTextBox";
+            this.pumpAOMStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pumpAOMStepTextBox.TabIndex = 71;
+            this.pumpAOMStepTextBox.Text = "0";
+            // 
+            // label99
+            // 
+            this.label99.Location = new System.Drawing.Point(48, 48);
+            this.label99.Name = "label99";
+            this.label99.Size = new System.Drawing.Size(80, 23);
+            this.label99.TabIndex = 70;
+            this.label99.Text = "Step (V)";
+            // 
+            // pumpAOMVoltageTextBox
+            // 
+            this.pumpAOMVoltageTextBox.Location = new System.Drawing.Point(131, 22);
+            this.pumpAOMVoltageTextBox.Name = "pumpAOMVoltageTextBox";
+            this.pumpAOMVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pumpAOMVoltageTextBox.TabIndex = 69;
+            this.pumpAOMVoltageTextBox.Text = "0";
+            // 
+            // updatePumpAOMButton
+            // 
+            this.updatePumpAOMButton.Location = new System.Drawing.Point(131, 79);
+            this.updatePumpAOMButton.Name = "updatePumpAOMButton";
+            this.updatePumpAOMButton.Size = new System.Drawing.Size(75, 23);
+            this.updatePumpAOMButton.TabIndex = 68;
+            this.updatePumpAOMButton.Text = "Update";
+            this.updatePumpAOMButton.Click += new System.EventHandler(this.updatePumpAOMButton_Click);
+            // 
+            // label100
+            // 
+            this.label100.Location = new System.Drawing.Point(48, 25);
+            this.label100.Name = "label100";
+            this.label100.Size = new System.Drawing.Size(80, 23);
+            this.label100.TabIndex = 67;
+            this.label100.Text = "Voltage (V)";
+            // 
+            // pumpAOMFreqStepTextBox
+            // 
+            this.pumpAOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
+            this.pumpAOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pumpAOMFreqStepTextBox.Location = new System.Drawing.Point(375, 99);
+            this.pumpAOMFreqStepTextBox.Name = "pumpAOMFreqStepTextBox";
+            this.pumpAOMFreqStepTextBox.ReadOnly = true;
+            this.pumpAOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqStepTextBox.TabIndex = 65;
+            this.pumpAOMFreqStepTextBox.Text = "0";
+            // 
+            // label88
+            // 
+            this.label88.Location = new System.Drawing.Point(246, 102);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(111, 23);
+            this.label88.TabIndex = 63;
+            this.label88.Text = "Step (Hz)";
+            // 
+            // pumpAOMFreqPlusTextBox
+            // 
+            this.pumpAOMFreqPlusTextBox.BackColor = System.Drawing.Color.Black;
+            this.pumpAOMFreqPlusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pumpAOMFreqPlusTextBox.Location = new System.Drawing.Point(375, 45);
+            this.pumpAOMFreqPlusTextBox.Name = "pumpAOMFreqPlusTextBox";
+            this.pumpAOMFreqPlusTextBox.ReadOnly = true;
+            this.pumpAOMFreqPlusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqPlusTextBox.TabIndex = 66;
+            this.pumpAOMFreqPlusTextBox.Text = "0";
+            // 
+            // pumpAOMFreqCentreTextBox
+            // 
+            this.pumpAOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
+            this.pumpAOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pumpAOMFreqCentreTextBox.Location = new System.Drawing.Point(375, 73);
+            this.pumpAOMFreqCentreTextBox.Name = "pumpAOMFreqCentreTextBox";
+            this.pumpAOMFreqCentreTextBox.ReadOnly = true;
+            this.pumpAOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqCentreTextBox.TabIndex = 62;
+            this.pumpAOMFreqCentreTextBox.Text = "0";
+            // 
+            // label95
+            // 
+            this.label95.Location = new System.Drawing.Point(246, 48);
+            this.label95.Name = "label95";
+            this.label95.Size = new System.Drawing.Size(111, 23);
+            this.label95.TabIndex = 64;
+            this.label95.Text = "AOM freq high (Hz)";
+            // 
+            // pumpAOMFreqMinusTextBox
+            // 
+            this.pumpAOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
+            this.pumpAOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pumpAOMFreqMinusTextBox.Location = new System.Drawing.Point(375, 19);
+            this.pumpAOMFreqMinusTextBox.Name = "pumpAOMFreqMinusTextBox";
+            this.pumpAOMFreqMinusTextBox.ReadOnly = true;
+            this.pumpAOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqMinusTextBox.TabIndex = 61;
+            this.pumpAOMFreqMinusTextBox.Text = "0";
+            // 
+            // label96
+            // 
+            this.label96.Location = new System.Drawing.Point(246, 76);
+            this.label96.Name = "label96";
+            this.label96.Size = new System.Drawing.Size(111, 23);
+            this.label96.TabIndex = 58;
+            this.label96.Text = "Centre (Hz)";
+            // 
+            // pumpAOMFreqUpdateButton
+            // 
+            this.pumpAOMFreqUpdateButton.Location = new System.Drawing.Point(331, 137);
+            this.pumpAOMFreqUpdateButton.Name = "pumpAOMFreqUpdateButton";
+            this.pumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.pumpAOMFreqUpdateButton.TabIndex = 60;
+            this.pumpAOMFreqUpdateButton.Text = "Update";
+            this.pumpAOMFreqUpdateButton.Click += new System.EventHandler(this.pumpAOMFreqUpdateButton_Click);
+            // 
+            // label98
+            // 
+            this.label98.Location = new System.Drawing.Point(246, 22);
+            this.label98.Name = "label98";
+            this.label98.Size = new System.Drawing.Size(111, 23);
+            this.label98.TabIndex = 59;
+            this.label98.Text = "AOM freq low (Hz)";
             // 
             // groupBox19
             // 
@@ -3450,6 +3682,7 @@ namespace EDMHardwareControl
             // 
             // tabPage8
             // 
+            this.tabPage8.BackColor = System.Drawing.Color.Transparent;
             this.tabPage8.Controls.Add(this.groupBox28);
             this.tabPage8.Controls.Add(this.groupBox27);
             this.tabPage8.Controls.Add(this.groupBox26);
@@ -3459,7 +3692,6 @@ namespace EDMHardwareControl
             this.tabPage8.Size = new System.Drawing.Size(697, 575);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "Diode Laser";
-            this.tabPage8.UseVisualStyleBackColor = true;
             // 
             // groupBox28
             // 
@@ -3685,11 +3917,11 @@ namespace EDMHardwareControl
             this.label94.TabIndex = 73;
             this.label94.Text = "Piezo Control Step (V)";
             // 
-            // flPZT2TextBox
+            // flPZT2StepTextBox
             // 
             this.flPZT2StepTextBox.BackColor = System.Drawing.Color.White;
             this.flPZT2StepTextBox.Location = new System.Drawing.Point(127, 110);
-            this.flPZT2StepTextBox.Name = "flPZT2TextBox";
+            this.flPZT2StepTextBox.Name = "flPZT2StepTextBox";
             this.flPZT2StepTextBox.Size = new System.Drawing.Size(64, 20);
             this.flPZT2StepTextBox.TabIndex = 72;
             this.flPZT2StepTextBox.Text = "0";
@@ -3746,11 +3978,11 @@ namespace EDMHardwareControl
             this.updateflPZTButton.UseVisualStyleBackColor = true;
             this.updateflPZTButton.Click += new System.EventHandler(this.updateflPZTButton_Click);
             // 
-            // diodeRefCavTextBox
+            // flPZT2TextBox
             // 
             this.flPZT2TextBox.BackColor = System.Drawing.Color.LimeGreen;
             this.flPZT2TextBox.Location = new System.Drawing.Point(127, 22);
-            this.flPZT2TextBox.Name = "diodeRefCavTextBox";
+            this.flPZT2TextBox.Name = "flPZT2TextBox";
             this.flPZT2TextBox.Size = new System.Drawing.Size(64, 20);
             this.flPZT2TextBox.TabIndex = 45;
             this.flPZT2TextBox.Text = "0";
@@ -3877,6 +4109,7 @@ namespace EDMHardwareControl
             // 
             // tabPage5
             // 
+            this.tabPage5.BackColor = System.Drawing.Color.Transparent;
             this.tabPage5.Controls.Add(this.groupBox17);
             this.tabPage5.Controls.Add(this.groupBox15);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
@@ -3884,7 +4117,6 @@ namespace EDMHardwareControl
             this.tabPage5.Size = new System.Drawing.Size(697, 575);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
-            this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // groupBox17
             // 
@@ -4053,7 +4285,6 @@ namespace EDMHardwareControl
             this.tabPage6.Size = new System.Drawing.Size(697, 575);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
-            this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // label81
             // 
@@ -4147,7 +4378,6 @@ namespace EDMHardwareControl
             this.tabPage7.Size = new System.Drawing.Size(697, 575);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Alerts";
-            this.tabPage7.UseVisualStyleBackColor = true;
             // 
             // clearAlertButton
             // 
@@ -4169,6 +4399,7 @@ namespace EDMHardwareControl
             // 
             // tabPage9
             // 
+            this.tabPage9.BackColor = System.Drawing.Color.Transparent;
             this.tabPage9.Controls.Add(this.switchScanTTLSwitch);
             this.tabPage9.Controls.Add(this.label97);
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
@@ -4177,7 +4408,6 @@ namespace EDMHardwareControl
             this.tabPage9.Size = new System.Drawing.Size(697, 575);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Misc";
-            this.tabPage9.UseVisualStyleBackColor = true;
             // 
             // switchScanTTLSwitch
             // 
@@ -4396,8 +4626,12 @@ namespace EDMHardwareControl
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.groupBox25.ResumeLayout(false);
             this.groupBox25.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pumpAOMTrackBar)).EndInit();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox19.PerformLayout();
             this.groupBox18.ResumeLayout(false);
@@ -4692,9 +4926,29 @@ namespace EDMHardwareControl
             controller.UpdateFLPZTV();
         }
 
+        private void updatePumpAOMButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOM();
+        }
+
         private void I2AOMFreqUpdateButton_Click(object sender, EventArgs e)
         {
             controller.UpdateI2AOMFreqMonitor();
+        }
+
+        private void pumpAOMFreqUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOMFreqMonitor();
+        }
+
+        private void FLPZTVtrackBar_Scroll(object sender, EventArgs e)
+        {
+            controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value / 100.0);
+        }
+
+        private void pumpAOMTrackBar_Scroll(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOM((Double)pumpAOMTrackBar.Value / 100.0);
         }
 
         private void probePolarizerUpdateButton_Click(object sender, EventArgs e)
@@ -4851,15 +5105,6 @@ namespace EDMHardwareControl
             controller.WindowClosing();
         }
 
-        private void PumpAOMFreqUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.UpdatePumpAOMFreqMonitor();
-        }
-
-        private void FLPZTVtrackBar_Scroll(object sender, EventArgs e)
-        {
-            controller.UpdateFLPZTV((Double)FLPZTVtrackBar.Value/100.0);
-        }
 
         private void switch1_StateChanged(object sender, ActionEventArgs e)
         {
@@ -4870,6 +5115,18 @@ namespace EDMHardwareControl
         {
             controller.SetflPZT2((Double) flPZT2TrackBar.Value / 100.0);
         }
+
+        private void UpdateVCOConversionFractionButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOMFreqMonitor();
+            controller.UpdateI2AOMFreqMonitor();
+            controller.UpdateVCOFraction();
+        }
+
+
+
+
+
 
         
 

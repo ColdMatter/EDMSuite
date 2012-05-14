@@ -81,6 +81,7 @@ namespace EDMHardwareControl
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
         Task flPZTVAnalogOutputTask;
+        Task pumpAOMAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -158,6 +159,7 @@ namespace EDMHardwareControl
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
+            pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -956,6 +958,42 @@ namespace EDMHardwareControl
             }
         }
 
+        public double PumpAOMVoltage
+        {
+            get
+            {
+                return Double.Parse(window.pumpAOMVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.pumpAOMVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double PumpAOMStep
+        {
+            get
+            {
+                return Double.Parse(window.pumpAOMStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.pumpAOMStepTextBox, value.ToString());
+            }
+        }
+
+        public double VCOConvFrac
+        {
+            get
+            {
+                return Double.Parse(window.vcoConversionFractionTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.vcoConversionFractionTextBox, value.ToString());
+            }
+        }
+
         public double diodeRefCavVoltage
         {
             get
@@ -1082,16 +1120,22 @@ namespace EDMHardwareControl
             }
         }
 
-        public double PumpAOMFreq
+        public double PumpAOMFrequencyCentre
         {
             get
             {
-                return Double.Parse(window.PumpAOMFreqTextBox.Text);
+                return Double.Parse(window.pumpAOMFreqCentreTextBox.Text);
             }
         }
 
-
-
+        public double PumpAOMFrequencyStep
+        {
+            get
+            {
+                return Double.Parse(window.pumpAOMFreqStepTextBox.Text);
+            }
+        }
+        
         public double RF1FrequencyCentre
         {
             get
@@ -1216,6 +1260,52 @@ namespace EDMHardwareControl
 
         #region Hardware control methods - safe for remote
 
+        public void Switch(string channel, bool state)
+        {
+            switch (channel)
+            {
+                case "eChan":
+                    SwitchEAndWait(state);
+                    break;
+                case "flPZT": //probe laser
+                    SwitchLF1(state);
+                    break;
+                case "pumpAOM": //pump laser
+                    SwitchLF2(state);
+                    break;
+            }
+        }
+
+        private bool lf1State;
+        private bool lf2State;
+        private double calculateIodineAOMFrequency(bool lf1State)
+        {
+
+            return FLPZTVoltage + (lf1State ? FLPZTStep : -FLPZTStep);
+        }
+        private double calculatePumpAOMCompensation(bool lf1State)
+        {
+            return VCOConvFrac * (!lf1State ? FLPZTStep : -FLPZTStep);
+        }
+        private double calculatePumpAOMFrequency(bool lf1State, bool lf2State)
+        {
+            return PumpAOMVoltage + (lf2State ? PumpAOMStep : -PumpAOMStep)
+                + calculatePumpAOMCompensation(lf1State);
+        }
+        public void SwitchLF1(bool lf1State)
+        {
+            this.lf1State = lf1State;
+
+            SetAnalogOutput(flPZTVAnalogOutputTask, calculateIodineAOMFrequency(lf1State));
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+        }
+        public void SwitchLF2(bool lf2State)
+        {
+            this.lf2State = lf2State;
+
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+        }
+
         public void FieldsOff()
         {
             CPlusVoltage = 0;
@@ -1224,7 +1314,6 @@ namespace EDMHardwareControl
             CMinusOffVoltage = 0;
             UpdateVoltages();
             EFieldEnabled = false;
-
         }
 
         private bool switchingEfield = false;
@@ -1971,10 +2060,6 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.FLPZTStepPlusButton, true);
             UpdateFLPZTV();
             Thread.Sleep(10);
-            //bool[] cntrlSeq = (bool[])Environs.Hardware.GetInfo("IodineFreqMon");
-            //SetDigitalLine("rfCountSwBit1", cntrlSeq[0]);
-            //SetDigitalLine("rfCountSwBit2", cntrlSeq[1]);
-            // The VCO is connected to channel two (should put this line in PXIEDMHardware.cs)
             rfCounter.Channel = 2; 
             double I2PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.I2AOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
@@ -1990,8 +2075,27 @@ namespace EDMHardwareControl
 
         public void UpdatePumpAOMFreqMonitor()
         {
-            double PumpAOMFreq = rfCounter2.Frequency();
-            window.SetTextBox(window.PumpAOMFreqTextBox, String.Format("{0:F0}", PumpAOMFreq));
+            window.SetRadioButton(window.pumpAOMStepPlusButton, true);
+            UpdatePumpAOM();
+            Thread.Sleep(10);
+            double pumpAOMPlusFreq = rfCounter2.Frequency();
+            window.SetTextBox(window.pumpAOMFreqPlusTextBox, String.Format("{0:F0}", pumpAOMPlusFreq));
+
+            window.SetRadioButton(window.pumpAOMStepMinusButton, true);
+            UpdatePumpAOM();
+            Thread.Sleep(10);
+            double pumpAOMMinusFreq = rfCounter2.Frequency();
+            window.SetTextBox(window.pumpAOMFreqMinusTextBox, String.Format("{0:F0}", pumpAOMMinusFreq));
+            window.SetTextBox(window.pumpAOMFreqCentreTextBox, String.Format("{0:F0}", ((pumpAOMPlusFreq + pumpAOMMinusFreq) / 2)));
+            window.SetTextBox(window.pumpAOMFreqStepTextBox, String.Format("{0:F0}", ((pumpAOMPlusFreq - pumpAOMMinusFreq) / 2)));
+
+        }
+
+        public void UpdateVCOFraction()
+        {
+            double i2Coeff = Double.Parse(window.I2AOMFreqStepTextBox.Text) / Double.Parse(window.FLPZTStepTextBox.Text);
+            double pumpAOMCoeff = Double.Parse(window.pumpAOMFreqStepTextBox.Text) / Double.Parse(window.pumpAOMStepTextBox.Text);
+            VCOConvFrac = i2Coeff / pumpAOMCoeff;
         }
 
         internal void UpdateProbePolarizerAngle()
@@ -2205,10 +2309,10 @@ namespace EDMHardwareControl
 
         public void UpdateFLPZTV()
         {
-            double pztVoltage = Double.Parse(window.FLPZTVTextBox.Text);
-            if (window.FLPZTStepMinusButton.Checked) pztVoltage -= Double.Parse(window.FLPZTStepTextBox.Text);
-            if (window.FLPZTStepPlusButton.Checked) pztVoltage += Double.Parse(window.FLPZTStepTextBox.Text);
-            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            double pztVoltage = FLPZTVoltage;
+            if (window.FLPZTStepMinusButton.Checked) pztVoltage -= FLPZTStep;
+            if (window.FLPZTStepPlusButton.Checked) pztVoltage += FLPZTStep;
+            pztVoltage = windowVoltage(pztVoltage, 0, 5);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
             window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
         }
@@ -2223,6 +2327,28 @@ namespace EDMHardwareControl
         {
             window.SetTextBox(window.FLPZTVTextBox, v.ToString());
             SetAnalogOutput(flPZTVAnalogOutputTask, v);
+        }
+
+        public void UpdatePumpAOM()
+        {
+            double pumpAOMVoltage = PumpAOMVoltage;
+            if (window.pumpAOMStepMinusButton.Checked) pumpAOMVoltage -= PumpAOMStep;
+            if (window.pumpAOMStepPlusButton.Checked) pumpAOMVoltage += PumpAOMStep;
+            pumpAOMVoltage = windowVoltage(pumpAOMVoltage, 0, 10);
+            SetAnalogOutput(pumpAOMAnalogOutputTask, pumpAOMVoltage);
+            window.pumpAOMTrackBar.Value = 100 * (int)pumpAOMVoltage;
+        }
+
+        public void UpdatePumpAOM(double pumpAOMVoltage)
+        {
+            SetAnalogOutput(pumpAOMAnalogOutputTask, pumpAOMVoltage);
+            window.pumpAOMVoltageTextBox.Text = pumpAOMVoltage.ToString();
+        }
+
+        public void SetPumpAOMVoltage(double v)
+        {
+            window.SetTextBox(window.pumpAOMVoltageTextBox, v.ToString());
+            SetAnalogOutput(pumpAOMAnalogOutputTask, v);
         }
 
         public void SetScanningBZero()
