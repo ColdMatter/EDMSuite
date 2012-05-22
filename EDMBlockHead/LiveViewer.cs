@@ -21,6 +21,9 @@ namespace EDMBlockHead
         double clusterVariance = 0;
         double clusterVarianceNormed = 0;
         double blocksPerDay = 240;
+
+        private double initPumpPD = 1;
+        private double initProbePD = 1;
  
 
         public LiveViewer(Controller c)
@@ -98,6 +101,10 @@ namespace EDMBlockHead
                 new double[] { analysis.NorthCurrentValAndError[1] });
             AppendToSouthLeakageErrorScatter(new double[] { blockCount },
                 new double[] { analysis.SouthCurrentValAndError[1] });
+            AppendToNorthECorrLeakageScatter(new double[] { blockCount },
+                new double[] { analysis.NorthECorrCurrentValAndError[0] });
+            AppendToSouthECorrLeakageScatter(new double[] { blockCount },
+                new double[] { analysis.SouthECorrCurrentValAndError[0] });
             AppendToMagNoiseScatter(new double[] { blockCount },
                 new double[] { analysis.MagValandErr[1] });
             AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[0] });
@@ -106,6 +113,17 @@ namespace EDMBlockHead
             AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
             AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
             AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
+
+            if (blockCount == 1)
+            {
+                initProbePD = analysis.probePD[0];
+                initPumpPD = analysis.pumpPD[0];
+            }           
+            AppendTopProbePDScatter(new double[] { blockCount }, new double[] { analysis.probePD[0] / initProbePD });
+            AppendTopPumpPDScatter(new double[] { blockCount }, new double[] { analysis.pumpPD[0] / initPumpPD });
+
+            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB });
+            AppendToLF2DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF2DBDB });
 
             blockCount = blockCount + 1;
         }
@@ -129,7 +147,8 @@ namespace EDMBlockHead
             ClearLF1NoiseGraph();
             ClearRFxAGraph();
             ClearRFxFGraph();
-            
+            ClearPDScatter();
+            ClearLF1DBDBGraph();
         }
 
         #region UI methods
@@ -172,6 +191,16 @@ namespace EDMBlockHead
         private void AppendToSouthLeakageScatter(double[] x, double[] y)
         {
             PlotXYAppend(leakageGraph, southLeakagePlot, x, y);
+        }
+
+        private void AppendToNorthECorrLeakageScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(eCorrLeakageScatterGraph, nECorrLeakagePlot, x, y);
+        }
+
+        private void AppendToSouthECorrLeakageScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(eCorrLeakageScatterGraph, sECorrLeakagePlot, x, y);
         }
  
         private void AppendToEDMScatter(double[] x, double[] y)
@@ -227,6 +256,16 @@ namespace EDMBlockHead
             PlotXYAppend(lf1ScatterGraph, lf1Plot, x, y);
         }
 
+        private void AppendToLF1DBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(lfxdbdbScatterGraph, lf1dbdbScatterPlot, x, y);
+        }
+
+        private void AppendToLF2DBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(lfxdbdbScatterGraph, lf2dbdbScatterPlot, x, y);
+        }
+
         private void AppendToLF1NoiseScatter(double[] x, double[] y)
         {
             PlotXYAppend(lf1NoiseScatterGraph, lf1NoisePlot, x, y);
@@ -250,6 +289,21 @@ namespace EDMBlockHead
         private void AppendToRF2FScatter(double[] x, double[] y)
         {
             PlotXYAppend(rfFreqScatterGraph, rf2fScatterPlot, x, y);
+        }
+
+        private void AppendTopProbePDScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(photoDiodeScatterGraph, probePDScatterPlot, x, y);
+        }
+
+        private void AppendTopPumpPDScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(photoDiodeScatterGraph, pumpPDScatterPlot, x, y);
+        }
+
+        private void ClearPDScatter()
+        {
+            ClearNIGraph(photoDiodeScatterGraph);
         }
 
         private void ClearSIGScatter()
@@ -276,6 +330,7 @@ namespace EDMBlockHead
         {
             ClearNIGraph(leakageGraph);
             ClearNIGraph(leakageErrorGraph);
+            ClearNIGraph(eCorrLeakageScatterGraph);
         }
 
         private void ClearMagNoiseScatterGraph()
@@ -291,6 +346,11 @@ namespace EDMBlockHead
         private void ClearLF1Graph()
         {
             ClearNIGraph(lf1ScatterGraph);
+        }
+
+        private void ClearLF1DBDBGraph()
+        {
+            ClearNIGraph(lfxdbdbScatterGraph);
         }
 
         private void ClearLF1NoiseGraph()
