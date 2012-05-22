@@ -246,6 +246,7 @@ def updateLocksNL(bState):
 	lf2Value = pmtChannelValues.GetValue(("LF2",))
 	lf2dbdbValue = normedpmtChannelValues.GetSpecialValue("LF2DBDB")
 
+
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
@@ -416,7 +417,7 @@ def EDMGo():
 		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbValue = pmtChannelValues.GetValue(("DB",))
-		if (dbValue < 11):
+		if (dbValue < 9.5):
 			print("Dodgy spot target rotation.")
 			for i in range(2):
 				hc.StepTarget(2)
