@@ -218,7 +218,6 @@ def updateLocks(bState):
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
-	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -1.25 * (lf1Value / dbValue)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
@@ -249,6 +248,7 @@ def updateLocksNL(bState):
 
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
+	print "B.DB" + str(bDBValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
@@ -417,7 +417,7 @@ def EDMGo():
 		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		dbValue = pmtChannelValues.GetValue(("DB",))
-		if (dbValue < 9.5):
+		if (dbValue < 10):
 			print("Dodgy spot target rotation.")
 			for i in range(2):
 				hc.StepTarget(2)
