@@ -69,11 +69,14 @@ namespace Analysis.EDM
             // namely those required to extract the edm (and the correction term). This speeds
             // up the execution enormously when the BlockTOFDemodulator is used by the
             // BlockDemodulator for calculating the non-linear channel combinations.
-            int[] channelsToAnalyse;
+            //int[] channelsToAnalyse;
+            List<int> channelsToAnalyse;
             if (allChannels)
             {
-                channelsToAnalyse = new int[numStates];
-                for (int i = 0; i < numStates; i++) channelsToAnalyse[i] = i;
+                //channelsToAnalyse = new int[numStates];
+                channelsToAnalyse = new List<int>();
+                //for (int i = 0; i < numStates; i++) channelsToAnalyse[i] = i;
+                for (int i = 0; i < numStates; i++) channelsToAnalyse.Add(i);
             }
             else
             {
@@ -111,14 +114,26 @@ namespace Analysis.EDM
                 int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
                 int lf1Channel = (1 << lf1Index);
                 int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
-                int lf2Channel = (1 << lf2Index);
-                int dblf2Channel = (1 << dbIndex) + (1 << lf2Index);
 
-                channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
+                channelsToAnalyse = new List<int>() { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
                     dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
                     rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
-                    dbrf2aChannel, lf1Channel, dblf1Channel, lf2Channel, dblf2Channel
+                    dbrf2aChannel, lf1Channel, dblf1Channel,
                 };
+                                
+                if (lf2Index != -1) // Index = -1 if "LF2" not found
+                {
+                    int lf2Channel = (1 << lf2Index);
+                    channelsToAnalyse.Add(lf2Channel);
+                    int dblf2Channel = (1 << dbIndex) + (1 << lf2Index);
+                    channelsToAnalyse.Add(dblf2Channel);
+                }
+                
+                //channelsToAnalyse = new int[] { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
+                //    dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
+                //    rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
+                //    dbrf2aChannel, lf1Channel, dblf1Channel, lf2Channel, dblf2Channel
+                //};
             }
 
             foreach (int channel in channelsToAnalyse)
@@ -178,8 +193,35 @@ namespace Analysis.EDM
 
             TOFChannel c_lf1 = (TOFChannel)tcs.GetChannel(new string[] { "LF1" });
             TOFChannel c_dblf1 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
-            TOFChannel c_lf2 = (TOFChannel)tcs.GetChannel(new string[] { "LF2" });
-            TOFChannel c_dblf2 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF2" });
+
+            TOFChannel c_lf2;
+            TOFChannel c_dblf2;
+            if (modNames.IndexOf("LF2") == -1) // Index = -1 if "LF2" not found
+            {
+                TOF tofTemp = new TOF();
+                TOFChannel tcTemp = new TOFChannel();
+                // For many blocks there is no LF2 channel (and hence switch states).
+                // To get around this problem I will populate the TOFChannel with "SIG"
+                // It will then be obvious in the analysis when LF2 takes on real values.
+                for (int i = 0; i < blockLength; i++)
+                {
+                    tofTemp += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]); 
+                }
+                tofTemp /= (blockLength / 2);
+
+                tcTemp.On = tofTemp;
+                tcTemp.Off = tofTemp;
+                tcTemp.Difference = tofTemp;
+                
+                c_lf2 = tcTemp;
+                c_dblf2 = tcTemp;
+            }
+            else
+            {
+                c_lf2 = (TOFChannel)tcs.GetChannel(new string[] { "LF2" });
+                c_dblf2 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF2" });
+            }
+            
 
 
             // work out some intermediate terms for the full, corrected edm. The names

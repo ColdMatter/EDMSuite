@@ -25,7 +25,16 @@ namespace Analysis.EDM
             else
             {
                 uint index = 0;
-                foreach (string s in switches) index += SwitchMasks[s];
+                
+                //foreach (string s in switches) index += SwitchMasks[s];
+                foreach (string s in switches)
+                {
+                    uint val = 0;
+                    if (SwitchMasks.TryGetValue(s, out val))
+                    {
+                        index += val;
+                    }                    
+                } 
                 return index;
             }
         }
