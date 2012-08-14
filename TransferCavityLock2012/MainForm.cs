@@ -242,6 +242,11 @@ namespace TransferCavityLock2012
 
         #endregion
 
+        private void MasterLaserIntensityScatterGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
 
 
         

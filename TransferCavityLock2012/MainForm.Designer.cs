@@ -46,6 +46,7 @@
             this.slaveLasersTab = new System.Windows.Forms.TabControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.logCheckBox = new System.Windows.Forms.CheckBox();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -126,6 +127,7 @@
             this.xAxis2});
             this.MasterLaserIntensityScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
+            this.MasterLaserIntensityScatterGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.MasterLaserIntensityScatterGraph_PlotDataChanged);
             // 
             // MasterDataPlot
             // 
@@ -192,11 +194,22 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Reference laser";
             // 
+            // logCheckBox
+            // 
+            this.logCheckBox.AutoSize = true;
+            this.logCheckBox.Location = new System.Drawing.Point(586, 315);
+            this.logCheckBox.Name = "logCheckBox";
+            this.logCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.logCheckBox.TabIndex = 18;
+            this.logCheckBox.Text = "Log locked laser parameters";
+            this.logCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 535);
+            this.ClientSize = new System.Drawing.Size(976, 539);
+            this.Controls.Add(this.logCheckBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.slaveLasersTab);
@@ -212,6 +225,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -235,6 +249,7 @@
         private System.Windows.Forms.TabControl slaveLasersTab;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        public System.Windows.Forms.CheckBox logCheckBox;
     }
 }
 

@@ -7,6 +7,7 @@ using DAQ.HAL;
 using DAQ;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
 
 namespace TransferCavityLock2012
 {
@@ -274,6 +275,13 @@ namespace TransferCavityLock2012
                                 case SlaveLaser.LaserState.LOCKED:
                                     sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
                                     RefreshLockParametersOnUI(sl.Name);
+                                    if (ui.logCheckBox.Checked == true)
+                                    {
+                                        using (StreamWriter writer = new StreamWriter(Environs.FileSystem.Paths["transferCavityData"] + "log.txt", true))
+                                        {
+                                            writer.WriteLine(slName + "," + DateTime.Now.ToString("h:mm:ss.ff t") + "," + Math.Round(fits["masterFits"][1], 5).ToString() + "," + Math.Round(fits[slName + "Fits"][1], 5).ToString());
+                                        }
+                                    }
                                     break;
                             }
 
