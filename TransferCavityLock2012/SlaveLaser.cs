@@ -53,7 +53,7 @@ namespace TransferCavityLock2012
         public void DisengageLock()
         {
             lState = LaserState.FREE;
-            laser.SetLaserVoltage(0.0);  
+            laser.SetLaserVoltage(VoltageToLaser);  
             controller.UpdateUIState(Name, lState);
         }
         public void DisposeLaserControl()

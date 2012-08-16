@@ -199,9 +199,9 @@
             this.logCheckBox.AutoSize = true;
             this.logCheckBox.Location = new System.Drawing.Point(586, 315);
             this.logCheckBox.Name = "logCheckBox";
-            this.logCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.logCheckBox.Size = new System.Drawing.Size(124, 17);
             this.logCheckBox.TabIndex = 18;
-            this.logCheckBox.Text = "Log locked laser parameters";
+            this.logCheckBox.Text = "Log laser parameters";
             this.logCheckBox.UseVisualStyleBackColor = true;
             // 
             // MainForm
