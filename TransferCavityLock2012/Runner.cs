@@ -19,9 +19,9 @@ namespace TransferCavityLock2012
             Controller controller = new Controller();
 
             // publish the controller to the remoting system
-           // TcpChannel channel = new TcpChannel(1179);
-           // ChannelServices.RegisterChannel(channel, false);
-           // RemotingServices.Marshal(controller, "controller.rem");
+            TcpChannel channel = new TcpChannel(1190);
+            ChannelServices.RegisterChannel(channel, false);
+            RemotingServices.Marshal(controller, "controller.rem");
 
             // hand over to the controller
             controller.Start();

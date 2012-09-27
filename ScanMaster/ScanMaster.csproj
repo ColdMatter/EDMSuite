@@ -110,6 +110,10 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
+      <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
+      <Name>TransferCavityLock2012</Name>
+    </ProjectReference>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
@@ -349,6 +353,7 @@
     <Compile Include="SynthFrequencyOutputPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TCLOutputPlugin.cs" />
     <Compile Include="TofFitter.cs" />
     <Compile Include="TTLSwitchPlugin.cs" />
     <Compile Include="Viewer.cs">

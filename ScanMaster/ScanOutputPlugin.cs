@@ -14,9 +14,10 @@ namespace ScanMaster.Acquire.Plugin
     XmlInclude(typeof(NullOutputPlugin)), 
 	XmlInclude(typeof(SynthAmplitudeOutputPlugin)),
 	XmlInclude(typeof(SynthFrequencyOutputPlugin)),
-    XmlInclude(typeof(PGOutputPlugin)), 
+    XmlInclude(typeof(PGOutputPlugin)),
+    XmlInclude(typeof(TCLOutputPlugin))
 #if DECELERATOR
-    XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
+    ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif
     ]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin

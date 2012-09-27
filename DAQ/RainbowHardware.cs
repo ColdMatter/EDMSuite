@@ -4,6 +4,7 @@ using System.Collections;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using System.Runtime.Remoting;
 
 namespace DAQ.HAL
 {
@@ -97,6 +98,13 @@ namespace DAQ.HAL
             //AddCounterChannel("northLeakage", counterBoard + "/ctr0");
             //AddCounterChannel("southLeakage", counterBoard + "/ctr1");
 
+        }
+
+        public override void ConnectApplications()
+        {
+            // ask the remoting system for access to TCL2012
+            Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
 
     }

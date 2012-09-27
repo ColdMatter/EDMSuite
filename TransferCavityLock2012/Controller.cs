@@ -210,6 +210,16 @@ namespace TransferCavityLock2012
         }
         #endregion
 
+
+        #region Remote methods
+
+        public void SetLaserSetpoint(string laserName, double newSetpoint)
+        {
+            SlaveLasers[laserName].LaserSetPoint = newSetpoint;
+        }
+
+        #endregion
+
         #region SCAN! (MAIN PART OF PROGRAM. If reading through code, start here)
 
         /// <summary>
