@@ -199,6 +199,17 @@ namespace TransferCavityLock2012
             slaveLasers[name].DisplayFit(cavityData, slaveFitData);
         }
 
+        public void SetVtoOffsetVoltage(double value)
+        {
+            SetTextBox(VToOffsetTextBox, Convert.ToString(value));
+        }
+
+        public void SetMasterFitTextBox(double value)
+        {
+            SetTextBox(MasterFitTextBox, Convert.ToString(value));
+        }
+
+
         #endregion
 
         #region Panel Control
@@ -246,6 +257,58 @@ namespace TransferCavityLock2012
         {
 
         }
+
+        private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public void MasterSetPointTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MasterGainTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void logCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        public void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MasterFitTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void slaveLasersTab_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+ 
 
 
 

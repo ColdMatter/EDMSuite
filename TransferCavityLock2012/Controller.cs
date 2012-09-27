@@ -166,7 +166,6 @@ namespace TransferCavityLock2012
             ui.SetGain(name, SlaveLasers[name].Gain);
             ui.SetLaserSetPoint(name, SlaveLasers[name].LaserSetPoint);
         }
-
         #endregion
 
         #region Passing Events from UIs to the correct slave laser class.
@@ -234,6 +233,10 @@ namespace TransferCavityLock2012
             
             readParametersFromUI();                             //This isn't part of the loop. Do an initial setup of the parameters.
             ScanParameters sp = createInitialScanParameters();
+            double masterVoltage = 0;
+            setupMasterVoltageOut();
+            writeMasterVoltageOut(0);
+            disposeMasterVoltageOut();
 
             initializeAIHardware(sp);
 
@@ -253,6 +256,19 @@ namespace TransferCavityLock2012
 
                         fits["masterFits"] = fitMaster(scanData);
                         plotMaster(scanData, fits["masterFits"]);
+
+                        if (ui.masterLockEnableCheck.Checked == true && checkRampChannel() == true)
+                        {
+                            masterVoltage = calculateMasterVoltageShift(masterVoltage)+ masterVoltage;
+                            setupMasterVoltageOut();
+                            //write difference to analog output
+                            writeMasterVoltageOut(masterVoltage);
+                            ui.SetVtoOffsetVoltage(Math.Round(masterVoltage,4));
+                            ui.SetMasterFitTextBox(Math.Round((fits["masterFits"][1]-masterVoltage), 4));
+                            disposeMasterVoltageOut();
+                        }
+
+
 
                         foreach (KeyValuePair<string, SlaveLaser> pair in SlaveLasers)
                         {
@@ -358,6 +374,51 @@ namespace TransferCavityLock2012
             return sp;
         }
         /// <summary>
+        /// Functions for locking master laser to cavity length
+        /// </summary>
+        /// 
+        private bool checkRampChannel()
+        {   bool xMaster;
+            if((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"]!=null)
+            xMaster = true;
+            else
+            xMaster=false;
+            return xMaster;
+        }
+        private double calculateMasterVoltageShift(double masterV)
+        {
+            double masterSetPoint=double.Parse(ui.MasterSetPointTextBox.Text);
+            double masterFit = fits["masterFits"][1];
+            double masterGain= double.Parse(ui.MasterGainTextBox.Text);
+            double masterVoltageShift = -masterGain * (masterSetPoint - masterFit + masterV);
+            return masterVoltageShift;
+        }
+        
+        private Task masterOutputTask;
+        private AnalogOutputChannel masterChannel;
+        private AnalogSingleChannelWriter masterWriter;
+        
+        public void setupMasterVoltageOut()
+        {
+            masterOutputTask = new Task("rampfeedback");
+            masterChannel=(AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"];
+            masterChannel.AddToTask(masterOutputTask, -10, 10);
+            masterOutputTask.Control(TaskAction.Verify);
+            masterWriter = new AnalogSingleChannelWriter(masterOutputTask.Stream);
+        }
+        public void writeMasterVoltageOut(double voltage)
+        {
+            masterOutputTask.Start();
+            masterWriter.WriteSingleSample(true, voltage);
+            masterOutputTask.Stop();
+        }
+        public void disposeMasterVoltageOut()
+        {
+            masterOutputTask.Dispose();
+        }
+
+        #endregion
+        /// <summary>
         /// The function which gets called at the end, after breaking out of the while loop.
         /// </summary>
         private void endRamping()
@@ -385,7 +446,6 @@ namespace TransferCavityLock2012
             tcl.ConfigureReadAI(sp.Steps, false);
         }
 
-        #endregion
 
     }
 

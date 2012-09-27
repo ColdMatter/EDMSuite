@@ -198,7 +198,7 @@ namespace TransferCavityLock2012
             {
                 case SlaveLaser.LaserState.FREE:
                     lockEnableCheck.Enabled = true;
-                    VoltageToLaserTextBox.Enabled = true;
+                    VoltageToLaserTextBox.Enabled = true;    
                     LaserSetPointTextBox.Enabled = false;
                     GainTextbox.Enabled = true;
                     lockedLED.Value = false;

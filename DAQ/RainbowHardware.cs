@@ -27,8 +27,8 @@ namespace DAQ.HAL
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI1");
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI2");
-            Info.Add("sourceToDetect", 1.3);
-            Info.Add("moleculeMass", 193.0);
+            Info.Add("sourceToDetect", 0.4);
+            Info.Add("moleculeMass", 100.0);
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", daqBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", daqBoard);
@@ -36,8 +36,8 @@ namespace DAQ.HAL
             Info.Add("PGClockCounter", "/ctr0");
 
             //TCL Lockable lasers
-            Info.Add("TCLLockableLasers", new string[] { "laser","laser2"});
-            Info.Add("TCLPhotodiodes", new string[] { "cavityRampMonitor", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            Info.Add("TCLLockableLasers", new string[] { "laser","laser2","laser4"});
+            Info.Add("TCLPhotodiodes", new string[] { "cavityRampMonitor", "master", "p1", "p2","p4"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
             Info.Add("TCL_Slave_Voltage_Limit_Lower", -2.0); //volts: Laser control
             Info.Add("TCL_Default_Gain", -0.01);
@@ -46,7 +46,7 @@ namespace DAQ.HAL
             // Some matching up for TCL
             Info.Add("laser", "p1");
             Info.Add("laser2", "p2");
-            //Info.Add("laser3", "p3");
+            Info.Add("laser4", "p4");
             Info.Add("TCLTrigger", TCLBoard + "/PFI0");
 
             // YAG laser
@@ -63,22 +63,24 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("aom", daqBoard, 0, 5); // this trigger is for switch scanning
 
             // map the analog input channels
-            AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Nrse);
-            AddAnalogInputChannel("norm", daqBoard + "/ai1", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("pmt", daqBoard + "/ai1", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("norm", daqBoard + "/ai0", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
 
             AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p1", TCLBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cavityRampMonitor", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("p2", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p3", TCLBoard + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p4", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p2", TCLBoard + "/ai5", AITerminalConfiguration.Rse);
 
    
             // map the analog output channels
             AddAnalogOutputChannel("laser", TCLBoard + "/ao0");
-            AddAnalogOutputChannel("laser2", TCLBoard + "/ao1");
-            AddAnalogOutputChannel("laser3", daqBoard + "/ao0");
+            AddAnalogOutputChannel("laser4", TCLBoard + "/ao1");
+            AddAnalogOutputChannel("laser2", daqBoard + "/ao1");
+            AddAnalogOutputChannel("laser3", daqBoard + "/ao2");
+            AddAnalogOutputChannel("rampfb", daqBoard + "/ao0");
          
             //Transfer Cavity Lock
             //AddAnalogOutputChannel("cavity", daqBoard + "/ao1");

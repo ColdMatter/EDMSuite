@@ -12,6 +12,7 @@ namespace DAQ
 			Paths.Add("settingsPath", "C:\\Users\\SrF\\Files\\Data\\Settings\\");
             Paths.Add("scanMasterDataPath", "C:\\Users\\SrF\\Files\\Data\\General\\");
             Paths.Add("fakeData", "C:\\Users\\SrF\\Files\\Data\\Examples\\");
+            Paths.Add("transferCavityData", "C:\\Users\\SrF\\Files\\Data\\TransferCavity\\");
 
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 			

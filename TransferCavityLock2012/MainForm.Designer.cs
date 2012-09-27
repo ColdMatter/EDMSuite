@@ -47,6 +47,14 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.logCheckBox = new System.Windows.Forms.CheckBox();
+            this.MasterSetPointTextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.masterLockEnableCheck = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.MasterGainTextBox = new System.Windows.Forms.TextBox();
+            this.VToOffsetTextBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.MasterFitTextBox = new System.Windows.Forms.TextBox();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -173,6 +181,7 @@
             this.slaveLasersTab.SelectedIndex = 0;
             this.slaveLasersTab.Size = new System.Drawing.Size(958, 192);
             this.slaveLasersTab.TabIndex = 15;
+            this.slaveLasersTab.SelectedIndexChanged += new System.EventHandler(this.slaveLasersTab_SelectedIndexChanged);
             // 
             // groupBox1
             // 
@@ -203,12 +212,99 @@
             this.logCheckBox.TabIndex = 18;
             this.logCheckBox.Text = "Log laser parameters";
             this.logCheckBox.UseVisualStyleBackColor = true;
+            this.logCheckBox.CheckedChanged += new System.EventHandler(this.logCheckBox_CheckedChanged);
+            // 
+            // MasterSetPointTextBox
+            // 
+            this.MasterSetPointTextBox.AcceptsReturn = true;
+            this.MasterSetPointTextBox.Location = new System.Drawing.Point(658, 239);
+            this.MasterSetPointTextBox.Name = "MasterSetPointTextBox";
+            this.MasterSetPointTextBox.Size = new System.Drawing.Size(57, 20);
+            this.MasterSetPointTextBox.TabIndex = 29;
+            this.MasterSetPointTextBox.Text = "0";
+            this.MasterSetPointTextBox.TextChanged += new System.EventHandler(this.MasterSetPointTextBox_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(583, 242);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 13);
+            this.label3.TabIndex = 28;
+            this.label3.Text = "Set Point (V):";
+            // 
+            // masterLockEnableCheck
+            // 
+            this.masterLockEnableCheck.AutoSize = true;
+            this.masterLockEnableCheck.Location = new System.Drawing.Point(721, 241);
+            this.masterLockEnableCheck.Name = "masterLockEnableCheck";
+            this.masterLockEnableCheck.Size = new System.Drawing.Size(50, 17);
+            this.masterLockEnableCheck.TabIndex = 35;
+            this.masterLockEnableCheck.Text = "Lock";
+            this.masterLockEnableCheck.UseVisualStyleBackColor = true;
+            this.masterLockEnableCheck.CheckedChanged += new System.EventHandler(this.masterLockEnableCheck_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(583, 267);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 37;
+            this.label1.Text = "Gain:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // MasterGainTextBox
+            // 
+            this.MasterGainTextBox.AcceptsReturn = true;
+            this.MasterGainTextBox.Location = new System.Drawing.Point(658, 267);
+            this.MasterGainTextBox.Name = "MasterGainTextBox";
+            this.MasterGainTextBox.Size = new System.Drawing.Size(57, 20);
+            this.MasterGainTextBox.TabIndex = 38;
+            this.MasterGainTextBox.Text = "0";
+            this.MasterGainTextBox.TextChanged += new System.EventHandler(this.MasterGainTextBox_TextChanged);
+            // 
+            // VToOffsetTextBox
+            // 
+            this.VToOffsetTextBox.CausesValidation = false;
+            this.VToOffsetTextBox.Location = new System.Drawing.Point(871, 267);
+            this.VToOffsetTextBox.Name = "VToOffsetTextBox";
+            this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
+            this.VToOffsetTextBox.TabIndex = 39;
+            this.VToOffsetTextBox.TextChanged += new System.EventHandler(this.VToOffsetTextBox_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(773, 270);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(91, 13);
+            this.label2.TabIndex = 40;
+            this.label2.Text = "V to Ramp Offset:";
+            this.label2.Click += new System.EventHandler(this.label2_Click_1);
+            // 
+            // MasterFitTextBox
+            // 
+            this.MasterFitTextBox.CausesValidation = false;
+            this.MasterFitTextBox.Location = new System.Drawing.Point(871, 239);
+            this.MasterFitTextBox.Name = "MasterFitTextBox";
+            this.MasterFitTextBox.Size = new System.Drawing.Size(93, 20);
+            this.MasterFitTextBox.TabIndex = 41;
+            this.MasterFitTextBox.TextChanged += new System.EventHandler(this.MasterFitTextBox_TextChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 539);
+            this.Controls.Add(this.MasterFitTextBox);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.VToOffsetTextBox);
+            this.Controls.Add(this.MasterGainTextBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.masterLockEnableCheck);
+            this.Controls.Add(this.MasterSetPointTextBox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.logCheckBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -250,6 +346,14 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         public System.Windows.Forms.CheckBox logCheckBox;
+        private System.Windows.Forms.Label label3;
+        public System.Windows.Forms.CheckBox masterLockEnableCheck;
+        public System.Windows.Forms.TextBox MasterSetPointTextBox;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.TextBox MasterGainTextBox;
+        public System.Windows.Forms.TextBox VToOffsetTextBox;
+        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.TextBox MasterFitTextBox;
     }
 }
 
