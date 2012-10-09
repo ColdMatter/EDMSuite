@@ -28,7 +28,7 @@ namespace DAQ.HAL
             Boards.Add("usbDAQ2", "/dev1");
             Boards.Add("usbDAQ3", "/dev4");
             Boards.Add("usbDAQ4", "/dev3");
-            Boards.Add("usbDAQ5", "/dev6");
+            Boards.Add("tclBoard", "/PXI1Slot9");
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string counterBoard = (string)Boards["counter"];
@@ -38,7 +38,7 @@ namespace DAQ.HAL
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbDAQ3 = (string)Boards["usbDAQ3"];
             string usbDAQ4 = (string)Boards["usbDAQ4"];
-            string TCLBoard = (string)Boards["usbDAQ5"];
+            string tclBoard = (string)Boards["tclBoard"];
 
             // add things to the info
             // the analog triggers
@@ -71,6 +71,9 @@ namespace DAQ.HAL
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
             Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
             Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL8::INSTR"));
+            Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL5::INSTR"));
+            Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL3::INSTR"));
+
 
             // map the digital channels
             // these channels are generally switched by the pattern generator
@@ -140,9 +143,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
-            //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse); 
-            
-
+            //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("rfCurrent", daqBoard + "/ai14 ", AITerminalConfiguration.Nrse);
 
             // high quality analog inputs (will be) on the S-series analog in board
             AddAnalogInputChannel("pmt", analogIn + "/ai0", AITerminalConfiguration.Differential);
@@ -183,25 +185,33 @@ namespace DAQ.HAL
             //AddCounterChannel("southLeakage", counterBoard + "/ctr1");
 
             //TCL Lockable lasers
-            Info.Add("TCLLockableLasers", new string[] { "flPZT2" });
+            //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
+            Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
             Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-            Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
+            Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //volts: Laser control
             Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //volts: Laser control
             Info.Add("TCL_Default_Gain", -0.01);
             Info.Add("TCL_Default_VoltageToLaser", 1.0);
+            Info.Add("TCL_Default_VoltageToDependent", 1.0);
             // Some matching up for TCL
             Info.Add("flPZT2", "p1");
-            Info.Add("TCLTrigger", TCLBoard + "/PFI0");
+            Info.Add("flPZT2Temp", "p1");
+            Info.Add("fibreAOM", "p1");
+            Info.Add("TCLTrigger", tclBoard + "/PFI0");
+            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
 
-            AddAnalogInputChannel("transCavV", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("p1", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("transCavV", tclBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("master", tclBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p1", tclBoard + "/ai2", AITerminalConfiguration.Rse);
 
             // Laser control
             AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2");
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
-            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10); 
+            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
+            AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
+            AddAnalogOutputChannel("fibreAOM", aoBoard + "/ao7", 0, 10);
         }
 
     }
