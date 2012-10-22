@@ -20,20 +20,20 @@ Contributors
 
 The code that makes up the trunk today has seen contributions from:
 
-Aki Matsushima
-Chris Sinclair
-Dhiren Kara
-Joe Smallman
-Jony Hudson
-Michael Tarbutt
-Nick Bulleid
-Sean Tokunaga
+* Aki Matsushima
+* Chris Sinclair
+* Dhiren Kara
+* Joe Smallman
+* Jony Hudson
+* Michael Tarbutt
+* Nick Bulleid
+* Sean Tokunaga
 
 In addition, early versions of this code, that pre-date this repository, or never made it to the trunk, were contributed to by:
 
-Henry Ashworth
-Suresh Doravari
-Jalani Kanem
+* Henry Ashworth
+* Suresh Doravari
+* Jalani Kanem
 
 License
 =======
