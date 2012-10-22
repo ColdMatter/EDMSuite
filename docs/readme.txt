@@ -1,3 +1,5 @@
+This is pretty out of date:
+
 This is a very incomplete readme file. At the moment it just has some notes about source code organisation and the build system.
 
 Source code organisation and build system
