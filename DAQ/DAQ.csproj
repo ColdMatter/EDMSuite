@@ -170,6 +170,8 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SerialMotorControllerBCD.cs" />
+    <Compile Include="SerialMotorController.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
     <Compile Include="Parker404XR.cs" />
     <Compile Include="PHRHENDRIC02FileSystem.cs" />
@@ -337,6 +339,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="licenses.licx" />
+    <Content Include="bdc-comm-92.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Wolfram.NETLink.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

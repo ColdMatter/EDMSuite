@@ -26,7 +26,7 @@ namespace DAQ.Analyze
             double q = parameters[1];
             double c = parameters[2];
             double w = parameters[3];
-            result = n + q * Math.Pow(Math.Sin((x[0] - c) / w), 2);
+            result = n + q * Math.Pow(Math.Cos((x[0] - c) / w), 2);
         }
 
         public override double[] SuggestParameters(double[] xDat, double[] yDat, double scanStart, double scanEnd)

@@ -13,6 +13,7 @@ namespace DAQ
 			Paths.Add("scanMasterDataPath", "f:\\data\\general\\");
 			Paths.Add("edmDataPath", "f:\\data\\sedm\\v3\\");
 			Paths.Add("fakeData","f:\\data\\examples\\");
+            Paths.Add("transferCavityData", "f:\\data\\transfer cavity\\");
 
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 			DataSearchPaths.Add(Paths["edmDataPath"]);

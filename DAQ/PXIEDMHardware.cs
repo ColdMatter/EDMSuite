@@ -51,7 +51,7 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", pgBoard + "/PFI4"); //Mapped to PFI2 on 6533 connector
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            // rf counter switch control seq
+            // rf counter switch control seq``
             Info.Add("IodineFreqMon", new bool[] { false, false }); // IN 1
             Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
@@ -144,7 +144,6 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
-            AddAnalogInputChannel("rfCurrent", daqBoard + "/ai14 ", AITerminalConfiguration.Nrse);
 
             // high quality analog inputs (will be) on the S-series analog in board
             AddAnalogInputChannel("pmt", analogIn + "/ai0", AITerminalConfiguration.Differential);
@@ -154,6 +153,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
             AddAnalogOutputChannel("b", aoBoard + "/ao1");

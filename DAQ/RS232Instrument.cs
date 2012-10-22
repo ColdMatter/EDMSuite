@@ -12,7 +12,7 @@ namespace DAQ.HAL
     public class RS232Instrument : Instrument
     {
         protected SerialSession serial;
-        private string address;
+        protected string address;
         protected bool connected = false;
 
         public RS232Instrument(String visaAddress)
@@ -47,6 +47,13 @@ namespace DAQ.HAL
         }
 
         protected override void Write(string command)
+        {
+            if (!connected) Connect();
+            if (!Environs.Debug) serial.Write(command);
+            Disconnect();
+        }
+
+        protected void Write(byte[] command)
         {
             if (!connected) Connect();
             if (!Environs.Debug) serial.Write(command);
