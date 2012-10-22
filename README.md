@@ -38,4 +38,4 @@ In addition, early versions of this code, that pre-date this repository, or neve
 License
 =======
 
-The code in this repository is licensed to you under the MIT License. Please see LICENCE.txt for details.
+The code in this repository is licensed to you under the MIT License. Please see LICENSE.txt for details.
