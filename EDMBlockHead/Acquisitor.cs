@@ -396,15 +396,6 @@ namespace EDMBlockHead.Acquire
             mag.Calibration = 0.00001;
             inputs.Channels.Add(mag);
 
-            ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
-            rfCurrent.ReductionMode = DataReductionMode.Average;
-            rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
-            rfCurrent.AverageEvery = 20;
-            rfCurrent.LowLimit = -10;
-            rfCurrent.HighLimit = 10;
-            rfCurrent.Calibration = 0.115; //V/nA calibration from 9-10-12 b19 p153
-            inputs.Channels.Add(rfCurrent);
-
             ScannedAnalogInput gnd = new ScannedAnalogInput();
             gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
             gnd.ReductionMode = DataReductionMode.Average;
@@ -423,6 +414,14 @@ namespace EDMBlockHead.Acquire
             battery.HighLimit = 10;
             battery.Calibration = 1;
             inputs.Channels.Add(battery);
+
+            ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
+            rfCurrent.ReductionMode = DataReductionMode.Average;
+            rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
+            rfCurrent.AverageEvery = 10; //Bandwidth of the ammeter is aprox 12kHz
+            rfCurrent.LowLimit = -10;
+            rfCurrent.HighLimit = 10;
+            inputs.Channels.Add(rfCurrent);
         }
 
         ///* THIS VERSION FOR He/Kr */
