@@ -183,10 +183,11 @@ namespace Analysis.EDM
             DemodulatedBlock dblock = DemodulateBlock(b, config);
             // normalise the PMT signal
             b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
+            int tndi = dblock.DetectorIndices["topNormed"];
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 5, false);
+            TOFChannelSet tcs = btd.TOFDemodulateBlock(b, tndi, false);
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
@@ -243,7 +244,6 @@ namespace Analysis.EDM
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
             // I use the simple correction error for the full correction. Doesn't much matter.
-            int tndi = dblock.DetectorIndices["topNormed"];
             DetectorChannelValues dcv = dblock.ChannelValues[tndi];
             double edmDBE = dcv.GetError(new string[] { "E", "B" }) / dcv.GetValue(new string[] { "DB" });
             double corrDBE = Math.Sqrt(

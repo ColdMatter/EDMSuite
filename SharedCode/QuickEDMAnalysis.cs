@@ -104,8 +104,8 @@ namespace Analysis.EDM
 
             //laser freq
             analysis.LFValandErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "top");
-            analysis.LF1DBDB = dblock.ChannelValues[5].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
-            analysis.LF2DBDB = dblock.ChannelValues[5].GetSpecialValue("LF2DBDB");
+            analysis.LF1DBDB = dblock.ChannelValues[6].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
+            analysis.LF2DBDB = dblock.ChannelValues[6].GetSpecialValue("LF2DBDB");
 
             //rf freq
             analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");

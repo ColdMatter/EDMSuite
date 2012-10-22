@@ -318,11 +318,11 @@ namespace Analysis.EDM
             TOFChannel lf1DBDB = c_dblf1 / c_db;
             tcs.AddChannel(new string[] { "LF1DBDB" }, lf1DBDB);
 
-            // the LF1 channel, normalized to DB
+            // the LF2 channel, normalized to DB
             TOFChannel lf2DB = c_lf2 / c_db;
             tcs.AddChannel(new string[] { "LF2DB" }, lf2DB);
 
-            TOFChannel lf2DBDB = c_dblf1 / c_db;
+            TOFChannel lf2DBDB = c_dblf2 / c_db;
             tcs.AddChannel(new string[] { "LF2DBDB" }, lf2DBDB);
 
             TOFChannel bDB = c_b / c_db;

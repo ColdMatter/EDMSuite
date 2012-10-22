@@ -16,7 +16,7 @@ namespace Data.EDM
 		private DateTime timeStamp = DateTime.Now;
 		private BlockConfig config = new BlockConfig();
 
-        public List<string> detectors = new List<string>() {"top", "norm", "magnetometer", "gnd", "battery"};
+        public List<string> detectors = new List<string>() {"top", "norm", "magnetometer", "gnd", "battery",  "rfCurrent"};
 
 		public void SetTimeStamp()
 		{

@@ -48,7 +48,7 @@ namespace Analysis.EDM
             {
 
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "wide";
@@ -64,12 +64,16 @@ namespace Analysis.EDM
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
+                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
+                dg5.Name = "rfCurrent";
+                dg5.Integrate = false;
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
                 dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");
@@ -230,7 +234,7 @@ namespace Analysis.EDM
             DemodulationConfigBuilder dcb = delegate(Block b)
             {
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = name;
@@ -254,12 +258,16 @@ namespace Analysis.EDM
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
+                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
+                dg5.Name = "rfCurrent";
+                dg5.Integrate = false;
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
                 dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+                dc.GatedDetectorExtractSpecs.Add(dg5 .Name, dg5);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");
