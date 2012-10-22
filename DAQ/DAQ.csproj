@@ -171,7 +171,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SerialMotorControllerBCD.cs" />
-    <Compile Include="SerialMotorController.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
     <Compile Include="Parker404XR.cs" />
     <Compile Include="PHRHENDRIC02FileSystem.cs" />
