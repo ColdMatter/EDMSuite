@@ -362,7 +362,7 @@ def EDMGo():
 
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
-	# randomise Ramsey phase
+	# randomise Ramsey phase 
 	scramblerV = 0.799718 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
 	# randomise polarizations
@@ -452,7 +452,7 @@ def EDMGo():
 			del dbValueList[0]
 		print "DB values for last 3 blocks " + str(dbValueList).strip('[]')
 		runningdbMean =float(sum(dbValueList)) / len(dbValueList)
-		if ( runningdbMean < 1):	
+		if ( runningdbMean < 1 and nightBool is Y ):	
 			hc.EnableEField( False )
 			hc.SetArgonShutter( True )
 			break
