@@ -45,9 +45,10 @@ namespace DAQ.HAL
             Info.Add("TCLPhotodiodes", new string[] {"cavity", "master", "p1" ,"p2"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //volts: Laser control
             Info.Add("TCL_Slave_Voltage_Limit_Lower", -10.0); //volts: Laser control
-            Info.Add("TCL_Default_Gain", 0.5);
+            Info.Add("TCL_Default_Gain", 0.01);
             Info.Add("TCL_Default_VoltageToLaser", 0.0);
             Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
+
             // Some matching up for TCL
             Info.Add("laser", "p1");
             Info.Add("laser2", "p2");
@@ -125,6 +126,7 @@ namespace DAQ.HAL
            // AddAnalogOutputChannel("cavity", PXIBoard + "/ao5");
             AddAnalogOutputChannel("laser2", PXIBoard + "/ao25");
             AddAnalogOutputChannel("laser3", PXIBoard + "/ao31");
+            AddAnalogOutputChannel("rampfb", PXIBoard + "/ao19"); 
            
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
             
