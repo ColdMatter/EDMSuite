@@ -86,6 +86,10 @@ namespace EDMBlockHead.Acquire
 			Block b = new Block();
 			b.Config = config;
 			b.SetTimeStamp();
+            foreach (ScannedAnalogInput channel in inputs.Channels)
+            {
+                b.detectors.Add(channel.Channel.Name);
+            }
 			
 			try
 			{
