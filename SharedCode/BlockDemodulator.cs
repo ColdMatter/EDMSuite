@@ -33,16 +33,31 @@ namespace Analysis.EDM
             // *** extract the gated detector data using the given config ***
             List<GatedDetectorData> gatedDetectorData = new List<GatedDetectorData>();
             int ind = 0;
-            foreach (KeyValuePair<string, GatedDetectorExtractSpec> spec in config.GatedDetectorExtractSpecs)
+            foreach (string d in b.detectors)
             {
-                GatedDetectorExtractSpec gate = spec.Value;
-                gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
-                db.DetectorIndices.Add(gate.Name, ind);
-                ind++;
-                db.DetectorCalibrations.Add(gate.Name,
-                    ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
-
+                GatedDetectorExtractSpec gdes;
+                config.GatedDetectorExtractSpecs.TryGetValue(d, out gdes);
+                
+                if (gdes != null)
+                {
+                    gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gdes));
+                    db.DetectorIndices.Add(gdes.Name, ind);
+                    ind++;
+                    db.DetectorCalibrations.Add(gdes.Name,
+                        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gdes.Index]).Calibration);
+                }     
             }
+
+            //foreach (KeyValuePair<string, GatedDetectorExtractSpec> spec in config.GatedDetectorExtractSpecs)
+            //{
+            //    GatedDetectorExtractSpec gate = spec.Value;
+            //    gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
+            //    db.DetectorIndices.Add(gate.Name, ind);
+            //    ind++;
+            //    db.DetectorCalibrations.Add(gate.Name,
+            //        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
+
+            //}
             // ** normalise the top detector **
             gatedDetectorData.Add(
                 gatedDetectorData[db.DetectorIndices["top"]] / gatedDetectorData[db.DetectorIndices["norm"]]);
