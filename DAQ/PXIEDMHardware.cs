@@ -146,7 +146,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
 
             // high quality analog inputs (will be) on the S-series analog in board
-            AddAnalogInputChannel("pmt", analogIn + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("norm", analogIn + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
