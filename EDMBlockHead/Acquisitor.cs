@@ -86,6 +86,10 @@ namespace EDMBlockHead.Acquire
 			Block b = new Block();
 			b.Config = config;
 			b.SetTimeStamp();
+            foreach (ScannedAnalogInput channel in inputs.Channels)
+            {
+                b.detectors.Add(channel.Channel.Name);
+            }
 			
 			try
 			{
@@ -358,7 +362,7 @@ namespace EDMBlockHead.Acquire
 
             // this code should be used for normal running
             ScannedAnalogInput pmt = new ScannedAnalogInput();
-            pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["pmt"];
+            pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["top"];
             pmt.ReductionMode = DataReductionMode.Chop;
             pmt.ChopStart = 140;
             pmt.ChopLength = 80;

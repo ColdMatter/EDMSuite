@@ -57,10 +57,10 @@ namespace Analysis.EDM
                 dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
                 dg1.Name = "norm";
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
+                dg2.Name = "magnetometer";
                 dg2.Integrate = false;
                 dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
+                dg3.Name = "gnd";
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
@@ -251,10 +251,10 @@ namespace Analysis.EDM
                 dg1.GateLow = (int)((centre - width) / kDetectorDistanceRatio);
                 dg1.GateHigh = (int)((centre + width) / kDetectorDistanceRatio);
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "mag1";
+                dg2.Name = "magnetometer";
                 dg2.Integrate = false;
                 dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "short";
+                dg3.Name = "gnd";
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";

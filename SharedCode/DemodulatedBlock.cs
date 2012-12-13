@@ -23,10 +23,19 @@ namespace Analysis.EDM
         // way to do it if pulling out a lot of values, but it's not bad. And it is convenient.
         public double[] GetChannelValueAndError(string[] switches, string detector)
         {
-            int detectorIndex = DetectorIndices[detector];
-            DetectorChannelValues dcv = ChannelValues[detectorIndex];
-            uint channelIndex = dcv.GetChannelIndex(switches);
-            return new double[] { dcv.Values[channelIndex], dcv.Errors[channelIndex] };
+            int detectorIndex;
+
+            if (DetectorIndices.TryGetValue(detector, out detectorIndex))
+            {
+                DetectorChannelValues dcv = ChannelValues[detectorIndex];
+                uint channelIndex = dcv.GetChannelIndex(switches);
+                return new double[] { dcv.Values[channelIndex], dcv.Errors[channelIndex] };
+            }
+            else
+            {
+                return new double[] {0.0, 0.0};
+            }
+            
         }
 
         public double[] GetSpecialChannelValueAndError(string name, string detector)
@@ -34,7 +43,7 @@ namespace Analysis.EDM
             int detectorIndex = DetectorIndices[detector];
             DetectorChannelValues dcv = ChannelValues[detectorIndex];
             return dcv.SpecialValues[name];
-         }
+        }
 
     }
 }
