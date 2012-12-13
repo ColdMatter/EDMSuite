@@ -250,8 +250,10 @@ namespace TransferCavityLock2012
 
             initializeAIHardware(sp);
 
-            CavityScanData scanData;            
+            CavityScanData scanData;
 
+            int count = 0;
+          
             while (TCLState != ControllerState.STOPPED)
             {
                 
@@ -285,35 +287,58 @@ namespace TransferCavityLock2012
                             string slName = pair.Key;
                             SlaveLaser sl = pair.Value;
 
-                            fits[slName + "Fits"] = fitSlave(slName, scanData);
-                            plotSlave(slName, scanData, fits[slName + "Fits"]);
+                            
+                            //Some rearrangements to fit only when log fit slave lasers parameters on and/or lock slave lasers on.
+                            plotSlaveNoFit(slName, scanData);
+                            
                             if (ui.logCheckBox.Checked == true)
                             {
-                                using (StreamWriter writer = new StreamWriter(Environs.FileSystem.Paths["transferCavityData"] + "log.txt", true))
-                                {
-                                    writer.WriteLine(slName + "," + DateTime.Now.ToString("h:mm:ss.ff t") + 
-                                        "," + Math.Round(fits["masterFits"][1], 5).ToString() + 
-                                        "," + Math.Round(fits[slName + "Fits"][1], 5).ToString() + 
-                                        "," + Math.Round(sl.VoltageToLaser,5).ToString());
-                                }
+                                fits[slName + "Fits"] = fitSlave(slName, scanData);
+                                plotSlave(slName, scanData, fits[slName + "Fits"]);
+
+                               using (StreamWriter writer = new StreamWriter(Environs.FileSystem.Paths["transferCavityData"] + "log.txt", true))
+                               {
+                                  writer.WriteLine(slName + "," + DateTime.Now.ToString("h:mm:ss.ff t") + 
+                                  "," + Math.Round(fits["masterFits"][1], 5).ToString() + 
+                                  "," + Math.Round(fits[slName + "Fits"][1], 5).ToString() + 
+                                  "," + Math.Round(sl.VoltageToLaser,5).ToString());
+                               }
                             }
 
+                           
                             switch (sl.lState)
                             {
                                 case SlaveLaser.LaserState.FREE:
+                                    
                                     break;
 
                                 case SlaveLaser.LaserState.LOCKING:
+                                    
+                                    fits[slName + "Fits"] = fitSlave(slName, scanData);
+                                    plotSlave(slName, scanData, fits[slName + "Fits"]);
+                                   
+
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
+                                     
                                     sl.Lock();
+                                    RefreshErrorGraph(slName);
+                                    count = 0;
                                     break;
+
 
                                 case SlaveLaser.LaserState.LOCKED:
+                                    
+                                    fits[slName + "Fits"] = fitSlave(slName, scanData);
+                                    plotSlave(slName, scanData, fits[slName + "Fits"]);
+
+                                    plotError(slName, new double[] { count }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint });
+                                                                       
                                     sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
                                     RefreshLockParametersOnUI(sl.Name);
+
+                                    count++;
                                     break;
                             }
-
                         }
                     }
                     else 
@@ -362,7 +387,23 @@ namespace TransferCavityLock2012
             ui.DisplaySlaveData(name, cavity, slave, CavityScanFitHelper.CreatePointsFromFit(cavity, slaveFit));
         }
 
+        private void plotSlaveNoFit(string name, CavityScanData data)
+        {
+            double[] cavity = data.GetCavityData();
+            double[] slave = data.GetSlaveData(name);
+            ui.DisplaySlaveDataNoFit(name, cavity, slave);
+        }
 
+        private void plotError(string name, double[] time, double[] error )
+        {
+           ui.DisplayErrorData(name, time, error);
+        }
+
+        private void RefreshErrorGraph(string name)
+        {
+            ui.ClearErrorGraph(name);
+        }
+        
         #endregion
 
         #region privates
@@ -457,9 +498,8 @@ namespace TransferCavityLock2012
         }
 
 
+
+        
     }
-
-
-
 
 }

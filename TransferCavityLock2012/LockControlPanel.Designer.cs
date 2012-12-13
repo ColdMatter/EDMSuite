@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.lockParams = new System.Windows.Forms.GroupBox();
+            this.lockedLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label10 = new System.Windows.Forms.Label();
             this.setPointIncrementBox = new System.Windows.Forms.TextBox();
             this.GainTextbox = new System.Windows.Forms.TextBox();
@@ -46,11 +47,15 @@
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.SlaveFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lockedLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.ErrorScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.ErrorPlot = new NationalInstruments.UI.ScatterPlot();
             this.lockParams.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // lockParams
@@ -69,10 +74,18 @@
             this.lockParams.Controls.Add(this.label3);
             this.lockParams.Location = new System.Drawing.Point(589, 3);
             this.lockParams.Name = "lockParams";
-            this.lockParams.Size = new System.Drawing.Size(355, 161);
+            this.lockParams.Size = new System.Drawing.Size(355, 149);
             this.lockParams.TabIndex = 13;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
+            // 
+            // lockedLED
+            // 
+            this.lockedLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.lockedLED.Location = new System.Drawing.Point(310, 19);
+            this.lockedLED.Name = "lockedLED";
+            this.lockedLED.Size = new System.Drawing.Size(32, 30);
+            this.lockedLED.TabIndex = 34;
             // 
             // label10
             // 
@@ -179,12 +192,12 @@
             // 
             // SlaveLaserIntensityScatterGraph
             // 
-            this.SlaveLaserIntensityScatterGraph.Location = new System.Drawing.Point(6, 19);
+            this.SlaveLaserIntensityScatterGraph.Location = new System.Drawing.Point(9, 17);
             this.SlaveLaserIntensityScatterGraph.Name = "SlaveLaserIntensityScatterGraph";
             this.SlaveLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.SlaveDataPlot,
             this.SlaveFitPlot});
-            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(548, 132);
+            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(567, 132);
             this.SlaveLaserIntensityScatterGraph.TabIndex = 12;
             this.SlaveLaserIntensityScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis1});
@@ -209,35 +222,56 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.ErrorScatterGraph);
             this.groupBox1.Controls.Add(this.SlaveLaserIntensityScatterGraph);
             this.groupBox1.Location = new System.Drawing.Point(4, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(582, 161);
+            this.groupBox1.Size = new System.Drawing.Size(582, 286);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Slave laser";
             // 
-            // lockedLED
+            // ErrorScatterGraph
             // 
-            this.lockedLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.lockedLED.Location = new System.Drawing.Point(310, 19);
-            this.lockedLED.Name = "lockedLED";
-            this.lockedLED.Size = new System.Drawing.Size(32, 30);
-            this.lockedLED.TabIndex = 34;
+            this.ErrorScatterGraph.Location = new System.Drawing.Point(6, 155);
+            this.ErrorScatterGraph.Name = "ErrorScatterGraph";
+            this.ErrorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.ErrorPlot});
+            this.ErrorScatterGraph.Size = new System.Drawing.Size(570, 125);
+            this.ErrorScatterGraph.TabIndex = 13;
+            this.ErrorScatterGraph.UseColorGenerator = true;
+            this.ErrorScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.ErrorScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
+            // 
+            // ErrorPlot
+            // 
+            this.ErrorPlot.LineColor = System.Drawing.Color.Red;
+            this.ErrorPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.ErrorPlot.XAxis = this.xAxis2;
+            this.ErrorPlot.YAxis = this.yAxis2;
             // 
             // LockControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lockParams);
             this.Name = "LockControlPanel";
-            this.Size = new System.Drawing.Size(1001, 172);
+            this.Size = new System.Drawing.Size(952, 294);
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -263,5 +297,9 @@
         public NationalInstruments.UI.ScatterPlot SlaveFitPlot;
         private System.Windows.Forms.GroupBox groupBox1;
         private NationalInstruments.UI.WindowsForms.Led lockedLED;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph ErrorScatterGraph;
+        private NationalInstruments.UI.ScatterPlot ErrorPlot;
+        private NationalInstruments.UI.XAxis xAxis2;
+        private NationalInstruments.UI.YAxis yAxis2;
     }
 }

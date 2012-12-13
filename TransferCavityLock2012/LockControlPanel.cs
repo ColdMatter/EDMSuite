@@ -76,14 +76,27 @@ namespace TransferCavityLock2012
             {
                 plot.ClearData();
                 plot.PlotXY(x, y);
-
-
             }
         }
+       
         private void scatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
         {
             graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] { plot, x, y });
         }
+
+        private delegate void PlotXYDelegate(double[] x, double[] y);
+       
+        private void PlotXYAppend(Graph graph, ScatterPlot plot, double[] x, double[] y)
+        {
+            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { x, y });
+        }
+
+        private delegate void ClearDataDelegate();
+        private void ClearNIGraph(Graph graph)
+        {
+            graph.Invoke(new ClearDataDelegate(graph.ClearData));
+        }
+
         #endregion
 
         #region Events
@@ -189,6 +202,18 @@ namespace TransferCavityLock2012
         {
             scatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
         }
+
+         public void AppendToErrorGraph(double[] x, double[] y)
+        {
+            PlotXYAppend(ErrorScatterGraph, ErrorPlot, x, y);
+        }
+
+         public void ClearErrorGraph()
+         {
+             ClearNIGraph(ErrorScatterGraph);
+         }
+
+        
         #endregion
 
         #region UI state control
@@ -216,6 +241,10 @@ namespace TransferCavityLock2012
 
             }
         }
+
         #endregion
+
+   
+     
     }
 }

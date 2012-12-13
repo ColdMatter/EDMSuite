@@ -85,6 +85,7 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +127,18 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="Properties\DataSources\TransferCavityLock.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock.Properties.Settings.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.CavityScanData.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.CavityScanFitHelper.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.Controller+ControllerState.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.Controller.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.LockControlPanel.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.MainForm.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.Runner.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.ScanParameters.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.SlaveLaser+LaserState.datasource" />
+    <None Include="Properties\DataSources\TransferCavityLock2012.SlaveLaser.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
