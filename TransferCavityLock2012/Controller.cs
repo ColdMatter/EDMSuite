@@ -30,7 +30,7 @@ namespace TransferCavityLock2012
         #region Declarations
 
         public const int default_ScanPoints = 700;
-        
+
         private MainForm ui;
         
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
@@ -412,7 +412,7 @@ namespace TransferCavityLock2012
         {
             masterOutputTask = new Task("rampfeedback");
             masterChannel=(AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"];
-            masterChannel.AddToTask(masterOutputTask, -10, 10);
+            masterChannel.AddToTask(masterOutputTask, masterChannel.RangeLow, masterChannel.RangeHigh);
             masterOutputTask.Control(TaskAction.Verify);
             masterWriter = new AnalogSingleChannelWriter(masterOutputTask.Stream);
         }
