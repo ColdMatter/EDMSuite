@@ -144,7 +144,7 @@ namespace TransferCavityLock2012
         }
 
 
-        private double calculateDeviationFromSetPoint(double laserSetPoint,
+        public double calculateDeviationFromSetPoint(double laserSetPoint,
             double[] masterFitCoefficients, double[] slaveFitCoefficients)
         {
             double currentPeakSeparation = new double();
@@ -171,5 +171,7 @@ namespace TransferCavityLock2012
         }
 
         #endregion
-    }
+
+
+       }
 }

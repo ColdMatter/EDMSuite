@@ -179,7 +179,7 @@
             this.slaveLasersTab.Location = new System.Drawing.Point(12, 338);
             this.slaveLasersTab.Name = "slaveLasersTab";
             this.slaveLasersTab.SelectedIndex = 0;
-            this.slaveLasersTab.Size = new System.Drawing.Size(958, 192);
+            this.slaveLasersTab.Size = new System.Drawing.Size(952, 334);
             this.slaveLasersTab.TabIndex = 15;
             this.slaveLasersTab.SelectedIndexChanged += new System.EventHandler(this.slaveLasersTab_SelectedIndexChanged);
             // 
@@ -296,7 +296,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 539);
+            this.ClientSize = new System.Drawing.Size(976, 677);
             this.Controls.Add(this.MasterFitTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.VToOffsetTextBox);

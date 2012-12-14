@@ -127,8 +127,7 @@ namespace TransferCavityLock2012
         }
 
 
-        private delegate void plotScatterGraphDelegate(ScatterPlot plot,
-            double[] x, double[] y);
+        private delegate void plotScatterGraphDelegate(ScatterPlot plot,double[] x, double[] y);
         private void plotScatterGraphHelper(ScatterPlot plot,
             double[] x, double[] y)
         {
@@ -136,15 +135,16 @@ namespace TransferCavityLock2012
             {
                 plot.ClearData();
                 plot.PlotXY(x, y);
-                
-                
-            }
+             }
         }
+
+
         private void scatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
         {
             graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] {plot, x, y });
         }
 
+      
         private void rampStartButton_Click(object sender, EventArgs e)
         {
             controller.StartTCL();
@@ -197,6 +197,21 @@ namespace TransferCavityLock2012
         {
             slaveLasers[name].DisplayData(cavityData, slaveData);
             slaveLasers[name].DisplayFit(cavityData, slaveFitData);
+        }
+       
+        public void DisplaySlaveDataNoFit(string name, double[] cavityData, double[] slaveData)
+        {
+            slaveLasers[name].DisplayData(cavityData, slaveData);
+        }
+
+        public void DisplayErrorData(string name, double[] time, double[] errordata)
+        {
+            slaveLasers[name].AppendToErrorGraph(time, errordata);
+        }
+
+        public void ClearErrorGraph(string name)
+        {
+            slaveLasers[name].ClearErrorGraph();
         }
 
         public void SetVtoOffsetVoltage(double value)
