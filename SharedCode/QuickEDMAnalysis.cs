@@ -40,8 +40,8 @@ namespace Analysis.EDM
         public double[] MagValandErr;
 
         public double[] LFValandErr;
-        public double LF1DBDB;
-        public double LF2DBDB;
+        public double[] LF1DBDB;
+        public double[] LF2DBDB;
 
         public double[] rf1FreqAndErr;
         public double[] rf2FreqAndErr;
@@ -50,7 +50,9 @@ namespace Analysis.EDM
 
         public double[] probePD;
         public double[] pumpPD;
-        
+
+        public double[] rfCurrent;
+
         public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
         {
             QuickEDMAnalysis analysis = new QuickEDMAnalysis();
@@ -100,13 +102,15 @@ namespace Analysis.EDM
                 dblock.GetChannelValueAndError(new string[] { "E" }, "SouthCurrent");
 
             //magnetometer (I know it is not signed right but I just want the noise so any waveform will do)
-            analysis.MagValandErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "mag1");
+            analysis.MagValandErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "magnetometer");
 
             //laser freq
             analysis.LFValandErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "top");
-            analysis.LF1DBDB = dblock.ChannelValues[6].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
-            analysis.LF2DBDB = dblock.ChannelValues[6].GetSpecialValue("LF2DBDB");
-
+            //analysis.LF1DBDB = dblock.ChannelValues[6].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
+            //analysis.LF2DBDB = dblock.ChannelValues[6].GetSpecialValue("LF2DBDB");
+            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError("LF1DBDB", "topNormed"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
+            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB" , "topNormed");
+           
             //rf freq
             analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");
             analysis.rf2FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "top");
@@ -118,6 +122,9 @@ namespace Analysis.EDM
             //photodiodes
             analysis.probePD = dblock.GetChannelValueAndError(new string[] { "SIG" }, "ProbePD");
             analysis.pumpPD = dblock.GetChannelValueAndError(new string[] {"SIG"}, "PumpPD");            
+
+            //rfAmmeter
+            analysis.rfCurrent = dblock.GetChannelValueAndError(new string[] { "SIG" }, "rfCurrent");
 
             return analysis;
         }
