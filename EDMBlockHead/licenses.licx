@@ -1,8 +1,2 @@
-<<<<<<< HEAD
-NationalInstruments.UI.WindowsForms.Tank, NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298
-NationalInstruments.UI.WindowsForms.WaveformGraph, NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298
-=======
 NationalInstruments.UI.WindowsForms.WaveformGraph, NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298
 NationalInstruments.UI.WindowsForms.Tank, NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298
->>>>>>> 21c5ae8e9096ecbde8d11f333046644976923673
-NationalInstruments.UI.WindowsForms.ScatterGraph, NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298
