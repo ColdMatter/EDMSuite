@@ -85,7 +85,7 @@ namespace EDMHardwareControl
         LeakageMonitor southLeakageMonitor = new LeakageMonitor("southLeakage", southVolt2FreqSlope, southFreq2AmpSlope, southOffset);
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
-        Task steppingBBiasAnalogOutputTask;
+        //Task steppingBBiasAnalogOutputTask;
         Task flPZTVAnalogOutputTask;
         Task flAOMAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
@@ -169,7 +169,7 @@ namespace EDMHardwareControl
 
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
-            steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            //steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
@@ -496,7 +496,7 @@ namespace EDMHardwareControl
                 RF1FMStep = dataStore.rf1FMS;
                 RF2FMCentre = dataStore.rf2FMC;
                 RF2FMStep = dataStore.rf2FMS;
-                SetSteppingBBiasVoltage(dataStore.steppingBias);
+                //SetSteppingBBiasVoltage(dataStore.steppingBias);
                 FLPZTVoltage = dataStore.flPZT;
                 FLPZTStep = dataStore.flPZTStep;
                 EOvershootFactor = dataStore.overshootFactor;
@@ -1139,6 +1139,30 @@ namespace EDMHardwareControl
             }
         }
 
+        public double probePolBacklash
+        {
+            set
+            {
+                window.SetTextBox(window.probeBacklashTextBox, value.ToString());
+            }
+            get
+            {
+                return Double.Parse(window.probeBacklashTextBox.Text);
+            }
+        }
+
+        public double pumpPolBacklash
+        {
+            set
+            {
+                window.SetTextBox(window.pumpBacklashTextBox, value.ToString());
+            }
+            get
+            {
+                return Double.Parse(window.pumpBacklashTextBox.Text);
+            }
+        }
+
         public double pumpPolAngle
         {
             set
@@ -1463,13 +1487,13 @@ namespace EDMHardwareControl
             this.lf1State = lf1State;
 
             SetAnalogOutput(flPZTVAnalogOutputTask, calculateIodineAOMFrequency(lf1State));
-            //SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
         }
         public void SwitchLF2(bool lf2State)
         {
             this.lf2State = lf2State;
 
-            //SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
         }
 
         public void FieldsOff()
@@ -1524,13 +1548,18 @@ namespace EDMHardwareControl
         double kNegativeChargeMin = -2;
         double kNegativeChargeMax = -20;
 
-        // this function switches the E field polarity with ramped turn on and off
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
+
         public void SwitchEWorker()
         {
+            bool startingSynthState = GreenSynthEnabled;
             lock (switchingLock)
             {
                 // raise flag for switching E-fields
                 switchingEfield = true;
+                //switch off the synth
+                GreenSynthEnabled = false;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
@@ -1550,7 +1579,7 @@ namespace EDMHardwareControl
                                 CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
                 // impose the overshoot delay
                 Thread.Sleep((int)(1000 * EOvershootHold));
-                 // ramp back to the control point
+                // ramp back to the control point
                 RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
                                 EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
                 // set as enabled
@@ -1570,7 +1599,7 @@ namespace EDMHardwareControl
                     // North plate should see -ve current and the South +ve
                     if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
                         && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
-                    {}
+                    { }
                     //else activateEAlarm(newEPolarity);
                 }
                 else
@@ -1582,6 +1611,7 @@ namespace EDMHardwareControl
                     //else activateEAlarm(newEPolarity);
                 }
             }
+            GreenSynthEnabled = startingSynthState;
             ESwitchDone();
         }
 
@@ -1594,7 +1624,7 @@ namespace EDMHardwareControl
 
         private void ESwitchDone()
         {
-            switchingEfield = false;
+            switchingEfield = false; 
             window.EnableControl(window.switchEButton, true);
         }
 
@@ -2237,7 +2267,7 @@ namespace EDMHardwareControl
             double diff = 0;
             double I2PlusFreq = 0;
             double I2MinusFreq = 0;
-            int averages = 3;       //The averaging is to remove glitches in the measured step caused by the AOM modulation, which would play havoc with the Pump AOM locking scheme 
+            int averages = 1;       //The averaging is to remove glitches in the measured step caused by the AOM modulation, which would play havoc with the Pump AOM locking scheme 
 
                 window.SetRadioButton(window.FLPZTStepPlusButton, true);
                 UpdateFLPZTV();
@@ -2504,27 +2534,25 @@ namespace EDMHardwareControl
 
         public void SetRandomProbePosition()
         {
-            probePolCont.SetRandomPosition();
+            probePolCont.SetRandomPosition(probePolBacklash);
         }
 
         public void SetRandomPumpPosition()
         {
-            pumpPolCont.SetRandomPosition();
+            pumpPolCont.SetRandomPosition(pumpPolBacklash);
         }
 
 
         public void SetProbePolAngle()
         {
             double probePolariserAngle = Double.Parse(window.probePolSetAngle.Text);
-            probePolCont.SetPosition(probePolariserAngle);
+            probePolCont.SetPositionWithBacklash(probePolariserAngle,probePolBacklash);
         }
         
-        
-
         public void SetPumpPolAngle()
         {
             double pumpPolariserAngle = Double.Parse(window.pumpPolSetAngle.Text);
-            pumpPolCont.SetPosition(pumpPolariserAngle);
+            pumpPolCont.SetPositionWithBacklash(pumpPolariserAngle,pumpPolBacklash);
         }
         
         public void UpdateProbePolAngleMonitor()
@@ -2680,19 +2708,19 @@ namespace EDMHardwareControl
         {
             double targetBias = Math.Round(BiasCurrent);
 
-            double guessBiasVoltage = 0;
+            double guessBiasVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
             double newBias = 0;
             int a = 0;
             int bSign = BManualState ? 1 : -1;
-            double gain = 0.001;
+            double gain = 0.0005;
 
             SetSteppingBBiasVoltage();
 
-            while (newBias != targetBias | a < 5)
+            while (newBias != targetBias & a < 5)
             {
                 UpdateBCurrentMonitor();
                 newBias = Math.Round(BiasCurrent);
-                guessBiasVoltage = guessBiasVoltage + bSign * gain * (targetBias - BiasCurrent);
+                guessBiasVoltage = guessBiasVoltage + bSign * gain * (targetBias - newBias);
                 SetSteppingBBiasVoltage(guessBiasVoltage);
                 a = a + 1;
             }
@@ -2720,7 +2748,7 @@ namespace EDMHardwareControl
             double pztVoltage = FLPZTVoltage;
             if (window.FLPZTStepMinusButton.Checked) pztVoltage -= FLPZTStep;
             if (window.FLPZTStepPlusButton.Checked) pztVoltage += FLPZTStep;
-            pztVoltage = windowVoltage(pztVoltage, 0, 5);
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
             window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
         }

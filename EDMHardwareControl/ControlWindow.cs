@@ -451,6 +451,10 @@ namespace EDMHardwareControl
         public TextBox flAOMVoltageTextBox;
         private Button UpdateFLAOMButton;
         private Label label118;
+        private Label label123;
+        public TextBox probeBacklashTextBox;
+        private Label label124;
+        public TextBox pumpBacklashTextBox;
 
 
 		public Controller controller;
@@ -857,6 +861,8 @@ namespace EDMHardwareControl
             this.zeroPumpPol = new System.Windows.Forms.Button();
             this.label110 = new System.Windows.Forms.Label();
             this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.label124 = new System.Windows.Forms.Label();
+            this.pumpBacklashTextBox = new System.Windows.Forms.TextBox();
             this.pumpPolVoltStopButton = new System.Windows.Forms.Button();
             this.pumpPolVoltTrackBar = new System.Windows.Forms.TrackBar();
             this.label111 = new System.Windows.Forms.Label();
@@ -874,6 +880,8 @@ namespace EDMHardwareControl
             this.zeroProbePol = new System.Windows.Forms.Button();
             this.label101 = new System.Windows.Forms.Label();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.label123 = new System.Windows.Forms.Label();
+            this.probeBacklashTextBox = new System.Windows.Forms.TextBox();
             this.probePolVoltStopButton = new System.Windows.Forms.Button();
             this.probePolVoltTrackBar = new System.Windows.Forms.TrackBar();
             this.label107 = new System.Windows.Forms.Label();
@@ -889,6 +897,9 @@ namespace EDMHardwareControl
             this.label80 = new System.Windows.Forms.Label();
             this.probePolarizerUpdateButton = new System.Windows.Forms.Button();
             this.probePolarizerAngleTextBox = new System.Windows.Forms.TextBox();
+            this.motorController2 = new AxMG17MotorLib.AxMG17Motor();
+            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
+            this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.clearAlertButton = new System.Windows.Forms.Button();
             this.alertTextBox = new System.Windows.Forms.TextBox();
@@ -910,9 +921,6 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.motorController2 = new AxMG17MotorLib.AxMG17Motor();
-            this.axMG17Logger1 = new AxMG17LoggerLib.AxMG17Logger();
-            this.motorController1 = new AxMG17MotorLib.AxMG17Motor();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -984,13 +992,13 @@ namespace EDMHardwareControl
             this.groupBox33.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.probePolVoltTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.probePolModeSelectSwitch)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -3305,7 +3313,7 @@ namespace EDMHardwareControl
             // pumpAOMTrackBar
             // 
             this.pumpAOMTrackBar.Location = new System.Drawing.Point(9, 128);
-            this.pumpAOMTrackBar.Maximum = 1000;
+            this.pumpAOMTrackBar.Maximum = 500;
             this.pumpAOMTrackBar.Name = "pumpAOMTrackBar";
             this.pumpAOMTrackBar.Size = new System.Drawing.Size(215, 45);
             this.pumpAOMTrackBar.TabIndex = 73;
@@ -3601,7 +3609,7 @@ namespace EDMHardwareControl
             // FLPZTVtrackBar
             // 
             this.FLPZTVtrackBar.Location = new System.Drawing.Point(6, 94);
-            this.FLPZTVtrackBar.Maximum = 500;
+            this.FLPZTVtrackBar.Maximum = 1000;
             this.FLPZTVtrackBar.Name = "FLPZTVtrackBar";
             this.FLPZTVtrackBar.Size = new System.Drawing.Size(284, 45);
             this.FLPZTVtrackBar.TabIndex = 49;
@@ -4756,6 +4764,8 @@ namespace EDMHardwareControl
             // 
             // groupBox35
             // 
+            this.groupBox35.Controls.Add(this.label124);
+            this.groupBox35.Controls.Add(this.pumpBacklashTextBox);
             this.groupBox35.Controls.Add(this.pumpPolVoltStopButton);
             this.groupBox35.Controls.Add(this.pumpPolVoltTrackBar);
             this.groupBox35.Controls.Add(this.label111);
@@ -4770,6 +4780,23 @@ namespace EDMHardwareControl
             this.groupBox35.Size = new System.Drawing.Size(332, 153);
             this.groupBox35.TabIndex = 50;
             this.groupBox35.TabStop = false;
+            // 
+            // label124
+            // 
+            this.label124.AutoSize = true;
+            this.label124.Location = new System.Drawing.Point(118, 55);
+            this.label124.Name = "label124";
+            this.label124.Size = new System.Drawing.Size(114, 13);
+            this.label124.TabIndex = 54;
+            this.label124.Text = "-ve overshoot ( 0 = off)";
+            // 
+            // pumpBacklashTextBox
+            // 
+            this.pumpBacklashTextBox.Location = new System.Drawing.Point(244, 52);
+            this.pumpBacklashTextBox.Name = "pumpBacklashTextBox";
+            this.pumpBacklashTextBox.Size = new System.Drawing.Size(75, 20);
+            this.pumpBacklashTextBox.TabIndex = 53;
+            this.pumpBacklashTextBox.Text = "0";
             // 
             // pumpPolVoltStopButton
             // 
@@ -4932,6 +4959,8 @@ namespace EDMHardwareControl
             // 
             // groupBox33
             // 
+            this.groupBox33.Controls.Add(this.label123);
+            this.groupBox33.Controls.Add(this.probeBacklashTextBox);
             this.groupBox33.Controls.Add(this.probePolVoltStopButton);
             this.groupBox33.Controls.Add(this.probePolVoltTrackBar);
             this.groupBox33.Controls.Add(this.label107);
@@ -4946,6 +4975,23 @@ namespace EDMHardwareControl
             this.groupBox33.Size = new System.Drawing.Size(332, 153);
             this.groupBox33.TabIndex = 50;
             this.groupBox33.TabStop = false;
+            // 
+            // label123
+            // 
+            this.label123.AutoSize = true;
+            this.label123.Location = new System.Drawing.Point(117, 55);
+            this.label123.Name = "label123";
+            this.label123.Size = new System.Drawing.Size(114, 13);
+            this.label123.TabIndex = 52;
+            this.label123.Text = "-ve overshoot ( 0 = off)";
+            // 
+            // probeBacklashTextBox
+            // 
+            this.probeBacklashTextBox.Location = new System.Drawing.Point(243, 52);
+            this.probeBacklashTextBox.Name = "probeBacklashTextBox";
+            this.probeBacklashTextBox.Size = new System.Drawing.Size(75, 20);
+            this.probeBacklashTextBox.TabIndex = 14;
+            this.probeBacklashTextBox.Text = "0";
             // 
             // probePolVoltStopButton
             // 
@@ -5086,6 +5132,32 @@ namespace EDMHardwareControl
             this.probePolarizerAngleTextBox.Size = new System.Drawing.Size(66, 20);
             this.probePolarizerAngleTextBox.TabIndex = 3;
             this.probePolarizerAngleTextBox.Text = "10";
+            // 
+            // motorController2
+            // 
+            this.motorController2.Enabled = true;
+            this.motorController2.Location = new System.Drawing.Point(373, 69);
+            this.motorController2.Name = "motorController2";
+            this.motorController2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController2.OcxState")));
+            this.motorController2.Size = new System.Drawing.Size(294, 205);
+            this.motorController2.TabIndex = 7;
+            // 
+            // axMG17Logger1
+            // 
+            this.axMG17Logger1.Location = new System.Drawing.Point(14, 280);
+            this.axMG17Logger1.Name = "axMG17Logger1";
+            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
+            this.axMG17Logger1.Size = new System.Drawing.Size(664, 39);
+            this.axMG17Logger1.TabIndex = 6;
+            // 
+            // motorController1
+            // 
+            this.motorController1.Enabled = true;
+            this.motorController1.Location = new System.Drawing.Point(15, 69);
+            this.motorController1.Name = "motorController1";
+            this.motorController1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController1.OcxState")));
+            this.motorController1.Size = new System.Drawing.Size(294, 205);
+            this.motorController1.TabIndex = 0;
             // 
             // tabPage7
             // 
@@ -5286,32 +5358,6 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
-            // motorController2
-            // 
-            this.motorController2.Enabled = true;
-            this.motorController2.Location = new System.Drawing.Point(373, 69);
-            this.motorController2.Name = "motorController2";
-            this.motorController2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController2.OcxState")));
-            this.motorController2.Size = new System.Drawing.Size(294, 205);
-            this.motorController2.TabIndex = 7;
-            // 
-            // axMG17Logger1
-            // 
-            this.axMG17Logger1.Location = new System.Drawing.Point(14, 280);
-            this.axMG17Logger1.Name = "axMG17Logger1";
-            this.axMG17Logger1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMG17Logger1.OcxState")));
-            this.axMG17Logger1.Size = new System.Drawing.Size(664, 39);
-            this.axMG17Logger1.TabIndex = 6;
-            // 
-            // motorController1
-            // 
-            this.motorController1.Enabled = true;
-            this.motorController1.Location = new System.Drawing.Point(15, 69);
-            this.motorController1.Name = "motorController1";
-            this.motorController1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("motorController1.OcxState")));
-            this.motorController1.Size = new System.Drawing.Size(294, 205);
-            this.motorController1.TabIndex = 0;
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -5433,6 +5479,9 @@ namespace EDMHardwareControl
             this.groupBox33.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.probePolVoltTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.probePolModeSelectSwitch)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
             this.tabPage9.ResumeLayout(false);
@@ -5440,9 +5489,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.motorController2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axMG17Logger1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.motorController1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

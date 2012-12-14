@@ -12,10 +12,18 @@ using System.Threading;
 namespace DAQ.HAL
 {
     /// <summary>
-    /// This class controlls the jaguar motor controller by passing commands to the BCD application. 
-    /// To prevent the controller reseting to a neutral state, a hearbeat signal must be periodically sent by the application.
+    /// This class controlls the TI jaguar motor controller by passing commands to the BCD application. 
+    /// To prevent the controller resetting to a neutral state, a hearbeat signal must be periodically sent by the application.
     /// This means that the application has to stay open, otherwise the controller will stop whatever it is doing (anoyingly), 
-    /// which means that this instrument behaves  quite differently from other RS232 instruments. 
+    /// which means that this instrument behaves quite differently from other RS232 instruments. 
+    /// 
+    /// The TI motor controller keeps track of the position of the rotation mount internally, however because the limit switches on our polarisation 
+    /// mounts are broken, it doesn't realise that the mount has executed a full rotation (i.e. it thinks x and x+360 are two different positions). 
+    /// In practice this isn't much of a problem, but does mean that the mount goes the long way round half of the time. 
+    /// 
+    /// Added 23.10.2012: When setting the position involves a decrement in angle, the motors now overshoot and then approach the angle from the positive
+    /// direction. This should prevent backlash (We'll see....) 
+    /// 
     /// </summary>
    
 	public class SerialMotorControllerBCD : DAQ.HAL.Instrument
@@ -28,6 +36,7 @@ namespace DAQ.HAL
         private double posDiffTwoPi = 327680;
         private double maxVoltSetting = 32767;
         private double minVoltSetting = 32768;
+        private int rotationTime360 = 30000; //in millis
 
         public SerialMotorControllerBCD(String visaAddress)
         {
@@ -159,10 +168,57 @@ namespace DAQ.HAL
             Write("pos set " + angleAsString);
         }
 
+        public void SetPositionWithBacklash(double Angle, double backlash)
+        {
+            if (backlash == 0)
+            {
+                SetPosition(Angle);
+            }
+            else
+            {
+                double currentPos = MeasurePosition();
+                if (Angle < currentPos)
+                {
+                    int timeToMove = (int)((currentPos - backlash - Angle) * (rotationTime360 / 360));
+                    string angleAsStringWithBacklash = AngleToPosition(Angle - backlash);
+                    Write("pos set " + angleAsStringWithBacklash);
+                    Thread.Sleep(timeToMove);
+                }
+
+                string angleAsString = AngleToPosition(Angle);
+                Write("pos set " + angleAsString);
+            }
+        }
+
+
         public void SetPosition(string position)
         {
             Write("pos set " + position);
         }
+
+        public void SetPositionWithBacklash(string position, double backlash)
+        {
+            if (backlash == 0)
+            {
+                SetPosition(position);
+            }
+            else
+            {
+                double currentPos = MeasurePosition();
+                double Angle = PositionToAngle(position);
+                if (Angle < currentPos)
+                {
+                    int timeToMove = (int)(Angle - currentPos - backlash) * (rotationTime360 / 360);
+                    string angleAsStringWithBacklash = AngleToPosition(Angle - backlash);
+                    Write("pos set " + angleAsStringWithBacklash);
+                    Thread.Sleep(timeToMove);
+                }
+
+                string angleAsString = AngleToPosition(Angle);
+                Write("pos set " + angleAsString);
+            }
+        }
+
 
         public double MeasurePosition()
         {
@@ -206,11 +262,11 @@ namespace DAQ.HAL
         }
 
 
-        public void SetRandomPosition()
+        public void SetRandomPosition(double backlash)
         {
             Random random = new Random();
             int randomNumber = random.Next(0, (int)posDiffTwoPi);
-            SetPosition(randomNumber.ToString());
+            SetPositionWithBacklash(randomNumber.ToString(),backlash);
         }
 
         public void ReturnToZero()
