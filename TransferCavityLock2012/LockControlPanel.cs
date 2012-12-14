@@ -15,6 +15,9 @@ namespace TransferCavityLock2012
     public partial class LockControlPanel : UserControl
     {
         private string name;
+
+        public int Count = 0; 
+
         public Controller controller;
 
         public LockControlPanel(string name)
@@ -161,6 +164,14 @@ namespace TransferCavityLock2012
             }
             catch { }
         }
+
+
+        private void slErrorResetButton_Click(object sender, EventArgs e)
+        {
+            ClearErrorGraph();
+            Count = 0; 
+        }
+
         #endregion
 
         #region Setting and getting parameter values from textboxes
