@@ -55,7 +55,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
 	hc.UpdatePumpAOMFreqMonitor()
-	#hc.UpdateVCOFraction()
+	hc.UpdateVCOFraction()
 	print("Measuring polarizer angle")
 	hc.UpdateProbePolAngleMonitor()
 	hc.UpdatePumpPolAngleMonitor()
@@ -79,7 +79,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
+	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFrequencyCentre 
 	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
@@ -305,21 +305,22 @@ def updateLocksNL(bState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	deltaLF1 = -0.25 * ( lf1dbdbValue)
+	deltaLF1 = -35 * ( lf1dbdbValue)
 	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
+	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 10 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
-	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 1.25 * lf2dbdbValue
+	#deltaLF2 = hc.VCOConvFrac * deltaLF1 + 55 * lf2dbdbValue
+	deltaLF2 = hc.VCOConvFrac * deltaLF1
 	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
-	deltaLF2 = 0
+	#deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
-	#newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
-	#hc.SetPumpAOMVoltage( newLF2 )
+	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
+	hc.SetPumpAOMVoltage( newLF2 )
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):
@@ -452,7 +453,7 @@ def EDMGo():
 			del dbValueList[0]
 		print "DB values for last 3 blocks " + str(dbValueList).strip('[]')
 		runningdbMean =float(sum(dbValueList)) / len(dbValueList)
-		if ( runningdbMean < 1 and nightBool is Y ):	
+		if ( runningdbMean < 1 and nightBool is "Y" ):	
 			hc.EnableEField( False )
 			hc.SetArgonShutter( True )
 			break
