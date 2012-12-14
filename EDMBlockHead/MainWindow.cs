@@ -53,6 +53,10 @@ namespace EDMBlockHead.GUI
         private XAxis xAxis4;
         private YAxis yAxis4;
         private WaveformPlot southPlot;
+        private WaveformGraph tofGraph4;
+        private WaveformPlot tofPlot4;
+        private XAxis xAxis5;
+        private YAxis yAxis5;
 
 		private Controller controller;
 
@@ -123,11 +127,16 @@ namespace EDMBlockHead.GUI
             this.xAxis4 = new NationalInstruments.UI.XAxis();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
             this.southPlot = new NationalInstruments.UI.WaveformPlot();
+            this.tofGraph4 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.tofPlot4 = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis5 = new NationalInstruments.UI.XAxis();
+            this.yAxis5 = new NationalInstruments.UI.YAxis();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tofGraph4)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -249,7 +258,7 @@ namespace EDMBlockHead.GUI
             // 
             this.statusBar.Location = new System.Drawing.Point(0, 624);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(925, 22);
+            this.statusBar.Size = new System.Drawing.Size(926, 22);
             this.statusBar.SizingGrip = false;
             this.statusBar.TabIndex = 0;
             this.statusBar.Text = "Ready.";
@@ -275,7 +284,7 @@ namespace EDMBlockHead.GUI
             // yAxis1
             // 
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(0, 1.5);
+            this.yAxis1.Range = new NationalInstruments.UI.Range(0D, 1.5D);
             // 
             // progressTank
             // 
@@ -283,7 +292,7 @@ namespace EDMBlockHead.GUI
             this.progressTank.FillStyle = NationalInstruments.UI.FillStyle.ZigZag;
             this.progressTank.Location = new System.Drawing.Point(0, 563);
             this.progressTank.Name = "progressTank";
-            this.progressTank.Range = new NationalInstruments.UI.Range(0, 4096);
+            this.progressTank.Range = new NationalInstruments.UI.Range(0D, 4096D);
             this.progressTank.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.progressTank.ScalePosition = NationalInstruments.UI.NumericScalePosition.Bottom;
             this.progressTank.Size = new System.Drawing.Size(925, 55);
@@ -316,13 +325,14 @@ namespace EDMBlockHead.GUI
             // tofPlot2
             // 
             this.tofPlot2.LineColor = System.Drawing.Color.LightSkyBlue;
+            this.tofPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofPlot2.XAxis = this.xAxis2;
             this.tofPlot2.YAxis = this.yAxis2;
             // 
             // yAxis2
             // 
             this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis2.Range = new NationalInstruments.UI.Range(0, 3);
+            this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 3D);
             // 
             // tofGraph3
             // 
@@ -330,16 +340,18 @@ namespace EDMBlockHead.GUI
             this.tofGraph3.Name = "tofGraph3";
             this.tofGraph3.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
             this.tofPlot3});
-            this.tofGraph3.Size = new System.Drawing.Size(228, 362);
+            this.tofGraph3.Size = new System.Drawing.Size(228, 174);
             this.tofGraph3.TabIndex = 5;
             this.tofGraph3.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis3});
             this.tofGraph3.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis3});
+            this.tofGraph3.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph3_PlotDataChanged);
             // 
             // tofPlot3
             // 
             this.tofPlot3.LineColor = System.Drawing.Color.Red;
+            this.tofPlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofPlot3.XAxis = this.xAxis3;
             this.tofPlot3.YAxis = this.yAxis3;
             // 
@@ -365,26 +377,54 @@ namespace EDMBlockHead.GUI
             // 
             this.northPlot.HistoryCapacity = 5000;
             this.northPlot.LineColor = System.Drawing.Color.Red;
+            this.northPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.northPlot.XAxis = this.xAxis4;
             this.northPlot.YAxis = this.yAxis4;
             // 
             // xAxis4
             // 
             this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.xAxis4.Range = new NationalInstruments.UI.Range(0, 820);
+            this.xAxis4.Range = new NationalInstruments.UI.Range(0D, 820D);
             this.xAxis4.Visible = false;
             // 
             // southPlot
             // 
             this.southPlot.HistoryCapacity = 5000;
             this.southPlot.LineColor = System.Drawing.Color.DodgerBlue;
+            this.southPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.southPlot.XAxis = this.xAxis4;
             this.southPlot.YAxis = this.yAxis4;
+            // 
+            // tofGraph4
+            // 
+            this.tofGraph4.Location = new System.Drawing.Point(476, 196);
+            this.tofGraph4.Name = "tofGraph4";
+            this.tofGraph4.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.tofPlot4});
+            this.tofGraph4.Size = new System.Drawing.Size(228, 174);
+            this.tofGraph4.TabIndex = 7;
+            this.tofGraph4.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis5});
+            this.tofGraph4.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis5});
+            // 
+            // tofPlot4
+            // 
+            this.tofPlot4.LineColor = System.Drawing.Color.Blue;
+            this.tofPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofPlot4.XAxis = this.xAxis5;
+            this.tofPlot4.YAxis = this.yAxis5;
+            // 
+            // yAxis5
+            // 
+            this.yAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis5.Range = new NationalInstruments.UI.Range(-1D, 10D);
             // 
             // MainWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(925, 646);
+            this.ClientSize = new System.Drawing.Size(926, 646);
+            this.Controls.Add(this.tofGraph4);
             this.Controls.Add(this.leakageGraph);
             this.Controls.Add(this.tofGraph3);
             this.Controls.Add(this.tofGraph2);
@@ -405,6 +445,7 @@ namespace EDMBlockHead.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.leakageGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tofGraph4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -434,6 +475,7 @@ namespace EDMBlockHead.GUI
             if (tofIndex == 0) PlotY(tofGraph1, tofPlot1, data, start, inc);
             if (tofIndex == 1) PlotY(tofGraph2, tofPlot2, data, start, inc);
             if (tofIndex == 2) PlotY(tofGraph3, tofPlot3, data, start, inc);
+            if (tofIndex == 3) PlotY(tofGraph4, tofPlot4, data, start, inc);
         }
 
         public void AppendLeakageMeasurement(double[] northValues, double[] southValues)
@@ -556,6 +598,11 @@ namespace EDMBlockHead.GUI
         }
 
 		#endregion
+
+        private void tofGraph3_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
 
     }
 }

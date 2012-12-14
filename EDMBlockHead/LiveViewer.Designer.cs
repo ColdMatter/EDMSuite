@@ -106,13 +106,21 @@ namespace EDMBlockHead
             this.yAxis13 = new NationalInstruments.UI.YAxis();
             this.lf2dbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.yAxis14 = new NationalInstruments.UI.YAxis();
-            this.xAxis14 = new NationalInstruments.UI.XAxis();
+            this.rfCurrentGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.rfCurrentPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis17 = new NationalInstruments.UI.XAxis();
+            this.yAxis17 = new NationalInstruments.UI.YAxis();
             this.eCorrLeakageScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.nECorrLeakagePlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis16 = new NationalInstruments.UI.XAxis();
             this.yAxis16 = new NationalInstruments.UI.YAxis();
             this.sECorrLeakagePlot = new NationalInstruments.UI.ScatterPlot();
+            this.yAxis14 = new NationalInstruments.UI.YAxis();
+            this.xAxis14 = new NationalInstruments.UI.XAxis();
+            this.lf1SigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.lf1SigmaLo = new NationalInstruments.UI.ScatterPlot();
+            this.lf2SigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.lf2SigmaLo = new NationalInstruments.UI.ScatterPlot();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).BeginInit();
@@ -130,6 +138,7 @@ namespace EDMBlockHead
             ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rfCurrentGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eCorrLeakageScatterGraph)).BeginInit();
             this.SuspendLayout();
             // 
@@ -853,7 +862,11 @@ namespace EDMBlockHead
             this.lfxdbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
             this.lfxdbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.lf1dbdbScatterPlot,
-            this.lf2dbdbScatterPlot});
+            this.lf2dbdbScatterPlot,
+            this.lf1SigmaHi,
+            this.lf1SigmaLo,
+            this.lf2SigmaHi,
+            this.lf2SigmaLo});
             this.lfxdbdbScatterGraph.Size = new System.Drawing.Size(259, 179);
             this.lfxdbdbScatterGraph.TabIndex = 36;
             this.lfxdbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -892,6 +905,7 @@ namespace EDMBlockHead
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.rfCurrentGraph);
             this.tabPage2.Controls.Add(this.eCorrLeakageScatterGraph);
             this.tabPage2.Controls.Add(this.leakageGraph);
             this.tabPage2.Controls.Add(this.magNoiseGraph);
@@ -906,16 +920,45 @@ namespace EDMBlockHead
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "2";
             // 
-            // yAxis14
+            // rfCurrentGraph
             // 
-            this.yAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfCurrentGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.rfCurrentGraph.Caption = "rfCurrent";
+            this.rfCurrentGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.rfCurrentGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfCurrentGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.rfCurrentGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfCurrentGraph.Location = new System.Drawing.Point(271, 535);
+            this.rfCurrentGraph.Name = "rfCurrentGraph";
+            this.rfCurrentGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.rfCurrentGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.rfCurrentPlot});
+            this.rfCurrentGraph.Size = new System.Drawing.Size(259, 170);
+            this.rfCurrentGraph.TabIndex = 34;
+            this.rfCurrentGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis17});
+            this.rfCurrentGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis17});
             // 
-            // xAxis14
+            // rfCurrentPlot
             // 
-            this.xAxis14.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xAxis14.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
-            this.xAxis14.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
-            this.xAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfCurrentPlot.LineColor = System.Drawing.Color.Aqua;
+            this.rfCurrentPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.rfCurrentPlot.PointColor = System.Drawing.Color.Aqua;
+            this.rfCurrentPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
+            this.rfCurrentPlot.XAxis = this.xAxis17;
+            this.rfCurrentPlot.YAxis = this.yAxis17;
+            // 
+            // xAxis17
+            // 
+            this.xAxis17.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis17.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis17.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis17.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis17
+            // 
+            this.yAxis17.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // eCorrLeakageScatterGraph
             // 
@@ -964,6 +1007,51 @@ namespace EDMBlockHead
             this.sECorrLeakagePlot.XAxis = this.xAxis16;
             this.sECorrLeakagePlot.YAxis = this.yAxis16;
             // 
+            // yAxis14
+            // 
+            this.yAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // xAxis14
+            // 
+            this.xAxis14.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis14.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis14.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // lf1SigmaHi
+            // 
+            this.lf1SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf1SigmaHi.PointColor = System.Drawing.Color.Lime;
+            this.lf1SigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.lf1SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf1SigmaHi.XAxis = this.xAxis13;
+            this.lf1SigmaHi.YAxis = this.yAxis13;
+            // 
+            // lf1SigmaLo
+            // 
+            this.lf1SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf1SigmaLo.PointColor = System.Drawing.Color.Lime;
+            this.lf1SigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.lf1SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf1SigmaLo.XAxis = this.xAxis13;
+            this.lf1SigmaLo.YAxis = this.yAxis13;
+            // 
+            // lf2SigmaHi
+            // 
+            this.lf2SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf2SigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.lf2SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf2SigmaHi.XAxis = this.xAxis13;
+            this.lf2SigmaHi.YAxis = this.yAxis13;
+            // 
+            // lf2SigmaLo
+            // 
+            this.lf2SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf2SigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.lf2SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf2SigmaLo.XAxis = this.xAxis13;
+            this.lf2SigmaLo.YAxis = this.yAxis13;
+            // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -998,6 +1086,7 @@ namespace EDMBlockHead
             ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.rfCurrentGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eCorrLeakageScatterGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1090,6 +1179,14 @@ namespace EDMBlockHead
         private NationalInstruments.UI.XAxis xAxis16;
         private NationalInstruments.UI.YAxis yAxis16;
         private NationalInstruments.UI.ScatterPlot sECorrLeakagePlot;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph rfCurrentGraph;
+        private NationalInstruments.UI.ScatterPlot rfCurrentPlot;
+        private NationalInstruments.UI.XAxis xAxis17;
+        private NationalInstruments.UI.YAxis yAxis17;
+        private NationalInstruments.UI.ScatterPlot lf1SigmaHi;
+        private NationalInstruments.UI.ScatterPlot lf1SigmaLo;
+        private NationalInstruments.UI.ScatterPlot lf2SigmaHi;
+        private NationalInstruments.UI.ScatterPlot lf2SigmaLo;
 
     }
 }

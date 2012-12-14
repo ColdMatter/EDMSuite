@@ -107,6 +107,8 @@ namespace EDMBlockHead
                 new double[] { analysis.SouthECorrCurrentValAndError[0] });
             AppendToMagNoiseScatter(new double[] { blockCount },
                 new double[] { analysis.MagValandErr[1] });
+            AppendToRfCurrentScatter(new double[] {blockCount },
+                new double[] {analysis.rfCurrent[0]});
             AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[0] });
             AppendToLF1NoiseScatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[1] });
             AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
@@ -122,8 +124,14 @@ namespace EDMBlockHead
             AppendTopProbePDScatter(new double[] { blockCount }, new double[] { analysis.probePD[0] / initProbePD });
             AppendTopPumpPDScatter(new double[] { blockCount }, new double[] { analysis.pumpPD[0] / initPumpPD });
 
-            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB });
-            AppendToLF2DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF2DBDB });
+            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
+            AppendToLF2DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF2DBDB[0] });
+            AppendSigmaToLF1Scatter(new double[] { blockCount },
+                new double[] { analysis.LF1DBDB[0] + analysis.LF1DBDB[1] },
+                new double[] { analysis.LF1DBDB[0] - analysis.LF1DBDB[1] });
+            AppendSigmaToLF2Scatter(new double[] { blockCount },
+                new double[] { analysis.LF2DBDB[0] + analysis.LF2DBDB[1] },
+                new double[] { analysis.LF2DBDB[0] - analysis.LF2DBDB[1] });
 
             blockCount = blockCount + 1;
         }
@@ -143,6 +151,7 @@ namespace EDMBlockHead
             ClearEDMErrScatter();
             ClearLeakageScatters();
             ClearMagNoiseScatterGraph();
+            ClearRfCurrentScatterGraph();
             ClearLF1Graph();
             ClearLF1NoiseGraph();
             ClearRFxAGraph();
@@ -246,6 +255,11 @@ namespace EDMBlockHead
             PlotXYAppend(magNoiseGraph, magNoisePlot, x, y);
         }
 
+        private void AppendToRfCurrentScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfCurrentGraph, rfCurrentPlot, x, y);
+        }
+
         private void AppendToSigNoiseScatter(double[] x, double[] y)
         {
             PlotXYAppend(sigNoiseScatterGraph, sigNoisePlot, x, y);
@@ -264,6 +278,18 @@ namespace EDMBlockHead
         private void AppendToLF2DBDBScatter(double[] x, double[] y)
         {
             PlotXYAppend(lfxdbdbScatterGraph, lf2dbdbScatterPlot, x, y);
+        }
+
+        private void AppendSigmaToLF1Scatter(double[] x, double[] yPlusSigma, double[] yMinusSigma)
+        {
+            PlotXYAppend(lfxdbdbScatterGraph, lf1SigmaHi, x, yPlusSigma);
+            PlotXYAppend(lfxdbdbScatterGraph, lf1SigmaLo, x, yMinusSigma);
+        }
+
+        private void AppendSigmaToLF2Scatter(double[] x, double[] yPlusSigma, double[] yMinusSigma)
+        {
+            PlotXYAppend(lfxdbdbScatterGraph, lf2SigmaHi, x, yPlusSigma);
+            PlotXYAppend(lfxdbdbScatterGraph, lf2SigmaLo, x, yMinusSigma);
         }
 
         private void AppendToLF1NoiseScatter(double[] x, double[] y)
@@ -336,6 +362,11 @@ namespace EDMBlockHead
         private void ClearMagNoiseScatterGraph()
         {
             ClearNIGraph(magNoiseGraph);
+        }
+
+        private void ClearRfCurrentScatterGraph()
+        {
+            ClearNIGraph(rfCurrentGraph);
         }
 
         private void ClearSigNoiseScatterGraph()

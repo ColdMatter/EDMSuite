@@ -357,6 +357,8 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                tof = (TOF)data.TOFs[5];
+                mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs
                 mainWindow.AppendLeakageMeasurement(new double[]{northLeakages[0]}, new double[]{southLeakages[0]});
