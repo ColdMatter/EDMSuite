@@ -1272,6 +1272,11 @@ namespace EDMHardwareControl
 
         public double SteppingBiasVoltage
         {
+            set
+            {
+                window.SetTextBox(window.steppingBBoxBiasTextBox, value.ToString());
+            }
+
             get
             {
                 return Double.Parse(window.steppingBBoxBiasTextBox.Text);
@@ -1694,6 +1699,18 @@ namespace EDMHardwareControl
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
             }
+        }
+
+        public void SetCPlusVoltage(double voltage)
+        {
+            CPlusVoltage = voltage;
+            UpdateVoltages();
+        }
+
+        public void SetCMinusVoltage(double voltage)
+        {
+            CMinusVoltage = voltage;
+            UpdateVoltages();
         }
 
         public void UpdateRFFrequencyMonitor()
@@ -2388,6 +2405,13 @@ namespace EDMHardwareControl
             greenSynth.Disconnect();
         }
 
+        public void SetGreenSynthAmp(double amplitude)
+        {
+            GreenSynthOnAmplitude = amplitude;
+        }
+
+
+
         public void EnableRFSwitch(bool enable)
         {
             SetDigitalLine("rfSwitch", enable);
@@ -2528,8 +2552,7 @@ namespace EDMHardwareControl
 
         public void SetSteppingBBiasVoltage()
         {
-            double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
-            bfieldCntrl.SetOut1(bBoxVoltage);
+            bfieldCntrl.SetOut1(SteppingBiasVoltage);
         }
 
         public void SetRandomProbePosition()
@@ -2708,7 +2731,7 @@ namespace EDMHardwareControl
         {
             double targetBias = Math.Round(BiasCurrent);
 
-            double guessBiasVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
+            //double guessBiasVoltage = SteppingBiasVoltage;
             double newBias = 0;
             int a = 0;
             int bSign = BManualState ? 1 : -1;
@@ -2720,9 +2743,10 @@ namespace EDMHardwareControl
             {
                 UpdateBCurrentMonitor();
                 newBias = Math.Round(BiasCurrent);
-                guessBiasVoltage = guessBiasVoltage + bSign * gain * (targetBias - newBias);
-                SetSteppingBBiasVoltage(guessBiasVoltage);
-                a = a + 1;
+                SteppingBiasVoltage = SteppingBiasVoltage + bSign * gain * (targetBias - newBias);
+                SetSteppingBBiasVoltage();
+                //SetSteppingBBiasVoltage(guessBiasVoltage);
+                a++;
             }
 
         }
