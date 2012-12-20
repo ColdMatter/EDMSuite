@@ -305,7 +305,7 @@ def updateLocksNL(bState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	deltaLF1 = -35 * ( lf1dbdbValue)
+	deltaLF1 = -2.5* ( lf1dbdbValue)
 	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	#deltaLF1 = 0
@@ -377,6 +377,7 @@ def EDMGo():
 	# calibrate leakage monitors
 	print("calibrating leakage monitors..")
 	print("E-field off")
+	hc.EnableGreenSynth( False )
 	hc.EnableEField( False )
 	System.Threading.Thread.Sleep(10000)
 	hc.EnableBleed( True )
@@ -386,6 +387,7 @@ def EDMGo():
 	System.Threading.Thread.Sleep(500)
 	print("E-field on")
 	hc.EnableEField( True )
+	hc.EnableGreenSynth( True )
 	print("leakage monitors calibrated")
 	#print("Waiting For Polarizers (maybe)")
 

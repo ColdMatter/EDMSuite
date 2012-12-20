@@ -313,7 +313,7 @@ def updateLocksNL(bState, blockIndex):
 	hc.SetFLPZTVoltage( newLF1 )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
-	deltaLF2 = -hc.VCOConvFrac * deltaLF1 -0.5
+	deltaLF2 = -0.25
 	#deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
 	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
@@ -426,7 +426,8 @@ def EDMGo():
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
 		normedpmtChannelValues = bh.DBlock.ChannelValues[6]
-		lf2dbdbValue = normedpmtChannelValues.GetSpecialValue("LF2DBDB")
+		#lf2dbdbValue = bh.analysis.LF1DBDB
+		lf2dbdbValue = [normedpmtChannelValues.GetSpecialValue("LF2DBDB"),normedpmtChannelValues.GetSpecialError("LF2DBDB")]
 		pumpVValue = hc.PumpAOMFrequencyCentre
 
 		lf2dbdbValueList.append(lf2dbdbValue)
