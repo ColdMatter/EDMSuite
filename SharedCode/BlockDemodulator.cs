@@ -190,12 +190,21 @@ namespace Analysis.EDM
         // DemodulateBlockNL augments the channel values returned by DemodulateBlock
         // with several non-linear combinations of channels (E.B/DB, the correction, etc).
         // These non-linear channels are calculated point-by-point for the TOF and then
-        // integrated according to the Demodulation config. For reasons of speed they are
-        // only calculated for the "topNormed" detector.
+        // integrated according to the Demodulation config. This is calculated for top and 
+        // topNormed detectors only for speed. 
+        // 
         public DemodulatedBlock DemodulateBlockNL(Block b, DemodulationConfig config)
         {
             // we start with the standard demodulated block
             DemodulatedBlock dblock = DemodulateBlock(b, config);
+            // First do everything for the un-normalised top detector
+            int tdi = dblock.DetectorIndices["top"];
+            // TOF demodulate the block to get the channel wiggles
+            // the BlockTOFDemodulator only demodulates the PMT detector
+            BlockTOFDemodulator btdt = new BlockTOFDemodulator();
+            TOFChannelSet tcst = btdt.TOFDemodulateBlock(b, tdi, false);
+            
+            // now repeat having normed the block
             // normalise the PMT signal
             b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
             int tndi = dblock.DetectorIndices["topNormed"];
@@ -203,6 +212,7 @@ namespace Analysis.EDM
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
             TOFChannelSet tcs = btd.TOFDemodulateBlock(b, tndi, false);
+            
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
@@ -256,6 +266,13 @@ namespace Analysis.EDM
             TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel( "BRF2FCORRDB" );
             double brf2fCorrDBG = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
+            //Repeat for top
+
+            TOFChannel lf2DBtop = (TOFChannel)tcst.GetChannel("LF2DB");
+            double lf2DBGtop = lf2DBtop.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf2DBDBtop = (TOFChannel)tcst.GetChannel("LF2DBDB");
+            double lf2DBDBGtop = lf2DBDBtop.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
             // I use the simple correction error for the full correction. Doesn't much matter.
@@ -290,6 +307,11 @@ namespace Analysis.EDM
             double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double BDBE = dcv.GetError(new string[] { "B" }) / dcv.GetValue(new string[] { "DB" });
 
+            //repeat for top
+            DetectorChannelValues dcvt = dblock.ChannelValues[tdi];
+            double lf2DBEtop = dcvt.GetError(new string[] { "LF2" }) / dcv.GetValue(new string[] { "DB" });
+            double lf2DBDBEtop = dcvt.GetError(new string[] { "DB", "LF2" }) / dcv.GetValue(new string[] { "DB" });
+
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -316,6 +338,9 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["LF2DB"] = new double[] { lf2DBG, lf2DBE };
             dblock.ChannelValues[tndi].SpecialValues["LF2DBDB"] = new double[] { lf2DBDBG, lf2DBDBE };
             dblock.ChannelValues[tndi].SpecialValues["BDB"] = new double[] { BDBG, BDBE };
+
+            dblock.ChannelValues[tdi].SpecialValues["LF2DB"] = new double[] { lf2DBGtop, lf2DBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["LF2DBDB"] = new double[] { lf2DBDBGtop, lf2DBDBEtop };
 
             return dblock;
         }
