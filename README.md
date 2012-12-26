@@ -21,8 +21,10 @@ Contributors
 The code that makes up the trunk today has seen contributions from:
 
 * Aki Matsushima
+* Anne Cournol
 * Chris Sinclair
 * Dhiren Kara
+* Jack Devlin
 * Joe Smallman
 * Jony Hudson
 * Michael Tarbutt
