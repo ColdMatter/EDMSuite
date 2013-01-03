@@ -353,7 +353,7 @@ namespace EDMPhaseLock
 
 		// constants
 		const double SAMPLE_CLOCK_RATE = 50;			// (Hz) this defines what a second is
-		const double OSCILLATOR_TARGET_RATE = 1000000;	// (Hz) how many cycles you'd like the
+		const double OSCILLATOR_TARGET_RATE = 10000000;	// (Hz) how many cycles you'd like the
 														// fast oscillator to produce in a second (as defined
 														// by the SAMPLE_CLOCK_RATE)
 		const int SAMPLE_MULTI_READ = 10;		// this is how many samples to read at a time, sets a limit on
@@ -367,14 +367,16 @@ namespace EDMPhaseLock
 		// lock parameters
 		const double PROPORTIONAL_GAIN = 1;		// the units are Hz per count
 		const double DERIVATIVE_GAIN = 50;		// the units are difficult to work out
-		const double OSCILLATOR_DEVIATION_LIMIT = 7500;		// this is the furthest the output frequency
+		const double OSCILLATOR_DEVIATION_LIMIT = 75000;		// this is the furthest the output frequency
 															// can deviate from the target frequency
-		const double DIFFERENCE_LIMIT = 500;	// in counts. This times by the sample clock rate
+		const double DIFFERENCE_LIMIT = 5000;	// in counts. This times by the sample clock rate
 												// is the maximum frequency deviation that will be passed through
-												// to the lock. It's important that this can never be reached
-												// under normal operating conditions or it will unlock and not
-												// relock.
-        const double VCO_CENTRAL = 1;          // when using a VCO to generate the clock signal, this is the
+												// to the lock. 
+        const long LOCK_UNPINNING_STEP = 100; // (Hz) This is a small constant to be fed back if the difference 
+                                                // array exceeds the difference limit; it keeps the useful behaviour 
+                                                // of the difference limit while at the same preventing the lock from
+                                                // unlocking permanently if the frequency genuinely exceeds the difference limt. 
+        const double VCO_CENTRAL = 1;           // when using a VCO to generate the clock signal, this is the
                                                 // input voltage to the VCO that generates the target frequency 
 
         const double VCO_CAL = 100000;          // The calibration of the VCO, in Hz per V, around the central value
@@ -573,7 +575,7 @@ namespace EDMPhaseLock
 			{
 				deviationArray[i] = differenceArray[i] - targetStep;
 				// this eats glitches before they get to the lock
-				if (Math.Abs(deviationArray[i]) > DIFFERENCE_LIMIT) deviationArray[i] = 0;
+				if (Math.Abs(deviationArray[i]) > DIFFERENCE_LIMIT) deviationArray[i] = Math.Sign(deviationArray[i]) * LOCK_UNPINNING_STEP; 
 			}
 			// calculate the accumlated phase difference
 			int[] phaseArray = new int[differenceArray.Length];
