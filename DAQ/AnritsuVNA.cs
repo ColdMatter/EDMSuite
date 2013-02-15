@@ -17,6 +17,16 @@ namespace DAQ.HAL
             : base(visaAddress) /// Connect the VNA
         { }
 
+        public void SetVNATimeout()
+        {
+            Timeout();
+        }
+
+        public void SetVNATimeout(int numChars)
+        {
+            Timeout(numChars);
+        }
+
         public void Test()
         {
             Write("CNTR 13.9706E10 GHZ;SPAN 20 MHZ;TRS");
