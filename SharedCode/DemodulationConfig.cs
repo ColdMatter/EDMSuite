@@ -184,6 +184,8 @@ namespace Analysis.EDM
             AddFixedSliceConfig("wideslowFixed", 2330, 150);
             // A narrow centre gate for correlation analysis
             AddFixedSliceConfig("cgateNarrowFixed", 2175, 25);
+            // A gate containing no molecules to look for edms caused by rf pickup
+            AddFixedSliceConfig("preMolecularBackground", 1900, 50);
             // A demodulation config for Kr
             AddFixedSliceConfig("centreFixedKr", 2950, 90);
 
