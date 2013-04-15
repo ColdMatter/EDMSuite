@@ -193,6 +193,18 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-ST1809":
+                    Hardware = new EDMHardware();
+                    FileSystem = new FileSystem();
+                    Debug = false;
+                    break;
+
+                case "PH-LAB10A":
+                    Hardware = new EDMHardware();
+                    FileSystem = new FileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

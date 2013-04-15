@@ -47,5 +47,20 @@ namespace DAQ.HAL
 		{
 			return session.ReadString();
 		}
+
+        protected string Read(int numChars)
+        {
+            return session.ReadString(numChars);
+        }
+
+        protected void Timeout()
+        {
+            session.Timeout = NationalInstruments.VisaNS.Session.InfiniteTimeout;
+        }
+
+        protected void Timeout(int timeoutValue)
+        {
+            session.Timeout = timeoutValue;
+        }
 	}
 }
