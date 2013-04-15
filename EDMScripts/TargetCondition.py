@@ -5,7 +5,7 @@ def condition(switchTime):
 	#loop forever
 	while switchCount > 0:
 		print("Stepping target")
-		hc.StepTarget(10)
+		hc.StepTarget(2)
 		System.Threading.Thread.Sleep(1000 * switchTime)
 		switchCount = switchCount + 1
 

@@ -16,9 +16,12 @@ namespace Analysis.EDM
         public int Index;
         public int GateLow;
         public int GateHigh;
+        //public int FirstSelection;
+        //public int SecondSelection;
         public double OffsetFWHM;
         public double WidthFWHM;
         public bool Integrate = true;
+        //public bool Select = false;
         public bool BackgroundSubtract = true;
         public double Background;
 

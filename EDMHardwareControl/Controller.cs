@@ -183,7 +183,7 @@ namespace EDMHardwareControl
             flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
-            flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
+            //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -2471,11 +2471,13 @@ namespace EDMHardwareControl
         public void SetBFlip(bool enable)
         {
             SetDigitalLine("b", enable);
+            //SetDigitalLine("notB", !enable);
         }
 
         public void SetCalFlip(bool enable)
         {
             SetDigitalLine("notDB", !enable);
+            //SetDigitalLine("DB", enable);
         }
 
         public void SelectGreenDCFM(bool enable)

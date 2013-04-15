@@ -426,6 +426,24 @@ namespace EDMBlockHead.Acquire
             rfCurrent.LowLimit = -10;
             rfCurrent.HighLimit = 10;
             inputs.Channels.Add(rfCurrent);
+
+            ScannedAnalogInput reflectedrf1Amplitude = new ScannedAnalogInput();
+            reflectedrf1Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf1Amplitude"];
+            reflectedrf1Amplitude.ReductionMode = DataReductionMode.Chop;
+            reflectedrf1Amplitude.ChopStart = 30;
+            reflectedrf1Amplitude.ChopLength = 130;
+            reflectedrf1Amplitude.LowLimit = -10;
+            reflectedrf1Amplitude.HighLimit = 1;
+            inputs.Channels.Add(reflectedrf1Amplitude);
+
+            ScannedAnalogInput reflectedrf2Amplitude = new ScannedAnalogInput();
+            reflectedrf2Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf2Amplitude"];
+            reflectedrf2Amplitude.ReductionMode = DataReductionMode.Chop;
+            reflectedrf2Amplitude.ChopStart = 30;
+            reflectedrf2Amplitude.ChopLength = 130;
+            reflectedrf2Amplitude.LowLimit = -10;
+            reflectedrf2Amplitude.HighLimit = 1;
+            inputs.Channels.Add(reflectedrf2Amplitude);
         }
 
         ///* THIS VERSION FOR He/Kr */

@@ -139,11 +139,13 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("northLeakage", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("southLeakage", daqBoard + "/ai7", AITerminalConfiguration.Nrse);
-            // Used ai10,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
-            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
+            // Used ai13,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
+            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("piMonitor", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
+            // Don't use ai10, cross talk with other channels on this line
 
             // high quality analog inputs (will be) on the S-series analog in board
             AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential);
@@ -151,8 +153,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
@@ -197,7 +201,7 @@ namespace DAQ.HAL
             // Some matching up for TCL
             Info.Add("flPZT2", "p1");
             Info.Add("flPZT2Temp", "p1");
-            Info.Add("fibreAOM", "p1");
+            //Info.Add("fibreAOM", "p1");
             Info.Add("TCLTrigger", tclBoard + "/PFI0");
             Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
 
@@ -214,7 +218,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
             AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
             AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
-            AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
+            //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rampfb", aoBoard + "/ao4", -10, 10);
         }
 

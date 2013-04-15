@@ -328,7 +328,7 @@ namespace EDMBlockHead
             DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate4", b); // was cgate11fixed
             DBlock = blockDemodulator.DemodulateBlockNL(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
             liveViewer.AddDBlock(DBlock);
-                     
+       
             //config.g
             haveBlock = true;
             appState = AppState.stopped;

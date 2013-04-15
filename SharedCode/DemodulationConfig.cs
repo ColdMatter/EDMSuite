@@ -48,7 +48,7 @@ namespace Analysis.EDM
             {
 
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "wide";
@@ -67,6 +67,10 @@ namespace Analysis.EDM
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
+                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
+                dg6.Name = "reflectedrf1Amplitude";
+                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
+                dg7.Name = "reflectedrf2Amplitude";
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
@@ -74,6 +78,8 @@ namespace Analysis.EDM
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
                 dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");
@@ -234,7 +240,7 @@ namespace Analysis.EDM
             DemodulationConfigBuilder dcb = delegate(Block b)
             {
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = name;
@@ -261,13 +267,28 @@ namespace Analysis.EDM
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
+                dg6 = new GatedDetectorExtractSpec();
+                dg6.Index = 6;
+                dg6.Name = "reflectedrf1Amplitude";
+                dg6.BackgroundSubtract = false;
+                dg6.GateLow = 819;
+                dg6.GateHigh = 821;
+                dg7 = new GatedDetectorExtractSpec();
+                dg7.Index = 7 ;
+                dg7.Name = "reflectedrf2Amplitude";
+                dg7.BackgroundSubtract = false;
+                dg7.GateLow = 1799;
+                dg7.GateHigh = 1801;
+
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
                 dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-                dc.GatedDetectorExtractSpecs.Add(dg5 .Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");

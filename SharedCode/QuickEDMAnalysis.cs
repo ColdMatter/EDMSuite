@@ -109,7 +109,7 @@ namespace Analysis.EDM
             //analysis.LF1DBDB = dblock.ChannelValues[6].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
             //analysis.LF2DBDB = dblock.ChannelValues[6].GetSpecialValue("LF2DBDB");
             analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError("LF1DBDB", "topNormed"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
-            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB" , "topNormed");
+            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB" , "top");
            
             //rf freq
             analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");
