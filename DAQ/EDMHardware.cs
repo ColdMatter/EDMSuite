@@ -89,7 +89,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
 			AddDigitalOutputChannel("notEPol", pgBoard, 2, 7);
 			AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
-			AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
+            AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
 			AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);

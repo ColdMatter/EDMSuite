@@ -108,9 +108,11 @@ namespace EDMHardwareControl
         Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
         Task flPZT2OutputTask;
-        Task flPZT2TempOutputTask;
-        Task flPZT2CurOutputTask;
+        //Task flPZT2TempOutputTask;
+        //Task flPZT2CurOutputTask;
         Task fibreAmpOutputTask;
+        Task i2ErrorSignalInputTask;
+        Task i2BiasOutputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -147,10 +149,12 @@ namespace EDMHardwareControl
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
-            CreateDigitalTask("rfCountSwBit1");
-            CreateDigitalTask("rfCountSwBit2");
+            //CreateDigitalTask("rfCountSwBit1");
+            //CreateDigitalTask("rfCountSwBit2");
             CreateDigitalTask("fibreAmpEnable");
             CreateDigitalTask("ttlSwitch");
+            CreateDigitalTask("I2PropSwitch");
+            CreateDigitalTask("I2IntSwitch");
 
             // digitial input tasks
             CreateDigitalInputTask("fibreAmpMasterErr");
@@ -180,10 +184,11 @@ namespace EDMHardwareControl
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
             flPZT2OutputTask = CreateAnalogOutputTask("flPZT2");
-            flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
-            flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
+            //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
+            //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
+            i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -199,21 +204,12 @@ namespace EDMHardwareControl
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
             //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
             diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
+            i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
+            
 
             // make the control window
             window = new ControlWindow();
             window.controller = this;
-
-            // initialise the motor controllers - this needs to be done
-            // after the window is made because the ActiveX object needs
-            // to live in the window.
-            motorController1 = window.motorController1;
-            motorController1.StartCtrl();
-            motorController2 = window.motorController2;
-            motorController2.StartCtrl();
-            // set the velocity and acceleration to maximum.
-            motorController1.SetVelParams(0, 0, 10, 14);
-            motorController2.SetVelParams(0, 0, 10, 14);
 
             Application.Run(window);
         }
@@ -2107,6 +2103,20 @@ namespace EDMHardwareControl
                                     new double[] { diodeCurrentMonValue });
         }
 
+        public void UpdateI2ErrorSigMonitor()
+        {
+            double i2ErrorSigVal = ReadAnalogInput(i2ErrorSignalInputTask);
+            window.SetTextBox(window.I2ErrorSigTextBox, i2ErrorSigVal.ToString());
+        }
+
+        public void UpdateI2ErrorSigGraphAndMonitor()
+        {
+            double i2ErrorSigVal = ReadAnalogInput(i2ErrorSignalInputTask);
+            window.SetTextBox(window.I2ErrorSigTextBox, i2ErrorSigVal.ToString());
+            window.PlotYAppend(window.I2ErrorSigGraph, window.I2ErrorSigPlot,
+                new double[] { i2ErrorSigVal });
+        }
+
         public void UpdateFibreAmpFaults()
         {
             window.fibreAmpMasterFaultLED.Value =! ReadDigitalLine("fibreAmpMasterErr");
@@ -2157,6 +2167,57 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopDiodeCurrentPollButton, false);
         }
 
+        private Thread i2ErrorSigMonitorPollThread;
+        private object i2ErrorSigMonitorLock = new object();
+        private bool i2ErrorSigMonitorStopFlag = false;
+        private int i2ErrorSigMonitorPollPeriod = 250;
+        internal void StartI2ErrorSigPoll()
+        {
+            lock (i2ErrorSigMonitorLock)
+            {
+                i2ErrorSigMonitorPollThread = new Thread(new ThreadStart(i2ErrorSigMonitorPollWorker));
+                window.EnableControl(window.startI2ErrorSigPollButton, false);
+                window.EnableControl(window.stopI2ErrorSigPollButton, true);
+                i2ErrorSigMonitorPollPeriod = Int32.Parse(window.I2ErrorPollPeriodTextBox.Text);
+                i2ErrorSigMonitorPollThread.Start();
+            }
+
+        }
+
+        internal void StopI2ErrorSigPoll()
+        {
+            lock (i2ErrorSigMonitorLock) i2ErrorSigMonitorStopFlag = true;
+        }
+
+        private void i2ErrorSigMonitorPollWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(i2ErrorSigMonitorPollPeriod);
+                UpdateI2ErrorSigGraphAndMonitor();
+                lock (i2ErrorSigMonitorLock)
+                {
+                    if (i2ErrorSigMonitorStopFlag)
+                    {
+                        i2ErrorSigMonitorStopFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startI2ErrorSigPollButton, true);
+            window.EnableControl(window.stopI2ErrorSigPollButton, false);
+        }
+
+        public void SetI2Bias(double value)
+        {
+            if (value <= 5.0 && value >= 0.0)
+            {
+                SetAnalogOutput(i2BiasOutputTask, value);
+                window.I2BiasVoltageTextBox.Text = value.ToString();
+            }
+            return;
+        }
+
         public void SetflPZT2(double value)
         {
             if (value < 0)
@@ -2180,13 +2241,15 @@ namespace EDMHardwareControl
         }
 
         public void SetFLPZT2Temp()
+            //FUNCTION DEPRECIATED
         {
-            SetAnalogOutput(flPZT2TempOutputTask, FLPZT2Temp);
+           // SetAnalogOutput(flPZT2TempOutputTask, FLPZT2Temp); 
         }
 
         public void SetFLPZT2Cur()
+            //FUNCTION DEPRECIATED
         {
-            SetAnalogOutput(flPZT2CurOutputTask, FLPZT2Cur);
+           // SetAnalogOutput(flPZT2CurOutputTask, FLPZT2Cur);
         }
 
 
@@ -2365,29 +2428,29 @@ namespace EDMHardwareControl
             VCOConvFrac = i2Coeff / pumpAOMCoeff;
         }
 
-        internal void UpdateProbePolarizerAngle()
-        {
-            motorController1.MoveAbsoluteEx(0,
-                (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
-        }
+        //internal void UpdateProbePolarizerAngle()
+        //{
+        //    motorController1.MoveAbsoluteEx(0,
+        //        (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
+        //}
 
-        internal void UpdatePumpPolarizerAngle()
-        {
-            motorController2.MoveAbsoluteEx(0,
-                (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
-        }
+        //internal void UpdatePumpPolarizerAngle()
+        //{
+        //    motorController2.MoveAbsoluteEx(0,
+        //        (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
+        //}
 
-        public void SetProbePolarizerAngle(double theta)
-        {
-            window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
-            UpdateProbePolarizerAngle();
-        }
+        //public void SetProbePolarizerAngle(double theta)
+        //{
+        //    window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
+        //    UpdateProbePolarizerAngle();
+        //}
 
-        public void SetPumpPolarizerAngle(double theta)
-        {
-            window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
-            UpdatePumpPolarizerAngle();
-        }
+        //public void SetPumpPolarizerAngle(double theta)
+        //{
+        //    window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
+        //    UpdatePumpPolarizerAngle();
+        //}
 
         public void EnableGreenSynth(bool enable)
         {
@@ -2886,6 +2949,19 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
+
+        public void SetI2ProportionalLock(bool state)
+        {
+            SetDigitalLine("I2PropSwitch", state);
+            return;
+        }
+
+        public void SetI2IntegralLock(bool state)
+        {
+            SetDigitalLine("I2IntSwitch", state);
+            return;
+        }
+
         #endregion
 
     }

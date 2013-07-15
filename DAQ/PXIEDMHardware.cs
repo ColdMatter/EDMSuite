@@ -94,9 +94,15 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
             // will switch if it's switch scanning.
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
+            
             //RF Counter Control (single pole 4 throw)
-            AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
-            AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            //AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
+            //AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            
+            //I2 Lock Control
+            AddDigitalOutputChannel("I2PropSwitch", pgBoard, 3, 5);
+            AddDigitalOutputChannel("I2IntSwitch", pgBoard, 3, 6);
+            
             // new rf amp blanking
             AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
 
@@ -212,132 +218,16 @@ namespace DAQ.HAL
             // Laser control
             //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("flPZT", aoBoard + "/ao7", 0, 10);
-            AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2", 0, 5);
+            AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2", 0, 10);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
             AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
-            AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
-            AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
+            //AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
+            //AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
             //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rampfb", aoBoard + "/ao4", -10, 10);
+            AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
         }
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
