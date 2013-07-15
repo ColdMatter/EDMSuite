@@ -377,10 +377,6 @@ def EDMGo():
 	scramblerV = 0.97156 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
 	# randomise polarizations
-	#probePolAngle = 360.0 * r.NextDouble()
-	#hc.SetProbePolarizerAngle(probePolAngle)
-	#pumpPolAngle = 360.0 * r.NextDouble()
-	#hc.SetPumpPolarizerAngle(pumpPolAngle)
 	hc.SetRandomProbePosition()
 	hc.SetRandomPumpPosition()
 
@@ -442,21 +438,11 @@ def EDMGo():
 		scramblerV = 0.799718 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
-		#probePolAngle = 360.0 * r.NextDouble()
-		#hc.SetProbePolarizerAngle(probePolAngle)
-		#pumpPolAngle = 360.0 * r.NextDouble()
-		#hc.SetPumpPolarizerAngle(pumpPolAngle)
 		hc.SetRandomProbePosition()
 		hc.SetRandomPumpPosition()
-		#System.Threading.Thread.Sleep(15000)
-
-	
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, measProbePwr, measPumpPwr)
-		# do things that need periodically doing
-	#	if ((blockIndex % kTargetRotationPeriod) == 0):
-		#	print("Rotating target.")
-		#	hc.StepTarget(10)
+)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		magChannelValues = bh.DBlock.ChannelValues[2]
 		mini1ChannelValues = bh.DBlock.ChannelValues[9]
@@ -490,10 +476,10 @@ def EDMGo():
 		print "Average E_{Mag} for the last 10 blocks " + str(runningEmag1Mean)
 
 
-		if (dbValue < 9):
+		if (dbValue < 19):
 			print("Dodgy spot target rotation.")
-			for i in range(3):
-				hc.StepTarget(3)
+			for i in range(2):
+				hc.StepTarget(20)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
