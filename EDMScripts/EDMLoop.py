@@ -290,16 +290,33 @@ def updateLocksNL(bState):
 	deltaRF1A = - (1.8/2.0) * rf1adbdbValue * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF1A = 0
-	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
-	hc.SetRF1AttCentre( newRF1A )
+	if (newRF1A == 4.9):
+		newSynthAmp =  hc.GreenSynthOnAmplitude + 1
+		print "RF1A pinned, increasing synth to  " + str(newSynthAmp) + " dBm."
+		print "Setting RF1A to 4.5 V."
+		newRF1A = 4.5
+		hc.SetRF1AttCentre( newRF1A )
+		hc.SetGreenSynthAmp(newSynthAmp)
+	else:
+		print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
+		hc.SetRF1AttCentre( newRF1A )
 	#
 	deltaRF2A = - (1.8/2.0) * rf2adbdbValue * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF2A = 0
-	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
-	hc.SetRF2AttCentre( newRF2A )
+	if (newRF2A == 4.9):
+		newSynthAmp =  hc.GreenSynthOnAmplitude + 1
+		print "RF2A pinned, increasing synth to  " + str(newSynthAmp) + " dBm."
+		print "Setting RF2A to 4.5 V."
+		newRF2A = 4.5
+		hc.SetRF2AttCentre( newRF2A )
+		hc.SetGreenSynthAmp(newSynthAmp)
+	else:
+		print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
+		hc.SetRF2AttCentre( newRF2A )
+
 	# RFF  locks
 	deltaRF1F = - (5.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
@@ -435,14 +452,13 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocksNL(bState)
 		# randomise Ramsey phase
-		scramblerV = 0.799718 * r.NextDouble()
+		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
 		hc.SetRandomProbePosition()
 		hc.SetRandomPumpPosition()
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, measProbePwr, measPumpPwr)
-)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		magChannelValues = bh.DBlock.ChannelValues[2]
 		mini1ChannelValues = bh.DBlock.ChannelValues[9]
