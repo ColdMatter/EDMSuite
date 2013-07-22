@@ -99,10 +99,6 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
             //AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
             
-            //I2 Lock Control
-            AddDigitalOutputChannel("I2PropSwitch", pgBoard, 3, 5);
-            AddDigitalOutputChannel("I2IntSwitch", pgBoard, 3, 6);
-            
             // new rf amp blanking
             AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
 
@@ -122,7 +118,11 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
-            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
+            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);
+
+            //I2 Lock Control
+            AddDigitalOutputChannel("I2PropSwitch", pgBoard, 2, 4);
+            AddDigitalOutputChannel("I2IntSwitch", pgBoard, 3, 6);
            
 
 
