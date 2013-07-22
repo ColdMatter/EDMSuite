@@ -259,12 +259,14 @@ namespace ScanMaster.GUI
             // menuItem10
             // 
             this.menuItem10.Index = 0;
+            this.menuItem10.Shortcut = System.Windows.Forms.Shortcut.CtrlF;
             this.menuItem10.Text = "Start pattern output";
             this.menuItem10.Click += new System.EventHandler(this.menuItem10_Click);
             // 
             // menuItem11
             // 
             this.menuItem11.Index = 1;
+            this.menuItem11.Shortcut = System.Windows.Forms.Shortcut.CtrlX;
             this.menuItem11.Text = "Stop pattern output";
             this.menuItem11.Click += new System.EventHandler(this.menuItem11_Click);
             // 
