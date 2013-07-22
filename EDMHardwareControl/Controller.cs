@@ -492,7 +492,7 @@ namespace EDMHardwareControl
                 RF1FMStep = dataStore.rf1FMS;
                 RF2FMCentre = dataStore.rf2FMC;
                 RF2FMStep = dataStore.rf2FMS;
-                //SetSteppingBBiasVoltage(dataStore.steppingBias);
+                SetSteppingBBiasVoltage(dataStore.steppingBias);
                 FLPZTVoltage = dataStore.flPZT;
                 FLPZTStep = dataStore.flPZTStep;
                 EOvershootFactor = dataStore.overshootFactor;
@@ -1266,6 +1266,37 @@ namespace EDMHardwareControl
             }
         }
 
+        public double RF1aGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf1aCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF2aGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf2aCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF1fGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf1fCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF2fGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf2fCentreGuessTextBox.Text);
+            }
+        }
         public double SteppingBiasVoltage
         {
             set
@@ -1786,6 +1817,58 @@ namespace EDMHardwareControl
 
         }
 
+        //This method is supposed to automate the process of setting rf attenuator settings before EDM data taking. 
+        //It assumes that the correct measured rfxa centre power is in the rfxaCentreGuessTextBoxes, and parses this 
+        //to use as its target.
+
+        public void AutomaticRFxACalculation()
+        {
+
+            double newRF1a = 0;
+            double newRF2a = 0;
+            int a = 0;
+            double gain = 0.2;
+
+            SetAttenutatorVoltages();
+            while (newRF1a != RF1aGuess & newRF2a != RF2aGuess & a < 5)
+            {
+                UpdateRFPowerMonitor();
+                newRF1a = RF1PowerCentre;
+                newRF2a = RF2PowerCentre;
+                RF1AttCentre = windowVoltage(RF1AttCentre + gain * (RF1aGuess - newRF1a), 0, 5);
+                RF2AttCentre = windowVoltage(RF2AttCentre + gain * (RF2aGuess - newRF2a), 0, 5);
+                SetAttenutatorVoltages();
+                a++;
+            }
+
+        }
+
+        //This method is supposed to automate the process of setting rf DCFM settings before EDM data taking. 
+        //It assumes that the correct measured rfxf centre freq is in the rfxfCentreGuessTextBoxes, and parses this 
+        //to use as its target.
+
+        public void AutomaticRFxFCalculation()
+        {
+
+            double newRF1f = 0;
+            double newRF2f = 0;
+            int a = 0;
+            double gain = 0.000025;
+
+            SetFMVoltages();
+            while (newRF1f != RF1fGuess & newRF2f != RF2fGuess & a < 5)
+            {
+                UpdateRFFrequencyMonitor();
+                newRF1f = RF1FrequencyCentre;
+                newRF2f = RF2FrequencyCentre;
+                RF1FMCentre = windowVoltage(RF1FMCentre + gain * (RF1fGuess - newRF1f), 0, 1);
+                RF2FMCentre = windowVoltage(RF2FMCentre + gain * (RF2fGuess - newRF2f), 0, 1);
+                SetFMVoltages();
+                a++;
+            }
+
+        }
+
         // This is a little cheezy - it probably should be in its own class.
         // This method reads the power meter input and converts the result to dBm.
         // Have replaced the power monitor with the HP438A 24/06/08
@@ -2034,9 +2117,12 @@ namespace EDMHardwareControl
             window.EnableControl(window.startIRecordButton, true);
             window.EnableControl(window.stopIRecordButton, false);
         }
+
         internal void SaveToFile()
         {
-            using (StreamWriter sw = new StreamWriter("F://Data//general//LeakageCurrent.csv"))
+            string path = Environs.FileSystem.GetDataDirectory((String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            string name = Environs.FileSystem.GenerateNextDataFileName();
+            using (StreamWriter sw = new StreamWriter(path + name + ".csv"))
             {
                 sw.WriteLine(DateTime.Now);
                 sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
@@ -2468,10 +2554,6 @@ namespace EDMHardwareControl
             greenSynth.Disconnect();
         }
 
-        public void SetGreenSynthAmp(double amplitude)
-        {
-            GreenSynthOnAmplitude = amplitude;
-        }
 
 
 
@@ -2898,6 +2980,11 @@ namespace EDMHardwareControl
         }
 
         // these are here as it seems IronPython has trouble setting attributes remotely
+
+        public void SetGreenSynthAmp(double amp)
+        {
+            GreenSynthOnAmplitude = windowVoltage(amp, -30, 16);
+        }
         public void SetRF1AttCentre(double v)
         {
             RF1AttCentre = windowVoltage(v, 0, 5);

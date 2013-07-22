@@ -464,6 +464,20 @@ namespace EDMHardwareControl
         private Label label68;
         private Button UpdateI2BiasVoltage;
         public TextBox I2BiasVoltageTextBox;
+        private Button setDCFMtoGuess;
+        private Button Copyrf2f;
+        private Button Copyrf1f;
+        public TextBox rf2fCentreGuessTextBox;
+        public TextBox rf1fCentreGuessTextBox;
+        private Button setAttunatorsToGuesses;
+        private Button Copyrf2a;
+        private Button Copyrf1a;
+        public TextBox rf2aCentreGuessTextBox;
+        public TextBox rf1aCentreGuessTextBox;
+        private Label label81;
+        private Label label125;
+        private Label label126;
+        private Label label127;
 
 
 		public Controller controller;
@@ -603,9 +617,20 @@ namespace EDMHardwareControl
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.setDCFMtoGuess = new System.Windows.Forms.Button();
+            this.Copyrf2f = new System.Windows.Forms.Button();
+            this.Copyrf1f = new System.Windows.Forms.Button();
+            this.rf2fCentreGuessTextBox = new System.Windows.Forms.TextBox();
+            this.rf1fCentreGuessTextBox = new System.Windows.Forms.TextBox();
+            this.setAttunatorsToGuesses = new System.Windows.Forms.Button();
+            this.Copyrf2a = new System.Windows.Forms.Button();
+            this.Copyrf1a = new System.Windows.Forms.Button();
+            this.rf2aCentreGuessTextBox = new System.Windows.Forms.TextBox();
+            this.rf1aCentreGuessTextBox = new System.Windows.Forms.TextBox();
             this.rf2StepPowerMon = new System.Windows.Forms.TextBox();
             this.rf2StepFreqMon = new System.Windows.Forms.TextBox();
             this.rf1StepPowerMon = new System.Windows.Forms.TextBox();
+            this.rfPowerUpdateButton = new System.Windows.Forms.Button();
             this.rf1StepFreqMon = new System.Windows.Forms.TextBox();
             this.rf2CentrePowerMon = new System.Windows.Forms.TextBox();
             this.rf2CentreFreqMon = new System.Windows.Forms.TextBox();
@@ -627,7 +652,6 @@ namespace EDMHardwareControl
             this.rf2PlusFreqMon = new System.Windows.Forms.TextBox();
             this.rf1PlusPowerMon = new System.Windows.Forms.TextBox();
             this.rf1PlusFreqMon = new System.Windows.Forms.TextBox();
-            this.rfPowerUpdateButton = new System.Windows.Forms.Button();
             this.label52 = new System.Windows.Forms.Label();
             this.rfFrequencyUpdateButton = new System.Windows.Forms.Button();
             this.label51 = new System.Windows.Forms.Label();
@@ -637,6 +661,10 @@ namespace EDMHardwareControl
             this.label49 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
+            this.label81 = new System.Windows.Forms.Label();
+            this.label125 = new System.Windows.Forms.Label();
+            this.label126 = new System.Windows.Forms.Label();
+            this.label127 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.scramblerCheckBox = new System.Windows.Forms.CheckBox();
             this.attenuatorSelectCheck = new System.Windows.Forms.CheckBox();
@@ -826,6 +854,8 @@ namespace EDMHardwareControl
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.tabPage10 = new System.Windows.Forms.TabPage();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.UpdateI2BiasVoltage = new System.Windows.Forms.Button();
+            this.I2BiasVoltageTextBox = new System.Windows.Forms.TextBox();
             this.I2BiasVoltageTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.I2AOMFreqStepTextBox = new System.Windows.Forms.TextBox();
@@ -937,8 +967,6 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.I2BiasVoltageTextBox = new System.Windows.Forms.TextBox();
-            this.UpdateI2BiasVoltage = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -2005,9 +2033,9 @@ namespace EDMHardwareControl
             this.groupBox24.Controls.Add(this.updatePiMonitorButton);
             this.groupBox24.Controls.Add(this.label82);
             this.groupBox24.Controls.Add(this.piMonitor1TextBox);
-            this.groupBox24.Location = new System.Drawing.Point(8, 518);
+            this.groupBox24.Location = new System.Drawing.Point(8, 528);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(382, 50);
+            this.groupBox24.Size = new System.Drawing.Size(382, 40);
             this.groupBox24.TabIndex = 65;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "pi monitor";
@@ -2016,7 +2044,7 @@ namespace EDMHardwareControl
             // 
             this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor2TextBox.Location = new System.Drawing.Point(214, 22);
+            this.piMonitor2TextBox.Location = new System.Drawing.Point(213, 17);
             this.piMonitor2TextBox.Name = "piMonitor2TextBox";
             this.piMonitor2TextBox.ReadOnly = true;
             this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
@@ -2025,7 +2053,7 @@ namespace EDMHardwareControl
             // 
             // updatePiMonitorButton
             // 
-            this.updatePiMonitorButton.Location = new System.Drawing.Point(301, 20);
+            this.updatePiMonitorButton.Location = new System.Drawing.Point(300, 15);
             this.updatePiMonitorButton.Name = "updatePiMonitorButton";
             this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updatePiMonitorButton.TabIndex = 63;
@@ -2034,7 +2062,7 @@ namespace EDMHardwareControl
             // 
             // label82
             // 
-            this.label82.Location = new System.Drawing.Point(17, 24);
+            this.label82.Location = new System.Drawing.Point(16, 19);
             this.label82.Name = "label82";
             this.label82.Size = new System.Drawing.Size(108, 23);
             this.label82.TabIndex = 64;
@@ -2044,7 +2072,7 @@ namespace EDMHardwareControl
             // 
             this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor1TextBox.Location = new System.Drawing.Point(131, 22);
+            this.piMonitor1TextBox.Location = new System.Drawing.Point(130, 17);
             this.piMonitor1TextBox.Name = "piMonitor1TextBox";
             this.piMonitor1TextBox.ReadOnly = true;
             this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
@@ -2056,7 +2084,7 @@ namespace EDMHardwareControl
             this.groupBox22.Controls.Add(this.rfManualStateCheckBox);
             this.groupBox22.Location = new System.Drawing.Point(320, 263);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(363, 52);
+            this.groupBox22.Size = new System.Drawing.Size(363, 61);
             this.groupBox22.TabIndex = 33;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "Manual state";
@@ -2071,9 +2099,20 @@ namespace EDMHardwareControl
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.setDCFMtoGuess);
+            this.groupBox4.Controls.Add(this.Copyrf2f);
+            this.groupBox4.Controls.Add(this.Copyrf1f);
+            this.groupBox4.Controls.Add(this.rf2fCentreGuessTextBox);
+            this.groupBox4.Controls.Add(this.rf1fCentreGuessTextBox);
+            this.groupBox4.Controls.Add(this.setAttunatorsToGuesses);
+            this.groupBox4.Controls.Add(this.Copyrf2a);
+            this.groupBox4.Controls.Add(this.Copyrf1a);
+            this.groupBox4.Controls.Add(this.rf2aCentreGuessTextBox);
+            this.groupBox4.Controls.Add(this.rf1aCentreGuessTextBox);
             this.groupBox4.Controls.Add(this.rf2StepPowerMon);
             this.groupBox4.Controls.Add(this.rf2StepFreqMon);
             this.groupBox4.Controls.Add(this.rf1StepPowerMon);
+            this.groupBox4.Controls.Add(this.rfPowerUpdateButton);
             this.groupBox4.Controls.Add(this.rf1StepFreqMon);
             this.groupBox4.Controls.Add(this.rf2CentrePowerMon);
             this.groupBox4.Controls.Add(this.rf2CentreFreqMon);
@@ -2095,7 +2134,6 @@ namespace EDMHardwareControl
             this.groupBox4.Controls.Add(this.rf2PlusFreqMon);
             this.groupBox4.Controls.Add(this.rf1PlusPowerMon);
             this.groupBox4.Controls.Add(this.rf1PlusFreqMon);
-            this.groupBox4.Controls.Add(this.rfPowerUpdateButton);
             this.groupBox4.Controls.Add(this.label52);
             this.groupBox4.Controls.Add(this.rfFrequencyUpdateButton);
             this.groupBox4.Controls.Add(this.label51);
@@ -2105,12 +2143,102 @@ namespace EDMHardwareControl
             this.groupBox4.Controls.Add(this.label49);
             this.groupBox4.Controls.Add(this.label45);
             this.groupBox4.Controls.Add(this.label44);
-            this.groupBox4.Location = new System.Drawing.Point(8, 373);
+            this.groupBox4.Controls.Add(this.label81);
+            this.groupBox4.Controls.Add(this.label125);
+            this.groupBox4.Controls.Add(this.label126);
+            this.groupBox4.Controls.Add(this.label127);
+            this.groupBox4.Location = new System.Drawing.Point(8, 328);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(675, 139);
+            this.groupBox4.Size = new System.Drawing.Size(675, 209);
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
+            // 
+            // setDCFMtoGuess
+            // 
+            this.setDCFMtoGuess.Location = new System.Drawing.Point(62, 175);
+            this.setDCFMtoGuess.Name = "setDCFMtoGuess";
+            this.setDCFMtoGuess.Size = new System.Drawing.Size(225, 23);
+            this.setDCFMtoGuess.TabIndex = 67;
+            this.setDCFMtoGuess.Text = "Set DCFM Voltages to Guess";
+            this.setDCFMtoGuess.Click += new System.EventHandler(this.setDCFMtoGuess_Click);
+            // 
+            // Copyrf2f
+            // 
+            this.Copyrf2f.Location = new System.Drawing.Point(256, 148);
+            this.Copyrf2f.Name = "Copyrf2f";
+            this.Copyrf2f.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf2f.TabIndex = 66;
+            this.Copyrf2f.Text = "Copy";
+            this.Copyrf2f.Click += new System.EventHandler(this.Copyrf2f_Click);
+            // 
+            // Copyrf1f
+            // 
+            this.Copyrf1f.Location = new System.Drawing.Point(95, 147);
+            this.Copyrf1f.Name = "Copyrf1f";
+            this.Copyrf1f.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf1f.TabIndex = 65;
+            this.Copyrf1f.Text = "Copy";
+            this.Copyrf1f.Click += new System.EventHandler(this.Copyrf1f_Click);
+            // 
+            // rf2fCentreGuessTextBox
+            // 
+            this.rf2fCentreGuessTextBox.Location = new System.Drawing.Point(185, 148);
+            this.rf2fCentreGuessTextBox.Name = "rf2fCentreGuessTextBox";
+            this.rf2fCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf2fCentreGuessTextBox.TabIndex = 64;
+            this.rf2fCentreGuessTextBox.Text = "0";
+            // 
+            // rf1fCentreGuessTextBox
+            // 
+            this.rf1fCentreGuessTextBox.Location = new System.Drawing.Point(24, 147);
+            this.rf1fCentreGuessTextBox.Name = "rf1fCentreGuessTextBox";
+            this.rf1fCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf1fCentreGuessTextBox.TabIndex = 63;
+            this.rf1fCentreGuessTextBox.Text = "0";
+            // 
+            // setAttunatorsToGuesses
+            // 
+            this.setAttunatorsToGuesses.Location = new System.Drawing.Point(398, 177);
+            this.setAttunatorsToGuesses.Name = "setAttunatorsToGuesses";
+            this.setAttunatorsToGuesses.Size = new System.Drawing.Size(225, 23);
+            this.setAttunatorsToGuesses.TabIndex = 62;
+            this.setAttunatorsToGuesses.Text = "Set Attenuator Voltages to Guess";
+            this.setAttunatorsToGuesses.Click += new System.EventHandler(this.setAttunatorsToGuesses_Click);
+            // 
+            // Copyrf2a
+            // 
+            this.Copyrf2a.Location = new System.Drawing.Point(592, 148);
+            this.Copyrf2a.Name = "Copyrf2a";
+            this.Copyrf2a.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf2a.TabIndex = 61;
+            this.Copyrf2a.Text = "Copy";
+            this.Copyrf2a.Click += new System.EventHandler(this.Copyrf2a_Click);
+            // 
+            // Copyrf1a
+            // 
+            this.Copyrf1a.Location = new System.Drawing.Point(431, 147);
+            this.Copyrf1a.Name = "Copyrf1a";
+            this.Copyrf1a.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf1a.TabIndex = 60;
+            this.Copyrf1a.Text = "Copy";
+            this.Copyrf1a.Click += new System.EventHandler(this.Copyrf1a_Click);
+            // 
+            // rf2aCentreGuessTextBox
+            // 
+            this.rf2aCentreGuessTextBox.Location = new System.Drawing.Point(521, 148);
+            this.rf2aCentreGuessTextBox.Name = "rf2aCentreGuessTextBox";
+            this.rf2aCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf2aCentreGuessTextBox.TabIndex = 59;
+            this.rf2aCentreGuessTextBox.Text = "0";
+            // 
+            // rf1aCentreGuessTextBox
+            // 
+            this.rf1aCentreGuessTextBox.Location = new System.Drawing.Point(360, 147);
+            this.rf1aCentreGuessTextBox.Name = "rf1aCentreGuessTextBox";
+            this.rf1aCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf1aCentreGuessTextBox.TabIndex = 34;
+            this.rf1aCentreGuessTextBox.Text = "0";
             // 
             // rf2StepPowerMon
             // 
@@ -2144,6 +2272,15 @@ namespace EDMHardwareControl
             this.rf1StepPowerMon.Size = new System.Drawing.Size(64, 20);
             this.rf1StepPowerMon.TabIndex = 58;
             this.rf1StepPowerMon.Text = "0";
+            // 
+            // rfPowerUpdateButton
+            // 
+            this.rfPowerUpdateButton.Location = new System.Drawing.Point(469, 107);
+            this.rfPowerUpdateButton.Name = "rfPowerUpdateButton";
+            this.rfPowerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.rfPowerUpdateButton.TabIndex = 50;
+            this.rfPowerUpdateButton.Text = "Update";
+            this.rfPowerUpdateButton.Click += new System.EventHandler(this.rfPowerUpdateButton_Click);
             // 
             // rf1StepFreqMon
             // 
@@ -2352,15 +2489,6 @@ namespace EDMHardwareControl
             this.rf1PlusFreqMon.TabIndex = 51;
             this.rf1PlusFreqMon.Text = "0";
             // 
-            // rfPowerUpdateButton
-            // 
-            this.rfPowerUpdateButton.Location = new System.Drawing.Point(469, 107);
-            this.rfPowerUpdateButton.Name = "rfPowerUpdateButton";
-            this.rfPowerUpdateButton.Size = new System.Drawing.Size(75, 23);
-            this.rfPowerUpdateButton.TabIndex = 50;
-            this.rfPowerUpdateButton.Text = "Update";
-            this.rfPowerUpdateButton.Click += new System.EventHandler(this.rfPowerUpdateButton_Click);
-            // 
             // label52
             // 
             this.label52.Location = new System.Drawing.Point(589, 25);
@@ -2371,7 +2499,7 @@ namespace EDMHardwareControl
             // 
             // rfFrequencyUpdateButton
             // 
-            this.rfFrequencyUpdateButton.Location = new System.Drawing.Point(139, 107);
+            this.rfFrequencyUpdateButton.Location = new System.Drawing.Point(140, 107);
             this.rfFrequencyUpdateButton.Name = "rfFrequencyUpdateButton";
             this.rfFrequencyUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.rfFrequencyUpdateButton.TabIndex = 50;
@@ -2434,6 +2562,38 @@ namespace EDMHardwareControl
             this.label44.TabIndex = 46;
             this.label44.Text = "rf1 fr + (Hz)";
             // 
+            // label81
+            // 
+            this.label81.Location = new System.Drawing.Point(358, 133);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(80, 23);
+            this.label81.TabIndex = 68;
+            this.label81.Text = "Centre";
+            // 
+            // label125
+            // 
+            this.label125.Location = new System.Drawing.Point(519, 134);
+            this.label125.Name = "label125";
+            this.label125.Size = new System.Drawing.Size(80, 23);
+            this.label125.TabIndex = 69;
+            this.label125.Text = "Centre";
+            // 
+            // label126
+            // 
+            this.label126.Location = new System.Drawing.Point(23, 133);
+            this.label126.Name = "label126";
+            this.label126.Size = new System.Drawing.Size(80, 23);
+            this.label126.TabIndex = 70;
+            this.label126.Text = "Centre";
+            // 
+            // label127
+            // 
+            this.label127.Location = new System.Drawing.Point(184, 134);
+            this.label127.Name = "label127";
+            this.label127.Size = new System.Drawing.Size(80, 23);
+            this.label127.TabIndex = 71;
+            this.label127.Text = "Centre";
+            // 
             // groupBox16
             // 
             this.groupBox16.Controls.Add(this.scramblerCheckBox);
@@ -2444,14 +2604,14 @@ namespace EDMHardwareControl
             this.groupBox16.Controls.Add(this.rfSwitchEnableCheck);
             this.groupBox16.Location = new System.Drawing.Point(8, 184);
             this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(296, 183);
+            this.groupBox16.Size = new System.Drawing.Size(296, 140);
             this.groupBox16.TabIndex = 26;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "TTL controls";
             // 
             // scramblerCheckBox
             // 
-            this.scramblerCheckBox.Location = new System.Drawing.Point(156, 142);
+            this.scramblerCheckBox.Location = new System.Drawing.Point(190, 22);
             this.scramblerCheckBox.Name = "scramblerCheckBox";
             this.scramblerCheckBox.Size = new System.Drawing.Size(122, 24);
             this.scramblerCheckBox.TabIndex = 31;
@@ -2469,7 +2629,7 @@ namespace EDMHardwareControl
             // 
             // phaseFlip2CheckBox
             // 
-            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(24, 142);
+            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(187, 112);
             this.phaseFlip2CheckBox.Name = "phaseFlip2CheckBox";
             this.phaseFlip2CheckBox.Size = new System.Drawing.Size(152, 24);
             this.phaseFlip2CheckBox.TabIndex = 29;
@@ -4340,6 +4500,23 @@ namespace EDMHardwareControl
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Lock Bias";
             // 
+            // UpdateI2BiasVoltage
+            // 
+            this.UpdateI2BiasVoltage.Location = new System.Drawing.Point(488, 45);
+            this.UpdateI2BiasVoltage.Name = "UpdateI2BiasVoltage";
+            this.UpdateI2BiasVoltage.Size = new System.Drawing.Size(75, 23);
+            this.UpdateI2BiasVoltage.TabIndex = 53;
+            this.UpdateI2BiasVoltage.Text = "Update";
+            this.UpdateI2BiasVoltage.Click += new System.EventHandler(this.UpdateI2BiasVoltage_Click);
+            // 
+            // I2BiasVoltageTextBox
+            // 
+            this.I2BiasVoltageTextBox.Location = new System.Drawing.Point(488, 18);
+            this.I2BiasVoltageTextBox.Name = "I2BiasVoltageTextBox";
+            this.I2BiasVoltageTextBox.Size = new System.Drawing.Size(75, 20);
+            this.I2BiasVoltageTextBox.TabIndex = 52;
+            this.I2BiasVoltageTextBox.Text = "0";
+            // 
             // I2BiasVoltageTrackBar
             // 
             this.I2BiasVoltageTrackBar.Location = new System.Drawing.Point(30, 18);
@@ -4607,7 +4784,7 @@ namespace EDMHardwareControl
             this.I2ErrorPollPeriodTextBox.Name = "I2ErrorPollPeriodTextBox";
             this.I2ErrorPollPeriodTextBox.Size = new System.Drawing.Size(64, 20);
             this.I2ErrorPollPeriodTextBox.TabIndex = 64;
-            this.I2ErrorPollPeriodTextBox.Text = "250";
+            this.I2ErrorPollPeriodTextBox.Text = "50";
             // 
             // updateI2ErrorSigButton
             // 
@@ -5459,23 +5636,6 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
-            // I2BiasVoltageTextBox
-            // 
-            this.I2BiasVoltageTextBox.Location = new System.Drawing.Point(488, 18);
-            this.I2BiasVoltageTextBox.Name = "I2BiasVoltageTextBox";
-            this.I2BiasVoltageTextBox.Size = new System.Drawing.Size(75, 20);
-            this.I2BiasVoltageTextBox.TabIndex = 52;
-            this.I2BiasVoltageTextBox.Text = "0";
-            // 
-            // UpdateI2BiasVoltage
-            // 
-            this.UpdateI2BiasVoltage.Location = new System.Drawing.Point(488, 45);
-            this.UpdateI2BiasVoltage.Name = "UpdateI2BiasVoltage";
-            this.UpdateI2BiasVoltage.Size = new System.Drawing.Size(75, 23);
-            this.UpdateI2BiasVoltage.TabIndex = 53;
-            this.UpdateI2BiasVoltage.Text = "Update";
-            this.UpdateI2BiasVoltage.Click += new System.EventHandler(this.UpdateI2BiasVoltage_Click);
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -6157,5 +6317,37 @@ namespace EDMHardwareControl
             controller.SetI2Bias(voltage);
             I2BiasVoltageTrackBar.Value = (int)(1000.0 * voltage);
         }
+
+        private void Copyrf1a_Click(object sender, EventArgs e)
+        {
+            rf1aCentreGuessTextBox.Text = rf1CentrePowerMon.Text;
+        }
+
+        private void Copyrf2a_Click(object sender, EventArgs e)
+        {
+            rf2aCentreGuessTextBox.Text = rf2CentrePowerMon.Text;
+        }
+
+        private void Copyrf1f_Click(object sender, EventArgs e)
+        {
+            rf1fCentreGuessTextBox.Text = rf1CentreFreqMon.Text;
+        }
+
+        private void Copyrf2f_Click(object sender, EventArgs e)
+        {
+            rf2fCentreGuessTextBox.Text = rf2CentreFreqMon.Text;
+        }
+
+        private void setAttunatorsToGuesses_Click(object sender, EventArgs e)
+        {
+            controller.AutomaticRFxACalculation();
+        }
+
+        private void setDCFMtoGuess_Click(object sender, EventArgs e)
+        {
+            controller.AutomaticRFxFCalculation();
+        }
+
+
     }
 }
