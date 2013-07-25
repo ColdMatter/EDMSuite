@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -12,6 +13,7 @@ using NationalInstruments.DAQmx;
 using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.VisaNS;
+using System.Linq;
 
 using DAQ.HAL;
 using DAQ.Environment;
@@ -1950,18 +1952,50 @@ namespace EDMHardwareControl
 
         private double lastNorthCurrent;
         private double lastSouthCurrent;
+        private Queue<double> nCurrentSamples = new Queue<double>();
+        private Queue<double> sCurrentSamples = new Queue<double>();
         public void UpdateIMonitor()
         {
             ReconfigureIMonitors();
+
+            //sample the leakage current
             lastNorthCurrent = northLeakageMonitor.GetCurrent();
             lastSouthCurrent = southLeakageMonitor.GetCurrent();
-            window.SetTextBox(window.northIMonitorTextBox, (lastNorthCurrent).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (lastSouthCurrent).ToString());
+
+            //plot the most recent samples
             window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-                                    new double[] { lastNorthCurrent });
+                        new double[] { lastNorthCurrent });
             window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
                                     new double[] { lastSouthCurrent });
 
+            //add samples to Queues for averaging
+            nCurrentSamples.Enqueue(lastNorthCurrent);
+            sCurrentSamples.Enqueue(lastSouthCurrent);
+
+            //drop samples when array is larger than the moving average sample length
+            while (nCurrentSamples.Count > movingAverageSampleLength)
+            {
+                nCurrentSamples.Dequeue();
+                sCurrentSamples.Dequeue();
+            }
+
+            //average samples
+            double nAvCurr = nCurrentSamples.Average();
+            double sAvCurr = sCurrentSamples.Average();
+            double nAvCurrErr = Math.Sqrt((nCurrentSamples.Sum(d => Math.Pow(d - nAvCurr, 2))) / (nCurrentSamples.Count() - 1)) / (Math.Sqrt(nCurrentSamples.Count()));
+            double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
+
+            //update text boxes
+            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+        }
+
+        public void ClearIMonitorAv()
+        {
+            nCurrentSamples.Clear();
+            sCurrentSamples.Clear();
         }
 
         List<double> northCList = new List<double>();
@@ -2039,6 +2073,7 @@ namespace EDMHardwareControl
         private object iMonitorLock = new object();
         private bool iMonitorStopFlag = false;
         private int iMonitorPollPeriod = 200;
+        private int movingAverageSampleLength = 10;
         internal void StartIMonitorPoll()
         {
             lock (iMonitorLock)
@@ -2047,6 +2082,9 @@ namespace EDMHardwareControl
                 window.EnableControl(window.startIMonitorPollButton, false);
                 window.EnableControl(window.stopIMonitorPollButton, true);
                 iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+                movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
+                nCurrentSamples.Clear();
+                sCurrentSamples.Clear();
                 iMonitorPollThread.Start();
             }
 
