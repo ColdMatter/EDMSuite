@@ -24,6 +24,8 @@ namespace DAQ.HAL
     /// Added 23.10.2012: When setting the position involves a decrement in angle, the motors now overshoot and then approach the angle from the positive
     /// direction. This should prevent backlash (We'll see....) 
     /// 
+    /// Added 22.07.2013: Write some functions to force the motor to approach all angles by rotating anti-clockwise, to see if this improves the backlashing 
+    /// 
     /// </summary>
    
 	public class SerialMotorControllerBCD : DAQ.HAL.Instrument
@@ -162,39 +164,17 @@ namespace DAQ.HAL
 
         }
 
-        public void SetPosition(double Angle)
-        {
-            string angleAsString = AngleToPosition(Angle);
-            Write("pos set " + angleAsString);
-        }
-
-        public void SetPositionWithBacklash(double Angle, double backlash)
-        {
-            if (backlash == 0)
-            {
-                SetPosition(Angle);
-            }
-            else
-            {
-                double currentPos = MeasurePosition();
-                if (Angle < currentPos)
-                {
-                    int timeToMove = (int)((currentPos - backlash - Angle) * (rotationTime360 / 360));
-                    string angleAsStringWithBacklash = AngleToPosition(Angle - backlash);
-                    Write("pos set " + angleAsStringWithBacklash);
-                    Thread.Sleep(timeToMove);
-                }
-
-                string angleAsString = AngleToPosition(Angle);
-                Write("pos set " + angleAsString);
-            }
-        }
-
-
         public void SetPosition(string position)
         {
             Write("pos set " + position);
         }
+
+        public void SetPosition(double Angle)
+        {
+            string angleAsString = AngleToPosition(Angle);
+            SetPosition(angleAsString);
+        }
+
 
         public void SetPositionWithBacklash(string position, double backlash)
         {
@@ -219,6 +199,29 @@ namespace DAQ.HAL
             }
         }
 
+        public void SetPositionWithBacklash(double Angle, double backlash)
+        {
+            string angleAsString = AngleToPosition(Angle);
+            SetPositionWithBacklash(angleAsString, backlash);
+        }
+
+        //forces the motor to approach all angles "from below"
+        public void SetPositionOneDirection(string position)
+        {
+            Write("stat pos");
+            double currentposition = Convert.ToDouble(ParsedRead());
+            double targetposition = Convert.ToDouble(position);
+            if (targetposition < currentposition)
+            {
+                targetposition += posDiffTwoPi;
+                Write("pos set " + targetposition.ToString());
+            }
+            else
+            {
+                Write("pos set " + position);
+            }
+           
+        }
 
         public double MeasurePosition()
         {
@@ -226,6 +229,26 @@ namespace DAQ.HAL
             Write("stat pos");
             string position = ParsedRead();
             return PositionToAngle(position);
+        }
+
+        //when an angle greater than 360 is measured, this fn subtracts 360 and tells the motor controller
+        //that this is the angle
+        public double MeasurePositionCorrectingWraping()
+        {
+
+            Write("stat pos");
+            string position = ParsedRead();
+            double posAsDouble = Convert.ToDouble(position);
+            if (posAsDouble > posDiffTwoPi)
+            {
+                string newPos = (posAsDouble - posDiffTwoPi).ToString();
+                Write("pos en " + newPos);
+                return PositionToAngle(newPos);
+            }
+            else
+            {
+                return PositionToAngle(position);
+            }
         }
 
         //public string MeasureVoltage()
