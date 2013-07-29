@@ -2887,7 +2887,10 @@ namespace EDMHardwareControl
                 UpdatePumpPolMode();
                 pumpPolCont.SetPosition(0);
 
-                while (probePolAngle * probePolAngle >= 1 && pumpPolAngle * pumpPolAngle >= 1) //To make sure that they've made it back to zero (more or less)
+                UpdateProbePolAngleMonitor();
+                UpdatePumpPolAngleMonitor();
+
+                while (probePolAngle * probePolAngle >= 1 || pumpPolAngle * pumpPolAngle >= 1) //To make sure that they've made it back to zero (more or less)
                 {
                     UpdateProbePolAngleMonitor();
                     UpdatePumpPolAngleMonitor();
