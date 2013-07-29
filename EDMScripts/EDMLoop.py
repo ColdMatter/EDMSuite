@@ -264,7 +264,7 @@ def updateLocksNL(bState):
 
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
-	print "B.DB" + str(bDBValue)
+	print "B/DB" + str(bDBValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
@@ -322,14 +322,14 @@ def updateLocksNL(bState):
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF1F = 0
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
-	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 1.1 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
 	deltaRF2F = - (5.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF2F = 0
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
-	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 1.1 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -2.5* ( lf1dbdbValue)
