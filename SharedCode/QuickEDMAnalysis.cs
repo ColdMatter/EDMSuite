@@ -27,6 +27,7 @@ namespace Analysis.EDM
         public double[] SIGValAndErrNormed;
         public double[] BValAndErrNormed;
         public double[] DBValAndErrNormed;
+        public double[] BDBValAndErrNormed;
         public double[] EValAndErrNormed;
         public double[] EBValAndErrNormed;
         public double RawEDMNormed;
@@ -47,6 +48,14 @@ namespace Analysis.EDM
         public double[] rf2FreqAndErr;
         public double[] rf1AmpAndErr;
         public double[] rf2AmpAndErr;
+        public double[] rf1FreqAndErrNormed;
+        public double[] rf2FreqAndErrNormed;
+        public double[] rf1AmpAndErrNormed;
+        public double[] rf2AmpAndErrNormed;
+        public double[] RF1FDBDB;
+        public double[] RF2FDBDB;
+        public double[] RF1ADBDB;
+        public double[] RF2ADBDB;
 
         public double[] probePD;
         public double[] pumpPD;
@@ -82,6 +91,7 @@ namespace Analysis.EDM
             analysis.SIGValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "SIG" }, "topNormed");
             analysis.BValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "B" }, "topNormed");
             analysis.DBValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "DB" }, "topNormed");
+            analysis.BDBValAndErrNormed = dblock.GetSpecialChannelValueAndError( "BDB", "topNormed" );
             analysis.EValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "E" }, "topNormed");
             analysis.EBValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "topNormed");
 
@@ -106,18 +116,24 @@ namespace Analysis.EDM
 
             //laser freq
             analysis.LFValandErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "top");
-            //analysis.LF1DBDB = dblock.ChannelValues[6].GetSpecialValue("LF1DBDB"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
-            //analysis.LF2DBDB = dblock.ChannelValues[6].GetSpecialValue("LF2DBDB");
-            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError("LF1DBDB", "topNormed"); // 5 is topNormed TODO: make GetSpecialValuesAndError work
-            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB" , "top");
+            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError( "LF1DBDB", "topNormed" ); 
+            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB", "top" );
            
             //rf freq
             analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");
             analysis.rf2FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "top");
+            analysis.rf1FreqAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "topNormed");
+            analysis.rf2FreqAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "topNormed");
+            analysis.RF1FDBDB = dblock.GetSpecialChannelValueAndError( "RF1FDBDB", "topNormed" );
+            analysis.RF2FDBDB = dblock.GetSpecialChannelValueAndError( "RF2FDBDB", "topNormed" );
 
             //rf amp
             analysis.rf1AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "top");
             analysis.rf2AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "top");
+            analysis.rf1AmpAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "topNormed");
+            analysis.rf2AmpAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "topNormed");
+            analysis.RF1ADBDB = dblock.GetSpecialChannelValueAndError( "RF1ADBDB", "topNormed" );
+            analysis.RF2ADBDB = dblock.GetSpecialChannelValueAndError( "RF2ADBDB", "topNormed" );
 
             //photodiodes
             analysis.probePD = dblock.GetChannelValueAndError(new string[] { "SIG" }, "ProbePD");

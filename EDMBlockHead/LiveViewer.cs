@@ -77,8 +77,8 @@ namespace EDMBlockHead
 
             //Update Plots
             AppendToSigScatter(new double[] { blockCount }, new double[] { analysis.SIGValAndErr[0] });
-            AppendToSigNoiseScatter(new double[] { blockCount }, new double[] { analysis.SIGValAndErr[1] });
-            AppendToBScatter(new double[] { blockCount }, new double[] { analysis.BValAndErr[0] });
+            AppendToBScatter(new double[] { blockCount }, new double[] { analysis.BValAndErrNormed[0] });
+            AppendToBNormedScatter(new double[] { blockCount }, new double[] { 10.0*analysis.BDBValAndErrNormed[0] }); // Factor of 10 is to make {B} and {B}/{dB} scales comparable
             AppendToDBScatter(new double[] { blockCount }, new double[] { analysis.DBValAndErr[0] });
             AppendToEDMScatter(new double[] { blockCount }, 
                 new double[] { Math.Pow(10, 26) * analysis.RawEDMErr });
@@ -110,11 +110,14 @@ namespace EDMBlockHead
             AppendToRfCurrentScatter(new double[] {blockCount },
                 new double[] {analysis.rfCurrent[0]});
             AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[0] });
-            AppendToLF1NoiseScatter(new double[] { blockCount }, new double[] { analysis.LFValandErr[1] });
-            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
-            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
-            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
-            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
+            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErrNormed[0] });
+            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErrNormed[0] });
+            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErrNormed[0] });
+            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErrNormed[0] });
+            AppendToRF1ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1ADBDB[0] });
+            AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
+            AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
+            AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
 
             if (blockCount == 1)
             {
@@ -145,7 +148,6 @@ namespace EDMBlockHead
                 + Environment.NewLine + "block count: " + 0);
             UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
             ClearSIGScatter();
-            ClearSigNoiseScatterGraph();
             ClearBScatter();
             ClearDBScatter();
             ClearEDMErrScatter();
@@ -153,9 +155,10 @@ namespace EDMBlockHead
             ClearMagNoiseScatterGraph();
             ClearRfCurrentScatterGraph();
             ClearLF1Graph();
-            ClearLF1NoiseGraph();
             ClearRFxAGraph();
             ClearRFxFGraph();
+            ClearRFxFDBDBGraph();
+            ClearRFxADBDBGraph();
             ClearPDScatter();
             ClearLF1DBDBGraph();
         }
@@ -185,6 +188,11 @@ namespace EDMBlockHead
         private void AppendToBScatter(double[] x, double[] y)
         {
             PlotXYAppend(bScatterGraph, bPlot, x, y);
+        }
+
+        private void AppendToBNormedScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(bScatterGraph, bDBNLPlot, x, y);
         }
 
         private void AppendToDBScatter(double[] x, double[] y)
@@ -260,11 +268,6 @@ namespace EDMBlockHead
             PlotXYAppend(rfCurrentGraph, rfCurrentPlot, x, y);
         }
 
-        private void AppendToSigNoiseScatter(double[] x, double[] y)
-        {
-            PlotXYAppend(sigNoiseScatterGraph, sigNoisePlot, x, y);
-        }
-
         private void AppendToLF1Scatter(double[] x, double[] y)
         {
             PlotXYAppend(lf1ScatterGraph, lf1Plot, x, y);
@@ -273,6 +276,26 @@ namespace EDMBlockHead
         private void AppendToLF1DBDBScatter(double[] x, double[] y)
         {
             PlotXYAppend(lfxdbdbScatterGraph, lf1dbdbScatterPlot, x, y);
+        }
+
+        private void AppendToRF1FDBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfxfdbdbScatterGraph, rf1fdbdbScatterPlot, x, y);
+        }
+
+        private void AppendToRF2FDBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfxfdbdbScatterGraph, rf2fdbdbScatterPlot, x, y);
+        }
+
+        private void AppendToRF1ADBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfxadbdbScatterGraph, rf1adbdbScatterPlot, x, y);
+        }
+
+        private void AppendToRF2ADBDBScatter(double[] x, double[] y)
+        {
+            PlotXYAppend(rfxadbdbScatterGraph, rf2adbdbScatterPlot, x, y);
         }
 
         private void AppendToLF2DBDBScatter(double[] x, double[] y)
@@ -290,11 +313,6 @@ namespace EDMBlockHead
         {
             PlotXYAppend(lfxdbdbScatterGraph, lf2SigmaHi, x, yPlusSigma);
             PlotXYAppend(lfxdbdbScatterGraph, lf2SigmaLo, x, yMinusSigma);
-        }
-
-        private void AppendToLF1NoiseScatter(double[] x, double[] y)
-        {
-            PlotXYAppend(lf1NoiseScatterGraph, lf1NoisePlot, x, y);
         }
 
         private void AppendToRF1AScatter(double[] x, double[] y)
@@ -369,11 +387,6 @@ namespace EDMBlockHead
             ClearNIGraph(rfCurrentGraph);
         }
 
-        private void ClearSigNoiseScatterGraph()
-        {
-            ClearNIGraph(sigNoiseScatterGraph);
-        }
-
         private void ClearLF1Graph()
         {
             ClearNIGraph(lf1ScatterGraph);
@@ -384,9 +397,14 @@ namespace EDMBlockHead
             ClearNIGraph(lfxdbdbScatterGraph);
         }
 
-        private void ClearLF1NoiseGraph()
+        private void ClearRFxFDBDBGraph()
         {
-            ClearNIGraph(lf1NoiseScatterGraph);
+            ClearNIGraph(rfxfdbdbScatterGraph);
+        }
+
+        private void ClearRFxADBDBGraph()
+        {
+            ClearNIGraph(rfxadbdbScatterGraph);
         }
 
         private void ClearRFxAGraph()
