@@ -110,6 +110,10 @@ namespace Analysis.EDM
             for (int i = 1; i < 10; i++)
                 AddFixedSliceConfig("wgate" + i, 2190, i * 20);
 
+            for (int i = 1; i < 30; i++)
+                AddFixedSliceConfig("pgate" + i, 2090 + i*10, 10);
+
+
             //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
             //// is centred and +0.7 fwhm.
             //for (int i = 0; i < 15; i++)
@@ -244,6 +248,13 @@ namespace Analysis.EDM
                 DemodulationConfig dc;
                 GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
 
+                //This dodgy bit of code is to make sure that the reflected rf power meters
+                // only select a single point in the centre of the rf pulse. It won't work
+                // if either of the rf pulses is centred at a time not divisible w/o rem. by 10us
+
+                int rf1CT = (int)b.Config.Settings["rf1CentreTime"];
+                int rf2CT = (int)b.Config.Settings["rf2CentreTime"];
+
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = name;
                 dg0 = new GatedDetectorExtractSpec();
@@ -273,14 +284,14 @@ namespace Analysis.EDM
                 dg6.Index = 6;
                 dg6.Name = "reflectedrf1Amplitude";
                 dg6.BackgroundSubtract = false;
-                dg6.GateLow = 819;
-                dg6.GateHigh = 821;
+                dg6.GateLow = (rf1CT/10) -1;
+                dg6.GateHigh = (rf1CT / 10) + 1;
                 dg7 = new GatedDetectorExtractSpec();
                 dg7.Index = 7 ;
                 dg7.Name = "reflectedrf2Amplitude";
                 dg7.BackgroundSubtract = false;
-                dg7.GateLow = 1799;
-                dg7.GateHigh = 1801;
+                dg7.GateLow = (rf2CT / 10) - 1;
+                dg7.GateHigh = (rf2CT / 10) + 1;
 
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
