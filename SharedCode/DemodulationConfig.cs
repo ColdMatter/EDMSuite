@@ -277,6 +277,7 @@ namespace Analysis.EDM
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
+                dg4.Integrate = false; //Add this in to analyse By in 3 axis internal magnetometer tests
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
@@ -310,6 +311,7 @@ namespace Analysis.EDM
                 dc.PointDetectorChannels.Add("SouthCurrent");
                 dc.PointDetectorChannels.Add("PumpPD");
                 dc.PointDetectorChannels.Add("ProbePD");
+                dc.PointDetectorChannels.Add("PhaseLockFrequency");
 
                 return dc;
             };
