@@ -114,11 +114,13 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
             AddDigitalOutputChannel("notEPol", pgBoard, 2, 7);
             AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
+            AddDigitalOutputChannel("eSwitching", aoBoard, 0, 6);
             AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
             AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);
+            AddDigitalOutputChannel("patternTTL", aoBoard, 0, 7);
 
             //I2 Lock Control
             AddDigitalOutputChannel("I2PropSwitch", pgBoard, 2, 4);

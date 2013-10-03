@@ -61,7 +61,6 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdatePumpPolAngleMonitor()
 	pumpPolAngle = hc.pumpPolAngle
 	probePolAngle = hc.probePolAngle
-	
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -331,6 +330,7 @@ def updateLocksNL(bState):
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 1.1 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
+
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -2.5* ( lf1dbdbValue)
 	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
@@ -339,10 +339,11 @@ def updateLocksNL(bState):
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 10 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
+	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
 	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
-	#deltaLF2 = hc.VCOConvFrac * deltaLF1
+	deltaLF2 = hc.VCOConvFrac * deltaLF1
 	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
 	#deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
@@ -494,7 +495,7 @@ def EDMGo():
 
 		if (dbValue < 19):
 			print("Dodgy spot target rotation.")
-			for i in range(2):
+			for i in range(4):
 				hc.StepTarget(20)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
