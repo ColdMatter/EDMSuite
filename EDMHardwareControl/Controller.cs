@@ -1,4 +1,5 @@
 using System;
+using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -115,6 +116,8 @@ namespace EDMHardwareControl
         Task fibreAmpOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
+        Task eSwitchingOutputTask;
+        Task patternTTLOutputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -157,6 +160,8 @@ namespace EDMHardwareControl
             CreateDigitalTask("ttlSwitch");
             CreateDigitalTask("I2PropSwitch");
             CreateDigitalTask("I2IntSwitch");
+            CreateDigitalTask("eSwitching");
+            CreateDigitalTask("patternTTL");
 
             // digitial input tasks
             CreateDigitalInputTask("fibreAmpMasterErr");
@@ -1540,10 +1545,14 @@ namespace EDMHardwareControl
             EFieldEnabled = false;
         }
 
-        private bool switchingEfield = false;
+        //private bool switchingEfield = false;
         public bool SwitchingEfields
         {
-            get { return switchingEfield; }
+            set
+            {
+                SetDigitalLine("eSwitching", value);
+            }
+
         }
 
         public void SwitchE()
@@ -1573,6 +1582,8 @@ namespace EDMHardwareControl
                 newEPolarity = state;
                 switchThread = new Thread(new ThreadStart(SwitchEWorker));
                 window.EnableControl(window.switchEButton, false);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
                 switchThread.Start();
             }
         }
@@ -1584,21 +1595,24 @@ namespace EDMHardwareControl
 
         // this function switches the E field polarity with ramped turn on and off. 
         // It also switches off the Synth to prevent rf discharges while the fields are off
-
         public void SwitchEWorker()
         {
+            
             bool startingSynthState = GreenSynthEnabled;
             lock (switchingLock)
             {
                 // raise flag for switching E-fields
-                switchingEfield = true;
+                SwitchingEfields = true;
                 //switch off the synth
                 GreenSynthEnabled = false;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
-                // ramp the field down
-                RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                // ramp the field down if on
+                if (EFieldEnabled)
+                {
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime); 
+                }
                 // set as disabled
                 EFieldEnabled = false;
                 Thread.Sleep((int)(1000 * ERampDownDelay));
@@ -1610,7 +1624,7 @@ namespace EDMHardwareControl
                 CalculateVoltages();
                 // ramp the field up to the overshoot voltage
                 RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
-                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime); 
                 // impose the overshoot delay
                 Thread.Sleep((int)(1000 * EOvershootHold));
                 // ramp back to the control point
@@ -1620,7 +1634,7 @@ namespace EDMHardwareControl
                 EFieldEnabled = true;
                 // monitor the tail of the charging current to make sure the switches are
                 // working as they should (see spring2009 fiasco!)
-                Thread.Sleep((int)(1000 * ERampUpDelay));
+                Thread.Sleep((int)(1000 * ERampUpDelay)); 
                 window.SetLED(window.switchingLED, false);
 
                 // check that the switch was ok (i.e. that the relays really switched)
@@ -1658,7 +1672,7 @@ namespace EDMHardwareControl
 
         private void ESwitchDone()
         {
-            switchingEfield = false; 
+            SwitchingEfields = false; 
             window.EnableControl(window.switchEButton, true);
         }
 
@@ -1720,6 +1734,8 @@ namespace EDMHardwareControl
                 CalculateVoltages();
                 SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
                 SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
                 //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
                 //SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
             }
@@ -1727,6 +1743,8 @@ namespace EDMHardwareControl
             {
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                window.EnableControl(window.ePolarityCheck, true);
+                window.EnableControl(window.eBleedCheck, true);
             }
         }
 
@@ -2715,6 +2733,12 @@ namespace EDMHardwareControl
             SetDigitalLine("ttlSwitch", enable);
             window.switchScanTTLSwitch.Value = enable;
         }
+
+        public void SetPatternTTL(bool enable)
+        {
+            SetDigitalLine("patternTTL", enable);
+        }
+
 
         public void SetScanningBVoltage()
         {
