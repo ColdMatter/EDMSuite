@@ -286,7 +286,7 @@ def updateLocksNL(bState):
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = - (3.6/2.0) * rf1adbdbValue * kRFAVoltsPerCal
+	deltaRF1A = - (1.0/2.0) * rf1adbdbValue * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF1A = 0
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
@@ -301,7 +301,7 @@ def updateLocksNL(bState):
 		print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 		hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (3.6/2.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = - (1.0/2.0) * rf2adbdbValue * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF2A = 0
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
@@ -317,14 +317,14 @@ def updateLocksNL(bState):
 		hc.SetRF2AttCentre( newRF2A )
 
 	# RFF  locks
-	deltaRF1F = - (5.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
+	deltaRF1F = - (1.0/2.0) * rf1fdbdbValue * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF1F = 0
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 1.1 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (5.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
+	deltaRF2F = - (1.0/2.0) * rf2fdbdbValue * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF2F = 0
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
