@@ -2,3 +2,7 @@ bin
 obj
 *.suo
 *.csproj.user
+*.licx
+*.lnk
+iamjack.sh
+iamjoe.sh
