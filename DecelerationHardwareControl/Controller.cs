@@ -11,8 +11,13 @@ namespace DecelerationHardwareControl
 {
     public class Controller : MarshalByRefObject, TransferCavityLockable
     {
+        #region Constants
+        private const double synthOffAmplitude = -130.0;
+        #endregion
 
         ControlWindow window;
+
+        HP8673BSynth synth = (HP8673BSynth)Environs.Hardware.Instruments["synth"];
 
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
@@ -30,6 +35,30 @@ namespace DecelerationHardwareControl
         public AnalogSingleChannelWriter aomWriter;
 
         public double normsigGain;
+
+        public double SynthOnFrequency
+        {
+            get
+            {
+                return Double.Parse(window.synthOnFreqBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.synthOnFreqBox, value.ToString());
+            }
+        }
+
+        public double SynthOnAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.synthOnAmpBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.synthOnAmpBox, value.ToString());
+            }
+        }
 
         // The keys of the hashtable are the names of the analog output channels
         // The values are all booleans - true means the channel is blocked
@@ -229,6 +258,31 @@ namespace DecelerationHardwareControl
         {
             TCLHelper.ReleaseLaser();
         }
+
+        public void EnableSynth(bool enable)
+        {
+            synth.Connect();
+            if (enable)
+            {
+                synth.Frequency = SynthOnFrequency;
+                synth.Amplitude = SynthOnAmplitude;
+                synth.Enabled = true;
+            }
+            else
+            {
+                synth.Enabled = false;
+            }
+            synth.Disconnect();
+        }
+
+        public void UpdateSynthSettings()
+        {
+            synth.Connect();
+            synth.Frequency = SynthOnFrequency;
+            synth.Amplitude = SynthOnAmplitude;
+            synth.Disconnect();
+        }
+
         #endregion
 
     }
