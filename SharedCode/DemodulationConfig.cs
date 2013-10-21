@@ -48,7 +48,7 @@ namespace Analysis.EDM
             {
 
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "wide";
@@ -67,6 +67,10 @@ namespace Analysis.EDM
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
+                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
+                dg6.Name = "reflectedrf1Amplitude";
+                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
+                dg7.Name = "reflectedrf2Amplitude";
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
@@ -74,6 +78,8 @@ namespace Analysis.EDM
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
                 dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");
@@ -103,6 +109,10 @@ namespace Analysis.EDM
             // for testing out different centred-gate widths
             for (int i = 1; i < 10; i++)
                 AddFixedSliceConfig("wgate" + i, 2190, i * 20);
+
+            for (int i = 1; i < 30; i++)
+                AddFixedSliceConfig("pgate" + i, 2090 + i*10, 10);
+
 
             //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
             //// is centred and +0.7 fwhm.
@@ -178,6 +188,8 @@ namespace Analysis.EDM
             AddFixedSliceConfig("wideslowFixed", 2330, 150);
             // A narrow centre gate for correlation analysis
             AddFixedSliceConfig("cgateNarrowFixed", 2175, 25);
+            // A gate containing no molecules to look for edms caused by rf pickup
+            AddFixedSliceConfig("preMolecularBackground", 1900, 50);
             // A demodulation config for Kr
             AddFixedSliceConfig("centreFixedKr", 2950, 90);
 
@@ -234,7 +246,14 @@ namespace Analysis.EDM
             DemodulationConfigBuilder dcb = delegate(Block b)
             {
                 DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
+
+                //This dodgy bit of code is to make sure that the reflected rf power meters
+                // only select a single point in the centre of the rf pulse. It won't work
+                // if either of the rf pulses is centred at a time not divisible w/o rem. by 10us
+
+                int rf1CT = (int)b.Config.Settings["rf1CentreTime"];
+                int rf2CT = (int)b.Config.Settings["rf2CentreTime"];
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = name;
@@ -258,16 +277,32 @@ namespace Analysis.EDM
                 dg3.Integrate = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
+                dg4.Integrate = false; //Add this in to analyse By in 3 axis internal magnetometer tests
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
+                dg6 = new GatedDetectorExtractSpec();
+                dg6.Index = 6;
+                dg6.Name = "reflectedrf1Amplitude";
+                dg6.BackgroundSubtract = false;
+                dg6.GateLow = (rf1CT/10) -1;
+                dg6.GateHigh = (rf1CT / 10) + 1;
+                dg7 = new GatedDetectorExtractSpec();
+                dg7.Index = 7 ;
+                dg7.Name = "reflectedrf2Amplitude";
+                dg7.BackgroundSubtract = false;
+                dg7.GateLow = (rf2CT / 10) - 1;
+                dg7.GateHigh = (rf2CT / 10) + 1;
+
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
                 dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-                dc.GatedDetectorExtractSpecs.Add(dg5 .Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
 
                 dc.PointDetectorChannels.Add("MiniFlux1");
                 dc.PointDetectorChannels.Add("MiniFlux2");
@@ -276,6 +311,7 @@ namespace Analysis.EDM
                 dc.PointDetectorChannels.Add("SouthCurrent");
                 dc.PointDetectorChannels.Add("PumpPD");
                 dc.PointDetectorChannels.Add("ProbePD");
+                dc.PointDetectorChannels.Add("PhaseLockFrequency");
 
                 return dc;
             };

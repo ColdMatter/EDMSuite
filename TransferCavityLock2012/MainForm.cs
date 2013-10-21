@@ -209,6 +209,16 @@ namespace TransferCavityLock2012
             slaveLasers[name].AppendToErrorGraph(time, errordata);
         }
 
+        public void IncrementErrorCount(string name)
+        {
+            slaveLasers[name].Count++;
+        }
+
+        public int GetErrorCount(string name)
+        {
+            return slaveLasers[name].Count;
+        }
+
         public void ClearErrorGraph(string name)
         {
             slaveLasers[name].ClearErrorGraph();

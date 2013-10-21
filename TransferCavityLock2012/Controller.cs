@@ -30,7 +30,7 @@ namespace TransferCavityLock2012
         #region Declarations
 
         public const int default_ScanPoints = 700;
-        
+
         private MainForm ui;
         
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
@@ -49,7 +49,6 @@ namespace TransferCavityLock2012
         public ControllerState TCLState = ControllerState.STOPPED;
         public object rampStopLock = new object();
         public object tweakLock = new object();
-
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -251,7 +250,6 @@ namespace TransferCavityLock2012
             initializeAIHardware(sp);
 
             CavityScanData scanData;
-
             int count = 0;
           
             while (TCLState != ControllerState.STOPPED)
@@ -286,7 +284,7 @@ namespace TransferCavityLock2012
                         {
                             string slName = pair.Key;
                             SlaveLaser sl = pair.Value;
-
+                            
                             
                             //Some rearrangements to fit only when log fit slave lasers parameters on and/or lock slave lasers on.
                             plotSlaveNoFit(slName, scanData);
@@ -321,7 +319,7 @@ namespace TransferCavityLock2012
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
                                      
                                     sl.Lock();
-                                    RefreshErrorGraph(slName);
+                                    //RefreshErrorGraph(slName);
                                     count = 0;
                                     break;
 
@@ -331,11 +329,11 @@ namespace TransferCavityLock2012
                                     fits[slName + "Fits"] = fitSlave(slName, scanData);
                                     plotSlave(slName, scanData, fits[slName + "Fits"]);
 
-                                    plotError(slName, new double[] { count }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint });
+                                    plotError(slName, new double[] { getErrorCount(slName) }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint });
                                                                        
                                     sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
                                     RefreshLockParametersOnUI(sl.Name);
-
+                                    incrementCounter(slName);
                                     count++;
                                     break;
                             }
@@ -399,6 +397,17 @@ namespace TransferCavityLock2012
            ui.DisplayErrorData(name, time, error);
         }
 
+        private void incrementCounter(string name)
+        {
+            ui.IncrementErrorCount(name);
+        }
+
+        private int getErrorCount(string name)
+        {
+           return ui.GetErrorCount(name);
+        }
+
+
         private void RefreshErrorGraph(string name)
         {
             ui.ClearErrorGraph(name);
@@ -453,7 +462,7 @@ namespace TransferCavityLock2012
         {
             masterOutputTask = new Task("rampfeedback");
             masterChannel=(AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"];
-            masterChannel.AddToTask(masterOutputTask, -10, 10);
+            masterChannel.AddToTask(masterOutputTask, masterChannel.RangeLow, masterChannel.RangeHigh);
             masterOutputTask.Control(TaskAction.Verify);
             masterWriter = new AnalogSingleChannelWriter(masterOutputTask.Stream);
         }

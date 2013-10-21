@@ -1,6 +1,8 @@
 using System;
+using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -12,6 +14,7 @@ using NationalInstruments.DAQmx;
 using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.VisaNS;
+using System.Linq;
 
 using DAQ.HAL;
 using DAQ.Environment;
@@ -85,7 +88,7 @@ namespace EDMHardwareControl
         LeakageMonitor southLeakageMonitor = new LeakageMonitor("southLeakage", southVolt2FreqSlope, southFreq2AmpSlope, southOffset);
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
-        Task steppingBBiasAnalogOutputTask;
+        //Task steppingBBiasAnalogOutputTask;
         Task flPZTVAnalogOutputTask;
         Task flAOMAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
@@ -108,9 +111,13 @@ namespace EDMHardwareControl
         Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
         Task flPZT2OutputTask;
-        Task flPZT2TempOutputTask;
-        Task flPZT2CurOutputTask;
+        //Task flPZT2TempOutputTask;
+        //Task flPZT2CurOutputTask;
         Task fibreAmpOutputTask;
+        Task i2ErrorSignalInputTask;
+        Task i2BiasOutputTask;
+        Task eSwitchingOutputTask;
+        Task patternTTLOutputTask;
 
         AxMG17MotorLib.AxMG17Motor motorController1;
         AxMG17MotorLib.AxMG17Motor motorController2;
@@ -147,10 +154,14 @@ namespace EDMHardwareControl
             CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
-            CreateDigitalTask("rfCountSwBit1");
-            CreateDigitalTask("rfCountSwBit2");
+            //CreateDigitalTask("rfCountSwBit1");
+            //CreateDigitalTask("rfCountSwBit2");
             CreateDigitalTask("fibreAmpEnable");
             CreateDigitalTask("ttlSwitch");
+            CreateDigitalTask("I2PropSwitch");
+            CreateDigitalTask("I2IntSwitch");
+            CreateDigitalTask("eSwitching");
+            CreateDigitalTask("patternTTL");
 
             // digitial input tasks
             CreateDigitalInputTask("fibreAmpMasterErr");
@@ -169,7 +180,7 @@ namespace EDMHardwareControl
 
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
-            steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            //steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
@@ -180,10 +191,11 @@ namespace EDMHardwareControl
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
             flPZT2OutputTask = CreateAnalogOutputTask("flPZT2");
-            flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
-            flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
+            //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
+            //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
-            flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
+            //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
+            i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -199,21 +211,12 @@ namespace EDMHardwareControl
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
             //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
             diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
+            i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
+            
 
             // make the control window
             window = new ControlWindow();
             window.controller = this;
-
-            // initialise the motor controllers - this needs to be done
-            // after the window is made because the ActiveX object needs
-            // to live in the window.
-            motorController1 = window.motorController1;
-            motorController1.StartCtrl();
-            motorController2 = window.motorController2;
-            motorController2.StartCtrl();
-            // set the velocity and acceleration to maximum.
-            motorController1.SetVelParams(0, 0, 10, 14);
-            motorController2.SetVelParams(0, 0, 10, 14);
 
             Application.Run(window);
         }
@@ -1139,6 +1142,30 @@ namespace EDMHardwareControl
             }
         }
 
+        public double probePolBacklash
+        {
+            set
+            {
+                window.SetTextBox(window.probeBacklashTextBox, value.ToString());
+            }
+            get
+            {
+                return Double.Parse(window.probeBacklashTextBox.Text);
+            }
+        }
+
+        public double pumpPolBacklash
+        {
+            set
+            {
+                window.SetTextBox(window.pumpBacklashTextBox, value.ToString());
+            }
+            get
+            {
+                return Double.Parse(window.pumpBacklashTextBox.Text);
+            }
+        }
+
         public double pumpPolAngle
         {
             set
@@ -1246,8 +1273,44 @@ namespace EDMHardwareControl
             }
         }
 
+        public double RF1aGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf1aCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF2aGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf2aCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF1fGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf1fCentreGuessTextBox.Text);
+            }
+        }
+
+        public double RF2fGuess
+        {
+            get
+            {
+                return Double.Parse(window.rf2fCentreGuessTextBox.Text);
+            }
+        }
         public double SteppingBiasVoltage
         {
+            set
+            {
+                window.SetTextBox(window.steppingBBoxBiasTextBox, value.ToString());
+            }
+
             get
             {
                 return Double.Parse(window.steppingBBoxBiasTextBox.Text);
@@ -1463,13 +1526,13 @@ namespace EDMHardwareControl
             this.lf1State = lf1State;
 
             SetAnalogOutput(flPZTVAnalogOutputTask, calculateIodineAOMFrequency(lf1State));
-            //SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
         }
         public void SwitchLF2(bool lf2State)
         {
             this.lf2State = lf2State;
 
-            //SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
         }
 
         public void FieldsOff()
@@ -1482,10 +1545,14 @@ namespace EDMHardwareControl
             EFieldEnabled = false;
         }
 
-        private bool switchingEfield = false;
+        //private bool switchingEfield = false;
         public bool SwitchingEfields
         {
-            get { return switchingEfield; }
+            set
+            {
+                SetDigitalLine("eSwitching", value);
+            }
+
         }
 
         public void SwitchE()
@@ -1515,6 +1582,8 @@ namespace EDMHardwareControl
                 newEPolarity = state;
                 switchThread = new Thread(new ThreadStart(SwitchEWorker));
                 window.EnableControl(window.switchEButton, false);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
                 switchThread.Start();
             }
         }
@@ -1524,18 +1593,26 @@ namespace EDMHardwareControl
         double kNegativeChargeMin = -2;
         double kNegativeChargeMax = -20;
 
-        // this function switches the E field polarity with ramped turn on and off
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
         public void SwitchEWorker()
         {
+            
+            bool startingSynthState = GreenSynthEnabled;
             lock (switchingLock)
             {
                 // raise flag for switching E-fields
-                switchingEfield = true;
+                SwitchingEfields = true;
+                //switch off the synth
+                GreenSynthEnabled = false;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
-                // ramp the field down
-                RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                // ramp the field down if on
+                if (EFieldEnabled)
+                {
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime); 
+                }
                 // set as disabled
                 EFieldEnabled = false;
                 Thread.Sleep((int)(1000 * ERampDownDelay));
@@ -1547,17 +1624,17 @@ namespace EDMHardwareControl
                 CalculateVoltages();
                 // ramp the field up to the overshoot voltage
                 RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
-                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime); 
                 // impose the overshoot delay
                 Thread.Sleep((int)(1000 * EOvershootHold));
-                 // ramp back to the control point
+                // ramp back to the control point
                 RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
                                 EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
                 // set as enabled
                 EFieldEnabled = true;
                 // monitor the tail of the charging current to make sure the switches are
                 // working as they should (see spring2009 fiasco!)
-                Thread.Sleep((int)(1000 * ERampUpDelay));
+                Thread.Sleep((int)(1000 * ERampUpDelay)); 
                 window.SetLED(window.switchingLED, false);
 
                 // check that the switch was ok (i.e. that the relays really switched)
@@ -1570,7 +1647,7 @@ namespace EDMHardwareControl
                     // North plate should see -ve current and the South +ve
                     if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
                         && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
-                    {}
+                    { }
                     //else activateEAlarm(newEPolarity);
                 }
                 else
@@ -1582,6 +1659,7 @@ namespace EDMHardwareControl
                     //else activateEAlarm(newEPolarity);
                 }
             }
+            GreenSynthEnabled = startingSynthState;
             ESwitchDone();
         }
 
@@ -1594,7 +1672,7 @@ namespace EDMHardwareControl
 
         private void ESwitchDone()
         {
-            switchingEfield = false;
+            SwitchingEfields = false; 
             window.EnableControl(window.switchEButton, true);
         }
 
@@ -1656,6 +1734,8 @@ namespace EDMHardwareControl
                 CalculateVoltages();
                 SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
                 SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
                 //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
                 //SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
             }
@@ -1663,7 +1743,21 @@ namespace EDMHardwareControl
             {
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                window.EnableControl(window.ePolarityCheck, true);
+                window.EnableControl(window.eBleedCheck, true);
             }
+        }
+
+        public void SetCPlusVoltage(double voltage)
+        {
+            CPlusVoltage = voltage;
+            UpdateVoltages();
+        }
+
+        public void SetCMinusVoltage(double voltage)
+        {
+            CMinusVoltage = voltage;
+            UpdateVoltages();
         }
 
         public void UpdateRFFrequencyMonitor()
@@ -1740,6 +1834,58 @@ namespace EDMHardwareControl
             window.SetTextBox(window.rf2MinusPowerMon, String.Format("{0:F3}", rf2MinusPower));
             window.SetTextBox(window.rf2CentrePowerMon, String.Format("{0:F3}", ((rf2MinusPower + rf2PlusPower) / 2)));
             window.SetTextBox(window.rf2StepPowerMon, String.Format("{0:F3}", ((rf2PlusPower - rf2MinusPower) / 2)));
+
+        }
+
+        //This method is supposed to automate the process of setting rf attenuator settings before EDM data taking. 
+        //It assumes that the correct measured rfxa centre power is in the rfxaCentreGuessTextBoxes, and parses this 
+        //to use as its target.
+
+        public void AutomaticRFxACalculation()
+        {
+
+            double newRF1a = 0;
+            double newRF2a = 0;
+            int a = 0;
+            double gain = 0.2;
+
+            SetAttenutatorVoltages();
+            while (newRF1a != RF1aGuess & newRF2a != RF2aGuess & a < 5)
+            {
+                UpdateRFPowerMonitor();
+                newRF1a = RF1PowerCentre;
+                newRF2a = RF2PowerCentre;
+                RF1AttCentre = windowVoltage(RF1AttCentre + gain * (RF1aGuess - newRF1a), 0, 5);
+                RF2AttCentre = windowVoltage(RF2AttCentre + gain * (RF2aGuess - newRF2a), 0, 5);
+                SetAttenutatorVoltages();
+                a++;
+            }
+
+        }
+
+        //This method is supposed to automate the process of setting rf DCFM settings before EDM data taking. 
+        //It assumes that the correct measured rfxf centre freq is in the rfxfCentreGuessTextBoxes, and parses this 
+        //to use as its target.
+
+        public void AutomaticRFxFCalculation()
+        {
+
+            double newRF1f = 0;
+            double newRF2f = 0;
+            int a = 0;
+            double gain = 0.000025;
+
+            SetFMVoltages();
+            while (newRF1f != RF1fGuess & newRF2f != RF2fGuess & a < 5)
+            {
+                UpdateRFFrequencyMonitor();
+                newRF1f = RF1FrequencyCentre;
+                newRF2f = RF2FrequencyCentre;
+                RF1FMCentre = windowVoltage(RF1FMCentre + gain * (RF1fGuess - newRF1f), 0, 1);
+                RF2FMCentre = windowVoltage(RF2FMCentre + gain * (RF2fGuess - newRF2f), 0, 1);
+                SetFMVoltages();
+                a++;
+            }
 
         }
 
@@ -1824,18 +1970,50 @@ namespace EDMHardwareControl
 
         private double lastNorthCurrent;
         private double lastSouthCurrent;
+        private Queue<double> nCurrentSamples = new Queue<double>();
+        private Queue<double> sCurrentSamples = new Queue<double>();
         public void UpdateIMonitor()
         {
             ReconfigureIMonitors();
+
+            //sample the leakage current
             lastNorthCurrent = northLeakageMonitor.GetCurrent();
             lastSouthCurrent = southLeakageMonitor.GetCurrent();
-            window.SetTextBox(window.northIMonitorTextBox, (lastNorthCurrent).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (lastSouthCurrent).ToString());
+
+            //plot the most recent samples
             window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-                                    new double[] { lastNorthCurrent });
+                        new double[] { lastNorthCurrent });
             window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
                                     new double[] { lastSouthCurrent });
 
+            //add samples to Queues for averaging
+            nCurrentSamples.Enqueue(lastNorthCurrent);
+            sCurrentSamples.Enqueue(lastSouthCurrent);
+
+            //drop samples when array is larger than the moving average sample length
+            while (nCurrentSamples.Count > movingAverageSampleLength)
+            {
+                nCurrentSamples.Dequeue();
+                sCurrentSamples.Dequeue();
+            }
+
+            //average samples
+            double nAvCurr = nCurrentSamples.Average();
+            double sAvCurr = sCurrentSamples.Average();
+            double nAvCurrErr = Math.Sqrt((nCurrentSamples.Sum(d => Math.Pow(d - nAvCurr, 2))) / (nCurrentSamples.Count() - 1)) / (Math.Sqrt(nCurrentSamples.Count()));
+            double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
+
+            //update text boxes
+            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+        }
+
+        public void ClearIMonitorAv()
+        {
+            nCurrentSamples.Clear();
+            sCurrentSamples.Clear();
         }
 
         List<double> northCList = new List<double>();
@@ -1913,6 +2091,7 @@ namespace EDMHardwareControl
         private object iMonitorLock = new object();
         private bool iMonitorStopFlag = false;
         private int iMonitorPollPeriod = 200;
+        private int movingAverageSampleLength = 10;
         internal void StartIMonitorPoll()
         {
             lock (iMonitorLock)
@@ -1921,6 +2100,9 @@ namespace EDMHardwareControl
                 window.EnableControl(window.startIMonitorPollButton, false);
                 window.EnableControl(window.stopIMonitorPollButton, true);
                 iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+                movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
+                nCurrentSamples.Clear();
+                sCurrentSamples.Clear();
                 iMonitorPollThread.Start();
             }
 
@@ -1991,9 +2173,12 @@ namespace EDMHardwareControl
             window.EnableControl(window.startIRecordButton, true);
             window.EnableControl(window.stopIRecordButton, false);
         }
+
         internal void SaveToFile()
         {
-            using (StreamWriter sw = new StreamWriter("F://Data//general//LeakageCurrent.csv"))
+            string path = Environs.FileSystem.GetDataDirectory((String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            string name = Environs.FileSystem.GenerateNextDataFileName();
+            using (StreamWriter sw = new StreamWriter(path + name + ".csv"))
             {
                 sw.WriteLine(DateTime.Now);
                 sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
@@ -2060,6 +2245,20 @@ namespace EDMHardwareControl
                                     new double[] { diodeCurrentMonValue });
         }
 
+        public void UpdateI2ErrorSigMonitor()
+        {
+            double i2ErrorSigVal = ReadAnalogInput(i2ErrorSignalInputTask);
+            window.SetTextBox(window.I2ErrorSigTextBox, i2ErrorSigVal.ToString());
+        }
+
+        public void UpdateI2ErrorSigGraphAndMonitor()
+        {
+            double i2ErrorSigVal = ReadAnalogInput(i2ErrorSignalInputTask);
+            window.SetTextBox(window.I2ErrorSigTextBox, i2ErrorSigVal.ToString());
+            window.PlotYAppend(window.I2ErrorSigGraph, window.I2ErrorSigPlot,
+                new double[] { i2ErrorSigVal });
+        }
+
         public void UpdateFibreAmpFaults()
         {
             window.fibreAmpMasterFaultLED.Value =! ReadDigitalLine("fibreAmpMasterErr");
@@ -2110,6 +2309,57 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopDiodeCurrentPollButton, false);
         }
 
+        private Thread i2ErrorSigMonitorPollThread;
+        private object i2ErrorSigMonitorLock = new object();
+        private bool i2ErrorSigMonitorStopFlag = false;
+        private int i2ErrorSigMonitorPollPeriod = 250;
+        internal void StartI2ErrorSigPoll()
+        {
+            lock (i2ErrorSigMonitorLock)
+            {
+                i2ErrorSigMonitorPollThread = new Thread(new ThreadStart(i2ErrorSigMonitorPollWorker));
+                window.EnableControl(window.startI2ErrorSigPollButton, false);
+                window.EnableControl(window.stopI2ErrorSigPollButton, true);
+                i2ErrorSigMonitorPollPeriod = Int32.Parse(window.I2ErrorPollPeriodTextBox.Text);
+                i2ErrorSigMonitorPollThread.Start();
+            }
+
+        }
+
+        internal void StopI2ErrorSigPoll()
+        {
+            lock (i2ErrorSigMonitorLock) i2ErrorSigMonitorStopFlag = true;
+        }
+
+        private void i2ErrorSigMonitorPollWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(i2ErrorSigMonitorPollPeriod);
+                UpdateI2ErrorSigGraphAndMonitor();
+                lock (i2ErrorSigMonitorLock)
+                {
+                    if (i2ErrorSigMonitorStopFlag)
+                    {
+                        i2ErrorSigMonitorStopFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startI2ErrorSigPollButton, true);
+            window.EnableControl(window.stopI2ErrorSigPollButton, false);
+        }
+
+        public void SetI2Bias(double value)
+        {
+            if (value <= 5.0 && value >= 0.0)
+            {
+                SetAnalogOutput(i2BiasOutputTask, value);
+                window.I2BiasVoltageTextBox.Text = value.ToString();
+            }
+            return;
+        }
+
         public void SetflPZT2(double value)
         {
             if (value < 0)
@@ -2133,13 +2383,15 @@ namespace EDMHardwareControl
         }
 
         public void SetFLPZT2Temp()
+            //FUNCTION DEPRECIATED
         {
-            SetAnalogOutput(flPZT2TempOutputTask, FLPZT2Temp);
+           // SetAnalogOutput(flPZT2TempOutputTask, FLPZT2Temp); 
         }
 
         public void SetFLPZT2Cur()
+            //FUNCTION DEPRECIATED
         {
-            SetAnalogOutput(flPZT2CurOutputTask, FLPZT2Cur);
+           // SetAnalogOutput(flPZT2CurOutputTask, FLPZT2Cur);
         }
 
 
@@ -2237,7 +2489,7 @@ namespace EDMHardwareControl
             double diff = 0;
             double I2PlusFreq = 0;
             double I2MinusFreq = 0;
-            int averages = 3;       //The averaging is to remove glitches in the measured step caused by the AOM modulation, which would play havoc with the Pump AOM locking scheme 
+            int averages = 1;       //The averaging is to remove glitches in the measured step caused by the AOM modulation, which would play havoc with the Pump AOM locking scheme 
 
                 window.SetRadioButton(window.FLPZTStepPlusButton, true);
                 UpdateFLPZTV();
@@ -2318,29 +2570,29 @@ namespace EDMHardwareControl
             VCOConvFrac = i2Coeff / pumpAOMCoeff;
         }
 
-        internal void UpdateProbePolarizerAngle()
-        {
-            motorController1.MoveAbsoluteEx(0,
-                (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
-        }
+        //internal void UpdateProbePolarizerAngle()
+        //{
+        //    motorController1.MoveAbsoluteEx(0,
+        //        (int)Double.Parse(window.probePolarizerAngleTextBox.Text), 0, true);
+        //}
 
-        internal void UpdatePumpPolarizerAngle()
-        {
-            motorController2.MoveAbsoluteEx(0,
-                (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
-        }
+        //internal void UpdatePumpPolarizerAngle()
+        //{
+        //    motorController2.MoveAbsoluteEx(0,
+        //        (int)Double.Parse(window.pumpPolarizerAngleTextBox.Text), 0, true);
+        //}
 
-        public void SetProbePolarizerAngle(double theta)
-        {
-            window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
-            UpdateProbePolarizerAngle();
-        }
+        //public void SetProbePolarizerAngle(double theta)
+        //{
+        //    window.SetTextBox(window.probePolarizerAngleTextBox, theta.ToString());
+        //    UpdateProbePolarizerAngle();
+        //}
 
-        public void SetPumpPolarizerAngle(double theta)
-        {
-            window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
-            UpdatePumpPolarizerAngle();
-        }
+        //public void SetPumpPolarizerAngle(double theta)
+        //{
+        //    window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
+        //    UpdatePumpPolarizerAngle();
+        //}
 
         public void EnableGreenSynth(bool enable)
         {
@@ -2357,6 +2609,9 @@ namespace EDMHardwareControl
             }
             greenSynth.Disconnect();
         }
+
+
+
 
         public void EnableRFSwitch(bool enable)
         {
@@ -2417,11 +2672,13 @@ namespace EDMHardwareControl
         public void SetBFlip(bool enable)
         {
             SetDigitalLine("b", enable);
+            //SetDigitalLine("notB", !enable);
         }
 
         public void SetCalFlip(bool enable)
         {
             SetDigitalLine("notDB", !enable);
+            //SetDigitalLine("DB", enable);
         }
 
         public void SelectGreenDCFM(bool enable)
@@ -2477,6 +2734,12 @@ namespace EDMHardwareControl
             window.switchScanTTLSwitch.Value = enable;
         }
 
+        public void SetPatternTTL(bool enable)
+        {
+            SetDigitalLine("patternTTL", enable);
+        }
+
+
         public void SetScanningBVoltage()
         {
             double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
@@ -2498,33 +2761,30 @@ namespace EDMHardwareControl
 
         public void SetSteppingBBiasVoltage()
         {
-            double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
-            bfieldCntrl.SetOut1(bBoxVoltage);
+            bfieldCntrl.SetOut1(SteppingBiasVoltage);
         }
 
         public void SetRandomProbePosition()
         {
-            probePolCont.SetRandomPosition();
+            probePolCont.SetRandomPosition(probePolBacklash);
         }
 
         public void SetRandomPumpPosition()
         {
-            pumpPolCont.SetRandomPosition();
+            pumpPolCont.SetRandomPosition(pumpPolBacklash);
         }
 
 
         public void SetProbePolAngle()
         {
             double probePolariserAngle = Double.Parse(window.probePolSetAngle.Text);
-            probePolCont.SetPosition(probePolariserAngle);
+            probePolCont.SetPositionWithBacklash(probePolariserAngle,probePolBacklash);
         }
         
-        
-
         public void SetPumpPolAngle()
         {
             double pumpPolariserAngle = Double.Parse(window.pumpPolSetAngle.Text);
-            pumpPolCont.SetPosition(pumpPolariserAngle);
+            pumpPolCont.SetPositionWithBacklash(pumpPolariserAngle,pumpPolBacklash);
         }
         
         public void UpdateProbePolAngleMonitor()
@@ -2651,7 +2911,10 @@ namespace EDMHardwareControl
                 UpdatePumpPolMode();
                 pumpPolCont.SetPosition(0);
 
-                while (probePolAngle * probePolAngle >= 1 && pumpPolAngle * pumpPolAngle >= 1) //To make sure that they've made it back to zero (more or less)
+                UpdateProbePolAngleMonitor();
+                UpdatePumpPolAngleMonitor();
+
+                while (probePolAngle * probePolAngle >= 1 || pumpPolAngle * pumpPolAngle >= 1) //To make sure that they've made it back to zero (more or less)
                 {
                     UpdateProbePolAngleMonitor();
                     UpdatePumpPolAngleMonitor();
@@ -2680,21 +2943,22 @@ namespace EDMHardwareControl
         {
             double targetBias = Math.Round(BiasCurrent);
 
-            double guessBiasVoltage = 0;
+            //double guessBiasVoltage = SteppingBiasVoltage;
             double newBias = 0;
             int a = 0;
             int bSign = BManualState ? 1 : -1;
-            double gain = 0.001;
+            double gain = 0.0005;
 
             SetSteppingBBiasVoltage();
 
-            while (newBias != targetBias | a < 5)
+            while (newBias != targetBias & a < 5)
             {
                 UpdateBCurrentMonitor();
                 newBias = Math.Round(BiasCurrent);
-                guessBiasVoltage = guessBiasVoltage + bSign * gain * (targetBias - BiasCurrent);
-                SetSteppingBBiasVoltage(guessBiasVoltage);
-                a = a + 1;
+                SteppingBiasVoltage = SteppingBiasVoltage + bSign * gain * (targetBias - newBias);
+                SetSteppingBBiasVoltage();
+                //SetSteppingBBiasVoltage(guessBiasVoltage);
+                a++;
             }
 
         }
@@ -2720,7 +2984,7 @@ namespace EDMHardwareControl
             double pztVoltage = FLPZTVoltage;
             if (window.FLPZTStepMinusButton.Checked) pztVoltage -= FLPZTStep;
             if (window.FLPZTStepPlusButton.Checked) pztVoltage += FLPZTStep;
-            pztVoltage = windowVoltage(pztVoltage, 0, 5);
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
             SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
             window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
         }
@@ -2781,6 +3045,11 @@ namespace EDMHardwareControl
         }
 
         // these are here as it seems IronPython has trouble setting attributes remotely
+
+        public void SetGreenSynthAmp(double amp)
+        {
+            GreenSynthOnAmplitude = windowVoltage(amp, -30, 16);
+        }
         public void SetRF1AttCentre(double v)
         {
             RF1AttCentre = windowVoltage(v, 0, 5);
@@ -2832,6 +3101,19 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf1FMOutputTask, rf1FMVoltage);
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
+
+        public void SetI2ProportionalLock(bool state)
+        {
+            SetDigitalLine("I2PropSwitch", state);
+            return;
+        }
+
+        public void SetI2IntegralLock(bool state)
+        {
+            SetDigitalLine("I2IntSwitch", state);
+            return;
+        }
+
         #endregion
 
     }

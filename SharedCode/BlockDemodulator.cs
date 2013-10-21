@@ -190,12 +190,21 @@ namespace Analysis.EDM
         // DemodulateBlockNL augments the channel values returned by DemodulateBlock
         // with several non-linear combinations of channels (E.B/DB, the correction, etc).
         // These non-linear channels are calculated point-by-point for the TOF and then
-        // integrated according to the Demodulation config. For reasons of speed they are
-        // only calculated for the "topNormed" detector.
+        // integrated according to the Demodulation config. This is calculated for top and 
+        // topNormed detectors only for speed. 
+        // 
         public DemodulatedBlock DemodulateBlockNL(Block b, DemodulationConfig config)
         {
             // we start with the standard demodulated block
             DemodulatedBlock dblock = DemodulateBlock(b, config);
+            // First do everything for the un-normalised top detector
+            int tdi = dblock.DetectorIndices["top"];
+            // TOF demodulate the block to get the channel wiggles
+            // the BlockTOFDemodulator only demodulates the PMT detector
+            BlockTOFDemodulator btdt = new BlockTOFDemodulator();
+            TOFChannelSet tcst = btdt.TOFDemodulateBlock(b, tdi, false);
+            
+            // now repeat having normed the block
             // normalise the PMT signal
             b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
             int tndi = dblock.DetectorIndices["topNormed"];
@@ -203,6 +212,7 @@ namespace Analysis.EDM
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
             TOFChannelSet tcs = btd.TOFDemodulateBlock(b, tndi, false);
+            
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["top"];
 
@@ -256,6 +266,61 @@ namespace Analysis.EDM
             TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel( "BRF2FCORRDB" );
             double brf2fCorrDBG = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
+            //Repeat for top
+
+            
+            TOFChannel edmDBtop = (TOFChannel)tcst.GetChannel("EDMDB");
+            double edmDBGtop = edmDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel corrDBtop = (TOFChannel)tcst.GetChannel("CORRDB");
+            double corrDBGtop = corrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel edmCorrDBtop = (TOFChannel)tcst.GetChannel("EDMCORRDB");
+            double edmCorrDBGtop = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel corrDB_oldtop = (TOFChannel)tcst.GetChannel("CORRDB_OLD");
+            double corrDBG_oldtop = corrDB_old.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel edmCorrDB_oldtop = (TOFChannel)tcst.GetChannel("EDMCORRDB_OLD");
+            double edmCorrDBG_oldtop = edmCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1fDBtop = (TOFChannel)tcst.GetChannel("RF1FDB");
+            double rf1fDBGtop = rf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2fDBtop = (TOFChannel)tcst.GetChannel("RF2FDB");
+            double rf2fDBGtop = rf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1fDBDBtop = (TOFChannel)tcst.GetChannel("RF1FDBDB");
+            double rf1fDBDBGtop = rf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2fDBDBtop = (TOFChannel)tcst.GetChannel("RF2FDBDB");
+            double rf2fDBDBGtop = rf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1aDBtop = (TOFChannel)tcst.GetChannel("RF1ADB");
+            double rf1aDBGtop = rf1aDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2aDBtop = (TOFChannel)tcst.GetChannel("RF2ADB");
+            double rf2aDBGtop = rf2aDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf1aDBDBtop = (TOFChannel)tcst.GetChannel("RF1ADBDB");
+            double rf1aDBDBGtop = rf1aDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel rf2aDBDBtop = (TOFChannel)tcst.GetChannel("RF2ADBDB");
+            double rf2aDBDBGtop = rf2aDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf1DBtop = (TOFChannel)tcst.GetChannel("LF1DB");
+            double lf1DBGtop = lf1DB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf1DBDBtop = (TOFChannel)tcst.GetChannel("LF1DBDB");
+            double lf1DBDBGtop = lf1DBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf2DBtop = (TOFChannel)tcst.GetChannel("LF2DB");
+            double lf2DBGtop = lf2DB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel lf2DBDBtop = (TOFChannel)tcst.GetChannel("LF2DBDB");
+            double lf2DBDBGtop = lf2DBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel BDBtop = (TOFChannel)tcst.GetChannel("BDB");
+            double BDBGtop = BDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf1fDBtop = (TOFChannel)tcst.GetChannel("ERF1FDB");
+            double erf1fDBGtop = erf1fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf2fDBtop = (TOFChannel)tcst.GetChannel("ERF2FDB");
+            double erf2fDBGtop = erf2fDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf1fDBDBtop = (TOFChannel)tcst.GetChannel("ERF1FDBDB");
+            double erf1fDBDBGtop = erf1fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel erf2fDBDBtop = (TOFChannel)tcst.GetChannel("ERF2FDBDB");
+            double erf2fDBDBGtop = erf2fDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel brf1fCorrDBtop = (TOFChannel)tcst.GetChannel("BRF1FCORRDB");
+            double brf1fCorrDBGtop = brf1fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel brf2fCorrDBtop = (TOFChannel)tcst.GetChannel("BRF2FCORRDB");
+            double brf2fCorrDBGtop = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+
+
+
+
             // we bodge the errors, which aren't really used for much anyway
             // by just using the error from the normal dblock. I ignore the error in DB.
             // I use the simple correction error for the full correction. Doesn't much matter.
@@ -290,6 +355,40 @@ namespace Analysis.EDM
             double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double BDBE = dcv.GetError(new string[] { "B" }) / dcv.GetValue(new string[] { "DB" });
 
+            //repeat for top
+            DetectorChannelValues dcvt = dblock.ChannelValues[tdi];
+            double lf2DBEtop = dcvt.GetError(new string[] { "LF2" }) / dcvt.GetValue(new string[] { "DB" }); //Change the db channel back to topNormed
+            double lf2DBDBEtop = dcvt.GetError(new string[] { "DB", "LF2" }) / dcvt.GetValue(new string[] { "DB" }); //Change the db channel back to topNormed
+
+            double edmDBEtop = dcvt.GetError(new string[] { "E", "B" }) / dcvt.GetValue(new string[] { "DB" });
+            double corrDBEtop = Math.Sqrt(
+                Math.Pow(dcvt.GetValue(new string[] { "E", "DB" }) * dcvt.GetError(new string[] { "B" }), 2) +
+                Math.Pow(dcvt.GetValue(new string[] { "B" }) * dcvt.GetError(new string[] { "E", "DB" }), 2))
+                / Math.Pow(dcvt.GetValue(new string[] { "DB" }), 2);
+            double edmCorrDBEtop = Math.Sqrt(Math.Pow(edmDBEtop, 2) + Math.Pow(corrDBEtop, 2));
+
+            double rf1fDBEtop = dcvt.GetError(new string[] { "RF1F" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf2fDBEtop = dcvt.GetError(new string[] { "RF2F" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf1fDBDBEtop = dcvt.GetError(new string[] { "DB", "RF1F" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf2fDBDBEtop = dcvt.GetError(new string[] { "DB", "RF2F" }) / dcvt.GetValue(new string[] { "DB" });
+
+            double rf1aDBEtop = dcvt.GetError(new string[] { "RF1A" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf2aDBEtop = dcvt.GetError(new string[] { "RF2A" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf1aDBDBEtop = dcvt.GetError(new string[] { "DB", "RF1A" }) / dcvt.GetValue(new string[] { "DB" });
+            double rf2aDBDBEtop = dcvt.GetError(new string[] { "DB", "RF2A" }) / dcvt.GetValue(new string[] { "DB" });
+
+            double lf1DBEtop = dcvt.GetError(new string[] { "LF1" }) / dcvt.GetValue(new string[] { "DB" });
+            double lf1DBDBEtop = dcvt.GetError(new string[] { "DB", "LF1" }) / dcvt.GetValue(new string[] { "DB" });
+
+            double brf1fDBEtop = dcvt.GetError(new string[] { "B", "RF1F" }) / dcvt.GetValue(new string[] { "DB" });
+            double brf2fDBEtop = dcvt.GetError(new string[] { "B", "RF2F" }) / dcvt.GetValue(new string[] { "DB" });
+            double erf1fDBEtop = dcvt.GetError(new string[] { "E", "RF1F" }) / dcvt.GetValue(new string[] { "DB" });
+            double erf2fDBEtop = dcvt.GetError(new string[] { "E", "RF2F" }) / dcvt.GetValue(new string[] { "DB" });
+            double erf1fDBDBEtop = dcvt.GetError(new string[] { "E", "DB", "RF1F" }) / dcvt.GetValue(new string[] { "DB" });
+            double erf2fDBDBEtop = dcvt.GetError(new string[] { "E", "DB", "RF2F" }) / dcvt.GetValue(new string[] { "DB" });
+            double BDBEtop = dcvt.GetError(new string[] { "B" }) / dcvt.GetValue(new string[] { "DB" });
+
+
 
             // stuff the data into the dblock
             dblock.ChannelValues[tndi].SpecialValues["EDMDB"] = new double[] { edmDBG, edmDBE };
@@ -316,6 +415,33 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["LF2DB"] = new double[] { lf2DBG, lf2DBE };
             dblock.ChannelValues[tndi].SpecialValues["LF2DBDB"] = new double[] { lf2DBDBG, lf2DBDBE };
             dblock.ChannelValues[tndi].SpecialValues["BDB"] = new double[] { BDBG, BDBE };
+
+
+            dblock.ChannelValues[tdi].SpecialValues["EDMDB"] = new double[] { edmDBGtop, edmDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["CORRDB"] = new double[] { corrDBGtop, corrDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["EDMCORRDB"] = new double[] { edmCorrDBGtop, edmCorrDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["CORRDB_OLD"] = new double[] { corrDBG_oldtop, corrDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["EDMCORRDB_OLD"] = new double[] { edmCorrDBG_oldtop, edmCorrDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF1FDB"] = new double[] { rf1fDBGtop, rf1fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF2FDB"] = new double[] { rf2fDBGtop, rf2fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF1FDBDB"] = new double[] { rf1fDBDBGtop, rf1fDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF2FDBDB"] = new double[] { rf2fDBDBGtop, rf2fDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF1ADB"] = new double[] { rf1aDBGtop, rf1aDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF2ADB"] = new double[] { rf2aDBGtop, rf2aDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF1ADBDB"] = new double[] { rf1aDBDBGtop, rf1aDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["RF2ADBDB"] = new double[] { rf2aDBDBGtop, rf2aDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["BRF1FCORRDB"] = new double[] { brf1fCorrDBGtop, brf1fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["BRF2FCORRDB"] = new double[] { brf2fCorrDBGtop, brf2fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["ERF1FDB"] = new double[] { erf1fDBGtop, erf1fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["ERF2FDB"] = new double[] { erf2fDBGtop, erf2fDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["ERF1FDBDB"] = new double[] { erf1fDBDBGtop, erf1fDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["ERF2FDBDB"] = new double[] { erf2fDBDBGtop, erf2fDBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["LF1DB"] = new double[] { lf1DBGtop, lf1DBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["LF1DBDB"] = new double[] { lf1DBDBGtop, lf1DBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["LF2DB"] = new double[] { lf2DBGtop, lf2DBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["LF2DBDB"] = new double[] { lf2DBDBGtop, lf2DBDBEtop };
+            dblock.ChannelValues[tdi].SpecialValues["BDB"] = new double[] { BDBGtop, BDBEtop };
+
 
             return dblock;
         }

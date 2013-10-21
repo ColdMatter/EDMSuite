@@ -333,7 +333,7 @@ namespace EDMBlockHead.Acquire
             switchedChannels.Add(lf1Channel);
 
             HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
-            lf1Channel.Channel = "pumpAOM";
+            lf2Channel.Channel = "pumpAOM";
             lf2Channel.Modulation = config.GetModulationByName("LF2");
             switchedChannels.Add(lf2Channel);
 
@@ -352,9 +352,10 @@ namespace EDMBlockHead.Acquire
         public void MapAnalogInputs()
         {
             inputs = new ScannedAnalogInputCollection();
-            inputs.RawSampleRate = 100000;
+            inputs.RawSampleRate = 100000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
             inputs.GateLength = 220;
+            //inputs.GateLength = 1000;
             // NOTE: this long version is for null runs, don't set it so long that the shots overlap!
             // Comment the following line out if you're not null running.
             //inputs.GateLength = 3000;
@@ -391,32 +392,62 @@ namespace EDMBlockHead.Acquire
             normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
             inputs.Channels.Add(normPMT);
 
+            //ScannedAnalogInput mag = new ScannedAnalogInput();
+            //mag.ReductionMode = DataReductionMode.Average;
+            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
+            //mag.AverageEvery = 20;
+            //mag.LowLimit = -10;
+            //mag.HighLimit = 10;
+            //mag.Calibration = 0.00001;
+            //inputs.Channels.Add(mag);
+
             ScannedAnalogInput mag = new ScannedAnalogInput();
-            mag.ReductionMode = DataReductionMode.Average;
+            mag.ReductionMode = DataReductionMode.Chop;
             mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
-            mag.AverageEvery = 20;
+            mag.ChopStart = 0;
+            mag.ChopLength = 220;
             mag.LowLimit = -10;
             mag.HighLimit = 10;
             mag.Calibration = 0.00001;
             inputs.Channels.Add(mag);
 
+            //ScannedAnalogInput gnd = new ScannedAnalogInput();
+            //gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
+            //gnd.ReductionMode = DataReductionMode.Average;
+            //gnd.AverageEvery = 20;
+            //gnd.LowLimit = -1;
+            //gnd.HighLimit = 1;
+            //gnd.Calibration = 1;
+            //inputs.Channels.Add(gnd);
+
             ScannedAnalogInput gnd = new ScannedAnalogInput();
             gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
-            gnd.ReductionMode = DataReductionMode.Average;
-            gnd.AverageEvery = 20;
-            gnd.LowLimit = -1;
-            gnd.HighLimit = 1;
-            gnd.Calibration = 1;
+            gnd.ReductionMode = DataReductionMode.Chop;
+            gnd.ChopStart = 0;
+            gnd.ChopLength = 220;
+            gnd.LowLimit = -10;
+            gnd.HighLimit = 10;
+            gnd.Calibration = 0.00001;
             inputs.Channels.Add(gnd);
+
+            //ScannedAnalogInput battery = new ScannedAnalogInput();
+            //battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
+            //battery.ReductionMode = DataReductionMode.Chop;
+            //battery.ChopStart = 140;
+            //battery.ChopLength = 80;
+            //battery.LowLimit = 0;
+            //battery.HighLimit = 10;
+            //battery.Calibration = 1;
+            //inputs.Channels.Add(battery);
 
             ScannedAnalogInput battery = new ScannedAnalogInput();
             battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
             battery.ReductionMode = DataReductionMode.Chop;
-            battery.ChopStart = 140;
-            battery.ChopLength = 80;
-            battery.LowLimit = 0;
+            battery.ChopStart = 0;
+            battery.ChopLength = 220;
+            battery.LowLimit = -10;
             battery.HighLimit = 10;
-            battery.Calibration = 1;
+            battery.Calibration = 0.00001;
             inputs.Channels.Add(battery);
 
             ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
@@ -426,6 +457,24 @@ namespace EDMBlockHead.Acquire
             rfCurrent.LowLimit = -10;
             rfCurrent.HighLimit = 10;
             inputs.Channels.Add(rfCurrent);
+
+            ScannedAnalogInput reflectedrf1Amplitude = new ScannedAnalogInput();
+            reflectedrf1Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf1Amplitude"];
+            reflectedrf1Amplitude.ReductionMode = DataReductionMode.Chop;
+            reflectedrf1Amplitude.ChopStart = 30;
+            reflectedrf1Amplitude.ChopLength = 130;
+            reflectedrf1Amplitude.LowLimit = -10;
+            reflectedrf1Amplitude.HighLimit = 1;
+            inputs.Channels.Add(reflectedrf1Amplitude);
+
+            ScannedAnalogInput reflectedrf2Amplitude = new ScannedAnalogInput();
+            reflectedrf2Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf2Amplitude"];
+            reflectedrf2Amplitude.ReductionMode = DataReductionMode.Chop;
+            reflectedrf2Amplitude.ChopStart = 30;
+            reflectedrf2Amplitude.ChopLength = 130;
+            reflectedrf2Amplitude.LowLimit = -10;
+            reflectedrf2Amplitude.HighLimit = 1;
+            inputs.Channels.Add(reflectedrf2Amplitude);
         }
 
         ///* THIS VERSION FOR He/Kr */

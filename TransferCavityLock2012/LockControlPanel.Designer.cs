@@ -48,14 +48,17 @@
             this.SlaveFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ErrorScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.ErrorPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
-            this.ErrorPlot = new NationalInstruments.UI.ScatterPlot();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.slErrorResetButton = new System.Windows.Forms.Button();
             this.lockParams.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lockParams
@@ -245,11 +248,6 @@
             this.ErrorScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
             // 
-            // xAxis2
-            // 
-            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
-            // 
             // ErrorPlot
             // 
             this.ErrorPlot.LineColor = System.Drawing.Color.Red;
@@ -257,11 +255,37 @@
             this.ErrorPlot.XAxis = this.xAxis2;
             this.ErrorPlot.YAxis = this.yAxis2;
             // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.slErrorResetButton);
+            this.groupBox2.Location = new System.Drawing.Point(589, 158);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(355, 131);
+            this.groupBox2.TabIndex = 16;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Error Signal Parameters";
+            // 
+            // slErrorResetButton
+            // 
+            this.slErrorResetButton.Location = new System.Drawing.Point(9, 19);
+            this.slErrorResetButton.Name = "slErrorResetButton";
+            this.slErrorResetButton.Size = new System.Drawing.Size(109, 23);
+            this.slErrorResetButton.TabIndex = 29;
+            this.slErrorResetButton.Text = "Reset Graph";
+            this.slErrorResetButton.UseVisualStyleBackColor = true;
+            this.slErrorResetButton.Click += new System.EventHandler(this.slErrorResetButton_Click);
+            // 
             // LockControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lockParams);
             this.Name = "LockControlPanel";
@@ -272,6 +296,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).EndInit();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -301,5 +326,7 @@
         private NationalInstruments.UI.ScatterPlot ErrorPlot;
         private NationalInstruments.UI.XAxis xAxis2;
         private NationalInstruments.UI.YAxis yAxis2;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button slErrorResetButton;
     }
 }

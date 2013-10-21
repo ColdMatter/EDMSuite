@@ -4,8 +4,8 @@ def condition(switchTime):
 	switchCount = 1
 	#loop forever
 	while switchCount > 0:
-		print("Switching E " + str(switchCount))
 		hc.SwitchEAndWait()
+		print "Switch count "+str(switchCount)
 		System.Threading.Thread.Sleep(1000 * switchTime)
 		switchCount = switchCount + 1
 

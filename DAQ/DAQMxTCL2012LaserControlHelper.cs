@@ -34,7 +34,7 @@ namespace DAQ.TransferCavityLock2012
             outputLaserTask = new Task("FeedbackToLaser" + laserChannelName);
             laserChannel =
                     (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[laserChannelName];
-            laserChannel.AddToTask(outputLaserTask, -10, 10);
+            laserChannel.AddToTask(outputLaserTask, laserChannel.RangeLow, laserChannel.RangeHigh);
             outputLaserTask.Control(TaskAction.Verify);
             laserWriter = new AnalogSingleChannelWriter(outputLaserTask.Stream);
             laserWriter.WriteSingleSample(true, voltage);

@@ -25,6 +25,7 @@ namespace EDMBlockHead.Acquire.Input
 		public double LowLimit;
 		public double HighLimit;
 		public double Calibration;
+        public int[] ChosenPoints = new int[1]; 
 
 		public double[] Reduce(double[] rawData)
 		{
@@ -50,6 +51,16 @@ namespace EDMBlockHead.Acquire.Input
 				return data;
 			}
 
+            //This allows you to choose two points in the tof to serve as your detector. 
+            //Designed for the rf reflected Amplitude 
+            //if (ReductionMode == DataReductionMode.Select)
+            //{
+            //    int length = ChosenPoints.Length;
+            //    double[] data = new double[length];
+            //    foreach (int q in ChosenPoints) data[q] = rawData[q];
+            //    return data;
+            //}
+
 			return rawData;
 		}
 
@@ -73,6 +84,7 @@ namespace EDMBlockHead.Acquire.Input
 	{
 		None,
 		Chop,
-		Average
+		Average,
+        Select
 	}
 }

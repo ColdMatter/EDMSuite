@@ -55,13 +55,12 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
 	hc.UpdatePumpAOMFreqMonitor()
-	#hc.UpdateVCOFraction()
+	hc.UpdateVCOFraction()
 	print("Measuring polarizer angle")
 	hc.UpdateProbePolAngleMonitor()
 	hc.UpdatePumpPolAngleMonitor()
 	pumpPolAngle = hc.pumpPolAngle
 	probePolAngle = hc.probePolAngle
-	
 	print("V plus: " + str(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale))
 	print("V minus: " + str(hc.CMinusMonitorVoltage * hc.CMinusMonitorScale))
 	print("Bias: " + str(hc.BiasCurrent))
@@ -79,7 +78,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	bc.Settings["pumpPolarizerAngle"] = pumpPolAngle
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
-	#bc.Settings["pumpAOMFreq"] = hc.PumpAOMFreq 
+	bc.Settings["pumpAOMFreq"] = hc.PumpAOMFrequencyCentre 
 	bc.Settings["bBiasV"] = hc.SteppingBiasVoltage
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
@@ -234,7 +233,9 @@ def updateLocks(bState):
 
 def updateLocksNL(bState):
 	pmtChannelValues = bh.DBlock.ChannelValues[0]
-	normedpmtChannelValues = bh.DBlock.ChannelValues[6]
+	normedpmtChannelValues = bh.DBlock.ChannelValues[8]
+	rf1ampReftChannelValues = bh.DBlock.ChannelValues[6]
+	rf2ampReftChannelValues = bh.DBlock.ChannelValues[7]
 	# note the weird python syntax for a one element list
 	sigValue = pmtChannelValues.GetValue(("SIG",))
 	bValue = pmtChannelValues.GetValue(("B",))
@@ -252,17 +253,25 @@ def updateLocksNL(bState):
 	lf1dbdbValue = normedpmtChannelValues.GetSpecialValue("LF1DBDB")
 	lf1dbValue = normedpmtChannelValues.GetSpecialValue("LF1DB")
 	lf2Value = pmtChannelValues.GetValue(("LF2",))
-	lf2dbdbValue = normedpmtChannelValues.GetSpecialValue("LF2DBDB")
-
+	lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
+	rf1ampRefSig = rf1ampReftChannelValues.GetValue(("SIG",))
+	rf2ampRefSig = rf2ampReftChannelValues.GetValue(("SIG",))
+	rf1ampRefE = rf1ampReftChannelValues.GetValue(("E",))
+	rf2ampRefE = rf2ampReftChannelValues.GetValue(("E",))
+	rf1ampRefEErr = rf1ampReftChannelValues.GetError(("E",))
+	rf2ampRefEErr = rf2ampReftChannelValues.GetError(("E",))
 
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
-	print "B.DB" + str(bDBValue)
+	print "B/DB" + str(bDBValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
 	print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
 	print "LF2: " + str(lf2Value) + " LF2.DB/DB: " + str(lf2dbdbValue)
+	print "RF1 Reflected: " + str(rf1ampRefSig) +  " RF2 Reflected: " + str(rf2ampRefSig) 
+	print "{E}_RF1 Reflected: {" + str(rf1ampRefE) + " , " + str(rf1ampRefEErr) + " }"
+	print "{E}_RF2 Reflected: {" + str(rf2ampRefE) + " , " + str(rf2ampRefEErr) + " }"
 	
 	# B bias lock
 	# the sign of the feedback depends on the b-state
@@ -277,49 +286,69 @@ def updateLocksNL(bState):
 	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
 	hc.SetSteppingBBiasVoltage( newBiasVoltage )
 	# RFA  locks
-	deltaRF1A = - (18.0/2.0) * rf1adbdbValue * kRFAVoltsPerCal
+	deltaRF1A = - (1.0/2.0) * rf1adbdbValue * kRFAVoltsPerCal
 	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF1A = 0
-	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
-	hc.SetRF1AttCentre( newRF1A )
+	if (newRF1A == 4.9):
+		newSynthAmp =  hc.GreenSynthOnAmplitude + 1
+		print "RF1A pinned, increasing synth to  " + str(newSynthAmp) + " dBm."
+		print "Setting RF1A to 4.5 V."
+		newRF1A = 4.5
+		hc.SetRF1AttCentre( newRF1A )
+		hc.SetGreenSynthAmp(newSynthAmp)
+	else:
+		print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
+		hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (18.0/2.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = - (1.0/2.0) * rf2adbdbValue * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	#deltaRF2A = 0
-	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
-	hc.SetRF2AttCentre( newRF2A )
+	if (newRF2A == 4.9):
+		newSynthAmp =  hc.GreenSynthOnAmplitude + 1
+		print "RF2A pinned, increasing synth to  " + str(newSynthAmp) + " dBm."
+		print "Setting RF2A to 4.5 V."
+		newRF2A = 4.5
+		hc.SetRF2AttCentre( newRF2A )
+		hc.SetGreenSynthAmp(newSynthAmp)
+	else:
+		print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
+		hc.SetRF2AttCentre( newRF2A )
+
 	# RFF  locks
-	deltaRF1F = - (10.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
+	deltaRF1F = - (1.0/2.0) * rf1fdbdbValue * kRFFVoltsPerCal
 	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF1F = 0
 	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
-	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 1.1 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
+	deltaRF2F = - (1.0/2.0) * rf2fdbdbValue * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	#deltaRF2F = 0
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
-	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 1.1 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
+
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	deltaLF1 = -0.25 * ( lf1dbdbValue)
+	deltaLF1 = -2.5* ( lf1dbdbValue)
 	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 5 - hc.FLPZTStep )
+	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 10 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
+	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
-	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 1.25 * lf2dbdbValue
+	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
+	deltaLF2 = hc.VCOConvFrac * deltaLF1
 	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
-	deltaLF2 = 0
+	#deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
-	#newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
-	#hc.SetPumpAOMVoltage( newLF2 )
+	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
+	hc.SetPumpAOMVoltage( newLF2 )
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):
@@ -363,19 +392,16 @@ def EDMGo():
 	# this is to make sure the B current monitor is in a sensible state
 	hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase 
-	scramblerV = 0.799718 * r.NextDouble()
+	scramblerV = 0.97156 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
 	# randomise polarizations
-	#probePolAngle = 360.0 * r.NextDouble()
-	#hc.SetProbePolarizerAngle(probePolAngle)
-	#pumpPolAngle = 360.0 * r.NextDouble()
-	#hc.SetPumpPolarizerAngle(pumpPolAngle)
 	hc.SetRandomProbePosition()
 	hc.SetRandomPumpPosition()
 
 	# calibrate leakage monitors
 	print("calibrating leakage monitors..")
 	print("E-field off")
+	hc.EnableGreenSynth( False )
 	hc.EnableEField( False )
 	System.Threading.Thread.Sleep(10000)
 	hc.EnableBleed( True )
@@ -385,6 +411,7 @@ def EDMGo():
 	System.Threading.Thread.Sleep(500)
 	print("E-field on")
 	hc.EnableEField( True )
+	hc.EnableGreenSynth( True )
 	print("leakage monitors calibrated")
 	#print("Waiting For Polarizers (maybe)")
 
@@ -394,6 +421,10 @@ def EDMGo():
 	blockIndex = 0
 	maxBlockIndex = 10000
 	dbValueList = []
+	Emag1List =[]
+	Emini1List=[]
+	Emini2List=[]
+	Emini3List=[]
 	while blockIndex < maxBlockIndex:
 		print("Acquiring block " + str(blockIndex) + " ...")
 		# save the block config and load into blockhead
@@ -422,26 +453,23 @@ def EDMGo():
 		blockIndex = blockIndex + 1
 		updateLocksNL(bState)
 		# randomise Ramsey phase
-		scramblerV = 0.799718 * r.NextDouble()
+		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
-		#probePolAngle = 360.0 * r.NextDouble()
-		#hc.SetProbePolarizerAngle(probePolAngle)
-		#pumpPolAngle = 360.0 * r.NextDouble()
-		#hc.SetPumpPolarizerAngle(pumpPolAngle)
 		hc.SetRandomProbePosition()
 		hc.SetRandomPumpPosition()
-		#System.Threading.Thread.Sleep(15000)
-
-	
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, measProbePwr, measPumpPwr)
-		# do things that need periodically doing
-	#	if ((blockIndex % kTargetRotationPeriod) == 0):
-		#	print("Rotating target.")
-		#	hc.StepTarget(10)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
+		magChannelValues = bh.DBlock.ChannelValues[2]
+		mini1ChannelValues = bh.DBlock.ChannelValues[9]
+		mini2ChannelValues = bh.DBlock.ChannelValues[10]
+		mini3ChannelValues = bh.DBlock.ChannelValues[11]
 		dbValue = pmtChannelValues.GetValue(("DB",))
+		magEValue = magChannelValues.GetValue(("E",))
+		mini1EValue = mini1ChannelValues.GetValue(("E",))
+		mini2EValue = mini2ChannelValues.GetValue(("E",))
+		mini3EValue = mini3ChannelValues.GetValue(("E",))
 		
 
 		# some code to stop EDMLoop if the laser unlocks. 
@@ -452,15 +480,23 @@ def EDMGo():
 			del dbValueList[0]
 		print "DB values for last 3 blocks " + str(dbValueList).strip('[]')
 		runningdbMean =float(sum(dbValueList)) / len(dbValueList)
-		if ( runningdbMean < 1 and nightBool is Y ):	
+		if ( runningdbMean < 1 and nightBool is "Y" ):	
 			hc.EnableEField( False )
 			hc.SetArgonShutter( True )
 			break
 
-		if (dbValue < 10):
+		Emag1List.append(magEValue)
+		if (len(Emag1List) == 11):
+			del Emag1List[0]
+		print "E_{Mag} for the last 10 blocks " + str(Emag1List).strip('[]')
+		runningEmag1Mean =float(sum(Emag1List)) / len(Emag1List)
+		print "Average E_{Mag} for the last 10 blocks " + str(runningEmag1Mean)
+
+
+		if (dbValue < 19):
 			print("Dodgy spot target rotation.")
-			for i in range(2):
-				hc.StepTarget(2)
+			for i in range(4):
+				hc.StepTarget(20)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")

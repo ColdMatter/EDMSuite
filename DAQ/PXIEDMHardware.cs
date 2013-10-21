@@ -94,9 +94,11 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
             // will switch if it's switch scanning.
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
+            
             //RF Counter Control (single pole 4 throw)
-            AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
-            AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            //AddDigitalOutputChannel("rfCountSwBit1", pgBoard, 3, 5);
+            //AddDigitalOutputChannel("rfCountSwBit2", pgBoard, 3, 6);
+            
             // new rf amp blanking
             AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
 
@@ -112,11 +114,17 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
             AddDigitalOutputChannel("notEPol", pgBoard, 2, 7);
             AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
+            AddDigitalOutputChannel("eSwitching", aoBoard, 0, 6);
             AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
             AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
             AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
-            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);// (3,6) & (3,7) are dead.
+            AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);
+            AddDigitalOutputChannel("patternTTL", aoBoard, 0, 7);
+
+            //I2 Lock Control
+            AddDigitalOutputChannel("I2PropSwitch", pgBoard, 2, 4);
+            AddDigitalOutputChannel("I2IntSwitch", pgBoard, 3, 6);
            
 
 
@@ -139,11 +147,13 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pumpPD", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("northLeakage", daqBoard + "/ai6", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("southLeakage", daqBoard + "/ai7", AITerminalConfiguration.Nrse);
-            // Used ai10,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
-            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
+            // Used ai13,11 & 12 over 6,7 & 8 for miniFluxgates, because ai8, 9 have an isolated ground. 
+            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("piMonitor", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
+            // Don't use ai10, cross talk with other channels on this line
 
             // high quality analog inputs (will be) on the S-series analog in board
             AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential);
@@ -151,8 +161,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
@@ -175,7 +187,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
 
             // B field control
-            AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
 
 
             // map the counter channels
@@ -186,17 +198,18 @@ namespace DAQ.HAL
 
             //TCL Lockable lasers
             //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
-            Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
+            Info.Add("TCLLockableLasers", new string[] { "flPZT2" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
             Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //volts: Laser control
             Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //volts: Laser control
-            Info.Add("TCL_Default_Gain", -0.01);
-            Info.Add("TCL_Default_VoltageToLaser", 1.0);
+            Info.Add("TCL_Default_Gain", -1.1);
+            //Info.Add("TCL_Default_ScanPoints", 250);
+            Info.Add("TCL_Default_VoltageToLaser", 2.5);
             Info.Add("TCL_Default_VoltageToDependent", 1.0);
             // Some matching up for TCL
             Info.Add("flPZT2", "p1");
             Info.Add("flPZT2Temp", "p1");
-            Info.Add("fibreAOM", "p1");
+            //Info.Add("fibreAOM", "p1");
             Info.Add("TCLTrigger", tclBoard + "/PFI0");
             Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
 
@@ -205,13 +218,17 @@ namespace DAQ.HAL
             AddAnalogInputChannel("p1", tclBoard + "/ai2", AITerminalConfiguration.Rse);
 
             // Laser control
-            AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
-            AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2");
+            //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("flPZT", aoBoard + "/ao7", 0, 10);
+            AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2", 0, 10);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
-            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
-            AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
-            AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
-            AddAnalogOutputChannel("fibreAOM", aoBoard + "/ao7", 0, 10);
+            //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
+            //AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
+            //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("rampfb", aoBoard + "/ao4", -10, 10);
+            AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
         }
 
     }

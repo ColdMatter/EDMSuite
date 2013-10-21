@@ -149,6 +149,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AnalogPatternBuilder.cs" />
+    <Compile Include="AnritsuVNA.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -170,6 +171,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PXIEDMHardwareNormal.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
     <Compile Include="Parker404XR.cs" />
