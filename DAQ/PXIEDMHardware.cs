@@ -151,6 +151,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux2", daqBoard + "/ai11", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("miniFlux3", daqBoard + "/ai12", AITerminalConfiguration.Nrse);
+            AddAnalogInputChannel("ground", daqBoard + "/ai14", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("piMonitor", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
             // Don't use ai10, cross talk with other channels on this line
@@ -183,8 +184,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", 0, 10);
-            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -5, 0);
+            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 5);
 
             // B field control
             //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
