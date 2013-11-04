@@ -168,6 +168,7 @@ namespace ScanMaster.GUI
             // 
             this.analog1Plot.AntiAliased = true;
             this.analog1Plot.LineColor = System.Drawing.Color.Red;
+            this.analog1Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.analog1Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog1Plot.PointColor = System.Drawing.Color.Red;
             this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
@@ -195,6 +196,7 @@ namespace ScanMaster.GUI
             // 
             this.analog2Plot.AntiAliased = true;
             this.analog2Plot.LineColor = System.Drawing.Color.Blue;
+            this.analog2Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.analog2Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog2Plot.PointColor = System.Drawing.Color.Blue;
             this.analog2Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
@@ -210,13 +212,13 @@ namespace ScanMaster.GUI
             this.pmtGraph.Cursors.AddRange(new NationalInstruments.UI.XYCursor[] {
             this.pmtLowCursor,
             this.pmtHighCursor});
-            this.pmtGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY)
-                        | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint)
-                        | NationalInstruments.UI.GraphInteractionModes.PanX)
-                        | NationalInstruments.UI.GraphInteractionModes.PanY)
-                        | NationalInstruments.UI.GraphInteractionModes.DragCursor)
-                        | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption)
-                        | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.pmtGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
             this.pmtGraph.Location = new System.Drawing.Point(376, 304);
             this.pmtGraph.Name = "pmtGraph";
             this.pmtGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -243,6 +245,7 @@ namespace ScanMaster.GUI
             // pmtOnAvgPlot
             // 
             this.pmtOnAvgPlot.LineColor = System.Drawing.Color.Red;
+            this.pmtOnAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtOnAvgPlot.XAxis = this.xAxis3;
             this.pmtOnAvgPlot.YAxis = this.pmtYAxis;
             // 
@@ -277,12 +280,14 @@ namespace ScanMaster.GUI
             // pmtOffAvgPlot
             // 
             this.pmtOffAvgPlot.LineColor = System.Drawing.Color.PowderBlue;
+            this.pmtOffAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtOffAvgPlot.XAxis = this.xAxis3;
             this.pmtOffAvgPlot.YAxis = this.pmtYAxis;
             // 
             // pmtFitPlot
             // 
             this.pmtFitPlot.LineColor = System.Drawing.Color.Silver;
+            this.pmtFitPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.pmtFitPlot.LineWidth = 2F;
             this.pmtFitPlot.XAxis = this.xAxis3;
@@ -335,6 +340,7 @@ namespace ScanMaster.GUI
             // differenceAvgPlot
             // 
             this.differenceAvgPlot.LineColor = System.Drawing.Color.Red;
+            this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.differenceAvgPlot.XAxis = this.xAxis5;
             this.differenceAvgPlot.YAxis = this.differenceYAxis;
             // 
@@ -358,6 +364,7 @@ namespace ScanMaster.GUI
             this.tofGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.tofYAxis,
             this.tofAvgYAxis});
+            this.tofGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph_PlotDataChanged);
             // 
             // tofLowCursor
             // 
@@ -372,6 +379,7 @@ namespace ScanMaster.GUI
             // tofOnAveragePlot
             // 
             this.tofOnAveragePlot.LineColor = System.Drawing.Color.Red;
+            this.tofOnAveragePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOnAveragePlot.XAxis = this.xAxis4;
             this.tofOnAveragePlot.YAxis = this.tofAvgYAxis;
             // 
@@ -393,6 +401,7 @@ namespace ScanMaster.GUI
             // tofOnPlot
             // 
             this.tofOnPlot.LineColor = System.Drawing.Color.Blue;
+            this.tofOnPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOnPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.tofOnPlot.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.tofOnPlot.XAxis = this.xAxis4;
@@ -409,12 +418,14 @@ namespace ScanMaster.GUI
             // tofOffAveragePlot
             // 
             this.tofOffAveragePlot.LineColor = System.Drawing.Color.PowderBlue;
+            this.tofOffAveragePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOffAveragePlot.XAxis = this.xAxis4;
             this.tofOffAveragePlot.YAxis = this.tofAvgYAxis;
             // 
             // tofFitPlot
             // 
             this.tofFitPlot.LineColor = System.Drawing.Color.Silver;
+            this.tofFitPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.tofFitPlot.LineWidth = 2F;
             this.tofFitPlot.XAxis = this.xAxis4;
@@ -866,5 +877,10 @@ namespace ScanMaster.GUI
 			viewer.ToggleVisible();
 			e.Cancel = true;
 		}
+
+        private void tofGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
 	}
 }
