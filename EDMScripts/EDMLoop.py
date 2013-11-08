@@ -343,9 +343,9 @@ def updateLocksNL(bState):
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
 	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
-	deltaLF2 = hc.VCOConvFrac * deltaLF1
-	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
-	#deltaLF2 = 0
+	#deltaLF2 = hc.VCOConvFrac * deltaLF1
+	#deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
+	deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
 	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
 	hc.SetPumpAOMVoltage( newLF2 )
@@ -493,10 +493,10 @@ def EDMGo():
 		print "Average E_{Mag} for the last 10 blocks " + str(runningEmag1Mean)
 
 
-		if (dbValue < 19):
+		if (dbValue < 12):
 			print("Dodgy spot target rotation.")
-			for i in range(4):
-				hc.StepTarget(20)
+			for i in range(3):
+				hc.StepTarget(10)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")

@@ -107,6 +107,7 @@ namespace EDMHardwareControl
         Task miniFlux1MonitorInputTask;
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
+        Task groundedInputTask;
         Task piMonitorTask;
         Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
@@ -206,6 +207,7 @@ namespace EDMHardwareControl
             miniFlux1MonitorInputTask = CreateAnalogInputTask("miniFlux1");
             miniFlux2MonitorInputTask = CreateAnalogInputTask("miniFlux2");
             miniFlux3MonitorInputTask = CreateAnalogInputTask("miniFlux3");
+            groundedInputTask = CreateAnalogInputTask("ground");
             piMonitorTask = CreateAnalogInputTask("piMonitor");
             //northLeakageInputTask = CreateAnalogInputTask("northLeakage");
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
@@ -1317,6 +1319,72 @@ namespace EDMHardwareControl
             }
         }
 
+        public double miniFlux1Voltage
+        {
+            set
+            {
+                window.SetTextBox(window.miniFlux1TextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.miniFlux1TextBox.Text);
+            }
+        }
+
+        public double miniFlux2Voltage
+        {
+            set
+            {
+                window.SetTextBox(window.miniFlux2TextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.miniFlux2TextBox.Text);
+            }
+        }
+
+        public double miniFlux3Voltage
+        {
+            set
+            {
+                window.SetTextBox(window.miniFlux3TextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.miniFlux3TextBox.Text);
+            }
+        }
+        
+
+        public double pumpPDVoltage
+        {
+            set
+            {
+                window.SetTextBox(window.pumpMonitorTextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.pumpMonitorTextBox.Text);
+            }
+        }
+
+         public double probePDVoltage
+        {
+            set
+            {
+                window.SetTextBox(window.probeMonitorTextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.probeMonitorTextBox.Text);
+            }
+        }
+
         public double FlipStepCurrent
         {
             get
@@ -2036,7 +2104,9 @@ namespace EDMHardwareControl
 
         public void ReadIMonitor()
         {
+            double ground = ReadAnalogInput(groundedInputTask);
             lastNorthCurrent = northLeakageMonitor.GetCurrent();
+            ground = ReadAnalogInput(groundedInputTask);
             lastSouthCurrent = southLeakageMonitor.GetCurrent();
         }
 
@@ -2201,20 +2271,20 @@ namespace EDMHardwareControl
         }
         public void UpdateLaserPhotodiodes()
         {
-            double probePDValue = ReadAnalogInput(probeMonitorInputTask);
-            window.SetTextBox(window.probeMonitorTextBox, probePDValue.ToString());
-            double pumpPDValue = ReadAnalogInput(pumpMonitorInputTask);
-            window.SetTextBox(window.pumpMonitorTextBox, pumpPDValue.ToString());
+            double groundValue = ReadAnalogInput(groundedInputTask);
+            probePDVoltage = ReadAnalogInput(probeMonitorInputTask);
+            groundValue = ReadAnalogInput(groundedInputTask);
+            pumpPDVoltage = ReadAnalogInput(pumpMonitorInputTask);
         }
 
         public void UpdateMiniFluxgates()
         {
-            double miniFlux1Value = ReadAnalogInput(miniFlux1MonitorInputTask);
-            window.SetTextBox(window.miniFlux1TextBox, miniFlux1Value.ToString());
-            double miniFlux2Value = ReadAnalogInput(miniFlux2MonitorInputTask);
-            window.SetTextBox(window.miniFlux2TextBox, miniFlux2Value.ToString());
-            double miniFlux3Value = ReadAnalogInput(miniFlux3MonitorInputTask);
-            window.SetTextBox(window.miniFlux3TextBox, miniFlux3Value.ToString());
+            double groundValue = ReadAnalogInput(groundedInputTask);
+            miniFlux1Voltage = ReadAnalogInput(miniFlux1MonitorInputTask);
+            groundValue = ReadAnalogInput(groundedInputTask);
+            miniFlux2Voltage = ReadAnalogInput(miniFlux2MonitorInputTask);
+            groundValue = ReadAnalogInput(groundedInputTask);
+            miniFlux3Voltage = ReadAnalogInput(miniFlux3MonitorInputTask);
         }
 
         public void UpdatePiMonitor()
