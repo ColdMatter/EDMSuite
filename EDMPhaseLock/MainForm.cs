@@ -353,7 +353,7 @@ namespace EDMPhaseLock
 
 		// constants
 		const double SAMPLE_CLOCK_RATE = 50;			// (Hz) this defines what a second is
-		const double OSCILLATOR_TARGET_RATE = 10000000;	// (Hz) how many cycles you'd like the
+		const double OSCILLATOR_TARGET_RATE = 1000000;	// (Hz) how many cycles you'd like the
 														// fast oscillator to produce in a second (as defined
 														// by the SAMPLE_CLOCK_RATE)
 		const int SAMPLE_MULTI_READ = 10;		// this is how many samples to read at a time, sets a limit on
