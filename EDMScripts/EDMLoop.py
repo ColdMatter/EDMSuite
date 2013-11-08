@@ -334,8 +334,8 @@ def updateLocksNL(bState):
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF1 = -2.5* ( lf1dbdbValue)
 	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
-	#deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
-	deltaLF1 = 0
+	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
+	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
 	newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 10 - hc.FLPZTStep )
 	hc.SetFLPZTVoltage( newLF1 )
@@ -343,7 +343,7 @@ def updateLocksNL(bState):
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
 	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
-	deltaLF2 = hc.VCOConvFrac * deltaLF1
+	#deltaLF2 = hc.VCOConvFrac * deltaLF1
 	#deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
 	deltaLF2 = 0
 	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
