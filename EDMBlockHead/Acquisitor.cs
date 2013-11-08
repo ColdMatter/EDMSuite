@@ -525,7 +525,7 @@ namespace EDMBlockHead.Acquire
             //AddChannelToSinglePointTask("miniFlux2");
             //AddChannelToSinglePointTask("miniFlux3");
             //AddChannelToSinglePointTask("northLeakage");
-            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");
             //AddChannelToSinglePointTask("ground");
 
