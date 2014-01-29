@@ -330,6 +330,7 @@ namespace ScanMaster.GUI
 			{
 				startTOFGate = window.TOFGate.Minimum;
 				endTOFGate = window.TOFGate.Maximum;
+                window.SetTOFStatus("S: " + string.Format("{0:N1}", startTOFGate) + " E: " + string.Format("{0:N1}", endTOFGate) + " C: " + string.Format("{0:N1}", (endTOFGate+startTOFGate)/2) + " L: " + string.Format("{0:N1}", endTOFGate-startTOFGate));
 				UpdatePMTAveragePlots();
 			}
 		}
@@ -355,7 +356,7 @@ namespace ScanMaster.GUI
 			endSpectrumGate = averageScan.MaximumScanParameter;
 			TOF tof = ((TOF)((Shot)((ScanPoint)averageScan.Points[0]).OnShots[0]).TOFs[0]);
 			startTOFGate = tof.GateStartTime;
-			endTOFGate = tof.GateStartTime + tof.Length;
+			endTOFGate = tof.GateStartTime + tof.ClockPeriod*tof.Length;
 			UpdateTOFAveragePlots();
 			UpdatePMTAveragePlots();
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);

@@ -23,8 +23,7 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.YAxis yAxis1;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph analog2Graph;
 		private NationalInstruments.UI.XAxis xAxis2;
-		private NationalInstruments.UI.YAxis yAxis2;
-		private System.Windows.Forms.StatusBar statusBar1;
+        private NationalInstruments.UI.YAxis yAxis2;
 		private NationalInstruments.UI.ScatterPlot analog1Plot;
 		private NationalInstruments.UI.ScatterPlot analog2Plot;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph pmtGraph;
@@ -64,6 +63,9 @@ namespace ScanMaster.GUI
 		private Button updateTOFFitButton;
         private Button updateSpectrumFitButton;
         public ComboBox tofFitDataSelectCombo;
+        private SplitContainer splitContainer1;
+        private StatusBar statusBar2;
+        private StatusBar statusBar1;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
@@ -112,7 +114,6 @@ namespace ScanMaster.GUI
             this.pmtOffAvgPlot = new NationalInstruments.UI.ScatterPlot();
             this.pmtFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.pmtXAxis = new NationalInstruments.UI.XAxis();
-            this.statusBar1 = new System.Windows.Forms.StatusBar();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.differenceYAxis = new NationalInstruments.UI.YAxis();
             this.differenceGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
@@ -140,6 +141,9 @@ namespace ScanMaster.GUI
             this.updateTOFFitButton = new System.Windows.Forms.Button();
             this.updateSpectrumFitButton = new System.Windows.Forms.Button();
             this.tofFitDataSelectCombo = new System.Windows.Forms.ComboBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.statusBar2 = new System.Windows.Forms.StatusBar();
+            this.statusBar1 = new System.Windows.Forms.StatusBar();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -149,6 +153,10 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -296,15 +304,6 @@ namespace ScanMaster.GUI
             // pmtXAxis
             // 
             this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            // 
-            // statusBar1
-            // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 634);
-            this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Size = new System.Drawing.Size(970, 20);
-            this.statusBar1.SizingGrip = false;
-            this.statusBar1.TabIndex = 13;
-            this.statusBar1.Text = "Ready";
             // 
             // xAxis5
             // 
@@ -543,10 +542,46 @@ namespace ScanMaster.GUI
             this.tofFitDataSelectCombo.Size = new System.Drawing.Size(50, 21);
             this.tofFitDataSelectCombo.TabIndex = 27;
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 636);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.statusBar2);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.statusBar1);
+            this.splitContainer1.Size = new System.Drawing.Size(970, 23);
+            this.splitContainer1.SplitterDistance = 371;
+            this.splitContainer1.TabIndex = 30;
+            // 
+            // statusBar2
+            // 
+            this.statusBar2.Location = new System.Drawing.Point(0, 0);
+            this.statusBar2.Name = "statusBar2";
+            this.statusBar2.Size = new System.Drawing.Size(371, 23);
+            this.statusBar2.SizingGrip = false;
+            this.statusBar2.TabIndex = 30;
+            this.statusBar2.Text = "Ready";
+            // 
+            // statusBar1
+            // 
+            this.statusBar1.Location = new System.Drawing.Point(0, 0);
+            this.statusBar1.Name = "statusBar1";
+            this.statusBar1.Size = new System.Drawing.Size(595, 23);
+            this.statusBar1.SizingGrip = false;
+            this.statusBar1.TabIndex = 14;
+            this.statusBar1.Text = "Ready";
+            // 
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(970, 654);
+            this.ClientSize = new System.Drawing.Size(970, 659);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.tofFitDataSelectCombo);
             this.Controls.Add(this.updateSpectrumFitButton);
             this.Controls.Add(this.updateTOFFitButton);
@@ -560,7 +595,6 @@ namespace ScanMaster.GUI
             this.Controls.Add(this.tofFitModeCombo);
             this.Controls.Add(this.tofGraph);
             this.Controls.Add(this.differenceGraph);
-            this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.pmtGraph);
             this.Controls.Add(this.analog2Graph);
             this.Controls.Add(this.analog1Graph);
@@ -579,6 +613,10 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -837,10 +875,18 @@ namespace ScanMaster.GUI
         {
             this.Invoke(new SetStatusDelegate(SetStatusHelper), new object[] { text });
         }
+        public void SetTOFStatus(string text)
+        {
+            this.Invoke(new SetStatusDelegate(SetTOFStatusHelper), new object[] { text });
+        }
         private delegate void SetStatusDelegate(string text);
         private void SetStatusHelper(string text)
         {
             statusBar1.Text = text;
+        }
+        private void SetTOFStatusHelper(string text)
+        {
+            statusBar2.Text = text;
         }
 
         private void TofFitComboHelper(bool state)
@@ -882,5 +928,7 @@ namespace ScanMaster.GUI
         {
 
         }
+
+
 	}
 }
