@@ -1731,7 +1731,75 @@ namespace EDMHardwareControl
             ESwitchDone();
         }
 
+        public void SwitchEWorkerForIRamp()
+        {
 
+            bool startingSynthState = GreenSynthEnabled;
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
+                //switch off the synth
+                GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down if on
+                int eSign;
+                if(EFieldPolarity){eSign=1;}else{eSign=-1;}
+                if (EFieldEnabled)
+                {
+                    RampVoltages(eSign * CPlusVoltage, eSign * CPlusOffVoltage, -eSign * CMinusVoltage, -eSign * CMinusOffVoltage, 5, ERampDownTime);
+                }
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(-eSign * CPlusOffVoltage, -eSign * EOvershootFactor * cPlusToWrite,
+                               eSign * CMinusOffVoltage, eSign * EOvershootFactor * cMinusToWrite, 5, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                // ramp back to the control point
+                RampVoltages(-eSign * EOvershootFactor * cPlusToWrite, -eSign * cPlusToWrite,
+                                eSign * EOvershootFactor * cMinusToWrite, eSign * cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                window.SetLED(window.switchingLED, false);
+
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>N+) then when switching into state 0
+                // (false) the North plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // North plate should see -ve current and the South +ve
+                    if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
+                        && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // North should be +ve, South -ve
+                    if ((lastSouthCurrent < kNegativeChargeMin) && (lastSouthCurrent > kNegativeChargeMax)
+                        && (lastNorthCurrent > kPositiveChargeMin) && (lastNorthCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+            }
+            GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+        }
         private void activateEAlarm(bool newEPolarity)
         {
             window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState + 
@@ -1918,7 +1986,7 @@ namespace EDMHardwareControl
             double gain = 0.2;
 
             SetAttenutatorVoltages();
-            while (newRF1a != RF1aGuess & newRF2a != RF2aGuess & a < 5)
+            while (newRF1a != RF1aGuess || newRF2a != RF2aGuess && a < 5)
             {
                 UpdateRFPowerMonitor();
                 newRF1a = RF1PowerCentre;
@@ -1944,7 +2012,7 @@ namespace EDMHardwareControl
             double gain = 0.000025;
 
             SetFMVoltages();
-            while (newRF1f != RF1fGuess & newRF2f != RF2fGuess & a < 5)
+            while (newRF1f != RF1fGuess || newRF2f != RF2fGuess && a < 5)
             {
                 UpdateRFFrequencyMonitor();
                 newRF1f = RF1FrequencyCentre;
