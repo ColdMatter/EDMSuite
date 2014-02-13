@@ -87,6 +87,16 @@ namespace DAQ.HAL
 			analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig));
 		}
 
+        protected void AddAnalogInputChannel(
+            String name,
+            String physicalChannel,
+            AITerminalConfiguration terminalConfig,
+            Double config
+            )
+        {
+            analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig, config));
+        }
+
 		protected void AddAnalogOutputChannel(String name, String physicalChannel)
 		{
 			analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel));

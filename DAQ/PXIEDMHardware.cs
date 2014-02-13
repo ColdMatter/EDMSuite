@@ -13,7 +13,6 @@ namespace DAQ.HAL
     /// </summary>
     public class PXIEDMHardware : DAQ.HAL.Hardware
     {
-
         public PXIEDMHardware()
         {
 
@@ -47,6 +46,9 @@ namespace DAQ.HAL
 
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
+            Info.Add("machineLengthRatio", 3.842);
+
+
             Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", pgBoard + "/PFI4"); //Mapped to PFI2 on 6533 connector
             Info.Add("PatternGeneratorBoard", pgBoard);
@@ -157,8 +159,9 @@ namespace DAQ.HAL
             // Don't use ai10, cross talk with other channels on this line
 
             // high quality analog inputs (will be) on the S-series analog in board
-            AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("norm", analogIn + "/ai1", AITerminalConfiguration.Differential);
+            // The last number in AddAnalogInputChannel is an optional calibration which turns VuS 
+            AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential, 0.1);
+            AddAnalogInputChannel("norm", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
@@ -184,8 +187,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", -5, 0);
-            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", 0, 10);
+            AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
 
             // B field control
             //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);

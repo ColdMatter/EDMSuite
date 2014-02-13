@@ -31,6 +31,11 @@ namespace Data
             return ((TOF)tofs[index]).Mean;
         }
 
+        public double Calibration(int index)
+        {
+            return ((TOF)tofs[index]).Calibration;
+        }
+
         public double GatedMean(int index, double startTime, double endTime)
         {
             return ((TOF)tofs[index]).GatedMean(startTime, endTime);

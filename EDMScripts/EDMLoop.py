@@ -55,7 +55,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdateVMonitor()
 	hc.UpdateI2AOMFreqMonitor()
 	hc.UpdatePumpAOMFreqMonitor()
-	hc.UpdateVCOFraction()
+	#hc.UpdateVCOFraction()
 	print("Measuring polarizer angle")
 	hc.UpdateProbePolAngleMonitor()
 	hc.UpdatePumpPolAngleMonitor()
@@ -342,7 +342,7 @@ def updateLocksNL(bState):
 	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	# first cancel the overal movement of the laser
-	deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
+	#deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
 	#deltaLF2 = hc.VCOConvFrac * deltaLF1
 	#deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
 	deltaLF2 = 0
@@ -493,10 +493,10 @@ def EDMGo():
 		print "Average E_{Mag} for the last 10 blocks " + str(runningEmag1Mean)
 
 
-		if (dbValue < 12):
+		if (dbValue < 8):
 			print("Dodgy spot target rotation.")
 			for i in range(3):
-				hc.StepTarget(10)
+				hc.StepTarget(2)
 				System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")

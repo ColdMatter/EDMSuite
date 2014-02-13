@@ -77,6 +77,15 @@ namespace Data.Scans
 			return temp;
 		}
 
+        public double[] GetTOFOnOverShotNoiseArray(int index, double startTime, double endTime)
+        {
+            double[] tempShot = new double[points.Count];
+            for (int i = 0; i < points.Count; i++) tempShot[i] =
+                                                       (double)((ScanPoint)points[i]).IntegrateOn(index, startTime, endTime) / (double)((ScanPoint)points[i]).OnShots[0];
+            return temp;
+        }
+
+
 		public double[] GetTOFOffIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];

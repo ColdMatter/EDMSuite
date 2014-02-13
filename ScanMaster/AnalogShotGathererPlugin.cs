@@ -107,6 +107,7 @@ namespace ScanMaster.Acquire.Plugins
 							TOF t = new TOF();
  							t.ClockPeriod = (int)settings["clockPeriod"];
                             t.GateStartTime = (int)settings["gateStartTime"];
+                            t.Calibration = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputTask.AIChannels[i].VirtualName]).Calibration;
 							double[] tmp = new double[(int)settings["gateLength"]];
 							for (int j = 0 ; j < (int)settings["gateLength"] ; j++)
 								tmp[j] = latestData[i,j];

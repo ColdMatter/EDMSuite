@@ -3552,6 +3552,7 @@ namespace EDMHardwareControl
             this.vcoConversionFractionTextBox.Size = new System.Drawing.Size(136, 20);
             this.vcoConversionFractionTextBox.TabIndex = 64;
             this.vcoConversionFractionTextBox.Text = "0";
+            this.vcoConversionFractionTextBox.TextChanged += new System.EventHandler(this.vcoConversionFractionTextBox_TextChanged);
             // 
             // label83
             // 
@@ -6463,6 +6464,11 @@ namespace EDMHardwareControl
         }
 
         private void pumpAOMVoltageTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void vcoConversionFractionTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }

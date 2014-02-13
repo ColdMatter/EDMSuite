@@ -48,12 +48,40 @@ namespace Data.Scans
 			return Integrate(offShots, index, startTime, endTime);
 		}
 
+        public double VarianceOn(int index, double startTime, double endTime)
+        {
+            return Variance(onShots, index, startTime, endTime);
+        }
+
 		private double Integrate(ArrayList shots, int index, double startTime, double endTime)
 		{
 			double temp = 0;
 			foreach (Shot s in shots) temp += s.Integrate(index, startTime, endTime);
 			return temp/shots.Count;
 		}
+
+        private double Variance(ArrayList shots, int index, double startTime, double endTime)
+        {
+            double tempMn = 0;
+            double tempx2 = 0;
+            double vari = 0;
+            double n = shots.Count; 
+
+            if (n==1)
+            {
+                return vari;
+            }
+            else
+            {
+            foreach (Shot s in shots) tempMn += s.Integrate(index, startTime, endTime);
+            foreach (Shot s in shots) tempx2 += Math.Pow(s.Integrate(index, startTime, endTime),2);
+            return vari = (n / (n - 1)) * ((tempx2 / n) - Math.Pow((tempMn / n), 2));
+            }
+        }
+        public double Calibration(int index)
+        {
+           
+        }
 
         public double MeanOn(int index)
         {

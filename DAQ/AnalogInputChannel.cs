@@ -12,18 +12,35 @@ namespace DAQ.HAL
 	{
 		
 		private AITerminalConfiguration terminalConfig;
+        private Double calibration;
 
 		public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig) 
 		{
 			this.name = name;
 			this.physicalChannel = physicalChannel;
 			this.terminalConfig = terminalConfig;
+            this.calibration = 1;
 		}
+
+        public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig, Double calibration)
+        {
+            this.name = name;
+            this.physicalChannel = physicalChannel;
+            this.terminalConfig = terminalConfig;
+            this.calibration = calibration;
+        }
+
 
 		public AITerminalConfiguration TerminalConfig
 		{
 			get { return terminalConfig; }
 		}
+
+        public Double Calibration
+        {
+            get { return calibration; }
+        }
+
 
 		public void AddToTask( Task task, double inputRangeLow, double inputRangeHigh )
 		{
