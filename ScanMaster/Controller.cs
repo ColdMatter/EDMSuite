@@ -55,7 +55,7 @@ namespace ScanMaster
 		{
 			get { return acquisitor; }
 		}
-		private ScanSerializer serializer = new ScanSerializer();
+		public ScanSerializer serializer = new ScanSerializer();
 		private ProfileManager profileManager = new ProfileManager();
 		public ProfileManager ProfileManager
 		{

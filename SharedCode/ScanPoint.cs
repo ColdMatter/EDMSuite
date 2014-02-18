@@ -53,12 +53,29 @@ namespace Data.Scans
             return Variance(onShots, index, startTime, endTime);
         }
 
+        public double FractionOfShotNoiseOn(int index, double startTime, double endTime)
+        {
+            return FractionOfShotNoise(onShots, index, startTime, endTime);
+        }
+
+        public double FractionOfShotNoiseNormedOn(int[] index, double startTime0, double endTime0, double startTime1, double endTime1)
+        {
+            return FractionOfShotNoiseNormed(onShots, index, startTime0, endTime0,startTime1,endTime1);
+        }
+
 		private double Integrate(ArrayList shots, int index, double startTime, double endTime)
 		{
 			double temp = 0;
 			foreach (Shot s in shots) temp += s.Integrate(index, startTime, endTime);
 			return temp/shots.Count;
 		}
+
+        private double IntegrateNormed(ArrayList shots, int[] index, double startTime0, double endTime0, double startTime1, double endTime1)
+        {
+            double temp = 0;
+            foreach (Shot s in shots) temp += s.Integrate(index[0], startTime0, endTime0) / s.Integrate(index[1], startTime1, endTime1);
+            return temp / shots.Count;
+        }
 
         private double Variance(ArrayList shots, int index, double startTime, double endTime)
         {
@@ -78,10 +95,48 @@ namespace Data.Scans
             return vari = (n / (n - 1)) * ((tempx2 / n) - Math.Pow((tempMn / n), 2));
             }
         }
-        public double Calibration(int index)
+
+        private double VarianceNormed(ArrayList shots, int[] index, double startTime0, double endTime0, double startTime1, double endTime1)
         {
-           
+            double tempMn = 0;
+            double tempx2 = 0;
+            double vari = 0;
+            double n = shots.Count;
+
+            if (n == 1)
+            {
+                return vari;
+            }
+            else
+            {
+                foreach (Shot s in shots) tempMn += s.Integrate(index[0], startTime0, endTime0) / s.Integrate(index[1], startTime1, endTime1);
+                foreach (Shot s in shots) tempx2 += Math.Pow(s.Integrate(index[0], startTime0, endTime0) / s.Integrate(index[1], startTime1, endTime1), 2);
+                return vari = (n / (n - 1)) * ((tempx2 / n) - Math.Pow((tempMn / n), 2));
+            }
         }
+
+        private double Calibration(ArrayList shots, int index)
+        {
+            Shot s = (Shot)shots[0];
+            return s.Calibration(index);
+        }
+
+        private double FractionOfShotNoise(ArrayList shots, int index, double startTime, double endTime)
+        {
+            return Math.Pow(Variance(shots, index, startTime, endTime)/(Integrate(shots, index, startTime, endTime)*Calibration(shots, index)),0.5);
+        }
+
+        private double FractionOfShotNoiseNormed(ArrayList shots, int[] index, double startTime0, double endTime0, double startTime1, double endTime1)
+        {
+            double fracNoiseTN = Math.Pow(VarianceNormed(shots, index, startTime0, endTime0, startTime1, endTime1),0.5) / IntegrateNormed(shots, index, startTime0, endTime0, startTime1, endTime1);
+            double fracNoiseT2 = Calibration(shots, index[0]) / Integrate(shots, index[0], startTime0, endTime0);
+            double fracNoiseN2 = Calibration(shots, index[1]) / Integrate(shots, index[1], startTime1, endTime1);
+            return fracNoiseTN / Math.Pow(fracNoiseT2 + fracNoiseN2, 0.5);
+ 
+        }
+
+
+
 
         public double MeanOn(int index)
         {

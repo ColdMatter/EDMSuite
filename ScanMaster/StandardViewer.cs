@@ -9,6 +9,7 @@ using ScanMaster.Acquire.Plugin;
 using ScanMaster.Analyze;
 
 using DAQ.Analyze;
+using DAQ.Environment;
 
 namespace ScanMaster.GUI
 {
@@ -41,6 +42,10 @@ namespace ScanMaster.GUI
 		Hashtable fitters = new Hashtable();
 		Fitter tofFitter;
 		Fitter spectrumFitter;
+        double OverShotNoise0;
+        double OverShotNoise1;
+        double OverShotNoise01;
+
 
 		public String Name
 		{
@@ -247,6 +252,15 @@ namespace ScanMaster.GUI
 			window.SetLabel(window.spectrumFitResultsLabel, spectrumFitter.ParameterReport);
 		}
 
+        private void AnalyseNoise(Scan scan)
+        {
+            AnalyseScanNoise(scan, startTOFGate, endTOFGate, startSpectrumGate, endSpectrumGate);
+            // update the noise report
+            string[] info =  {"top:", OverShotNoise0.ToString("G3"), "norm:",OverShotNoise1.ToString("G3"), "Normed:", OverShotNoise01.ToString("G3")};
+            window.SetLabel(window.noiseResultsLabel, String.Join(" ", info));
+        }
+
+
 		public void ScanFinished()
 		{
 			// update the gate window
@@ -323,8 +337,55 @@ namespace ScanMaster.GUI
                 );
         }
 
-		// The main window calls this when a TOF cursor is moved.
-		public void TOFCursorMoved()
+        private void AnalyseScanNoise(Scan s, double gateStart, double gateEnd, double spectrumGateStart, double spectrumGateEnd)
+        {
+            double detectorRatio = (double)Environs.Hardware.GetInfo("machineLengthRatio");
+            string channelList = (string)s.GetSetting("shot","channel");
+            string[] channels = channelList.Split(new char[] { ',' });
+            double[] probedat;
+            double[] pumpdat;
+            double[] normedDat;
+
+            if (channels.Length == 2)
+            {
+                int[] detectors = { 0, 1 };
+
+                probedat = s.GetTOFOnOverShotNoiseArray(0, gateStart, gateEnd);
+                pumpdat = s.GetTOFOnOverShotNoiseArray(1, gateStart / detectorRatio, gateEnd / detectorRatio);
+                normedDat = s.GetTOFOnOverShotNoiseNormedArray(detectors, gateStart, gateEnd, gateStart / detectorRatio, gateEnd / detectorRatio);
+            }
+            else
+            {
+                probedat = s.GetTOFOnOverShotNoiseArray(0, gateStart, gateEnd);
+                pumpdat = probedat;
+                normedDat = probedat;
+            }
+
+            double tempP = 0;
+            double tempN = 0;
+            double tempTN = 0;
+
+            double scanStart = s.ScanParameterArray[0];
+            double scanEnd = s.ScanParameterArray[s.ScanParameterArray.Length - 1];
+
+            int pointStart = (int)Math.Round((spectrumGateStart * (probedat.Length - 1)) / (scanEnd - scanStart));
+            int pointEnd = (int)Math.Round((spectrumGateEnd * (probedat.Length - 1)) / (scanEnd - scanStart));
+            int pointLength = pointEnd - pointStart;
+
+            for (int i = pointStart; i < pointEnd; i++)
+            {
+                tempP += probedat[i];
+                tempN += pumpdat[i];
+                tempTN += normedDat[i];
+            }
+
+            OverShotNoise0 = tempP/pointLength;
+            OverShotNoise1 = tempN/pointLength;
+            OverShotNoise01 = tempTN/pointLength;
+        }
+
+        // The main window calls this when a TOF cursor is moved.
+        public void TOFCursorMoved()
 		{
 			if (Controller.GetController().appState == Controller.AppState.stopped)
 			{
@@ -473,5 +534,23 @@ namespace ScanMaster.GUI
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			if (averageScan.Points.Count != 0) FitAndPlotSpectrum(averageScan);
 		}
+
+        internal void UpdateNoiseResults()
+        {
+            string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+            int k = Controller.GetController().DataStore.NumberOfScans;
+            Scan currentScan = Controller.GetController().serializer.DeserializeScanAsBinary(tempPath + "\\scan_" + k);
+            if (currentScan.Points.Count != 0) AnalyseNoise(currentScan);
+        }
+
+        internal void SetGatesToDefault()
+        {
+            if ((double[])Environs.Hardware.GetInfo("defaultGate") != null)
+            {
+            double[] defaultGate = (double[])Environs.Hardware.GetInfo("defaultGate");
+            window.TOFGate = new NationalInstruments.UI.Range(defaultGate[0] - defaultGate[1],defaultGate[0] + defaultGate[1]);
+            TOFCursorMoved();
+            }
+        }
 	}
 }

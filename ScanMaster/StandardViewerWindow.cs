@@ -64,8 +64,13 @@ namespace ScanMaster.GUI
         private Button updateSpectrumFitButton;
         public ComboBox tofFitDataSelectCombo;
         private SplitContainer splitContainer1;
-        private StatusBar statusBar2;
         private StatusBar statusBar1;
+        private Label label3;
+        private Button updateNoiseResultsbutton;
+        public Label noiseResultsLabel;
+        private SplitContainer splitContainer2;
+        private StatusBar statusBar2;
+        private Button defaultGateButton;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
@@ -142,8 +147,13 @@ namespace ScanMaster.GUI
             this.updateSpectrumFitButton = new System.Windows.Forms.Button();
             this.tofFitDataSelectCombo = new System.Windows.Forms.ComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.statusBar2 = new System.Windows.Forms.StatusBar();
+            this.defaultGateButton = new System.Windows.Forms.Button();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
+            this.label3 = new System.Windows.Forms.Label();
+            this.updateNoiseResultsbutton = new System.Windows.Forms.Button();
+            this.noiseResultsLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -157,6 +167,10 @@ namespace ScanMaster.GUI
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -363,7 +377,6 @@ namespace ScanMaster.GUI
             this.tofGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.tofYAxis,
             this.tofAvgYAxis});
-            this.tofGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph_PlotDataChanged);
             // 
             // tofLowCursor
             // 
@@ -463,7 +476,7 @@ namespace ScanMaster.GUI
             // spectrumFitFunctionCombo
             // 
             this.spectrumFitFunctionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(555, 605);
+            this.spectrumFitFunctionCombo.Location = new System.Drawing.Point(632, 605);
             this.spectrumFitFunctionCombo.Name = "spectrumFitFunctionCombo";
             this.spectrumFitFunctionCombo.Size = new System.Drawing.Size(88, 21);
             this.spectrumFitFunctionCombo.TabIndex = 22;
@@ -471,7 +484,7 @@ namespace ScanMaster.GUI
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(474, 587);
+            this.label2.Location = new System.Drawing.Point(551, 587);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 15);
             this.label2.TabIndex = 21;
@@ -485,7 +498,7 @@ namespace ScanMaster.GUI
             "off",
             "average",
             "shot"});
-            this.spectrumFitModeCombo.Location = new System.Drawing.Point(477, 605);
+            this.spectrumFitModeCombo.Location = new System.Drawing.Point(554, 605);
             this.spectrumFitModeCombo.Name = "spectrumFitModeCombo";
             this.spectrumFitModeCombo.Size = new System.Drawing.Size(72, 21);
             this.spectrumFitModeCombo.TabIndex = 20;
@@ -496,7 +509,7 @@ namespace ScanMaster.GUI
             this.tofFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
             this.tofFitResultsLabel.Location = new System.Drawing.Point(260, 602);
             this.tofFitResultsLabel.Name = "tofFitResultsLabel";
-            this.tofFitResultsLabel.Size = new System.Drawing.Size(206, 24);
+            this.tofFitResultsLabel.Size = new System.Drawing.Size(100, 24);
             this.tofFitResultsLabel.TabIndex = 23;
             this.tofFitResultsLabel.Text = "...";
             this.tofFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -504,7 +517,7 @@ namespace ScanMaster.GUI
             // spectrumFitResultsLabel
             // 
             this.spectrumFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
-            this.spectrumFitResultsLabel.Location = new System.Drawing.Point(673, 602);
+            this.spectrumFitResultsLabel.Location = new System.Drawing.Point(748, 602);
             this.spectrumFitResultsLabel.Name = "spectrumFitResultsLabel";
             this.spectrumFitResultsLabel.Size = new System.Drawing.Size(210, 24);
             this.spectrumFitResultsLabel.TabIndex = 24;
@@ -523,7 +536,7 @@ namespace ScanMaster.GUI
             // 
             // updateSpectrumFitButton
             // 
-            this.updateSpectrumFitButton.Location = new System.Drawing.Point(649, 605);
+            this.updateSpectrumFitButton.Location = new System.Drawing.Point(724, 605);
             this.updateSpectrumFitButton.Name = "updateSpectrumFitButton";
             this.updateSpectrumFitButton.Size = new System.Drawing.Size(18, 23);
             this.updateSpectrumFitButton.TabIndex = 26;
@@ -550,7 +563,7 @@ namespace ScanMaster.GUI
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.statusBar2);
+            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
             // 
             // splitContainer1.Panel2
             // 
@@ -559,14 +572,41 @@ namespace ScanMaster.GUI
             this.splitContainer1.SplitterDistance = 371;
             this.splitContainer1.TabIndex = 30;
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.statusBar2);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.defaultGateButton);
+            this.splitContainer2.Size = new System.Drawing.Size(371, 23);
+            this.splitContainer2.SplitterDistance = 236;
+            this.splitContainer2.TabIndex = 0;
+            // 
             // statusBar2
             // 
             this.statusBar2.Location = new System.Drawing.Point(0, 0);
             this.statusBar2.Name = "statusBar2";
-            this.statusBar2.Size = new System.Drawing.Size(371, 23);
+            this.statusBar2.Size = new System.Drawing.Size(236, 23);
             this.statusBar2.SizingGrip = false;
-            this.statusBar2.TabIndex = 30;
+            this.statusBar2.TabIndex = 32;
             this.statusBar2.Text = "Ready";
+            // 
+            // defaultGateButton
+            // 
+            this.defaultGateButton.Location = new System.Drawing.Point(3, 0);
+            this.defaultGateButton.Name = "defaultGateButton";
+            this.defaultGateButton.Size = new System.Drawing.Size(120, 23);
+            this.defaultGateButton.TabIndex = 26;
+            this.defaultGateButton.Text = "Default Gate";
+            this.defaultGateButton.UseVisualStyleBackColor = true;
+            this.defaultGateButton.Click += new System.EventHandler(this.defaultGateButton_Click);
             // 
             // statusBar1
             // 
@@ -577,10 +617,42 @@ namespace ScanMaster.GUI
             this.statusBar1.TabIndex = 14;
             this.statusBar1.Text = "Ready";
             // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(378, 587);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(117, 12);
+            this.label3.TabIndex = 31;
+            this.label3.Text = "Factor over shot noise:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // updateNoiseResultsbutton
+            // 
+            this.updateNoiseResultsbutton.Location = new System.Drawing.Point(381, 602);
+            this.updateNoiseResultsbutton.Name = "updateNoiseResultsbutton";
+            this.updateNoiseResultsbutton.Size = new System.Drawing.Size(18, 23);
+            this.updateNoiseResultsbutton.TabIndex = 32;
+            this.updateNoiseResultsbutton.Text = ">";
+            this.updateNoiseResultsbutton.UseVisualStyleBackColor = true;
+            this.updateNoiseResultsbutton.Click += new System.EventHandler(this.updateNoiseResultsbutton_Click);
+            // 
+            // noiseResultsLabel
+            // 
+            this.noiseResultsLabel.ForeColor = System.Drawing.Color.Blue;
+            this.noiseResultsLabel.Location = new System.Drawing.Point(405, 603);
+            this.noiseResultsLabel.Name = "noiseResultsLabel";
+            this.noiseResultsLabel.Size = new System.Drawing.Size(143, 24);
+            this.noiseResultsLabel.TabIndex = 33;
+            this.noiseResultsLabel.Text = "...";
+            this.noiseResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(970, 659);
+            this.Controls.Add(this.noiseResultsLabel);
+            this.Controls.Add(this.updateNoiseResultsbutton);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.tofFitDataSelectCombo);
             this.Controls.Add(this.updateSpectrumFitButton);
@@ -617,6 +689,10 @@ namespace ScanMaster.GUI
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -924,9 +1000,15 @@ namespace ScanMaster.GUI
 			e.Cancel = true;
 		}
 
-        private void tofGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        private void updateNoiseResultsbutton_Click(object sender, EventArgs e)
         {
+            viewer.UpdateNoiseResults();
+        }
 
+
+        private void defaultGateButton_Click(object sender, EventArgs e)
+        {
+            viewer.SetGatesToDefault();
         }
 
 

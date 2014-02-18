@@ -40,13 +40,14 @@ namespace DAQ.HAL
             string tclBoard = (string)Boards["tclBoard"];
 
             // add things to the info
-            // the analog triggers
+            // the analog triggersf
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
 
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
+            Info.Add("defaultGate",new double[] {2190, 80});
 
 
             Info.Add("phaseLockControlMethod", "synth");

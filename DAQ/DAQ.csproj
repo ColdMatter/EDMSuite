@@ -171,6 +171,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NoiseInfo.cs" />
     <Compile Include="PXIEDMHardwareNormal.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
