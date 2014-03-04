@@ -61,7 +61,7 @@ namespace Data.Scans
 
 		public Scan DeserializeScanFromXML(String filePath)
 		{
-			Stream scanStream = new FileStream(filePath, FileMode.Create);
+			Stream scanStream = new FileStream(filePath, FileMode.Open);
 			Scan scan = (Scan)xmls.Deserialize(scanStream);
 			scanStream.Close();
 			return scan;
