@@ -34,6 +34,8 @@ namespace DAQ.HAL
             string PXIBoard = (string)Boards["PXI6"];
             string TCLBoard = (string)Boards["PXI4"];
 
+            Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
+
 
             // add things to the info
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");

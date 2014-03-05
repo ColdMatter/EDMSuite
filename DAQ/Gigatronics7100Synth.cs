@@ -8,7 +8,7 @@ namespace DAQ.HAL
     /// This class represents a GPIB controlled Gigatronics 7100 arbitrary waveform generator. It conforms to the Synth
     /// interface.
     /// </summary>
-    class Gigatronics7100Synth : Synth
+    public class Gigatronics7100Synth : Synth
     {
         public Gigatronics7100Synth(String visaAddress)
             : base(visaAddress)
@@ -26,7 +26,7 @@ namespace DAQ.HAL
         {
             set 
             {
-                if (!Environs.Debug) Write("PL" + value + "DM"); // the value is entered in MHz
+                if (!Environs.Debug) Write("PL" + value + "DM"); // the value is entered in dBm
             } // do nothing
         }
 
@@ -42,7 +42,17 @@ namespace DAQ.HAL
 
         public override bool Enabled
         {
-            set { } // do nothing
+            set
+            {
+                if (value)
+                {
+                    if (!Environs.Debug) Write("RF1");
+                }
+                else
+                {
+                    if (!Environs.Debug) Write("RF0");
+                }
+            }
         }
 
         public double PulseDuration

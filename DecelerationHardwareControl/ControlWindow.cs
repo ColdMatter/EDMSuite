@@ -33,6 +33,16 @@ namespace DecelerationHardwareControl
             box.Checked = state;
         }
 
+        public void SetTextBox(TextBox box, string text)
+        {
+            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
+        }
+        private delegate void SetTextDelegate(TextBox box, string text);
+        private void SetTextHelper(TextBox box, string text)
+        {
+            box.Text = text;
+        }
+
         public void SetDiodeWarning(Led led, bool state)
         {
             led.Invoke(new SetWarningDelegate(SetWarningHelper), new object[] { led, state });
@@ -55,6 +65,16 @@ namespace DecelerationHardwareControl
         private void laserBlockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             controller.SetAnalogOutputBlockedStatus("laser", laserBlockCheckBox.Checked);
+        }
+
+        private void synthOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableSynth(synthOnCheck.Checked);
+        }
+
+        private void synthSettingsUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateSynthSettings();
         }
 
        

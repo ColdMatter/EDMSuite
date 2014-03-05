@@ -62,5 +62,10 @@ namespace DAQ.HAL
         {
             session.Timeout = timeoutValue;
         }
+
+        protected void TerminationCharacter(bool enabled)
+        {
+            session.TerminationCharacterEnabled = enabled;
+        }
 	}
 }
