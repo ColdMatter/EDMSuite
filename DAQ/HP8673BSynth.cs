@@ -19,7 +19,7 @@ namespace DAQ.HAL
 		{
 			set
 			{
-				if (!Environs.Debug) Write("FR" + value + "GZ");
+				if (!Environs.Debug) Write("FR" + value + "MZ");
 			}
 		}
 
