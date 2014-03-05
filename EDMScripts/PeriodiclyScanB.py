@@ -11,14 +11,14 @@ def Run(interval, numScans):
 					fileSystem.Paths["scanMasterDataPath"])\
 		+ fileSystem.GenerateNextDataFileName()
 	print("Saving as " + file + "_*.zip")
-	print("Selecting profile Scan B")
-	sm.SelectProfile("Scan B")
+	# print("Selecting profile Scan B")
+	# sm.SelectProfile("Scan B")
 	print("running...")
 	# start looping
 	r = list
 	for i in range(numScans):
 		print str(i)+"th scan of B"
-		sm.AcquireAndWait(4)
+		sm.AcquireAndWait(1)
 		scanPath = file + "_" + str(i) + ".zip"
 		sm.SaveData(scanPath)
 		System.Threading.Thread.Sleep(interval*1000)	

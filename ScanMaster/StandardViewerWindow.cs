@@ -23,8 +23,7 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.YAxis yAxis1;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph analog2Graph;
 		private NationalInstruments.UI.XAxis xAxis2;
-		private NationalInstruments.UI.YAxis yAxis2;
-		private System.Windows.Forms.StatusBar statusBar1;
+        private NationalInstruments.UI.YAxis yAxis2;
 		private NationalInstruments.UI.ScatterPlot analog1Plot;
 		private NationalInstruments.UI.ScatterPlot analog2Plot;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph pmtGraph;
@@ -64,6 +63,9 @@ namespace ScanMaster.GUI
 		private Button updateTOFFitButton;
         private Button updateSpectrumFitButton;
         public ComboBox tofFitDataSelectCombo;
+        private SplitContainer splitContainer1;
+        private StatusBar statusBar2;
+        private StatusBar statusBar1;
 		private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
@@ -112,7 +114,6 @@ namespace ScanMaster.GUI
             this.pmtOffAvgPlot = new NationalInstruments.UI.ScatterPlot();
             this.pmtFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.pmtXAxis = new NationalInstruments.UI.XAxis();
-            this.statusBar1 = new System.Windows.Forms.StatusBar();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.differenceYAxis = new NationalInstruments.UI.YAxis();
             this.differenceGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
@@ -140,6 +141,9 @@ namespace ScanMaster.GUI
             this.updateTOFFitButton = new System.Windows.Forms.Button();
             this.updateSpectrumFitButton = new System.Windows.Forms.Button();
             this.tofFitDataSelectCombo = new System.Windows.Forms.ComboBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.statusBar2 = new System.Windows.Forms.StatusBar();
+            this.statusBar1 = new System.Windows.Forms.StatusBar();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -149,6 +153,10 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -168,6 +176,7 @@ namespace ScanMaster.GUI
             // 
             this.analog1Plot.AntiAliased = true;
             this.analog1Plot.LineColor = System.Drawing.Color.Red;
+            this.analog1Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.analog1Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog1Plot.PointColor = System.Drawing.Color.Red;
             this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
@@ -195,6 +204,7 @@ namespace ScanMaster.GUI
             // 
             this.analog2Plot.AntiAliased = true;
             this.analog2Plot.LineColor = System.Drawing.Color.Blue;
+            this.analog2Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.analog2Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog2Plot.PointColor = System.Drawing.Color.Blue;
             this.analog2Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
@@ -210,13 +220,13 @@ namespace ScanMaster.GUI
             this.pmtGraph.Cursors.AddRange(new NationalInstruments.UI.XYCursor[] {
             this.pmtLowCursor,
             this.pmtHighCursor});
-            this.pmtGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY)
-                        | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint)
-                        | NationalInstruments.UI.GraphInteractionModes.PanX)
-                        | NationalInstruments.UI.GraphInteractionModes.PanY)
-                        | NationalInstruments.UI.GraphInteractionModes.DragCursor)
-                        | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption)
-                        | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.pmtGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
             this.pmtGraph.Location = new System.Drawing.Point(376, 304);
             this.pmtGraph.Name = "pmtGraph";
             this.pmtGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -243,6 +253,7 @@ namespace ScanMaster.GUI
             // pmtOnAvgPlot
             // 
             this.pmtOnAvgPlot.LineColor = System.Drawing.Color.Red;
+            this.pmtOnAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtOnAvgPlot.XAxis = this.xAxis3;
             this.pmtOnAvgPlot.YAxis = this.pmtYAxis;
             // 
@@ -277,12 +288,14 @@ namespace ScanMaster.GUI
             // pmtOffAvgPlot
             // 
             this.pmtOffAvgPlot.LineColor = System.Drawing.Color.PowderBlue;
+            this.pmtOffAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtOffAvgPlot.XAxis = this.xAxis3;
             this.pmtOffAvgPlot.YAxis = this.pmtYAxis;
             // 
             // pmtFitPlot
             // 
             this.pmtFitPlot.LineColor = System.Drawing.Color.Silver;
+            this.pmtFitPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.pmtFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.pmtFitPlot.LineWidth = 2F;
             this.pmtFitPlot.XAxis = this.xAxis3;
@@ -291,15 +304,6 @@ namespace ScanMaster.GUI
             // pmtXAxis
             // 
             this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            // 
-            // statusBar1
-            // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 634);
-            this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Size = new System.Drawing.Size(970, 20);
-            this.statusBar1.SizingGrip = false;
-            this.statusBar1.TabIndex = 13;
-            this.statusBar1.Text = "Ready";
             // 
             // xAxis5
             // 
@@ -335,6 +339,7 @@ namespace ScanMaster.GUI
             // differenceAvgPlot
             // 
             this.differenceAvgPlot.LineColor = System.Drawing.Color.Red;
+            this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.differenceAvgPlot.XAxis = this.xAxis5;
             this.differenceAvgPlot.YAxis = this.differenceYAxis;
             // 
@@ -358,6 +363,7 @@ namespace ScanMaster.GUI
             this.tofGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.tofYAxis,
             this.tofAvgYAxis});
+            this.tofGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph_PlotDataChanged);
             // 
             // tofLowCursor
             // 
@@ -372,6 +378,7 @@ namespace ScanMaster.GUI
             // tofOnAveragePlot
             // 
             this.tofOnAveragePlot.LineColor = System.Drawing.Color.Red;
+            this.tofOnAveragePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOnAveragePlot.XAxis = this.xAxis4;
             this.tofOnAveragePlot.YAxis = this.tofAvgYAxis;
             // 
@@ -393,6 +400,7 @@ namespace ScanMaster.GUI
             // tofOnPlot
             // 
             this.tofOnPlot.LineColor = System.Drawing.Color.Blue;
+            this.tofOnPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOnPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.tofOnPlot.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.tofOnPlot.XAxis = this.xAxis4;
@@ -409,12 +417,14 @@ namespace ScanMaster.GUI
             // tofOffAveragePlot
             // 
             this.tofOffAveragePlot.LineColor = System.Drawing.Color.PowderBlue;
+            this.tofOffAveragePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOffAveragePlot.XAxis = this.xAxis4;
             this.tofOffAveragePlot.YAxis = this.tofAvgYAxis;
             // 
             // tofFitPlot
             // 
             this.tofFitPlot.LineColor = System.Drawing.Color.Silver;
+            this.tofFitPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofFitPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.tofFitPlot.LineWidth = 2F;
             this.tofFitPlot.XAxis = this.xAxis4;
@@ -532,10 +542,46 @@ namespace ScanMaster.GUI
             this.tofFitDataSelectCombo.Size = new System.Drawing.Size(50, 21);
             this.tofFitDataSelectCombo.TabIndex = 27;
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 636);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.statusBar2);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.statusBar1);
+            this.splitContainer1.Size = new System.Drawing.Size(970, 23);
+            this.splitContainer1.SplitterDistance = 371;
+            this.splitContainer1.TabIndex = 30;
+            // 
+            // statusBar2
+            // 
+            this.statusBar2.Location = new System.Drawing.Point(0, 0);
+            this.statusBar2.Name = "statusBar2";
+            this.statusBar2.Size = new System.Drawing.Size(371, 23);
+            this.statusBar2.SizingGrip = false;
+            this.statusBar2.TabIndex = 30;
+            this.statusBar2.Text = "Ready";
+            // 
+            // statusBar1
+            // 
+            this.statusBar1.Location = new System.Drawing.Point(0, 0);
+            this.statusBar1.Name = "statusBar1";
+            this.statusBar1.Size = new System.Drawing.Size(595, 23);
+            this.statusBar1.SizingGrip = false;
+            this.statusBar1.TabIndex = 14;
+            this.statusBar1.Text = "Ready";
+            // 
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(970, 654);
+            this.ClientSize = new System.Drawing.Size(970, 659);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.tofFitDataSelectCombo);
             this.Controls.Add(this.updateSpectrumFitButton);
             this.Controls.Add(this.updateTOFFitButton);
@@ -549,7 +595,6 @@ namespace ScanMaster.GUI
             this.Controls.Add(this.tofFitModeCombo);
             this.Controls.Add(this.tofGraph);
             this.Controls.Add(this.differenceGraph);
-            this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.pmtGraph);
             this.Controls.Add(this.analog2Graph);
             this.Controls.Add(this.analog1Graph);
@@ -568,6 +613,10 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -826,10 +875,18 @@ namespace ScanMaster.GUI
         {
             this.Invoke(new SetStatusDelegate(SetStatusHelper), new object[] { text });
         }
+        public void SetTOFStatus(string text)
+        {
+            this.Invoke(new SetStatusDelegate(SetTOFStatusHelper), new object[] { text });
+        }
         private delegate void SetStatusDelegate(string text);
         private void SetStatusHelper(string text)
         {
             statusBar1.Text = text;
+        }
+        private void SetTOFStatusHelper(string text)
+        {
+            statusBar2.Text = text;
         }
 
         private void TofFitComboHelper(bool state)
@@ -866,5 +923,12 @@ namespace ScanMaster.GUI
 			viewer.ToggleVisible();
 			e.Cancel = true;
 		}
+
+        private void tofGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+
 	}
 }

@@ -189,7 +189,7 @@ namespace Analysis.EDM
             // A narrow centre gate for correlation analysis
             AddFixedSliceConfig("cgateNarrowFixed", 2175, 25);
             // A gate containing no molecules to look for edms caused by rf pickup
-            AddFixedSliceConfig("preMolecularBackground", 1900, 50);
+            AddFixedSliceConfig("preMolecularBackground", 1850, 50);
             // A demodulation config for Kr
             AddFixedSliceConfig("centreFixedKr", 2950, 90);
 
@@ -254,6 +254,8 @@ namespace Analysis.EDM
 
                 int rf1CT = (int)b.Config.Settings["rf1CentreTime"];
                 int rf2CT = (int)b.Config.Settings["rf2CentreTime"];
+                int clock = (int)b.Config.Settings["clockFrequency"];
+                int conFac = clock / 1000000; 
 
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = name;
@@ -285,14 +287,14 @@ namespace Analysis.EDM
                 dg6.Index = 6;
                 dg6.Name = "reflectedrf1Amplitude";
                 dg6.BackgroundSubtract = false;
-                dg6.GateLow = (rf1CT/10) -1;
-                dg6.GateHigh = (rf1CT / 10) + 1;
+                dg6.GateLow = (rf1CT / conFac) - 1;
+                dg6.GateHigh = (rf1CT / conFac) + 1;
                 dg7 = new GatedDetectorExtractSpec();
                 dg7.Index = 7 ;
                 dg7.Name = "reflectedrf2Amplitude";
                 dg7.BackgroundSubtract = false;
-                dg7.GateLow = (rf2CT / 10) - 1;
-                dg7.GateHigh = (rf2CT / 10) + 1;
+                dg7.GateLow = (rf2CT / conFac) - 1;
+                dg7.GateHigh = (rf2CT / conFac) + 1;
 
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);

@@ -3660,6 +3660,7 @@ namespace EDMHardwareControl
             this.pumpAOMVoltageTextBox.Size = new System.Drawing.Size(64, 20);
             this.pumpAOMVoltageTextBox.TabIndex = 69;
             this.pumpAOMVoltageTextBox.Text = "0";
+            this.pumpAOMVoltageTextBox.TextChanged += new System.EventHandler(this.pumpAOMVoltageTextBox_TextChanged);
             // 
             // updatePumpAOMButton
             // 
@@ -6457,6 +6458,11 @@ namespace EDMHardwareControl
         }
 
         private void label97_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pumpAOMVoltageTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }

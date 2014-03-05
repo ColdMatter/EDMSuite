@@ -9,6 +9,7 @@ using NationalInstruments.UI.WindowsForms;
 
 using Data;
 using DAQ.FakeData;
+using System.Collections.Generic;
 
 
 namespace ScanMaster.GUI
@@ -26,6 +27,8 @@ namespace ScanMaster.GUI
 		private bool newLineAvailable = false;
 		private ProfileManager manager;
 		public String Prompt = ":> ";
+        private List<string> commands = new List<string>(new string[] {""});
+        private int commandMarker = 0;
 
 		private System.Windows.Forms.MainMenu mainMenu1;
 		private System.Windows.Forms.MenuItem menuItem2;
@@ -328,6 +331,7 @@ namespace ScanMaster.GUI
             this.commandTextBox.Name = "commandTextBox";
             this.commandTextBox.Size = new System.Drawing.Size(488, 22);
             this.commandTextBox.TabIndex = 20;
+            this.commandTextBox.TextChanged += new System.EventHandler(this.commandTextBox_TextChanged);
             this.commandTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUpHandler);
             // 
             // outputTextBox
@@ -467,6 +471,8 @@ namespace ScanMaster.GUI
 			if (e.KeyData == Keys.Enter)
 			{
 				String command = commandTextBox.Text;
+                commands.Add(command);
+                commandMarker = commands.Count;
 				commandTextBox.Clear();
 				// echo the command
 				WriteLine(Prompt + command);
@@ -477,7 +483,32 @@ namespace ScanMaster.GUI
 				}
 						
 			}
-		
+		    // if up is pressed return the previous command in the list in the usual way
+            if (e.KeyData == Keys.Up)
+            {
+                commandMarker--;
+                if (commandMarker<0) commandMarker = 0;
+                commandTextBox.Clear();
+                commandTextBox.Text= commands[commandMarker];
+                commandTextBox.Select(commandTextBox.Text.Length,0); 
+            }
+
+            // if down is pressed return the next command in the usual way
+            if (e.KeyData == Keys.Down)
+            {
+                commandMarker++;
+                if (commandMarker > commands.Count) commandMarker = commands.Count;
+                commandTextBox.Clear();
+                if (commandMarker == commands.Count)
+                {
+                }
+                else
+                {
+                    commandTextBox.Text = commands[commandMarker];
+                    commandTextBox.Select(commandTextBox.Text.Length, 0);
+                }
+            }
+
 			// tab attempts to autocomplete the command
 			if (e.KeyData == Keys.Tab)
 			{
@@ -683,6 +714,11 @@ namespace ScanMaster.GUI
         private void SetWindowTitleInternal(string text)
         {
             Text = text;
+        }
+
+        private void commandTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         
