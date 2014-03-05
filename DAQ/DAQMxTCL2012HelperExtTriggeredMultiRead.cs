@@ -11,6 +11,7 @@ namespace DAQ.TransferCavityLock2012
     {
         //In this helper, the cavity is scanned externally (not from the computer). The software waits for a trigger pulse to start scanning.
         //An additional AI read is added to this helper. It's for reading off the cavity voltage.
+        //I think this file is obsolete
         private Task outputLaserTask; //Some stuff to let you write to laser
         private AnalogOutputChannel laserChannel;
         private AnalogSingleChannelWriter laserWriter;

@@ -333,6 +333,12 @@ namespace TransferCavityLock2012
 
         }
 
+        private void centreTracesButton_Click(object sender, EventArgs e)
+        {
+            controller.centreTraces();
+        }
+
+
  
 
 

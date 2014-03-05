@@ -39,7 +39,7 @@ namespace DAQ.Analyze
             {
                 return "n: " + lastFittedParameters[0].ToString("G3") +
                     " q: " + lastFittedParameters[1].ToString("G3") +
-                    " c: " + lastFittedParameters[2].ToString("G6") +
+                    " c: " + lastFittedParameters[2].ToString("G8") +
                     " w: " + lastFittedParameters[3].ToString("G3");
             }
         }

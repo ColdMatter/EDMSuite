@@ -131,7 +131,7 @@ namespace TransferCavityLock2012
 
         private double calculateLaserSetPoint(double[] masterFitCoefficients, double[] slaveFitCoefficients)
         {
-            return Math.Round(slaveFitCoefficients[1] - masterFitCoefficients[1], 4);
+            return slaveFitCoefficients[1] - masterFitCoefficients[1];
         }
 
 
@@ -150,6 +150,7 @@ namespace TransferCavityLock2012
             double currentPeakSeparation = new double();
             currentPeakSeparation = slaveFitCoefficients[1] - masterFitCoefficients[1];
             return currentPeakSeparation - LaserSetPoint;
+            
         }
 
         private double calculateNewVoltageToLaser(double vtolaser, double measuredVoltageChange)
@@ -166,8 +167,7 @@ namespace TransferCavityLock2012
             {
                 newVoltage = vtolaser + Gain * measuredVoltageChange; //Feedback 
             }
-            double r = Math.Round(newVoltage, 4);
-            return r;
+            return newVoltage;
         }
 
         #endregion
