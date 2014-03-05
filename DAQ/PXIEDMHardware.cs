@@ -211,6 +211,7 @@ namespace DAQ.HAL
             //Info.Add("TCL_Default_ScanPoints", 250);
             Info.Add("TCL_Default_VoltageToLaser", 2.5);
             Info.Add("TCL_Default_VoltageToDependent", 1.0);
+            Info.Add("TCL_Default_ScanPoints",300);
             // Some matching up for TCL
             Info.Add("flPZT2", "p1");
             Info.Add("flPZT2Temp", "p1");
@@ -225,14 +226,14 @@ namespace DAQ.HAL
             // Laser control
             //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("flPZT", aoBoard + "/ao7", 0, 10);
-            AddAnalogOutputChannel("flPZT2", aoBoard + "/ao2", 0, 10);
+            AddAnalogOutputChannel("flPZT2", tclBoard + "/ao0", 0, 5);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
             AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
             //AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
             //AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
             //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
-            AddAnalogOutputChannel("rampfb", aoBoard + "/ao4", -10, 10);
+            AddAnalogOutputChannel("rampfb", tclBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
         }
 
