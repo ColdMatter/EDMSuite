@@ -56,6 +56,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdateI2AOMFreqMonitor()
 	hc.UpdatePumpAOMFreqMonitor()
 	#hc.UpdateVCOFraction()
+	#hc.CheckPiMonitor()
 	print("Measuring polarizer angle")
 	hc.UpdateProbePolAngleMonitor()
 	hc.UpdatePumpPolAngleMonitor()
