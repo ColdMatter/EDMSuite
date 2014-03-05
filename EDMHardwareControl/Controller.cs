@@ -1332,6 +1332,20 @@ namespace EDMHardwareControl
             }
         }
 
+        public double piFlipMonVoltage
+        {
+            set
+            {
+                window.SetTextBox(window.piFlipMonTextBox, value.ToString());
+            }
+
+            get
+            {
+                return Double.Parse(window.piFlipMonTextBox.Text);
+            }
+        }
+
+
         public double miniFlux2Voltage
         {
             set
@@ -1497,13 +1511,6 @@ namespace EDMHardwareControl
             }
         }
 
-        public double PiMonitorVoltage
-        {
-            get
-            {
-                return Double.Parse(window.piMonitor1TextBox.Text);
-            }
-        }
 
         public double NorthCurrent
         {
@@ -2357,16 +2364,23 @@ namespace EDMHardwareControl
 
         public void UpdatePiMonitor()
         {
+            piFlipMonVoltage = ReadAnalogInput(piMonitorTask);
+        }
+
+        public void CheckPiMonitor()
+        {
             SetPhaseFlip1(true);
             SetPhaseFlip2(false);
-            double piMonitorV1 = ReadAnalogInput(piMonitorTask);
+            UpdatePiMonitor();
+            double piMonitorV1 = piFlipMonVoltage;
             window.SetTextBox(window.piMonitor1TextBox, piMonitorV1.ToString());
             SetPhaseFlip2(true);
-            double piMonitorV2 = ReadAnalogInput(piMonitorTask);
+            UpdatePiMonitor();
+            double piMonitorV2 = piFlipMonVoltage;
             window.SetTextBox(window.piMonitor2TextBox, piMonitorV2.ToString());
             SetPhaseFlip1(false);
             SetPhaseFlip2(false);
-            if (true) window.AddAlert("Pi-flip - V1: " + piMonitorV1 + "; V2: " + piMonitorV1 + " .");
+            if (Math.Round(piMonitorV1)==Math.Round(piMonitorV2)) window.AddAlert("Pi-flip - V1: " + piMonitorV1 + "; V2: " + piMonitorV1 + " .");
         }
 
         public void UpdateDiodeCurrentMonitor()

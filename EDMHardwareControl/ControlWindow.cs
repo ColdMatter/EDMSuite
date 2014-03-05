@@ -486,6 +486,10 @@ namespace EDMHardwareControl
         public TextBox southIMonitorErrorTextBox;
         private Label label131;
         private Button clearIMonitorButton;
+        public TextBox piFlipMonTextBox;
+        private Button UpdatePiFlipMonButton;
+        private Label label132;
+        private Label label133;
 
 
 		public Controller controller;
@@ -626,13 +630,17 @@ namespace EDMHardwareControl
             this.label19 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.piFlipMonTextBox = new System.Windows.Forms.TextBox();
+            this.UpdatePiFlipMonButton = new System.Windows.Forms.Button();
             this.piMonitor2TextBox = new System.Windows.Forms.TextBox();
             this.updatePiMonitorButton = new System.Windows.Forms.Button();
             this.label82 = new System.Windows.Forms.Label();
             this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
+            this.label132 = new System.Windows.Forms.Label();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label133 = new System.Windows.Forms.Label();
             this.setDCFMtoGuess = new System.Windows.Forms.Button();
             this.Copyrf2f = new System.Windows.Forms.Button();
             this.Copyrf1f = new System.Windows.Forms.Button();
@@ -2126,22 +2134,46 @@ namespace EDMHardwareControl
             // 
             // groupBox24
             // 
+            this.groupBox24.Controls.Add(this.piFlipMonTextBox);
+            this.groupBox24.Controls.Add(this.UpdatePiFlipMonButton);
             this.groupBox24.Controls.Add(this.piMonitor2TextBox);
             this.groupBox24.Controls.Add(this.updatePiMonitorButton);
             this.groupBox24.Controls.Add(this.label82);
             this.groupBox24.Controls.Add(this.piMonitor1TextBox);
-            this.groupBox24.Location = new System.Drawing.Point(8, 528);
+            this.groupBox24.Controls.Add(this.label132);
+            this.groupBox24.Controls.Add(this.label133);
+            this.groupBox24.Location = new System.Drawing.Point(8, 532);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(382, 40);
+            this.groupBox24.Size = new System.Drawing.Size(675, 39);
             this.groupBox24.TabIndex = 65;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "pi monitor";
+            // 
+            // piFlipMonTextBox
+            // 
+            this.piFlipMonTextBox.BackColor = System.Drawing.Color.Black;
+            this.piFlipMonTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.piFlipMonTextBox.Location = new System.Drawing.Point(127, 16);
+            this.piFlipMonTextBox.Name = "piFlipMonTextBox";
+            this.piFlipMonTextBox.ReadOnly = true;
+            this.piFlipMonTextBox.Size = new System.Drawing.Size(64, 20);
+            this.piFlipMonTextBox.TabIndex = 67;
+            this.piFlipMonTextBox.Text = "0";
+            // 
+            // UpdatePiFlipMonButton
+            // 
+            this.UpdatePiFlipMonButton.Location = new System.Drawing.Point(212, 14);
+            this.UpdatePiFlipMonButton.Name = "UpdatePiFlipMonButton";
+            this.UpdatePiFlipMonButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdatePiFlipMonButton.TabIndex = 66;
+            this.UpdatePiFlipMonButton.Text = "Update";
+            this.UpdatePiFlipMonButton.Click += new System.EventHandler(this.UpdatePiFlipMonButton_Click);
             // 
             // piMonitor2TextBox
             // 
             this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor2TextBox.Location = new System.Drawing.Point(213, 17);
+            this.piMonitor2TextBox.Location = new System.Drawing.Point(441, 17);
             this.piMonitor2TextBox.Name = "piMonitor2TextBox";
             this.piMonitor2TextBox.ReadOnly = true;
             this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
@@ -2150,11 +2182,11 @@ namespace EDMHardwareControl
             // 
             // updatePiMonitorButton
             // 
-            this.updatePiMonitorButton.Location = new System.Drawing.Point(300, 15);
+            this.updatePiMonitorButton.Location = new System.Drawing.Point(528, 15);
             this.updatePiMonitorButton.Name = "updatePiMonitorButton";
             this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updatePiMonitorButton.TabIndex = 63;
-            this.updatePiMonitorButton.Text = "Update";
+            this.updatePiMonitorButton.Text = "Check";
             this.updatePiMonitorButton.Click += new System.EventHandler(this.updatePiMonitorButton_Click);
             // 
             // label82
@@ -2163,18 +2195,26 @@ namespace EDMHardwareControl
             this.label82.Name = "label82";
             this.label82.Size = new System.Drawing.Size(108, 23);
             this.label82.TabIndex = 64;
-            this.label82.Text = "Monitor voltages (V)";
+            this.label82.Text = "Monitor voltage (V)";
             // 
             // piMonitor1TextBox
             // 
             this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor1TextBox.Location = new System.Drawing.Point(130, 17);
+            this.piMonitor1TextBox.Location = new System.Drawing.Point(345, 17);
             this.piMonitor1TextBox.Name = "piMonitor1TextBox";
             this.piMonitor1TextBox.ReadOnly = true;
             this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
             this.piMonitor1TextBox.TabIndex = 62;
             this.piMonitor1TextBox.Text = "0";
+            // 
+            // label132
+            // 
+            this.label132.Location = new System.Drawing.Point(331, 20);
+            this.label132.Name = "label132";
+            this.label132.Size = new System.Drawing.Size(80, 23);
+            this.label132.TabIndex = 72;
+            this.label132.Text = "0";
             // 
             // groupBox22
             // 
@@ -2250,6 +2290,14 @@ namespace EDMHardwareControl
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
+            // 
+            // label133
+            // 
+            this.label133.Location = new System.Drawing.Point(418, 20);
+            this.label133.Name = "label133";
+            this.label133.Size = new System.Drawing.Size(80, 23);
+            this.label133.TabIndex = 73;
+            this.label133.Text = "180";
             // 
             // setDCFMtoGuess
             // 
@@ -6148,7 +6196,7 @@ namespace EDMHardwareControl
 
         private void updatePiMonitorButton_Click(object sender, EventArgs e)
         {
-            controller.UpdatePiMonitor();
+            controller.CheckPiMonitor();
         }
 
         private void updateDiodeCurrentMonButton_Click(object sender, EventArgs e)
@@ -6471,6 +6519,11 @@ namespace EDMHardwareControl
         private void vcoConversionFractionTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void UpdatePiFlipMonButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePiMonitor();
         }
 
 
