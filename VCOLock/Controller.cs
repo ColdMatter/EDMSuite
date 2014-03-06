@@ -23,12 +23,24 @@ namespace VCOLock
         /// </summary>
         public void Start()
         {
+            outMax = (double)Environs.Hardware.GetInfo("VCO_Voltage_Limit_Upper");
+            outMin = (double)Environs.Hardware.GetInfo("VCO_Voltage_Limit_Lower");
+
             window = new ControlWindow();
             window.controller = this;
             Application.Run(window);
         }
 
         #region variables for lock
+        
+        /// <summary>
+        /// Max range of VCO
+        /// </summary>
+        private double outMax;
+        /// <summary>
+        /// Min range of VCO
+        /// </summary>
+        private double outMin;
 
         /// <summary>
         /// Set point for generator frequency to be compared to
@@ -36,11 +48,11 @@ namespace VCOLock
         public double FrequencySetPoint{ 
             get
             {
-                return double.Parse(window.freqSetpointTextBox.Text);
+                return (double)window.setPointNumericUpDown.Value;
             } 
             set
             {
-                window.SetTextBox(window.freqSetpointTextBox, value.ToString());
+                window.SetNumericBox(window.setPointNumericUpDown, (decimal)value);
             } 
         }
 
@@ -67,11 +79,11 @@ namespace VCOLock
         {
             get
             {
-                return double.Parse(window.intGainTextBox.Text);
+                return (double)window.propGainNumeric.Value;
             }
             set
             {
-                window.SetTextBox(window.intGainTextBox, value.ToString());
+                window.SetNumericBox(window.propGainNumeric, (decimal)value);
             }
         }
 
@@ -82,13 +94,22 @@ namespace VCOLock
         {
             get
             {
-                return double.Parse(window.intGainTextBox.Text);
+                return (double)window.intGainNumeric.Value;
             }
             set
             {
-                window.SetTextBox(window.intGainTextBox, value.ToString());
+                window.SetNumericBox(window.intGainNumeric, (decimal)value);
             }
         }
+
+        /// <summary>
+        /// Current value of proportional term in lock
+        /// </summary>
+        private double propTerm { get; set; }
+        /// <summary>
+        /// Current value of integral term in lock
+        /// </summary>
+        private double intTerm { get; set; }
 
         /// <summary>
         /// Poll interval (ms)
@@ -137,9 +158,8 @@ namespace VCOLock
         /// <summary>
         /// Method for updating the error signal plot
         /// </summary>
-        public void UpdateErrorSigGraph()
+        public void UpdateErrorSigGraph(double errorVal)
         {
-            double errorVal = FrequencySetPoint - CurrentFrequency;
             window.PlotYAppend(window.errorSigGraph, window.errorSigPlot,
                 new double[] { errorVal });
         }
@@ -174,10 +194,11 @@ namespace VCOLock
             while (!stop.WaitOne(0))
             {
                 Thread.Sleep(PollPeriod);
-                UpdateErrorSigGraph();
+                double errorVal = FrequencySetPoint - CurrentFrequency;
+                UpdateErrorSigGraph(errorVal);
                 if (window.propLockEnable.Checked || window.intLockEnable.Checked)
                 {
-                    double outputV = ComputeOutputVoltage();
+                    double outputV = ComputeOutputVoltage(errorVal);
                     UpdateVoltageOutput(outputV);
 
                 }
@@ -196,9 +217,46 @@ namespace VCOLock
         /// proportional gain Kp and integral gain Ki
         /// </summary>
         /// <returns>Feedback voltage to output</returns>
-        public double ComputeOutputVoltage()
+        public double ComputeOutputVoltage(double errorVal)
         {
-            return 0.0;
+            double sign;
+            if (window.reverseCheckBox.Checked)
+            {
+                sign = -1.0;
+            }
+            else
+            {
+                sign = +1.0;
+            }
+
+            if (window.propLockEnable.Checked)
+            {
+                propTerm = sign * Kp * errorVal;
+            }
+            else
+            {
+                propTerm = 0.0;
+            }
+            
+            if (window.intLockEnable.Checked)
+            {
+                intTerm += sign * Ki * errorVal;
+            }
+            else
+            {
+                intTerm = 0.0;
+            }
+            // This stops the iTerm running away uncontrollably
+            if (intTerm < outMin) intTerm = outMin;
+            if (intTerm > outMax) intTerm = outMax;
+            
+            // Calculate voltage to feedback
+            double outputV = propTerm + intTerm;
+            // This stops the output from going out of its range
+            if (outputV < outMin) outputV = outMin;
+            if (outputV > outMax) outputV = outMax;
+
+            return outputV;
         }
 
         /// <summary>
@@ -207,6 +265,7 @@ namespace VCOLock
         /// <param name="outputV">Required output voltage</param>
         public void UpdateVoltageOutput(double outputV)
         {
+            window.SetTextBox(window.outputVoltageTextBox, outputV.ToString());
         }
         
         #endregion

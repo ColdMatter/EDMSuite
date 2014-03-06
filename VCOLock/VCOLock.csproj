@@ -38,10 +38,6 @@
     <StartupObject>VCOLock.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DAQ, Version=1.0.5177.31142, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\DAQ\bin\Decelerator\DAQ.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=9.6.40.57, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.UI, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
@@ -91,6 +87,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

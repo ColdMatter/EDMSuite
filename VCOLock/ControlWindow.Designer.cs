@@ -33,7 +33,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.freqSetpointTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.errorSigGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.errorSigPlot = new NationalInstruments.UI.WaveformPlot();
@@ -44,12 +43,21 @@
             this.label80 = new System.Windows.Forms.Label();
             this.startPollButton = new System.Windows.Forms.Button();
             this.intLockEnable = new System.Windows.Forms.CheckBox();
-            this.propGainTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.intGainTextBox = new System.Windows.Forms.TextBox();
             this.propLockEnable = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.outputVoltageTextBox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.reverseCheckBox = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.setPointNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.propGainNumeric = new System.Windows.Forms.NumericUpDown();
+            this.intGainNumeric = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.errorSigGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.setPointNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.propGainNumeric)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.intGainNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // freqCounterTextBox
@@ -96,14 +104,6 @@
             this.label1.Size = new System.Drawing.Size(101, 23);
             this.label1.TabIndex = 48;
             this.label1.Text = "Set point";
-            // 
-            // freqSetpointTextBox
-            // 
-            this.freqSetpointTextBox.Location = new System.Drawing.Point(114, 182);
-            this.freqSetpointTextBox.Name = "freqSetpointTextBox";
-            this.freqSetpointTextBox.Size = new System.Drawing.Size(113, 20);
-            this.freqSetpointTextBox.TabIndex = 49;
-            this.freqSetpointTextBox.Text = "14000";
             // 
             // label2
             // 
@@ -179,14 +179,6 @@
             this.intLockEnable.Text = "Enable";
             this.intLockEnable.UseVisualStyleBackColor = true;
             // 
-            // propGainTextBox
-            // 
-            this.propGainTextBox.Location = new System.Drawing.Point(114, 202);
-            this.propGainTextBox.Name = "propGainTextBox";
-            this.propGainTextBox.Size = new System.Drawing.Size(49, 20);
-            this.propGainTextBox.TabIndex = 73;
-            this.propGainTextBox.Text = "1";
-            // 
             // label5
             // 
             this.label5.Location = new System.Drawing.Point(15, 205);
@@ -203,14 +195,6 @@
             this.label6.TabIndex = 74;
             this.label6.Text = "Integral Gain";
             // 
-            // intGainTextBox
-            // 
-            this.intGainTextBox.Location = new System.Drawing.Point(114, 225);
-            this.intGainTextBox.Name = "intGainTextBox";
-            this.intGainTextBox.Size = new System.Drawing.Size(49, 20);
-            this.intGainTextBox.TabIndex = 75;
-            this.intGainTextBox.Text = "1";
-            // 
             // propLockEnable
             // 
             this.propLockEnable.AutoSize = true;
@@ -221,15 +205,130 @@
             this.propLockEnable.Text = "Enable";
             this.propLockEnable.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(15, 274);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(101, 23);
+            this.label7.TabIndex = 78;
+            this.label7.Text = "Output voltage";
+            // 
+            // outputVoltageTextBox
+            // 
+            this.outputVoltageTextBox.BackColor = System.Drawing.Color.Black;
+            this.outputVoltageTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.outputVoltageTextBox.Location = new System.Drawing.Point(114, 271);
+            this.outputVoltageTextBox.Name = "outputVoltageTextBox";
+            this.outputVoltageTextBox.ReadOnly = true;
+            this.outputVoltageTextBox.Size = new System.Drawing.Size(113, 20);
+            this.outputVoltageTextBox.TabIndex = 79;
+            this.outputVoltageTextBox.Text = "0";
+            // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(233, 274);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(48, 23);
+            this.label8.TabIndex = 80;
+            this.label8.Text = "V";
+            // 
+            // reverseCheckBox
+            // 
+            this.reverseCheckBox.AutoSize = true;
+            this.reverseCheckBox.Location = new System.Drawing.Point(114, 250);
+            this.reverseCheckBox.Name = "reverseCheckBox";
+            this.reverseCheckBox.Size = new System.Drawing.Size(66, 17);
+            this.reverseCheckBox.TabIndex = 82;
+            this.reverseCheckBox.Text = "Reverse";
+            this.reverseCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(15, 251);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(78, 23);
+            this.label9.TabIndex = 83;
+            this.label9.Text = "Lock Direction";
+            // 
+            // setPointNumericUpDown
+            // 
+            this.setPointNumericUpDown.Location = new System.Drawing.Point(116, 181);
+            this.setPointNumericUpDown.Maximum = new decimal(new int[] {
+            20000,
+            0,
+            0,
+            0});
+            this.setPointNumericUpDown.Name = "setPointNumericUpDown";
+            this.setPointNumericUpDown.Size = new System.Drawing.Size(111, 20);
+            this.setPointNumericUpDown.TabIndex = 84;
+            this.setPointNumericUpDown.Value = new decimal(new int[] {
+            14000,
+            0,
+            0,
+            0});
+            // 
+            // propGainNumeric
+            // 
+            this.propGainNumeric.DecimalPlaces = 1;
+            this.propGainNumeric.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.propGainNumeric.Location = new System.Drawing.Point(116, 204);
+            this.propGainNumeric.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.propGainNumeric.Name = "propGainNumeric";
+            this.propGainNumeric.Size = new System.Drawing.Size(47, 20);
+            this.propGainNumeric.TabIndex = 85;
+            this.propGainNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // intGainNumeric
+            // 
+            this.intGainNumeric.DecimalPlaces = 1;
+            this.intGainNumeric.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.intGainNumeric.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.intGainNumeric.Location = new System.Drawing.Point(116, 226);
+            this.intGainNumeric.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.intGainNumeric.Name = "intGainNumeric";
+            this.intGainNumeric.Size = new System.Drawing.Size(47, 20);
+            this.intGainNumeric.TabIndex = 86;
+            this.intGainNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(361, 302);
+            this.Controls.Add(this.intGainNumeric);
+            this.Controls.Add(this.propGainNumeric);
+            this.Controls.Add(this.setPointNumericUpDown);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.reverseCheckBox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.outputVoltageTextBox);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.propLockEnable);
-            this.Controls.Add(this.intGainTextBox);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.propGainTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.intLockEnable);
             this.Controls.Add(this.pollPeriodTextBox);
@@ -238,7 +337,6 @@
             this.Controls.Add(this.startPollButton);
             this.Controls.Add(this.errorSigGraph);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.freqSetpointTextBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.freqCounterTextBox);
             this.Controls.Add(this.counterFreqUpdateButton);
@@ -246,7 +344,11 @@
             this.Controls.Add(this.label3);
             this.Name = "ControlWindow";
             this.Text = "VCOLock";
+            this.Load += new System.EventHandler(this.ControlWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorSigGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.setPointNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.propGainNumeric)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.intGainNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,21 +362,26 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        public System.Windows.Forms.TextBox freqSetpointTextBox;
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
         public System.Windows.Forms.TextBox pollPeriodTextBox;
         public System.Windows.Forms.Button stopPollButton;
         private System.Windows.Forms.Label label80;
         public System.Windows.Forms.Button startPollButton;
-        public System.Windows.Forms.TextBox propGainTextBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        public System.Windows.Forms.TextBox intGainTextBox;
         public NationalInstruments.UI.WaveformPlot errorSigPlot;
         public NationalInstruments.UI.WindowsForms.WaveformGraph errorSigGraph;
         public System.Windows.Forms.CheckBox intLockEnable;
         public System.Windows.Forms.CheckBox propLockEnable;
+        private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.TextBox outputVoltageTextBox;
+        private System.Windows.Forms.Label label8;
+        public System.Windows.Forms.CheckBox reverseCheckBox;
+        private System.Windows.Forms.Label label9;
+        public System.Windows.Forms.NumericUpDown setPointNumericUpDown;
+        public System.Windows.Forms.NumericUpDown propGainNumeric;
+        public System.Windows.Forms.NumericUpDown intGainNumeric;
     }
 }
 

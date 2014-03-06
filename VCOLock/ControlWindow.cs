@@ -33,6 +33,16 @@ namespace VCOLock
             box.Text = text;
         }
 
+        private delegate void SetNumericDelegate(NumericUpDown box, decimal val);
+        public void SetNumericBox(NumericUpDown box, decimal val)
+        {
+            box.Invoke(new SetNumericDelegate(SetNumericHelper), new object[] { box, val });
+        }
+        private void SetNumericHelper(NumericUpDown box, decimal val)
+        {
+            box.Value = val;
+        }
+
         public void EnableControl(Control control, bool enabled)
         {
             control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
@@ -78,5 +88,10 @@ namespace VCOLock
             controller.StopPoll();
         }
         #endregion
+
+        private void ControlWindow_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

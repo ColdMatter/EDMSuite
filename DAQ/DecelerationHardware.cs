@@ -35,7 +35,11 @@ namespace DAQ.HAL
             string TCLBoard = (string)Boards["PXI4"];
 
             Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
+            Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
 
+            //info for VCO lock
+            Info.Add("VCO_Voltage_Limit_Upper", 10.0); 
+            Info.Add("VCO_Voltage_Limit_Lower", 0.0);
 
             // add things to the info
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
