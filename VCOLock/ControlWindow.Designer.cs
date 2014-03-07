@@ -54,6 +54,7 @@
             this.propGainNumeric = new System.Windows.Forms.NumericUpDown();
             this.intGainNumeric = new System.Windows.Forms.NumericUpDown();
             this.outputVoltageNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.logCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorSigGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.setPointNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.propGainNumeric)).BeginInit();
@@ -130,6 +131,7 @@
             // 
             // errorSigPlot
             // 
+            this.errorSigPlot.HistoryCapacity = 10;
             this.errorSigPlot.XAxis = this.xAxis1;
             this.errorSigPlot.YAxis = this.yAxis1;
             // 
@@ -259,12 +261,12 @@
             // 
             // propGainNumeric
             // 
-            this.propGainNumeric.DecimalPlaces = 1;
+            this.propGainNumeric.DecimalPlaces = 2;
             this.propGainNumeric.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
             this.propGainNumeric.Location = new System.Drawing.Point(116, 204);
             this.propGainNumeric.Maximum = new decimal(new int[] {
             1000,
@@ -282,13 +284,13 @@
             // 
             // intGainNumeric
             // 
-            this.intGainNumeric.DecimalPlaces = 1;
+            this.intGainNumeric.DecimalPlaces = 2;
             this.intGainNumeric.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.intGainNumeric.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
             this.intGainNumeric.Location = new System.Drawing.Point(116, 226);
             this.intGainNumeric.Maximum = new decimal(new int[] {
             1000,
@@ -306,12 +308,12 @@
             // 
             // outputVoltageNumericUpDown
             // 
-            this.outputVoltageNumericUpDown.DecimalPlaces = 1;
+            this.outputVoltageNumericUpDown.DecimalPlaces = 3;
             this.outputVoltageNumericUpDown.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
             this.outputVoltageNumericUpDown.Location = new System.Drawing.Point(116, 272);
             this.outputVoltageNumericUpDown.Maximum = new decimal(new int[] {
             1000,
@@ -322,11 +324,22 @@
             this.outputVoltageNumericUpDown.Size = new System.Drawing.Size(111, 20);
             this.outputVoltageNumericUpDown.TabIndex = 87;
             // 
+            // logCheckBox
+            // 
+            this.logCheckBox.AutoSize = true;
+            this.logCheckBox.Location = new System.Drawing.Point(278, 184);
+            this.logCheckBox.Name = "logCheckBox";
+            this.logCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.logCheckBox.TabIndex = 88;
+            this.logCheckBox.Text = "Log Lock";
+            this.logCheckBox.UseVisualStyleBackColor = true;
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(361, 302);
+            this.Controls.Add(this.logCheckBox);
             this.Controls.Add(this.outputVoltageNumericUpDown);
             this.Controls.Add(this.intGainNumeric);
             this.Controls.Add(this.propGainNumeric);
@@ -391,6 +404,7 @@
         public System.Windows.Forms.NumericUpDown propGainNumeric;
         public System.Windows.Forms.NumericUpDown intGainNumeric;
         public System.Windows.Forms.NumericUpDown outputVoltageNumericUpDown;
+        public System.Windows.Forms.CheckBox logCheckBox;
     }
 }
 

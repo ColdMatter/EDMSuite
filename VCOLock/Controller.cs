@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.TransferCavityLock;
@@ -220,6 +221,23 @@ namespace VCOLock
                     ComputeOutputVoltage(errorVal);
                 }
                 SetAnalogOutput(voltageOutputTask, OutputVoltage);
+
+                // Log lock parameters
+                // This slows the lock down considerably and should be moved over
+                // to its own thread which processes and writes out data from a queue 
+                if (window.logCheckBox.Checked)
+                {
+                    using (StreamWriter writer = new StreamWriter(Environs.FileSystem.Paths["vcoLockData"] + "log.txt", true))
+                    {
+                        writer.WriteLine("time=" + DateTime.Now.ToString("h:mm:ss.ff t") +
+                        ", SetPoint=" + Math.Round(FrequencySetPoint, 5).ToString() +
+                        ", CurrentFreq=" + Math.Round(CurrentFrequency, 5).ToString() +
+                        ", FreqError=" + Math.Round(errorVal, 5).ToString() +
+                        ", PropTerm=" + Math.Round(propTerm, 5).ToString() +
+                        ", IntTerm=" + Math.Round(intTerm, 5).ToString() +
+                        ", OutputVoltage=" + Math.Round(OutputVoltage, 5).ToString());
+                    }
+                }
             }
             stop.Reset();
             window.EnableControl(window.startPollButton, true);
