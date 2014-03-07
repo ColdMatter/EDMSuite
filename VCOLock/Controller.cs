@@ -17,15 +17,19 @@ namespace VCOLock
     {
         ControlWindow window;
         FrequencyCounter counter = (FrequencyCounter)Environs.Hardware.Instruments["counter"];
+        Task voltageOutputTask; 
         
         /// <summary>
         /// (Not main) entry point for application 
         /// </summary>
         public void Start()
         {
-            outMax = (double)Environs.Hardware.GetInfo("VCO_Voltage_Limit_Upper");
-            outMin = (double)Environs.Hardware.GetInfo("VCO_Voltage_Limit_Lower");
+            // Setup output task
+            voltageOutputTask = CreateAnalogOutputTask("VCO_Out");
+            outMax = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["VCO_Out"]).RangeHigh;
+            outMin = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["VCO_Out"]).RangeLow;
 
+            // Make GUI
             window = new ControlWindow();
             window.controller = this;
             Application.Run(window);
@@ -69,6 +73,21 @@ namespace VCOLock
             set
             {
                 window.SetTextBox(window.freqCounterTextBox, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Output Voltage
+        /// </summary>
+        public double OutputVoltage
+        {
+            get
+            {
+                return (double)window.outputVoltageNumericUpDown.Value;
+            }
+            set
+            {
+                window.SetNumericBox(window.outputVoltageNumericUpDown, (decimal)value);
             }
         }
 
@@ -198,10 +217,9 @@ namespace VCOLock
                 UpdateErrorSigGraph(errorVal);
                 if (window.propLockEnable.Checked || window.intLockEnable.Checked)
                 {
-                    double outputV = ComputeOutputVoltage(errorVal);
-                    UpdateVoltageOutput(outputV);
-
+                    ComputeOutputVoltage(errorVal);
                 }
+                SetAnalogOutput(voltageOutputTask, OutputVoltage);
             }
             stop.Reset();
             window.EnableControl(window.startPollButton, true);
@@ -216,9 +234,9 @@ namespace VCOLock
         /// Method for calculating the feedback voltage using
         /// proportional gain Kp and integral gain Ki
         /// </summary>
-        /// <returns>Feedback voltage to output</returns>
-        public double ComputeOutputVoltage(double errorVal)
+        public void ComputeOutputVoltage(double errorVal)
         {
+            // Optionally change sign of gain
             double sign;
             if (window.reverseCheckBox.Checked)
             {
@@ -229,6 +247,8 @@ namespace VCOLock
                 sign = +1.0;
             }
 
+            // Calculate the porpotinal term if 
+            // proportional lock is enabled
             if (window.propLockEnable.Checked)
             {
                 propTerm = sign * Kp * errorVal;
@@ -237,7 +257,9 @@ namespace VCOLock
             {
                 propTerm = 0.0;
             }
-            
+
+            // Calculate the integral term if 
+            // integral lock is enabled
             if (window.intLockEnable.Checked)
             {
                 intTerm += sign * Ki * errorVal;
@@ -246,26 +268,49 @@ namespace VCOLock
             {
                 intTerm = 0.0;
             }
-            // This stops the iTerm running away uncontrollably
+            // This stops intTerm from running away uncontrollably
             if (intTerm < outMin) intTerm = outMin;
             if (intTerm > outMax) intTerm = outMax;
             
-            // Calculate voltage to feedback
             double outputV = propTerm + intTerm;
-            // This stops the output from going out of its range
-            if (outputV < outMin) outputV = outMin;
-            if (outputV > outMax) outputV = outMax;
 
-            return outputV;
+            // Limit range of feedback voltage
+            if (outputV > outMax) outputV = outMax;
+            if (outputV < outMin) outputV = outMin;
+
+            OutputVoltage = outputV; 
         }
 
         /// <summary>
-        /// Method to update Analog output of DAQ
+        /// Method to create a analog output task
         /// </summary>
-        /// <param name="outputV">Required output voltage</param>
-        public void UpdateVoltageOutput(double outputV)
+        /// <param name="channel">Channel name as defined in Hardware class</param>
+        /// <returns>The output task</returns>
+        private Task CreateAnalogOutputTask(string channel)
         {
-            window.SetTextBox(window.outputVoltageTextBox, outputV.ToString());
+            Task task = new Task(channel);
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
+                task,
+                c.RangeLow,
+                c.RangeHigh
+                );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
+        /// <summary>
+        /// Method for outputing a voltage on the DAQ
+        /// </summary>
+        /// <param name="task">NI-DAQ output task</param>
+        /// <param name="voltage">Voltage to output. 
+        /// Note must be between the limits outMax and outMin.
+        /// The range is limited elsewhere in the code</param>
+        private void SetAnalogOutput(Task task, double voltage)
+        {
+            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
+            writer.WriteSingleSample(true, voltage);
+            task.Control(TaskAction.Unreserve);
         }
         
         #endregion
