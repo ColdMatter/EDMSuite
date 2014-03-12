@@ -35,7 +35,10 @@ namespace DAQ.HAL
             string TCLBoard = (string)Boards["PXI4"];
 
             Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
+            Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
 
+            //VCO lock
+            AddAnalogOutputChannel("VCO_Out", PXIBoard + "/ao12", 0.0, 10.0);
 
             // add things to the info
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");

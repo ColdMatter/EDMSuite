@@ -11,6 +11,7 @@ namespace DAQ.Environment
             Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/7.0/mathkernel.exe");
             Paths.Add("fakeData", "c:\\Data\\examples\\");
           //  Paths.Add("decelerationUtilitiesPath", "d:\\Tools\\");
+            Paths.Add("vcoLockData", "c:\\Data\\VCO Lock\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

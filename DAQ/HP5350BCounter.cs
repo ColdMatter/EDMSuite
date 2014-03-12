@@ -22,18 +22,20 @@ namespace DAQ.HAL
             TerminationCharacter(true);
         }
 
+        private double tempFreq = 0.0;
 		override public double Frequency
 		{
 			get
 			{
-                double val = 0.0;
                 if (!Environs.Debug)
                 {
+                    double val;
                     Write("trg");
                     string s = Read();
-                    val = double.Parse(s);
+                    double.TryParse(s, out val);
+                    if (val < 20E9) tempFreq = val; // Range of counter is 20 GHz
                 }
-                return val;
+                return tempFreq;
 			}
 		}
 
