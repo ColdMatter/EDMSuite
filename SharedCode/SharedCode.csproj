@@ -28,7 +28,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -136,10 +136,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLog.cs" />
+    <Compile Include="JSONSerializer.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
     <Compile Include="OldCode\IAccumulator.cs" />
     <Compile Include="OldCode\IField.cs" />
     <Compile Include="OldCode\IVectorSpace.cs" />
+    <Compile Include="TCLDataLog.cs" />
     <Compile Include="TOFAccumulator.cs" />
     <Compile Include="TOFChannel.cs" />
     <Compile Include="OldCode\TOFChannelAccumulator.cs" />
@@ -175,6 +178,7 @@
     <Compile Include="ChannelSet.cs" />
     <Compile Include="TOFChannelSetAccumulator.cs" />
     <Compile Include="TOFWithError.cs" />
+    <Compile Include="VCODataLog.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />

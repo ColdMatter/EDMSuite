@@ -5,6 +5,7 @@ using DAQ.TransferCavityLock2012;
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ;
+using Data;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
@@ -31,8 +32,9 @@ namespace TransferCavityLock2012
         #region Declarations
         public int default_ScanPoints = 300;
 
-
         private MainForm ui;
+
+        private JSONSerializer serializer;
         
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
         public Dictionary<string, SlaveLaser> SlaveLasers;      //Stores all the slave laser classes.
@@ -129,6 +131,19 @@ namespace TransferCavityLock2012
         #endregion
 
         #region START AND STOP
+
+        //private bool logging = false;
+        public void StartLogger()
+        {
+            serializer = new JSONSerializer();
+            serializer.StartLogFile(Environs.FileSystem.Paths["transferCavityData"] + "log.json");
+            serializer.StartProcessingData();
+        }
+
+        public void StopLogger()
+        {
+            serializer.CompleteAdding();
+        }
 
         public void StartTCL()
         {
@@ -291,24 +306,6 @@ namespace TransferCavityLock2012
                             
                             //Some rearrangements to fit only when log fit slave lasers parameters on and/or lock slave lasers on.
                             plotSlaveNoFit(slName, scanData);
-                            
-                            if (ui.logCheckBox.Checked == true)
-                            {
-
-                                fits[slName + "Fits"] = fitSlave(slName, scanData);
-
-                                sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
-                                plotSlave(slName, scanData, fits[slName + "Fits"]);
-
-                               using (StreamWriter writer = new StreamWriter(Environs.FileSystem.Paths["transferCavityData"] + "log.txt", true))
-                               {
-                                  writer.WriteLine(slName + "," + DateTime.Now.ToString("h:mm:ss.ff t") + 
-                                  "," + Math.Round(fits["masterFits"][1], 5).ToString() + 
-                                  "," + Math.Round(fits[slName + "Fits"][1], 5).ToString() + 
-                                  "," + Math.Round(sl.VoltageToLaser,5).ToString());
-                               }
-                            }
-
                            
                             switch (sl.lState)
                             {
@@ -343,6 +340,21 @@ namespace TransferCavityLock2012
                                     incrementCounter(slName);
                                     count++;
                                     break;
+                            }
+                            if (ui.logCheckBox.Checked)
+                            {
+                                double[] masterFitParams;
+                                double[] slaveFitParams;
+                                if (!fits.TryGetValue("masterFits", out masterFitParams))
+                                {
+                                    masterFitParams = new double[4] { 0, 0, 0, 0 };
+                                }
+                                if(!fits.TryGetValue(slName + "Fits", out slaveFitParams))
+                                {
+                                    slaveFitParams = new double[4] { 0, 0, 0, 0};
+                                };
+
+                                serializer.AddData(new TCLDataLog(DateTime.Now, slName, masterFitParams[1], slaveFitParams[1], sl.VoltageToLaser));
                             }
                         }
 

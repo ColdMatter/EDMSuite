@@ -285,7 +285,6 @@ namespace TransferCavityLock2012
 
         private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
-
         }
 
         public void MasterSetPointTextBox_TextChanged(object sender, EventArgs e)
@@ -305,7 +304,14 @@ namespace TransferCavityLock2012
 
         private void logCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (logCheckBox.Checked)
+            {
+                controller.StartLogger();
+            }
+            else
+            {
+                controller.StopLogger();
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
