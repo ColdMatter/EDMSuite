@@ -262,9 +262,6 @@ namespace EDMHardwareControl
         public TextBox miniFlux3TextBox;
         private Label label77;
         private Label label76;
-        public Button startIRecordButton;
-        public Button stopIRecordButton;
-        public Button saveToFile;
         public CheckBox argonShutterCheckBox;
         private Label label78;
         public TextBox eOvershootHoldTextBox;
@@ -490,6 +487,7 @@ namespace EDMHardwareControl
         private Button UpdatePiFlipMonButton;
         private Label label132;
         private Label label133;
+        public CheckBox logCurrentDataCheckBox;
 
 
 		public Controller controller;
@@ -587,6 +585,7 @@ namespace EDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.logCurrentDataCheckBox = new System.Windows.Forms.CheckBox();
             this.clearIMonitorButton = new System.Windows.Forms.Button();
             this.southIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
             this.label131 = new System.Windows.Forms.Label();
@@ -606,9 +605,6 @@ namespace EDMHardwareControl
             this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
             this.stopIMonitorPollButton = new System.Windows.Forms.Button();
-            this.saveToFile = new System.Windows.Forms.Button();
-            this.stopIRecordButton = new System.Windows.Forms.Button();
-            this.startIRecordButton = new System.Windows.Forms.Button();
             this.legend1 = new NationalInstruments.UI.WindowsForms.Legend();
             this.NorthLegendItem = new NationalInstruments.UI.LegendItem();
             this.northLeakagePlot = new NationalInstruments.UI.WaveformPlot();
@@ -637,10 +633,10 @@ namespace EDMHardwareControl
             this.label82 = new System.Windows.Forms.Label();
             this.piMonitor1TextBox = new System.Windows.Forms.TextBox();
             this.label132 = new System.Windows.Forms.Label();
+            this.label133 = new System.Windows.Forms.Label();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label133 = new System.Windows.Forms.Label();
             this.setDCFMtoGuess = new System.Windows.Forms.Button();
             this.Copyrf2f = new System.Windows.Forms.Button();
             this.Copyrf1f = new System.Windows.Forms.Button();
@@ -1701,6 +1697,7 @@ namespace EDMHardwareControl
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.logCurrentDataCheckBox);
             this.groupBox7.Controls.Add(this.clearIMonitorButton);
             this.groupBox7.Controls.Add(this.southIMonitorErrorTextBox);
             this.groupBox7.Controls.Add(this.label131);
@@ -1720,9 +1717,6 @@ namespace EDMHardwareControl
             this.groupBox7.Controls.Add(this.leakageMonitorSlopeTextBox);
             this.groupBox7.Controls.Add(this.label64);
             this.groupBox7.Controls.Add(this.stopIMonitorPollButton);
-            this.groupBox7.Controls.Add(this.saveToFile);
-            this.groupBox7.Controls.Add(this.stopIRecordButton);
-            this.groupBox7.Controls.Add(this.startIRecordButton);
             this.groupBox7.Controls.Add(this.legend1);
             this.groupBox7.Controls.Add(this.label63);
             this.groupBox7.Controls.Add(this.iMonitorPollPeriod);
@@ -1742,6 +1736,17 @@ namespace EDMHardwareControl
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // logCurrentDataCheckBox
+            // 
+            this.logCurrentDataCheckBox.AutoSize = true;
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
+            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.logCurrentDataCheckBox.TabIndex = 75;
+            this.logCurrentDataCheckBox.Text = "Log data";
+            this.logCurrentDataCheckBox.UseVisualStyleBackColor = true;
+            this.logCurrentDataCheckBox.CheckedChanged += new System.EventHandler(this.logdataCheckBox_CheckedChanged);
             // 
             // clearIMonitorButton
             // 
@@ -1908,45 +1913,13 @@ namespace EDMHardwareControl
             // stopIMonitorPollButton
             // 
             this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(579, 76);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(577, 50);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
             this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopIMonitorPollButton.TabIndex = 55;
             this.stopIMonitorPollButton.Text = "Stop poll";
             this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
             this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
-            // 
-            // saveToFile
-            // 
-            this.saveToFile.Enabled = false;
-            this.saveToFile.Location = new System.Drawing.Point(476, 63);
-            this.saveToFile.Name = "saveToFile";
-            this.saveToFile.Size = new System.Drawing.Size(90, 23);
-            this.saveToFile.TabIndex = 62;
-            this.saveToFile.Text = "Save";
-            this.saveToFile.UseVisualStyleBackColor = true;
-            this.saveToFile.Click += new System.EventHandler(this.saveToFile_Click);
-            // 
-            // stopIRecordButton
-            // 
-            this.stopIRecordButton.Enabled = false;
-            this.stopIRecordButton.Location = new System.Drawing.Point(528, 34);
-            this.stopIRecordButton.Name = "stopIRecordButton";
-            this.stopIRecordButton.Size = new System.Drawing.Size(39, 23);
-            this.stopIRecordButton.TabIndex = 61;
-            this.stopIRecordButton.Text = "Stop";
-            this.stopIRecordButton.UseVisualStyleBackColor = true;
-            this.stopIRecordButton.Click += new System.EventHandler(this.stopIRecordButton_Click);
-            // 
-            // startIRecordButton
-            // 
-            this.startIRecordButton.Location = new System.Drawing.Point(476, 34);
-            this.startIRecordButton.Name = "startIRecordButton";
-            this.startIRecordButton.Size = new System.Drawing.Size(42, 23);
-            this.startIRecordButton.TabIndex = 60;
-            this.startIRecordButton.Text = "Rec";
-            this.startIRecordButton.UseVisualStyleBackColor = true;
-            this.startIRecordButton.Click += new System.EventHandler(this.startIRecordButton_Click);
             // 
             // legend1
             // 
@@ -2001,9 +1974,9 @@ namespace EDMHardwareControl
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(479, 15);
+            this.label63.Location = new System.Drawing.Point(519, 16);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(108, 23);
+            this.label63.Size = new System.Drawing.Size(65, 23);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
@@ -2017,7 +1990,7 @@ namespace EDMHardwareControl
             // 
             // startIMonitorPollButton
             // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(579, 45);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(491, 50);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
             this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startIMonitorPollButton.TabIndex = 53;
@@ -2216,6 +2189,14 @@ namespace EDMHardwareControl
             this.label132.TabIndex = 72;
             this.label132.Text = "0";
             // 
+            // label133
+            // 
+            this.label133.Location = new System.Drawing.Point(418, 20);
+            this.label133.Name = "label133";
+            this.label133.Size = new System.Drawing.Size(80, 23);
+            this.label133.TabIndex = 73;
+            this.label133.Text = "180";
+            // 
             // groupBox22
             // 
             this.groupBox22.Controls.Add(this.rfManualStateCheckBox);
@@ -2290,14 +2271,6 @@ namespace EDMHardwareControl
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
-            // 
-            // label133
-            // 
-            this.label133.Location = new System.Drawing.Point(418, 20);
-            this.label133.Name = "label133";
-            this.label133.Size = new System.Drawing.Size(80, 23);
-            this.label133.TabIndex = 73;
-            this.label133.Text = "180";
             // 
             // setDCFMtoGuess
             // 
@@ -6524,6 +6497,18 @@ namespace EDMHardwareControl
         private void UpdatePiFlipMonButton_Click(object sender, EventArgs e)
         {
             controller.UpdatePiMonitor();
+        }
+
+        private void logdataCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (logCurrentDataCheckBox.Checked)
+            {
+                controller.StartLoggingCurrent();
+            }
+            else
+            {
+                controller.StopLoggingCurrent();
+            }
         }
 
 

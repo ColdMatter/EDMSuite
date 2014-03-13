@@ -18,6 +18,7 @@ using System.Linq;
 
 using DAQ.HAL;
 using DAQ.Environment;
+using Data;
 
 namespace EDMHardwareControl
 {
@@ -2185,22 +2186,6 @@ namespace EDMHardwareControl
             lastSouthCurrent = southLeakageMonitor.GetCurrent();
         }
 
-        //Thread updateIMonThread;
-        //public void UpdateIMonitorAsync()
-        //{
-        //    updateIMonThread = new Thread(delegate()
-        //        {
-        //            lastNorthCurrent = northLeakageMonitor.GetCurrent();
-        //           lastSouthCurrent = southLeakageMonitor.GetCurrent();
-        //        });
-        //    updateIMonThread.Start();
-        //}
-
-        //public void WaitForIMonitorAsync()
-        //{
-        //    updateIMonThread.Join();
-        //}
-
         public void CalibrateIMonitors()
         {
             ReconfigureIMonitors();
@@ -2213,7 +2198,6 @@ namespace EDMHardwareControl
 
             window.SetTextBox(window.southOffsetIMonitorTextBox, southOffset.ToString());
             window.SetTextBox(window.northOffsetIMonitorTextBox, northOffset.ToString());
-
         }
 
         public void ReconfigureIMonitors()
@@ -2232,118 +2216,70 @@ namespace EDMHardwareControl
             southLeakageMonitor.V2FSlope = southVolt2FreqSlope;
         }
 
+
+        private JSONSerializer serializer;
+        public void StartLoggingCurrent()
+        {
+            serializer = new JSONSerializer();
+            serializer.StartLogFile((String)Environs.FileSystem.Paths["scanMasterDataPath"] +
+                Environs.FileSystem.GenerateNextDataFileName() + ".json");
+            serializer.StartProcessingData();
+        }
+        public void StopLoggingCurrent()
+        {
+            serializer.EndLogFile();
+        }
+
         private Thread iMonitorPollThread;
-        private object iMonitorLock = new object();
-        private bool iMonitorStopFlag = false;
         private int iMonitorPollPeriod = 200;
+        private Object iMonitorLock; 
         private int movingAverageSampleLength = 10;
         internal void StartIMonitorPoll()
         {
-            lock (iMonitorLock)
-            {
-                iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
-                window.EnableControl(window.startIMonitorPollButton, false);
-                window.EnableControl(window.stopIMonitorPollButton, true);
-                iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
-                movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
-                nCurrentSamples.Clear();
-                sCurrentSamples.Clear();
-                iMonitorPollThread.Start();
-            }
-
+            iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
+            window.EnableControl(window.startIMonitorPollButton, false);
+            window.EnableControl(window.stopIMonitorPollButton, true);
+            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+            movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
+            nCurrentSamples.Clear();
+            sCurrentSamples.Clear();
+            iMonitorLock = new Object();
+            iMonitorFlag = new ManualResetEvent(false);
+            iMonitorPollThread.Start();
         }
 
         internal void StopIMonitorPoll()
         {
-            lock (iMonitorLock) iMonitorStopFlag = true;
+            iMonitorFlag.Set();
         }
-
+        private ManualResetEvent iMonitorFlag;
         private void IMonitorPollWorker()
         {
-            for (; ; )
+            while (!iMonitorFlag.WaitOne(0))
             {
                 Thread.Sleep(iMonitorPollPeriod);
-                UpdateIMonitor();
                 lock (iMonitorLock)
                 {
-                    if (iMonitorStopFlag)
+                    UpdateIMonitor();
+                    if (window.logCurrentDataCheckBox.Checked)
                     {
-                        iMonitorStopFlag = false;
-                        break;
+                        serializer.AddData(new CurrentMonitorDataLog(DateTime.Now,
+                            iMonitorPollPeriod,
+                            northVolt2FreqSlope,
+                            southVolt2FreqSlope,
+                            northFreq2AmpSlope,
+                            northOffset,
+                            southOffset,
+                            lastNorthCurrent,
+                            lastSouthCurrent));
                     }
                 }
             }
+            iMonitorFlag.Reset();
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
         }
 
-        private Thread iRecordThread;
-        private object iRecordLock = new object();
-        private bool iRecordStopFlag = false;
-        //private int iMonitorPollPeriod = 200;
-        internal void StartIRecord()
-        {
-            lock (iRecordLock)
-            {
-                iRecordThread = new Thread(new ThreadStart(IRecordWorker));
-                window.EnableControl(window.startIRecordButton, false);
-                window.EnableControl(window.stopIRecordButton, true);
-                window.EnableControl(window.saveToFile, true);
-                iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
-                iRecordThread.Start();
-            }
-
-        }
-
-        internal void StopIRecord()
-        {
-            lock (iRecordLock) iRecordStopFlag = true;
-        }
-
-        private void IRecordWorker()
-        {
-            for (; ; )
-            {
-                Thread.Sleep(iMonitorPollPeriod);
-                UpdateIRecord();
-                lock (iRecordLock)
-                {
-                    if (iRecordStopFlag)
-                    {
-                        iRecordStopFlag = false;
-                        break;
-                    }
-                }
-            }
-            window.EnableControl(window.startIRecordButton, true);
-            window.EnableControl(window.stopIRecordButton, false);
-        }
-
-        internal void SaveToFile()
-        {
-            string path = Environs.FileSystem.GetDataDirectory((String)Environs.FileSystem.Paths["scanMasterDataPath"]);
-            string name = Environs.FileSystem.GenerateNextDataFileName();
-            using (StreamWriter sw = new StreamWriter(path + name + ".csv"))
-            {
-                sw.WriteLine(DateTime.Now);
-                sw.WriteLine("Poll period =" + " " + iMonitorPollPeriod);
-                //sw.WriteLine("Measurement time =" + " " + northLeakageMonitor.MeasurementTime);
-                sw.WriteLine("North voltage to frequency slope =" + " " + northVolt2FreqSlope);
-                sw.WriteLine("South voltage to frequency slope =" + " " + southVolt2FreqSlope);
-                sw.WriteLine("Frequency to current slope =" + " " + northLeakageMonitor.F2ISlope);
-                sw.WriteLine("North offset =" + " " + northLeakageMonitor.Offset);
-                sw.WriteLine("South offset =" + " " + southLeakageMonitor.Offset);
-                sw.WriteLine("northCurrent" + "," + "southCurrent");
-
-                for (int i = 0; i < northCList.ToArray().Length; i++)
-                {
-                    sw.WriteLine(northCList[i] + "," + southCList[i]);
-                }
-                northCList.Clear();
-                southCList.Clear();
-                window.EnableControl(window.saveToFile, false);
-            }
-        }
         public void UpdateLaserPhotodiodes()
         {
             double groundValue = ReadAnalogInput(groundedInputTask);
