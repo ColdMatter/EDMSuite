@@ -132,7 +132,6 @@ namespace TransferCavityLock2012
 
         #region START AND STOP
 
-        //private bool logging = false;
         public void StartLogger()
         {
             serializer = new JSONSerializer();
@@ -351,7 +350,7 @@ namespace TransferCavityLock2012
                                 }
                                 if(!fits.TryGetValue(slName + "Fits", out slaveFitParams))
                                 {
-                                    slaveFitParams = new double[4] { 0, 0, 0, 0};
+                                    slaveFitParams = new double[4] { 0, 0, 0, 0 };
                                 };
 
                                 serializer.AddData(new TCLDataLog(DateTime.Now, slName, masterFitParams[1], slaveFitParams[1], sl.VoltageToLaser));
