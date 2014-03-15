@@ -2232,7 +2232,8 @@ namespace EDMHardwareControl
 
         private Thread iMonitorPollThread;
         private int iMonitorPollPeriod = 200;
-        private Object iMonitorLock; 
+        private Object iMonitorLock;
+        private bool iMonitorFlag;
         private int movingAverageSampleLength = 10;
         internal void StartIMonitorPoll()
         {
@@ -2244,18 +2245,20 @@ namespace EDMHardwareControl
             nCurrentSamples.Clear();
             sCurrentSamples.Clear();
             iMonitorLock = new Object();
-            iMonitorFlag = new ManualResetEvent(false);
+            iMonitorFlag = false;
             iMonitorPollThread.Start();
         }
 
         internal void StopIMonitorPoll()
         {
-            iMonitorFlag.Set();
+            lock (iMonitorLock)
+            {
+                iMonitorFlag = true;
+            }
         }
-        private ManualResetEvent iMonitorFlag;
         private void IMonitorPollWorker()
         {
-            while (!iMonitorFlag.WaitOne(0))
+            for ( ; ; )
             {
                 Thread.Sleep(iMonitorPollPeriod);
                 lock (iMonitorLock)
@@ -2273,9 +2276,13 @@ namespace EDMHardwareControl
                             lastNorthCurrent,
                             lastSouthCurrent));
                     }
+                    if(iMonitorFlag)
+                    {
+                        iMonitorFlag = false;
+                        break;
+                    }
                 }
             }
-            iMonitorFlag.Reset();
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
         }

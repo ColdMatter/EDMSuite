@@ -6112,21 +6112,6 @@ namespace EDMHardwareControl
             controller.StopIMonitorPoll();
         }
 
-        private void startIRecordButton_Click(object sender, EventArgs e)
-        {
-            controller.StartIRecord();
-        }
-
-        private void stopIRecordButton_Click(object sender, EventArgs e)
-        {
-            controller.StopIRecord();
-        }
-        
-        private void saveToFile_Click(object sender, EventArgs e)
-        {
-            controller.StopIRecord();
-            controller.SaveToFile();
-        }
         private void TargetStepButton_Click(object sender, EventArgs e)
         {
             controller.StepTarget();
