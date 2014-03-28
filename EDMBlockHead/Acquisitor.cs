@@ -332,14 +332,9 @@ namespace EDMBlockHead.Acquire
             //switchedChannels.Add(lf1Channel);
 
             HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
-            lf1Channel.Channel = "flPZT";
+            lf1Channel.Channel = "probeAOM";
             lf1Channel.Modulation = config.GetModulationByName("LF1");
             switchedChannels.Add(lf1Channel);
-
-            HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
-            lf2Channel.Channel = "pumpAOM";
-            lf2Channel.Modulation = config.GetModulationByName("LF2");
-            switchedChannels.Add(lf2Channel);
 
             //AnalogSwitchedChannel lf3Channel = new HardwareControllerSwitchChannel();
             //lf3Channel.Channel = "LF3";

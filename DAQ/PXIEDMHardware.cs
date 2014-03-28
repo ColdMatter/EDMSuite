@@ -203,19 +203,18 @@ namespace DAQ.HAL
 
             //TCL Lockable lasers
             //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
-            Info.Add("TCLLockableLasers", new string[] { "flPZT2", "flPZT" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
+            Info.Add("TCLLockableLasers", new string[] { "MenloPZT", "899ExternalScan" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
             Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             //Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //This now comes from the limits set when the AnalogOutputChannels are added
             //Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //This now comes from the limits set when the AnalogOutputChannels are added
             Info.Add("TCL_Default_Gain", -1.1);
-            //Info.Add("TCL_Default_ScanPoints", 250);
             Info.Add("TCL_Default_VoltageToLaser", 2.5);
             Info.Add("TCL_Default_VoltageToDependent", 1.0);
             Info.Add("TCL_Default_ScanPoints",300);
             // Some matching up for TCL
-            Info.Add("flPZT2", "p1");
-            Info.Add("flPZT2Temp", "p1");
-            Info.Add("flPZT", "p2");
+            Info.Add("MenloPZT", "p1");
+            //Info.Add("flPZT2Temp", "p1");
+            Info.Add("899ExternalScan", "p2");
             //Info.Add("fibreAOM", "p1");
             Info.Add("TCLTrigger", tclBoard + "/PFI0");
             Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
@@ -227,8 +226,10 @@ namespace DAQ.HAL
 
             // Laser control
             //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
-            AddAnalogOutputChannel("flPZT", aoBoard + "/ao7", -5, 5);
-            AddAnalogOutputChannel("flPZT2", tclBoard + "/ao0", 0, 5);
+            AddAnalogOutputChannel("899ExternalScan", aoBoard + "/ao7", -5, 5);
+            AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 5);
+            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao4", 0, 10);
+
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
             AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);

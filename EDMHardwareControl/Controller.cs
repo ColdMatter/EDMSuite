@@ -90,9 +90,9 @@ namespace EDMHardwareControl
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
         //Task steppingBBiasAnalogOutputTask;
-        Task flPZTVAnalogOutputTask;
         Task flAOMAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
+        Task probeAOMAnalogOutputTask;   
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -112,7 +112,7 @@ namespace EDMHardwareControl
         Task piMonitorTask;
         Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
-        Task flPZT2OutputTask;
+        Task MenloPZTOutputTask;
         //Task flPZT2TempOutputTask;
         //Task flPZT2CurOutputTask;
         Task fibreAmpOutputTask;
@@ -183,8 +183,9 @@ namespace EDMHardwareControl
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
             //steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
-            flPZTVAnalogOutputTask = CreateAnalogOutputTask("flPZT");
+            //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
+            probeAOMAnalogOutputTask = CreateAnalogOutputTask("probeAOM");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -192,7 +193,7 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
-            flPZT2OutputTask = CreateAnalogOutputTask("flPZT2");
+            MenloPZTOutputTask = CreateAnalogOutputTask("MenloPZT");
             //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
@@ -437,8 +438,8 @@ namespace EDMHardwareControl
             dataStore.rf2FMC = RF2FMCentre;
             dataStore.rf2FMS = RF2FMStep;
             dataStore.steppingBias = SteppingBiasVoltage;
-            dataStore.flPZT = FLPZTVoltage;
-            dataStore.flPZTStep = FLPZTStep;
+            dataStore.flPZT = probeAOMVoltage;
+            dataStore.flPZTStep = probeAOMStep;
             dataStore.overshootFactor = EOvershootFactor;
             dataStore.overshootHold = EOvershootHold;
             dataStore.pumpAOM = PumpAOMVoltage;
@@ -503,8 +504,8 @@ namespace EDMHardwareControl
                 RF2FMCentre = dataStore.rf2FMC;
                 RF2FMStep = dataStore.rf2FMS;
                 SetSteppingBBiasVoltage(dataStore.steppingBias);
-                FLPZTVoltage = dataStore.flPZT;
-                FLPZTStep = dataStore.flPZTStep;
+                probeAOMVoltage = dataStore.flPZT;
+                probeAOMStep = dataStore.flPZTStep;
                 EOvershootFactor = dataStore.overshootFactor;
                 EOvershootHold = dataStore.overshootHold;
                 PumpAOMVoltage = dataStore.pumpAOM;
@@ -771,7 +772,7 @@ namespace EDMHardwareControl
         {
             get
             {
-                return Double.Parse(window.I2AOMFreqCentreTextBox.Text);
+                return Double.Parse(window.probeAOMFreqCentreTextBox.Text);
             }
         }
 
@@ -779,7 +780,7 @@ namespace EDMHardwareControl
         {
             get
             {
-                return Double.Parse(window.I2AOMFreqStepTextBox.Text);
+                return Double.Parse(window.probeAOMFreqStepTextBox.Text);
             }
         }
 
@@ -984,15 +985,15 @@ namespace EDMHardwareControl
             }
         }
 
-        public double FLPZTVoltage
+        public double probeAOMVoltage
         {
             get
             {
-                return Double.Parse(window.FLPZTVTextBox.Text);
+                return Double.Parse(window.probeAOMVTextBox.Text);
             }
             set
             {
-                window.SetTextBox(window.FLPZTVTextBox, value.ToString());
+                window.SetTextBox(window.probeAOMVTextBox, value.ToString());
             }
         }
 
@@ -1044,15 +1045,15 @@ namespace EDMHardwareControl
             }
         }
 
-        public double FLPZTStep
+        public double probeAOMStep
         {
             get
             {
-                return Double.Parse(window.FLPZTStepTextBox.Text);
+                return Double.Parse(window.probeAOMStepTextBox.Text);
             }
             set
             {
-                window.SetTextBox(window.FLPZTStepTextBox, value.ToString());
+                window.SetTextBox(window.probeAOMStepTextBox, value.ToString());
             }
         }
 
@@ -1080,27 +1081,17 @@ namespace EDMHardwareControl
             }
         }
 
-        public double VCOConvFrac
-        {
-            get
-            {
-                return Double.Parse(window.vcoConversionFractionTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.vcoConversionFractionTextBox, value.ToString());
-            }
-        }
+
 
         public double diodeRefCavVoltage
         {
             get
             {
-                return Double.Parse(window.flPZT2TextBox.Text);
+                return Double.Parse(window.MenloPZTTextBox.Text);
             }
             set
             {
-                window.SetTextBox(window.flPZT2TextBox, value.ToString());
+                window.SetTextBox(window.MenloPZTTextBox, value.ToString());
             }
         }
 
@@ -1108,11 +1099,11 @@ namespace EDMHardwareControl
         {
             get
             {
-            return Double.Parse(window.flPZT2StepTextBox.Text);
+            return Double.Parse(window.MenloPZTStepTextBox.Text);
             }
             set
            {
-               window.SetTextBox(window.flPZT2StepTextBox, value.ToString());
+               window.SetTextBox(window.MenloPZTStepTextBox, value.ToString());
             }
         }
         public double LeakageMonitorMeasurementTime
@@ -1572,43 +1563,23 @@ namespace EDMHardwareControl
                 case "eChan":
                     SwitchEAndWait(state);
                     break;
-                case "flPZT": //probe laser
+                case "probeAOM": //probe laser
                     SwitchLF1(state);
-                    break;
-                case "pumpAOM": //pump laser
-                    SwitchLF2(state);
                     break;
             }
         }
 
         private bool lf1State;
-        private bool lf2State;
-        private double calculateIodineAOMFrequency(bool lf1State)
+        private double calculateProbeAOMFrequency(bool lf1State)
         {
 
-            return FLPZTVoltage + (lf1State ? FLPZTStep : -FLPZTStep);
-        }
-        private double calculatePumpAOMCompensation(bool lf1State)
-        {
-            return VCOConvFrac * (!lf1State ? FLPZTStep : -FLPZTStep);
-        }
-        private double calculatePumpAOMFrequency(bool lf1State, bool lf2State)
-        {
-            return PumpAOMVoltage + (lf2State ? PumpAOMStep : -PumpAOMStep)
-                + calculatePumpAOMCompensation(lf1State);
+            return probeAOMVoltage + (lf1State ? probeAOMStep : -probeAOMStep);
         }
         public void SwitchLF1(bool lf1State)
         {
             this.lf1State = lf1State;
 
-            SetAnalogOutput(flPZTVAnalogOutputTask, calculateIodineAOMFrequency(lf1State));
-            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
-        }
-        public void SwitchLF2(bool lf2State)
-        {
-            this.lf2State = lf2State;
-
-            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf1State, lf2State));
+            SetAnalogOutput(probeAOMAnalogOutputTask, calculateProbeAOMFrequency(lf1State));
         }
 
         public void FieldsOff()
@@ -2452,26 +2423,12 @@ namespace EDMHardwareControl
             return;
         }
 
-        public void SetflPZT2(double value)
+        public void SetMenloPZT(double value)
         {
-            if (value < 0)
-            {
-                SetAnalogOutput(flPZT2OutputTask, 0.0);
-                window.flPZT2TextBox.Text = value.ToString();
-                window.flPZT2TextBox.BackColor = System.Drawing.Color.Red;
-            }
-            else if (value > 10)
-            {
-                SetAnalogOutput(flPZT2OutputTask, 10.0);
-                window.flPZT2TextBox.Text = value.ToString();
-                window.flPZT2TextBox.BackColor = System.Drawing.Color.Red;
-            }
-            else
-            {
-                SetAnalogOutput(flPZT2OutputTask, value);
-                window.flPZT2TextBox.Text = value.ToString();
-                window.flPZT2TextBox.BackColor = System.Drawing.Color.LimeGreen;
-            }
+
+                SetAnalogOutput(MenloPZTOutputTask, value);
+                window.MenloPZTTextBox.Text = value.ToString();
+                window.MenloPZTTextBox.BackColor = System.Drawing.Color.LimeGreen;
         }
 
         public void SetFLPZT2Temp()
@@ -2487,14 +2444,14 @@ namespace EDMHardwareControl
         }
 
 
-        public void UpdateflPZT2()
+        public void UpdateMenloPZT()
         {
-            double refCavVoltage = Double.Parse(window.flPZT2TextBox.Text);
-            window.flPZT2TrackBar.Value = (int) (100 * refCavVoltage);
-            if (window.flPZT2StepMinusButton.Checked) refCavVoltage -= Double.Parse(window.flPZT2StepTextBox.Text);
-            if (window.flPZT2StepPlusButton.Checked) refCavVoltage += Double.Parse(window.flPZT2StepTextBox.Text);
+            double refCavVoltage = Double.Parse(window.MenloPZTTextBox.Text);
+            window.MenloPZTTrackBar.Value = (int) (100 * refCavVoltage);
+            if (window.MenloPZTStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.MenloPZTStepTextBox.Text);
+            if (window.MenloPZTStepPlusButton.Checked) refCavVoltage += Double.Parse(window.MenloPZTStepTextBox.Text);
 
-            SetflPZT2(refCavVoltage);
+            SetMenloPZT(refCavVoltage);
         }
 
         public void SetFibreAmpPwr()
@@ -2576,15 +2533,15 @@ namespace EDMHardwareControl
             }
         }
 
-        public void UpdateI2AOMFreqMonitor()
+        public void UpdateProbeAOMFreqMonitor()
         {
             double diff = 0;
             double I2PlusFreq = 0;
             double I2MinusFreq = 0;
             int averages = 1;       //The averaging is to remove glitches in the measured step caused by the AOM modulation, which would play havoc with the Pump AOM locking scheme 
 
-                window.SetRadioButton(window.FLPZTStepPlusButton, true);
-                UpdateFLPZTV();
+                window.SetRadioButton(window.probeAOMStepPlusButton, true);
+                UpdateProbeAOMV();
                 Thread.Sleep(10);
                 rfCounter.Channel = 2;
                 for (int i = 1; i <= averages; i++)
@@ -2594,10 +2551,10 @@ namespace EDMHardwareControl
                 }
 
                 I2PlusFreq = I2PlusFreq / averages;
-                window.SetTextBox(window.I2AOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
+                window.SetTextBox(window.probeAOMFreqPlusTextBox, String.Format("{0:F0}", I2PlusFreq));
 
-                window.SetRadioButton(window.FLPZTStepMinusButton, true);
-                UpdateFLPZTV();
+                window.SetRadioButton(window.probeAOMMinusButton, true);
+                UpdateProbeAOMV();
                 Thread.Sleep(10);
                 for (int i = 1; i <= averages; i++)
                 {
@@ -2609,9 +2566,9 @@ namespace EDMHardwareControl
                 diff = (I2PlusFreq - I2MinusFreq) / 2;
 
 
-            window.SetTextBox(window.I2AOMFreqMinusTextBox, String.Format("{0:F0}", I2MinusFreq));
-            window.SetTextBox(window.I2AOMFreqCentreTextBox, String.Format("{0:F0}", ((I2PlusFreq + I2MinusFreq) / 2)));
-            window.SetTextBox(window.I2AOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
+            window.SetTextBox(window.probeAOMFreqMinusTextBox, String.Format("{0:F0}", I2MinusFreq));
+            window.SetTextBox(window.probeAOMFreqCentreTextBox, String.Format("{0:F0}", ((I2PlusFreq + I2MinusFreq) / 2)));
+            window.SetTextBox(window.probeAOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
         }
 
         public void UpdateFLAOMFreqMonitor()
@@ -2655,12 +2612,7 @@ namespace EDMHardwareControl
 
         }
 
-        public void UpdateVCOFraction()
-        {
-            double i2Coeff = Double.Parse(window.I2AOMFreqStepTextBox.Text) / Double.Parse(window.FLPZTStepTextBox.Text);
-            double pumpAOMCoeff = Double.Parse(window.pumpAOMFreqStepTextBox.Text) / Double.Parse(window.pumpAOMStepTextBox.Text);
-            VCOConvFrac = i2Coeff / pumpAOMCoeff;
-        }
+
 
         //internal void UpdateProbePolarizerAngle()
         //{
@@ -3071,26 +3023,26 @@ namespace EDMHardwareControl
             SetAnalogOutput(phaseScramblerVoltageOutputTask, v);
         }
 
-        public void UpdateFLPZTV()
+        public void UpdateProbeAOMV()
         {
-            double pztVoltage = FLPZTVoltage;
-            if (window.FLPZTStepMinusButton.Checked) pztVoltage -= FLPZTStep;
-            if (window.FLPZTStepPlusButton.Checked) pztVoltage += FLPZTStep;
+            double pztVoltage = probeAOMVoltage;
+            if (window.probeAOMMinusButton.Checked) pztVoltage -= probeAOMStep;
+            if (window.probeAOMStepPlusButton.Checked) pztVoltage += probeAOMStep;
             pztVoltage = windowVoltage(pztVoltage, 0, 10);
-            SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
-            window.FLPZTVtrackBar.Value = 100*(int)pztVoltage;
+            SetAnalogOutput(probeAOMAnalogOutputTask, pztVoltage);
+            window.probeAOMtrackBar.Value = 100*(int)pztVoltage;
         }
 
-        public void UpdateFLPZTV(double pztVoltage)
+        public void UpdateProbeAOMV(double pztVoltage)
         {
-            SetAnalogOutput(flPZTVAnalogOutputTask, pztVoltage);
-            window.FLPZTVTextBox.Text = pztVoltage.ToString();
+            SetAnalogOutput(probeAOMAnalogOutputTask, pztVoltage);
+            window.probeAOMVTextBox.Text = pztVoltage.ToString();
         }
 
-        public void SetFLPZTVoltage(double v)
+        public void SetprobeAOMVoltage(double v)
         {
-            window.SetTextBox(window.FLPZTVTextBox, v.ToString());
-            SetAnalogOutput(flPZTVAnalogOutputTask, v);
+            window.SetTextBox(window.probeAOMVTextBox, v.ToString());
+            SetAnalogOutput(probeAOMAnalogOutputTask, v);
         }
 
         public void UpdateFLAOM()
