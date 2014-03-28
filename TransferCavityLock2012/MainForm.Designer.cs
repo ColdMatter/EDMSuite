@@ -55,12 +55,17 @@
             this.VToOffsetTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.MasterFitTextBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.CavLockVoltageTrackBar = new System.Windows.Forms.TrackBar();
+            this.label7 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CavityVoltageReadScatterGraph)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CavLockVoltageTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // voltageRampControl
@@ -135,7 +140,6 @@
             this.xAxis2});
             this.MasterLaserIntensityScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
-            this.MasterLaserIntensityScatterGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.MasterLaserIntensityScatterGraph_PlotDataChanged);
             // 
             // MasterDataPlot
             // 
@@ -181,7 +185,6 @@
             this.slaveLasersTab.SelectedIndex = 0;
             this.slaveLasersTab.Size = new System.Drawing.Size(952, 334);
             this.slaveLasersTab.TabIndex = 15;
-            this.slaveLasersTab.SelectedIndexChanged += new System.EventHandler(this.slaveLasersTab_SelectedIndexChanged);
             // 
             // groupBox1
             // 
@@ -217,17 +220,16 @@
             // MasterSetPointTextBox
             // 
             this.MasterSetPointTextBox.AcceptsReturn = true;
-            this.MasterSetPointTextBox.Location = new System.Drawing.Point(658, 239);
+            this.MasterSetPointTextBox.Location = new System.Drawing.Point(658, 193);
             this.MasterSetPointTextBox.Name = "MasterSetPointTextBox";
             this.MasterSetPointTextBox.Size = new System.Drawing.Size(57, 20);
             this.MasterSetPointTextBox.TabIndex = 29;
             this.MasterSetPointTextBox.Text = "0";
-            this.MasterSetPointTextBox.TextChanged += new System.EventHandler(this.MasterSetPointTextBox_TextChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(583, 242);
+            this.label3.Location = new System.Drawing.Point(583, 196);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 28;
@@ -236,38 +238,35 @@
             // masterLockEnableCheck
             // 
             this.masterLockEnableCheck.AutoSize = true;
-            this.masterLockEnableCheck.Location = new System.Drawing.Point(721, 241);
+            this.masterLockEnableCheck.Location = new System.Drawing.Point(721, 195);
             this.masterLockEnableCheck.Name = "masterLockEnableCheck";
             this.masterLockEnableCheck.Size = new System.Drawing.Size(50, 17);
             this.masterLockEnableCheck.TabIndex = 35;
             this.masterLockEnableCheck.Text = "Lock";
             this.masterLockEnableCheck.UseVisualStyleBackColor = true;
-            this.masterLockEnableCheck.CheckedChanged += new System.EventHandler(this.masterLockEnableCheck_CheckedChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(583, 267);
+            this.label1.Location = new System.Drawing.Point(583, 221);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 37;
             this.label1.Text = "Gain:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // MasterGainTextBox
             // 
             this.MasterGainTextBox.AcceptsReturn = true;
-            this.MasterGainTextBox.Location = new System.Drawing.Point(658, 267);
+            this.MasterGainTextBox.Location = new System.Drawing.Point(658, 221);
             this.MasterGainTextBox.Name = "MasterGainTextBox";
             this.MasterGainTextBox.Size = new System.Drawing.Size(57, 20);
             this.MasterGainTextBox.TabIndex = 38;
             this.MasterGainTextBox.Text = "0";
-            this.MasterGainTextBox.TextChanged += new System.EventHandler(this.MasterGainTextBox_TextChanged);
             // 
             // VToOffsetTextBox
             // 
             this.VToOffsetTextBox.CausesValidation = false;
-            this.VToOffsetTextBox.Location = new System.Drawing.Point(871, 267);
+            this.VToOffsetTextBox.Location = new System.Drawing.Point(871, 221);
             this.VToOffsetTextBox.Name = "VToOffsetTextBox";
             this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
             this.VToOffsetTextBox.TabIndex = 39;
@@ -276,27 +275,69 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(773, 270);
+            this.label2.Location = new System.Drawing.Point(773, 224);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(91, 13);
+            this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 40;
-            this.label2.Text = "V to Ramp Offset:";
-            this.label2.Click += new System.EventHandler(this.label2_Click_1);
+            this.label2.Text = "Summed Voltage";
             // 
             // MasterFitTextBox
             // 
             this.MasterFitTextBox.CausesValidation = false;
-            this.MasterFitTextBox.Location = new System.Drawing.Point(871, 239);
+            this.MasterFitTextBox.Location = new System.Drawing.Point(871, 193);
             this.MasterFitTextBox.Name = "MasterFitTextBox";
+            this.MasterFitTextBox.ReadOnly = true;
             this.MasterFitTextBox.Size = new System.Drawing.Size(93, 20);
             this.MasterFitTextBox.TabIndex = 41;
-            this.MasterFitTextBox.TextChanged += new System.EventHandler(this.MasterFitTextBox_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(773, 187);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(95, 13);
+            this.label4.TabIndex = 42;
+            this.label4.Text = "Voltage into Cavity";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(773, 200);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 43;
+            this.label6.Text = "at Ref Peak";
+            // 
+            // CavLockVoltageTrackBar
+            // 
+            this.CavLockVoltageTrackBar.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.CavLockVoltageTrackBar.Location = new System.Drawing.Point(580, 263);
+            this.CavLockVoltageTrackBar.Maximum = 1000;
+            this.CavLockVoltageTrackBar.Minimum = -1000;
+            this.CavLockVoltageTrackBar.Name = "CavLockVoltageTrackBar";
+            this.CavLockVoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.CavLockVoltageTrackBar.Size = new System.Drawing.Size(384, 45);
+            this.CavLockVoltageTrackBar.TabIndex = 52;
+            this.CavLockVoltageTrackBar.Scroll += new System.EventHandler(this.CavLockVoltageTrackBar_Scroll);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(586, 247);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(87, 13);
+            this.label7.TabIndex = 53;
+            this.label7.Text = "Summed Voltage";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 677);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.CavLockVoltageTrackBar);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.MasterFitTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.VToOffsetTextBox);
@@ -320,6 +361,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.CavityVoltageReadScatterGraph)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.CavLockVoltageTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -354,6 +396,10 @@
         public System.Windows.Forms.TextBox VToOffsetTextBox;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.TextBox MasterFitTextBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label6;
+        public System.Windows.Forms.TrackBar CavLockVoltageTrackBar;
+        private System.Windows.Forms.Label label7;
     }
 }
 

@@ -2447,11 +2447,8 @@ namespace EDMHardwareControl
 
         public void SetI2Bias(double value)
         {
-            if (value <= 5.0 && value >= 0.0)
-            {
                 SetAnalogOutput(i2BiasOutputTask, value);
                 window.I2BiasVoltageTextBox.Text = value.ToString();
-            }
             return;
         }
 

@@ -4641,6 +4641,7 @@ namespace EDMHardwareControl
             // 
             this.I2BiasVoltageTrackBar.Location = new System.Drawing.Point(30, 18);
             this.I2BiasVoltageTrackBar.Maximum = 5000;
+            this.I2BiasVoltageTrackBar.Minimum = -5000;
             this.I2BiasVoltageTrackBar.Name = "I2BiasVoltageTrackBar";
             this.I2BiasVoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.I2BiasVoltageTrackBar.Size = new System.Drawing.Size(441, 45);

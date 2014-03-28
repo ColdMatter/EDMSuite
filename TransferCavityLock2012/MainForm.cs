@@ -229,6 +229,11 @@ namespace TransferCavityLock2012
             SetTextBox(VToOffsetTextBox, Convert.ToString(value));
         }
 
+        public double GetVtoOffsetVoltage()
+        {
+            return Double.Parse(VToOffsetTextBox.Text);
+        }
+
         public void SetMasterFitTextBox(double value)
         {
             SetTextBox(MasterFitTextBox, Convert.ToString(value));
@@ -278,30 +283,6 @@ namespace TransferCavityLock2012
 
         #endregion
 
-        private void MasterLaserIntensityScatterGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
-        {
-
-        }
-
-        private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        public void MasterSetPointTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MasterGainTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void logCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (logCheckBox.Checked)
@@ -314,38 +295,17 @@ namespace TransferCavityLock2012
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void CavLockVoltageTrackBar_Scroll(object sender, EventArgs e)
         {
-
+            SetVtoOffsetVoltage(((double)CavLockVoltageTrackBar.Value)/100);
         }
 
-        public void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
+        private void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
         {
-
+          //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
         }
 
-        private void label2_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MasterFitTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void slaveLasersTab_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-
-
- 
-
-
-
-        
+       
     }
 }
 

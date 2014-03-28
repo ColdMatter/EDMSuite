@@ -117,6 +117,7 @@ namespace TransferCavityLock2012
         public void InitializeUI()
         {
             ui.SetNumberOfPoints(default_ScanPoints);
+            ui.SetVtoOffsetVoltage(0);
             foreach (KeyValuePair<string, SlaveLaser> laser in SlaveLasers)
             {
                 ui.AddSlaveLaser(laser.Value.Name);
@@ -127,6 +128,16 @@ namespace TransferCavityLock2012
         }
 
         
+
+        #endregion
+        #region LOADING AND SAVING
+        [Serializable]
+        private struct DataStore
+        {
+            public double scanPoints;
+            public double gain;
+        }
+
 
         #endregion
 
@@ -284,17 +295,28 @@ namespace TransferCavityLock2012
                             
                         fits["masterFits"] = fitMaster(scanData);
                         plotMaster(scanData, fits["masterFits"]);
-                        if (ui.masterLockEnableCheck.Checked == true && checkRampChannel() == true)
+                        if(checkRampChannel() == true)
                         {
-                            masterVoltage = calculateMasterVoltageShift(masterVoltage)+ masterVoltage;
-                            setupMasterVoltageOut();
-                            //write difference to analog output
-                            writeMasterVoltageOut(masterVoltage);
-                            ui.SetVtoOffsetVoltage(masterVoltage);
-                            ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
-                            disposeMasterVoltageOut();
+                            //if the cavity length is locked, use the set point to determine what voltage to output
+                            if (ui.masterLockEnableCheck.Checked == true)
+                            {
+                                masterVoltage = calculateMasterVoltageShift(masterVoltage)+ masterVoltage;
+                                setupMasterVoltageOut();
+                                 //write difference to analog output
+                                writeMasterVoltageOut(masterVoltage);
+                                ui.SetVtoOffsetVoltage(masterVoltage);
+                                ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
+                                disposeMasterVoltageOut();
+                            }
+                            //if the cavity length is not locked, allow the voltage out to be scanned
+                            else
+                            {
+                                setupMasterVoltageOut();
+                                double vout=ui.GetVtoOffsetVoltage();
+                                writeMasterVoltageOut(vout);
+                                disposeMasterVoltageOut();
+                            }
                         }
-
 
 
                         foreach (KeyValuePair<string, SlaveLaser> pair in SlaveLasers)
