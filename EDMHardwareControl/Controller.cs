@@ -768,7 +768,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double I2LockAOMFrequencyCentre
+        public double ProbeAOMFrequencyCentre
         {
             get
             {
@@ -776,7 +776,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double I2LockAOMFrequencyStep
+        public double ProbeAOMFrequencyStep
         {
             get
             {

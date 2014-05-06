@@ -3573,10 +3573,11 @@ namespace EDMHardwareControl
             // pumpAOMTrackBar
             // 
             this.pumpAOMTrackBar.Location = new System.Drawing.Point(9, 128);
-            this.pumpAOMTrackBar.Maximum = 500;
+            this.pumpAOMTrackBar.Maximum = 1000;
             this.pumpAOMTrackBar.Name = "pumpAOMTrackBar";
             this.pumpAOMTrackBar.Size = new System.Drawing.Size(284, 45);
             this.pumpAOMTrackBar.TabIndex = 73;
+            this.pumpAOMTrackBar.Scroll += new System.EventHandler(this.pumpAOMTrackBar_Scroll);
             // 
             // panel7
             // 
@@ -3735,6 +3736,7 @@ namespace EDMHardwareControl
             this.pumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.pumpAOMFreqUpdateButton.TabIndex = 60;
             this.pumpAOMFreqUpdateButton.Text = "Update";
+            this.pumpAOMFreqUpdateButton.Click += new System.EventHandler(this.pumpAOMFreqUpdateButton_Click_1);
             // 
             // label98
             // 
@@ -3845,6 +3847,7 @@ namespace EDMHardwareControl
             this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
             this.argonShutterCheckBox.TabIndex = 25;
             this.argonShutterCheckBox.Text = "Ar+";
+            this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
             // 
             // label32
             // 
@@ -6424,6 +6427,11 @@ namespace EDMHardwareControl
         private void probeAOMFreqUpdateButton_Click(object sender, EventArgs e)
         {
             controller.UpdateProbeAOMFreqMonitor();
+        }
+
+        private void pumpAOMFreqUpdateButton_Click_1(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOMFreqMonitor();
         }
 
 
