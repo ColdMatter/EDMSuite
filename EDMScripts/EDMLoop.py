@@ -110,8 +110,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	bc.GetModulationByName("RF2F").PhysicalStep = hc.RF2FrequencyStep
 	bc.GetModulationByName("LF1").Centre = hc.probeAOMVoltage
 	bc.GetModulationByName("LF1").Step = hc.probeAOMStep
-	bc.GetModulationByName("LF1").PhysicalCentre = hc.I2LockAOMFrequencyCentre
-	bc.GetModulationByName("LF1").PhysicalStep = hc.I2LockAOMFrequencyStep
+	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre
+	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep
 	#bc.GetModulationByName("LF2").Centre = hc.PumpAOMVoltage
 	#bc.GetModulationByName("LF2").Centre = hc.PumpAOMStep
 	#bc.GetModulationByName("LF2").PhysicalCentre = hc.PumpAOMFrequencyCentre
