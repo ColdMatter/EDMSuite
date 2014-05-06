@@ -229,10 +229,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("899ExternalScan", aoBoard + "/ao7", -5, 5);
             AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 5);
             AddAnalogOutputChannel("probeAOM", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao2", 0, 10);
 
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
-            AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
             //AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
             //AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
             //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
