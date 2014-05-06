@@ -270,7 +270,7 @@
             this.VToOffsetTextBox.Name = "VToOffsetTextBox";
             this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
             this.VToOffsetTextBox.TabIndex = 39;
-            this.VToOffsetTextBox.TextChanged += new System.EventHandler(this.VToOffsetTextBox_TextChanged);
+            //this.VToOffsetTextBox.TextChanged += new System.EventHandler(this.VToOffsetTextBox_TextChanged);
             // 
             // label2
             // 

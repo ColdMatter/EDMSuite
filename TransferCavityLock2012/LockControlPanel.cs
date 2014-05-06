@@ -15,6 +15,8 @@ namespace TransferCavityLock2012
     public partial class LockControlPanel : UserControl
     {
         private string name;
+        private double upperVoltageLimit = 10;
+        private double lowerVoltageLimit = 0;
 
         public int Count = 0; 
 
@@ -25,6 +27,15 @@ namespace TransferCavityLock2012
             this.name = name;
             InitializeComponent();
         }
+
+        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit)
+        {
+            this.name = name;
+            this.upperVoltageLimit = upperVoltageLimit;
+            this.lowerVoltageLimit = lowerVoltageLimit; 
+            InitializeComponent();
+        }
+
 
         #region ThreadSafe wrappers
 
@@ -172,6 +183,12 @@ namespace TransferCavityLock2012
             Count = 0; 
         }
 
+        private void VoltageTrackBar_Scroll(object sender, EventArgs e)
+        {
+            
+            SetLaserVoltage((((double)VoltageTrackBar.Value) / 1000)*(upperVoltageLimit-lowerVoltageLimit));
+        }
+
         #endregion
 
         #region Setting and getting parameter values from textboxes
@@ -238,12 +255,14 @@ namespace TransferCavityLock2012
                     LaserSetPointTextBox.Enabled = false;
                     GainTextbox.Enabled = true;
                     lockedLED.Value = false;
+                    VoltageTrackBar.Enabled = true;
                     break;
 
                 case SlaveLaser.LaserState.LOCKING:
                     VoltageToLaserTextBox.Enabled = false;
                     GainTextbox.Enabled = false;
                     lockedLED.Value = false;
+                    VoltageTrackBar.Enabled = false;
                     break;
 
                 case SlaveLaser.LaserState.LOCKED:
@@ -254,6 +273,8 @@ namespace TransferCavityLock2012
         }
 
         #endregion
+
+
 
    
      

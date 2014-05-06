@@ -120,7 +120,7 @@ namespace TransferCavityLock2012
             ui.SetVtoOffsetVoltage(0);
             foreach (KeyValuePair<string, SlaveLaser> laser in SlaveLasers)
             {
-                ui.AddSlaveLaser(laser.Value.Name);
+                ui.AddSlaveLaser(laser.Value);
 
             }
             ui.ShowAllTabPanels();
@@ -293,13 +293,14 @@ namespace TransferCavityLock2012
                     {
 
                             
-                        fits["masterFits"] = fitMaster(scanData);
-                        plotMaster(scanData, fits["masterFits"]);
                         if(checkRampChannel() == true)
                         {
+
                             //if the cavity length is locked, use the set point to determine what voltage to output
                             if (ui.masterLockEnableCheck.Checked == true)
                             {
+                                fits["masterFits"] = fitMaster(scanData);
+                                plotMaster(scanData, fits["masterFits"]);
                                 masterVoltage = calculateMasterVoltageShift(masterVoltage)+ masterVoltage;
                                 setupMasterVoltageOut();
                                  //write difference to analog output
@@ -311,9 +312,10 @@ namespace TransferCavityLock2012
                             //if the cavity length is not locked, allow the voltage out to be scanned
                             else
                             {
+                                plotMaster(scanData);
                                 setupMasterVoltageOut();
-                                double vout=ui.GetVtoOffsetVoltage();
-                                writeMasterVoltageOut(vout);
+                                masterVoltage=ui.GetVtoOffsetVoltage();
+                                writeMasterVoltageOut(masterVoltage);
                                 disposeMasterVoltageOut();
                             }
                         }
@@ -405,6 +407,13 @@ namespace TransferCavityLock2012
             double[] master = data.GetMasterData();
             ui.DisplayMasterData(cavity, master, CavityScanFitHelper.CreatePointsFromFit(cavity, MasterFit));
         }
+        private void plotMaster(CavityScanData data)
+        {
+            double[] cavity = data.GetCavityData();
+            double[] master = data.GetMasterData();
+            ui.DisplayMasterData(cavity, master);
+        }
+
         private void plotCavity(CavityScanData data)
         {
             double[] indeces = new double[data.GetCavityData().Length];

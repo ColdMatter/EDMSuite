@@ -35,16 +35,16 @@ namespace TransferCavityLock2012
             controller.InitializeUI();
         }
         
-        public void AddSlaveLaser(string name)
+        public void AddSlaveLaser(SlaveLaser sl)
         {
-            string title = name;
+            string title = sl.Name;
             TabPage newTab = new TabPage(title);
-            LockControlPanel panel = new LockControlPanel(name);
+            LockControlPanel panel = new LockControlPanel(title,sl.LowerVoltageLimit,sl.UpperVoltageLimit);
             panel.controller = this.controller;
             slaveLasersTab.TabPages.Add(newTab);
             newTab.Controls.Add(panel);
             slaveLasersTab.Enabled = true;
-            slaveLasers.Add(name, panel);
+            slaveLasers.Add(title, panel);
         }
 
         public void ShowAllTabPanels()
@@ -193,6 +193,11 @@ namespace TransferCavityLock2012
             scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, cavityData, masterData);
             scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterFitPlot, cavityData, masterFitData);
         }
+        public void DisplayMasterData(double[] cavityData, double[] masterData)
+        {
+            scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, cavityData, masterData);
+        }
+
         public void DisplaySlaveData(string name, double[] cavityData, double[] slaveData, double[] slaveFitData)
         {
             slaveLasers[name].DisplayData(cavityData, slaveData);
@@ -300,10 +305,10 @@ namespace TransferCavityLock2012
             SetVtoOffsetVoltage(((double)CavLockVoltageTrackBar.Value)/100);
         }
 
-        private void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
-        {
+        //private void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
+        //{
           //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
-        }
+        //}
 
        
     }
