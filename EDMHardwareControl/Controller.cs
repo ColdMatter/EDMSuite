@@ -1566,6 +1566,9 @@ namespace EDMHardwareControl
                 case "probeAOM": //probe laser
                     SwitchLF1(state);
                     break;
+                case "pumpAOM": //probe laser
+                    SwitchLF2(state);
+                    break;
             }
         }
 
@@ -1581,6 +1584,20 @@ namespace EDMHardwareControl
 
             SetAnalogOutput(probeAOMAnalogOutputTask, calculateProbeAOMFrequency(lf1State));
         }
+
+        private bool lf2State;
+        private double calculatePumpAOMFrequency(bool lf2State)
+        {
+
+            return PumpAOMVoltage + (lf2State ? PumpAOMStep : -PumpAOMStep);
+        }
+        public void SwitchLF2(bool lf2State)
+        {
+            this.lf2State = lf2State;
+
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf2State));
+        }
+
 
         public void FieldsOff()
         {

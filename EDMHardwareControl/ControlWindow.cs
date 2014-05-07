@@ -3864,6 +3864,7 @@ namespace EDMHardwareControl
             this.probeShutterCheck.Size = new System.Drawing.Size(72, 24);
             this.probeShutterCheck.TabIndex = 23;
             this.probeShutterCheck.Text = "Probe";
+            this.probeShutterCheck.CheckedChanged += new System.EventHandler(this.probeShutterCheck_CheckedChanged);
             // 
             // pumpShutterCheck
             // 
@@ -3872,6 +3873,7 @@ namespace EDMHardwareControl
             this.pumpShutterCheck.Size = new System.Drawing.Size(72, 24);
             this.pumpShutterCheck.TabIndex = 22;
             this.pumpShutterCheck.Text = "Pump";
+            this.pumpShutterCheck.CheckedChanged += new System.EventHandler(this.pumpShutterCheck_CheckedChanged);
             // 
             // groupBox18
             // 

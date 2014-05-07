@@ -112,10 +112,10 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	bc.GetModulationByName("LF1").Step = hc.probeAOMStep
 	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre
 	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep
-	#bc.GetModulationByName("LF2").Centre = hc.PumpAOMVoltage
-	#bc.GetModulationByName("LF2").Centre = hc.PumpAOMStep
-	#bc.GetModulationByName("LF2").PhysicalCentre = hc.PumpAOMFrequencyCentre
-	#bc.GetModulationByName("LF2").PhysicalStep = hc.PumpAOMFrequencyStep
+	bc.GetModulationByName("LF2").Centre = hc.PumpAOMVoltage
+	bc.GetModulationByName("LF2").Centre = hc.PumpAOMStep
+	bc.GetModulationByName("LF2").PhysicalCentre = hc.PumpAOMFrequencyCentre
+	bc.GetModulationByName("LF2").PhysicalStep = hc.PumpAOMFrequencyStep
 
 	# generate the waveform codes
 	print("Generating waveform codes ...")
@@ -123,7 +123,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	eWave.Name = "E"
 	lf1Wave = bc.GetModulationByName("LF1").Waveform
 	lf1Wave.Name = "LF1"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F","LF2") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -131,7 +131,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	bc.GetModulationByName("RF2A").Waveform = ws["RF2A"]
 	bc.GetModulationByName("RF1F").Waveform = ws["RF1F"]
 	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
-	#bc.GetModulationByName("LF2").Waveform = ws["LF2"]
+	bc.GetModulationByName("LF2").Waveform = ws["LF2"]
 	# change the inversions of the static codes E and LF1
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	bc.GetModulationByName("LF1").Waveform.Inverted = WaveformSetGenerator.RandomBool()
@@ -252,8 +252,8 @@ def updateLocksNL(bState):
 	lf1Value = pmtChannelValues.GetValue(("LF1",))
 	lf1dbdbValue = normedpmtChannelValues.GetSpecialValue("LF1DBDB")
 	lf1dbValue = normedpmtChannelValues.GetSpecialValue("LF1DB")
-	#lf2Value = pmtChannelValues.GetValue(("LF2",))
-	#lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
+	lf2Value = pmtChannelValues.GetValue(("LF2",))
+	lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
 	rf1ampRefSig = rf1ampReftChannelValues.GetValue(("SIG",))
 	rf2ampRefSig = rf2ampReftChannelValues.GetValue(("SIG",))
 	rf1ampRefE = rf1ampReftChannelValues.GetValue(("E",))
@@ -268,7 +268,7 @@ def updateLocksNL(bState):
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
 	print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
-	#print "LF2: " + str(lf2Value) + " LF2.DB/DB: " + str(lf2dbdbValue)
+	print "LF2: " + str(lf2Value) + " LF2.DB/DB: " + str(lf2dbdbValue)
 	print "RF1 Reflected: " + str(rf1ampRefSig) +  " RF2 Reflected: " + str(rf2ampRefSig) 
 	print "{E}_RF1 Reflected: {" + str(rf1ampRefE) + " , " + str(rf1ampRefEErr) + " }"
 	print "{E}_RF2 Reflected: {" + str(rf2ampRefE) + " , " + str(rf2ampRefEErr) + " }"
@@ -341,9 +341,7 @@ def updateLocksNL(bState):
 	#hc.SetFLPZTVoltage( newLF1 )
 	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	# first cancel the overal movement of the laser
-	#deltaLF2 = hc.VCOConvFrac * deltaLF1 - 2.5 * lf2dbdbValue
-	#deltaLF2 = hc.VCOConvFrac * deltaLF1
+	#deltaLF2 =  - 2.5 * lf2dbdbValue
 	#deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
 	#deltaLF2 = 0
 	#print "Attempting to change LF2 by " + str(deltaLF2) + " V."
