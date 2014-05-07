@@ -270,7 +270,6 @@
             this.VToOffsetTextBox.Name = "VToOffsetTextBox";
             this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
             this.VToOffsetTextBox.TabIndex = 39;
-            //this.VToOffsetTextBox.TextChanged += new System.EventHandler(this.VToOffsetTextBox_TextChanged);
             // 
             // label2
             // 
@@ -353,6 +352,7 @@
             this.Controls.Add(this.voltageRampControl);
             this.Name = "MainForm";
             this.Text = "Transfer Cavity Lock 2012";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.voltageRampControl.ResumeLayout(false);
             this.voltageRampControl.PerformLayout();

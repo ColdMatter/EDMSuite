@@ -305,6 +305,15 @@ namespace TransferCavityLock2012
             SetVtoOffsetVoltage(((double)CavLockVoltageTrackBar.Value)/100);
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            lock (controller.rampStopLock)
+            {
+                controller.StopTCL();
+            }
+        }
+
         //private void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
         //{
           //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
