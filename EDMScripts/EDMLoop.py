@@ -332,21 +332,20 @@ def updateLocksNL(bState):
 	hc.SetRF2FMCentre( newRF2F )
 
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	#deltaLF1 = -2.5* ( lf1dbdbValue)
-	#deltaLF1 = 2.5 * ( lf1dbValue) (for Diode laser)
-	#deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
+	deltaLF1 = -2.5* ( lf1dbdbValue)
+	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	#deltaLF1 = 0
-	#print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	#newLF1 = windowValue( hc.FLPZTVoltage - deltaLF1, hc.FLPZTStep, 10 - hc.FLPZTStep )
-	#hc.SetFLPZTVoltage( newLF1 )
+	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
+	newLF1 = windowValue( hc.probeAOMVoltage - deltaLF1, hc.probeAOMVoltage, 10 - hc.FLPZTStep )
+	hc.SetFLPZTVoltage( newLF1 )
 	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
-	#deltaLF2 =  - 2.5 * lf2dbdbValue
-	#deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
+	deltaLF2 =  - 2.5 * lf2dbdbValue
+	deltaLF2 = windowValue(deltaLF2, -0.1, 0.1)
 	#deltaLF2 = 0
-	#print "Attempting to change LF2 by " + str(deltaLF2) + " V."
-	#newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
-	#hc.SetPumpAOMVoltage( newLF2 )
+	print "Attempting to change LF2 by " + str(deltaLF2) + " V."
+	newLF2 = windowValue( hc.PumpAOMVoltage - deltaLF2, hc.PumpAOMStep, 10 - hc.PumpAOMStep )
+	hc.SetPumpAOMVoltage( newLF2 )
 
 def windowValue(value, minValue, maxValue):
 	if ( (value < maxValue) & (value > minValue) ):
