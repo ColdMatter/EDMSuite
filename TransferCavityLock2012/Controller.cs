@@ -277,14 +277,19 @@ namespace TransferCavityLock2012
 
             initializeAIHardware(sp);
 
-            CavityScanData scanData;
+            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, lookupAI, photodiodes[0], photodiodes[1]);
             int count = 0;
           
             while (TCLState != ControllerState.STOPPED)
             {
-
+                double[] lastCav= scanData.GetCavityData();
+                
                 scanData = acquireAI(sp);
 
+                if (ui.scanAvCheckBox.Checked == true)
+                {
+                    scanData.SetAverageCavityData(lastCav);
+                }
                 if (scanData != null)
                 {
                     plotCavity(scanData);

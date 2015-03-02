@@ -3769,6 +3769,7 @@ namespace EDMHardwareControl
             this.updateLaserPhotodiodesButton.Size = new System.Drawing.Size(75, 23);
             this.updateLaserPhotodiodesButton.TabIndex = 52;
             this.updateLaserPhotodiodesButton.Text = "Update";
+            this.updateLaserPhotodiodesButton.Click += new System.EventHandler(this.updateLaserPhotodiodesButton_Click);
             // 
             // pumpMonitorTextBox
             // 
@@ -5934,7 +5935,7 @@ namespace EDMHardwareControl
 		}
 		private void updateVMonitorButton_Click(object sender, System.EventArgs e)
 		{
-			controller.UpdateVMonitor();
+			controller.UpdateVMonitorUI();
 		}
 
 		private void updateIMonitorButton_Click(object sender, System.EventArgs e)
@@ -6015,12 +6016,12 @@ namespace EDMHardwareControl
 
 		private void updateLaserPhotodiodesButton_Click(object sender, EventArgs e)
 		{
-			controller.UpdateLaserPhotodiodes();
+			controller.UpdateLaserPhotodiodesUI();
 		}
        
         private void updateMiniFluxgatesButton_Click(object sender, EventArgs e)
         {
-           controller.UpdateMiniFluxgates();
+           controller.UpdateMiniFluxgatesUI();
         }
 
         private void setAttenuatorsButton_Click(object sender, EventArgs e)
@@ -6411,7 +6412,7 @@ namespace EDMHardwareControl
 
         private void UpdatePiFlipMonButton_Click(object sender, EventArgs e)
         {
-            controller.UpdatePiMonitor();
+            controller.UpdatePiMonitorUI();
         }
 
         private void logdataCheckBox_CheckedChanged(object sender, EventArgs e)

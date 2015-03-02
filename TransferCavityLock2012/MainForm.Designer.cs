@@ -59,6 +59,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.CavLockVoltageTrackBar = new System.Windows.Forms.TrackBar();
             this.label7 = new System.Windows.Forms.Label();
+            this.scanAvCheckBox = new System.Windows.Forms.CheckBox();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -328,11 +329,22 @@
             this.label7.TabIndex = 53;
             this.label7.Text = "Summed Voltage";
             // 
+            // scanAvCheckBox
+            // 
+            this.scanAvCheckBox.AutoSize = true;
+            this.scanAvCheckBox.Location = new System.Drawing.Point(586, 94);
+            this.scanAvCheckBox.Name = "scanAvCheckBox";
+            this.scanAvCheckBox.Size = new System.Drawing.Size(133, 17);
+            this.scanAvCheckBox.TabIndex = 54;
+            this.scanAvCheckBox.Text = "Average Scan Voltage";
+            this.scanAvCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 677);
+            this.Controls.Add(this.scanAvCheckBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.CavLockVoltageTrackBar);
             this.Controls.Add(this.label6);
@@ -400,6 +412,7 @@
         private System.Windows.Forms.Label label6;
         public System.Windows.Forms.TrackBar CavLockVoltageTrackBar;
         private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.CheckBox scanAvCheckBox;
     }
 }
 

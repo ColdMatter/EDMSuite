@@ -54,7 +54,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mea
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateProbeAOMFreqMonitor()
-	#hc.UpdatePumpAOMFreqMonitor()
+	hc.UpdatePumpAOMFreqMonitor()
 	#hc.CheckPiMonitor()
 	print("Measuring polarizer angle")
 	hc.UpdateProbePolAngleMonitor()
@@ -336,8 +336,8 @@ def updateLocksNL(bState):
 	deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
 	#deltaLF1 = 0
 	print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	newLF1 = windowValue( hc.probeAOMVoltage - deltaLF1, hc.probeAOMVoltage, 10 - hc.FLPZTStep )
-	hc.SetFLPZTVoltage( newLF1 )
+	newLF1 = windowValue( hc.probeAOMVoltage - deltaLF1, hc.probeAOMStep, 10 - hc.probeAOMStep )
+	hc.SetprobeAOMVoltage( newLF1 )
 	
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	deltaLF2 =  - 2.5 * lf2dbdbValue
@@ -392,8 +392,8 @@ def EDMGo():
 	scramblerV = 0.97156 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
 	# randomise polarizations
-	hc.SetRandomProbePosition()
-	hc.SetRandomPumpPosition()
+	#hc.SetRandomProbePosition()
+	#hc.SetRandomPumpPosition()
 
 	# calibrate leakage monitors
 	print("calibrating leakage monitors..")
@@ -453,8 +453,8 @@ def EDMGo():
 		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 		# randomise polarizations
-		hc.SetRandomProbePosition()
-		hc.SetRandomPumpPosition()
+		#hc.SetRandomProbePosition()
+		#hc.SetRandomPumpPosition()
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, measProbePwr, measPumpPwr)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
