@@ -485,6 +485,11 @@ namespace EDMHardwareControl
         public TextBox probeAOMVTextBox;
         private Button UpdateProbeAOMButton;
         private Label label68;
+        //uWave Control
+    //    private TabPage tabPage12;
+      //  private GroupBox groupBox121;
+    //    public System.Windows.Forms.TextBox uWaveDCFMBox;
+     //   private System.Windows.Forms.Label label140;
 
 
 		public Controller controller;
@@ -981,6 +986,10 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
+         //   this.tabPage12 = new System.Windows.Forms.TabPage();
+         //   this.groupBox121 = new System.Windows.Forms.GroupBox();
+          //  this.uWaveDCFMBox = new System.Windows.Forms.TextBox();
+         //   this.label140 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1062,6 +1071,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
+
             // 
             // groupBox2
             // 
@@ -1486,11 +1496,12 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage11);
+            this.tabControl.Controls.Add(this.tabPage8);
+         //   this.tabControl.Controls.Add(this.tabPage12);
             this.tabControl.Controls.Add(this.tabPage6);
             this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Controls.Add(this.tabPage9);
             this.tabControl.Controls.Add(this.tabPage7);
-            this.tabControl.Controls.Add(this.tabPage8);
             this.tabControl.Controls.Add(this.tabPage10);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
@@ -4713,7 +4724,7 @@ namespace EDMHardwareControl
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage8.Size = new System.Drawing.Size(697, 575);
             this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "Diode Laser";
+            this.tabPage8.Text = "N=2 Lasers";
             // 
             // groupBox36
             // 
@@ -5715,6 +5726,53 @@ namespace EDMHardwareControl
             this.radioButton6.TabIndex = 32;
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
+            //
+            // tabPage12
+            // 
+          //  this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
+            //this.tabPage12.Controls.Add(this.groupBox121);
+            //this.tabPage12.Controls.Add(this.groupBox11);
+            //this.tabPage12.Controls.Add(this.groupBox10);
+            //this.tabPage12.Controls.Add(this.groupBox18);
+           // this.tabPage12.Location = new System.Drawing.Point(4, 22);
+          //  this.tabPage12.Name = "tabPage12";
+          //  this.tabPage12.Size = new System.Drawing.Size(697, 575);
+            //this.tabPage12.TabIndex = 10;
+          //  this.tabPage12.Text = "Microwaves";
+            // 
+            // groupBox121
+            // 
+          //  this.groupBox3.Controls.Add(this.label140);
+           // this.groupBox121.Controls.Add(this.uWaveDCFMBox);
+           // this.groupBox3.Controls.Add(this.greenOnCheck);
+            //this.groupBox3.Controls.Add(this.label7);
+            //this.groupBox3.Controls.Add(this.greenOnAmpBox);
+           // this.groupBox3.Controls.Add(this.label8);
+          //  this.groupBox3.Controls.Add(this.greenOnFreqBox);
+           // this.groupBox121.Location = new System.Drawing.Point(8, 16);
+          //  this.groupBox121.Name = "groupBox121";
+          //  this.groupBox121.Size = new System.Drawing.Size(296, 160);
+          //  this.groupBox3.TabIndex = 21;
+           // this.groupBox3.TabStop = false;
+          //  this.groupBox121.Text = "Direct synth control";
+            // 
+            // label140
+            // 
+         //   this.label140.Location = new System.Drawing.Point(6, 88);
+          //  this.label140.Name = "label140";
+           // this.label140.Size = new System.Drawing.Size(133, 23);
+          //  this.label140.TabIndex = 23;
+           // this.label140.Text = "Microwave synth DC FM (V)";
+            // 
+            // uWaveDCFMBox
+            // 
+           // this.uWaveDCFMBox.Location = new System.Drawing.Point(168, 85);
+          //  this.uWaveDCFMBox.Name = "uWaveDCFMBox";
+           // this.uWaveDCFMBox.Size = new System.Drawing.Size(64, 20);
+          //  this.uWaveDCFMBox.TabIndex = 2;
+          //  this.uWaveDCFMBox.Text = "0";
+
+          
             // 
             // ControlWindow
             // 
@@ -5849,8 +5907,14 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+           // this.tabPage12.ResumeLayout(false);
+           // this.groupBox121.ResumeLayout(false);
+          //  this.groupBox121.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
+
+          
 
 		}
 		#endregion

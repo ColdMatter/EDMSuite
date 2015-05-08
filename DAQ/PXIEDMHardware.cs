@@ -4,6 +4,7 @@ using System.Runtime.Remoting;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using System.Collections.Generic;
 
 namespace DAQ.HAL
 {
@@ -217,9 +218,8 @@ namespace DAQ.HAL
             //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
             Info.Add("TCLLockableLasers", new string[] { "MenloPZT", "899ExternalScan" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
             Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-            //Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //This now comes from the limits set when the AnalogOutputChannels are added
-            //Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //This now comes from the limits set when the AnalogOutputChannels are added
-            Info.Add("TCL_Default_Gain", -1.1);
+            Info.Add("TCL_Default_Master_Gain", -1.1);
+            Info.Add("TCL_Default_Lockable_Laser_Gains",-0.1);
             Info.Add("TCL_Default_VoltageToLaser", 2.5);
             Info.Add("TCL_Default_VoltageToDependent", 1.0);
             Info.Add("TCL_Default_ScanPoints",300);
@@ -239,7 +239,7 @@ namespace DAQ.HAL
             // Laser control
             //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("899ExternalScan", aoBoard + "/ao4", 0, 7.5);
-            AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 5);
+            AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("probeAOM", aoBoard + "/ao9", 0, 10);
             AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao8", 0, 10);
 
@@ -250,6 +250,10 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rampfb", tclBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
+
+            //Microwave Control Channels
+            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/a011", -2.5, 2.5);
+            AddAnalogOutputChannel("uWaveMixerV", aoBoard + "/ao12", 0, 10);
         }
 
     }

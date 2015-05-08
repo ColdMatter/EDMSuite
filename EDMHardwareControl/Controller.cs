@@ -117,6 +117,7 @@ namespace EDMHardwareControl
         Task fibreAmpOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
+      //  Task uWaveDCFMOutputTask;
 
         ControlWindow window;
 
@@ -195,6 +196,8 @@ namespace EDMHardwareControl
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
             i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
+       //     uWaveDCFMOutputTask = CreateAnalogOutputTask("uWaveDCFM");
+            
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
