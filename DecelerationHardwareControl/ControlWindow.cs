@@ -77,8 +77,21 @@ namespace DecelerationHardwareControl
             controller.UpdateSynthSettings();
         }
 
-       
+        private void GetData_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMonitoring();
+        }
 
-        
+        private void ReadFlow_Click(object sender, EventArgs e)
+        {
+            //controller.ReadFlowMeter();
+        }
+
+        private void SetFlow_Click(object sender, EventArgs e)
+        {
+            controller.SetFlowMeter();
+        }
+
+       
     }
 }

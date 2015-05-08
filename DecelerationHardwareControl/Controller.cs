@@ -1,10 +1,13 @@
 using System;
+using System.Globalization;
 using System.Collections;
 using System.Text;
 using System.Windows.Forms;
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.TransferCavityLock;
+using NationalInstruments.DAQmx;
+using NationalInstruments;
 using NationalInstruments.DAQmx;
 
 namespace DecelerationHardwareControl
@@ -18,6 +21,7 @@ namespace DecelerationHardwareControl
         ControlWindow window;
 
         HP8673BSynth synth = (HP8673BSynth)Environs.Hardware.Instruments["synth"];
+        FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
 
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
@@ -33,6 +37,24 @@ namespace DecelerationHardwareControl
         private Task outputTask = new Task("AomControllerOutput");
         private AnalogOutputChannel aomChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["highvoltage"];
         public AnalogSingleChannelWriter aomWriter;
+
+
+        private AnalogInputChannel pressureSourceChamber = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["PressureSourceChamber"];
+        private Task pressureMonitorTask = new Task();
+        private AnalogInputChannel pressureRough = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["RoughVacuum"];
+        private Task roughVacuumTask = new Task();
+        private AnalogInputChannel voltageReference = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["VoltageReference"];
+        private Task voltageReferenceTask = new Task();
+        private AnalogInputChannel therm30KTemp = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["10KThermistor30KPlate"];
+        private Task thermistor30KPlateTask = new Task();
+        private AnalogInputChannel shieldTemp = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["30KShield"];
+        private Task shieldTask = new Task();
+        private AnalogInputChannel cellTemp = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["4KCell"];
+        private Task cellTask = new Task();
+
+        public string command;
+	
+
 
         public double normsigGain;
 
@@ -84,6 +106,13 @@ namespace DecelerationHardwareControl
             aomChannel.AddToTask(outputTask, -10, 10);
             outputTask.Control(TaskAction.Verify);
             aomWriter = new AnalogSingleChannelWriter(outputTask.Stream);
+
+            pressureSourceChamber.AddToTask(pressureMonitorTask, -10, 10);
+            pressureRough.AddToTask(roughVacuumTask, -10, 10);
+            voltageReference.AddToTask(voltageReferenceTask, -10, 10);
+            therm30KTemp.AddToTask(thermistor30KPlateTask, -10, 10);
+            shieldTemp.AddToTask(shieldTask, -10, 10);
+            cellTemp.AddToTask(cellTask, -10, 10);
 
             window = new ControlWindow();
             window.controller = this;
@@ -283,7 +312,69 @@ namespace DecelerationHardwareControl
             synth.Disconnect();
         }
 
-        #endregion
+        private double VoltageResistanceConversion(double voltage, double Vref)
+        {
+            return 47120 * (voltage / (Vref - voltage));
+        }
 
+        private double VoltageRoughVacuumConversion(double voltage)
+        {
+            return Math.Pow(10, ((voltage - 6.143)/1.286));
+        }
+
+        private double VoltagePressureConversion(double voltage)
+        {
+            return Math.Pow(10, (1.667 * voltage - 11.33));
+        }
+
+        public void UpdateMonitoring()
+        {
+            AnalogSingleChannelReader reader3 = new AnalogSingleChannelReader(voltageReferenceTask.Stream);
+            double Vref = reader3.ReadSingleSample();
+            
+            AnalogSingleChannelReader reader1 = new AnalogSingleChannelReader(pressureMonitorTask.Stream);
+            double analogDataIn1 = reader1.ReadSingleSample();
+            window.monitorPressureSourceChamber.Text = VoltagePressureConversion(analogDataIn1).ToString("E02",CultureInfo.InvariantCulture);
+
+            AnalogSingleChannelReader reader2 = new AnalogSingleChannelReader(roughVacuumTask.Stream);
+            double analogDataIn2 = reader2.ReadSingleSample();
+            window.monitorRoughVacuum.Text = VoltageRoughVacuumConversion(analogDataIn2).ToString("E02", CultureInfo.InvariantCulture);
+
+
+            AnalogSingleChannelReader reader4 = new AnalogSingleChannelReader(thermistor30KPlateTask.Stream);
+            double analogDataIn4 = reader4.ReadSingleSample();
+            window.monitor10KTherm30KPlate.Text = VoltageResistanceConversion(analogDataIn4, Vref).ToString("E04", CultureInfo.InvariantCulture);
+
+            AnalogSingleChannelReader reader5 = new AnalogSingleChannelReader(shieldTask.Stream);
+            double analogDataIn5 = reader5.ReadSingleSample();
+            window.monitorShield.Text = VoltageResistanceConversion(analogDataIn5, Vref).ToString("E04", CultureInfo.InvariantCulture);
+
+            AnalogSingleChannelReader reader6 = new AnalogSingleChannelReader(cellTask.Stream);
+            double analogDataIn6 = reader6.ReadSingleSample();
+            window.monitorColdPlate.Text = VoltageResistanceConversion(analogDataIn6, Vref).ToString("E04", CultureInfo.InvariantCulture);
+        }
+
+
+        public string GetCommand()
+        {
+            return window.CommandBox.Text;
+        }
+
+        //public void ReadFlowMeter()
+        //{
+            //string 
+            //window.SetTextBox(window.CommandBox, value.ToString());
+
+            //return window.CommandBox.Text;        
+        //}
+
+
+
+        public void SetFlowMeter()
+        {
+            flowMeter.SetFlow(GetCommand());
+        }
+
+        #endregion
     }
 }
