@@ -312,8 +312,8 @@ namespace TransferCavityLock2012
                             else
                             {
                                 setupMasterVoltageOut();
-                                double vout=ui.GetVtoOffsetVoltage();
-                                writeMasterVoltageOut(vout);
+                                masterVoltage=ui.GetVtoOffsetVoltage();
+                                writeMasterVoltageOut(masterVoltage);
                                 disposeMasterVoltageOut();
                             }
                         }

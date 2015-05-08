@@ -42,7 +42,8 @@ namespace DAQ.TransferCavityLock2012
         //the other.
         public void ConfigureReadAI(int numberOfMeasurements, bool autostart) //AND CAVITY VOLTAGE!!! 
         {
-            readAIsTask = new Task("readAI");
+            //readAIsTask = new Task("readAI");
+            readAIsTask = new Task();
 
             channels = new Dictionary<string, AnalogInputChannel>();
             foreach (string s in analogInputs)
@@ -60,7 +61,7 @@ namespace DAQ.TransferCavityLock2012
             {
                  readAIsTask.Timing.ConfigureSampleClock(
                     "",
-                    80000,
+                    50000,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples, numberOfMeasurements);
 

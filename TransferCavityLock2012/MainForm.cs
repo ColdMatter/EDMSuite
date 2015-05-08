@@ -305,6 +305,11 @@ namespace TransferCavityLock2012
           //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
         }
 
+        private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
        
     }
 }

@@ -27,8 +27,8 @@ namespace TransferCavityLock2012
             controller.Start();
 
             // the application is finishing - close down the remoting channel
-           // RemotingServices.Disconnect(controller);
-           // ChannelServices.UnregisterChannel(channel);
+            //RemotingServices.Disconnect(controller);
+            //ChannelServices.UnregisterChannel(channel);
         }
     }
 }

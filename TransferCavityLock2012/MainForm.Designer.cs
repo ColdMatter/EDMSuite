@@ -244,6 +244,7 @@
             this.masterLockEnableCheck.TabIndex = 35;
             this.masterLockEnableCheck.Text = "Lock";
             this.masterLockEnableCheck.UseVisualStyleBackColor = true;
+            this.masterLockEnableCheck.CheckedChanged += new System.EventHandler(this.masterLockEnableCheck_CheckedChanged);
             // 
             // label1
             // 
