@@ -63,7 +63,7 @@ namespace DAQ.TransferCavityLock2012
             {
                  readAIsTask.Timing.ConfigureSampleClock(
                     "",
-                    50000,
+                   100000,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples, numberOfMeasurements);
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(

@@ -182,18 +182,29 @@ namespace EDMBlockHead.Acquire
                         spd = singlePointInputReader.ReadSingleSample();
                         singlePointInputTask.Stop();
                     }
-                    hardwareController.UpdateLaserPhotodiodes();
-                    p.SinglePointData.Add("ProbePD", hardwareController.probePDVoltage);
-                    p.SinglePointData.Add("PumpPD", hardwareController.probePDVoltage);
-                    hardwareController.UpdateMiniFluxgates();
-                    p.SinglePointData.Add("MiniFlux1", hardwareController.miniFlux1Voltage);
-                    p.SinglePointData.Add("MiniFlux2", hardwareController.miniFlux2Voltage);
-                    p.SinglePointData.Add("MiniFlux3", hardwareController.miniFlux3Voltage);
-                    hardwareController.UpdatePiMonitor();
-                    p.SinglePointData.Add("piMonitor", hardwareController.piFlipMonVoltage);
+                    p.SinglePointData.Add("ProbePD", spd[0]);
+                    p.SinglePointData.Add("PumpPD", spd[1]);
+                    p.SinglePointData.Add("MiniFlux1", spd[2]);
+                    p.SinglePointData.Add("MiniFlux2", spd[3]);
+                    p.SinglePointData.Add("MiniFlux3", spd[4]);
+                    p.SinglePointData.Add("CplusV", spd[5]);
+                    p.SinglePointData.Add("CminusV", spd[6]);
+
+                    //hardwareController.UpdateVMonitor();
+                    //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
+                    //hardwareController.UpdateLaserPhotodiodes();
+                    //p.SinglePointData.Add("ProbePD", hardwareController.ProbePDVoltage);
+                    //p.SinglePointData.Add("PumpPD", hardwareController.PumpPDVoltage);
+                    //hardwareController.UpdateMiniFluxgates();
+                    //p.SinglePointData.Add("MiniFlux1", hardwareController.MiniFlux1Voltage);
+                    //p.SinglePointData.Add("MiniFlux2", hardwareController.MiniFlux2Voltage);
+                    //p.SinglePointData.Add("MiniFlux3", hardwareController.MiniFlux3Voltage);
                     hardwareController.ReadIMonitor();
                     p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
                     p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                    //hardwareController.UpdatePiMonitor();
+                    //p.SinglePointData.Add("piMonitor", hardwareController.PiFlipMonVoltage);
+                    //p.SinglePointData.Add("CminusV", hardwareController.CMinusMonitorVoltage);
 
                     // Hopefully the leakage monitors will have finished reading by now.
                     // We join them, read out the data, and then launch another asynchronous
@@ -335,6 +346,11 @@ namespace EDMBlockHead.Acquire
             lf1Channel.Channel = "probeAOM";
             lf1Channel.Modulation = config.GetModulationByName("LF1");
             switchedChannels.Add(lf1Channel);
+
+            HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
+            lf2Channel.Channel = "pumpAOM";
+            lf2Channel.Modulation = config.GetModulationByName("LF2");
+            switchedChannels.Add(lf2Channel);
 
             //AnalogSwitchedChannel lf3Channel = new HardwareControllerSwitchChannel();
             //lf3Channel.Channel = "LF3";
@@ -515,14 +531,21 @@ namespace EDMBlockHead.Acquire
         {
             // here we configure the scan of analog inputs that happens after each shot.
             singlePointInputTask = new Task("Blockhead single point inputs");
-            //Note, thise single points are actually read from HC, so i'll get rid of them
-            //AddChannelToSinglePointTask("probePD");
-            //AddChannelToSinglePointTask("pumpPD");
-            //AddChannelToSinglePointTask("miniFlux1");
-            //AddChannelToSinglePointTask("miniFlux2");
-            //AddChannelToSinglePointTask("miniFlux3");
+            AddChannelToSinglePointTask("probePD");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("pumpPD");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("miniFlux1");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("miniFlux2");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("miniFlux3");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("cPlusMonitor");
+            //AddChannelToSinglePointTask("ground");
+            AddChannelToSinglePointTask("cMinusMonitor");
             //AddChannelToSinglePointTask("northLeakage");
-            AddChannelToSinglePointTask("ground");
+            //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");
             //AddChannelToSinglePointTask("ground");
 

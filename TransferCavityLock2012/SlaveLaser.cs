@@ -26,7 +26,7 @@ namespace TransferCavityLock2012
         }
 
         public string Name;
-       
+        private double gain;
         private int increments = 0;          // for tweaking the laser set point
         private int decrements = 0;
         public double SetPointIncrementSize = 0.01;
@@ -97,7 +97,6 @@ namespace TransferCavityLock2012
                 voltageToLaser = value;
             }
         }
-        private double gain = (double)Environs.Hardware.GetInfo("TCL_Default_Gain");
         public double Gain
         {
             get
@@ -165,12 +164,12 @@ namespace TransferCavityLock2012
 
 
         public double calculateDeviationFromSetPoint(double laserSetPoint,
-            double[] masterFitCoefficients, double[] slaveFitCoefficients)
+    double[] masterFitCoefficients, double[] slaveFitCoefficients)
         {
             double currentPeakSeparation = new double();
             currentPeakSeparation = slaveFitCoefficients[1] - masterFitCoefficients[1];
             return currentPeakSeparation - LaserSetPoint;
-            
+
         }
 
         private double calculateNewVoltageToLaser(double vtolaser, double measuredVoltageChange)

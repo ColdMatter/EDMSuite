@@ -46,6 +46,15 @@ namespace TransferCavityLock2012
             }
             return temp;
         }
+
+        public void SetAverageCavityData(double[] avDat)
+        {
+            for (int i = 0; i < AIData.GetLength(1); i++)
+            {
+                AIData[parameters.Channels[cavityMonitorName], i] = (AIData[parameters.Channels[cavityMonitorName], i] + 49 * avDat[i]) / 50;
+            }
+        }
+
         public double[] GetMasterData()
         {
             double[] temp = new double[AIData.GetLength(1)];

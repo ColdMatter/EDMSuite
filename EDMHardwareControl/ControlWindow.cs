@@ -485,6 +485,11 @@ namespace EDMHardwareControl
         public TextBox probeAOMVTextBox;
         private Button UpdateProbeAOMButton;
         private Label label68;
+        //uWave Control
+    //    private TabPage tabPage12;
+      //  private GroupBox groupBox121;
+    //    public System.Windows.Forms.TextBox uWaveDCFMBox;
+     //   private System.Windows.Forms.Label label140;
 
 
 		public Controller controller;
@@ -981,6 +986,10 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
+         //   this.tabPage12 = new System.Windows.Forms.TabPage();
+         //   this.groupBox121 = new System.Windows.Forms.GroupBox();
+          //  this.uWaveDCFMBox = new System.Windows.Forms.TextBox();
+         //   this.label140 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1062,6 +1071,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
+
             // 
             // groupBox2
             // 
@@ -1486,11 +1496,12 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage11);
+            this.tabControl.Controls.Add(this.tabPage8);
+         //   this.tabControl.Controls.Add(this.tabPage12);
             this.tabControl.Controls.Add(this.tabPage6);
             this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Controls.Add(this.tabPage9);
             this.tabControl.Controls.Add(this.tabPage7);
-            this.tabControl.Controls.Add(this.tabPage8);
             this.tabControl.Controls.Add(this.tabPage10);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
@@ -3573,10 +3584,11 @@ namespace EDMHardwareControl
             // pumpAOMTrackBar
             // 
             this.pumpAOMTrackBar.Location = new System.Drawing.Point(9, 128);
-            this.pumpAOMTrackBar.Maximum = 500;
+            this.pumpAOMTrackBar.Maximum = 1000;
             this.pumpAOMTrackBar.Name = "pumpAOMTrackBar";
             this.pumpAOMTrackBar.Size = new System.Drawing.Size(284, 45);
             this.pumpAOMTrackBar.TabIndex = 73;
+            this.pumpAOMTrackBar.Scroll += new System.EventHandler(this.pumpAOMTrackBar_Scroll);
             // 
             // panel7
             // 
@@ -3735,6 +3747,7 @@ namespace EDMHardwareControl
             this.pumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.pumpAOMFreqUpdateButton.TabIndex = 60;
             this.pumpAOMFreqUpdateButton.Text = "Update";
+            this.pumpAOMFreqUpdateButton.Click += new System.EventHandler(this.pumpAOMFreqUpdateButton_Click_1);
             // 
             // label98
             // 
@@ -3767,6 +3780,7 @@ namespace EDMHardwareControl
             this.updateLaserPhotodiodesButton.Size = new System.Drawing.Size(75, 23);
             this.updateLaserPhotodiodesButton.TabIndex = 52;
             this.updateLaserPhotodiodesButton.Text = "Update";
+            this.updateLaserPhotodiodesButton.Click += new System.EventHandler(this.updateLaserPhotodiodesButton_Click);
             // 
             // pumpMonitorTextBox
             // 
@@ -3845,6 +3859,7 @@ namespace EDMHardwareControl
             this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
             this.argonShutterCheckBox.TabIndex = 25;
             this.argonShutterCheckBox.Text = "Ar+";
+            this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
             // 
             // label32
             // 
@@ -3861,6 +3876,7 @@ namespace EDMHardwareControl
             this.probeShutterCheck.Size = new System.Drawing.Size(72, 24);
             this.probeShutterCheck.TabIndex = 23;
             this.probeShutterCheck.Text = "Probe";
+            this.probeShutterCheck.CheckedChanged += new System.EventHandler(this.probeShutterCheck_CheckedChanged);
             // 
             // pumpShutterCheck
             // 
@@ -3869,6 +3885,7 @@ namespace EDMHardwareControl
             this.pumpShutterCheck.Size = new System.Drawing.Size(72, 24);
             this.pumpShutterCheck.TabIndex = 22;
             this.pumpShutterCheck.Text = "Pump";
+            this.pumpShutterCheck.CheckedChanged += new System.EventHandler(this.pumpShutterCheck_CheckedChanged);
             // 
             // groupBox18
             // 
@@ -4707,7 +4724,7 @@ namespace EDMHardwareControl
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage8.Size = new System.Drawing.Size(697, 575);
             this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "Diode Laser";
+            this.tabPage8.Text = "N=2 Lasers";
             // 
             // groupBox36
             // 
@@ -5709,6 +5726,53 @@ namespace EDMHardwareControl
             this.radioButton6.TabIndex = 32;
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
+            //
+            // tabPage12
+            // 
+          //  this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
+            //this.tabPage12.Controls.Add(this.groupBox121);
+            //this.tabPage12.Controls.Add(this.groupBox11);
+            //this.tabPage12.Controls.Add(this.groupBox10);
+            //this.tabPage12.Controls.Add(this.groupBox18);
+           // this.tabPage12.Location = new System.Drawing.Point(4, 22);
+          //  this.tabPage12.Name = "tabPage12";
+          //  this.tabPage12.Size = new System.Drawing.Size(697, 575);
+            //this.tabPage12.TabIndex = 10;
+          //  this.tabPage12.Text = "Microwaves";
+            // 
+            // groupBox121
+            // 
+          //  this.groupBox3.Controls.Add(this.label140);
+           // this.groupBox121.Controls.Add(this.uWaveDCFMBox);
+           // this.groupBox3.Controls.Add(this.greenOnCheck);
+            //this.groupBox3.Controls.Add(this.label7);
+            //this.groupBox3.Controls.Add(this.greenOnAmpBox);
+           // this.groupBox3.Controls.Add(this.label8);
+          //  this.groupBox3.Controls.Add(this.greenOnFreqBox);
+           // this.groupBox121.Location = new System.Drawing.Point(8, 16);
+          //  this.groupBox121.Name = "groupBox121";
+          //  this.groupBox121.Size = new System.Drawing.Size(296, 160);
+          //  this.groupBox3.TabIndex = 21;
+           // this.groupBox3.TabStop = false;
+          //  this.groupBox121.Text = "Direct synth control";
+            // 
+            // label140
+            // 
+         //   this.label140.Location = new System.Drawing.Point(6, 88);
+          //  this.label140.Name = "label140";
+           // this.label140.Size = new System.Drawing.Size(133, 23);
+          //  this.label140.TabIndex = 23;
+           // this.label140.Text = "Microwave synth DC FM (V)";
+            // 
+            // uWaveDCFMBox
+            // 
+           // this.uWaveDCFMBox.Location = new System.Drawing.Point(168, 85);
+          //  this.uWaveDCFMBox.Name = "uWaveDCFMBox";
+           // this.uWaveDCFMBox.Size = new System.Drawing.Size(64, 20);
+          //  this.uWaveDCFMBox.TabIndex = 2;
+          //  this.uWaveDCFMBox.Text = "0";
+
+          
             // 
             // ControlWindow
             // 
@@ -5843,8 +5907,14 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+           // this.tabPage12.ResumeLayout(false);
+           // this.groupBox121.ResumeLayout(false);
+          //  this.groupBox121.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
+
+          
 
 		}
 		#endregion
@@ -5929,7 +5999,7 @@ namespace EDMHardwareControl
 		}
 		private void updateVMonitorButton_Click(object sender, System.EventArgs e)
 		{
-			controller.UpdateVMonitor();
+			controller.UpdateVMonitorUI();
 		}
 
 		private void updateIMonitorButton_Click(object sender, System.EventArgs e)
@@ -6010,12 +6080,12 @@ namespace EDMHardwareControl
 
 		private void updateLaserPhotodiodesButton_Click(object sender, EventArgs e)
 		{
-			controller.UpdateLaserPhotodiodes();
+			controller.UpdateLaserPhotodiodesUI();
 		}
        
         private void updateMiniFluxgatesButton_Click(object sender, EventArgs e)
         {
-           controller.UpdateMiniFluxgates();
+           controller.UpdateMiniFluxgatesUI();
         }
 
         private void setAttenuatorsButton_Click(object sender, EventArgs e)
@@ -6406,7 +6476,7 @@ namespace EDMHardwareControl
 
         private void UpdatePiFlipMonButton_Click(object sender, EventArgs e)
         {
-            controller.UpdatePiMonitor();
+            controller.UpdatePiMonitorUI();
         }
 
         private void logdataCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -6424,6 +6494,11 @@ namespace EDMHardwareControl
         private void probeAOMFreqUpdateButton_Click(object sender, EventArgs e)
         {
             controller.UpdateProbeAOMFreqMonitor();
+        }
+
+        private void pumpAOMFreqUpdateButton_Click_1(object sender, EventArgs e)
+        {
+            controller.UpdatePumpAOMFreqMonitor();
         }
 
 

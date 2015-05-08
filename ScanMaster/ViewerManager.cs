@@ -20,6 +20,7 @@ namespace ScanMaster.GUI
 		public ViewerManager()
 		{
 			viewers.Add("StandardViewer", new StandardViewer());
+            viewers.Add("TweakViewer", new TweakViewer());
             //viewers.Add("StatisticsViewer", new StatisticsViewer());
             //viewers.Add("RollViewer", new RollViewer());
 			foreach (DictionaryEntry de in viewers) ((Viewer)(de.Value)).Show();

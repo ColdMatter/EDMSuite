@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
-
+using System.Runtime.Remoting;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using System.Collections.Generic;
 
 namespace DAQ.HAL
 {
@@ -13,6 +14,14 @@ namespace DAQ.HAL
     /// </summary>
     public class PXIEDMHardware : DAQ.HAL.Hardware
     {
+                public override void ConnectApplications()
+       {
+           // ask the remoting system for access to TCL2012
+           Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+       }
+ 
+
         public PXIEDMHardware()
         {
 
@@ -143,7 +152,7 @@ namespace DAQ.HAL
             // map the analog channels
             // These channels are on the daq board. Used mainly for diagnostic purposes.
             // On no account should they switch during the edm acquisition pattern.
-            AddAnalogInputChannel("diodeLaserCurrent", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("diodeLaserCurrent", daqBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("iodine", daqBoard + "/ai2", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("cavity", daqBoard + "/ai3", AITerminalConfiguration.Nrse);
             AddAnalogInputChannel("probePD", daqBoard + "/ai4", AITerminalConfiguration.Nrse);
@@ -172,8 +181,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
 
-            AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao0");
-            AddAnalogOutputChannel("b", aoBoard + "/ao1");
+            AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
+            AddAnalogOutputChannel("b", aoBoard + "/ao2");
 
 
             // rf rack control
@@ -185,12 +194,16 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
 
             // E field control and monitoring
-            AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cPlusMonitor", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cMinusMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", 0, 10);
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
 
+
+            
             // B field control
             //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
 
@@ -205,9 +218,8 @@ namespace DAQ.HAL
             //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
             Info.Add("TCLLockableLasers", new string[] { "MenloPZT", "899ExternalScan" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
             Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-            //Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //This now comes from the limits set when the AnalogOutputChannels are added
-            //Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //This now comes from the limits set when the AnalogOutputChannels are added
-            Info.Add("TCL_Default_Gain", -1.1);
+            Info.Add("TCL_Default_Master_Gain", -1.1);
+            Info.Add("TCL_Default_Lockable_Laser_Gains",-0.1);
             Info.Add("TCL_Default_VoltageToLaser", 2.5);
             Info.Add("TCL_Default_VoltageToDependent", 1.0);
             Info.Add("TCL_Default_ScanPoints",300);
@@ -226,18 +238,22 @@ namespace DAQ.HAL
 
             // Laser control
             //AddAnalogOutputChannel("flPZT", usbDAQ4 + "/ao1", 0, 5);
-            AddAnalogOutputChannel("899ExternalScan", aoBoard + "/ao7", -5, 5);
-            AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 5);
-            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("899ExternalScan", aoBoard + "/ao4", 0, 7.5);
+            AddAnalogOutputChannel("MenloPZT", tclBoard + "/ao0", 0, 10);
+            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao9", 0, 10);
+            AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao8", 0, 10);
 
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             //AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao4", 0, 10);
-            AddAnalogOutputChannel("pumpAOM", usbDAQ4 + "/ao0", 0, 5);
             //AddAnalogOutputChannel("flPZT2Temp", aoBoard + "/ao5", 0, 4); //voltage must not exceed 4V for Koheras laser
             //AddAnalogOutputChannel("flPZT2Cur", aoBoard + "/ao6", 0, 5); //voltage must not exceed 5V for Koheras laser
             //AddAnalogOutputChannel("fibreAOM", usbDAQ4 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rampfb", tclBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
+
+            //Microwave Control Channels
+            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/a011", -2.5, 2.5);
+            AddAnalogOutputChannel("uWaveMixerV", aoBoard + "/ao12", 0, 10);
         }
 
     }

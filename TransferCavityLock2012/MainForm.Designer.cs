@@ -59,6 +59,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.CavLockVoltageTrackBar = new System.Windows.Forms.TrackBar();
             this.label7 = new System.Windows.Forms.Label();
+            this.scanAvCheckBox = new System.Windows.Forms.CheckBox();
+            this.axisCheckBox = new System.Windows.Forms.CheckBox();
+            this.updateRateTextBox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -77,10 +81,11 @@
             this.voltageRampControl.Controls.Add(this.NumberOfScanpointsTextBox);
             this.voltageRampControl.Location = new System.Drawing.Point(580, 12);
             this.voltageRampControl.Name = "voltageRampControl";
-            this.voltageRampControl.Size = new System.Drawing.Size(355, 76);
+            this.voltageRampControl.Size = new System.Drawing.Size(384, 76);
             this.voltageRampControl.TabIndex = 2;
             this.voltageRampControl.TabStop = false;
             this.voltageRampControl.Text = "Analog Inputs";
+            this.voltageRampControl.Enter += new System.EventHandler(this.voltageRampControl_Enter);
             // 
             // rampLED
             // 
@@ -114,7 +119,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(99, 24);
+            this.label5.Location = new System.Drawing.Point(120, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(90, 13);
             this.label5.TabIndex = 21;
@@ -122,13 +127,20 @@
             // 
             // NumberOfScanpointsTextBox
             // 
-            this.NumberOfScanpointsTextBox.Location = new System.Drawing.Point(195, 21);
+            this.NumberOfScanpointsTextBox.Location = new System.Drawing.Point(216, 21);
             this.NumberOfScanpointsTextBox.Name = "NumberOfScanpointsTextBox";
             this.NumberOfScanpointsTextBox.Size = new System.Drawing.Size(57, 20);
             this.NumberOfScanpointsTextBox.TabIndex = 22;
             // 
             // MasterLaserIntensityScatterGraph
             // 
+            this.MasterLaserIntensityScatterGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
             this.MasterLaserIntensityScatterGraph.Location = new System.Drawing.Point(6, 19);
             this.MasterLaserIntensityScatterGraph.Name = "MasterLaserIntensityScatterGraph";
             this.MasterLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -159,6 +171,13 @@
             // 
             // CavityVoltageReadScatterGraph
             // 
+            this.CavityVoltageReadScatterGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
             this.CavityVoltageReadScatterGraph.Location = new System.Drawing.Point(6, 19);
             this.CavityVoltageReadScatterGraph.Name = "CavityVoltageReadScatterGraph";
             this.CavityVoltageReadScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -209,7 +228,7 @@
             // logCheckBox
             // 
             this.logCheckBox.AutoSize = true;
-            this.logCheckBox.Location = new System.Drawing.Point(586, 315);
+            this.logCheckBox.Location = new System.Drawing.Point(586, 119);
             this.logCheckBox.Name = "logCheckBox";
             this.logCheckBox.Size = new System.Drawing.Size(124, 17);
             this.logCheckBox.TabIndex = 18;
@@ -271,7 +290,6 @@
             this.VToOffsetTextBox.Name = "VToOffsetTextBox";
             this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
             this.VToOffsetTextBox.TabIndex = 39;
-            this.VToOffsetTextBox.TextChanged += new System.EventHandler(this.VToOffsetTextBox_TextChanged);
             // 
             // label2
             // 
@@ -330,11 +348,53 @@
             this.label7.TabIndex = 53;
             this.label7.Text = "Summed Voltage";
             // 
+            // scanAvCheckBox
+            // 
+            this.scanAvCheckBox.AutoSize = true;
+            this.scanAvCheckBox.Location = new System.Drawing.Point(586, 94);
+            this.scanAvCheckBox.Name = "scanAvCheckBox";
+            this.scanAvCheckBox.Size = new System.Drawing.Size(133, 17);
+            this.scanAvCheckBox.TabIndex = 54;
+            this.scanAvCheckBox.Text = "Average Scan Voltage";
+            this.scanAvCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // axisCheckBox
+            // 
+            this.axisCheckBox.AutoSize = true;
+            this.axisCheckBox.Location = new System.Drawing.Point(751, 94);
+            this.axisCheckBox.Name = "axisCheckBox";
+            this.axisCheckBox.Size = new System.Drawing.Size(118, 17);
+            this.axisCheckBox.TabIndex = 55;
+            this.axisCheckBox.Text = "Disable axis update";
+            this.axisCheckBox.UseVisualStyleBackColor = true;
+            this.axisCheckBox.CheckedChanged += new System.EventHandler(this.axisCheckBox_CheckedChanged);
+            // 
+            // updateRateTextBox
+            // 
+            this.updateRateTextBox.Enabled = false;
+            this.updateRateTextBox.Location = new System.Drawing.Point(721, 145);
+            this.updateRateTextBox.Name = "updateRateTextBox";
+            this.updateRateTextBox.Size = new System.Drawing.Size(69, 20);
+            this.updateRateTextBox.TabIndex = 56;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(586, 148);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(117, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Lock Update Rate (Hz)";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 677);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.updateRateTextBox);
+            this.Controls.Add(this.axisCheckBox);
+            this.Controls.Add(this.scanAvCheckBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.CavLockVoltageTrackBar);
             this.Controls.Add(this.label6);
@@ -354,6 +414,7 @@
             this.Controls.Add(this.voltageRampControl);
             this.Name = "MainForm";
             this.Text = "Transfer Cavity Lock 2012";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.voltageRampControl.ResumeLayout(false);
             this.voltageRampControl.PerformLayout();
@@ -401,6 +462,10 @@
         private System.Windows.Forms.Label label6;
         public System.Windows.Forms.TrackBar CavLockVoltageTrackBar;
         private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.CheckBox scanAvCheckBox;
+        public System.Windows.Forms.CheckBox axisCheckBox;
+        private System.Windows.Forms.TextBox updateRateTextBox;
+        private System.Windows.Forms.Label label8;
     }
 }
 

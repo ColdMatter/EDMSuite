@@ -90,9 +90,9 @@ namespace EDMHardwareControl
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
         //Task steppingBBiasAnalogOutputTask;
-        Task flAOMAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
-        Task probeAOMAnalogOutputTask;   
+        Task probeAOMAnalogOutputTask;
+        Task flAOMAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -110,7 +110,6 @@ namespace EDMHardwareControl
         Task miniFlux3MonitorInputTask;
         Task groundedInputTask;
         Task piMonitorTask;
-        Task diodeRefCavInputTask;
         Task diodeCurrentMonInputTask;
         Task MenloPZTOutputTask;
         //Task flPZT2TempOutputTask;
@@ -118,11 +117,7 @@ namespace EDMHardwareControl
         Task fibreAmpOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
-        Task eSwitchingOutputTask;
-        Task patternTTLOutputTask;
-
-        AxMG17MotorLib.AxMG17Motor motorController1;
-        AxMG17MotorLib.AxMG17Motor motorController2;
+      //  Task uWaveDCFMOutputTask;
 
         ControlWindow window;
 
@@ -148,6 +143,8 @@ namespace EDMHardwareControl
             CreateDigitalTask("attenuatorSelect");
             CreateDigitalTask("scramblerEnable");
             CreateDigitalTask("b");
+            CreateDigitalTask("notB");
+            CreateDigitalTask("db");
             CreateDigitalTask("notDB");
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
@@ -199,6 +196,8 @@ namespace EDMHardwareControl
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
             i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
+       //     uWaveDCFMOutputTask = CreateAnalogOutputTask("uWaveDCFM");
+            
 
             // analog inputs
             probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -214,7 +213,7 @@ namespace EDMHardwareControl
             //northLeakageInputTask = CreateAnalogInputTask("northLeakage");
             //southLeakageInputTask = CreateAnalogInputTask("southLeakage");
             //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
-            diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
+            //diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
             i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
             
 
@@ -768,7 +767,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double I2LockAOMFrequencyCentre
+        public double ProbeAOMFrequencyCentre
         {
             get
             {
@@ -776,7 +775,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double I2LockAOMFrequencyStep
+        public double ProbeAOMFrequencyStep
         {
             get
             {
@@ -1310,84 +1309,80 @@ namespace EDMHardwareControl
                 return Double.Parse(window.steppingBBoxBiasTextBox.Text);
             }
         }
+        private double miniFlux1Voltage;
 
-        public double miniFlux1Voltage
+        public double MiniFlux1Voltage
         {
-            set
-            {
-                window.SetTextBox(window.miniFlux1TextBox, value.ToString());
-            }
-
             get
             {
-                return Double.Parse(window.miniFlux1TextBox.Text);
+                return miniFlux1Voltage;
             }
         }
 
-        public double piFlipMonVoltage
+        private double piFlipMonVoltage;
+        public double PiFlipMonVoltage
         {
-            set
-            {
-                window.SetTextBox(window.piFlipMonTextBox, value.ToString());
-            }
-
             get
             {
-                return Double.Parse(window.piFlipMonTextBox.Text);
+                return piFlipMonVoltage;
+            }
+        }
+
+        private double cPlusMonitorVoltage;
+        private double cMinusMonitorVoltage;
+
+        public double CPlusMonitorVoltage
+        {
+            get
+            {
+                return cPlusMonitorVoltage;
+            }
+        }
+
+        public double CMinusMonitorVoltage
+        {
+            get
+            {
+                return cMinusMonitorVoltage;
             }
         }
 
 
-        public double miniFlux2Voltage
+        private double miniFlux2Voltage;
+        public double MiniFlux2Voltage
         {
-            set
-            {
-                window.SetTextBox(window.miniFlux2TextBox, value.ToString());
-            }
-
+ 
             get
             {
-                return Double.Parse(window.miniFlux2TextBox.Text);
+                return miniFlux2Voltage;
             }
         }
 
-        public double miniFlux3Voltage
+        private double miniFlux3Voltage;
+        public double MiniFlux3Voltage
         {
-            set
-            {
-                window.SetTextBox(window.miniFlux3TextBox, value.ToString());
-            }
-
             get
             {
-                return Double.Parse(window.miniFlux3TextBox.Text);
-            }
-        }
-        
-
-        public double pumpPDVoltage
-        {
-            set
-            {
-                window.SetTextBox(window.pumpMonitorTextBox, value.ToString());
-            }
-
-            get
-            {
-                return Double.Parse(window.pumpMonitorTextBox.Text);
+                return miniFlux3Voltage;
             }
         }
 
-         public double probePDVoltage
+        private double pumpPDVoltage;
+        public double PumpPDVoltage
         {
-            set
+            get
             {
-                window.SetTextBox(window.probeMonitorTextBox, value.ToString());
+                return pumpPDVoltage;
             }
+        }
+
+        private double probePDVoltage;
+        public double ProbePDVoltage
+        {
 
             get
             {
-                return Double.Parse(window.probeMonitorTextBox.Text);
+                return probePDVoltage;
             }
         }
 
@@ -1407,21 +1402,6 @@ namespace EDMHardwareControl
             }
         }
 
-        public double CPlusMonitorVoltage
-        {
-            get
-            {
-                return Double.Parse(window.cPlusVMonitorTextBox.Text);
-            }
-        }
-
-        public double CMinusMonitorVoltage
-        {
-            get
-            {
-                return Double.Parse(window.cMinusVMonitorTextBox.Text);
-            }
-        }
 
         public double PumpAOMFrequencyCentre
         {
@@ -1566,6 +1546,9 @@ namespace EDMHardwareControl
                 case "probeAOM": //probe laser
                     SwitchLF1(state);
                     break;
+                case "pumpAOM": //probe laser
+                    SwitchLF2(state);
+                    break;
             }
         }
 
@@ -1581,6 +1564,20 @@ namespace EDMHardwareControl
 
             SetAnalogOutput(probeAOMAnalogOutputTask, calculateProbeAOMFrequency(lf1State));
         }
+
+        private bool lf2State;
+        private double calculatePumpAOMFrequency(bool lf2State)
+        {
+
+            return PumpAOMVoltage + (lf2State ? PumpAOMStep : -PumpAOMStep);
+        }
+        public void SwitchLF2(bool lf2State)
+        {
+            this.lf2State = lf2State;
+
+            SetAnalogOutput(pumpAOMAnalogOutputTask, calculatePumpAOMFrequency(lf2State));
+        }
+
 
         public void FieldsOff()
         {
@@ -2077,11 +2074,16 @@ namespace EDMHardwareControl
                 (gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
             window.SetTextBox(window.gMinusVMonitorTextBox, 
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
-            double cPlusMonitor = ReadAnalogInput(cPlusMonitorInputTask, 100000, 50000);
-            window.SetTextBox(window.cPlusVMonitorTextBox, cPlusMonitor.ToString());
-            double cMinusMonitor = ReadAnalogInput(cMinusMonitorInputTask, 100000, 50000);
-            window.SetTextBox(window.cMinusVMonitorTextBox, cMinusMonitor.ToString());
+            cPlusMonitorVoltage = -1.5*ReadAnalogInput(cPlusMonitorInputTask);
+            cMinusMonitorVoltage = -1.5*ReadAnalogInput(cMinusMonitorInputTask);
         }
+        public void UpdateVMonitorUI()
+        {
+            UpdateVMonitor();
+            window.SetTextBox(window.cPlusVMonitorTextBox, CPlusMonitorVoltage.ToString());
+            window.SetTextBox(window.cMinusVMonitorTextBox, CMinusMonitorVoltage.ToString());
+        }
+
 
         private double lastNorthCurrent;
         private double lastSouthCurrent;
@@ -2266,6 +2268,14 @@ namespace EDMHardwareControl
             pumpPDVoltage = ReadAnalogInput(pumpMonitorInputTask);
         }
 
+        public void UpdateLaserPhotodiodesUI()
+        {
+            UpdateLaserPhotodiodes();
+            window.SetTextBox(window.probeMonitorTextBox, probePDVoltage.ToString());
+            window.SetTextBox(window.pumpMonitorTextBox, pumpPDVoltage.ToString());
+
+        }
+
         public void UpdateMiniFluxgates()
         {
             double groundValue = ReadAnalogInput(groundedInputTask);
@@ -2276,9 +2286,22 @@ namespace EDMHardwareControl
             miniFlux3Voltage = ReadAnalogInput(miniFlux3MonitorInputTask);
         }
 
+        public void UpdateMiniFluxgatesUI()
+        {
+            UpdateMiniFluxgates();
+            window.SetTextBox(window.miniFlux1TextBox , miniFlux1Voltage.ToString());
+            window.SetTextBox(window.miniFlux2TextBox, miniFlux2Voltage.ToString());
+            window.SetTextBox(window.miniFlux3TextBox, miniFlux3Voltage.ToString());
+        }
+
         public void UpdatePiMonitor()
         {
             piFlipMonVoltage = ReadAnalogInput(piMonitorTask);
+        }
+        public void UpdatePiMonitorUI()
+        {
+            UpdatePiMonitor();
+            window.SetTextBox(window.piFlipMonTextBox, PiFlipMonVoltage.ToString());
         }
 
         public void CheckPiMonitor()
@@ -2286,11 +2309,11 @@ namespace EDMHardwareControl
             SetPhaseFlip1(true);
             SetPhaseFlip2(false);
             UpdatePiMonitor();
-            double piMonitorV1 = piFlipMonVoltage;
+            double piMonitorV1 = PiFlipMonVoltage;
             window.SetTextBox(window.piMonitor1TextBox, piMonitorV1.ToString());
             SetPhaseFlip2(true);
             UpdatePiMonitor();
-            double piMonitorV2 = piFlipMonVoltage;
+            double piMonitorV2 = PiFlipMonVoltage;
             window.SetTextBox(window.piMonitor2TextBox, piMonitorV2.ToString());
             SetPhaseFlip1(false);
             SetPhaseFlip2(false);
@@ -2299,16 +2322,16 @@ namespace EDMHardwareControl
 
         public void UpdateDiodeCurrentMonitor()
         {
-            double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
-            window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
+            //double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
+            //window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
         }
 
         public void UpdateDiodeCurrentGraphAndMonitor()
         {
-            double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
-            window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
-            window.PlotYAppend(window.diodeCurrentGraph, window.diodeCurrentPlot,
-                                    new double[] { diodeCurrentMonValue });
+            //double diodeCurrentMonValue = ReadAnalogInput(diodeCurrentMonInputTask);
+            //window.SetTextBox(window.diodeCurrentTextBox, diodeCurrentMonValue.ToString());
+            //window.PlotYAppend(window.diodeCurrentGraph, window.diodeCurrentPlot,
+                                    //new double[] { diodeCurrentMonValue });
         }
 
         public void UpdateI2ErrorSigMonitor()
@@ -2716,13 +2739,13 @@ namespace EDMHardwareControl
         public void SetBFlip(bool enable)
         {
             SetDigitalLine("b", enable);
-            //SetDigitalLine("notB", !enable);
+            SetDigitalLine("notB", !enable);
         }
 
         public void SetCalFlip(bool enable)
         {
+            SetDigitalLine("db", enable);
             SetDigitalLine("notDB", !enable);
-            //SetDigitalLine("DB", enable);
         }
 
         public void SelectGreenDCFM(bool enable)
