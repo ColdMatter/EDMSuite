@@ -178,6 +178,10 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TweakViewerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TweakViewer.cs" />
     <Compile Include="ImageGrabbingAnalogShotGathererPlugin.cs" />
     <Compile Include="AnalogInputPlugin.cs">
       <SubType>Code</SubType>
@@ -371,6 +375,10 @@
     <Content Include="App.ico" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TweakViewerWindow.resx">
+      <DependentUpon>TweakViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="licenses.licx" />
