@@ -51,7 +51,7 @@ namespace TransferCavityLock2012
         {
             for (int i = 0; i < AIData.GetLength(1); i++)
             {
-                AIData[parameters.Channels[cavityMonitorName], i] = (AIData[parameters.Channels[cavityMonitorName], i]+49*avDat[i])/50;
+                AIData[parameters.Channels[cavityMonitorName], i] = (AIData[parameters.Channels[cavityMonitorName], i] + 49 * avDat[i]) / 50;
             }
         }
 

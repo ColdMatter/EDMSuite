@@ -41,6 +41,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.VoltageTrackBar = new System.Windows.Forms.TrackBar();
             this.SlaveLaserIntensityScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.SlaveDataPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
@@ -52,15 +53,17 @@
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.fsrTextBox = new System.Windows.Forms.TextBox();
             this.slErrorResetButton = new System.Windows.Forms.Button();
-            this.VoltageTrackBar = new System.Windows.Forms.TrackBar();
+            this.label5 = new System.Windows.Forms.Label();
             this.lockParams.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // lockParams
@@ -196,6 +199,18 @@
             this.label3.TabIndex = 13;
             this.label3.Text = "Set Point (V):";
             // 
+            // VoltageTrackBar
+            // 
+            this.VoltageTrackBar.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.VoltageTrackBar.Location = new System.Drawing.Point(6, 114);
+            this.VoltageTrackBar.Maximum = 1000;
+            this.VoltageTrackBar.Name = "VoltageTrackBar";
+            this.VoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.VoltageTrackBar.Size = new System.Drawing.Size(343, 45);
+            this.VoltageTrackBar.TabIndex = 53;
+            this.VoltageTrackBar.Value = 100;
+            this.VoltageTrackBar.Scroll += new System.EventHandler(this.VoltageTrackBar_Scroll);
+            // 
             // SlaveLaserIntensityScatterGraph
             // 
             this.SlaveLaserIntensityScatterGraph.Location = new System.Drawing.Point(9, 17);
@@ -239,6 +254,13 @@
             // 
             // ErrorScatterGraph
             // 
+            this.ErrorScatterGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
             this.ErrorScatterGraph.Location = new System.Drawing.Point(6, 155);
             this.ErrorScatterGraph.Name = "ErrorScatterGraph";
             this.ErrorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -265,6 +287,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.fsrTextBox);
             this.groupBox2.Controls.Add(this.slErrorResetButton);
             this.groupBox2.Location = new System.Drawing.Point(589, 171);
             this.groupBox2.Name = "groupBox2";
@@ -272,6 +297,24 @@
             this.groupBox2.TabIndex = 16;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Error Signal Parameters";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 58);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(203, 13);
+            this.label1.TabIndex = 54;
+            this.label1.Text = "Voltage spacing between adjacent peaks";
+            // 
+            // fsrTextBox
+            // 
+            this.fsrTextBox.Location = new System.Drawing.Point(215, 56);
+            this.fsrTextBox.Name = "fsrTextBox";
+            this.fsrTextBox.Size = new System.Drawing.Size(81, 20);
+            this.fsrTextBox.TabIndex = 54;
+            this.fsrTextBox.Text = "1";
+            this.fsrTextBox.TextChanged += new System.EventHandler(this.fsrTextBox_TextChanged);
             // 
             // slErrorResetButton
             // 
@@ -283,17 +326,14 @@
             this.slErrorResetButton.UseVisualStyleBackColor = true;
             this.slErrorResetButton.Click += new System.EventHandler(this.slErrorResetButton_Click);
             // 
-            // VoltageTrackBar
+            // label5
             // 
-            this.VoltageTrackBar.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.VoltageTrackBar.Location = new System.Drawing.Point(6, 114);
-            this.VoltageTrackBar.Maximum = 1000;
-            this.VoltageTrackBar.Name = "VoltageTrackBar";
-            this.VoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.VoltageTrackBar.Size = new System.Drawing.Size(343, 45);
-            this.VoltageTrackBar.TabIndex = 53;
-            this.VoltageTrackBar.Value = 100;
-            this.VoltageTrackBar.Scroll += new System.EventHandler(this.VoltageTrackBar_Scroll);
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 85);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(293, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "(Sets error signal y axis to be in MHz assuming 1.5 GHz FSR)";
             // 
             // LockControlPanel
             // 
@@ -308,11 +348,12 @@
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SlaveLaserIntensityScatterGraph)).EndInit();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ErrorScatterGraph)).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).EndInit();
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -345,5 +386,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button slErrorResetButton;
         public System.Windows.Forms.TrackBar VoltageTrackBar;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox fsrTextBox;
+        private System.Windows.Forms.Label label5;
     }
 }

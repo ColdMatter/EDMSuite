@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 
 namespace TransferCavityLock2012
 {
@@ -267,13 +268,13 @@ namespace TransferCavityLock2012
         private void mainLoop()
         {
             fits = new Dictionary<string, double[]>(); //Somewhere to store the fits for an iteration.
-            
             readParametersFromUI();                             //This isn't part of the loop. Do an initial setup of the parameters.
             ScanParameters sp = createInitialScanParameters();
             double masterVoltage = 0;
             setupMasterVoltageOut();
             writeMasterVoltageOut(0);
             disposeMasterVoltageOut();
+            DateTime previousTime = DateTime.Now;
 
             initializeAIHardware(sp);
 
@@ -285,7 +286,6 @@ namespace TransferCavityLock2012
                 double[] lastCav= scanData.GetCavityData();
                 
                 scanData = acquireAI(sp);
-
                 if (ui.scanAvCheckBox.Checked == true)
                 {
                     scanData.SetAverageCavityData(lastCav);
@@ -293,7 +293,8 @@ namespace TransferCavityLock2012
                 if (scanData != null)
                 {
                     plotCavity(scanData);
-
+                    updateTime(previousTime);
+                    previousTime = DateTime.Now;
                     if ((scanData.GetCavityData())[sp.Steps - 1] < (double)Environs.Hardware.GetInfo("TCL_MAX_INPUT_VOLTAGE")) // if the cavity ramp voltage exceeds the input voltage - do nothing
                     {
 
@@ -306,7 +307,7 @@ namespace TransferCavityLock2012
                             {
                                 fits["masterFits"] = fitMaster(scanData);
                                 plotMaster(scanData, fits["masterFits"]);
-                                masterVoltage = calculateMasterVoltageShift(masterVoltage)+ masterVoltage;
+                                masterVoltage = calculateNewMasterVoltage(masterVoltage);
                                 setupMasterVoltageOut();
                                  //write difference to analog output
                                 writeMasterVoltageOut(masterVoltage);
@@ -346,7 +347,7 @@ namespace TransferCavityLock2012
                                     fits[slName + "Fits"] = fitSlave(slName, scanData);
 
                                     plotSlave(slName, scanData, fits[slName + "Fits"]);
-                                   
+
 
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
                                      
@@ -447,6 +448,14 @@ namespace TransferCavityLock2012
             ui.DisplaySlaveDataNoFit(name, cavity, slave);
         }
 
+        private void updateTime(DateTime previousTime)
+        {
+            TimeSpan elapsed = DateTime.Now.Subtract(previousTime);
+            previousTime = DateTime.Now;
+            double seconds = elapsed.Milliseconds;
+            ui.UpdateElapsedTime(Math.Round(1000/seconds,1));
+        }
+
         private void plotError(string name, double[] time, double[] error )
         {
            ui.DisplayErrorData(name, time, error);
@@ -500,14 +509,15 @@ namespace TransferCavityLock2012
             xMaster=false;
             return xMaster;
         }
-        private double calculateMasterVoltageShift(double masterV)
+        private double calculateNewMasterVoltage(double masterV)
         {
             double masterSetPoint=double.Parse(ui.MasterSetPointTextBox.Text);
             double masterFit = fits["masterFits"][1];
-            double masterGain= double.Parse(ui.MasterGainTextBox.Text);
-            double masterVoltageShift = -masterGain * (masterSetPoint - masterFit);
+            double masterGain= double.Parse(ui.MasterGainTextBox.Text);;
+            double masterVoltageShift = masterV - masterGain * (masterSetPoint - masterFit);
             return masterVoltageShift;
         }
+
         
         private Task masterOutputTask;
         private AnalogOutputChannel masterChannel;

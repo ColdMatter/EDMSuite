@@ -214,6 +214,11 @@ namespace TransferCavityLock2012
             slaveLasers[name].AppendToErrorGraph(time, errordata);
         }
 
+        public void UpdateElapsedTime(double time)
+        {
+            SetTextBox(updateRateTextBox, Convert.ToString(time));
+        }
+
         public void IncrementErrorCount(string name)
         {
             slaveLasers[name].Count++;
@@ -232,6 +237,11 @@ namespace TransferCavityLock2012
         public void SetVtoOffsetVoltage(double value)
         {
             SetTextBox(VToOffsetTextBox, Convert.ToString(value));
+        }
+
+        public void SetMasterSetPointTextBox(double value)
+        {
+            SetTextBox(MasterSetPointTextBox, Convert.ToString(value));
         }
 
         public double GetVtoOffsetVoltage()
@@ -302,7 +312,8 @@ namespace TransferCavityLock2012
 
         private void CavLockVoltageTrackBar_Scroll(object sender, EventArgs e)
         {
-            SetVtoOffsetVoltage(((double)CavLockVoltageTrackBar.Value)/100);
+            double val =((double)CavLockVoltageTrackBar.Value)/100;
+            SetVtoOffsetVoltage(val);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -319,6 +330,29 @@ namespace TransferCavityLock2012
           //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
         //}
 
+        private void axisCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool boxState = axisCheckBox.Checked;
+
+            ScatterPlot[] plots = { MasterDataPlot, MasterFitPlot, cavityDataPlot };
+
+            foreach(ScatterPlot plot in plots)
+            {
+                plot.CanScaleYAxis =!boxState;
+                plot.CanScaleXAxis =!boxState;
+            }
+
+            foreach (LockControlPanel pannel in slaveLasers.Values)
+            {
+                pannel.AdjustAxesAutoScale(!boxState);
+            }
+
+        }
+
+        private void voltageRampControl_Enter(object sender, EventArgs e)
+        {
+
+        } 
        
     }
 }
