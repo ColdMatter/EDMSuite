@@ -41,7 +41,7 @@ namespace DAQ.HAL
             //Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
             //Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
 
-            Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
+          //  Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
 
 
             //VCO lock

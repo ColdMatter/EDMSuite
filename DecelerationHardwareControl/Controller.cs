@@ -21,7 +21,7 @@ namespace DecelerationHardwareControl
         ControlWindow window;
 
         HP8673BSynth synth = (HP8673BSynth)Environs.Hardware.Instruments["synth"];
-        FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
+//        FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
 
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
@@ -372,7 +372,7 @@ namespace DecelerationHardwareControl
 
         public void SetFlowMeter()
         {
-            flowMeter.SetFlow(GetCommand());
+      //      flowMeter.SetFlow(GetCommand());
         }
 
         #endregion
