@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ScanMaster.Acquire.Plugin;
 using TransferCavityLock2012;
+using DAQ.TransferCavityLock2012;
 using System.Xml.Serialization;
 using DAQ.Environment;
 using System.Threading;
@@ -23,13 +24,16 @@ namespace ScanMaster.Acquire.Plugins
         protected override void InitialiseSettings()
         {
             settings["channel"] = "laser";
+            settings["cavity"] = "Hamish";
         }
 
 
         public override void AcquisitionStarting()
         {
             // connect the TCL controller over remoting network connection
-            tclController = new TransferCavityLock2012.Controller();
+            string tcpChannel = ((TCLConfig)Environs.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
+            tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://localhost:" + tcpChannel + "/controller.rem"));
+            
             scanParameter = 0;
 
             setV((double)settings["start"], 200);

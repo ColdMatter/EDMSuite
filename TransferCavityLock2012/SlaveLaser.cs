@@ -30,6 +30,7 @@ namespace TransferCavityLock2012
         private int increments = 0;          // for tweaking the laser set point
         private int decrements = 0;
         public double SetPointIncrementSize = 0.01;
+
         
 
         public Controller controller;
@@ -85,7 +86,7 @@ namespace TransferCavityLock2012
             }
         }
 
-        private double voltageToLaser = (double)Environs.Hardware.GetInfo("TCL_Default_VoltageToLaser");
+        private double voltageToLaser;
         public double VoltageToLaser
         {
             get

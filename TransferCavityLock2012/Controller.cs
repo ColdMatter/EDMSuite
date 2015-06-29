@@ -20,12 +20,7 @@ namespace TransferCavityLock2012
     /// and a further n photodiode signals from n lasers you're trying to lock.
     /// The controller then fits a lorenzian to each of these datasets, and works out what to do with each slave laser to keep the peak distances the same.
     /// 
-    /// EXAMPLE: In the hardware controller, you need:
-    /// Info.Add("TCLLockableLasers", new string[] {"laser", "laser2"});             //Names of lasers you want to lock.
-    /// Info.Add("TCLPhotodiodes", new string[] {"cavity", "master", "p1" ,"p2"});   //Names of photodiodes to read from. THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-    /// Info.Add("laser", "p1");                                                     //Paring info. This means: the photodiode corresponding to "laser" is "p1".
-    /// Info.Add("laser2", "p2");
-    /// Careful! If you get the labelling wrong in the hardware control class, all hell breaks loose.
+    ///In the hardware class, you need to make a TCLConfig and populate all the fields of that TCLConfig.
     /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -36,15 +31,24 @@ namespace TransferCavityLock2012
         private MainForm ui;
 
         private JSONSerializer serializer;
+
+        public TCLConfig config;
         
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
         public Dictionary<string, SlaveLaser> SlaveLasers;      //Stores all the slave laser classes.
         private Dictionary<string, int> aiChannels;             //All ai channels, including the cavity and the master.
-        private Dictionary<string, string> lookupAI;            //This is how to tell TCL which photodiode corresponds to which slave laser.
-        string[] photodiodes;
-
+     
         TransferCavity2012Lockable tcl;
-        
+
+        public Controller()
+        {
+        }
+
+        public Controller(string configName)
+        {
+            config = (TCLConfig)Environs.Hardware.GetInfo(configName);
+        }
+
         public enum ControllerState
         {
             STOPPED, RUNNING
@@ -67,24 +71,25 @@ namespace TransferCavityLock2012
 
         public void Start()
         {
-            ui = new MainForm();
+            ui = new MainForm(config.Name);
             ui.controller = this;
-            
-            string[] lockableLasers = (string[])Environs.Hardware.GetInfo("TCLLockableLasers");
-            photodiodes = (string[])Environs.Hardware.GetInfo("TCLPhotodiodes");
-            if ((double)Environs.Hardware.GetInfo("TCL_Default_VoltageToLaser") != null)
+    
+            Dictionary<string, string> analogs = new Dictionary<string, string>();
+            foreach(string key in config.Lasers.Keys)
             {
-                default_ScanPoints = (int)Environs.Hardware.GetInfo("TCL_Default_ScanPoints");
+                analogs.Add(key, config.Lasers[key]);
             }
-            initializeSlaveLaserControl(lockableLasers);
-            initializeAIs(photodiodes);
-            makeLaserToAILookupTable();
-
+            analogs.Add("master", config.MasterLaser);
+            analogs.Add("cavity", config.Cavity);
+            
+            initializeSlaveLaserControl(config.Lasers.Keys);
+            initializeAIs(analogs.Values);
+      
             TCLState = ControllerState.STOPPED;
             Application.Run(ui);
         }
 
-        private void initializeSlaveLaserControl(string[] lockableLasers)
+        private void initializeSlaveLaserControl(Dictionary<string, string>.KeyCollection lockableLasers)
         {
             SlaveLasers = new Dictionary<string, SlaveLaser>();
            
@@ -95,9 +100,10 @@ namespace TransferCavityLock2012
             }
         }
 
-        private void initializeAIs(string[] channels)
+        private void initializeAIs(Dictionary<string,string>.ValueCollection channels)
         {
-            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(channels, "TCLTrigger");
+            
+            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(channels.ToArray(), config.Trigger);
             aiChannels = new Dictionary<string, int>();
             foreach (string s in channels)
             {
@@ -105,15 +111,6 @@ namespace TransferCavityLock2012
             }
         }
 
-        private void makeLaserToAILookupTable()
-        {
-            lookupAI = new Dictionary<string,string>();
-
-            foreach (string s in (string[])Environs.Hardware.GetInfo("TCLLockableLasers"))
-            {
-                lookupAI.Add(s, (string)Environs.Hardware.GetInfo(s));
-            }
-        }
 
         public void InitializeUI()
         {
@@ -256,7 +253,7 @@ namespace TransferCavityLock2012
         /// </summary>
         private CavityScanData acquireAI(ScanParameters sp)
         {
-            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, lookupAI, photodiodes[0], photodiodes[1]); //How many channels we expect. one pd for each slave, the He-Ne and the cavity voltage.
+            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, config.Lasers, config.Cavity, config.MasterLaser); //How many channels we expect. one pd for each slave, the He-Ne and the cavity voltage.
             scanData.AIData = tcl.ReadAI(sp.Steps);
             return scanData;
         }
@@ -278,7 +275,7 @@ namespace TransferCavityLock2012
 
             initializeAIHardware(sp);
 
-            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, lookupAI, photodiodes[0], photodiodes[1]);
+            CavityScanData scanData = new CavityScanData(sp.Steps, aiChannels, config.Lasers, config.Cavity, config.MasterLaser);
             int count = 0;
           
             while (TCLState != ControllerState.STOPPED)
@@ -295,7 +292,7 @@ namespace TransferCavityLock2012
                     plotCavity(scanData);
                     updateTime(previousTime);
                     previousTime = DateTime.Now;
-                    if ((scanData.GetCavityData())[sp.Steps - 1] < (double)Environs.Hardware.GetInfo("TCL_MAX_INPUT_VOLTAGE")) // if the cavity ramp voltage exceeds the input voltage - do nothing
+                    if ((scanData.GetCavityData())[sp.Steps - 1] < config.MaxInputVoltage) // if the cavity ramp voltage exceeds the input voltage - do nothing
                     {
 
                             
@@ -503,7 +500,7 @@ namespace TransferCavityLock2012
         /// 
         private bool checkRampChannel()
         {   bool xMaster;
-            if((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"]!=null)
+            if((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[config.Ramp]!=null)
             xMaster = true;
             else
             xMaster=false;
@@ -526,7 +523,7 @@ namespace TransferCavityLock2012
         public void setupMasterVoltageOut()
         {
             masterOutputTask = new Task("rampfeedback");
-            masterChannel=(AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["rampfb"];
+            masterChannel=(AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[config.Ramp];
             masterChannel.AddToTask(masterOutputTask, masterChannel.RangeLow, masterChannel.RangeHigh);
             masterOutputTask.Control(TaskAction.Verify);
             masterWriter = new AnalogSingleChannelWriter(masterOutputTask.Stream);
@@ -568,7 +565,7 @@ namespace TransferCavityLock2012
         /// <param name="sp"></param>
         private void initializeAIHardware(ScanParameters sp)
         {
-            tcl.ConfigureReadAI(sp.Steps, false);
+            tcl.ConfigureReadAI(sp.Steps, config.AnalogSampleRate, false);
         }
 
         

@@ -5,6 +5,7 @@ using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
 using DAQ.Remoting;
+using DAQ.TransferCavityLock2012;
 using System.Runtime.Remoting;
 using System.Collections.Generic;
 
@@ -28,7 +29,8 @@ namespace DAQ.HAL
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
             Boards.Add("usbDev", "/dev3");
-            Boards.Add("PXI6", "/PXI1Slot6_4");
+            //Boards.Add("PXI6", "/PXI1Slot6_4");
+            Boards.Add("PXI6", "/PXI1Slot6");
             Boards.Add("PXI4", "/PXI1Slot4");
             Boards.Add("PXI5", "/PXI1Slot5");
             string pgBoard =  (string)Boards["pg"];
@@ -38,10 +40,34 @@ namespace DAQ.HAL
             string TCLBoard = (string)Boards["PXI4"];
             string TCLBoard2 = (string)Boards["PXI5"];
 
-            //Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
+            TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
+            tcl1.AddLaser("v00cooling", "p1");
+            tcl1.AddLaser("v10repump", "p2");
+            tcl1.AddLaser("spectra", "p3");
+            tcl1.Trigger = TCLBoard + "/PFI0";
+            tcl1.Cavity = "cavity";
+            tcl1.MasterLaser = "master";
+            tcl1.Ramp = "rampfb";
+            tcl1.TCPChannel = 1190;
+            Info.Add("Hamish", tcl1);
+
+            TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
+            //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
+            tcl2.AddLaser("v00cooling", "p1");
+            tcl2.AddLaser("v10repump", "p2");
+            tcl2.AddLaser("spectra", "p3");
+            tcl2.Trigger = TCLBoard + "/PFI0";
+            tcl2.Cavity = "cavity";
+            tcl2.MasterLaser = "master";
+            tcl2.Ramp = "rampfb";
+            tcl2.TCPChannel = 1191;
+            Info.Add("Carlos", tcl2);
+
+
+            Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
             //Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
 
-          //  Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
+            //Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
 
 
             //VCO lock
@@ -52,49 +78,7 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
             
-            Info.Add("TCL_Slave_Voltage_Limit_Upper", 5.0); //volts: Laser control
-            Info.Add("TCL_Slave_Voltage_Limit_Lower", 0.0); //volts: Laser control
-            Info.Add("TCL_Default_Gain", 0.5);
-            Info.Add("TCL_Default_VoltageToLaser", 0.0);
-            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
-            Info.Add("TCL_Default_ScanPoints", 1000);
-
-            //TCL Lockable lasers
-            //For TCL 2012
-            Info.Add("TCLLockableLasers", new string[] { "v00cooling", "v10repump" ,"spectra"});
-            Info.Add("TCLPhotodiodes", new string[] { "cavity", "master", "p1", "p2","p3" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             
-            //Some matching up for TCL
-            Info.Add("v00cooling", "p1");
-            Info.Add("v10repump", "p2");
-            Info.Add("spectra", "p3");
-            Info.Add("TCLTrigger", TCLBoard + "/PFI0");
-
-
-            //TCL Lockable lasers
-            //For TCL 2014
-
-            //List<string> lockablelasers1 = new List<string> { "v00cooling", "v10repump" };
-           //List<string> lockablelasers2 = new List<string> { "v21repump" };
-           //List<List<string>> TCLlockableLasers = new List<List<string>> { lockablelasers1, lockablelasers2 };
-            
-            //List<string> photodiodes1 = new List<string> { "cavity0", "master0", "p1", "p2" };
-            //List<string> photodiodes2 = new List<string> { "cavity1", "master1", "p3" };
-            //List<List<string>> TCLphotodiodes = new List<List<string>> { photodiodes1, photodiodes2 };
-              
-            //Info.Add("TCLTriggers", new string[] { "trigger1", "trigger2" });
-            //Info.Add("TCLLockableLasers", TCLlockableLasers );
-            //Info.Add("TCLPhotodiodes", TCLphotodiodes ); 
-            //Info.Add("laser", "p1");                                                    
-            //Info.Add("laser2", "p2");
-
-            // Some matching up for TCL
-           // Info.Add("v00cooling", "p1");
-            //Info.Add("v10repump", "p2");
-            //Info.Add("v21repump", "p3");
-           // Info.Add("trigger1", TCLBoard + "/PFI0");
-           // Info.Add("trigger2", TCLBoard2 + "/PFI0");
-
 
             // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI0");// pin 11
@@ -165,26 +149,12 @@ namespace DAQ.HAL
             AddAnalogInputChannel("p2", TCLBoard + "/ai10", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p3", TCLBoard + "/ai4", AITerminalConfiguration.Rse);
 
-            //AddAnalogInputChannel("master1", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("cavity1", TCLBoard2 + "/ai15", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p3", TCLBoard2 + "/ai3", AITerminalConfiguration.Rse);
-
-            //AddAnalogOutputChannel("spectra", PXIBoard + "/ao13");
-            //AddAnalogOutputChannel("rampfb", PXIBoard + "/ao19");
-            //AddAnalogOutputChannel("v00cooling", TCLBoard + "/ao0");
-            AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
             AddAnalogOutputChannel("v10repump", TCLBoard + "/ao0");
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao1");
         
-            //AddAnalogOutputChannel("v00cooling", TCLBoard + "/ao0");
-            
-            //AddAnalogOutputChannel("v10repump", PXIBoard + "/ao0");
+            AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
             AddAnalogOutputChannel("spectra", PXIBoard + "/ao1");
-            AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
-            //AddAnalogOutputChannel("cavity", daqBoard + "/ao0");
-            // AddAnalogOutputChannel("cavity", PXIBoard + "/ao5");
-            //AddAnalogOutputChannel("laser3", PXIBoard + "/ao31");
-            
+                        
            
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
             
@@ -204,17 +174,14 @@ namespace DAQ.HAL
 
 		}
 
-        //public override void ConnectApplications()
-        //{
-        //   RemotingHelper.ConnectDecelerationHardwareControl();
-        //}
         
        public override void ConnectApplications()
         {
             RemotingHelper.ConnectDecelerationHardwareControl();
           // ask the remoting system for access to TCL2012
-            Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+       //     Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+            
         }
 
 	}

@@ -235,9 +235,10 @@ namespace TransferCavityLock2012
         {
             double cf = Double.Parse(fsrTextBox.Text);
             double[] ylist=y;
-            foreach (int i in y) 
+            int length = ylist.Length;
+            for (int i = 0; i < length; i++)
             {
-                ylist[i] = 1500* y[i]/cf ;
+                ylist[i] = 1500 * y[i] / cf;
             };
             PlotXYAppend(ErrorScatterGraph, ErrorPlot, x, ylist);
         }
