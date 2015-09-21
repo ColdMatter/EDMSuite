@@ -53,13 +53,11 @@ namespace DAQ.HAL
 
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
             //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
-            tcl2.AddLaser("v00cooling", "p1");
-            tcl2.AddLaser("v10repump", "p2");
-            tcl2.AddLaser("spectra", "p3");
-            tcl2.Trigger = TCLBoard + "/PFI0";
-            tcl2.Cavity = "cavity";
-            tcl2.MasterLaser = "master";
-            tcl2.Ramp = "rampfb";
+            tcl2.AddLaser("v21repump", "p12");
+            tcl2.Trigger = TCLBoard2 + "/PFI0";
+            tcl2.Cavity = "cavity2";
+            tcl2.MasterLaser = "master2";
+            tcl2.Ramp = "rampfb2";
             tcl2.TCPChannel = 1191;
             Info.Add("Carlos", tcl2);
 
@@ -77,7 +75,10 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            
+
+            Info.Add("defaultTOFRange", new double[] {4000, 12000}); // these entries are the two ends of the range for the upper TOF graph
+            Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
+            Info.Add("defaultGate", new double[] { 6000, 2000 }); // the first entry is the centre of the gate, the second is the half width of the gate (upper TOF graph)
             
 
             // the analog triggers
@@ -154,8 +155,17 @@ namespace DAQ.HAL
         
             AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
             AddAnalogOutputChannel("spectra", PXIBoard + "/ao1");
-                        
-           
+            
+            //second cavity
+
+            AddAnalogInputChannel("master2", TCLBoard2 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cavity2", TCLBoard2 + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p12", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
+            
+
+            AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
+            AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
+                       
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
             
 
