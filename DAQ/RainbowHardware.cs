@@ -5,6 +5,7 @@ using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
 using System.Runtime.Remoting;
+using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
@@ -36,19 +37,33 @@ namespace DAQ.HAL
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
 
-            //TCL Lockable lasers
-            Info.Add("TCLLockableLasers", new string[] { "laser","laser2","laser4"});
-            Info.Add("TCLPhotodiodes", new string[] { "cavityRampMonitor", "master", "p1", "p2","p4"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-            Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
-            Info.Add("TCL_Slave_Voltage_Limit_Lower", -2.0); //volts: Laser control
-            Info.Add("TCL_Default_Gain", -0.01);
-            Info.Add("TCL_Default_VoltageToLaser", 0.0);
-            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
-            // Some matching up for TCL
-            Info.Add("laser", "p1");
-            Info.Add("laser2", "p2");
-            Info.Add("laser4", "p4");
-            Info.Add("TCLTrigger", TCLBoard + "/PFI0");
+            //TCL Configuration
+            TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
+            tcl1.AddLaser("laser", "p1");
+            tcl1.AddLaser("laser2", "p2");
+            tcl1.AddLaser("laser4", "p4");
+            tcl1.Trigger = TCLBoard + "/PFI0";
+            tcl1.Cavity = "cavityRampMonitor";
+            tcl1.MasterLaser = "master";
+            tcl1.Ramp = "rampfb";
+            tcl1.AnalogSampleRate = 50000;
+            tcl1.TCPChannel = 1190;
+            Info.Add("Hamish", tcl1);
+
+            //TCL Lockable lasers - this stuff should no longer be needed - leave here for reference
+
+            //Info.Add("TCLLockableLasers", new string[] { "laser","laser2","laser4"});
+            //Info.Add("TCLPhotodiodes", new string[] { "cavityRampMonitor", "master", "p1", "p2","p4"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            //Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
+            //Info.Add("TCL_Slave_Voltage_Limit_Lower", -2.0); //volts: Laser control
+            //Info.Add("TCL_Default_Gain", -0.01);
+            //Info.Add("TCL_Default_VoltageToLaser", 0.0);
+            //Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
+            //// Some matching up for TCL
+            //Info.Add("laser", "p1");
+            //Info.Add("laser2", "p2");
+            //Info.Add("laser4", "p4");
+            //Info.Add("TCLTrigger", TCLBoard + "/PFI0");
 
             // YAG laser
             yag = new BrilliantLaser("ASRL3::INSTR");
@@ -103,8 +118,8 @@ namespace DAQ.HAL
         public override void ConnectApplications()
         {
             // ask the remoting system for access to TCL2012
-            Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+          //  Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
 
     }

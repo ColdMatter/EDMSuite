@@ -30,6 +30,12 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
+        public MainForm(string name)
+        {
+            InitializeComponent();
+            this.Text = "TransferCavityLock - Controlling " + name;
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             controller.InitializeUI();

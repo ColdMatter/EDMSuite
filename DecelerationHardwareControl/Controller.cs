@@ -8,7 +8,6 @@ using DAQ.HAL;
 using DAQ.TransferCavityLock;
 using NationalInstruments.DAQmx;
 using NationalInstruments;
-using NationalInstruments.DAQmx;
 
 namespace DecelerationHardwareControl
 {
@@ -289,28 +288,28 @@ namespace DecelerationHardwareControl
         }
 
         public void EnableSynth(bool enable)
-        {
+           {
             synth.Connect();
-            if (enable)
-            {
+           if (enable)
+           {
                 synth.Frequency = SynthOnFrequency;
                 synth.Amplitude = SynthOnAmplitude;
                 synth.Enabled = true;
             }
             else
-            {
+             {
                 synth.Enabled = false;
-            }
+           }
             synth.Disconnect();
         }
 
         public void UpdateSynthSettings()
-        {
+      {
             synth.Connect();
             synth.Frequency = SynthOnFrequency;
             synth.Amplitude = SynthOnAmplitude;
             synth.Disconnect();
-        }
+       }
 
         private double VoltageResistanceConversion(double voltage, double Vref)
         {

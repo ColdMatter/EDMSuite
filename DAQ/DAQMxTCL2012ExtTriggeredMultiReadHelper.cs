@@ -40,7 +40,7 @@ namespace DAQ.TransferCavityLock2012
 
         //The photodiode inputs have been bundled into one task. We never read one photodiode without reading
         //the other.
-        public void ConfigureReadAI(int numberOfMeasurements, bool autostart) //AND CAVITY VOLTAGE!!! 
+        public void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool autostart) //AND CAVITY VOLTAGE!!! 
         {
             //readAIsTask = new Task("readAI");
             readAIsTask = new Task();
@@ -61,12 +61,12 @@ namespace DAQ.TransferCavityLock2012
             {
                  readAIsTask.Timing.ConfigureSampleClock(
                     "",
-                    100000,
+                    sampleRate,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples, numberOfMeasurements);
 
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                    (string)Environs.Hardware.GetInfo(trigger),
+                    trigger,
                     DigitalEdgeStartTriggerEdge.Rising);
             }
             readAIsTask.Control(TaskAction.Verify);
@@ -91,7 +91,7 @@ namespace DAQ.TransferCavityLock2012
                 //data = null;
                 System.Diagnostics.Debug.WriteLine(e.Message.ToString());
                 DisposeAITask();
-                ConfigureReadAI(numberOfMeasurements, false);
+               // ConfigureReadAI(numberOfMeasurements, false);
             }
             
             return data;

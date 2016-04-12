@@ -9,7 +9,7 @@ namespace DAQ.TransferCavityLock2012
     public interface TransferCavity2012Lockable
     {
 
-        void ConfigureReadAI(int numberOfMeasurements, bool autostart);
+        void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool autostart);
         double[,] ReadAI(int numberOfMeasurements);
         void DisposeAITask();
     }

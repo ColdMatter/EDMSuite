@@ -5,6 +5,7 @@ using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
 using System.Collections.Generic;
+using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
@@ -17,8 +18,8 @@ namespace DAQ.HAL
                 public override void ConnectApplications()
        {
            // ask the remoting system for access to TCL2012
-           Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+          // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
        }
  
 
@@ -215,22 +216,37 @@ namespace DAQ.HAL
             //AddCounterChannel("northLeakage", counterBoard + "/ctr0");
             //AddCounterChannel("southLeakage", counterBoard + "/ctr1");
 
-            //TCL Lockable lasers
+            //TCL configuration
+
+            TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
+            tcl1.AddLaser("MenloPZT", "p1");
+            tcl1.AddLaser("899ExternalScan", "p2");
+            tcl1.Trigger = tclBoard + "/PFI0";
+            tcl1.Cavity = "transCavV";
+            tcl1.MasterLaser = "master";
+            tcl1.Ramp = "rampfb";
+            tcl1.TCPChannel = 1190;
+            tcl1.AnalogSampleRate = 50000;
+            tcl1.DefaultScanPoints = 300;
+            Info.Add("Hamish", tcl1);
+
+            //TCL Lockable lasers - this stuff should not now be needed - leave here for reference just in case
+
             //Info.Add("TCLLockableLasers", new string[][] { new string[] { "flPZT2" }, /*new string[] { "flPZT2Temp" },*/ new string[] { "fibreAOM", "flPZT2Temp" } });
-            Info.Add("TCLLockableLasers", new string[] { "MenloPZT", "899ExternalScan" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
-            Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
-            Info.Add("TCL_Default_Master_Gain", -1.1);
-            Info.Add("TCL_Default_Lockable_Laser_Gains",-0.1);
-            Info.Add("TCL_Default_VoltageToLaser", 2.5);
-            Info.Add("TCL_Default_VoltageToDependent", 1.0);
-            Info.Add("TCL_Default_ScanPoints",300);
+            //Info.Add("TCLLockableLasers", new string[] { "MenloPZT", "899ExternalScan" }); //, new string[] { "flPZT2Temp" }, new string[] { "fibreAOM"} });
+            //Info.Add("TCLPhotodiodes", new string[] {"transCavV", "master", "p1", "p2" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+            //Info.Add("TCL_Default_Master_Gain", -1.1);
+            //Info.Add("TCL_Default_Lockable_Laser_Gains",-0.1);
+            //Info.Add("TCL_Default_VoltageToLaser", 2.5);
+            //Info.Add("TCL_Default_VoltageToDependent", 1.0);
+            //Info.Add("TCL_Default_ScanPoints",300);
             // Some matching up for TCL
-            Info.Add("MenloPZT", "p1");
+            //Info.Add("MenloPZT", "p1");
             //Info.Add("flPZT2Temp", "p1");
-            Info.Add("899ExternalScan", "p2");
+            //Info.Add("899ExternalScan", "p2");
             //Info.Add("fibreAOM", "p1");
-            Info.Add("TCLTrigger", tclBoard + "/PFI0");
-            Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
+            //Info.Add("TCLTrigger", tclBoard + "/PFI0");
+            //Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
 
             AddAnalogInputChannel("transCavV", tclBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("master", tclBoard + "/ai1", AITerminalConfiguration.Rse);

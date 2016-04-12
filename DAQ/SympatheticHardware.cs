@@ -5,6 +5,7 @@ using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
 using DAQ.Remoting;
+using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
@@ -60,7 +61,18 @@ namespace DAQ.HAL
             Info.Add("mapPoints", 121);
             Info.Add("mapStartPoint", 0.0);
             Info.Add("mapResolution", 0.0001);
-            //TCL Lockable lasers
+
+            // TCL configuration
+            TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
+            tcl1.AddLaser("laser", "p1");
+            tcl1.Trigger = TCLBoard + "/PFI0";
+            tcl1.Cavity = "cavity";
+            tcl1.MasterLaser = "master";
+            tcl1.Ramp = "rampfb";
+            tcl1.TCPChannel = 1190;
+            Info.Add("Hamish", tcl1);
+
+            //TCL Lockable lasers - I'm not yet sure whether these settings are redundant for the SympatheticHardware - may be using an old version of TransferCavityLock??
             Info.Add("TCLLockableLasers", new string[] { "laser" });
             Info.Add("TCLPhotodiodes", new string[] { "cavity", "master", "p1" });// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
             Info.Add("TCL_Slave_Voltage_Limit_Upper", 10.0); //volts: Laser control
