@@ -75,6 +75,7 @@ namespace DAQ.HAL
 
             // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
+            Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
             Instruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
@@ -252,8 +253,15 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
 
             //Microwave Control Channels
-            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/a011", -2.5, 2.5);
+            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/ao11", -2.5, 2.5);
             AddAnalogOutputChannel("uWaveMixerV", aoBoard + "/ao12", 0, 10);
+            AddAnalogOutputChannel("VCO161Amp", aoBoard + "/ao13", 0, 10);
+            AddAnalogOutputChannel("VCO161Freq", aoBoard + "/ao14", 0, 10);
+            AddAnalogOutputChannel("VCO30Amp", aoBoard + "/ao15", 0, 10);
+            AddAnalogOutputChannel("VCO30Freq", aoBoard + "/ao16", 0, 10);
+            AddAnalogOutputChannel("VCO155Amp", aoBoard + "/ao17", 0, 10);
+            AddAnalogOutputChannel("VCO155Freq", aoBoard + "/ao18", 0, 10);
+
         }
 
     }

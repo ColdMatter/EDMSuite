@@ -509,7 +509,7 @@ namespace ScanMaster.GUI
             this.tofFitResultsLabel.ForeColor = System.Drawing.Color.Blue;
             this.tofFitResultsLabel.Location = new System.Drawing.Point(260, 602);
             this.tofFitResultsLabel.Name = "tofFitResultsLabel";
-            this.tofFitResultsLabel.Size = new System.Drawing.Size(100, 24);
+            this.tofFitResultsLabel.Size = new System.Drawing.Size(103, 49);
             this.tofFitResultsLabel.TabIndex = 23;
             this.tofFitResultsLabel.Text = "...";
             this.tofFitResultsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -558,7 +558,7 @@ namespace ScanMaster.GUI
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 636);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 669);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -568,7 +568,7 @@ namespace ScanMaster.GUI
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.statusBar1);
-            this.splitContainer1.Size = new System.Drawing.Size(970, 23);
+            this.splitContainer1.Size = new System.Drawing.Size(971, 23);
             this.splitContainer1.SplitterDistance = 371;
             this.splitContainer1.TabIndex = 30;
             // 
@@ -612,7 +612,7 @@ namespace ScanMaster.GUI
             // 
             this.statusBar1.Location = new System.Drawing.Point(0, 0);
             this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Size = new System.Drawing.Size(595, 23);
+            this.statusBar1.Size = new System.Drawing.Size(596, 23);
             this.statusBar1.SizingGrip = false;
             this.statusBar1.TabIndex = 14;
             this.statusBar1.Text = "Ready";
@@ -649,7 +649,7 @@ namespace ScanMaster.GUI
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(970, 659);
+            this.ClientSize = new System.Drawing.Size(971, 692);
             this.Controls.Add(this.noiseResultsLabel);
             this.Controls.Add(this.updateNoiseResultsbutton);
             this.Controls.Add(this.label3);
