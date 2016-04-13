@@ -6,6 +6,7 @@ using NationalInstruments.DAQmx;
 using DAQ.Pattern;
 using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
+using DAQ.Remoting;
 
 namespace DAQ.HAL
 {
@@ -17,7 +18,9 @@ namespace DAQ.HAL
     {
                 public override void ConnectApplications()
        {
-           // ask the remoting system for access to TCL2012
+
+           RemotingHelper.ConnectDecelerationHardwareControl();
+                    // ask the remoting system for access to TCL2012
           // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
           //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
        }
@@ -32,11 +35,11 @@ namespace DAQ.HAL
             Boards.Add("counter", "/PXI1Slot3");
             Boards.Add("aoBoard", "/PXI1Slot4");
             // this drives the rf attenuators
-            Boards.Add("usbDAQ1", "/Dev2");
+            Boards.Add("usbDAQ1", "/Dev4");
             Boards.Add("analogIn", "/PXI1Slot2");
-            Boards.Add("usbDAQ2", "/dev1");
-            Boards.Add("usbDAQ3", "/dev4");
-            Boards.Add("usbDAQ4", "/dev3");
+            Boards.Add("usbDAQ2", "/Dev6");
+            Boards.Add("usbDAQ3", "/Dev2");
+            Boards.Add("usbDAQ4", "/Dev5");
             Boards.Add("tclBoard", "/PXI1Slot9");
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
@@ -72,7 +75,7 @@ namespace DAQ.HAL
             Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL2::INSTR");
+            yag = new BrilliantLaser("ASRL9::INSTR");
 
             // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
@@ -83,10 +86,10 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
-            Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
-            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL8::INSTR"));
-            Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL5::INSTR"));
-            Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL3::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL7::INSTR"));
+            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL14::INSTR"));
+            Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL8::INSTR"));
+            Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL11::INSTR"));
 
 
             // map the digital channels
@@ -229,6 +232,7 @@ namespace DAQ.HAL
             tcl1.AnalogSampleRate = 50000;
             tcl1.DefaultScanPoints = 300;
             Info.Add("Hamish", tcl1);
+            Info.Add("DefaultCavity", tcl1);
 
             //TCL Lockable lasers - this stuff should not now be needed - leave here for reference just in case
 
