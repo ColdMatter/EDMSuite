@@ -49,6 +49,7 @@ namespace DAQ.HAL
             tcl1.AnalogSampleRate = 50000;
             tcl1.TCPChannel = 1190;
             Info.Add("Hamish", tcl1);
+            Info.Add("DefaultCavity", tcl1);
 
             //TCL Lockable lasers - this stuff should no longer be needed - leave here for reference
 

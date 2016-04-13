@@ -13,10 +13,23 @@ namespace TransferCavityLock2012
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] configName)
-        {
 
-            Controller controller = new Controller(configName[0]);
+
+
+        static void Main(string[] config)
+        {
+            string cg;
+
+            if(config.Length==0)
+            { 
+              cg = "DefaultCavity";
+            }
+            else
+            {
+                cg = config[0];
+            };
+
+            Controller controller = new Controller(cg);
 
             // publish the controller to the remoting system
             TcpChannel channel = new TcpChannel(controller.config.TCPChannel);
