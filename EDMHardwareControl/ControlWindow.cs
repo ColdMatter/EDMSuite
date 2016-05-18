@@ -463,8 +463,6 @@ namespace EDMHardwareControl
         private GroupBox groupBox10;
         public CheckBox argonShutterCheckBox;
         private Label label32;
-        public CheckBox probeShutterCheck;
-        public CheckBox pumpShutterCheck;
         private GroupBox groupBox18;
         public TextBox probeAOMFreqStepTextBox;
         private Label label73;
@@ -561,6 +559,10 @@ namespace EDMHardwareControl
         public TextBox uWaveDCFMTextBox;
         private Button uWaveUpdateButton;
         private Label label156;
+        private GroupBox groupBox42;
+        public CheckBox pumpRFCheckBox;
+        private GroupBox groupBox43;
+        public CheckBox mwEnableCheckBox;
 
  
 
@@ -875,8 +877,6 @@ namespace EDMHardwareControl
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.argonShutterCheckBox = new System.Windows.Forms.CheckBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.probeShutterCheck = new System.Windows.Forms.CheckBox();
-            this.pumpShutterCheck = new System.Windows.Forms.CheckBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.probeAOMFreqStepTextBox = new System.Windows.Forms.TextBox();
             this.label73 = new System.Windows.Forms.Label();
@@ -965,6 +965,8 @@ namespace EDMHardwareControl
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.tabPage13 = new System.Windows.Forms.TabPage();
+            this.groupBox43 = new System.Windows.Forms.GroupBox();
+            this.mwEnableCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox41 = new System.Windows.Forms.GroupBox();
             this.mixerVoltageMinusButton = new System.Windows.Forms.Button();
             this.mixerVoltagePlusButton = new System.Windows.Forms.Button();
@@ -984,6 +986,8 @@ namespace EDMHardwareControl
             this.uWaveUpdateButton = new System.Windows.Forms.Button();
             this.label156 = new System.Windows.Forms.Label();
             this.tabPage12 = new System.Windows.Forms.TabPage();
+            this.groupBox42 = new System.Windows.Forms.GroupBox();
+            this.pumpRFCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
             this.VCO155FreqStepMinusButton = new System.Windows.Forms.Button();
             this.VCO155FreqStepPlusButton = new System.Windows.Forms.Button();
@@ -1192,10 +1196,12 @@ namespace EDMHardwareControl
             this.groupBox26.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).BeginInit();
             this.tabPage13.SuspendLayout();
+            this.groupBox43.SuspendLayout();
             this.groupBox41.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mixerVoltageTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uWaveDCFMTrackBar)).BeginInit();
             this.tabPage12.SuspendLayout();
+            this.groupBox42.SuspendLayout();
             this.groupBox40.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VCO155FreqTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VCO155AmpTrackBar)).BeginInit();
@@ -2264,7 +2270,7 @@ namespace EDMHardwareControl
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Size = new System.Drawing.Size(697, 575);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Synths";
+            this.tabPage2.Text = "Synth";
             // 
             // groupBox24
             // 
@@ -3711,7 +3717,7 @@ namespace EDMHardwareControl
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Size = new System.Drawing.Size(697, 575);
             this.tabPage11.TabIndex = 10;
-            this.tabPage11.Text = "N=0 Lasers";
+            this.tabPage11.Text = "Q(0)+P12";
             // 
             // groupBox25
             // 
@@ -4000,8 +4006,6 @@ namespace EDMHardwareControl
             // 
             this.groupBox10.Controls.Add(this.argonShutterCheckBox);
             this.groupBox10.Controls.Add(this.label32);
-            this.groupBox10.Controls.Add(this.probeShutterCheck);
-            this.groupBox10.Controls.Add(this.pumpShutterCheck);
             this.groupBox10.Location = new System.Drawing.Point(12, 16);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size(224, 149);
@@ -4011,7 +4015,7 @@ namespace EDMHardwareControl
             // 
             // argonShutterCheckBox
             // 
-            this.argonShutterCheckBox.Location = new System.Drawing.Point(98, 56);
+            this.argonShutterCheckBox.Location = new System.Drawing.Point(10, 35);
             this.argonShutterCheckBox.Name = "argonShutterCheckBox";
             this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
             this.argonShutterCheckBox.TabIndex = 25;
@@ -4020,29 +4024,11 @@ namespace EDMHardwareControl
             // 
             // label32
             // 
-            this.label32.Location = new System.Drawing.Point(95, 29);
+            this.label32.Location = new System.Drawing.Point(10, 16);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(105, 43);
             this.label32.TabIndex = 24;
             this.label32.Text = "Checked is blocked.";
-            // 
-            // probeShutterCheck
-            // 
-            this.probeShutterCheck.Location = new System.Drawing.Point(24, 56);
-            this.probeShutterCheck.Name = "probeShutterCheck";
-            this.probeShutterCheck.Size = new System.Drawing.Size(72, 24);
-            this.probeShutterCheck.TabIndex = 23;
-            this.probeShutterCheck.Text = "Probe";
-            this.probeShutterCheck.CheckedChanged += new System.EventHandler(this.probeShutterCheck_CheckedChanged);
-            // 
-            // pumpShutterCheck
-            // 
-            this.pumpShutterCheck.Location = new System.Drawing.Point(24, 24);
-            this.pumpShutterCheck.Name = "pumpShutterCheck";
-            this.pumpShutterCheck.Size = new System.Drawing.Size(72, 24);
-            this.pumpShutterCheck.TabIndex = 22;
-            this.pumpShutterCheck.Text = "Pump";
-            this.pumpShutterCheck.CheckedChanged += new System.EventHandler(this.pumpShutterCheck_CheckedChanged);
             // 
             // groupBox18
             // 
@@ -4258,7 +4244,7 @@ namespace EDMHardwareControl
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage8.Size = new System.Drawing.Size(697, 575);
             this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "N=2 Lasers";
+            this.tabPage8.Text = "P(1) Lasers";
             // 
             // groupBox36
             // 
@@ -4928,12 +4914,32 @@ namespace EDMHardwareControl
             // tabPage13
             // 
             this.tabPage13.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage13.Controls.Add(this.groupBox43);
             this.tabPage13.Controls.Add(this.groupBox41);
             this.tabPage13.Location = new System.Drawing.Point(4, 22);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Size = new System.Drawing.Size(697, 575);
             this.tabPage13.TabIndex = 10;
             this.tabPage13.Text = "Microwaves";
+            // 
+            // groupBox43
+            // 
+            this.groupBox43.Controls.Add(this.mwEnableCheckBox);
+            this.groupBox43.Location = new System.Drawing.Point(13, 13);
+            this.groupBox43.Name = "groupBox43";
+            this.groupBox43.Size = new System.Drawing.Size(316, 113);
+            this.groupBox43.TabIndex = 71;
+            this.groupBox43.TabStop = false;
+            this.groupBox43.Text = "Microwave Switches";
+            // 
+            // mwEnableCheckBox
+            // 
+            this.mwEnableCheckBox.Location = new System.Drawing.Point(11, 19);
+            this.mwEnableCheckBox.Name = "mwEnableCheckBox";
+            this.mwEnableCheckBox.Size = new System.Drawing.Size(208, 24);
+            this.mwEnableCheckBox.TabIndex = 23;
+            this.mwEnableCheckBox.Text = "Enable microwaves ";
+            this.mwEnableCheckBox.CheckedChanged += new System.EventHandler(this.mwEnableCheckBox_CheckedChanged);
             // 
             // groupBox41
             // 
@@ -4954,7 +4960,7 @@ namespace EDMHardwareControl
             this.groupBox41.Controls.Add(this.uWaveDCFMTextBox);
             this.groupBox41.Controls.Add(this.uWaveUpdateButton);
             this.groupBox41.Controls.Add(this.label156);
-            this.groupBox41.Location = new System.Drawing.Point(14, 18);
+            this.groupBox41.Location = new System.Drawing.Point(13, 142);
             this.groupBox41.Name = "groupBox41";
             this.groupBox41.Size = new System.Drawing.Size(661, 175);
             this.groupBox41.TabIndex = 70;
@@ -5035,7 +5041,7 @@ namespace EDMHardwareControl
             // 
             // mixerVoltageTrackBar
             // 
-            this.mixerVoltageTrackBar.Location = new System.Drawing.Point(345, 99);
+            this.mixerVoltageTrackBar.Location = new System.Drawing.Point(335, 95);
             this.mixerVoltageTrackBar.Maximum = 1000;
             this.mixerVoltageTrackBar.Name = "mixerVoltageTrackBar";
             this.mixerVoltageTrackBar.Size = new System.Drawing.Size(287, 45);
@@ -5112,6 +5118,7 @@ namespace EDMHardwareControl
             // tabPage12
             // 
             this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage12.Controls.Add(this.groupBox42);
             this.tabPage12.Controls.Add(this.groupBox40);
             this.tabPage12.Controls.Add(this.groupBox39);
             this.tabPage12.Controls.Add(this.groupBox161MHzVCO);
@@ -5120,6 +5127,25 @@ namespace EDMHardwareControl
             this.tabPage12.Size = new System.Drawing.Size(697, 575);
             this.tabPage12.TabIndex = 10;
             this.tabPage12.Text = "RF VCOs";
+            // 
+            // groupBox42
+            // 
+            this.groupBox42.Controls.Add(this.pumpRFCheckBox);
+            this.groupBox42.Location = new System.Drawing.Point(17, 8);
+            this.groupBox42.Name = "groupBox42";
+            this.groupBox42.Size = new System.Drawing.Size(316, 113);
+            this.groupBox42.TabIndex = 70;
+            this.groupBox42.TabStop = false;
+            this.groupBox42.Text = "Rf Switches";
+            // 
+            // pumpRFCheckBox
+            // 
+            this.pumpRFCheckBox.Location = new System.Drawing.Point(11, 19);
+            this.pumpRFCheckBox.Name = "pumpRFCheckBox";
+            this.pumpRFCheckBox.Size = new System.Drawing.Size(208, 24);
+            this.pumpRFCheckBox.TabIndex = 23;
+            this.pumpRFCheckBox.Text = "Enable pump rf (check on)";
+            this.pumpRFCheckBox.CheckedChanged += new System.EventHandler(this.pumpRFCheckBox_CheckedChanged);
             // 
             // groupBox40
             // 
@@ -5140,9 +5166,9 @@ namespace EDMHardwareControl
             this.groupBox40.Controls.Add(this.VCO155AmpVoltageTextBox);
             this.groupBox40.Controls.Add(this.VCO155UpdateButton);
             this.groupBox40.Controls.Add(this.label136);
-            this.groupBox40.Location = new System.Drawing.Point(17, 381);
+            this.groupBox40.Location = new System.Drawing.Point(17, 424);
             this.groupBox40.Name = "groupBox40";
-            this.groupBox40.Size = new System.Drawing.Size(661, 184);
+            this.groupBox40.Size = new System.Drawing.Size(661, 141);
             this.groupBox40.TabIndex = 71;
             this.groupBox40.TabStop = false;
             this.groupBox40.Text = "155 MHz VCO";
@@ -5279,9 +5305,9 @@ namespace EDMHardwareControl
             // 
             // VCO155UpdateButton
             // 
-            this.VCO155UpdateButton.Location = new System.Drawing.Point(283, 152);
+            this.VCO155UpdateButton.Location = new System.Drawing.Point(182, 50);
             this.VCO155UpdateButton.Name = "VCO155UpdateButton";
-            this.VCO155UpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.VCO155UpdateButton.Size = new System.Drawing.Size(80, 23);
             this.VCO155UpdateButton.TabIndex = 40;
             this.VCO155UpdateButton.Text = "Update";
             this.VCO155UpdateButton.Click += new System.EventHandler(this.VCO155UpdateButton_Click);
@@ -5313,9 +5339,9 @@ namespace EDMHardwareControl
             this.groupBox39.Controls.Add(this.VCO30AmpVoltageTextBox);
             this.groupBox39.Controls.Add(this.VCO30UpdateButton);
             this.groupBox39.Controls.Add(this.label134);
-            this.groupBox39.Location = new System.Drawing.Point(17, 193);
+            this.groupBox39.Location = new System.Drawing.Point(17, 272);
             this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(661, 182);
+            this.groupBox39.Size = new System.Drawing.Size(661, 149);
             this.groupBox39.TabIndex = 70;
             this.groupBox39.TabStop = false;
             this.groupBox39.Text = "30 MHz VCO";
@@ -5394,7 +5420,7 @@ namespace EDMHardwareControl
             // 
             // VCO30FreqTrackBar
             // 
-            this.VCO30FreqTrackBar.Location = new System.Drawing.Point(345, 105);
+            this.VCO30FreqTrackBar.Location = new System.Drawing.Point(345, 99);
             this.VCO30FreqTrackBar.Maximum = 1000;
             this.VCO30FreqTrackBar.Name = "VCO30FreqTrackBar";
             this.VCO30FreqTrackBar.Size = new System.Drawing.Size(287, 45);
@@ -5419,7 +5445,7 @@ namespace EDMHardwareControl
             // 
             // VCO30AmpTrackBar
             // 
-            this.VCO30AmpTrackBar.Location = new System.Drawing.Point(6, 105);
+            this.VCO30AmpTrackBar.Location = new System.Drawing.Point(6, 100);
             this.VCO30AmpTrackBar.Maximum = 1000;
             this.VCO30AmpTrackBar.Name = "VCO30AmpTrackBar";
             this.VCO30AmpTrackBar.Size = new System.Drawing.Size(287, 45);
@@ -5452,9 +5478,9 @@ namespace EDMHardwareControl
             // 
             // VCO30UpdateButton
             // 
-            this.VCO30UpdateButton.Location = new System.Drawing.Point(283, 149);
+            this.VCO30UpdateButton.Location = new System.Drawing.Point(182, 50);
             this.VCO30UpdateButton.Name = "VCO30UpdateButton";
-            this.VCO30UpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.VCO30UpdateButton.Size = new System.Drawing.Size(80, 23);
             this.VCO30UpdateButton.TabIndex = 40;
             this.VCO30UpdateButton.Text = "Update";
             this.VCO30UpdateButton.Click += new System.EventHandler(this.VCO30UpdateButton_Click);
@@ -5486,9 +5512,9 @@ namespace EDMHardwareControl
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpVoltageTextBox);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161UpdateButton);
             this.groupBox161MHzVCO.Controls.Add(this.label138);
-            this.groupBox161MHzVCO.Location = new System.Drawing.Point(17, 12);
+            this.groupBox161MHzVCO.Location = new System.Drawing.Point(17, 127);
             this.groupBox161MHzVCO.Name = "groupBox161MHzVCO";
-            this.groupBox161MHzVCO.Size = new System.Drawing.Size(661, 175);
+            this.groupBox161MHzVCO.Size = new System.Drawing.Size(661, 140);
             this.groupBox161MHzVCO.TabIndex = 69;
             this.groupBox161MHzVCO.TabStop = false;
             this.groupBox161MHzVCO.Text = "161 MHz VCO";
@@ -5568,7 +5594,7 @@ namespace EDMHardwareControl
             // 
             // VCO161FreqTrackBar
             // 
-            this.VCO161FreqTrackBar.Location = new System.Drawing.Point(345, 99);
+            this.VCO161FreqTrackBar.Location = new System.Drawing.Point(345, 91);
             this.VCO161FreqTrackBar.Maximum = 1000;
             this.VCO161FreqTrackBar.Name = "VCO161FreqTrackBar";
             this.VCO161FreqTrackBar.Size = new System.Drawing.Size(287, 45);
@@ -5593,7 +5619,7 @@ namespace EDMHardwareControl
             // 
             // VCO161AmpTrackBar
             // 
-            this.VCO161AmpTrackBar.Location = new System.Drawing.Point(6, 99);
+            this.VCO161AmpTrackBar.Location = new System.Drawing.Point(6, 92);
             this.VCO161AmpTrackBar.Maximum = 1000;
             this.VCO161AmpTrackBar.Name = "VCO161AmpTrackBar";
             this.VCO161AmpTrackBar.Size = new System.Drawing.Size(287, 45);
@@ -5626,9 +5652,9 @@ namespace EDMHardwareControl
             // 
             // VCO161UpdateButton
             // 
-            this.VCO161UpdateButton.Location = new System.Drawing.Point(283, 146);
+            this.VCO161UpdateButton.Location = new System.Drawing.Point(182, 45);
             this.VCO161UpdateButton.Name = "VCO161UpdateButton";
-            this.VCO161UpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.VCO161UpdateButton.Size = new System.Drawing.Size(80, 23);
             this.VCO161UpdateButton.TabIndex = 40;
             this.VCO161UpdateButton.Text = "Update";
             this.VCO161UpdateButton.Click += new System.EventHandler(this.VCO161UpdateButton_Click);
@@ -6700,11 +6726,13 @@ namespace EDMHardwareControl
             this.groupBox26.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.diodeCurrentGraph)).EndInit();
             this.tabPage13.ResumeLayout(false);
+            this.groupBox43.ResumeLayout(false);
             this.groupBox41.ResumeLayout(false);
             this.groupBox41.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mixerVoltageTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uWaveDCFMTrackBar)).EndInit();
             this.tabPage12.ResumeLayout(false);
+            this.groupBox42.ResumeLayout(false);
             this.groupBox40.ResumeLayout(false);
             this.groupBox40.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VCO155FreqTrackBar)).EndInit();
@@ -6901,15 +6929,6 @@ namespace EDMHardwareControl
 			controller.SetScanningBFS();
 		}
 
-		private void pumpShutterCheck_CheckedChanged(object sender, EventArgs e)
-		{
-			controller.SetPumpShutter(pumpShutterCheck.Checked);
-		}
-
-		private void probeShutterCheck_CheckedChanged(object sender, EventArgs e)
-		{
-			controller.SetProbeShutter(probeShutterCheck.Checked);
-		}
 
         private void argonShutterCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -7502,6 +7521,16 @@ namespace EDMHardwareControl
        {
            controller.DecreaseuWaveVoltage();
            controller.TweakMixerVoltage();
+       }
+
+       private void pumpRFCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           controller.EnablePumpRFSwitch(pumpRFCheckBox.Checked);	
+       }
+
+       private void mwEnableCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           controller.EnableMicrowaves(mwEnableCheckBox.Checked);
        }
 
 

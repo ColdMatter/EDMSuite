@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Lifetime;
 
 namespace DAQ.Remoting
 {
+
     public class RemotingHelper
     {
 

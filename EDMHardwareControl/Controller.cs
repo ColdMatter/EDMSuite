@@ -146,6 +146,8 @@ namespace EDMHardwareControl
             CreateDigitalTask("notEPol");
             CreateDigitalTask("eBleed");
             CreateDigitalTask("rfSwitch");
+            CreateDigitalTask("pumprfSwitch");
+            CreateDigitalTask("mwEnable");
             CreateDigitalTask("fmSelect");
             CreateDigitalTask("attenuatorSelect");
             CreateDigitalTask("scramblerEnable");
@@ -156,8 +158,6 @@ namespace EDMHardwareControl
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
             CreateDigitalTask("notPIFlipEnable");
-            CreateDigitalTask("pumpShutter");
-            CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
             //CreateDigitalTask("rfCountSwBit1");
@@ -259,7 +259,7 @@ namespace EDMHardwareControl
         internal void WindowClosing()
         {
             StoreParameters();
-            ReturnPolarizersToZero();
+            /*ReturnPolarizersToZero();*/
             
             
         }
@@ -762,29 +762,6 @@ namespace EDMHardwareControl
             }
         }
 
-        public bool PumpShutter
-        {
-            get
-            {
-                return window.pumpShutterCheck.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.pumpShutterCheck, value);
-            }
-        }
-
-        public bool Pump2Shutter
-        {
-            get
-            {
-                return window.probeShutterCheck.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.probeShutterCheck, value);
-            }
-        }
 
         public double ProbeAOMFrequencyCentre
         {
@@ -2911,6 +2888,16 @@ namespace EDMHardwareControl
             SetDigitalLine("rfSwitch", enable);
         }
 
+        public void EnablePumpRFSwitch(bool enable)
+        {
+            SetDigitalLine("pumprfSwitch", enable);
+        }
+
+        public void EnableMicrowaves(bool enable)
+        {
+            SetDigitalLine("mwEnable", enable);
+        }
+
         /*private double lastGPlus = 0;
         private double lastGMinus = 0;
         private double lastCPlus = 0;
@@ -3000,15 +2987,7 @@ namespace EDMHardwareControl
             SetDigitalLine("scramblerEnable", enable);
         }
 
-        internal void SetPumpShutter(bool enable)
-        {
-            SetDigitalLine("pumpShutter", enable);
-        }
 
-        internal void SetProbeShutter(bool enable)
-        {
-            SetDigitalLine("probeShutter", enable);
-        }
 
         public void SetArgonShutter(bool enable)
         {
