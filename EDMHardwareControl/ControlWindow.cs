@@ -1260,201 +1260,201 @@ namespace EDMHardwareControl
             this.groupBox2.Controls.Add(this.eBleedCheck);
             this.groupBox2.Controls.Add(this.ePolarityCheck);
             this.groupBox2.Controls.Add(this.eOnCheck);
-            this.groupBox2.Location = new System.Drawing.Point(207, 16);
+            this.groupBox2.Location = new System.Drawing.Point(414, 30);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(280, 276);
+            this.groupBox2.Size = new System.Drawing.Size(560, 509);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Switch";
             // 
             // label78
             // 
-            this.label78.Location = new System.Drawing.Point(25, 215);
+            this.label78.Location = new System.Drawing.Point(50, 397);
             this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(115, 23);
+            this.label78.Size = new System.Drawing.Size(230, 42);
             this.label78.TabIndex = 52;
             this.label78.Text = "Settle time (s)";
             // 
             // eOvershootHoldTextBox
             // 
-            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
+            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(290, 314);
             this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
-            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(128, 31);
             this.eOvershootHoldTextBox.TabIndex = 50;
             this.eOvershootHoldTextBox.Text = "1";
             // 
             // label79
             // 
-            this.label79.Location = new System.Drawing.Point(25, 194);
+            this.label79.Location = new System.Drawing.Point(50, 358);
             this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(115, 23);
+            this.label79.Size = new System.Drawing.Size(230, 43);
             this.label79.TabIndex = 51;
             this.label79.Text = "Overshoot factor";
             // 
             // eOvershootFactorTextBox
             // 
-            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
+            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(290, 353);
             this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
-            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(128, 31);
             this.eOvershootFactorTextBox.TabIndex = 49;
             this.eOvershootFactorTextBox.Text = "2";
             // 
             // switchingLED
             // 
             this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.switchingLED.Location = new System.Drawing.Point(253, 19);
+            this.switchingLED.Location = new System.Drawing.Point(506, 35);
             this.switchingLED.Name = "switchingLED";
             this.switchingLED.OffColor = System.Drawing.Color.Maroon;
             this.switchingLED.OnColor = System.Drawing.Color.Red;
-            this.switchingLED.Size = new System.Drawing.Size(21, 22);
+            this.switchingLED.Size = new System.Drawing.Size(42, 41);
             this.switchingLED.TabIndex = 48;
             // 
             // rampLED
             // 
             this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(253, 40);
+            this.rampLED.Location = new System.Drawing.Point(506, 74);
             this.rampLED.Name = "rampLED";
-            this.rampLED.Size = new System.Drawing.Size(21, 22);
+            this.rampLED.Size = new System.Drawing.Size(42, 40);
             this.rampLED.TabIndex = 48;
             // 
             // label62
             // 
-            this.label62.Location = new System.Drawing.Point(25, 131);
+            this.label62.Location = new System.Drawing.Point(50, 242);
             this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(115, 23);
+            this.label62.Size = new System.Drawing.Size(230, 42);
             this.label62.TabIndex = 47;
             this.label62.Text = "Switch time (s)";
             // 
             // eSwitchTimeTextBox
             // 
-            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 128);
+            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(290, 236);
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
-            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(128, 31);
             this.eSwitchTimeTextBox.TabIndex = 3;
             this.eSwitchTimeTextBox.Text = "1";
             // 
             // label61
             // 
-            this.label61.Location = new System.Drawing.Point(25, 110);
+            this.label61.Location = new System.Drawing.Point(50, 203);
             this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(115, 23);
+            this.label61.Size = new System.Drawing.Size(230, 43);
             this.label61.TabIndex = 45;
             this.label61.Text = "Bleed time (s)";
             // 
             // eBleedTimeTextBox
             // 
-            this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 107);
+            this.eBleedTimeTextBox.Location = new System.Drawing.Point(290, 198);
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
-            this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eBleedTimeTextBox.Size = new System.Drawing.Size(128, 31);
             this.eBleedTimeTextBox.TabIndex = 2;
             this.eBleedTimeTextBox.Text = "0.01";
             // 
             // label60
             // 
-            this.label60.Location = new System.Drawing.Point(25, 173);
+            this.label60.Location = new System.Drawing.Point(50, 319);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(115, 23);
+            this.label60.Size = new System.Drawing.Size(230, 43);
             this.label60.TabIndex = 45;
             this.label60.Text = "Overshoot hold (s)";
             // 
             // label57
             // 
-            this.label57.Location = new System.Drawing.Point(25, 89);
+            this.label57.Location = new System.Drawing.Point(50, 164);
             this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(115, 23);
+            this.label57.Size = new System.Drawing.Size(230, 43);
             this.label57.TabIndex = 41;
             this.label57.Text = "Ramp down delay (s)";
             // 
             // eRampUpDelayTextBox
             // 
-            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 212);
+            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(290, 391);
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
-            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(128, 31);
             this.eRampUpDelayTextBox.TabIndex = 5;
             this.eRampUpDelayTextBox.Text = "1";
             // 
             // label58
             // 
-            this.label58.Location = new System.Drawing.Point(25, 68);
+            this.label58.Location = new System.Drawing.Point(50, 126);
             this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(115, 23);
+            this.label58.Size = new System.Drawing.Size(230, 42);
             this.label58.TabIndex = 40;
             this.label58.Text = "Ramp down time (s)";
             // 
             // eRampDownDelayTextBox
             // 
-            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 86);
+            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(290, 159);
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
-            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(128, 31);
             this.eRampDownDelayTextBox.TabIndex = 1;
             this.eRampDownDelayTextBox.Text = "3";
             // 
             // label59
             // 
-            this.label59.Location = new System.Drawing.Point(25, 152);
+            this.label59.Location = new System.Drawing.Point(50, 281);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(115, 23);
+            this.label59.Size = new System.Drawing.Size(230, 42);
             this.label59.TabIndex = 43;
             this.label59.Text = "Ramp up time (s)";
             // 
             // eRampDownTimeTextBox
             // 
-            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 65);
+            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(290, 120);
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
-            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(128, 31);
             this.eRampDownTimeTextBox.TabIndex = 0;
             this.eRampDownTimeTextBox.Text = "2";
             // 
             // eRampUpTimeTextBox
             // 
-            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 149);
+            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(290, 275);
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
-            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(128, 31);
             this.eRampUpTimeTextBox.TabIndex = 4;
             this.eRampUpTimeTextBox.Text = "2";
             // 
             // fieldsOffButton
             // 
             this.fieldsOffButton.Enabled = false;
-            this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
+            this.fieldsOffButton.Location = new System.Drawing.Point(48, 445);
             this.fieldsOffButton.Name = "fieldsOffButton";
-            this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
+            this.fieldsOffButton.Size = new System.Drawing.Size(192, 42);
             this.fieldsOffButton.TabIndex = 23;
             this.fieldsOffButton.Text = "Zero E fields";
             this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
             // 
             // switchEButton
             // 
-            this.switchEButton.Location = new System.Drawing.Point(136, 241);
+            this.switchEButton.Location = new System.Drawing.Point(272, 445);
             this.switchEButton.Name = "switchEButton";
-            this.switchEButton.Size = new System.Drawing.Size(96, 23);
+            this.switchEButton.Size = new System.Drawing.Size(192, 42);
             this.switchEButton.TabIndex = 22;
             this.switchEButton.Text = "Switch E";
             this.switchEButton.Click += new System.EventHandler(this.switchEButton_Click);
             // 
             // eBleedCheck
             // 
-            this.eBleedCheck.Location = new System.Drawing.Point(96, 19);
+            this.eBleedCheck.Location = new System.Drawing.Point(192, 35);
             this.eBleedCheck.Name = "eBleedCheck";
-            this.eBleedCheck.Size = new System.Drawing.Size(72, 24);
+            this.eBleedCheck.Size = new System.Drawing.Size(144, 44);
             this.eBleedCheck.TabIndex = 21;
             this.eBleedCheck.Text = "Bleed on";
             this.eBleedCheck.CheckedChanged += new System.EventHandler(this.eBleedCheck_CheckedChanged);
             // 
             // ePolarityCheck
             // 
-            this.ePolarityCheck.Location = new System.Drawing.Point(24, 40);
+            this.ePolarityCheck.Location = new System.Drawing.Point(48, 74);
             this.ePolarityCheck.Name = "ePolarityCheck";
-            this.ePolarityCheck.Size = new System.Drawing.Size(136, 24);
+            this.ePolarityCheck.Size = new System.Drawing.Size(272, 44);
             this.ePolarityCheck.TabIndex = 20;
             this.ePolarityCheck.Text = "Polarity (1 is checked)";
             this.ePolarityCheck.CheckedChanged += new System.EventHandler(this.ePolarityCheck_CheckedChanged);
             // 
             // eOnCheck
             // 
-            this.eOnCheck.Location = new System.Drawing.Point(24, 19);
+            this.eOnCheck.Location = new System.Drawing.Point(48, 35);
             this.eOnCheck.Name = "eOnCheck";
-            this.eOnCheck.Size = new System.Drawing.Size(72, 24);
+            this.eOnCheck.Size = new System.Drawing.Size(144, 44);
             this.eOnCheck.TabIndex = 19;
             this.eOnCheck.Text = "Field on";
             this.eOnCheck.CheckedChanged += new System.EventHandler(this.eOnCheck_CheckedChanged);
@@ -1468,67 +1468,67 @@ namespace EDMHardwareControl
             this.groupBox3.Controls.Add(this.greenOnAmpBox);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.greenOnFreqBox);
-            this.groupBox3.Location = new System.Drawing.Point(8, 16);
+            this.groupBox3.Location = new System.Drawing.Point(16, 30);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(296, 160);
+            this.groupBox3.Size = new System.Drawing.Size(592, 295);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Direct synth control";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(6, 88);
+            this.label1.Location = new System.Drawing.Point(12, 162);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(133, 23);
+            this.label1.Size = new System.Drawing.Size(266, 43);
             this.label1.TabIndex = 23;
             this.label1.Text = "Green synth DC FM (kHz)";
             // 
             // greenDCFMBox
             // 
-            this.greenDCFMBox.Location = new System.Drawing.Point(168, 85);
+            this.greenDCFMBox.Location = new System.Drawing.Point(336, 157);
             this.greenDCFMBox.Name = "greenDCFMBox";
-            this.greenDCFMBox.Size = new System.Drawing.Size(64, 20);
+            this.greenDCFMBox.Size = new System.Drawing.Size(128, 31);
             this.greenDCFMBox.TabIndex = 2;
             this.greenDCFMBox.Text = "0";
             // 
             // greenOnCheck
             // 
-            this.greenOnCheck.Location = new System.Drawing.Point(24, 114);
+            this.greenOnCheck.Location = new System.Drawing.Point(48, 210);
             this.greenOnCheck.Name = "greenOnCheck";
-            this.greenOnCheck.Size = new System.Drawing.Size(104, 24);
+            this.greenOnCheck.Size = new System.Drawing.Size(208, 45);
             this.greenOnCheck.TabIndex = 18;
             this.greenOnCheck.Text = "Green on";
             this.greenOnCheck.CheckedChanged += new System.EventHandler(this.greenOnCheck_CheckedChanged);
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(6, 56);
+            this.label7.Location = new System.Drawing.Point(12, 103);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(122, 23);
+            this.label7.Size = new System.Drawing.Size(244, 43);
             this.label7.TabIndex = 13;
             this.label7.Text = "Green synth amplitude";
             // 
             // greenOnAmpBox
             // 
-            this.greenOnAmpBox.Location = new System.Drawing.Point(168, 53);
+            this.greenOnAmpBox.Location = new System.Drawing.Point(336, 98);
             this.greenOnAmpBox.Name = "greenOnAmpBox";
-            this.greenOnAmpBox.Size = new System.Drawing.Size(64, 20);
+            this.greenOnAmpBox.Size = new System.Drawing.Size(128, 31);
             this.greenOnAmpBox.TabIndex = 1;
             this.greenOnAmpBox.Text = "-6";
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(6, 24);
+            this.label8.Location = new System.Drawing.Point(12, 44);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(122, 23);
+            this.label8.Size = new System.Drawing.Size(244, 43);
             this.label8.TabIndex = 11;
             this.label8.Text = "Green synth frequency";
             // 
             // greenOnFreqBox
             // 
-            this.greenOnFreqBox.Location = new System.Drawing.Point(168, 21);
+            this.greenOnFreqBox.Location = new System.Drawing.Point(336, 39);
             this.greenOnFreqBox.Name = "greenOnFreqBox";
-            this.greenOnFreqBox.Size = new System.Drawing.Size(64, 20);
+            this.greenOnFreqBox.Size = new System.Drawing.Size(128, 31);
             this.greenOnFreqBox.TabIndex = 0;
             this.greenOnFreqBox.Text = "170.800";
             // 
@@ -1543,83 +1543,83 @@ namespace EDMHardwareControl
             this.groupBox1.Controls.Add(this.cMinusOffTextBox);
             this.groupBox1.Controls.Add(this.cMinusTextBox);
             this.groupBox1.Controls.Add(this.cPlusTextBox);
-            this.groupBox1.Location = new System.Drawing.Point(17, 16);
+            this.groupBox1.Location = new System.Drawing.Point(34, 30);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(184, 208);
+            this.groupBox1.Size = new System.Drawing.Size(368, 384);
             this.groupBox1.TabIndex = 23;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Supplies";
             // 
             // updateFieldButton
             // 
-            this.updateFieldButton.Location = new System.Drawing.Point(48, 168);
+            this.updateFieldButton.Location = new System.Drawing.Point(96, 310);
             this.updateFieldButton.Name = "updateFieldButton";
-            this.updateFieldButton.Size = new System.Drawing.Size(75, 23);
+            this.updateFieldButton.Size = new System.Drawing.Size(150, 43);
             this.updateFieldButton.TabIndex = 40;
             this.updateFieldButton.Text = "Update";
             this.updateFieldButton.Click += new System.EventHandler(this.updateFieldButton_Click);
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(16, 128);
+            this.label10.Location = new System.Drawing.Point(32, 236);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(80, 23);
+            this.label10.Size = new System.Drawing.Size(160, 43);
             this.label10.TabIndex = 39;
             this.label10.Text = "C minus off (V)";
             // 
             // label11
             // 
-            this.label11.Location = new System.Drawing.Point(16, 96);
+            this.label11.Location = new System.Drawing.Point(32, 177);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(80, 23);
+            this.label11.Size = new System.Drawing.Size(160, 43);
             this.label11.TabIndex = 38;
             this.label11.Text = "C plus off (V)";
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(16, 56);
+            this.label9.Location = new System.Drawing.Point(32, 103);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(80, 23);
+            this.label9.Size = new System.Drawing.Size(160, 43);
             this.label9.TabIndex = 1;
             this.label9.Text = "C minus (V)";
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(16, 24);
+            this.label5.Location = new System.Drawing.Point(32, 44);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 23);
+            this.label5.Size = new System.Drawing.Size(160, 43);
             this.label5.TabIndex = 0;
             this.label5.Text = "C plus (V)";
             // 
             // cPlusOffTextBox
             // 
-            this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 96);
+            this.cPlusOffTextBox.Location = new System.Drawing.Point(208, 177);
             this.cPlusOffTextBox.Name = "cPlusOffTextBox";
-            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusOffTextBox.Size = new System.Drawing.Size(128, 31);
             this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
             // 
             // cMinusOffTextBox
             // 
-            this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 128);
+            this.cMinusOffTextBox.Location = new System.Drawing.Point(208, 236);
             this.cMinusOffTextBox.Name = "cMinusOffTextBox";
-            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusOffTextBox.Size = new System.Drawing.Size(128, 31);
             this.cMinusOffTextBox.TabIndex = 3;
             this.cMinusOffTextBox.Text = "0";
             // 
             // cMinusTextBox
             // 
-            this.cMinusTextBox.Location = new System.Drawing.Point(104, 56);
+            this.cMinusTextBox.Location = new System.Drawing.Point(208, 103);
             this.cMinusTextBox.Name = "cMinusTextBox";
-            this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusTextBox.Size = new System.Drawing.Size(128, 31);
             this.cMinusTextBox.TabIndex = 1;
             this.cMinusTextBox.Text = "0";
             // 
             // cPlusTextBox
             // 
-            this.cPlusTextBox.Location = new System.Drawing.Point(104, 24);
+            this.cPlusTextBox.Location = new System.Drawing.Point(208, 44);
             this.cPlusTextBox.Name = "cPlusTextBox";
-            this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusTextBox.Size = new System.Drawing.Size(128, 31);
             this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
             // 
@@ -1627,27 +1627,27 @@ namespace EDMHardwareControl
             // 
             this.groupBox5.Controls.Add(this.calFlipCheck);
             this.groupBox5.Controls.Add(this.bFlipCheck);
-            this.groupBox5.Location = new System.Drawing.Point(8, 16);
+            this.groupBox5.Location = new System.Drawing.Point(16, 30);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(376, 56);
+            this.groupBox5.Size = new System.Drawing.Size(752, 103);
             this.groupBox5.TabIndex = 24;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Manual B-flip";
             // 
             // calFlipCheck
             // 
-            this.calFlipCheck.Location = new System.Drawing.Point(152, 24);
+            this.calFlipCheck.Location = new System.Drawing.Point(304, 44);
             this.calFlipCheck.Name = "calFlipCheck";
-            this.calFlipCheck.Size = new System.Drawing.Size(40, 24);
+            this.calFlipCheck.Size = new System.Drawing.Size(80, 45);
             this.calFlipCheck.TabIndex = 1;
             this.calFlipCheck.Text = "dB";
             this.calFlipCheck.CheckedChanged += new System.EventHandler(this.calFlipCheck_CheckedChanged);
             // 
             // bFlipCheck
             // 
-            this.bFlipCheck.Location = new System.Drawing.Point(16, 24);
+            this.bFlipCheck.Location = new System.Drawing.Point(32, 44);
             this.bFlipCheck.Name = "bFlipCheck";
-            this.bFlipCheck.Size = new System.Drawing.Size(61, 24);
+            this.bFlipCheck.Size = new System.Drawing.Size(122, 45);
             this.bFlipCheck.TabIndex = 0;
             this.bFlipCheck.Text = "DB";
             this.bFlipCheck.CheckedChanged += new System.EventHandler(this.bFlipCheck_CheckedChanged);
@@ -1666,10 +1666,10 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage9);
             this.tabControl.Controls.Add(this.tabPage7);
             this.tabControl.Controls.Add(this.tabPage10);
-            this.tabControl.Location = new System.Drawing.Point(12, 27);
+            this.tabControl.Location = new System.Drawing.Point(24, 50);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(705, 601);
+            this.tabControl.Size = new System.Drawing.Size(1410, 1109);
             this.tabControl.TabIndex = 25;
             // 
             // tabPage1
@@ -1681,27 +1681,27 @@ namespace EDMHardwareControl
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.groupBox7);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(8, 39);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(697, 575);
+            this.tabPage1.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
             // 
             // groupBox21
             // 
             this.groupBox21.Controls.Add(this.eManualStateCheckBox);
-            this.groupBox21.Location = new System.Drawing.Point(17, 231);
+            this.groupBox21.Location = new System.Drawing.Point(34, 426);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(184, 61);
+            this.groupBox21.Size = new System.Drawing.Size(368, 113);
             this.groupBox21.TabIndex = 27;
             this.groupBox21.TabStop = false;
             this.groupBox21.Text = "Manual state";
             // 
             // eManualStateCheckBox
             // 
-            this.eManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.eManualStateCheckBox.Location = new System.Drawing.Point(12, 42);
             this.eManualStateCheckBox.Name = "eManualStateCheckBox";
-            this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
+            this.eManualStateCheckBox.Size = new System.Drawing.Size(334, 45);
             this.eManualStateCheckBox.TabIndex = 53;
             this.eManualStateCheckBox.Text = "State (Checked is 0=>N+)";
             // 
@@ -1712,50 +1712,50 @@ namespace EDMHardwareControl
             this.groupBox13.Controls.Add(this.label38);
             this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
-            this.groupBox13.Location = new System.Drawing.Point(493, 179);
+            this.groupBox13.Location = new System.Drawing.Point(986, 330);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(184, 113);
+            this.groupBox13.Size = new System.Drawing.Size(368, 209);
             this.groupBox13.TabIndex = 41;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Supply asymmetry";
             // 
             // eFieldAsymmetryCheckBox
             // 
-            this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
+            this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(38, 35);
             this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
-            this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
+            this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(144, 44);
             this.eFieldAsymmetryCheckBox.TabIndex = 38;
             this.eFieldAsymmetryCheckBox.Text = "Enable";
             // 
             // label37
             // 
-            this.label37.Location = new System.Drawing.Point(6, 83);
+            this.label37.Location = new System.Drawing.Point(12, 153);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(84, 23);
+            this.label37.Size = new System.Drawing.Size(168, 43);
             this.label37.TabIndex = 37;
             this.label37.Text = "0+1- boost (V)";
             // 
             // label38
             // 
-            this.label38.Location = new System.Drawing.Point(6, 51);
+            this.label38.Location = new System.Drawing.Point(12, 94);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(89, 23);
+            this.label38.Size = new System.Drawing.Size(178, 43);
             this.label38.TabIndex = 36;
             this.label38.Text = "0+ boost (V)";
             // 
             // zeroPlusOneMinusBoostTextBox
             // 
-            this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
+            this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(202, 146);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
-            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(128, 31);
             this.zeroPlusOneMinusBoostTextBox.TabIndex = 1;
             this.zeroPlusOneMinusBoostTextBox.Text = "0";
             // 
             // zeroPlusBoostTextBox
             // 
-            this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
+            this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(204, 94);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
-            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(128, 31);
             this.zeroPlusBoostTextBox.TabIndex = 0;
             this.zeroPlusBoostTextBox.Text = "0";
             // 
@@ -1770,9 +1770,9 @@ namespace EDMHardwareControl
             this.groupBox6.Controls.Add(this.label14);
             this.groupBox6.Controls.Add(this.label15);
             this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
-            this.groupBox6.Location = new System.Drawing.Point(493, 16);
+            this.groupBox6.Location = new System.Drawing.Point(986, 30);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(184, 153);
+            this.groupBox6.Size = new System.Drawing.Size(368, 282);
             this.groupBox6.TabIndex = 24;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Voltage monitors";
@@ -1781,10 +1781,10 @@ namespace EDMHardwareControl
             // 
             this.gMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.gMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 95);
+            this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(208, 175);
             this.gMinusVMonitorTextBox.Name = "gMinusVMonitorTextBox";
             this.gMinusVMonitorTextBox.ReadOnly = true;
-            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.gMinusVMonitorTextBox.TabIndex = 43;
             this.gMinusVMonitorTextBox.Text = "0";
             // 
@@ -1792,10 +1792,10 @@ namespace EDMHardwareControl
             // 
             this.cPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.cPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 24);
+            this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(208, 44);
             this.cPlusVMonitorTextBox.Name = "cPlusVMonitorTextBox";
             this.cPlusVMonitorTextBox.ReadOnly = true;
-            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.cPlusVMonitorTextBox.TabIndex = 42;
             this.cPlusVMonitorTextBox.Text = "0";
             // 
@@ -1803,51 +1803,51 @@ namespace EDMHardwareControl
             // 
             this.gPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.gPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 71);
+            this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(208, 131);
             this.gPlusVMonitorTextBox.Name = "gPlusVMonitorTextBox";
             this.gPlusVMonitorTextBox.ReadOnly = true;
-            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.gPlusVMonitorTextBox.TabIndex = 41;
             this.gPlusVMonitorTextBox.Text = "0";
             // 
             // updateVMonitorButton
             // 
-            this.updateVMonitorButton.Location = new System.Drawing.Point(56, 121);
+            this.updateVMonitorButton.Location = new System.Drawing.Point(112, 223);
             this.updateVMonitorButton.Name = "updateVMonitorButton";
-            this.updateVMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updateVMonitorButton.Size = new System.Drawing.Size(150, 43);
             this.updateVMonitorButton.TabIndex = 40;
             this.updateVMonitorButton.Text = "Update";
             this.updateVMonitorButton.Click += new System.EventHandler(this.updateVMonitorButton_Click);
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(16, 95);
+            this.label12.Location = new System.Drawing.Point(32, 175);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(80, 23);
+            this.label12.Size = new System.Drawing.Size(160, 43);
             this.label12.TabIndex = 39;
             this.label12.Text = "G minus (V)";
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(16, 71);
+            this.label13.Location = new System.Drawing.Point(32, 131);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(80, 23);
+            this.label13.Size = new System.Drawing.Size(160, 43);
             this.label13.TabIndex = 38;
             this.label13.Text = "G plus (V)";
             // 
             // label14
             // 
-            this.label14.Location = new System.Drawing.Point(16, 48);
+            this.label14.Location = new System.Drawing.Point(32, 89);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(80, 23);
+            this.label14.Size = new System.Drawing.Size(160, 42);
             this.label14.TabIndex = 37;
             this.label14.Text = "C minus (V)";
             // 
             // label15
             // 
-            this.label15.Location = new System.Drawing.Point(16, 24);
+            this.label15.Location = new System.Drawing.Point(32, 44);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(80, 23);
+            this.label15.Size = new System.Drawing.Size(160, 43);
             this.label15.TabIndex = 36;
             this.label15.Text = "C plus (V)";
             // 
@@ -1855,10 +1855,10 @@ namespace EDMHardwareControl
             // 
             this.cMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.cMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 48);
+            this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(208, 89);
             this.cMinusVMonitorTextBox.Name = "cMinusVMonitorTextBox";
             this.cMinusVMonitorTextBox.ReadOnly = true;
-            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.cMinusVMonitorTextBox.TabIndex = 33;
             this.cMinusVMonitorTextBox.Text = "0";
             // 
@@ -1897,9 +1897,9 @@ namespace EDMHardwareControl
             this.groupBox7.Controls.Add(this.updateIMonitorButton);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.label19);
-            this.groupBox7.Location = new System.Drawing.Point(17, 298);
+            this.groupBox7.Location = new System.Drawing.Point(34, 550);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(660, 274);
+            this.groupBox7.Size = new System.Drawing.Size(1320, 506);
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
@@ -1907,9 +1907,9 @@ namespace EDMHardwareControl
             // logCurrentDataCheckBox
             // 
             this.logCurrentDataCheckBox.AutoSize = true;
-            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(1160, 159);
             this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
-            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(128, 29);
             this.logCurrentDataCheckBox.TabIndex = 75;
             this.logCurrentDataCheckBox.Text = "Log data";
             this.logCurrentDataCheckBox.UseVisualStyleBackColor = true;
@@ -1917,9 +1917,9 @@ namespace EDMHardwareControl
             // 
             // clearIMonitorButton
             // 
-            this.clearIMonitorButton.Location = new System.Drawing.Point(118, 76);
+            this.clearIMonitorButton.Location = new System.Drawing.Point(236, 140);
             this.clearIMonitorButton.Name = "clearIMonitorButton";
-            this.clearIMonitorButton.Size = new System.Drawing.Size(39, 23);
+            this.clearIMonitorButton.Size = new System.Drawing.Size(78, 43);
             this.clearIMonitorButton.TabIndex = 74;
             this.clearIMonitorButton.Text = "Clear";
             this.clearIMonitorButton.UseVisualStyleBackColor = true;
@@ -1929,26 +1929,26 @@ namespace EDMHardwareControl
             // 
             this.southIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
             this.southIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
+            this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(186, 87);
             this.southIMonitorErrorTextBox.Name = "southIMonitorErrorTextBox";
             this.southIMonitorErrorTextBox.ReadOnly = true;
-            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(76, 31);
             this.southIMonitorErrorTextBox.TabIndex = 73;
             this.southIMonitorErrorTextBox.Text = "0";
             // 
             // label131
             // 
-            this.label131.Location = new System.Drawing.Point(80, 50);
+            this.label131.Location = new System.Drawing.Point(160, 92);
             this.label131.Name = "label131";
-            this.label131.Size = new System.Drawing.Size(12, 23);
+            this.label131.Size = new System.Drawing.Size(24, 43);
             this.label131.TabIndex = 72;
             this.label131.Text = "±";
             // 
             // label130
             // 
-            this.label130.Location = new System.Drawing.Point(80, 24);
+            this.label130.Location = new System.Drawing.Point(160, 44);
             this.label130.Name = "label130";
-            this.label130.Size = new System.Drawing.Size(12, 23);
+            this.label130.Size = new System.Drawing.Size(24, 43);
             this.label130.TabIndex = 71;
             this.label130.Text = "±";
             // 
@@ -1956,26 +1956,26 @@ namespace EDMHardwareControl
             // 
             this.northIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
             this.northIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
+            this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(186, 39);
             this.northIMonitorErrorTextBox.Name = "northIMonitorErrorTextBox";
             this.northIMonitorErrorTextBox.ReadOnly = true;
-            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(76, 31);
             this.northIMonitorErrorTextBox.TabIndex = 70;
             this.northIMonitorErrorTextBox.Text = "0";
             // 
             // label35
             // 
-            this.label35.Location = new System.Drawing.Point(163, 73);
+            this.label35.Location = new System.Drawing.Point(326, 135);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(80, 31);
+            this.label35.Size = new System.Drawing.Size(160, 57);
             this.label35.TabIndex = 51;
             this.label35.Text = "Measurement Length (S)";
             // 
             // zeroIMonitorButton
             // 
-            this.zeroIMonitorButton.Location = new System.Drawing.Point(68, 76);
+            this.zeroIMonitorButton.Location = new System.Drawing.Point(136, 140);
             this.zeroIMonitorButton.Name = "zeroIMonitorButton";
-            this.zeroIMonitorButton.Size = new System.Drawing.Size(44, 23);
+            this.zeroIMonitorButton.Size = new System.Drawing.Size(88, 43);
             this.zeroIMonitorButton.TabIndex = 46;
             this.zeroIMonitorButton.Text = "Zero";
             this.zeroIMonitorButton.UseVisualStyleBackColor = true;
@@ -1983,25 +1983,25 @@ namespace EDMHardwareControl
             // 
             // label129
             // 
-            this.label129.Location = new System.Drawing.Point(134, 54);
+            this.label129.Location = new System.Drawing.Point(268, 100);
             this.label129.Name = "label129";
-            this.label129.Size = new System.Drawing.Size(47, 23);
+            this.label129.Size = new System.Drawing.Size(94, 42);
             this.label129.TabIndex = 69;
             this.label129.Text = "samples";
             // 
             // currentMonitorSampleLengthTextBox
             // 
-            this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(137, 31);
+            this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(274, 57);
             this.currentMonitorSampleLengthTextBox.Name = "currentMonitorSampleLengthTextBox";
-            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
+            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(72, 31);
             this.currentMonitorSampleLengthTextBox.TabIndex = 67;
             this.currentMonitorSampleLengthTextBox.Text = "20";
             // 
             // label128
             // 
-            this.label128.Location = new System.Drawing.Point(134, 16);
+            this.label128.Location = new System.Drawing.Point(268, 30);
             this.label128.Name = "label128";
-            this.label128.Size = new System.Drawing.Size(47, 23);
+            this.label128.Size = new System.Drawing.Size(94, 42);
             this.label128.TabIndex = 68;
             this.label128.Text = "Average";
             // 
@@ -2009,10 +2009,10 @@ namespace EDMHardwareControl
             // 
             this.southOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.southOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
+            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(488, 87);
             this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
             this.southOffsetIMonitorTextBox.ReadOnly = true;
-            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.southOffsetIMonitorTextBox.TabIndex = 47;
             this.southOffsetIMonitorTextBox.Text = "0";
             // 
@@ -2020,69 +2020,69 @@ namespace EDMHardwareControl
             // 
             this.northOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.northOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
+            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(488, 39);
             this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
             this.northOffsetIMonitorTextBox.ReadOnly = true;
-            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.northOffsetIMonitorTextBox.TabIndex = 49;
             this.northOffsetIMonitorTextBox.Text = "0";
             // 
             // label85
             // 
             this.label85.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label85.Location = new System.Drawing.Point(317, 41);
+            this.label85.Location = new System.Drawing.Point(634, 76);
             this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(82, 28);
+            this.label85.Size = new System.Drawing.Size(164, 51);
             this.label85.TabIndex = 66;
             this.label85.Text = "South monitor (V/kHz)";
             // 
             // label84
             // 
             this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label84.Location = new System.Drawing.Point(317, 13);
+            this.label84.Location = new System.Drawing.Point(634, 24);
             this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(82, 28);
+            this.label84.Size = new System.Drawing.Size(164, 52);
             this.label84.TabIndex = 65;
             this.label84.Text = "North monitor (V/kHz)";
             // 
             // southV2FSlopeTextBox
             // 
-            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
+            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(810, 70);
             this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
-            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(130, 31);
             this.southV2FSlopeTextBox.TabIndex = 64;
             this.southV2FSlopeTextBox.Text = "0.0255023";
             // 
             // northV2FSlopeTextBox
             // 
-            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
+            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(810, 18);
             this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
-            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(130, 31);
             this.northV2FSlopeTextBox.TabIndex = 63;
             this.northV2FSlopeTextBox.Text = "0.025425";
             // 
             // leakageMonitorSlopeTextBox
             // 
-            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(810, 155);
             this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
-            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(130, 31);
             this.leakageMonitorSlopeTextBox.TabIndex = 2;
             this.leakageMonitorSlopeTextBox.Text = "0.200";
             // 
             // label64
             // 
-            this.label64.Location = new System.Drawing.Point(317, 68);
+            this.label64.Location = new System.Drawing.Point(634, 126);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(149, 43);
+            this.label64.Size = new System.Drawing.Size(298, 79);
             this.label64.TabIndex = 58;
             this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
             // 
             // stopIMonitorPollButton
             // 
             this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(577, 50);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(1154, 92);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
-            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopIMonitorPollButton.Size = new System.Drawing.Size(150, 43);
             this.stopIMonitorPollButton.TabIndex = 55;
             this.stopIMonitorPollButton.Text = "Stop poll";
             this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
@@ -2094,9 +2094,9 @@ namespace EDMHardwareControl
             this.NorthLegendItem,
             this.SouthLegendItem});
             this.legend1.ItemSize = new System.Drawing.Size(12, 12);
-            this.legend1.Location = new System.Drawing.Point(472, 86);
+            this.legend1.Location = new System.Drawing.Point(944, 159);
             this.legend1.Name = "legend1";
-            this.legend1.Size = new System.Drawing.Size(115, 22);
+            this.legend1.Size = new System.Drawing.Size(230, 40);
             this.legend1.TabIndex = 59;
             // 
             // NorthLegendItem
@@ -2141,25 +2141,25 @@ namespace EDMHardwareControl
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(519, 16);
+            this.label63.Location = new System.Drawing.Point(1038, 30);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(65, 23);
+            this.label63.Size = new System.Drawing.Size(130, 42);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
             // iMonitorPollPeriod
             // 
-            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
+            this.iMonitorPollPeriod.Location = new System.Drawing.Point(1180, 24);
             this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
-            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
+            this.iMonitorPollPeriod.Size = new System.Drawing.Size(128, 31);
             this.iMonitorPollPeriod.TabIndex = 0;
             this.iMonitorPollPeriod.Text = "100";
             // 
             // startIMonitorPollButton
             // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(491, 50);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(982, 92);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
-            this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startIMonitorPollButton.Size = new System.Drawing.Size(150, 43);
             this.startIMonitorPollButton.TabIndex = 53;
             this.startIMonitorPollButton.Text = "Start poll";
             this.startIMonitorPollButton.UseVisualStyleBackColor = true;
@@ -2174,12 +2174,12 @@ namespace EDMHardwareControl
             | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
             | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
             | NationalInstruments.UI.GraphInteractionModes.EditRange)));
-            this.leakageGraph.Location = new System.Drawing.Point(9, 114);
+            this.leakageGraph.Location = new System.Drawing.Point(18, 210);
             this.leakageGraph.Name = "leakageGraph";
             this.leakageGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
             this.northLeakagePlot,
             this.southLeakagePlot});
-            this.leakageGraph.Size = new System.Drawing.Size(645, 153);
+            this.leakageGraph.Size = new System.Drawing.Size(1290, 283);
             this.leakageGraph.TabIndex = 45;
             this.leakageGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis1});
@@ -2188,25 +2188,25 @@ namespace EDMHardwareControl
             // 
             // IMonitorMeasurementLengthTextBox
             // 
-            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(244, 76);
+            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(488, 140);
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
-            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(128, 31);
             this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
             this.IMonitorMeasurementLengthTextBox.Text = "200";
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(179, 24);
+            this.label17.Location = new System.Drawing.Point(358, 44);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(72, 23);
+            this.label17.Size = new System.Drawing.Size(144, 43);
             this.label17.TabIndex = 50;
             this.label17.Text = "N offset (Hz)";
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(181, 50);
+            this.label16.Location = new System.Drawing.Point(362, 92);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(74, 23);
+            this.label16.Size = new System.Drawing.Size(148, 43);
             this.label16.TabIndex = 48;
             this.label16.Text = "S offset (Hz)";
             // 
@@ -2214,10 +2214,10 @@ namespace EDMHardwareControl
             // 
             this.southIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.southIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
+            this.southIMonitorTextBox.Location = new System.Drawing.Point(84, 87);
             this.southIMonitorTextBox.Name = "southIMonitorTextBox";
             this.southIMonitorTextBox.ReadOnly = true;
-            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.southIMonitorTextBox.Size = new System.Drawing.Size(78, 31);
             this.southIMonitorTextBox.TabIndex = 45;
             this.southIMonitorTextBox.Text = "0";
             // 
@@ -2225,35 +2225,35 @@ namespace EDMHardwareControl
             // 
             this.northIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.northIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
+            this.northIMonitorTextBox.Location = new System.Drawing.Point(84, 39);
             this.northIMonitorTextBox.Name = "northIMonitorTextBox";
             this.northIMonitorTextBox.ReadOnly = true;
-            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.northIMonitorTextBox.Size = new System.Drawing.Size(78, 31);
             this.northIMonitorTextBox.TabIndex = 42;
             this.northIMonitorTextBox.Text = "0";
             // 
             // updateIMonitorButton
             // 
-            this.updateIMonitorButton.Location = new System.Drawing.Point(9, 76);
+            this.updateIMonitorButton.Location = new System.Drawing.Point(18, 140);
             this.updateIMonitorButton.Name = "updateIMonitorButton";
-            this.updateIMonitorButton.Size = new System.Drawing.Size(53, 23);
+            this.updateIMonitorButton.Size = new System.Drawing.Size(106, 43);
             this.updateIMonitorButton.TabIndex = 40;
             this.updateIMonitorButton.Text = "Update";
             this.updateIMonitorButton.Click += new System.EventHandler(this.updateIMonitorButton_Click);
             // 
             // label18
             // 
-            this.label18.Location = new System.Drawing.Point(6, 50);
+            this.label18.Location = new System.Drawing.Point(12, 92);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(40, 23);
+            this.label18.Size = new System.Drawing.Size(80, 43);
             this.label18.TabIndex = 37;
             this.label18.Text = "S (nA)";
             // 
             // label19
             // 
-            this.label19.Location = new System.Drawing.Point(6, 24);
+            this.label19.Location = new System.Drawing.Point(12, 44);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(40, 23);
+            this.label19.Size = new System.Drawing.Size(80, 43);
             this.label19.TabIndex = 36;
             this.label19.Text = "N (nA)";
             // 
@@ -2266,9 +2266,9 @@ namespace EDMHardwareControl
             this.tabPage2.Controls.Add(this.groupBox16);
             this.tabPage2.Controls.Add(this.groupBox14);
             this.tabPage2.Controls.Add(this.groupBox3);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(8, 39);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(697, 575);
+            this.tabPage2.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Synth";
             // 
@@ -2282,9 +2282,9 @@ namespace EDMHardwareControl
             this.groupBox24.Controls.Add(this.piMonitor1TextBox);
             this.groupBox24.Controls.Add(this.label132);
             this.groupBox24.Controls.Add(this.label133);
-            this.groupBox24.Location = new System.Drawing.Point(8, 532);
+            this.groupBox24.Location = new System.Drawing.Point(16, 982);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(675, 39);
+            this.groupBox24.Size = new System.Drawing.Size(1350, 72);
             this.groupBox24.TabIndex = 65;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "pi monitor";
@@ -2293,18 +2293,18 @@ namespace EDMHardwareControl
             // 
             this.piFlipMonTextBox.BackColor = System.Drawing.Color.Black;
             this.piFlipMonTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piFlipMonTextBox.Location = new System.Drawing.Point(127, 16);
+            this.piFlipMonTextBox.Location = new System.Drawing.Point(254, 30);
             this.piFlipMonTextBox.Name = "piFlipMonTextBox";
             this.piFlipMonTextBox.ReadOnly = true;
-            this.piFlipMonTextBox.Size = new System.Drawing.Size(64, 20);
+            this.piFlipMonTextBox.Size = new System.Drawing.Size(128, 31);
             this.piFlipMonTextBox.TabIndex = 67;
             this.piFlipMonTextBox.Text = "0";
             // 
             // UpdatePiFlipMonButton
             // 
-            this.UpdatePiFlipMonButton.Location = new System.Drawing.Point(212, 14);
+            this.UpdatePiFlipMonButton.Location = new System.Drawing.Point(424, 26);
             this.UpdatePiFlipMonButton.Name = "UpdatePiFlipMonButton";
-            this.UpdatePiFlipMonButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdatePiFlipMonButton.Size = new System.Drawing.Size(150, 42);
             this.UpdatePiFlipMonButton.TabIndex = 66;
             this.UpdatePiFlipMonButton.Text = "Update";
             this.UpdatePiFlipMonButton.Click += new System.EventHandler(this.UpdatePiFlipMonButton_Click);
@@ -2313,27 +2313,27 @@ namespace EDMHardwareControl
             // 
             this.piMonitor2TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor2TextBox.Location = new System.Drawing.Point(441, 17);
+            this.piMonitor2TextBox.Location = new System.Drawing.Point(882, 31);
             this.piMonitor2TextBox.Name = "piMonitor2TextBox";
             this.piMonitor2TextBox.ReadOnly = true;
-            this.piMonitor2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor2TextBox.Size = new System.Drawing.Size(128, 31);
             this.piMonitor2TextBox.TabIndex = 65;
             this.piMonitor2TextBox.Text = "0";
             // 
             // updatePiMonitorButton
             // 
-            this.updatePiMonitorButton.Location = new System.Drawing.Point(528, 15);
+            this.updatePiMonitorButton.Location = new System.Drawing.Point(1056, 28);
             this.updatePiMonitorButton.Name = "updatePiMonitorButton";
-            this.updatePiMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updatePiMonitorButton.Size = new System.Drawing.Size(150, 42);
             this.updatePiMonitorButton.TabIndex = 63;
             this.updatePiMonitorButton.Text = "Check";
             this.updatePiMonitorButton.Click += new System.EventHandler(this.updatePiMonitorButton_Click);
             // 
             // label82
             // 
-            this.label82.Location = new System.Drawing.Point(16, 19);
+            this.label82.Location = new System.Drawing.Point(32, 35);
             this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(108, 23);
+            this.label82.Size = new System.Drawing.Size(216, 43);
             this.label82.TabIndex = 64;
             this.label82.Text = "Monitor voltage (V)";
             // 
@@ -2341,44 +2341,44 @@ namespace EDMHardwareControl
             // 
             this.piMonitor1TextBox.BackColor = System.Drawing.Color.Black;
             this.piMonitor1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.piMonitor1TextBox.Location = new System.Drawing.Point(345, 17);
+            this.piMonitor1TextBox.Location = new System.Drawing.Point(690, 31);
             this.piMonitor1TextBox.Name = "piMonitor1TextBox";
             this.piMonitor1TextBox.ReadOnly = true;
-            this.piMonitor1TextBox.Size = new System.Drawing.Size(64, 20);
+            this.piMonitor1TextBox.Size = new System.Drawing.Size(128, 31);
             this.piMonitor1TextBox.TabIndex = 62;
             this.piMonitor1TextBox.Text = "0";
             // 
             // label132
             // 
-            this.label132.Location = new System.Drawing.Point(331, 20);
+            this.label132.Location = new System.Drawing.Point(662, 37);
             this.label132.Name = "label132";
-            this.label132.Size = new System.Drawing.Size(80, 23);
+            this.label132.Size = new System.Drawing.Size(160, 42);
             this.label132.TabIndex = 72;
             this.label132.Text = "0";
             // 
             // label133
             // 
-            this.label133.Location = new System.Drawing.Point(418, 20);
+            this.label133.Location = new System.Drawing.Point(836, 37);
             this.label133.Name = "label133";
-            this.label133.Size = new System.Drawing.Size(80, 23);
+            this.label133.Size = new System.Drawing.Size(160, 42);
             this.label133.TabIndex = 73;
             this.label133.Text = "180";
             // 
             // groupBox22
             // 
             this.groupBox22.Controls.Add(this.rfManualStateCheckBox);
-            this.groupBox22.Location = new System.Drawing.Point(320, 263);
+            this.groupBox22.Location = new System.Drawing.Point(640, 486);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(363, 61);
+            this.groupBox22.Size = new System.Drawing.Size(726, 112);
             this.groupBox22.TabIndex = 33;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "Manual state";
             // 
             // rfManualStateCheckBox
             // 
-            this.rfManualStateCheckBox.Location = new System.Drawing.Point(29, 19);
+            this.rfManualStateCheckBox.Location = new System.Drawing.Point(58, 35);
             this.rfManualStateCheckBox.Name = "rfManualStateCheckBox";
-            this.rfManualStateCheckBox.Size = new System.Drawing.Size(257, 24);
+            this.rfManualStateCheckBox.Size = new System.Drawing.Size(514, 44);
             this.rfManualStateCheckBox.TabIndex = 53;
             this.rfManualStateCheckBox.Text = "State (Checked is rf in bottom)";
             // 
@@ -2432,96 +2432,96 @@ namespace EDMHardwareControl
             this.groupBox4.Controls.Add(this.label125);
             this.groupBox4.Controls.Add(this.label126);
             this.groupBox4.Controls.Add(this.label127);
-            this.groupBox4.Location = new System.Drawing.Point(8, 328);
+            this.groupBox4.Location = new System.Drawing.Point(16, 606);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(675, 209);
+            this.groupBox4.Size = new System.Drawing.Size(1350, 385);
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
             // 
             // setDCFMtoGuess
             // 
-            this.setDCFMtoGuess.Location = new System.Drawing.Point(62, 175);
+            this.setDCFMtoGuess.Location = new System.Drawing.Point(124, 323);
             this.setDCFMtoGuess.Name = "setDCFMtoGuess";
-            this.setDCFMtoGuess.Size = new System.Drawing.Size(225, 23);
+            this.setDCFMtoGuess.Size = new System.Drawing.Size(450, 43);
             this.setDCFMtoGuess.TabIndex = 67;
             this.setDCFMtoGuess.Text = "Set DCFM Voltages to Guess";
             this.setDCFMtoGuess.Click += new System.EventHandler(this.setDCFMtoGuess_Click);
             // 
             // Copyrf2f
             // 
-            this.Copyrf2f.Location = new System.Drawing.Point(256, 148);
+            this.Copyrf2f.Location = new System.Drawing.Point(512, 273);
             this.Copyrf2f.Name = "Copyrf2f";
-            this.Copyrf2f.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf2f.Size = new System.Drawing.Size(150, 43);
             this.Copyrf2f.TabIndex = 66;
             this.Copyrf2f.Text = "Copy";
             this.Copyrf2f.Click += new System.EventHandler(this.Copyrf2f_Click);
             // 
             // Copyrf1f
             // 
-            this.Copyrf1f.Location = new System.Drawing.Point(95, 147);
+            this.Copyrf1f.Location = new System.Drawing.Point(190, 271);
             this.Copyrf1f.Name = "Copyrf1f";
-            this.Copyrf1f.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf1f.Size = new System.Drawing.Size(150, 43);
             this.Copyrf1f.TabIndex = 65;
             this.Copyrf1f.Text = "Copy";
             this.Copyrf1f.Click += new System.EventHandler(this.Copyrf1f_Click);
             // 
             // rf2fCentreGuessTextBox
             // 
-            this.rf2fCentreGuessTextBox.Location = new System.Drawing.Point(185, 148);
+            this.rf2fCentreGuessTextBox.Location = new System.Drawing.Point(370, 273);
             this.rf2fCentreGuessTextBox.Name = "rf2fCentreGuessTextBox";
-            this.rf2fCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf2fCentreGuessTextBox.Size = new System.Drawing.Size(128, 31);
             this.rf2fCentreGuessTextBox.TabIndex = 64;
             this.rf2fCentreGuessTextBox.Text = "0";
             // 
             // rf1fCentreGuessTextBox
             // 
-            this.rf1fCentreGuessTextBox.Location = new System.Drawing.Point(24, 147);
+            this.rf1fCentreGuessTextBox.Location = new System.Drawing.Point(48, 271);
             this.rf1fCentreGuessTextBox.Name = "rf1fCentreGuessTextBox";
-            this.rf1fCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf1fCentreGuessTextBox.Size = new System.Drawing.Size(128, 31);
             this.rf1fCentreGuessTextBox.TabIndex = 63;
             this.rf1fCentreGuessTextBox.Text = "0";
             // 
             // setAttunatorsToGuesses
             // 
-            this.setAttunatorsToGuesses.Location = new System.Drawing.Point(398, 177);
+            this.setAttunatorsToGuesses.Location = new System.Drawing.Point(796, 327);
             this.setAttunatorsToGuesses.Name = "setAttunatorsToGuesses";
-            this.setAttunatorsToGuesses.Size = new System.Drawing.Size(225, 23);
+            this.setAttunatorsToGuesses.Size = new System.Drawing.Size(450, 42);
             this.setAttunatorsToGuesses.TabIndex = 62;
             this.setAttunatorsToGuesses.Text = "Set Attenuator Voltages to Guess";
             this.setAttunatorsToGuesses.Click += new System.EventHandler(this.setAttunatorsToGuesses_Click);
             // 
             // Copyrf2a
             // 
-            this.Copyrf2a.Location = new System.Drawing.Point(592, 148);
+            this.Copyrf2a.Location = new System.Drawing.Point(1184, 273);
             this.Copyrf2a.Name = "Copyrf2a";
-            this.Copyrf2a.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf2a.Size = new System.Drawing.Size(150, 43);
             this.Copyrf2a.TabIndex = 61;
             this.Copyrf2a.Text = "Copy";
             this.Copyrf2a.Click += new System.EventHandler(this.Copyrf2a_Click);
             // 
             // Copyrf1a
             // 
-            this.Copyrf1a.Location = new System.Drawing.Point(431, 147);
+            this.Copyrf1a.Location = new System.Drawing.Point(862, 271);
             this.Copyrf1a.Name = "Copyrf1a";
-            this.Copyrf1a.Size = new System.Drawing.Size(75, 23);
+            this.Copyrf1a.Size = new System.Drawing.Size(150, 43);
             this.Copyrf1a.TabIndex = 60;
             this.Copyrf1a.Text = "Copy";
             this.Copyrf1a.Click += new System.EventHandler(this.Copyrf1a_Click);
             // 
             // rf2aCentreGuessTextBox
             // 
-            this.rf2aCentreGuessTextBox.Location = new System.Drawing.Point(521, 148);
+            this.rf2aCentreGuessTextBox.Location = new System.Drawing.Point(1042, 273);
             this.rf2aCentreGuessTextBox.Name = "rf2aCentreGuessTextBox";
-            this.rf2aCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf2aCentreGuessTextBox.Size = new System.Drawing.Size(128, 31);
             this.rf2aCentreGuessTextBox.TabIndex = 59;
             this.rf2aCentreGuessTextBox.Text = "0";
             // 
             // rf1aCentreGuessTextBox
             // 
-            this.rf1aCentreGuessTextBox.Location = new System.Drawing.Point(360, 147);
+            this.rf1aCentreGuessTextBox.Location = new System.Drawing.Point(720, 271);
             this.rf1aCentreGuessTextBox.Name = "rf1aCentreGuessTextBox";
-            this.rf1aCentreGuessTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rf1aCentreGuessTextBox.Size = new System.Drawing.Size(128, 31);
             this.rf1aCentreGuessTextBox.TabIndex = 34;
             this.rf1aCentreGuessTextBox.Text = "0";
             // 
@@ -2529,10 +2529,10 @@ namespace EDMHardwareControl
             // 
             this.rf2StepPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf2StepPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2StepPowerMon.Location = new System.Drawing.Point(592, 81);
+            this.rf2StepPowerMon.Location = new System.Drawing.Point(1184, 150);
             this.rf2StepPowerMon.Name = "rf2StepPowerMon";
             this.rf2StepPowerMon.ReadOnly = true;
-            this.rf2StepPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2StepPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf2StepPowerMon.TabIndex = 58;
             this.rf2StepPowerMon.Text = "0";
             // 
@@ -2540,10 +2540,10 @@ namespace EDMHardwareControl
             // 
             this.rf2StepFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf2StepFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2StepFreqMon.Location = new System.Drawing.Point(258, 81);
+            this.rf2StepFreqMon.Location = new System.Drawing.Point(516, 150);
             this.rf2StepFreqMon.Name = "rf2StepFreqMon";
             this.rf2StepFreqMon.ReadOnly = true;
-            this.rf2StepFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2StepFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf2StepFreqMon.TabIndex = 58;
             this.rf2StepFreqMon.Text = "0";
             // 
@@ -2551,18 +2551,18 @@ namespace EDMHardwareControl
             // 
             this.rf1StepPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf1StepPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1StepPowerMon.Location = new System.Drawing.Point(431, 81);
+            this.rf1StepPowerMon.Location = new System.Drawing.Point(862, 150);
             this.rf1StepPowerMon.Name = "rf1StepPowerMon";
             this.rf1StepPowerMon.ReadOnly = true;
-            this.rf1StepPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1StepPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf1StepPowerMon.TabIndex = 58;
             this.rf1StepPowerMon.Text = "0";
             // 
             // rfPowerUpdateButton
             // 
-            this.rfPowerUpdateButton.Location = new System.Drawing.Point(469, 107);
+            this.rfPowerUpdateButton.Location = new System.Drawing.Point(938, 198);
             this.rfPowerUpdateButton.Name = "rfPowerUpdateButton";
-            this.rfPowerUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.rfPowerUpdateButton.Size = new System.Drawing.Size(150, 42);
             this.rfPowerUpdateButton.TabIndex = 50;
             this.rfPowerUpdateButton.Text = "Update";
             this.rfPowerUpdateButton.Click += new System.EventHandler(this.rfPowerUpdateButton_Click);
@@ -2571,10 +2571,10 @@ namespace EDMHardwareControl
             // 
             this.rf1StepFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf1StepFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1StepFreqMon.Location = new System.Drawing.Point(98, 81);
+            this.rf1StepFreqMon.Location = new System.Drawing.Point(196, 150);
             this.rf1StepFreqMon.Name = "rf1StepFreqMon";
             this.rf1StepFreqMon.ReadOnly = true;
-            this.rf1StepFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1StepFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf1StepFreqMon.TabIndex = 58;
             this.rf1StepFreqMon.Text = "0";
             // 
@@ -2582,10 +2582,10 @@ namespace EDMHardwareControl
             // 
             this.rf2CentrePowerMon.BackColor = System.Drawing.Color.Black;
             this.rf2CentrePowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2CentrePowerMon.Location = new System.Drawing.Point(521, 81);
+            this.rf2CentrePowerMon.Location = new System.Drawing.Point(1042, 150);
             this.rf2CentrePowerMon.Name = "rf2CentrePowerMon";
             this.rf2CentrePowerMon.ReadOnly = true;
-            this.rf2CentrePowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2CentrePowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf2CentrePowerMon.TabIndex = 57;
             this.rf2CentrePowerMon.Text = "0";
             // 
@@ -2593,10 +2593,10 @@ namespace EDMHardwareControl
             // 
             this.rf2CentreFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf2CentreFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2CentreFreqMon.Location = new System.Drawing.Point(187, 81);
+            this.rf2CentreFreqMon.Location = new System.Drawing.Point(374, 150);
             this.rf2CentreFreqMon.Name = "rf2CentreFreqMon";
             this.rf2CentreFreqMon.ReadOnly = true;
-            this.rf2CentreFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2CentreFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf2CentreFreqMon.TabIndex = 57;
             this.rf2CentreFreqMon.Text = "0";
             // 
@@ -2604,10 +2604,10 @@ namespace EDMHardwareControl
             // 
             this.rf1CentrePowerMon.BackColor = System.Drawing.Color.Black;
             this.rf1CentrePowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1CentrePowerMon.Location = new System.Drawing.Point(360, 81);
+            this.rf1CentrePowerMon.Location = new System.Drawing.Point(720, 150);
             this.rf1CentrePowerMon.Name = "rf1CentrePowerMon";
             this.rf1CentrePowerMon.ReadOnly = true;
-            this.rf1CentrePowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1CentrePowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf1CentrePowerMon.TabIndex = 57;
             this.rf1CentrePowerMon.Text = "0";
             // 
@@ -2615,74 +2615,74 @@ namespace EDMHardwareControl
             // 
             this.rf1CentreFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf1CentreFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1CentreFreqMon.Location = new System.Drawing.Point(27, 81);
+            this.rf1CentreFreqMon.Location = new System.Drawing.Point(54, 150);
             this.rf1CentreFreqMon.Name = "rf1CentreFreqMon";
             this.rf1CentreFreqMon.ReadOnly = true;
-            this.rf1CentreFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1CentreFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf1CentreFreqMon.TabIndex = 57;
             this.rf1CentreFreqMon.Text = "0";
             // 
             // label56
             // 
-            this.label56.Location = new System.Drawing.Point(589, 64);
+            this.label56.Location = new System.Drawing.Point(1178, 118);
             this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(80, 23);
+            this.label56.Size = new System.Drawing.Size(160, 43);
             this.label56.TabIndex = 56;
             this.label56.Text = "Step";
             // 
             // label48
             // 
-            this.label48.Location = new System.Drawing.Point(255, 64);
+            this.label48.Location = new System.Drawing.Point(510, 118);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(80, 23);
+            this.label48.Size = new System.Drawing.Size(160, 43);
             this.label48.TabIndex = 56;
             this.label48.Text = "Step";
             // 
             // label55
             // 
-            this.label55.Location = new System.Drawing.Point(428, 64);
+            this.label55.Location = new System.Drawing.Point(856, 118);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(80, 23);
+            this.label55.Size = new System.Drawing.Size(160, 43);
             this.label55.TabIndex = 56;
             this.label55.Text = "Step";
             // 
             // label40
             // 
-            this.label40.Location = new System.Drawing.Point(95, 64);
+            this.label40.Location = new System.Drawing.Point(190, 118);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(80, 23);
+            this.label40.Size = new System.Drawing.Size(160, 43);
             this.label40.TabIndex = 56;
             this.label40.Text = "Step";
             // 
             // label54
             // 
-            this.label54.Location = new System.Drawing.Point(518, 64);
+            this.label54.Location = new System.Drawing.Point(1036, 118);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(80, 23);
+            this.label54.Size = new System.Drawing.Size(160, 43);
             this.label54.TabIndex = 55;
             this.label54.Text = "Centre";
             // 
             // label47
             // 
-            this.label47.Location = new System.Drawing.Point(184, 64);
+            this.label47.Location = new System.Drawing.Point(368, 118);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(80, 23);
+            this.label47.Size = new System.Drawing.Size(160, 43);
             this.label47.TabIndex = 55;
             this.label47.Text = "Centre";
             // 
             // label53
             // 
-            this.label53.Location = new System.Drawing.Point(357, 64);
+            this.label53.Location = new System.Drawing.Point(714, 118);
             this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(80, 23);
+            this.label53.Size = new System.Drawing.Size(160, 43);
             this.label53.TabIndex = 55;
             this.label53.Text = "Centre";
             // 
             // label42
             // 
-            this.label42.Location = new System.Drawing.Point(24, 64);
+            this.label42.Location = new System.Drawing.Point(48, 118);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(80, 23);
+            this.label42.Size = new System.Drawing.Size(160, 43);
             this.label42.TabIndex = 55;
             this.label42.Text = "Centre";
             // 
@@ -2690,10 +2690,10 @@ namespace EDMHardwareControl
             // 
             this.rf2MinusPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf2MinusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2MinusPowerMon.Location = new System.Drawing.Point(592, 44);
+            this.rf2MinusPowerMon.Location = new System.Drawing.Point(1184, 81);
             this.rf2MinusPowerMon.Name = "rf2MinusPowerMon";
             this.rf2MinusPowerMon.ReadOnly = true;
-            this.rf2MinusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2MinusPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf2MinusPowerMon.TabIndex = 54;
             this.rf2MinusPowerMon.Text = "0";
             // 
@@ -2701,10 +2701,10 @@ namespace EDMHardwareControl
             // 
             this.rf2MinusFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf2MinusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2MinusFreqMon.Location = new System.Drawing.Point(258, 44);
+            this.rf2MinusFreqMon.Location = new System.Drawing.Point(516, 81);
             this.rf2MinusFreqMon.Name = "rf2MinusFreqMon";
             this.rf2MinusFreqMon.ReadOnly = true;
-            this.rf2MinusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2MinusFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf2MinusFreqMon.TabIndex = 54;
             this.rf2MinusFreqMon.Text = "0";
             // 
@@ -2712,10 +2712,10 @@ namespace EDMHardwareControl
             // 
             this.rf1MinusPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf1MinusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1MinusPowerMon.Location = new System.Drawing.Point(431, 44);
+            this.rf1MinusPowerMon.Location = new System.Drawing.Point(862, 81);
             this.rf1MinusPowerMon.Name = "rf1MinusPowerMon";
             this.rf1MinusPowerMon.ReadOnly = true;
-            this.rf1MinusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1MinusPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf1MinusPowerMon.TabIndex = 54;
             this.rf1MinusPowerMon.Text = "0";
             // 
@@ -2723,10 +2723,10 @@ namespace EDMHardwareControl
             // 
             this.rf1MinusFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf1MinusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1MinusFreqMon.Location = new System.Drawing.Point(98, 44);
+            this.rf1MinusFreqMon.Location = new System.Drawing.Point(196, 81);
             this.rf1MinusFreqMon.Name = "rf1MinusFreqMon";
             this.rf1MinusFreqMon.ReadOnly = true;
-            this.rf1MinusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1MinusFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf1MinusFreqMon.TabIndex = 54;
             this.rf1MinusFreqMon.Text = "0";
             // 
@@ -2734,10 +2734,10 @@ namespace EDMHardwareControl
             // 
             this.rf2PlusPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf2PlusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2PlusPowerMon.Location = new System.Drawing.Point(521, 44);
+            this.rf2PlusPowerMon.Location = new System.Drawing.Point(1042, 81);
             this.rf2PlusPowerMon.Name = "rf2PlusPowerMon";
             this.rf2PlusPowerMon.ReadOnly = true;
-            this.rf2PlusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2PlusPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf2PlusPowerMon.TabIndex = 51;
             this.rf2PlusPowerMon.Text = "0";
             // 
@@ -2745,10 +2745,10 @@ namespace EDMHardwareControl
             // 
             this.rf2PlusFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf2PlusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf2PlusFreqMon.Location = new System.Drawing.Point(187, 44);
+            this.rf2PlusFreqMon.Location = new System.Drawing.Point(374, 81);
             this.rf2PlusFreqMon.Name = "rf2PlusFreqMon";
             this.rf2PlusFreqMon.ReadOnly = true;
-            this.rf2PlusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf2PlusFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf2PlusFreqMon.TabIndex = 51;
             this.rf2PlusFreqMon.Text = "0";
             // 
@@ -2756,10 +2756,10 @@ namespace EDMHardwareControl
             // 
             this.rf1PlusPowerMon.BackColor = System.Drawing.Color.Black;
             this.rf1PlusPowerMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1PlusPowerMon.Location = new System.Drawing.Point(360, 44);
+            this.rf1PlusPowerMon.Location = new System.Drawing.Point(720, 81);
             this.rf1PlusPowerMon.Name = "rf1PlusPowerMon";
             this.rf1PlusPowerMon.ReadOnly = true;
-            this.rf1PlusPowerMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1PlusPowerMon.Size = new System.Drawing.Size(128, 31);
             this.rf1PlusPowerMon.TabIndex = 51;
             this.rf1PlusPowerMon.Text = "0";
             // 
@@ -2767,115 +2767,115 @@ namespace EDMHardwareControl
             // 
             this.rf1PlusFreqMon.BackColor = System.Drawing.Color.Black;
             this.rf1PlusFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.rf1PlusFreqMon.Location = new System.Drawing.Point(27, 44);
+            this.rf1PlusFreqMon.Location = new System.Drawing.Point(54, 81);
             this.rf1PlusFreqMon.Name = "rf1PlusFreqMon";
             this.rf1PlusFreqMon.ReadOnly = true;
-            this.rf1PlusFreqMon.Size = new System.Drawing.Size(64, 20);
+            this.rf1PlusFreqMon.Size = new System.Drawing.Size(128, 31);
             this.rf1PlusFreqMon.TabIndex = 51;
             this.rf1PlusFreqMon.Text = "0";
             // 
             // label52
             // 
-            this.label52.Location = new System.Drawing.Point(589, 25);
+            this.label52.Location = new System.Drawing.Point(1178, 46);
             this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(80, 23);
+            this.label52.Size = new System.Drawing.Size(160, 43);
             this.label52.TabIndex = 47;
             this.label52.Text = "rf2 ap - (dBm)";
             // 
             // rfFrequencyUpdateButton
             // 
-            this.rfFrequencyUpdateButton.Location = new System.Drawing.Point(140, 107);
+            this.rfFrequencyUpdateButton.Location = new System.Drawing.Point(280, 198);
             this.rfFrequencyUpdateButton.Name = "rfFrequencyUpdateButton";
-            this.rfFrequencyUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.rfFrequencyUpdateButton.Size = new System.Drawing.Size(150, 42);
             this.rfFrequencyUpdateButton.TabIndex = 50;
             this.rfFrequencyUpdateButton.Text = "Update";
             this.rfFrequencyUpdateButton.Click += new System.EventHandler(this.rfFrequencyUpdateButton_Click);
             // 
             // label51
             // 
-            this.label51.Location = new System.Drawing.Point(428, 25);
+            this.label51.Location = new System.Drawing.Point(856, 46);
             this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(80, 23);
+            this.label51.Size = new System.Drawing.Size(160, 43);
             this.label51.TabIndex = 47;
             this.label51.Text = "rf1 ap - (dBm)";
             // 
             // label46
             // 
-            this.label46.Location = new System.Drawing.Point(255, 25);
+            this.label46.Location = new System.Drawing.Point(510, 46);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(80, 23);
+            this.label46.Size = new System.Drawing.Size(160, 43);
             this.label46.TabIndex = 47;
             this.label46.Text = "rf2 fr - (Hz)";
             // 
             // label50
             // 
-            this.label50.Location = new System.Drawing.Point(518, 25);
+            this.label50.Location = new System.Drawing.Point(1036, 46);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(80, 23);
+            this.label50.Size = new System.Drawing.Size(160, 43);
             this.label50.TabIndex = 46;
             this.label50.Text = "rf2 ap + (dBm)";
             // 
             // label43
             // 
-            this.label43.Location = new System.Drawing.Point(95, 25);
+            this.label43.Location = new System.Drawing.Point(190, 46);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(80, 23);
+            this.label43.Size = new System.Drawing.Size(160, 43);
             this.label43.TabIndex = 47;
             this.label43.Text = "rf1 fr - (Hz)";
             // 
             // label49
             // 
-            this.label49.Location = new System.Drawing.Point(357, 25);
+            this.label49.Location = new System.Drawing.Point(714, 46);
             this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(80, 23);
+            this.label49.Size = new System.Drawing.Size(160, 43);
             this.label49.TabIndex = 46;
             this.label49.Text = "rf1ap + (dBm)";
             // 
             // label45
             // 
-            this.label45.Location = new System.Drawing.Point(184, 25);
+            this.label45.Location = new System.Drawing.Point(368, 46);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(80, 23);
+            this.label45.Size = new System.Drawing.Size(160, 43);
             this.label45.TabIndex = 46;
             this.label45.Text = "rf2 fr + (Hz)";
             // 
             // label44
             // 
-            this.label44.Location = new System.Drawing.Point(24, 25);
+            this.label44.Location = new System.Drawing.Point(48, 46);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(80, 23);
+            this.label44.Size = new System.Drawing.Size(160, 43);
             this.label44.TabIndex = 46;
             this.label44.Text = "rf1 fr + (Hz)";
             // 
             // label81
             // 
-            this.label81.Location = new System.Drawing.Point(358, 133);
+            this.label81.Location = new System.Drawing.Point(716, 246);
             this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(80, 23);
+            this.label81.Size = new System.Drawing.Size(160, 42);
             this.label81.TabIndex = 68;
             this.label81.Text = "Centre";
             // 
             // label125
             // 
-            this.label125.Location = new System.Drawing.Point(519, 134);
+            this.label125.Location = new System.Drawing.Point(1038, 247);
             this.label125.Name = "label125";
-            this.label125.Size = new System.Drawing.Size(80, 23);
+            this.label125.Size = new System.Drawing.Size(160, 43);
             this.label125.TabIndex = 69;
             this.label125.Text = "Centre";
             // 
             // label126
             // 
-            this.label126.Location = new System.Drawing.Point(23, 133);
+            this.label126.Location = new System.Drawing.Point(46, 246);
             this.label126.Name = "label126";
-            this.label126.Size = new System.Drawing.Size(80, 23);
+            this.label126.Size = new System.Drawing.Size(160, 42);
             this.label126.TabIndex = 70;
             this.label126.Text = "Centre";
             // 
             // label127
             // 
-            this.label127.Location = new System.Drawing.Point(184, 134);
+            this.label127.Location = new System.Drawing.Point(368, 247);
             this.label127.Name = "label127";
-            this.label127.Size = new System.Drawing.Size(80, 23);
+            this.label127.Size = new System.Drawing.Size(160, 43);
             this.label127.TabIndex = 71;
             this.label127.Text = "Centre";
             // 
@@ -2887,63 +2887,63 @@ namespace EDMHardwareControl
             this.groupBox16.Controls.Add(this.phaseFlip1CheckBox);
             this.groupBox16.Controls.Add(this.fmSelectCheck);
             this.groupBox16.Controls.Add(this.rfSwitchEnableCheck);
-            this.groupBox16.Location = new System.Drawing.Point(8, 184);
+            this.groupBox16.Location = new System.Drawing.Point(16, 340);
             this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(296, 140);
+            this.groupBox16.Size = new System.Drawing.Size(592, 258);
             this.groupBox16.TabIndex = 26;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "TTL controls";
             // 
             // scramblerCheckBox
             // 
-            this.scramblerCheckBox.Location = new System.Drawing.Point(190, 22);
+            this.scramblerCheckBox.Location = new System.Drawing.Point(380, 41);
             this.scramblerCheckBox.Name = "scramblerCheckBox";
-            this.scramblerCheckBox.Size = new System.Drawing.Size(122, 24);
+            this.scramblerCheckBox.Size = new System.Drawing.Size(244, 44);
             this.scramblerCheckBox.TabIndex = 31;
             this.scramblerCheckBox.Text = "scrambler TTL";
             this.scramblerCheckBox.CheckedChanged += new System.EventHandler(this.scramblerCheckBox_CheckedChanged);
             // 
             // attenuatorSelectCheck
             // 
-            this.attenuatorSelectCheck.Location = new System.Drawing.Point(24, 82);
+            this.attenuatorSelectCheck.Location = new System.Drawing.Point(48, 151);
             this.attenuatorSelectCheck.Name = "attenuatorSelectCheck";
-            this.attenuatorSelectCheck.Size = new System.Drawing.Size(208, 24);
+            this.attenuatorSelectCheck.Size = new System.Drawing.Size(416, 45);
             this.attenuatorSelectCheck.TabIndex = 30;
             this.attenuatorSelectCheck.Text = "Attenuator select (check rf1)";
             this.attenuatorSelectCheck.CheckedChanged += new System.EventHandler(this.attenuatorSelectCheck_CheckedChanged);
             // 
             // phaseFlip2CheckBox
             // 
-            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(187, 112);
+            this.phaseFlip2CheckBox.Location = new System.Drawing.Point(374, 207);
             this.phaseFlip2CheckBox.Name = "phaseFlip2CheckBox";
-            this.phaseFlip2CheckBox.Size = new System.Drawing.Size(152, 24);
+            this.phaseFlip2CheckBox.Size = new System.Drawing.Size(304, 44);
             this.phaseFlip2CheckBox.TabIndex = 29;
             this.phaseFlip2CheckBox.Text = "phase flip TTL 2";
             this.phaseFlip2CheckBox.CheckedChanged += new System.EventHandler(this.phaseFlip2CheckBox_CheckedChanged);
             // 
             // phaseFlip1CheckBox
             // 
-            this.phaseFlip1CheckBox.Location = new System.Drawing.Point(24, 112);
+            this.phaseFlip1CheckBox.Location = new System.Drawing.Point(48, 207);
             this.phaseFlip1CheckBox.Name = "phaseFlip1CheckBox";
-            this.phaseFlip1CheckBox.Size = new System.Drawing.Size(152, 24);
+            this.phaseFlip1CheckBox.Size = new System.Drawing.Size(304, 44);
             this.phaseFlip1CheckBox.TabIndex = 28;
             this.phaseFlip1CheckBox.Text = "phase flip TTL 1";
             this.phaseFlip1CheckBox.CheckedChanged += new System.EventHandler(this.phaseFlip1CheckBox_CheckedChanged);
             // 
             // fmSelectCheck
             // 
-            this.fmSelectCheck.Location = new System.Drawing.Point(24, 52);
+            this.fmSelectCheck.Location = new System.Drawing.Point(48, 96);
             this.fmSelectCheck.Name = "fmSelectCheck";
-            this.fmSelectCheck.Size = new System.Drawing.Size(208, 24);
+            this.fmSelectCheck.Size = new System.Drawing.Size(416, 44);
             this.fmSelectCheck.TabIndex = 27;
             this.fmSelectCheck.Text = "DC FM select (check rf1)";
             this.fmSelectCheck.CheckedChanged += new System.EventHandler(this.greenFMSelectCheck_CheckedChanged);
             // 
             // rfSwitchEnableCheck
             // 
-            this.rfSwitchEnableCheck.Location = new System.Drawing.Point(24, 22);
+            this.rfSwitchEnableCheck.Location = new System.Drawing.Point(48, 41);
             this.rfSwitchEnableCheck.Name = "rfSwitchEnableCheck";
-            this.rfSwitchEnableCheck.Size = new System.Drawing.Size(208, 24);
+            this.rfSwitchEnableCheck.Size = new System.Drawing.Size(416, 44);
             this.rfSwitchEnableCheck.TabIndex = 22;
             this.rfSwitchEnableCheck.Text = "Enable rf1 switch (check on)";
             this.rfSwitchEnableCheck.CheckedChanged += new System.EventHandler(this.rfSwitchEnableCheck_CheckedChanged);
@@ -2975,18 +2975,18 @@ namespace EDMHardwareControl
             this.groupBox14.Controls.Add(this.rf2AttenuatorVoltageTextBox);
             this.groupBox14.Controls.Add(this.label39);
             this.groupBox14.Controls.Add(this.rf1AttenuatorVoltageTextBox);
-            this.groupBox14.Location = new System.Drawing.Point(320, 16);
+            this.groupBox14.Location = new System.Drawing.Point(640, 30);
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(363, 244);
+            this.groupBox14.Size = new System.Drawing.Size(726, 450);
             this.groupBox14.TabIndex = 24;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "fast rf control";
             // 
             // setScramblerVoltageButton
             // 
-            this.setScramblerVoltageButton.Location = new System.Drawing.Point(125, 218);
+            this.setScramblerVoltageButton.Location = new System.Drawing.Point(250, 402);
             this.setScramblerVoltageButton.Name = "setScramblerVoltageButton";
-            this.setScramblerVoltageButton.Size = new System.Drawing.Size(131, 23);
+            this.setScramblerVoltageButton.Size = new System.Drawing.Size(262, 43);
             this.setScramblerVoltageButton.TabIndex = 33;
             this.setScramblerVoltageButton.Text = "Set scrambler voltage";
             this.setScramblerVoltageButton.Click += new System.EventHandler(this.setScramblerVoltageButton_Click);
@@ -2996,18 +2996,18 @@ namespace EDMHardwareControl
             this.panel4.Controls.Add(this.rf2FMZeroRB);
             this.panel4.Controls.Add(this.rf2FMPlusRB);
             this.panel4.Controls.Add(this.rf2FMMinusRB);
-            this.panel4.Location = new System.Drawing.Point(249, 134);
+            this.panel4.Location = new System.Drawing.Point(498, 247);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(108, 32);
+            this.panel4.Size = new System.Drawing.Size(216, 59);
             this.panel4.TabIndex = 0;
             // 
             // rf2FMZeroRB
             // 
             this.rf2FMZeroRB.AutoSize = true;
             this.rf2FMZeroRB.Checked = true;
-            this.rf2FMZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf2FMZeroRB.Location = new System.Drawing.Point(154, 13);
             this.rf2FMZeroRB.Name = "rf2FMZeroRB";
-            this.rf2FMZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2FMZeroRB.Size = new System.Drawing.Size(55, 29);
             this.rf2FMZeroRB.TabIndex = 32;
             this.rf2FMZeroRB.TabStop = true;
             this.rf2FMZeroRB.Text = "0";
@@ -3016,9 +3016,9 @@ namespace EDMHardwareControl
             // rf2FMPlusRB
             // 
             this.rf2FMPlusRB.AutoSize = true;
-            this.rf2FMPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf2FMPlusRB.Location = new System.Drawing.Point(6, 11);
             this.rf2FMPlusRB.Name = "rf2FMPlusRB";
-            this.rf2FMPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2FMPlusRB.Size = new System.Drawing.Size(55, 29);
             this.rf2FMPlusRB.TabIndex = 32;
             this.rf2FMPlusRB.Text = "+";
             this.rf2FMPlusRB.UseVisualStyleBackColor = true;
@@ -3026,26 +3026,26 @@ namespace EDMHardwareControl
             // rf2FMMinusRB
             // 
             this.rf2FMMinusRB.AutoSize = true;
-            this.rf2FMMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf2FMMinusRB.Location = new System.Drawing.Point(84, 13);
             this.rf2FMMinusRB.Name = "rf2FMMinusRB";
-            this.rf2FMMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf2FMMinusRB.Size = new System.Drawing.Size(50, 29);
             this.rf2FMMinusRB.TabIndex = 32;
             this.rf2FMMinusRB.Text = "-";
             this.rf2FMMinusRB.UseVisualStyleBackColor = true;
             // 
             // label74
             // 
-            this.label74.Location = new System.Drawing.Point(6, 195);
+            this.label74.Location = new System.Drawing.Point(12, 360);
             this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(114, 23);
+            this.label74.Size = new System.Drawing.Size(228, 42);
             this.label74.TabIndex = 32;
             this.label74.Text = "Scrambler voltage (V)";
             // 
             // scramblerVoltageTextBox
             // 
-            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(128, 192);
+            this.scramblerVoltageTextBox.Location = new System.Drawing.Point(256, 354);
             this.scramblerVoltageTextBox.Name = "scramblerVoltageTextBox";
-            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(34, 20);
+            this.scramblerVoltageTextBox.Size = new System.Drawing.Size(68, 31);
             this.scramblerVoltageTextBox.TabIndex = 31;
             this.scramblerVoltageTextBox.Text = "0";
             // 
@@ -3054,18 +3054,18 @@ namespace EDMHardwareControl
             this.panel3.Controls.Add(this.rf1FMZeroRB);
             this.panel3.Controls.Add(this.rf1FMPlusRB);
             this.panel3.Controls.Add(this.rf1FMMinusRB);
-            this.panel3.Location = new System.Drawing.Point(249, 106);
+            this.panel3.Location = new System.Drawing.Point(498, 196);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(108, 32);
+            this.panel3.Size = new System.Drawing.Size(216, 59);
             this.panel3.TabIndex = 0;
             // 
             // rf1FMZeroRB
             // 
             this.rf1FMZeroRB.AutoSize = true;
             this.rf1FMZeroRB.Checked = true;
-            this.rf1FMZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf1FMZeroRB.Location = new System.Drawing.Point(154, 13);
             this.rf1FMZeroRB.Name = "rf1FMZeroRB";
-            this.rf1FMZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1FMZeroRB.Size = new System.Drawing.Size(55, 29);
             this.rf1FMZeroRB.TabIndex = 32;
             this.rf1FMZeroRB.TabStop = true;
             this.rf1FMZeroRB.Text = "0";
@@ -3074,9 +3074,9 @@ namespace EDMHardwareControl
             // rf1FMPlusRB
             // 
             this.rf1FMPlusRB.AutoSize = true;
-            this.rf1FMPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf1FMPlusRB.Location = new System.Drawing.Point(6, 11);
             this.rf1FMPlusRB.Name = "rf1FMPlusRB";
-            this.rf1FMPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1FMPlusRB.Size = new System.Drawing.Size(55, 29);
             this.rf1FMPlusRB.TabIndex = 32;
             this.rf1FMPlusRB.Text = "+";
             this.rf1FMPlusRB.UseVisualStyleBackColor = true;
@@ -3084,9 +3084,9 @@ namespace EDMHardwareControl
             // rf1FMMinusRB
             // 
             this.rf1FMMinusRB.AutoSize = true;
-            this.rf1FMMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf1FMMinusRB.Location = new System.Drawing.Point(84, 13);
             this.rf1FMMinusRB.Name = "rf1FMMinusRB";
-            this.rf1FMMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf1FMMinusRB.Size = new System.Drawing.Size(50, 29);
             this.rf1FMMinusRB.TabIndex = 32;
             this.rf1FMMinusRB.Text = "-";
             this.rf1FMMinusRB.UseVisualStyleBackColor = true;
@@ -3096,18 +3096,18 @@ namespace EDMHardwareControl
             this.panel2.Controls.Add(this.rf2AttZeroRB);
             this.panel2.Controls.Add(this.rf2AttPlusRB);
             this.panel2.Controls.Add(this.rf2AttMinusRB);
-            this.panel2.Location = new System.Drawing.Point(249, 47);
+            this.panel2.Location = new System.Drawing.Point(498, 87);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(108, 32);
+            this.panel2.Size = new System.Drawing.Size(216, 59);
             this.panel2.TabIndex = 0;
             // 
             // rf2AttZeroRB
             // 
             this.rf2AttZeroRB.AutoSize = true;
             this.rf2AttZeroRB.Checked = true;
-            this.rf2AttZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf2AttZeroRB.Location = new System.Drawing.Point(154, 13);
             this.rf2AttZeroRB.Name = "rf2AttZeroRB";
-            this.rf2AttZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2AttZeroRB.Size = new System.Drawing.Size(55, 29);
             this.rf2AttZeroRB.TabIndex = 32;
             this.rf2AttZeroRB.TabStop = true;
             this.rf2AttZeroRB.Text = "0";
@@ -3116,9 +3116,9 @@ namespace EDMHardwareControl
             // rf2AttPlusRB
             // 
             this.rf2AttPlusRB.AutoSize = true;
-            this.rf2AttPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf2AttPlusRB.Location = new System.Drawing.Point(6, 11);
             this.rf2AttPlusRB.Name = "rf2AttPlusRB";
-            this.rf2AttPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf2AttPlusRB.Size = new System.Drawing.Size(55, 29);
             this.rf2AttPlusRB.TabIndex = 32;
             this.rf2AttPlusRB.Text = "+";
             this.rf2AttPlusRB.UseVisualStyleBackColor = true;
@@ -3126,9 +3126,9 @@ namespace EDMHardwareControl
             // rf2AttMinusRB
             // 
             this.rf2AttMinusRB.AutoSize = true;
-            this.rf2AttMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf2AttMinusRB.Location = new System.Drawing.Point(84, 13);
             this.rf2AttMinusRB.Name = "rf2AttMinusRB";
-            this.rf2AttMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf2AttMinusRB.Size = new System.Drawing.Size(50, 29);
             this.rf2AttMinusRB.TabIndex = 32;
             this.rf2AttMinusRB.Text = "-";
             this.rf2AttMinusRB.UseVisualStyleBackColor = true;
@@ -3138,18 +3138,18 @@ namespace EDMHardwareControl
             this.panel1.Controls.Add(this.rf1AttZeroRB);
             this.panel1.Controls.Add(this.rf1AttPlusRB);
             this.panel1.Controls.Add(this.rf1AttMinusRB);
-            this.panel1.Location = new System.Drawing.Point(249, 19);
+            this.panel1.Location = new System.Drawing.Point(498, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(108, 32);
+            this.panel1.Size = new System.Drawing.Size(216, 59);
             this.panel1.TabIndex = 0;
             // 
             // rf1AttZeroRB
             // 
             this.rf1AttZeroRB.AutoSize = true;
             this.rf1AttZeroRB.Checked = true;
-            this.rf1AttZeroRB.Location = new System.Drawing.Point(77, 7);
+            this.rf1AttZeroRB.Location = new System.Drawing.Point(154, 13);
             this.rf1AttZeroRB.Name = "rf1AttZeroRB";
-            this.rf1AttZeroRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1AttZeroRB.Size = new System.Drawing.Size(55, 29);
             this.rf1AttZeroRB.TabIndex = 32;
             this.rf1AttZeroRB.TabStop = true;
             this.rf1AttZeroRB.Text = "0";
@@ -3158,9 +3158,9 @@ namespace EDMHardwareControl
             // rf1AttPlusRB
             // 
             this.rf1AttPlusRB.AutoSize = true;
-            this.rf1AttPlusRB.Location = new System.Drawing.Point(3, 6);
+            this.rf1AttPlusRB.Location = new System.Drawing.Point(6, 11);
             this.rf1AttPlusRB.Name = "rf1AttPlusRB";
-            this.rf1AttPlusRB.Size = new System.Drawing.Size(31, 17);
+            this.rf1AttPlusRB.Size = new System.Drawing.Size(55, 29);
             this.rf1AttPlusRB.TabIndex = 32;
             this.rf1AttPlusRB.Text = "+";
             this.rf1AttPlusRB.UseVisualStyleBackColor = true;
@@ -3168,156 +3168,156 @@ namespace EDMHardwareControl
             // rf1AttMinusRB
             // 
             this.rf1AttMinusRB.AutoSize = true;
-            this.rf1AttMinusRB.Location = new System.Drawing.Point(42, 7);
+            this.rf1AttMinusRB.Location = new System.Drawing.Point(84, 13);
             this.rf1AttMinusRB.Name = "rf1AttMinusRB";
-            this.rf1AttMinusRB.Size = new System.Drawing.Size(28, 17);
+            this.rf1AttMinusRB.Size = new System.Drawing.Size(50, 29);
             this.rf1AttMinusRB.TabIndex = 32;
             this.rf1AttMinusRB.Text = "-";
             this.rf1AttMinusRB.UseVisualStyleBackColor = true;
             // 
             // rf2FMIncTextBox
             // 
-            this.rf2FMIncTextBox.Location = new System.Drawing.Point(198, 136);
+            this.rf2FMIncTextBox.Location = new System.Drawing.Point(396, 251);
             this.rf2FMIncTextBox.Name = "rf2FMIncTextBox";
-            this.rf2FMIncTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf2FMIncTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf2FMIncTextBox.TabIndex = 7;
             this.rf2FMIncTextBox.Text = "0";
             // 
             // label24
             // 
-            this.label24.Location = new System.Drawing.Point(168, 136);
+            this.label24.Location = new System.Drawing.Point(336, 251);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(24, 23);
+            this.label24.Size = new System.Drawing.Size(48, 43);
             this.label24.TabIndex = 30;
             this.label24.Text = "+-";
             // 
             // rf1FMIncTextBox
             // 
-            this.rf1FMIncTextBox.Location = new System.Drawing.Point(198, 110);
+            this.rf1FMIncTextBox.Location = new System.Drawing.Point(396, 203);
             this.rf1FMIncTextBox.Name = "rf1FMIncTextBox";
-            this.rf1FMIncTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf1FMIncTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf1FMIncTextBox.TabIndex = 5;
             this.rf1FMIncTextBox.Text = "0";
             // 
             // label28
             // 
-            this.label28.Location = new System.Drawing.Point(168, 110);
+            this.label28.Location = new System.Drawing.Point(336, 203);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(24, 23);
+            this.label28.Size = new System.Drawing.Size(48, 43);
             this.label28.TabIndex = 28;
             this.label28.Text = "+-";
             // 
             // rf2AttIncTextBox
             // 
-            this.rf2AttIncTextBox.Location = new System.Drawing.Point(198, 50);
+            this.rf2AttIncTextBox.Location = new System.Drawing.Point(396, 92);
             this.rf2AttIncTextBox.Name = "rf2AttIncTextBox";
-            this.rf2AttIncTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf2AttIncTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf2AttIncTextBox.TabIndex = 3;
             this.rf2AttIncTextBox.Text = "0";
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(168, 50);
+            this.label6.Location = new System.Drawing.Point(336, 92);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(24, 23);
+            this.label6.Size = new System.Drawing.Size(48, 43);
             this.label6.TabIndex = 2;
             this.label6.Text = "+-";
             // 
             // rf1AttIncTextBox
             // 
-            this.rf1AttIncTextBox.Location = new System.Drawing.Point(198, 24);
+            this.rf1AttIncTextBox.Location = new System.Drawing.Point(396, 44);
             this.rf1AttIncTextBox.Name = "rf1AttIncTextBox";
-            this.rf1AttIncTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf1AttIncTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf1AttIncTextBox.TabIndex = 1;
             this.rf1AttIncTextBox.Text = "0";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(168, 24);
+            this.label4.Location = new System.Drawing.Point(336, 44);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(24, 23);
+            this.label4.Size = new System.Drawing.Size(48, 43);
             this.label4.TabIndex = 0;
             this.label4.Text = "+-";
             // 
             // setFMVoltagesButton
             // 
-            this.setFMVoltagesButton.Location = new System.Drawing.Point(125, 166);
+            this.setFMVoltagesButton.Location = new System.Drawing.Point(250, 306);
             this.setFMVoltagesButton.Name = "setFMVoltagesButton";
-            this.setFMVoltagesButton.Size = new System.Drawing.Size(131, 23);
+            this.setFMVoltagesButton.Size = new System.Drawing.Size(262, 43);
             this.setFMVoltagesButton.TabIndex = 23;
             this.setFMVoltagesButton.Text = "Set fm voltages";
             this.setFMVoltagesButton.Click += new System.EventHandler(this.setFMVoltagesButton_Click);
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(59, 140);
+            this.label2.Location = new System.Drawing.Point(118, 258);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 23);
+            this.label2.Size = new System.Drawing.Size(122, 43);
             this.label2.TabIndex = 22;
             this.label2.Text = "rf2 fm (V)";
             // 
             // rf2FMVoltage
             // 
-            this.rf2FMVoltage.Location = new System.Drawing.Point(128, 136);
+            this.rf2FMVoltage.Location = new System.Drawing.Point(256, 251);
             this.rf2FMVoltage.Name = "rf2FMVoltage";
-            this.rf2FMVoltage.Size = new System.Drawing.Size(34, 20);
+            this.rf2FMVoltage.Size = new System.Drawing.Size(68, 31);
             this.rf2FMVoltage.TabIndex = 6;
             this.rf2FMVoltage.Text = "0";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(59, 114);
+            this.label3.Location = new System.Drawing.Point(118, 210);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 23);
+            this.label3.Size = new System.Drawing.Size(122, 43);
             this.label3.TabIndex = 20;
             this.label3.Text = "rf1 fm (V)";
             // 
             // rf1FMVoltage
             // 
-            this.rf1FMVoltage.Location = new System.Drawing.Point(128, 110);
+            this.rf1FMVoltage.Location = new System.Drawing.Point(256, 203);
             this.rf1FMVoltage.Name = "rf1FMVoltage";
-            this.rf1FMVoltage.Size = new System.Drawing.Size(34, 20);
+            this.rf1FMVoltage.Size = new System.Drawing.Size(68, 31);
             this.rf1FMVoltage.TabIndex = 4;
             this.rf1FMVoltage.Text = "0";
             // 
             // setAttenuatorsButton
             // 
-            this.setAttenuatorsButton.Location = new System.Drawing.Point(125, 79);
+            this.setAttenuatorsButton.Location = new System.Drawing.Point(250, 146);
             this.setAttenuatorsButton.Name = "setAttenuatorsButton";
-            this.setAttenuatorsButton.Size = new System.Drawing.Size(131, 23);
+            this.setAttenuatorsButton.Size = new System.Drawing.Size(262, 42);
             this.setAttenuatorsButton.TabIndex = 18;
             this.setAttenuatorsButton.Text = "Set attenuator voltages";
             this.setAttenuatorsButton.Click += new System.EventHandler(this.setAttenuatorsButton_Click);
             // 
             // label36
             // 
-            this.label36.Location = new System.Drawing.Point(24, 54);
+            this.label36.Location = new System.Drawing.Point(48, 100);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(96, 23);
+            this.label36.Size = new System.Drawing.Size(192, 42);
             this.label36.TabIndex = 15;
             this.label36.Text = "rf2 att. voltage (V)";
             // 
             // rf2AttenuatorVoltageTextBox
             // 
-            this.rf2AttenuatorVoltageTextBox.Location = new System.Drawing.Point(128, 50);
+            this.rf2AttenuatorVoltageTextBox.Location = new System.Drawing.Point(256, 92);
             this.rf2AttenuatorVoltageTextBox.Name = "rf2AttenuatorVoltageTextBox";
-            this.rf2AttenuatorVoltageTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf2AttenuatorVoltageTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf2AttenuatorVoltageTextBox.TabIndex = 2;
             this.rf2AttenuatorVoltageTextBox.Text = "5";
             // 
             // label39
             // 
-            this.label39.Location = new System.Drawing.Point(24, 28);
+            this.label39.Location = new System.Drawing.Point(48, 52);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(96, 23);
+            this.label39.Size = new System.Drawing.Size(192, 42);
             this.label39.TabIndex = 13;
             this.label39.Text = "rf1 att. voltage (V)";
             // 
             // rf1AttenuatorVoltageTextBox
             // 
-            this.rf1AttenuatorVoltageTextBox.Location = new System.Drawing.Point(128, 24);
+            this.rf1AttenuatorVoltageTextBox.Location = new System.Drawing.Point(256, 44);
             this.rf1AttenuatorVoltageTextBox.Name = "rf1AttenuatorVoltageTextBox";
-            this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(68, 31);
             this.rf1AttenuatorVoltageTextBox.TabIndex = 0;
             this.rf1AttenuatorVoltageTextBox.Text = "5";
             // 
@@ -3330,27 +3330,27 @@ namespace EDMHardwareControl
             this.tabPage3.Controls.Add(this.groupBox12);
             this.tabPage3.Controls.Add(this.groupBox8);
             this.tabPage3.Controls.Add(this.groupBox5);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(8, 39);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(697, 575);
+            this.tabPage3.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
             // 
             // groupBox23
             // 
             this.groupBox23.Controls.Add(this.bManualStateCheckBox);
-            this.groupBox23.Location = new System.Drawing.Point(390, 16);
+            this.groupBox23.Location = new System.Drawing.Point(780, 30);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(233, 61);
+            this.groupBox23.Size = new System.Drawing.Size(466, 112);
             this.groupBox23.TabIndex = 49;
             this.groupBox23.TabStop = false;
             this.groupBox23.Text = "Manual state";
             // 
             // bManualStateCheckBox
             // 
-            this.bManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.bManualStateCheckBox.Location = new System.Drawing.Point(12, 42);
             this.bManualStateCheckBox.Name = "bManualStateCheckBox";
-            this.bManualStateCheckBox.Size = new System.Drawing.Size(221, 24);
+            this.bManualStateCheckBox.Size = new System.Drawing.Size(442, 45);
             this.bManualStateCheckBox.TabIndex = 53;
             this.bManualStateCheckBox.Text = "State (Checked is Red=>+Iz)";
             // 
@@ -3363,9 +3363,9 @@ namespace EDMHardwareControl
             this.groupBox20.Controls.Add(this.miniFlux1TextBox);
             this.groupBox20.Controls.Add(this.updateMiniFluxgatesButton);
             this.groupBox20.Controls.Add(this.label75);
-            this.groupBox20.Location = new System.Drawing.Point(390, 78);
+            this.groupBox20.Location = new System.Drawing.Point(780, 144);
             this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(233, 192);
+            this.groupBox20.Size = new System.Drawing.Size(466, 354);
             this.groupBox20.TabIndex = 48;
             this.groupBox20.TabStop = false;
             this.groupBox20.Text = "Mini-Fluxgate Monitor";
@@ -3374,10 +3374,10 @@ namespace EDMHardwareControl
             // 
             this.miniFlux2TextBox.BackColor = System.Drawing.Color.Black;
             this.miniFlux2TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.miniFlux2TextBox.Location = new System.Drawing.Point(140, 50);
+            this.miniFlux2TextBox.Location = new System.Drawing.Point(280, 92);
             this.miniFlux2TextBox.Name = "miniFlux2TextBox";
             this.miniFlux2TextBox.ReadOnly = true;
-            this.miniFlux2TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux2TextBox.Size = new System.Drawing.Size(128, 31);
             this.miniFlux2TextBox.TabIndex = 49;
             this.miniFlux2TextBox.Text = "0";
             // 
@@ -3385,26 +3385,26 @@ namespace EDMHardwareControl
             // 
             this.miniFlux3TextBox.BackColor = System.Drawing.Color.Black;
             this.miniFlux3TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.miniFlux3TextBox.Location = new System.Drawing.Point(140, 79);
+            this.miniFlux3TextBox.Location = new System.Drawing.Point(280, 146);
             this.miniFlux3TextBox.Name = "miniFlux3TextBox";
             this.miniFlux3TextBox.ReadOnly = true;
-            this.miniFlux3TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux3TextBox.Size = new System.Drawing.Size(128, 31);
             this.miniFlux3TextBox.TabIndex = 48;
             this.miniFlux3TextBox.Text = "0";
             // 
             // label77
             // 
-            this.label77.Location = new System.Drawing.Point(16, 82);
+            this.label77.Location = new System.Drawing.Point(32, 151);
             this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(101, 23);
+            this.label77.Size = new System.Drawing.Size(202, 43);
             this.label77.TabIndex = 47;
             this.label77.Text = "Computer Rack (V)";
             // 
             // label76
             // 
-            this.label76.Location = new System.Drawing.Point(16, 53);
+            this.label76.Location = new System.Drawing.Point(32, 98);
             this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(80, 23);
+            this.label76.Size = new System.Drawing.Size(160, 42);
             this.label76.TabIndex = 46;
             this.label76.Text = "Optic Table (V)";
             // 
@@ -3412,27 +3412,27 @@ namespace EDMHardwareControl
             // 
             this.miniFlux1TextBox.BackColor = System.Drawing.Color.Black;
             this.miniFlux1TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.miniFlux1TextBox.Location = new System.Drawing.Point(140, 21);
+            this.miniFlux1TextBox.Location = new System.Drawing.Point(280, 39);
             this.miniFlux1TextBox.Name = "miniFlux1TextBox";
             this.miniFlux1TextBox.ReadOnly = true;
-            this.miniFlux1TextBox.Size = new System.Drawing.Size(64, 20);
+            this.miniFlux1TextBox.Size = new System.Drawing.Size(128, 31);
             this.miniFlux1TextBox.TabIndex = 45;
             this.miniFlux1TextBox.Text = "0";
             // 
             // updateMiniFluxgatesButton
             // 
-            this.updateMiniFluxgatesButton.Location = new System.Drawing.Point(16, 120);
+            this.updateMiniFluxgatesButton.Location = new System.Drawing.Point(32, 222);
             this.updateMiniFluxgatesButton.Name = "updateMiniFluxgatesButton";
-            this.updateMiniFluxgatesButton.Size = new System.Drawing.Size(75, 23);
+            this.updateMiniFluxgatesButton.Size = new System.Drawing.Size(150, 42);
             this.updateMiniFluxgatesButton.TabIndex = 40;
             this.updateMiniFluxgatesButton.Text = "Update";
             this.updateMiniFluxgatesButton.Click += new System.EventHandler(this.updateMiniFluxgatesButton_Click);
             // 
             // label75
             // 
-            this.label75.Location = new System.Drawing.Point(16, 24);
+            this.label75.Location = new System.Drawing.Point(32, 44);
             this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(80, 23);
+            this.label75.Size = new System.Drawing.Size(160, 43);
             this.label75.TabIndex = 36;
             this.label75.Text = "Supplies (V)";
             // 
@@ -3442,44 +3442,44 @@ namespace EDMHardwareControl
             this.groupBox9.Controls.Add(this.steppingBBoxBiasTextBox);
             this.groupBox9.Controls.Add(this.SteppingBBoxBiasUpdateButton);
             this.groupBox9.Controls.Add(this.label65);
-            this.groupBox9.Location = new System.Drawing.Point(310, 276);
+            this.groupBox9.Location = new System.Drawing.Point(620, 510);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(296, 96);
+            this.groupBox9.Size = new System.Drawing.Size(592, 177);
             this.groupBox9.TabIndex = 47;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Stepping B box bias";
             // 
             // automaticBiasCalcButton
             // 
-            this.automaticBiasCalcButton.Location = new System.Drawing.Point(96, 56);
+            this.automaticBiasCalcButton.Location = new System.Drawing.Point(192, 103);
             this.automaticBiasCalcButton.Name = "automaticBiasCalcButton";
-            this.automaticBiasCalcButton.Size = new System.Drawing.Size(163, 23);
+            this.automaticBiasCalcButton.Size = new System.Drawing.Size(326, 43);
             this.automaticBiasCalcButton.TabIndex = 46;
             this.automaticBiasCalcButton.Text = "Set to measured Bias";
             this.automaticBiasCalcButton.Click += new System.EventHandler(this.automaticBiasCalcButton_Click);
             // 
             // steppingBBoxBiasTextBox
             // 
-            this.steppingBBoxBiasTextBox.Location = new System.Drawing.Point(96, 24);
+            this.steppingBBoxBiasTextBox.Location = new System.Drawing.Point(192, 44);
             this.steppingBBoxBiasTextBox.Name = "steppingBBoxBiasTextBox";
-            this.steppingBBoxBiasTextBox.Size = new System.Drawing.Size(64, 20);
+            this.steppingBBoxBiasTextBox.Size = new System.Drawing.Size(128, 31);
             this.steppingBBoxBiasTextBox.TabIndex = 45;
             this.steppingBBoxBiasTextBox.Text = "0";
             // 
             // SteppingBBoxBiasUpdateButton
             // 
-            this.SteppingBBoxBiasUpdateButton.Location = new System.Drawing.Point(184, 24);
+            this.SteppingBBoxBiasUpdateButton.Location = new System.Drawing.Point(368, 44);
             this.SteppingBBoxBiasUpdateButton.Name = "SteppingBBoxBiasUpdateButton";
-            this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(150, 43);
             this.SteppingBBoxBiasUpdateButton.TabIndex = 40;
             this.SteppingBBoxBiasUpdateButton.Text = "Update";
             this.SteppingBBoxBiasUpdateButton.Click += new System.EventHandler(this.SteppingBBoxBiasUpdateButton_Click);
             // 
             // label65
             // 
-            this.label65.Location = new System.Drawing.Point(16, 24);
+            this.label65.Location = new System.Drawing.Point(32, 44);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(80, 23);
+            this.label65.Size = new System.Drawing.Size(160, 43);
             this.label65.TabIndex = 36;
             this.label65.Text = "Voltage (V)";
             // 
@@ -3490,53 +3490,53 @@ namespace EDMHardwareControl
             this.groupBox12.Controls.Add(this.scanningBZeroButton);
             this.groupBox12.Controls.Add(this.scanningBUpdateButton);
             this.groupBox12.Controls.Add(this.label41);
-            this.groupBox12.Location = new System.Drawing.Point(8, 276);
+            this.groupBox12.Location = new System.Drawing.Point(16, 510);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(296, 96);
+            this.groupBox12.Size = new System.Drawing.Size(592, 177);
             this.groupBox12.TabIndex = 46;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Scanning B box";
             // 
             // scanningBVoltageBox
             // 
-            this.scanningBVoltageBox.Location = new System.Drawing.Point(96, 24);
+            this.scanningBVoltageBox.Location = new System.Drawing.Point(192, 44);
             this.scanningBVoltageBox.Name = "scanningBVoltageBox";
-            this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
+            this.scanningBVoltageBox.Size = new System.Drawing.Size(128, 31);
             this.scanningBVoltageBox.TabIndex = 45;
             this.scanningBVoltageBox.Text = "0";
             // 
             // scanningBFSButton
             // 
-            this.scanningBFSButton.Location = new System.Drawing.Point(184, 56);
+            this.scanningBFSButton.Location = new System.Drawing.Point(368, 103);
             this.scanningBFSButton.Name = "scanningBFSButton";
-            this.scanningBFSButton.Size = new System.Drawing.Size(75, 23);
+            this.scanningBFSButton.Size = new System.Drawing.Size(150, 43);
             this.scanningBFSButton.TabIndex = 44;
             this.scanningBFSButton.Text = "Max";
             this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
             // 
             // scanningBZeroButton
             // 
-            this.scanningBZeroButton.Location = new System.Drawing.Point(85, 56);
+            this.scanningBZeroButton.Location = new System.Drawing.Point(170, 103);
             this.scanningBZeroButton.Name = "scanningBZeroButton";
-            this.scanningBZeroButton.Size = new System.Drawing.Size(75, 23);
+            this.scanningBZeroButton.Size = new System.Drawing.Size(150, 43);
             this.scanningBZeroButton.TabIndex = 43;
             this.scanningBZeroButton.Text = "Zero";
             this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
             // 
             // scanningBUpdateButton
             // 
-            this.scanningBUpdateButton.Location = new System.Drawing.Point(184, 24);
+            this.scanningBUpdateButton.Location = new System.Drawing.Point(368, 44);
             this.scanningBUpdateButton.Name = "scanningBUpdateButton";
-            this.scanningBUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.scanningBUpdateButton.Size = new System.Drawing.Size(150, 43);
             this.scanningBUpdateButton.TabIndex = 40;
             this.scanningBUpdateButton.Text = "Update";
             this.scanningBUpdateButton.Click += new System.EventHandler(this.scanningBUpdateButton_Click);
             // 
             // label41
             // 
-            this.label41.Location = new System.Drawing.Point(16, 24);
+            this.label41.Location = new System.Drawing.Point(32, 44);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(80, 23);
+            this.label41.Size = new System.Drawing.Size(160, 43);
             this.label41.TabIndex = 36;
             this.label41.Text = "Voltage (V)";
             // 
@@ -3557,9 +3557,9 @@ namespace EDMHardwareControl
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.label22);
             this.groupBox8.Controls.Add(this.label23);
-            this.groupBox8.Location = new System.Drawing.Point(8, 78);
+            this.groupBox8.Location = new System.Drawing.Point(16, 144);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(376, 192);
+            this.groupBox8.Size = new System.Drawing.Size(752, 354);
             this.groupBox8.TabIndex = 45;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Current monitor";
@@ -3568,10 +3568,10 @@ namespace EDMHardwareControl
             // 
             this.bCurrentCalStepTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentCalStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(288, 56);
+            this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(576, 103);
             this.bCurrentCalStepTextBox.Name = "bCurrentCalStepTextBox";
             this.bCurrentCalStepTextBox.ReadOnly = true;
-            this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrentCalStepTextBox.TabIndex = 53;
             this.bCurrentCalStepTextBox.Text = "0";
             // 
@@ -3579,10 +3579,10 @@ namespace EDMHardwareControl
             // 
             this.bCurrentFlipStepTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentFlipStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(288, 88);
+            this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(576, 162);
             this.bCurrentFlipStepTextBox.Name = "bCurrentFlipStepTextBox";
             this.bCurrentFlipStepTextBox.ReadOnly = true;
-            this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrentFlipStepTextBox.TabIndex = 51;
             this.bCurrentFlipStepTextBox.Text = "0";
             // 
@@ -3590,34 +3590,34 @@ namespace EDMHardwareControl
             // 
             this.bCurrentBiasTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentBiasTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentBiasTextBox.Location = new System.Drawing.Point(288, 24);
+            this.bCurrentBiasTextBox.Location = new System.Drawing.Point(576, 44);
             this.bCurrentBiasTextBox.Name = "bCurrentBiasTextBox";
             this.bCurrentBiasTextBox.ReadOnly = true;
-            this.bCurrentBiasTextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrentBiasTextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrentBiasTextBox.TabIndex = 50;
             this.bCurrentBiasTextBox.Text = "0";
             // 
             // label25
             // 
-            this.label25.Location = new System.Drawing.Point(200, 88);
+            this.label25.Location = new System.Drawing.Point(400, 162);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(80, 23);
+            this.label25.Size = new System.Drawing.Size(160, 43);
             this.label25.TabIndex = 48;
             this.label25.Text = "DB (uA)";
             // 
             // label26
             // 
-            this.label26.Location = new System.Drawing.Point(200, 56);
+            this.label26.Location = new System.Drawing.Point(400, 103);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(80, 23);
+            this.label26.Size = new System.Drawing.Size(160, 43);
             this.label26.TabIndex = 47;
             this.label26.Text = "dB (uA)";
             // 
             // label27
             // 
-            this.label27.Location = new System.Drawing.Point(200, 24);
+            this.label27.Location = new System.Drawing.Point(400, 44);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(80, 23);
+            this.label27.Size = new System.Drawing.Size(160, 43);
             this.label27.TabIndex = 46;
             this.label27.Text = "Bias (uA)";
             // 
@@ -3625,10 +3625,10 @@ namespace EDMHardwareControl
             // 
             this.bCurrent01TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent01TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent01TextBox.Location = new System.Drawing.Point(104, 56);
+            this.bCurrent01TextBox.Location = new System.Drawing.Point(208, 103);
             this.bCurrent01TextBox.Name = "bCurrent01TextBox";
             this.bCurrent01TextBox.ReadOnly = true;
-            this.bCurrent01TextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrent01TextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrent01TextBox.TabIndex = 45;
             this.bCurrent01TextBox.Text = "0";
             // 
@@ -3636,10 +3636,10 @@ namespace EDMHardwareControl
             // 
             this.bCurrent11TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent11TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent11TextBox.Location = new System.Drawing.Point(104, 120);
+            this.bCurrent11TextBox.Location = new System.Drawing.Point(208, 222);
             this.bCurrent11TextBox.Name = "bCurrent11TextBox";
             this.bCurrent11TextBox.ReadOnly = true;
-            this.bCurrent11TextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrent11TextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrent11TextBox.TabIndex = 44;
             this.bCurrent11TextBox.Text = "0";
             // 
@@ -3647,10 +3647,10 @@ namespace EDMHardwareControl
             // 
             this.bCurrent10TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent10TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent10TextBox.Location = new System.Drawing.Point(104, 88);
+            this.bCurrent10TextBox.Location = new System.Drawing.Point(208, 162);
             this.bCurrent10TextBox.Name = "bCurrent10TextBox";
             this.bCurrent10TextBox.ReadOnly = true;
-            this.bCurrent10TextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrent10TextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrent10TextBox.TabIndex = 43;
             this.bCurrent10TextBox.Text = "0";
             // 
@@ -3658,51 +3658,51 @@ namespace EDMHardwareControl
             // 
             this.bCurrent00TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent00TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent00TextBox.Location = new System.Drawing.Point(104, 24);
+            this.bCurrent00TextBox.Location = new System.Drawing.Point(208, 44);
             this.bCurrent00TextBox.Name = "bCurrent00TextBox";
             this.bCurrent00TextBox.ReadOnly = true;
-            this.bCurrent00TextBox.Size = new System.Drawing.Size(64, 20);
+            this.bCurrent00TextBox.Size = new System.Drawing.Size(128, 31);
             this.bCurrent00TextBox.TabIndex = 42;
             this.bCurrent00TextBox.Text = "0";
             // 
             // updateBCurrentMonitorButton
             // 
-            this.updateBCurrentMonitorButton.Location = new System.Drawing.Point(152, 152);
+            this.updateBCurrentMonitorButton.Location = new System.Drawing.Point(304, 281);
             this.updateBCurrentMonitorButton.Name = "updateBCurrentMonitorButton";
-            this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(150, 42);
             this.updateBCurrentMonitorButton.TabIndex = 40;
             this.updateBCurrentMonitorButton.Text = "Update";
             this.updateBCurrentMonitorButton.Click += new System.EventHandler(this.updateBCurrentMonitorButton_Click);
             // 
             // label20
             // 
-            this.label20.Location = new System.Drawing.Point(16, 120);
+            this.label20.Location = new System.Drawing.Point(32, 222);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(80, 23);
+            this.label20.Size = new System.Drawing.Size(160, 42);
             this.label20.TabIndex = 39;
             this.label20.Text = "DB1 dB1 (uA)";
             // 
             // label21
             // 
-            this.label21.Location = new System.Drawing.Point(16, 88);
+            this.label21.Location = new System.Drawing.Point(32, 162);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(80, 23);
+            this.label21.Size = new System.Drawing.Size(160, 43);
             this.label21.TabIndex = 38;
             this.label21.Text = "DB1 dB0 (uA)";
             // 
             // label22
             // 
-            this.label22.Location = new System.Drawing.Point(16, 56);
+            this.label22.Location = new System.Drawing.Point(32, 103);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(80, 23);
+            this.label22.Size = new System.Drawing.Size(160, 43);
             this.label22.TabIndex = 37;
             this.label22.Text = "DB0 dB1 (uA)";
             // 
             // label23
             // 
-            this.label23.Location = new System.Drawing.Point(16, 24);
+            this.label23.Location = new System.Drawing.Point(32, 44);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(80, 23);
+            this.label23.Size = new System.Drawing.Size(160, 43);
             this.label23.TabIndex = 36;
             this.label23.Text = "DB0 dB0 (uA)";
             // 
@@ -3713,9 +3713,9 @@ namespace EDMHardwareControl
             this.tabPage11.Controls.Add(this.groupBox11);
             this.tabPage11.Controls.Add(this.groupBox10);
             this.tabPage11.Controls.Add(this.groupBox18);
-            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Location = new System.Drawing.Point(8, 39);
             this.tabPage11.Name = "tabPage11";
-            this.tabPage11.Size = new System.Drawing.Size(697, 575);
+            this.tabPage11.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage11.TabIndex = 10;
             this.tabPage11.Text = "Q(0)+P12";
             // 
@@ -3737,19 +3737,19 @@ namespace EDMHardwareControl
             this.groupBox25.Controls.Add(this.label96);
             this.groupBox25.Controls.Add(this.pumpAOMFreqUpdateButton);
             this.groupBox25.Controls.Add(this.label98);
-            this.groupBox25.Location = new System.Drawing.Point(6, 369);
+            this.groupBox25.Location = new System.Drawing.Point(12, 681);
             this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(684, 203);
+            this.groupBox25.Size = new System.Drawing.Size(1368, 375);
             this.groupBox25.TabIndex = 71;
             this.groupBox25.TabStop = false;
             this.groupBox25.Text = "Pump AOM";
             // 
             // pumpAOMTrackBar
             // 
-            this.pumpAOMTrackBar.Location = new System.Drawing.Point(9, 128);
+            this.pumpAOMTrackBar.Location = new System.Drawing.Point(18, 236);
             this.pumpAOMTrackBar.Maximum = 1000;
             this.pumpAOMTrackBar.Name = "pumpAOMTrackBar";
-            this.pumpAOMTrackBar.Size = new System.Drawing.Size(284, 45);
+            this.pumpAOMTrackBar.Size = new System.Drawing.Size(568, 90);
             this.pumpAOMTrackBar.TabIndex = 73;
             this.pumpAOMTrackBar.Scroll += new System.EventHandler(this.pumpAOMTrackBar_Scroll);
             // 
@@ -3758,18 +3758,18 @@ namespace EDMHardwareControl
             this.panel7.Controls.Add(this.pumpAOMStepZeroButton);
             this.panel7.Controls.Add(this.pumpAOMStepPlusButton);
             this.panel7.Controls.Add(this.pumpAOMStepMinusButton);
-            this.panel7.Location = new System.Drawing.Point(177, 19);
+            this.panel7.Location = new System.Drawing.Point(354, 35);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(116, 32);
+            this.panel7.Size = new System.Drawing.Size(232, 59);
             this.panel7.TabIndex = 72;
             // 
             // pumpAOMStepZeroButton
             // 
             this.pumpAOMStepZeroButton.AutoSize = true;
             this.pumpAOMStepZeroButton.Checked = true;
-            this.pumpAOMStepZeroButton.Location = new System.Drawing.Point(77, 7);
+            this.pumpAOMStepZeroButton.Location = new System.Drawing.Point(154, 13);
             this.pumpAOMStepZeroButton.Name = "pumpAOMStepZeroButton";
-            this.pumpAOMStepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.pumpAOMStepZeroButton.Size = new System.Drawing.Size(55, 29);
             this.pumpAOMStepZeroButton.TabIndex = 32;
             this.pumpAOMStepZeroButton.TabStop = true;
             this.pumpAOMStepZeroButton.Text = "0";
@@ -3778,9 +3778,9 @@ namespace EDMHardwareControl
             // pumpAOMStepPlusButton
             // 
             this.pumpAOMStepPlusButton.AutoSize = true;
-            this.pumpAOMStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.pumpAOMStepPlusButton.Location = new System.Drawing.Point(6, 11);
             this.pumpAOMStepPlusButton.Name = "pumpAOMStepPlusButton";
-            this.pumpAOMStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.pumpAOMStepPlusButton.Size = new System.Drawing.Size(55, 29);
             this.pumpAOMStepPlusButton.TabIndex = 32;
             this.pumpAOMStepPlusButton.Text = "+";
             this.pumpAOMStepPlusButton.UseVisualStyleBackColor = true;
@@ -3788,50 +3788,50 @@ namespace EDMHardwareControl
             // pumpAOMStepMinusButton
             // 
             this.pumpAOMStepMinusButton.AutoSize = true;
-            this.pumpAOMStepMinusButton.Location = new System.Drawing.Point(42, 7);
+            this.pumpAOMStepMinusButton.Location = new System.Drawing.Point(84, 13);
             this.pumpAOMStepMinusButton.Name = "pumpAOMStepMinusButton";
-            this.pumpAOMStepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.pumpAOMStepMinusButton.Size = new System.Drawing.Size(50, 29);
             this.pumpAOMStepMinusButton.TabIndex = 32;
             this.pumpAOMStepMinusButton.Text = "-";
             this.pumpAOMStepMinusButton.UseVisualStyleBackColor = true;
             // 
             // pumpAOMStepTextBox
             // 
-            this.pumpAOMStepTextBox.Location = new System.Drawing.Point(96, 45);
+            this.pumpAOMStepTextBox.Location = new System.Drawing.Point(192, 83);
             this.pumpAOMStepTextBox.Name = "pumpAOMStepTextBox";
-            this.pumpAOMStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pumpAOMStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.pumpAOMStepTextBox.TabIndex = 71;
             this.pumpAOMStepTextBox.Text = "0";
             // 
             // label99
             // 
-            this.label99.Location = new System.Drawing.Point(13, 48);
+            this.label99.Location = new System.Drawing.Point(26, 89);
             this.label99.Name = "label99";
-            this.label99.Size = new System.Drawing.Size(80, 23);
+            this.label99.Size = new System.Drawing.Size(160, 42);
             this.label99.TabIndex = 70;
             this.label99.Text = "Step (V)";
             // 
             // pumpAOMVoltageTextBox
             // 
-            this.pumpAOMVoltageTextBox.Location = new System.Drawing.Point(96, 22);
+            this.pumpAOMVoltageTextBox.Location = new System.Drawing.Point(192, 41);
             this.pumpAOMVoltageTextBox.Name = "pumpAOMVoltageTextBox";
-            this.pumpAOMVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pumpAOMVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.pumpAOMVoltageTextBox.TabIndex = 69;
             this.pumpAOMVoltageTextBox.Text = "0";
             // 
             // updatePumpAOMButton
             // 
-            this.updatePumpAOMButton.Location = new System.Drawing.Point(131, 79);
+            this.updatePumpAOMButton.Location = new System.Drawing.Point(262, 146);
             this.updatePumpAOMButton.Name = "updatePumpAOMButton";
-            this.updatePumpAOMButton.Size = new System.Drawing.Size(75, 23);
+            this.updatePumpAOMButton.Size = new System.Drawing.Size(150, 42);
             this.updatePumpAOMButton.TabIndex = 68;
             this.updatePumpAOMButton.Text = "Update";
             // 
             // label100
             // 
-            this.label100.Location = new System.Drawing.Point(13, 25);
+            this.label100.Location = new System.Drawing.Point(26, 46);
             this.label100.Name = "label100";
-            this.label100.Size = new System.Drawing.Size(80, 23);
+            this.label100.Size = new System.Drawing.Size(160, 43);
             this.label100.TabIndex = 67;
             this.label100.Text = "Voltage (V)";
             // 
@@ -3839,18 +3839,18 @@ namespace EDMHardwareControl
             // 
             this.pumpAOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
             this.pumpAOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpAOMFreqStepTextBox.Location = new System.Drawing.Point(549, 105);
+            this.pumpAOMFreqStepTextBox.Location = new System.Drawing.Point(1098, 194);
             this.pumpAOMFreqStepTextBox.Name = "pumpAOMFreqStepTextBox";
             this.pumpAOMFreqStepTextBox.ReadOnly = true;
-            this.pumpAOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqStepTextBox.Size = new System.Drawing.Size(252, 31);
             this.pumpAOMFreqStepTextBox.TabIndex = 65;
             this.pumpAOMFreqStepTextBox.Text = "0";
             // 
             // label88
             // 
-            this.label88.Location = new System.Drawing.Point(420, 108);
+            this.label88.Location = new System.Drawing.Point(840, 199);
             this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(111, 23);
+            this.label88.Size = new System.Drawing.Size(222, 43);
             this.label88.TabIndex = 63;
             this.label88.Text = "Step (Hz)";
             // 
@@ -3858,10 +3858,10 @@ namespace EDMHardwareControl
             // 
             this.pumpAOMFreqPlusTextBox.BackColor = System.Drawing.Color.Black;
             this.pumpAOMFreqPlusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpAOMFreqPlusTextBox.Location = new System.Drawing.Point(549, 51);
+            this.pumpAOMFreqPlusTextBox.Location = new System.Drawing.Point(1098, 94);
             this.pumpAOMFreqPlusTextBox.Name = "pumpAOMFreqPlusTextBox";
             this.pumpAOMFreqPlusTextBox.ReadOnly = true;
-            this.pumpAOMFreqPlusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqPlusTextBox.Size = new System.Drawing.Size(252, 31);
             this.pumpAOMFreqPlusTextBox.TabIndex = 66;
             this.pumpAOMFreqPlusTextBox.Text = "0";
             // 
@@ -3869,18 +3869,18 @@ namespace EDMHardwareControl
             // 
             this.pumpAOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
             this.pumpAOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpAOMFreqCentreTextBox.Location = new System.Drawing.Point(549, 79);
+            this.pumpAOMFreqCentreTextBox.Location = new System.Drawing.Point(1098, 146);
             this.pumpAOMFreqCentreTextBox.Name = "pumpAOMFreqCentreTextBox";
             this.pumpAOMFreqCentreTextBox.ReadOnly = true;
-            this.pumpAOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqCentreTextBox.Size = new System.Drawing.Size(252, 31);
             this.pumpAOMFreqCentreTextBox.TabIndex = 62;
             this.pumpAOMFreqCentreTextBox.Text = "0";
             // 
             // label95
             // 
-            this.label95.Location = new System.Drawing.Point(420, 54);
+            this.label95.Location = new System.Drawing.Point(840, 100);
             this.label95.Name = "label95";
-            this.label95.Size = new System.Drawing.Size(111, 23);
+            this.label95.Size = new System.Drawing.Size(222, 42);
             this.label95.TabIndex = 64;
             this.label95.Text = "AOM freq high (Hz)";
             // 
@@ -3888,35 +3888,35 @@ namespace EDMHardwareControl
             // 
             this.pumpAOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
             this.pumpAOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpAOMFreqMinusTextBox.Location = new System.Drawing.Point(549, 25);
+            this.pumpAOMFreqMinusTextBox.Location = new System.Drawing.Point(1098, 46);
             this.pumpAOMFreqMinusTextBox.Name = "pumpAOMFreqMinusTextBox";
             this.pumpAOMFreqMinusTextBox.ReadOnly = true;
-            this.pumpAOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.pumpAOMFreqMinusTextBox.Size = new System.Drawing.Size(252, 31);
             this.pumpAOMFreqMinusTextBox.TabIndex = 61;
             this.pumpAOMFreqMinusTextBox.Text = "0";
             // 
             // label96
             // 
-            this.label96.Location = new System.Drawing.Point(420, 82);
+            this.label96.Location = new System.Drawing.Point(840, 151);
             this.label96.Name = "label96";
-            this.label96.Size = new System.Drawing.Size(111, 23);
+            this.label96.Size = new System.Drawing.Size(222, 43);
             this.label96.TabIndex = 58;
             this.label96.Text = "Centre (Hz)";
             // 
             // pumpAOMFreqUpdateButton
             // 
-            this.pumpAOMFreqUpdateButton.Location = new System.Drawing.Point(600, 131);
+            this.pumpAOMFreqUpdateButton.Location = new System.Drawing.Point(1200, 242);
             this.pumpAOMFreqUpdateButton.Name = "pumpAOMFreqUpdateButton";
-            this.pumpAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.pumpAOMFreqUpdateButton.Size = new System.Drawing.Size(150, 42);
             this.pumpAOMFreqUpdateButton.TabIndex = 60;
             this.pumpAOMFreqUpdateButton.Text = "Update";
             this.pumpAOMFreqUpdateButton.Click += new System.EventHandler(this.pumpAOMFreqUpdateButton_Click_1);
             // 
             // label98
             // 
-            this.label98.Location = new System.Drawing.Point(420, 28);
+            this.label98.Location = new System.Drawing.Point(840, 52);
             this.label98.Name = "label98";
-            this.label98.Size = new System.Drawing.Size(111, 23);
+            this.label98.Size = new System.Drawing.Size(222, 42);
             this.label98.TabIndex = 59;
             this.label98.Text = "AOM freq low (Hz)";
             // 
@@ -3929,18 +3929,18 @@ namespace EDMHardwareControl
             this.groupBox11.Controls.Add(this.label29);
             this.groupBox11.Controls.Add(this.label30);
             this.groupBox11.Controls.Add(this.label31);
-            this.groupBox11.Location = new System.Drawing.Point(242, 16);
+            this.groupBox11.Location = new System.Drawing.Point(484, 30);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(448, 149);
+            this.groupBox11.Size = new System.Drawing.Size(896, 275);
             this.groupBox11.TabIndex = 70;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Photodiodes";
             // 
             // updateLaserPhotodiodesButton
             // 
-            this.updateLaserPhotodiodesButton.Location = new System.Drawing.Point(220, 27);
+            this.updateLaserPhotodiodesButton.Location = new System.Drawing.Point(440, 50);
             this.updateLaserPhotodiodesButton.Name = "updateLaserPhotodiodesButton";
-            this.updateLaserPhotodiodesButton.Size = new System.Drawing.Size(75, 23);
+            this.updateLaserPhotodiodesButton.Size = new System.Drawing.Size(150, 42);
             this.updateLaserPhotodiodesButton.TabIndex = 52;
             this.updateLaserPhotodiodesButton.Text = "Update";
             this.updateLaserPhotodiodesButton.Click += new System.EventHandler(this.updateLaserPhotodiodesButton_Click);
@@ -3949,10 +3949,10 @@ namespace EDMHardwareControl
             // 
             this.pumpMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.pumpMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpMonitorTextBox.Location = new System.Drawing.Point(120, 64);
+            this.pumpMonitorTextBox.Location = new System.Drawing.Point(240, 118);
             this.pumpMonitorTextBox.Name = "pumpMonitorTextBox";
             this.pumpMonitorTextBox.ReadOnly = true;
-            this.pumpMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pumpMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.pumpMonitorTextBox.TabIndex = 51;
             this.pumpMonitorTextBox.Text = "0";
             // 
@@ -3960,10 +3960,10 @@ namespace EDMHardwareControl
             // 
             this.pump2MonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.pump2MonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pump2MonitorTextBox.Location = new System.Drawing.Point(120, 96);
+            this.pump2MonitorTextBox.Location = new System.Drawing.Point(240, 177);
             this.pump2MonitorTextBox.Name = "pump2MonitorTextBox";
             this.pump2MonitorTextBox.ReadOnly = true;
-            this.pump2MonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pump2MonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.pump2MonitorTextBox.TabIndex = 50;
             this.pump2MonitorTextBox.Text = "0";
             // 
@@ -3971,34 +3971,34 @@ namespace EDMHardwareControl
             // 
             this.probeMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.probeMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probeMonitorTextBox.Location = new System.Drawing.Point(120, 32);
+            this.probeMonitorTextBox.Location = new System.Drawing.Point(240, 59);
             this.probeMonitorTextBox.Name = "probeMonitorTextBox";
             this.probeMonitorTextBox.ReadOnly = true;
-            this.probeMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.probeMonitorTextBox.Size = new System.Drawing.Size(128, 31);
             this.probeMonitorTextBox.TabIndex = 49;
             this.probeMonitorTextBox.Text = "0";
             // 
             // label29
             // 
-            this.label29.Location = new System.Drawing.Point(32, 96);
+            this.label29.Location = new System.Drawing.Point(64, 177);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(80, 23);
+            this.label29.Size = new System.Drawing.Size(160, 43);
             this.label29.TabIndex = 48;
             this.label29.Text = "Pump 2 (V)";
             // 
             // label30
             // 
-            this.label30.Location = new System.Drawing.Point(32, 64);
+            this.label30.Location = new System.Drawing.Point(64, 118);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(80, 23);
+            this.label30.Size = new System.Drawing.Size(160, 43);
             this.label30.TabIndex = 47;
             this.label30.Text = "Pump (V)";
             // 
             // label31
             // 
-            this.label31.Location = new System.Drawing.Point(32, 32);
+            this.label31.Location = new System.Drawing.Point(64, 59);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(80, 23);
+            this.label31.Size = new System.Drawing.Size(160, 43);
             this.label31.TabIndex = 46;
             this.label31.Text = "Probe (V)";
             // 
@@ -4006,27 +4006,27 @@ namespace EDMHardwareControl
             // 
             this.groupBox10.Controls.Add(this.argonShutterCheckBox);
             this.groupBox10.Controls.Add(this.label32);
-            this.groupBox10.Location = new System.Drawing.Point(12, 16);
+            this.groupBox10.Location = new System.Drawing.Point(24, 30);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(224, 149);
+            this.groupBox10.Size = new System.Drawing.Size(448, 275);
             this.groupBox10.TabIndex = 69;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Shutters";
             // 
             // argonShutterCheckBox
             // 
-            this.argonShutterCheckBox.Location = new System.Drawing.Point(10, 35);
+            this.argonShutterCheckBox.Location = new System.Drawing.Point(20, 65);
             this.argonShutterCheckBox.Name = "argonShutterCheckBox";
-            this.argonShutterCheckBox.Size = new System.Drawing.Size(72, 24);
+            this.argonShutterCheckBox.Size = new System.Drawing.Size(144, 44);
             this.argonShutterCheckBox.TabIndex = 25;
             this.argonShutterCheckBox.Text = "Ar+";
             this.argonShutterCheckBox.CheckedChanged += new System.EventHandler(this.argonShutterCheckBox_CheckedChanged);
             // 
             // label32
             // 
-            this.label32.Location = new System.Drawing.Point(10, 16);
+            this.label32.Location = new System.Drawing.Point(20, 30);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(105, 43);
+            this.label32.Size = new System.Drawing.Size(210, 79);
             this.label32.TabIndex = 24;
             this.label32.Text = "Checked is blocked.";
             // 
@@ -4048,9 +4048,9 @@ namespace EDMHardwareControl
             this.groupBox18.Controls.Add(this.probeAOMVTextBox);
             this.groupBox18.Controls.Add(this.UpdateProbeAOMButton);
             this.groupBox18.Controls.Add(this.label68);
-            this.groupBox18.Location = new System.Drawing.Point(6, 171);
+            this.groupBox18.Location = new System.Drawing.Point(12, 316);
             this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(684, 192);
+            this.groupBox18.Size = new System.Drawing.Size(1368, 354);
             this.groupBox18.TabIndex = 68;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Probe AOM";
@@ -4059,18 +4059,18 @@ namespace EDMHardwareControl
             // 
             this.probeAOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
             this.probeAOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probeAOMFreqStepTextBox.Location = new System.Drawing.Point(549, 97);
+            this.probeAOMFreqStepTextBox.Location = new System.Drawing.Point(1098, 179);
             this.probeAOMFreqStepTextBox.Name = "probeAOMFreqStepTextBox";
             this.probeAOMFreqStepTextBox.ReadOnly = true;
-            this.probeAOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
+            this.probeAOMFreqStepTextBox.Size = new System.Drawing.Size(252, 31);
             this.probeAOMFreqStepTextBox.TabIndex = 64;
             this.probeAOMFreqStepTextBox.Text = "0";
             // 
             // label73
             // 
-            this.label73.Location = new System.Drawing.Point(420, 100);
+            this.label73.Location = new System.Drawing.Point(840, 185);
             this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(111, 23);
+            this.label73.Size = new System.Drawing.Size(222, 42);
             this.label73.TabIndex = 62;
             this.label73.Text = "Step (Hz)";
             // 
@@ -4078,10 +4078,10 @@ namespace EDMHardwareControl
             // 
             this.probeAOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
             this.probeAOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probeAOMFreqMinusTextBox.Location = new System.Drawing.Point(549, 43);
+            this.probeAOMFreqMinusTextBox.Location = new System.Drawing.Point(1098, 79);
             this.probeAOMFreqMinusTextBox.Name = "probeAOMFreqMinusTextBox";
             this.probeAOMFreqMinusTextBox.ReadOnly = true;
-            this.probeAOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.probeAOMFreqMinusTextBox.Size = new System.Drawing.Size(252, 31);
             this.probeAOMFreqMinusTextBox.TabIndex = 65;
             this.probeAOMFreqMinusTextBox.Text = "0";
             // 
@@ -4089,18 +4089,18 @@ namespace EDMHardwareControl
             // 
             this.probeAOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
             this.probeAOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probeAOMFreqCentreTextBox.Location = new System.Drawing.Point(549, 71);
+            this.probeAOMFreqCentreTextBox.Location = new System.Drawing.Point(1098, 131);
             this.probeAOMFreqCentreTextBox.Name = "probeAOMFreqCentreTextBox";
             this.probeAOMFreqCentreTextBox.ReadOnly = true;
-            this.probeAOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
+            this.probeAOMFreqCentreTextBox.Size = new System.Drawing.Size(252, 31);
             this.probeAOMFreqCentreTextBox.TabIndex = 61;
             this.probeAOMFreqCentreTextBox.Text = "0";
             // 
             // label71
             // 
-            this.label71.Location = new System.Drawing.Point(420, 46);
+            this.label71.Location = new System.Drawing.Point(840, 85);
             this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(111, 23);
+            this.label71.Size = new System.Drawing.Size(222, 42);
             this.label71.TabIndex = 63;
             this.label71.Text = "AOM freq high (Hz)";
             // 
@@ -4108,44 +4108,44 @@ namespace EDMHardwareControl
             // 
             this.probeAOMFreqPlusTextBox.BackColor = System.Drawing.Color.Black;
             this.probeAOMFreqPlusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probeAOMFreqPlusTextBox.Location = new System.Drawing.Point(549, 17);
+            this.probeAOMFreqPlusTextBox.Location = new System.Drawing.Point(1098, 31);
             this.probeAOMFreqPlusTextBox.Name = "probeAOMFreqPlusTextBox";
             this.probeAOMFreqPlusTextBox.ReadOnly = true;
-            this.probeAOMFreqPlusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.probeAOMFreqPlusTextBox.Size = new System.Drawing.Size(252, 31);
             this.probeAOMFreqPlusTextBox.TabIndex = 60;
             this.probeAOMFreqPlusTextBox.Text = "0";
             // 
             // label72
             // 
-            this.label72.Location = new System.Drawing.Point(420, 74);
+            this.label72.Location = new System.Drawing.Point(840, 137);
             this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(111, 23);
+            this.label72.Size = new System.Drawing.Size(222, 42);
             this.label72.TabIndex = 57;
             this.label72.Text = "Centre (Hz)";
             // 
             // probeAOMFreqUpdateButton
             // 
-            this.probeAOMFreqUpdateButton.Location = new System.Drawing.Point(600, 123);
+            this.probeAOMFreqUpdateButton.Location = new System.Drawing.Point(1200, 227);
             this.probeAOMFreqUpdateButton.Name = "probeAOMFreqUpdateButton";
-            this.probeAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.probeAOMFreqUpdateButton.Size = new System.Drawing.Size(150, 43);
             this.probeAOMFreqUpdateButton.TabIndex = 59;
             this.probeAOMFreqUpdateButton.Text = "Update";
             this.probeAOMFreqUpdateButton.Click += new System.EventHandler(this.probeAOMFreqUpdateButton_Click);
             // 
             // label69
             // 
-            this.label69.Location = new System.Drawing.Point(420, 20);
+            this.label69.Location = new System.Drawing.Point(840, 37);
             this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(111, 23);
+            this.label69.Size = new System.Drawing.Size(222, 42);
             this.label69.TabIndex = 58;
             this.label69.Text = "AOM freq low (Hz)";
             // 
             // probeAOMtrackBar
             // 
-            this.probeAOMtrackBar.Location = new System.Drawing.Point(6, 94);
+            this.probeAOMtrackBar.Location = new System.Drawing.Point(12, 174);
             this.probeAOMtrackBar.Maximum = 1000;
             this.probeAOMtrackBar.Name = "probeAOMtrackBar";
-            this.probeAOMtrackBar.Size = new System.Drawing.Size(287, 45);
+            this.probeAOMtrackBar.Size = new System.Drawing.Size(574, 90);
             this.probeAOMtrackBar.TabIndex = 49;
             this.probeAOMtrackBar.Scroll += new System.EventHandler(this.probeAOMtrackBar_Scroll);
             // 
@@ -4154,18 +4154,18 @@ namespace EDMHardwareControl
             this.panel5.Controls.Add(this.probeAOMStepZeroButton);
             this.panel5.Controls.Add(this.probeAOMStepPlusButton);
             this.panel5.Controls.Add(this.probeAOMMinusButton);
-            this.panel5.Location = new System.Drawing.Point(182, 20);
+            this.panel5.Location = new System.Drawing.Point(364, 37);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(111, 32);
+            this.panel5.Size = new System.Drawing.Size(222, 59);
             this.panel5.TabIndex = 48;
             // 
             // probeAOMStepZeroButton
             // 
             this.probeAOMStepZeroButton.AutoSize = true;
             this.probeAOMStepZeroButton.Checked = true;
-            this.probeAOMStepZeroButton.Location = new System.Drawing.Point(77, 7);
+            this.probeAOMStepZeroButton.Location = new System.Drawing.Point(154, 13);
             this.probeAOMStepZeroButton.Name = "probeAOMStepZeroButton";
-            this.probeAOMStepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.probeAOMStepZeroButton.Size = new System.Drawing.Size(55, 29);
             this.probeAOMStepZeroButton.TabIndex = 32;
             this.probeAOMStepZeroButton.TabStop = true;
             this.probeAOMStepZeroButton.Text = "0";
@@ -4174,9 +4174,9 @@ namespace EDMHardwareControl
             // probeAOMStepPlusButton
             // 
             this.probeAOMStepPlusButton.AutoSize = true;
-            this.probeAOMStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.probeAOMStepPlusButton.Location = new System.Drawing.Point(6, 11);
             this.probeAOMStepPlusButton.Name = "probeAOMStepPlusButton";
-            this.probeAOMStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.probeAOMStepPlusButton.Size = new System.Drawing.Size(55, 29);
             this.probeAOMStepPlusButton.TabIndex = 32;
             this.probeAOMStepPlusButton.Text = "+";
             this.probeAOMStepPlusButton.UseVisualStyleBackColor = true;
@@ -4184,51 +4184,51 @@ namespace EDMHardwareControl
             // probeAOMMinusButton
             // 
             this.probeAOMMinusButton.AutoSize = true;
-            this.probeAOMMinusButton.Location = new System.Drawing.Point(42, 7);
+            this.probeAOMMinusButton.Location = new System.Drawing.Point(84, 13);
             this.probeAOMMinusButton.Name = "probeAOMMinusButton";
-            this.probeAOMMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.probeAOMMinusButton.Size = new System.Drawing.Size(50, 29);
             this.probeAOMMinusButton.TabIndex = 32;
             this.probeAOMMinusButton.Text = "-";
             this.probeAOMMinusButton.UseVisualStyleBackColor = true;
             // 
             // probeAOMStepTextBox
             // 
-            this.probeAOMStepTextBox.Location = new System.Drawing.Point(96, 48);
+            this.probeAOMStepTextBox.Location = new System.Drawing.Point(192, 89);
             this.probeAOMStepTextBox.Name = "probeAOMStepTextBox";
-            this.probeAOMStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.probeAOMStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.probeAOMStepTextBox.TabIndex = 47;
             this.probeAOMStepTextBox.Text = "0";
             // 
             // label70
             // 
-            this.label70.Location = new System.Drawing.Point(16, 48);
+            this.label70.Location = new System.Drawing.Point(32, 89);
             this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(80, 23);
+            this.label70.Size = new System.Drawing.Size(160, 42);
             this.label70.TabIndex = 46;
             this.label70.Text = "Step (V)";
             // 
             // probeAOMVTextBox
             // 
-            this.probeAOMVTextBox.Location = new System.Drawing.Point(96, 24);
+            this.probeAOMVTextBox.Location = new System.Drawing.Point(192, 44);
             this.probeAOMVTextBox.Name = "probeAOMVTextBox";
-            this.probeAOMVTextBox.Size = new System.Drawing.Size(64, 20);
+            this.probeAOMVTextBox.Size = new System.Drawing.Size(128, 31);
             this.probeAOMVTextBox.TabIndex = 45;
             this.probeAOMVTextBox.Text = "0";
             // 
             // UpdateProbeAOMButton
             // 
-            this.UpdateProbeAOMButton.Location = new System.Drawing.Point(202, 58);
+            this.UpdateProbeAOMButton.Location = new System.Drawing.Point(404, 107);
             this.UpdateProbeAOMButton.Name = "UpdateProbeAOMButton";
-            this.UpdateProbeAOMButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdateProbeAOMButton.Size = new System.Drawing.Size(150, 43);
             this.UpdateProbeAOMButton.TabIndex = 40;
             this.UpdateProbeAOMButton.Text = "Update";
             this.UpdateProbeAOMButton.Click += new System.EventHandler(this.UpdateProbeAOMButton_Click);
             // 
             // label68
             // 
-            this.label68.Location = new System.Drawing.Point(16, 24);
+            this.label68.Location = new System.Drawing.Point(32, 44);
             this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(80, 23);
+            this.label68.Size = new System.Drawing.Size(160, 43);
             this.label68.TabIndex = 36;
             this.label68.Text = "Voltage (V)";
             // 
@@ -4239,10 +4239,10 @@ namespace EDMHardwareControl
             this.tabPage8.Controls.Add(this.groupBox28);
             this.tabPage8.Controls.Add(this.groupBox27);
             this.tabPage8.Controls.Add(this.groupBox26);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Location = new System.Drawing.Point(8, 39);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(697, 575);
+            this.tabPage8.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "P(1) Lasers";
             // 
@@ -4263,9 +4263,9 @@ namespace EDMHardwareControl
             this.groupBox36.Controls.Add(this.flAOMVoltageTextBox);
             this.groupBox36.Controls.Add(this.UpdateFLAOMButton);
             this.groupBox36.Controls.Add(this.label118);
-            this.groupBox36.Location = new System.Drawing.Point(9, 409);
+            this.groupBox36.Location = new System.Drawing.Point(18, 755);
             this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(393, 148);
+            this.groupBox36.Size = new System.Drawing.Size(786, 273);
             this.groupBox36.TabIndex = 49;
             this.groupBox36.TabStop = false;
             this.groupBox36.Text = "Stabilising AOM";
@@ -4274,18 +4274,18 @@ namespace EDMHardwareControl
             // 
             this.flAOMFreqStepTextBox.BackColor = System.Drawing.Color.Black;
             this.flAOMFreqStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.flAOMFreqStepTextBox.Location = new System.Drawing.Point(255, 95);
+            this.flAOMFreqStepTextBox.Location = new System.Drawing.Point(510, 175);
             this.flAOMFreqStepTextBox.Name = "flAOMFreqStepTextBox";
             this.flAOMFreqStepTextBox.ReadOnly = true;
-            this.flAOMFreqStepTextBox.Size = new System.Drawing.Size(126, 20);
+            this.flAOMFreqStepTextBox.Size = new System.Drawing.Size(252, 31);
             this.flAOMFreqStepTextBox.TabIndex = 74;
             this.flAOMFreqStepTextBox.Text = "0";
             // 
             // label119
             // 
-            this.label119.Location = new System.Drawing.Point(151, 98);
+            this.label119.Location = new System.Drawing.Point(302, 181);
             this.label119.Name = "label119";
-            this.label119.Size = new System.Drawing.Size(96, 23);
+            this.label119.Size = new System.Drawing.Size(192, 42);
             this.label119.TabIndex = 72;
             this.label119.Text = "Step (Hz)";
             // 
@@ -4293,10 +4293,10 @@ namespace EDMHardwareControl
             // 
             this.flAOMFreqPlusTextBox.BackColor = System.Drawing.Color.Black;
             this.flAOMFreqPlusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.flAOMFreqPlusTextBox.Location = new System.Drawing.Point(255, 41);
+            this.flAOMFreqPlusTextBox.Location = new System.Drawing.Point(510, 76);
             this.flAOMFreqPlusTextBox.Name = "flAOMFreqPlusTextBox";
             this.flAOMFreqPlusTextBox.ReadOnly = true;
-            this.flAOMFreqPlusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.flAOMFreqPlusTextBox.Size = new System.Drawing.Size(252, 31);
             this.flAOMFreqPlusTextBox.TabIndex = 75;
             this.flAOMFreqPlusTextBox.Text = "0";
             // 
@@ -4304,18 +4304,18 @@ namespace EDMHardwareControl
             // 
             this.flAOMFreqCentreTextBox.BackColor = System.Drawing.Color.Black;
             this.flAOMFreqCentreTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.flAOMFreqCentreTextBox.Location = new System.Drawing.Point(255, 69);
+            this.flAOMFreqCentreTextBox.Location = new System.Drawing.Point(510, 127);
             this.flAOMFreqCentreTextBox.Name = "flAOMFreqCentreTextBox";
             this.flAOMFreqCentreTextBox.ReadOnly = true;
-            this.flAOMFreqCentreTextBox.Size = new System.Drawing.Size(126, 20);
+            this.flAOMFreqCentreTextBox.Size = new System.Drawing.Size(252, 31);
             this.flAOMFreqCentreTextBox.TabIndex = 71;
             this.flAOMFreqCentreTextBox.Text = "0";
             // 
             // label120
             // 
-            this.label120.Location = new System.Drawing.Point(151, 44);
+            this.label120.Location = new System.Drawing.Point(302, 81);
             this.label120.Name = "label120";
-            this.label120.Size = new System.Drawing.Size(98, 23);
+            this.label120.Size = new System.Drawing.Size(196, 43);
             this.label120.TabIndex = 73;
             this.label120.Text = "AOM freq high (Hz)";
             // 
@@ -4323,35 +4323,35 @@ namespace EDMHardwareControl
             // 
             this.flAOMFreqMinusTextBox.BackColor = System.Drawing.Color.Black;
             this.flAOMFreqMinusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.flAOMFreqMinusTextBox.Location = new System.Drawing.Point(255, 15);
+            this.flAOMFreqMinusTextBox.Location = new System.Drawing.Point(510, 28);
             this.flAOMFreqMinusTextBox.Name = "flAOMFreqMinusTextBox";
             this.flAOMFreqMinusTextBox.ReadOnly = true;
-            this.flAOMFreqMinusTextBox.Size = new System.Drawing.Size(126, 20);
+            this.flAOMFreqMinusTextBox.Size = new System.Drawing.Size(252, 31);
             this.flAOMFreqMinusTextBox.TabIndex = 70;
             this.flAOMFreqMinusTextBox.Text = "0";
             // 
             // label121
             // 
-            this.label121.Location = new System.Drawing.Point(151, 72);
+            this.label121.Location = new System.Drawing.Point(302, 133);
             this.label121.Name = "label121";
-            this.label121.Size = new System.Drawing.Size(96, 23);
+            this.label121.Size = new System.Drawing.Size(192, 42);
             this.label121.TabIndex = 67;
             this.label121.Text = "Centre (Hz)";
             // 
             // flAOMFreqUpdateButton
             // 
-            this.flAOMFreqUpdateButton.Location = new System.Drawing.Point(305, 121);
+            this.flAOMFreqUpdateButton.Location = new System.Drawing.Point(610, 223);
             this.flAOMFreqUpdateButton.Name = "flAOMFreqUpdateButton";
-            this.flAOMFreqUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.flAOMFreqUpdateButton.Size = new System.Drawing.Size(150, 43);
             this.flAOMFreqUpdateButton.TabIndex = 69;
             this.flAOMFreqUpdateButton.Text = "Update";
             this.flAOMFreqUpdateButton.Click += new System.EventHandler(this.flAOMFreqUpdateButton_Click);
             // 
             // label122
             // 
-            this.label122.Location = new System.Drawing.Point(150, 18);
+            this.label122.Location = new System.Drawing.Point(300, 33);
             this.label122.Name = "label122";
-            this.label122.Size = new System.Drawing.Size(99, 23);
+            this.label122.Size = new System.Drawing.Size(198, 43);
             this.label122.TabIndex = 68;
             this.label122.Text = "AOM freq low (Hz)";
             // 
@@ -4360,18 +4360,18 @@ namespace EDMHardwareControl
             this.panel8.Controls.Add(this.flAOMStepZeroButton);
             this.panel8.Controls.Add(this.flAOMStepPlusButton);
             this.panel8.Controls.Add(this.flAOMStepMinusButton);
-            this.panel8.Location = new System.Drawing.Point(9, 67);
+            this.panel8.Location = new System.Drawing.Point(18, 124);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(111, 32);
+            this.panel8.Size = new System.Drawing.Size(222, 59);
             this.panel8.TabIndex = 48;
             // 
             // flAOMStepZeroButton
             // 
             this.flAOMStepZeroButton.AutoSize = true;
             this.flAOMStepZeroButton.Checked = true;
-            this.flAOMStepZeroButton.Location = new System.Drawing.Point(77, 7);
+            this.flAOMStepZeroButton.Location = new System.Drawing.Point(154, 13);
             this.flAOMStepZeroButton.Name = "flAOMStepZeroButton";
-            this.flAOMStepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.flAOMStepZeroButton.Size = new System.Drawing.Size(55, 29);
             this.flAOMStepZeroButton.TabIndex = 32;
             this.flAOMStepZeroButton.TabStop = true;
             this.flAOMStepZeroButton.Text = "0";
@@ -4380,9 +4380,9 @@ namespace EDMHardwareControl
             // flAOMStepPlusButton
             // 
             this.flAOMStepPlusButton.AutoSize = true;
-            this.flAOMStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.flAOMStepPlusButton.Location = new System.Drawing.Point(6, 11);
             this.flAOMStepPlusButton.Name = "flAOMStepPlusButton";
-            this.flAOMStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.flAOMStepPlusButton.Size = new System.Drawing.Size(55, 29);
             this.flAOMStepPlusButton.TabIndex = 32;
             this.flAOMStepPlusButton.Text = "+";
             this.flAOMStepPlusButton.UseVisualStyleBackColor = true;
@@ -4390,51 +4390,51 @@ namespace EDMHardwareControl
             // flAOMStepMinusButton
             // 
             this.flAOMStepMinusButton.AutoSize = true;
-            this.flAOMStepMinusButton.Location = new System.Drawing.Point(42, 7);
+            this.flAOMStepMinusButton.Location = new System.Drawing.Point(84, 13);
             this.flAOMStepMinusButton.Name = "flAOMStepMinusButton";
-            this.flAOMStepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.flAOMStepMinusButton.Size = new System.Drawing.Size(50, 29);
             this.flAOMStepMinusButton.TabIndex = 32;
             this.flAOMStepMinusButton.Text = "-";
             this.flAOMStepMinusButton.UseVisualStyleBackColor = true;
             // 
             // flAOMStepTextBox
             // 
-            this.flAOMStepTextBox.Location = new System.Drawing.Point(68, 41);
+            this.flAOMStepTextBox.Location = new System.Drawing.Point(136, 76);
             this.flAOMStepTextBox.Name = "flAOMStepTextBox";
-            this.flAOMStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.flAOMStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.flAOMStepTextBox.TabIndex = 47;
             this.flAOMStepTextBox.Text = "0";
             // 
             // label117
             // 
-            this.label117.Location = new System.Drawing.Point(6, 44);
+            this.label117.Location = new System.Drawing.Point(12, 81);
             this.label117.Name = "label117";
-            this.label117.Size = new System.Drawing.Size(80, 23);
+            this.label117.Size = new System.Drawing.Size(160, 43);
             this.label117.TabIndex = 46;
             this.label117.Text = "Step (V)";
             // 
             // flAOMVoltageTextBox
             // 
-            this.flAOMVoltageTextBox.Location = new System.Drawing.Point(68, 21);
+            this.flAOMVoltageTextBox.Location = new System.Drawing.Point(136, 39);
             this.flAOMVoltageTextBox.Name = "flAOMVoltageTextBox";
-            this.flAOMVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.flAOMVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.flAOMVoltageTextBox.TabIndex = 45;
             this.flAOMVoltageTextBox.Text = "0";
             // 
             // UpdateFLAOMButton
             // 
-            this.UpdateFLAOMButton.Location = new System.Drawing.Point(24, 121);
+            this.UpdateFLAOMButton.Location = new System.Drawing.Point(48, 223);
             this.UpdateFLAOMButton.Name = "UpdateFLAOMButton";
-            this.UpdateFLAOMButton.Size = new System.Drawing.Size(75, 23);
+            this.UpdateFLAOMButton.Size = new System.Drawing.Size(150, 43);
             this.UpdateFLAOMButton.TabIndex = 40;
             this.UpdateFLAOMButton.Text = "Update";
             this.UpdateFLAOMButton.Click += new System.EventHandler(this.UpdateFLAOMButton_Click);
             // 
             // label118
             // 
-            this.label118.Location = new System.Drawing.Point(6, 23);
+            this.label118.Location = new System.Drawing.Point(12, 42);
             this.label118.Name = "label118";
-            this.label118.Size = new System.Drawing.Size(80, 23);
+            this.label118.Size = new System.Drawing.Size(160, 43);
             this.label118.TabIndex = 36;
             this.label118.Text = "Voltage (V)";
             // 
@@ -4443,9 +4443,9 @@ namespace EDMHardwareControl
             this.groupBox28.Controls.Add(this.groupBox30);
             this.groupBox28.Controls.Add(this.groupBox31);
             this.groupBox28.Controls.Add(this.groupBox29);
-            this.groupBox28.Location = new System.Drawing.Point(408, 218);
+            this.groupBox28.Location = new System.Drawing.Point(816, 402);
             this.groupBox28.Name = "groupBox28";
-            this.groupBox28.Size = new System.Drawing.Size(283, 252);
+            this.groupBox28.Size = new System.Drawing.Size(566, 466);
             this.groupBox28.TabIndex = 2;
             this.groupBox28.TabStop = false;
             this.groupBox28.Text = "Fibre Amplifier";
@@ -4454,9 +4454,9 @@ namespace EDMHardwareControl
             // 
             this.groupBox30.Controls.Add(this.fibreAmpEnableLED);
             this.groupBox30.Controls.Add(this.fibreAmpEnableSwitch);
-            this.groupBox30.Location = new System.Drawing.Point(9, 18);
+            this.groupBox30.Location = new System.Drawing.Point(18, 33);
             this.groupBox30.Name = "groupBox30";
-            this.groupBox30.Size = new System.Drawing.Size(124, 79);
+            this.groupBox30.Size = new System.Drawing.Size(248, 146);
             this.groupBox30.TabIndex = 50;
             this.groupBox30.TabStop = false;
             this.groupBox30.Text = "On/Off";
@@ -4464,17 +4464,17 @@ namespace EDMHardwareControl
             // fibreAmpEnableLED
             // 
             this.fibreAmpEnableLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpEnableLED.Location = new System.Drawing.Point(9, 20);
+            this.fibreAmpEnableLED.Location = new System.Drawing.Point(18, 37);
             this.fibreAmpEnableLED.Name = "fibreAmpEnableLED";
             this.fibreAmpEnableLED.OffColor = System.Drawing.Color.Black;
-            this.fibreAmpEnableLED.Size = new System.Drawing.Size(47, 49);
+            this.fibreAmpEnableLED.Size = new System.Drawing.Size(94, 90);
             this.fibreAmpEnableLED.TabIndex = 51;
             // 
             // fibreAmpEnableSwitch
             // 
-            this.fibreAmpEnableSwitch.Location = new System.Drawing.Point(60, -4);
+            this.fibreAmpEnableSwitch.Location = new System.Drawing.Point(120, -7);
             this.fibreAmpEnableSwitch.Name = "fibreAmpEnableSwitch";
-            this.fibreAmpEnableSwitch.Size = new System.Drawing.Size(64, 96);
+            this.fibreAmpEnableSwitch.Size = new System.Drawing.Size(128, 177);
             this.fibreAmpEnableSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.fibreAmpEnableSwitch.TabIndex = 50;
             this.fibreAmpEnableSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.fibreAmpEnableSwitch_StateChanged);
@@ -4483,18 +4483,18 @@ namespace EDMHardwareControl
             // 
             this.groupBox31.Controls.Add(this.updateFibreAmpPwrButton);
             this.groupBox31.Controls.Add(this.fibreAmpPwrTextBox);
-            this.groupBox31.Location = new System.Drawing.Point(149, 19);
+            this.groupBox31.Location = new System.Drawing.Point(298, 35);
             this.groupBox31.Name = "groupBox31";
-            this.groupBox31.Size = new System.Drawing.Size(124, 76);
+            this.groupBox31.Size = new System.Drawing.Size(248, 140);
             this.groupBox31.TabIndex = 48;
             this.groupBox31.TabStop = false;
             this.groupBox31.Text = "Power";
             // 
             // updateFibreAmpPwrButton
             // 
-            this.updateFibreAmpPwrButton.Location = new System.Drawing.Point(6, 45);
+            this.updateFibreAmpPwrButton.Location = new System.Drawing.Point(12, 83);
             this.updateFibreAmpPwrButton.Name = "updateFibreAmpPwrButton";
-            this.updateFibreAmpPwrButton.Size = new System.Drawing.Size(100, 23);
+            this.updateFibreAmpPwrButton.Size = new System.Drawing.Size(200, 43);
             this.updateFibreAmpPwrButton.TabIndex = 60;
             this.updateFibreAmpPwrButton.Text = "Update";
             this.updateFibreAmpPwrButton.UseVisualStyleBackColor = true;
@@ -4503,9 +4503,9 @@ namespace EDMHardwareControl
             // fibreAmpPwrTextBox
             // 
             this.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.LimeGreen;
-            this.fibreAmpPwrTextBox.Location = new System.Drawing.Point(6, 19);
+            this.fibreAmpPwrTextBox.Location = new System.Drawing.Point(12, 35);
             this.fibreAmpPwrTextBox.Name = "fibreAmpPwrTextBox";
-            this.fibreAmpPwrTextBox.Size = new System.Drawing.Size(100, 20);
+            this.fibreAmpPwrTextBox.Size = new System.Drawing.Size(200, 31);
             this.fibreAmpPwrTextBox.TabIndex = 49;
             this.fibreAmpPwrTextBox.Text = "0";
             // 
@@ -4522,9 +4522,9 @@ namespace EDMHardwareControl
             this.groupBox29.Controls.Add(this.label91);
             this.groupBox29.Controls.Add(this.label90);
             this.groupBox29.Controls.Add(this.label89);
-            this.groupBox29.Location = new System.Drawing.Point(9, 103);
+            this.groupBox29.Location = new System.Drawing.Point(18, 190);
             this.groupBox29.Name = "groupBox29";
-            this.groupBox29.Size = new System.Drawing.Size(264, 142);
+            this.groupBox29.Size = new System.Drawing.Size(528, 262);
             this.groupBox29.TabIndex = 1;
             this.groupBox29.TabStop = false;
             this.groupBox29.Text = "Faults";
@@ -4532,58 +4532,58 @@ namespace EDMHardwareControl
             // fibreAmpPowerFaultLED
             // 
             this.fibreAmpPowerFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpPowerFaultLED.Location = new System.Drawing.Point(214, 34);
+            this.fibreAmpPowerFaultLED.Location = new System.Drawing.Point(428, 63);
             this.fibreAmpPowerFaultLED.Name = "fibreAmpPowerFaultLED";
             this.fibreAmpPowerFaultLED.OffColor = System.Drawing.Color.Black;
             this.fibreAmpPowerFaultLED.OnColor = System.Drawing.Color.Red;
-            this.fibreAmpPowerFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpPowerFaultLED.Size = new System.Drawing.Size(76, 74);
             this.fibreAmpPowerFaultLED.TabIndex = 66;
             // 
             // fibreAmpTempFaultLED
             // 
             this.fibreAmpTempFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpTempFaultLED.Location = new System.Drawing.Point(166, 34);
+            this.fibreAmpTempFaultLED.Location = new System.Drawing.Point(332, 63);
             this.fibreAmpTempFaultLED.Name = "fibreAmpTempFaultLED";
             this.fibreAmpTempFaultLED.OffColor = System.Drawing.Color.Black;
             this.fibreAmpTempFaultLED.OnColor = System.Drawing.Color.Red;
-            this.fibreAmpTempFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpTempFaultLED.Size = new System.Drawing.Size(76, 74);
             this.fibreAmpTempFaultLED.TabIndex = 65;
             // 
             // fibreAmpBackReflectFaultLED
             // 
             this.fibreAmpBackReflectFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpBackReflectFaultLED.Location = new System.Drawing.Point(112, 34);
+            this.fibreAmpBackReflectFaultLED.Location = new System.Drawing.Point(224, 63);
             this.fibreAmpBackReflectFaultLED.Name = "fibreAmpBackReflectFaultLED";
             this.fibreAmpBackReflectFaultLED.OffColor = System.Drawing.Color.Black;
             this.fibreAmpBackReflectFaultLED.OnColor = System.Drawing.Color.Red;
-            this.fibreAmpBackReflectFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpBackReflectFaultLED.Size = new System.Drawing.Size(76, 74);
             this.fibreAmpBackReflectFaultLED.TabIndex = 64;
             // 
             // fibreAmpSeedFaultLED
             // 
             this.fibreAmpSeedFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpSeedFaultLED.Location = new System.Drawing.Point(60, 34);
+            this.fibreAmpSeedFaultLED.Location = new System.Drawing.Point(120, 63);
             this.fibreAmpSeedFaultLED.Name = "fibreAmpSeedFaultLED";
             this.fibreAmpSeedFaultLED.OffColor = System.Drawing.Color.Black;
             this.fibreAmpSeedFaultLED.OnColor = System.Drawing.Color.Red;
-            this.fibreAmpSeedFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpSeedFaultLED.Size = new System.Drawing.Size(76, 74);
             this.fibreAmpSeedFaultLED.TabIndex = 63;
             // 
             // fibreAmpMasterFaultLED
             // 
             this.fibreAmpMasterFaultLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.fibreAmpMasterFaultLED.Location = new System.Drawing.Point(16, 34);
+            this.fibreAmpMasterFaultLED.Location = new System.Drawing.Point(32, 63);
             this.fibreAmpMasterFaultLED.Name = "fibreAmpMasterFaultLED";
             this.fibreAmpMasterFaultLED.OffColor = System.Drawing.Color.Black;
             this.fibreAmpMasterFaultLED.OnColor = System.Drawing.Color.Red;
-            this.fibreAmpMasterFaultLED.Size = new System.Drawing.Size(38, 40);
+            this.fibreAmpMasterFaultLED.Size = new System.Drawing.Size(76, 74);
             this.fibreAmpMasterFaultLED.TabIndex = 62;
             // 
             // faultCheckButton
             // 
-            this.faultCheckButton.Location = new System.Drawing.Point(169, 111);
+            this.faultCheckButton.Location = new System.Drawing.Point(338, 205);
             this.faultCheckButton.Name = "faultCheckButton";
-            this.faultCheckButton.Size = new System.Drawing.Size(89, 23);
+            this.faultCheckButton.Size = new System.Drawing.Size(178, 42);
             this.faultCheckButton.TabIndex = 61;
             this.faultCheckButton.Text = "Check for faults";
             this.faultCheckButton.UseVisualStyleBackColor = true;
@@ -4591,41 +4591,41 @@ namespace EDMHardwareControl
             // 
             // label93
             // 
-            this.label93.Location = new System.Drawing.Point(218, 77);
+            this.label93.Location = new System.Drawing.Point(436, 142);
             this.label93.Name = "label93";
-            this.label93.Size = new System.Drawing.Size(47, 31);
+            this.label93.Size = new System.Drawing.Size(94, 57);
             this.label93.TabIndex = 49;
             this.label93.Text = "Power supply";
             // 
             // label92
             // 
-            this.label92.Location = new System.Drawing.Point(166, 77);
+            this.label92.Location = new System.Drawing.Point(332, 142);
             this.label92.Name = "label92";
-            this.label92.Size = new System.Drawing.Size(38, 18);
+            this.label92.Size = new System.Drawing.Size(76, 33);
             this.label92.TabIndex = 48;
             this.label92.Text = "Temp";
             // 
             // label91
             // 
-            this.label91.Location = new System.Drawing.Point(112, 77);
+            this.label91.Location = new System.Drawing.Point(224, 142);
             this.label91.Name = "label91";
-            this.label91.Size = new System.Drawing.Size(59, 31);
+            this.label91.Size = new System.Drawing.Size(118, 57);
             this.label91.TabIndex = 47;
             this.label91.Text = "Back reflection";
             // 
             // label90
             // 
-            this.label90.Location = new System.Drawing.Point(67, 77);
+            this.label90.Location = new System.Drawing.Point(134, 142);
             this.label90.Name = "label90";
-            this.label90.Size = new System.Drawing.Size(39, 18);
+            this.label90.Size = new System.Drawing.Size(78, 33);
             this.label90.TabIndex = 46;
             this.label90.Text = "Seed";
             // 
             // label89
             // 
-            this.label89.Location = new System.Drawing.Point(13, 77);
+            this.label89.Location = new System.Drawing.Point(26, 142);
             this.label89.Name = "label89";
-            this.label89.Size = new System.Drawing.Size(41, 18);
+            this.label89.Size = new System.Drawing.Size(82, 33);
             this.label89.TabIndex = 45;
             this.label89.Text = "Master";
             // 
@@ -4644,18 +4644,18 @@ namespace EDMHardwareControl
             this.groupBox27.Controls.Add(this.updateflPZTButton);
             this.groupBox27.Controls.Add(this.MenloPZTTextBox);
             this.groupBox27.Controls.Add(this.label87);
-            this.groupBox27.Location = new System.Drawing.Point(9, 218);
+            this.groupBox27.Location = new System.Drawing.Point(18, 402);
             this.groupBox27.Name = "groupBox27";
-            this.groupBox27.Size = new System.Drawing.Size(393, 185);
+            this.groupBox27.Size = new System.Drawing.Size(786, 342);
             this.groupBox27.TabIndex = 1;
             this.groupBox27.TabStop = false;
             this.groupBox27.Text = "Fibre Laser";
             // 
             // flPZT2TempCurButton
             // 
-            this.flPZT2TempCurButton.Location = new System.Drawing.Point(208, 153);
+            this.flPZT2TempCurButton.Location = new System.Drawing.Point(416, 282);
             this.flPZT2TempCurButton.Name = "flPZT2TempCurButton";
-            this.flPZT2TempCurButton.Size = new System.Drawing.Size(72, 23);
+            this.flPZT2TempCurButton.Size = new System.Drawing.Size(144, 43);
             this.flPZT2TempCurButton.TabIndex = 79;
             this.flPZT2TempCurButton.Text = "Update";
             this.flPZT2TempCurButton.UseVisualStyleBackColor = true;
@@ -4664,17 +4664,17 @@ namespace EDMHardwareControl
             // flPZT2CurTextBox
             // 
             this.flPZT2CurTextBox.BackColor = System.Drawing.Color.White;
-            this.flPZT2CurTextBox.Location = new System.Drawing.Point(138, 156);
+            this.flPZT2CurTextBox.Location = new System.Drawing.Point(276, 288);
             this.flPZT2CurTextBox.Name = "flPZT2CurTextBox";
-            this.flPZT2CurTextBox.Size = new System.Drawing.Size(64, 20);
+            this.flPZT2CurTextBox.Size = new System.Drawing.Size(128, 31);
             this.flPZT2CurTextBox.TabIndex = 78;
             this.flPZT2CurTextBox.Text = "0";
             // 
             // flPZT2TempUpdateButton
             // 
-            this.flPZT2TempUpdateButton.Location = new System.Drawing.Point(208, 131);
+            this.flPZT2TempUpdateButton.Location = new System.Drawing.Point(416, 242);
             this.flPZT2TempUpdateButton.Name = "flPZT2TempUpdateButton";
-            this.flPZT2TempUpdateButton.Size = new System.Drawing.Size(72, 23);
+            this.flPZT2TempUpdateButton.Size = new System.Drawing.Size(144, 42);
             this.flPZT2TempUpdateButton.TabIndex = 77;
             this.flPZT2TempUpdateButton.Text = "Update";
             this.flPZT2TempUpdateButton.UseVisualStyleBackColor = true;
@@ -4682,52 +4682,52 @@ namespace EDMHardwareControl
             // 
             // label116
             // 
-            this.label116.Location = new System.Drawing.Point(6, 159);
+            this.label116.Location = new System.Drawing.Point(12, 294);
             this.label116.Name = "label116";
-            this.label116.Size = new System.Drawing.Size(126, 18);
+            this.label116.Size = new System.Drawing.Size(252, 33);
             this.label116.TabIndex = 76;
             this.label116.Text = "Current Control (V)";
             // 
             // flPZT2TempTextBox
             // 
             this.flPZT2TempTextBox.BackColor = System.Drawing.Color.White;
-            this.flPZT2TempTextBox.Location = new System.Drawing.Point(138, 134);
+            this.flPZT2TempTextBox.Location = new System.Drawing.Point(276, 247);
             this.flPZT2TempTextBox.Name = "flPZT2TempTextBox";
-            this.flPZT2TempTextBox.Size = new System.Drawing.Size(64, 20);
+            this.flPZT2TempTextBox.Size = new System.Drawing.Size(128, 31);
             this.flPZT2TempTextBox.TabIndex = 75;
             this.flPZT2TempTextBox.Text = "0";
             // 
             // label115
             // 
-            this.label115.Location = new System.Drawing.Point(6, 137);
+            this.label115.Location = new System.Drawing.Point(12, 253);
             this.label115.Name = "label115";
-            this.label115.Size = new System.Drawing.Size(126, 18);
+            this.label115.Size = new System.Drawing.Size(252, 33);
             this.label115.TabIndex = 74;
             this.label115.Text = "Temp Control (V)";
             // 
             // MenloPZTTrackBar
             // 
-            this.MenloPZTTrackBar.Location = new System.Drawing.Point(7, 51);
+            this.MenloPZTTrackBar.Location = new System.Drawing.Point(14, 94);
             this.MenloPZTTrackBar.Maximum = 1000;
             this.MenloPZTTrackBar.Name = "MenloPZTTrackBar";
-            this.MenloPZTTrackBar.Size = new System.Drawing.Size(373, 45);
+            this.MenloPZTTrackBar.Size = new System.Drawing.Size(746, 90);
             this.MenloPZTTrackBar.TabIndex = 50;
             this.MenloPZTTrackBar.Scroll += new System.EventHandler(this.diodeRefCavtrackBar_Scroll);
             // 
             // label94
             // 
-            this.label94.Location = new System.Drawing.Point(6, 102);
+            this.label94.Location = new System.Drawing.Point(12, 188);
             this.label94.Name = "label94";
-            this.label94.Size = new System.Drawing.Size(126, 18);
+            this.label94.Size = new System.Drawing.Size(252, 34);
             this.label94.TabIndex = 73;
             this.label94.Text = "Piezo Control Step (V)";
             // 
             // MenloPZTStepTextBox
             // 
             this.MenloPZTStepTextBox.BackColor = System.Drawing.Color.White;
-            this.MenloPZTStepTextBox.Location = new System.Drawing.Point(138, 100);
+            this.MenloPZTStepTextBox.Location = new System.Drawing.Point(276, 185);
             this.MenloPZTStepTextBox.Name = "MenloPZTStepTextBox";
-            this.MenloPZTStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.MenloPZTStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.MenloPZTStepTextBox.TabIndex = 72;
             this.MenloPZTStepTextBox.Text = "0";
             // 
@@ -4736,18 +4736,18 @@ namespace EDMHardwareControl
             this.panel6.Controls.Add(this.flPZT2StepZeroButton);
             this.panel6.Controls.Add(this.MenloPZTStepPlusButton);
             this.panel6.Controls.Add(this.MenloPZTStepMinusButton);
-            this.panel6.Location = new System.Drawing.Point(194, 16);
+            this.panel6.Location = new System.Drawing.Point(388, 30);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(108, 29);
+            this.panel6.Size = new System.Drawing.Size(216, 53);
             this.panel6.TabIndex = 71;
             // 
             // flPZT2StepZeroButton
             // 
             this.flPZT2StepZeroButton.AutoSize = true;
             this.flPZT2StepZeroButton.Checked = true;
-            this.flPZT2StepZeroButton.Location = new System.Drawing.Point(74, 7);
+            this.flPZT2StepZeroButton.Location = new System.Drawing.Point(148, 13);
             this.flPZT2StepZeroButton.Name = "flPZT2StepZeroButton";
-            this.flPZT2StepZeroButton.Size = new System.Drawing.Size(31, 17);
+            this.flPZT2StepZeroButton.Size = new System.Drawing.Size(55, 29);
             this.flPZT2StepZeroButton.TabIndex = 32;
             this.flPZT2StepZeroButton.TabStop = true;
             this.flPZT2StepZeroButton.Text = "0";
@@ -4756,9 +4756,9 @@ namespace EDMHardwareControl
             // MenloPZTStepPlusButton
             // 
             this.MenloPZTStepPlusButton.AutoSize = true;
-            this.MenloPZTStepPlusButton.Location = new System.Drawing.Point(3, 6);
+            this.MenloPZTStepPlusButton.Location = new System.Drawing.Point(6, 11);
             this.MenloPZTStepPlusButton.Name = "MenloPZTStepPlusButton";
-            this.MenloPZTStepPlusButton.Size = new System.Drawing.Size(31, 17);
+            this.MenloPZTStepPlusButton.Size = new System.Drawing.Size(55, 29);
             this.MenloPZTStepPlusButton.TabIndex = 32;
             this.MenloPZTStepPlusButton.Text = "+";
             this.MenloPZTStepPlusButton.UseVisualStyleBackColor = true;
@@ -4766,18 +4766,18 @@ namespace EDMHardwareControl
             // MenloPZTStepMinusButton
             // 
             this.MenloPZTStepMinusButton.AutoSize = true;
-            this.MenloPZTStepMinusButton.Location = new System.Drawing.Point(40, 7);
+            this.MenloPZTStepMinusButton.Location = new System.Drawing.Point(80, 13);
             this.MenloPZTStepMinusButton.Name = "MenloPZTStepMinusButton";
-            this.MenloPZTStepMinusButton.Size = new System.Drawing.Size(28, 17);
+            this.MenloPZTStepMinusButton.Size = new System.Drawing.Size(50, 29);
             this.MenloPZTStepMinusButton.TabIndex = 32;
             this.MenloPZTStepMinusButton.Text = "-";
             this.MenloPZTStepMinusButton.UseVisualStyleBackColor = true;
             // 
             // updateflPZTButton
             // 
-            this.updateflPZTButton.Location = new System.Drawing.Point(308, 19);
+            this.updateflPZTButton.Location = new System.Drawing.Point(616, 35);
             this.updateflPZTButton.Name = "updateflPZTButton";
-            this.updateflPZTButton.Size = new System.Drawing.Size(72, 23);
+            this.updateflPZTButton.Size = new System.Drawing.Size(144, 43);
             this.updateflPZTButton.TabIndex = 64;
             this.updateflPZTButton.Text = "Update";
             this.updateflPZTButton.UseVisualStyleBackColor = true;
@@ -4785,17 +4785,17 @@ namespace EDMHardwareControl
             // MenloPZTTextBox
             // 
             this.MenloPZTTextBox.BackColor = System.Drawing.Color.LimeGreen;
-            this.MenloPZTTextBox.Location = new System.Drawing.Point(127, 22);
+            this.MenloPZTTextBox.Location = new System.Drawing.Point(254, 41);
             this.MenloPZTTextBox.Name = "MenloPZTTextBox";
-            this.MenloPZTTextBox.Size = new System.Drawing.Size(64, 20);
+            this.MenloPZTTextBox.Size = new System.Drawing.Size(128, 31);
             this.MenloPZTTextBox.TabIndex = 45;
             this.MenloPZTTextBox.Text = "0";
             // 
             // label87
             // 
-            this.label87.Location = new System.Drawing.Point(6, 25);
+            this.label87.Location = new System.Drawing.Point(12, 46);
             this.label87.Name = "label87";
-            this.label87.Size = new System.Drawing.Size(93, 18);
+            this.label87.Size = new System.Drawing.Size(186, 33);
             this.label87.TabIndex = 44;
             this.label87.Text = "Piezo Control (V)";
             // 
@@ -4808,18 +4808,18 @@ namespace EDMHardwareControl
             this.groupBox26.Controls.Add(this.diodeCurrentPollTextBox);
             this.groupBox26.Controls.Add(this.label86);
             this.groupBox26.Controls.Add(this.diodeCurrentGraph);
-            this.groupBox26.Location = new System.Drawing.Point(6, 6);
+            this.groupBox26.Location = new System.Drawing.Point(12, 11);
             this.groupBox26.Name = "groupBox26";
-            this.groupBox26.Size = new System.Drawing.Size(685, 206);
+            this.groupBox26.Size = new System.Drawing.Size(1370, 380);
             this.groupBox26.TabIndex = 0;
             this.groupBox26.TabStop = false;
             this.groupBox26.Text = "Current Supply";
             // 
             // updateDiodeCurrentMonButton
             // 
-            this.updateDiodeCurrentMonButton.Location = new System.Drawing.Point(178, 176);
+            this.updateDiodeCurrentMonButton.Location = new System.Drawing.Point(356, 325);
             this.updateDiodeCurrentMonButton.Name = "updateDiodeCurrentMonButton";
-            this.updateDiodeCurrentMonButton.Size = new System.Drawing.Size(72, 23);
+            this.updateDiodeCurrentMonButton.Size = new System.Drawing.Size(144, 42);
             this.updateDiodeCurrentMonButton.TabIndex = 62;
             this.updateDiodeCurrentMonButton.Text = "Update";
             this.updateDiodeCurrentMonButton.UseVisualStyleBackColor = true;
@@ -4829,19 +4829,19 @@ namespace EDMHardwareControl
             // 
             this.diodeCurrentTextBox.BackColor = System.Drawing.Color.Black;
             this.diodeCurrentTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.diodeCurrentTextBox.Location = new System.Drawing.Point(35, 178);
+            this.diodeCurrentTextBox.Location = new System.Drawing.Point(70, 329);
             this.diodeCurrentTextBox.Name = "diodeCurrentTextBox";
             this.diodeCurrentTextBox.ReadOnly = true;
-            this.diodeCurrentTextBox.Size = new System.Drawing.Size(137, 20);
+            this.diodeCurrentTextBox.Size = new System.Drawing.Size(274, 31);
             this.diodeCurrentTextBox.TabIndex = 61;
             this.diodeCurrentTextBox.Text = "0";
             // 
             // stopDiodeCurrentPollButton
             // 
             this.stopDiodeCurrentPollButton.Enabled = false;
-            this.stopDiodeCurrentPollButton.Location = new System.Drawing.Point(604, 176);
+            this.stopDiodeCurrentPollButton.Location = new System.Drawing.Point(1208, 325);
             this.stopDiodeCurrentPollButton.Name = "stopDiodeCurrentPollButton";
-            this.stopDiodeCurrentPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopDiodeCurrentPollButton.Size = new System.Drawing.Size(150, 42);
             this.stopDiodeCurrentPollButton.TabIndex = 60;
             this.stopDiodeCurrentPollButton.Text = "Stop poll";
             this.stopDiodeCurrentPollButton.UseVisualStyleBackColor = true;
@@ -4849,9 +4849,9 @@ namespace EDMHardwareControl
             // 
             // startDiodeCurrentPollButton
             // 
-            this.startDiodeCurrentPollButton.Location = new System.Drawing.Point(523, 176);
+            this.startDiodeCurrentPollButton.Location = new System.Drawing.Point(1046, 325);
             this.startDiodeCurrentPollButton.Name = "startDiodeCurrentPollButton";
-            this.startDiodeCurrentPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startDiodeCurrentPollButton.Size = new System.Drawing.Size(150, 42);
             this.startDiodeCurrentPollButton.TabIndex = 59;
             this.startDiodeCurrentPollButton.Text = "Start poll";
             this.startDiodeCurrentPollButton.UseVisualStyleBackColor = true;
@@ -4859,17 +4859,17 @@ namespace EDMHardwareControl
             // 
             // diodeCurrentPollTextBox
             // 
-            this.diodeCurrentPollTextBox.Location = new System.Drawing.Point(453, 178);
+            this.diodeCurrentPollTextBox.Location = new System.Drawing.Point(906, 329);
             this.diodeCurrentPollTextBox.Name = "diodeCurrentPollTextBox";
-            this.diodeCurrentPollTextBox.Size = new System.Drawing.Size(64, 20);
+            this.diodeCurrentPollTextBox.Size = new System.Drawing.Size(128, 31);
             this.diodeCurrentPollTextBox.TabIndex = 58;
             this.diodeCurrentPollTextBox.Text = "100";
             // 
             // label86
             // 
-            this.label86.Location = new System.Drawing.Point(366, 181);
+            this.label86.Location = new System.Drawing.Point(732, 334);
             this.label86.Name = "label86";
-            this.label86.Size = new System.Drawing.Size(101, 23);
+            this.label86.Size = new System.Drawing.Size(202, 43);
             this.label86.TabIndex = 57;
             this.label86.Text = "Poll period (ms)";
             // 
@@ -4882,11 +4882,11 @@ namespace EDMHardwareControl
             | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
             | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
             | NationalInstruments.UI.GraphInteractionModes.EditRange)));
-            this.diodeCurrentGraph.Location = new System.Drawing.Point(6, 19);
+            this.diodeCurrentGraph.Location = new System.Drawing.Point(12, 35);
             this.diodeCurrentGraph.Name = "diodeCurrentGraph";
             this.diodeCurrentGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
             this.diodeCurrentPlot});
-            this.diodeCurrentGraph.Size = new System.Drawing.Size(673, 153);
+            this.diodeCurrentGraph.Size = new System.Drawing.Size(1346, 283);
             this.diodeCurrentGraph.TabIndex = 46;
             this.diodeCurrentGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis2});
@@ -4916,27 +4916,27 @@ namespace EDMHardwareControl
             this.tabPage13.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage13.Controls.Add(this.groupBox43);
             this.tabPage13.Controls.Add(this.groupBox41);
-            this.tabPage13.Location = new System.Drawing.Point(4, 22);
+            this.tabPage13.Location = new System.Drawing.Point(8, 39);
             this.tabPage13.Name = "tabPage13";
-            this.tabPage13.Size = new System.Drawing.Size(697, 575);
+            this.tabPage13.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage13.TabIndex = 10;
             this.tabPage13.Text = "Microwaves";
             // 
             // groupBox43
             // 
             this.groupBox43.Controls.Add(this.mwEnableCheckBox);
-            this.groupBox43.Location = new System.Drawing.Point(13, 13);
+            this.groupBox43.Location = new System.Drawing.Point(26, 24);
             this.groupBox43.Name = "groupBox43";
-            this.groupBox43.Size = new System.Drawing.Size(316, 113);
+            this.groupBox43.Size = new System.Drawing.Size(632, 209);
             this.groupBox43.TabIndex = 71;
             this.groupBox43.TabStop = false;
             this.groupBox43.Text = "Microwave Switches";
             // 
             // mwEnableCheckBox
             // 
-            this.mwEnableCheckBox.Location = new System.Drawing.Point(11, 19);
+            this.mwEnableCheckBox.Location = new System.Drawing.Point(22, 35);
             this.mwEnableCheckBox.Name = "mwEnableCheckBox";
-            this.mwEnableCheckBox.Size = new System.Drawing.Size(208, 24);
+            this.mwEnableCheckBox.Size = new System.Drawing.Size(416, 44);
             this.mwEnableCheckBox.TabIndex = 23;
             this.mwEnableCheckBox.Text = "Enable microwaves ";
             this.mwEnableCheckBox.CheckedChanged += new System.EventHandler(this.mwEnableCheckBox_CheckedChanged);
@@ -4960,18 +4960,18 @@ namespace EDMHardwareControl
             this.groupBox41.Controls.Add(this.uWaveDCFMTextBox);
             this.groupBox41.Controls.Add(this.uWaveUpdateButton);
             this.groupBox41.Controls.Add(this.label156);
-            this.groupBox41.Location = new System.Drawing.Point(13, 142);
+            this.groupBox41.Location = new System.Drawing.Point(26, 262);
             this.groupBox41.Name = "groupBox41";
-            this.groupBox41.Size = new System.Drawing.Size(661, 175);
+            this.groupBox41.Size = new System.Drawing.Size(1322, 323);
             this.groupBox41.TabIndex = 70;
             this.groupBox41.TabStop = false;
             this.groupBox41.Text = "Anapico Synth";
             // 
             // mixerVoltageMinusButton
             // 
-            this.mixerVoltageMinusButton.Location = new System.Drawing.Point(551, 19);
+            this.mixerVoltageMinusButton.Location = new System.Drawing.Point(1102, 35);
             this.mixerVoltageMinusButton.Name = "mixerVoltageMinusButton";
-            this.mixerVoltageMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.mixerVoltageMinusButton.Size = new System.Drawing.Size(74, 43);
             this.mixerVoltageMinusButton.TabIndex = 60;
             this.mixerVoltageMinusButton.Text = "-";
             this.mixerVoltageMinusButton.UseVisualStyleBackColor = true;
@@ -4979,9 +4979,9 @@ namespace EDMHardwareControl
             // 
             // mixerVoltagePlusButton
             // 
-            this.mixerVoltagePlusButton.Location = new System.Drawing.Point(508, 19);
+            this.mixerVoltagePlusButton.Location = new System.Drawing.Point(1016, 35);
             this.mixerVoltagePlusButton.Name = "mixerVoltagePlusButton";
-            this.mixerVoltagePlusButton.Size = new System.Drawing.Size(37, 23);
+            this.mixerVoltagePlusButton.Size = new System.Drawing.Size(74, 43);
             this.mixerVoltagePlusButton.TabIndex = 59;
             this.mixerVoltagePlusButton.Text = "+";
             this.mixerVoltagePlusButton.UseVisualStyleBackColor = true;
@@ -4989,25 +4989,25 @@ namespace EDMHardwareControl
             // 
             // stepMixerVoltageTextBox
             // 
-            this.stepMixerVoltageTextBox.Location = new System.Drawing.Point(438, 48);
+            this.stepMixerVoltageTextBox.Location = new System.Drawing.Point(876, 89);
             this.stepMixerVoltageTextBox.Name = "stepMixerVoltageTextBox";
-            this.stepMixerVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.stepMixerVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.stepMixerVoltageTextBox.TabIndex = 58;
             this.stepMixerVoltageTextBox.Text = "0.1";
             // 
             // label151
             // 
-            this.label151.Location = new System.Drawing.Point(342, 51);
+            this.label151.Location = new System.Drawing.Point(684, 94);
             this.label151.Name = "label151";
-            this.label151.Size = new System.Drawing.Size(90, 23);
+            this.label151.Size = new System.Drawing.Size(180, 43);
             this.label151.TabIndex = 57;
             this.label151.Text = "Step Mixer (V)";
             // 
             // uWaveDCFMMinusButton
             // 
-            this.uWaveDCFMMinusButton.Location = new System.Drawing.Point(225, 19);
+            this.uWaveDCFMMinusButton.Location = new System.Drawing.Point(450, 35);
             this.uWaveDCFMMinusButton.Name = "uWaveDCFMMinusButton";
-            this.uWaveDCFMMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.uWaveDCFMMinusButton.Size = new System.Drawing.Size(74, 43);
             this.uWaveDCFMMinusButton.TabIndex = 56;
             this.uWaveDCFMMinusButton.Text = "-";
             this.uWaveDCFMMinusButton.UseVisualStyleBackColor = true;
@@ -5015,25 +5015,25 @@ namespace EDMHardwareControl
             // 
             // uWaveDCFMStepTextBox
             // 
-            this.uWaveDCFMStepTextBox.Location = new System.Drawing.Point(112, 48);
+            this.uWaveDCFMStepTextBox.Location = new System.Drawing.Point(224, 89);
             this.uWaveDCFMStepTextBox.Name = "uWaveDCFMStepTextBox";
-            this.uWaveDCFMStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.uWaveDCFMStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.uWaveDCFMStepTextBox.TabIndex = 55;
             this.uWaveDCFMStepTextBox.Text = "0.1";
             // 
             // label152
             // 
-            this.label152.Location = new System.Drawing.Point(16, 51);
+            this.label152.Location = new System.Drawing.Point(32, 94);
             this.label152.Name = "label152";
-            this.label152.Size = new System.Drawing.Size(90, 23);
+            this.label152.Size = new System.Drawing.Size(180, 43);
             this.label152.TabIndex = 54;
             this.label152.Text = "Step DCFM (V)";
             // 
             // uWaveDCFMPlusButton
             // 
-            this.uWaveDCFMPlusButton.Location = new System.Drawing.Point(182, 19);
+            this.uWaveDCFMPlusButton.Location = new System.Drawing.Point(364, 35);
             this.uWaveDCFMPlusButton.Name = "uWaveDCFMPlusButton";
-            this.uWaveDCFMPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.uWaveDCFMPlusButton.Size = new System.Drawing.Size(74, 43);
             this.uWaveDCFMPlusButton.TabIndex = 53;
             this.uWaveDCFMPlusButton.Text = "+";
             this.uWaveDCFMPlusButton.UseVisualStyleBackColor = true;
@@ -5041,77 +5041,77 @@ namespace EDMHardwareControl
             // 
             // mixerVoltageTrackBar
             // 
-            this.mixerVoltageTrackBar.Location = new System.Drawing.Point(335, 95);
+            this.mixerVoltageTrackBar.Location = new System.Drawing.Point(670, 175);
             this.mixerVoltageTrackBar.Maximum = 1000;
             this.mixerVoltageTrackBar.Name = "mixerVoltageTrackBar";
-            this.mixerVoltageTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.mixerVoltageTrackBar.Size = new System.Drawing.Size(574, 90);
             this.mixerVoltageTrackBar.TabIndex = 52;
             this.mixerVoltageTrackBar.Scroll += new System.EventHandler(this.mixerVoltageTrackBar_Scroll);
             // 
             // label153
             // 
-            this.label153.Location = new System.Drawing.Point(342, 78);
+            this.label153.Location = new System.Drawing.Point(684, 144);
             this.label153.Name = "label153";
-            this.label153.Size = new System.Drawing.Size(90, 23);
+            this.label153.Size = new System.Drawing.Size(180, 42);
             this.label153.TabIndex = 51;
             this.label153.Text = "Mixer Voltage";
             // 
             // label154
             // 
-            this.label154.Location = new System.Drawing.Point(16, 78);
+            this.label154.Location = new System.Drawing.Point(32, 144);
             this.label154.Name = "label154";
-            this.label154.Size = new System.Drawing.Size(90, 23);
+            this.label154.Size = new System.Drawing.Size(180, 42);
             this.label154.TabIndex = 50;
             this.label154.Text = "DCFM Voltage";
             // 
             // uWaveDCFMTrackBar
             // 
-            this.uWaveDCFMTrackBar.Location = new System.Drawing.Point(6, 99);
+            this.uWaveDCFMTrackBar.Location = new System.Drawing.Point(12, 183);
             this.uWaveDCFMTrackBar.Maximum = 250;
             this.uWaveDCFMTrackBar.Minimum = -250;
             this.uWaveDCFMTrackBar.Name = "uWaveDCFMTrackBar";
-            this.uWaveDCFMTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.uWaveDCFMTrackBar.Size = new System.Drawing.Size(574, 90);
             this.uWaveDCFMTrackBar.TabIndex = 49;
             this.uWaveDCFMTrackBar.Scroll += new System.EventHandler(this.uWaveDCFMTrackBar_Scroll);
             // 
             // mixerVoltageTextBox
             // 
-            this.mixerVoltageTextBox.Location = new System.Drawing.Point(438, 21);
+            this.mixerVoltageTextBox.Location = new System.Drawing.Point(876, 39);
             this.mixerVoltageTextBox.Name = "mixerVoltageTextBox";
-            this.mixerVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.mixerVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.mixerVoltageTextBox.TabIndex = 47;
             this.mixerVoltageTextBox.Text = "0";
             // 
             // label155
             // 
-            this.label155.Location = new System.Drawing.Point(342, 24);
+            this.label155.Location = new System.Drawing.Point(684, 44);
             this.label155.Name = "label155";
-            this.label155.Size = new System.Drawing.Size(101, 23);
+            this.label155.Size = new System.Drawing.Size(202, 43);
             this.label155.TabIndex = 46;
             this.label155.Text = "Mixer Voltage (V)";
             // 
             // uWaveDCFMTextBox
             // 
-            this.uWaveDCFMTextBox.Location = new System.Drawing.Point(112, 21);
+            this.uWaveDCFMTextBox.Location = new System.Drawing.Point(224, 39);
             this.uWaveDCFMTextBox.Name = "uWaveDCFMTextBox";
-            this.uWaveDCFMTextBox.Size = new System.Drawing.Size(64, 20);
+            this.uWaveDCFMTextBox.Size = new System.Drawing.Size(128, 31);
             this.uWaveDCFMTextBox.TabIndex = 45;
             this.uWaveDCFMTextBox.Text = "0";
             // 
             // uWaveUpdateButton
             // 
-            this.uWaveUpdateButton.Location = new System.Drawing.Point(283, 146);
+            this.uWaveUpdateButton.Location = new System.Drawing.Point(566, 270);
             this.uWaveUpdateButton.Name = "uWaveUpdateButton";
-            this.uWaveUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.uWaveUpdateButton.Size = new System.Drawing.Size(150, 42);
             this.uWaveUpdateButton.TabIndex = 40;
             this.uWaveUpdateButton.Text = "Update";
             this.uWaveUpdateButton.Click += new System.EventHandler(this.uWaveUpdateButton_Click);
             // 
             // label156
             // 
-            this.label156.Location = new System.Drawing.Point(16, 24);
+            this.label156.Location = new System.Drawing.Point(32, 44);
             this.label156.Name = "label156";
-            this.label156.Size = new System.Drawing.Size(103, 23);
+            this.label156.Size = new System.Drawing.Size(206, 43);
             this.label156.TabIndex = 36;
             this.label156.Text = "DCFM Voltage (V)";
             // 
@@ -5122,27 +5122,27 @@ namespace EDMHardwareControl
             this.tabPage12.Controls.Add(this.groupBox40);
             this.tabPage12.Controls.Add(this.groupBox39);
             this.tabPage12.Controls.Add(this.groupBox161MHzVCO);
-            this.tabPage12.Location = new System.Drawing.Point(4, 22);
+            this.tabPage12.Location = new System.Drawing.Point(8, 39);
             this.tabPage12.Name = "tabPage12";
-            this.tabPage12.Size = new System.Drawing.Size(697, 575);
+            this.tabPage12.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage12.TabIndex = 10;
             this.tabPage12.Text = "RF VCOs";
             // 
             // groupBox42
             // 
             this.groupBox42.Controls.Add(this.pumpRFCheckBox);
-            this.groupBox42.Location = new System.Drawing.Point(17, 8);
+            this.groupBox42.Location = new System.Drawing.Point(34, 15);
             this.groupBox42.Name = "groupBox42";
-            this.groupBox42.Size = new System.Drawing.Size(316, 113);
+            this.groupBox42.Size = new System.Drawing.Size(632, 208);
             this.groupBox42.TabIndex = 70;
             this.groupBox42.TabStop = false;
             this.groupBox42.Text = "Rf Switches";
             // 
             // pumpRFCheckBox
             // 
-            this.pumpRFCheckBox.Location = new System.Drawing.Point(11, 19);
+            this.pumpRFCheckBox.Location = new System.Drawing.Point(22, 35);
             this.pumpRFCheckBox.Name = "pumpRFCheckBox";
-            this.pumpRFCheckBox.Size = new System.Drawing.Size(208, 24);
+            this.pumpRFCheckBox.Size = new System.Drawing.Size(416, 44);
             this.pumpRFCheckBox.TabIndex = 23;
             this.pumpRFCheckBox.Text = "Enable pump rf (check on)";
             this.pumpRFCheckBox.CheckedChanged += new System.EventHandler(this.pumpRFCheckBox_CheckedChanged);
@@ -5166,18 +5166,18 @@ namespace EDMHardwareControl
             this.groupBox40.Controls.Add(this.VCO155AmpVoltageTextBox);
             this.groupBox40.Controls.Add(this.VCO155UpdateButton);
             this.groupBox40.Controls.Add(this.label136);
-            this.groupBox40.Location = new System.Drawing.Point(17, 424);
+            this.groupBox40.Location = new System.Drawing.Point(34, 783);
             this.groupBox40.Name = "groupBox40";
-            this.groupBox40.Size = new System.Drawing.Size(661, 141);
+            this.groupBox40.Size = new System.Drawing.Size(1322, 260);
             this.groupBox40.TabIndex = 71;
             this.groupBox40.TabStop = false;
             this.groupBox40.Text = "155 MHz VCO";
             // 
             // VCO155FreqStepMinusButton
             // 
-            this.VCO155FreqStepMinusButton.Location = new System.Drawing.Point(551, 20);
+            this.VCO155FreqStepMinusButton.Location = new System.Drawing.Point(1102, 37);
             this.VCO155FreqStepMinusButton.Name = "VCO155FreqStepMinusButton";
-            this.VCO155FreqStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO155FreqStepMinusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO155FreqStepMinusButton.TabIndex = 71;
             this.VCO155FreqStepMinusButton.Text = "-";
             this.VCO155FreqStepMinusButton.UseVisualStyleBackColor = true;
@@ -5185,9 +5185,9 @@ namespace EDMHardwareControl
             // 
             // VCO155FreqStepPlusButton
             // 
-            this.VCO155FreqStepPlusButton.Location = new System.Drawing.Point(508, 20);
+            this.VCO155FreqStepPlusButton.Location = new System.Drawing.Point(1016, 37);
             this.VCO155FreqStepPlusButton.Name = "VCO155FreqStepPlusButton";
-            this.VCO155FreqStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO155FreqStepPlusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO155FreqStepPlusButton.TabIndex = 70;
             this.VCO155FreqStepPlusButton.Text = "+";
             this.VCO155FreqStepPlusButton.UseVisualStyleBackColor = true;
@@ -5195,9 +5195,9 @@ namespace EDMHardwareControl
             // 
             // VCO155AmpStepMinusButton
             // 
-            this.VCO155AmpStepMinusButton.Location = new System.Drawing.Point(225, 20);
+            this.VCO155AmpStepMinusButton.Location = new System.Drawing.Point(450, 37);
             this.VCO155AmpStepMinusButton.Name = "VCO155AmpStepMinusButton";
-            this.VCO155AmpStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO155AmpStepMinusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO155AmpStepMinusButton.TabIndex = 67;
             this.VCO155AmpStepMinusButton.Text = "-";
             this.VCO155AmpStepMinusButton.UseVisualStyleBackColor = true;
@@ -5205,9 +5205,9 @@ namespace EDMHardwareControl
             // 
             // VCO155AmpStepPlusButton
             // 
-            this.VCO155AmpStepPlusButton.Location = new System.Drawing.Point(182, 19);
+            this.VCO155AmpStepPlusButton.Location = new System.Drawing.Point(364, 35);
             this.VCO155AmpStepPlusButton.Name = "VCO155AmpStepPlusButton";
-            this.VCO155AmpStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO155AmpStepPlusButton.Size = new System.Drawing.Size(74, 43);
             this.VCO155AmpStepPlusButton.TabIndex = 67;
             this.VCO155AmpStepPlusButton.Text = "+";
             this.VCO155AmpStepPlusButton.UseVisualStyleBackColor = true;
@@ -5215,108 +5215,108 @@ namespace EDMHardwareControl
             // 
             // VCO155FreqStepTextBox
             // 
-            this.VCO155FreqStepTextBox.Location = new System.Drawing.Point(438, 50);
+            this.VCO155FreqStepTextBox.Location = new System.Drawing.Point(876, 92);
             this.VCO155FreqStepTextBox.Name = "VCO155FreqStepTextBox";
-            this.VCO155FreqStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO155FreqStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO155FreqStepTextBox.TabIndex = 69;
             this.VCO155FreqStepTextBox.Text = "0.1";
             // 
             // label150
             // 
-            this.label150.Location = new System.Drawing.Point(342, 53);
+            this.label150.Location = new System.Drawing.Point(684, 98);
             this.label150.Name = "label150";
-            this.label150.Size = new System.Drawing.Size(90, 23);
+            this.label150.Size = new System.Drawing.Size(180, 42);
             this.label150.TabIndex = 68;
             this.label150.Text = "Step Voltage (V)";
             // 
             // VCO155AmpStepTextBox
             // 
-            this.VCO155AmpStepTextBox.Location = new System.Drawing.Point(112, 50);
+            this.VCO155AmpStepTextBox.Location = new System.Drawing.Point(224, 92);
             this.VCO155AmpStepTextBox.Name = "VCO155AmpStepTextBox";
-            this.VCO155AmpStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO155AmpStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO155AmpStepTextBox.TabIndex = 67;
             this.VCO155AmpStepTextBox.Text = "0.1";
             // 
             // label149
             // 
-            this.label149.Location = new System.Drawing.Point(16, 53);
+            this.label149.Location = new System.Drawing.Point(32, 98);
             this.label149.Name = "label149";
-            this.label149.Size = new System.Drawing.Size(90, 23);
+            this.label149.Size = new System.Drawing.Size(180, 42);
             this.label149.TabIndex = 67;
             this.label149.Text = "Step Voltage (V)";
             // 
             // label144
             // 
-            this.label144.Location = new System.Drawing.Point(342, 85);
+            this.label144.Location = new System.Drawing.Point(684, 157);
             this.label144.Name = "label144";
-            this.label144.Size = new System.Drawing.Size(90, 23);
+            this.label144.Size = new System.Drawing.Size(180, 42);
             this.label144.TabIndex = 56;
             this.label144.Text = "VCO Frequency";
             // 
             // label143
             // 
-            this.label143.Location = new System.Drawing.Point(16, 85);
+            this.label143.Location = new System.Drawing.Point(32, 157);
             this.label143.Name = "label143";
-            this.label143.Size = new System.Drawing.Size(90, 23);
+            this.label143.Size = new System.Drawing.Size(180, 42);
             this.label143.TabIndex = 56;
             this.label143.Text = "VCO Amplitude";
             // 
             // VCO155FreqTrackBar
             // 
-            this.VCO155FreqTrackBar.Location = new System.Drawing.Point(345, 108);
+            this.VCO155FreqTrackBar.Location = new System.Drawing.Point(690, 199);
             this.VCO155FreqTrackBar.Maximum = 1000;
             this.VCO155FreqTrackBar.Name = "VCO155FreqTrackBar";
-            this.VCO155FreqTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO155FreqTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO155FreqTrackBar.TabIndex = 50;
             this.VCO155FreqTrackBar.Scroll += new System.EventHandler(this.VCO155FreqTrackBar_Scroll);
             // 
             // VCO155AmpTrackBar
             // 
-            this.VCO155AmpTrackBar.Location = new System.Drawing.Point(6, 108);
+            this.VCO155AmpTrackBar.Location = new System.Drawing.Point(12, 199);
             this.VCO155AmpTrackBar.Maximum = 1000;
             this.VCO155AmpTrackBar.Name = "VCO155AmpTrackBar";
-            this.VCO155AmpTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO155AmpTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO155AmpTrackBar.TabIndex = 49;
             this.VCO155AmpTrackBar.Scroll += new System.EventHandler(this.VCO155AmpTrackBar_Scroll);
             // 
             // VCO155FreqVoltageTextBox
             // 
-            this.VCO155FreqVoltageTextBox.Location = new System.Drawing.Point(438, 21);
+            this.VCO155FreqVoltageTextBox.Location = new System.Drawing.Point(876, 39);
             this.VCO155FreqVoltageTextBox.Name = "VCO155FreqVoltageTextBox";
-            this.VCO155FreqVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO155FreqVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO155FreqVoltageTextBox.TabIndex = 47;
             this.VCO155FreqVoltageTextBox.Text = "0";
             // 
             // label135
             // 
-            this.label135.Location = new System.Drawing.Point(342, 23);
+            this.label135.Location = new System.Drawing.Point(684, 42);
             this.label135.Name = "label135";
-            this.label135.Size = new System.Drawing.Size(99, 23);
+            this.label135.Size = new System.Drawing.Size(198, 43);
             this.label135.TabIndex = 46;
             this.label135.Text = "Freq Voltage (V)";
             // 
             // VCO155AmpVoltageTextBox
             // 
-            this.VCO155AmpVoltageTextBox.Location = new System.Drawing.Point(112, 22);
+            this.VCO155AmpVoltageTextBox.Location = new System.Drawing.Point(224, 41);
             this.VCO155AmpVoltageTextBox.Name = "VCO155AmpVoltageTextBox";
-            this.VCO155AmpVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO155AmpVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO155AmpVoltageTextBox.TabIndex = 45;
             this.VCO155AmpVoltageTextBox.Text = "0";
             // 
             // VCO155UpdateButton
             // 
-            this.VCO155UpdateButton.Location = new System.Drawing.Point(182, 50);
+            this.VCO155UpdateButton.Location = new System.Drawing.Point(364, 92);
             this.VCO155UpdateButton.Name = "VCO155UpdateButton";
-            this.VCO155UpdateButton.Size = new System.Drawing.Size(80, 23);
+            this.VCO155UpdateButton.Size = new System.Drawing.Size(160, 43);
             this.VCO155UpdateButton.TabIndex = 40;
             this.VCO155UpdateButton.Text = "Update";
             this.VCO155UpdateButton.Click += new System.EventHandler(this.VCO155UpdateButton_Click);
             // 
             // label136
             // 
-            this.label136.Location = new System.Drawing.Point(16, 24);
+            this.label136.Location = new System.Drawing.Point(32, 44);
             this.label136.Name = "label136";
-            this.label136.Size = new System.Drawing.Size(98, 23);
+            this.label136.Size = new System.Drawing.Size(196, 43);
             this.label136.TabIndex = 36;
             this.label136.Text = "Amp Voltage (V)";
             // 
@@ -5339,18 +5339,18 @@ namespace EDMHardwareControl
             this.groupBox39.Controls.Add(this.VCO30AmpVoltageTextBox);
             this.groupBox39.Controls.Add(this.VCO30UpdateButton);
             this.groupBox39.Controls.Add(this.label134);
-            this.groupBox39.Location = new System.Drawing.Point(17, 272);
+            this.groupBox39.Location = new System.Drawing.Point(34, 502);
             this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(661, 149);
+            this.groupBox39.Size = new System.Drawing.Size(1322, 275);
             this.groupBox39.TabIndex = 70;
             this.groupBox39.TabStop = false;
             this.groupBox39.Text = "30 MHz VCO";
             // 
             // VCO30FreqStepMinusButton
             // 
-            this.VCO30FreqStepMinusButton.Location = new System.Drawing.Point(551, 22);
+            this.VCO30FreqStepMinusButton.Location = new System.Drawing.Point(1102, 41);
             this.VCO30FreqStepMinusButton.Name = "VCO30FreqStepMinusButton";
-            this.VCO30FreqStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO30FreqStepMinusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO30FreqStepMinusButton.TabIndex = 66;
             this.VCO30FreqStepMinusButton.Text = "-";
             this.VCO30FreqStepMinusButton.UseVisualStyleBackColor = true;
@@ -5358,9 +5358,9 @@ namespace EDMHardwareControl
             // 
             // VCO30FreqStepPlusButton
             // 
-            this.VCO30FreqStepPlusButton.Location = new System.Drawing.Point(508, 22);
+            this.VCO30FreqStepPlusButton.Location = new System.Drawing.Point(1016, 41);
             this.VCO30FreqStepPlusButton.Name = "VCO30FreqStepPlusButton";
-            this.VCO30FreqStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO30FreqStepPlusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO30FreqStepPlusButton.TabIndex = 65;
             this.VCO30FreqStepPlusButton.Text = "+";
             this.VCO30FreqStepPlusButton.UseVisualStyleBackColor = true;
@@ -5368,25 +5368,25 @@ namespace EDMHardwareControl
             // 
             // VCO30FreqStepTextBox
             // 
-            this.VCO30FreqStepTextBox.Location = new System.Drawing.Point(438, 50);
+            this.VCO30FreqStepTextBox.Location = new System.Drawing.Point(876, 92);
             this.VCO30FreqStepTextBox.Name = "VCO30FreqStepTextBox";
-            this.VCO30FreqStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO30FreqStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO30FreqStepTextBox.TabIndex = 64;
             this.VCO30FreqStepTextBox.Text = "0.1";
             // 
             // label148
             // 
-            this.label148.Location = new System.Drawing.Point(342, 53);
+            this.label148.Location = new System.Drawing.Point(684, 98);
             this.label148.Name = "label148";
-            this.label148.Size = new System.Drawing.Size(90, 23);
+            this.label148.Size = new System.Drawing.Size(180, 42);
             this.label148.TabIndex = 63;
             this.label148.Text = "Step Voltage (V)";
             // 
             // VCO30AmpStepMinusButton
             // 
-            this.VCO30AmpStepMinusButton.Location = new System.Drawing.Point(225, 22);
+            this.VCO30AmpStepMinusButton.Location = new System.Drawing.Point(450, 41);
             this.VCO30AmpStepMinusButton.Name = "VCO30AmpStepMinusButton";
-            this.VCO30AmpStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO30AmpStepMinusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO30AmpStepMinusButton.TabIndex = 61;
             this.VCO30AmpStepMinusButton.Text = "-";
             this.VCO30AmpStepMinusButton.UseVisualStyleBackColor = true;
@@ -5394,9 +5394,9 @@ namespace EDMHardwareControl
             // 
             // VCO30AmpStepPlusButton
             // 
-            this.VCO30AmpStepPlusButton.Location = new System.Drawing.Point(182, 22);
+            this.VCO30AmpStepPlusButton.Location = new System.Drawing.Point(364, 41);
             this.VCO30AmpStepPlusButton.Name = "VCO30AmpStepPlusButton";
-            this.VCO30AmpStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO30AmpStepPlusButton.Size = new System.Drawing.Size(74, 42);
             this.VCO30AmpStepPlusButton.TabIndex = 62;
             this.VCO30AmpStepPlusButton.Text = "+";
             this.VCO30AmpStepPlusButton.UseVisualStyleBackColor = true;
@@ -5404,92 +5404,92 @@ namespace EDMHardwareControl
             // 
             // VCO30AmpStepTextBox
             // 
-            this.VCO30AmpStepTextBox.Location = new System.Drawing.Point(112, 50);
+            this.VCO30AmpStepTextBox.Location = new System.Drawing.Point(224, 92);
             this.VCO30AmpStepTextBox.Name = "VCO30AmpStepTextBox";
-            this.VCO30AmpStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO30AmpStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO30AmpStepTextBox.TabIndex = 61;
             this.VCO30AmpStepTextBox.Text = "0.1";
             // 
             // label147
             // 
-            this.label147.Location = new System.Drawing.Point(16, 53);
+            this.label147.Location = new System.Drawing.Point(32, 98);
             this.label147.Name = "label147";
-            this.label147.Size = new System.Drawing.Size(90, 23);
+            this.label147.Size = new System.Drawing.Size(180, 42);
             this.label147.TabIndex = 61;
             this.label147.Text = "Step Voltage (V)";
             // 
             // VCO30FreqTrackBar
             // 
-            this.VCO30FreqTrackBar.Location = new System.Drawing.Point(345, 99);
+            this.VCO30FreqTrackBar.Location = new System.Drawing.Point(690, 183);
             this.VCO30FreqTrackBar.Maximum = 1000;
             this.VCO30FreqTrackBar.Name = "VCO30FreqTrackBar";
-            this.VCO30FreqTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO30FreqTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO30FreqTrackBar.TabIndex = 55;
             this.VCO30FreqTrackBar.Scroll += new System.EventHandler(this.VCO30FreqTrackBar_Scroll);
             // 
             // label142
             // 
-            this.label142.Location = new System.Drawing.Point(342, 79);
+            this.label142.Location = new System.Drawing.Point(684, 146);
             this.label142.Name = "label142";
-            this.label142.Size = new System.Drawing.Size(90, 23);
+            this.label142.Size = new System.Drawing.Size(180, 42);
             this.label142.TabIndex = 54;
             this.label142.Text = "VCO Frequency";
             // 
             // label141
             // 
-            this.label141.Location = new System.Drawing.Point(16, 79);
+            this.label141.Location = new System.Drawing.Point(32, 146);
             this.label141.Name = "label141";
-            this.label141.Size = new System.Drawing.Size(90, 23);
+            this.label141.Size = new System.Drawing.Size(180, 42);
             this.label141.TabIndex = 53;
             this.label141.Text = "VCO Amplitude";
             // 
             // VCO30AmpTrackBar
             // 
-            this.VCO30AmpTrackBar.Location = new System.Drawing.Point(6, 100);
+            this.VCO30AmpTrackBar.Location = new System.Drawing.Point(12, 185);
             this.VCO30AmpTrackBar.Maximum = 1000;
             this.VCO30AmpTrackBar.Name = "VCO30AmpTrackBar";
-            this.VCO30AmpTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO30AmpTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO30AmpTrackBar.TabIndex = 49;
             this.VCO30AmpTrackBar.Scroll += new System.EventHandler(this.VCO30AmpTrackBar_Scroll);
             // 
             // VCO30FreqVoltageTextBox
             // 
-            this.VCO30FreqVoltageTextBox.Location = new System.Drawing.Point(438, 24);
+            this.VCO30FreqVoltageTextBox.Location = new System.Drawing.Point(876, 44);
             this.VCO30FreqVoltageTextBox.Name = "VCO30FreqVoltageTextBox";
-            this.VCO30FreqVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO30FreqVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO30FreqVoltageTextBox.TabIndex = 47;
             this.VCO30FreqVoltageTextBox.Text = "0";
             // 
             // label83
             // 
-            this.label83.Location = new System.Drawing.Point(342, 24);
+            this.label83.Location = new System.Drawing.Point(684, 44);
             this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(99, 23);
+            this.label83.Size = new System.Drawing.Size(198, 43);
             this.label83.TabIndex = 46;
             this.label83.Text = "Freq Voltage (V)";
             // 
             // VCO30AmpVoltageTextBox
             // 
-            this.VCO30AmpVoltageTextBox.Location = new System.Drawing.Point(112, 24);
+            this.VCO30AmpVoltageTextBox.Location = new System.Drawing.Point(224, 44);
             this.VCO30AmpVoltageTextBox.Name = "VCO30AmpVoltageTextBox";
-            this.VCO30AmpVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO30AmpVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO30AmpVoltageTextBox.TabIndex = 45;
             this.VCO30AmpVoltageTextBox.Text = "0";
             // 
             // VCO30UpdateButton
             // 
-            this.VCO30UpdateButton.Location = new System.Drawing.Point(182, 50);
+            this.VCO30UpdateButton.Location = new System.Drawing.Point(364, 92);
             this.VCO30UpdateButton.Name = "VCO30UpdateButton";
-            this.VCO30UpdateButton.Size = new System.Drawing.Size(80, 23);
+            this.VCO30UpdateButton.Size = new System.Drawing.Size(160, 43);
             this.VCO30UpdateButton.TabIndex = 40;
             this.VCO30UpdateButton.Text = "Update";
             this.VCO30UpdateButton.Click += new System.EventHandler(this.VCO30UpdateButton_Click);
             // 
             // label134
             // 
-            this.label134.Location = new System.Drawing.Point(16, 24);
+            this.label134.Location = new System.Drawing.Point(32, 44);
             this.label134.Name = "label134";
-            this.label134.Size = new System.Drawing.Size(98, 23);
+            this.label134.Size = new System.Drawing.Size(196, 43);
             this.label134.TabIndex = 36;
             this.label134.Text = "Amp Voltage (V)";
             // 
@@ -5512,9 +5512,9 @@ namespace EDMHardwareControl
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpVoltageTextBox);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161UpdateButton);
             this.groupBox161MHzVCO.Controls.Add(this.label138);
-            this.groupBox161MHzVCO.Location = new System.Drawing.Point(17, 127);
+            this.groupBox161MHzVCO.Location = new System.Drawing.Point(34, 234);
             this.groupBox161MHzVCO.Name = "groupBox161MHzVCO";
-            this.groupBox161MHzVCO.Size = new System.Drawing.Size(661, 140);
+            this.groupBox161MHzVCO.Size = new System.Drawing.Size(1322, 259);
             this.groupBox161MHzVCO.TabIndex = 69;
             this.groupBox161MHzVCO.TabStop = false;
             this.groupBox161MHzVCO.Text = "161 MHz VCO";
@@ -5522,9 +5522,9 @@ namespace EDMHardwareControl
             // 
             // VCO161FreqStepMinusButton
             // 
-            this.VCO161FreqStepMinusButton.Location = new System.Drawing.Point(551, 19);
+            this.VCO161FreqStepMinusButton.Location = new System.Drawing.Point(1102, 35);
             this.VCO161FreqStepMinusButton.Name = "VCO161FreqStepMinusButton";
-            this.VCO161FreqStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO161FreqStepMinusButton.Size = new System.Drawing.Size(74, 43);
             this.VCO161FreqStepMinusButton.TabIndex = 60;
             this.VCO161FreqStepMinusButton.Text = "-";
             this.VCO161FreqStepMinusButton.UseVisualStyleBackColor = true;
@@ -5532,9 +5532,9 @@ namespace EDMHardwareControl
             // 
             // VCO161FreqStepPlusButton
             // 
-            this.VCO161FreqStepPlusButton.Location = new System.Drawing.Point(508, 19);
+            this.VCO161FreqStepPlusButton.Location = new System.Drawing.Point(1016, 35);
             this.VCO161FreqStepPlusButton.Name = "VCO161FreqStepPlusButton";
-            this.VCO161FreqStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO161FreqStepPlusButton.Size = new System.Drawing.Size(74, 43);
             this.VCO161FreqStepPlusButton.TabIndex = 59;
             this.VCO161FreqStepPlusButton.Text = "+";
             this.VCO161FreqStepPlusButton.UseVisualStyleBackColor = true;
@@ -5542,25 +5542,25 @@ namespace EDMHardwareControl
             // 
             // VCO161FreqStepTextBox
             // 
-            this.VCO161FreqStepTextBox.Location = new System.Drawing.Point(438, 48);
+            this.VCO161FreqStepTextBox.Location = new System.Drawing.Point(876, 89);
             this.VCO161FreqStepTextBox.Name = "VCO161FreqStepTextBox";
-            this.VCO161FreqStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO161FreqStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO161FreqStepTextBox.TabIndex = 58;
             this.VCO161FreqStepTextBox.Text = "0.1";
             // 
             // label146
             // 
-            this.label146.Location = new System.Drawing.Point(342, 51);
+            this.label146.Location = new System.Drawing.Point(684, 94);
             this.label146.Name = "label146";
-            this.label146.Size = new System.Drawing.Size(90, 23);
+            this.label146.Size = new System.Drawing.Size(180, 43);
             this.label146.TabIndex = 57;
             this.label146.Text = "Step Voltage (V)";
             // 
             // VCO161AmpStepMinusButton
             // 
-            this.VCO161AmpStepMinusButton.Location = new System.Drawing.Point(225, 19);
+            this.VCO161AmpStepMinusButton.Location = new System.Drawing.Point(450, 35);
             this.VCO161AmpStepMinusButton.Name = "VCO161AmpStepMinusButton";
-            this.VCO161AmpStepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO161AmpStepMinusButton.Size = new System.Drawing.Size(74, 43);
             this.VCO161AmpStepMinusButton.TabIndex = 56;
             this.VCO161AmpStepMinusButton.Text = "-";
             this.VCO161AmpStepMinusButton.UseVisualStyleBackColor = true;
@@ -5568,25 +5568,25 @@ namespace EDMHardwareControl
             // 
             // VCO161AmpStepTextBox
             // 
-            this.VCO161AmpStepTextBox.Location = new System.Drawing.Point(112, 48);
+            this.VCO161AmpStepTextBox.Location = new System.Drawing.Point(224, 89);
             this.VCO161AmpStepTextBox.Name = "VCO161AmpStepTextBox";
-            this.VCO161AmpStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO161AmpStepTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO161AmpStepTextBox.TabIndex = 55;
             this.VCO161AmpStepTextBox.Text = "0.1";
             // 
             // label145
             // 
-            this.label145.Location = new System.Drawing.Point(16, 51);
+            this.label145.Location = new System.Drawing.Point(32, 94);
             this.label145.Name = "label145";
-            this.label145.Size = new System.Drawing.Size(90, 23);
+            this.label145.Size = new System.Drawing.Size(180, 43);
             this.label145.TabIndex = 54;
             this.label145.Text = "Step Voltage (V)";
             // 
             // VCO161AmpStepPlusButton
             // 
-            this.VCO161AmpStepPlusButton.Location = new System.Drawing.Point(182, 19);
+            this.VCO161AmpStepPlusButton.Location = new System.Drawing.Point(364, 35);
             this.VCO161AmpStepPlusButton.Name = "VCO161AmpStepPlusButton";
-            this.VCO161AmpStepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.VCO161AmpStepPlusButton.Size = new System.Drawing.Size(74, 43);
             this.VCO161AmpStepPlusButton.TabIndex = 53;
             this.VCO161AmpStepPlusButton.Text = "+";
             this.VCO161AmpStepPlusButton.UseVisualStyleBackColor = true;
@@ -5594,76 +5594,76 @@ namespace EDMHardwareControl
             // 
             // VCO161FreqTrackBar
             // 
-            this.VCO161FreqTrackBar.Location = new System.Drawing.Point(345, 91);
+            this.VCO161FreqTrackBar.Location = new System.Drawing.Point(690, 168);
             this.VCO161FreqTrackBar.Maximum = 1000;
             this.VCO161FreqTrackBar.Name = "VCO161FreqTrackBar";
-            this.VCO161FreqTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO161FreqTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO161FreqTrackBar.TabIndex = 52;
             this.VCO161FreqTrackBar.Scroll += new System.EventHandler(this.VCO161FreqTrackBar_Scroll);
             // 
             // label140
             // 
-            this.label140.Location = new System.Drawing.Point(342, 78);
+            this.label140.Location = new System.Drawing.Point(684, 144);
             this.label140.Name = "label140";
-            this.label140.Size = new System.Drawing.Size(90, 23);
+            this.label140.Size = new System.Drawing.Size(180, 42);
             this.label140.TabIndex = 51;
             this.label140.Text = "VCO Frequency";
             // 
             // label139
             // 
-            this.label139.Location = new System.Drawing.Point(16, 78);
+            this.label139.Location = new System.Drawing.Point(32, 144);
             this.label139.Name = "label139";
-            this.label139.Size = new System.Drawing.Size(90, 23);
+            this.label139.Size = new System.Drawing.Size(180, 42);
             this.label139.TabIndex = 50;
             this.label139.Text = "VCO Amplitude";
             // 
             // VCO161AmpTrackBar
             // 
-            this.VCO161AmpTrackBar.Location = new System.Drawing.Point(6, 92);
+            this.VCO161AmpTrackBar.Location = new System.Drawing.Point(12, 170);
             this.VCO161AmpTrackBar.Maximum = 1000;
             this.VCO161AmpTrackBar.Name = "VCO161AmpTrackBar";
-            this.VCO161AmpTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.VCO161AmpTrackBar.Size = new System.Drawing.Size(574, 90);
             this.VCO161AmpTrackBar.TabIndex = 49;
             this.VCO161AmpTrackBar.Scroll += new System.EventHandler(this.VCO161AmpTrackBar_Scroll);
             // 
             // VCO161FreqTextBox
             // 
-            this.VCO161FreqTextBox.Location = new System.Drawing.Point(438, 21);
+            this.VCO161FreqTextBox.Location = new System.Drawing.Point(876, 39);
             this.VCO161FreqTextBox.Name = "VCO161FreqTextBox";
-            this.VCO161FreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO161FreqTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO161FreqTextBox.TabIndex = 47;
             this.VCO161FreqTextBox.Text = "0";
             // 
             // label137
             // 
-            this.label137.Location = new System.Drawing.Point(342, 24);
+            this.label137.Location = new System.Drawing.Point(684, 44);
             this.label137.Name = "label137";
-            this.label137.Size = new System.Drawing.Size(90, 23);
+            this.label137.Size = new System.Drawing.Size(180, 43);
             this.label137.TabIndex = 46;
             this.label137.Text = "Freq Voltage (V)";
             // 
             // VCO161AmpVoltageTextBox
             // 
-            this.VCO161AmpVoltageTextBox.Location = new System.Drawing.Point(112, 21);
+            this.VCO161AmpVoltageTextBox.Location = new System.Drawing.Point(224, 39);
             this.VCO161AmpVoltageTextBox.Name = "VCO161AmpVoltageTextBox";
-            this.VCO161AmpVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.VCO161AmpVoltageTextBox.Size = new System.Drawing.Size(128, 31);
             this.VCO161AmpVoltageTextBox.TabIndex = 45;
             this.VCO161AmpVoltageTextBox.Text = "0";
             // 
             // VCO161UpdateButton
             // 
-            this.VCO161UpdateButton.Location = new System.Drawing.Point(182, 45);
+            this.VCO161UpdateButton.Location = new System.Drawing.Point(364, 83);
             this.VCO161UpdateButton.Name = "VCO161UpdateButton";
-            this.VCO161UpdateButton.Size = new System.Drawing.Size(80, 23);
+            this.VCO161UpdateButton.Size = new System.Drawing.Size(160, 43);
             this.VCO161UpdateButton.TabIndex = 40;
             this.VCO161UpdateButton.Text = "Update";
             this.VCO161UpdateButton.Click += new System.EventHandler(this.VCO161UpdateButton_Click);
             // 
             // label138
             // 
-            this.label138.Location = new System.Drawing.Point(16, 24);
+            this.label138.Location = new System.Drawing.Point(32, 44);
             this.label138.Name = "label138";
-            this.label138.Size = new System.Drawing.Size(90, 23);
+            this.label138.Size = new System.Drawing.Size(180, 43);
             this.label138.TabIndex = 36;
             this.label138.Text = "Amp Voltage (V)";
             // 
@@ -5672,10 +5672,10 @@ namespace EDMHardwareControl
             this.tabPage6.BackColor = System.Drawing.Color.Transparent;
             this.tabPage6.Controls.Add(this.groupBox34);
             this.tabPage6.Controls.Add(this.groupBox32);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Location = new System.Drawing.Point(8, 39);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(697, 575);
+            this.tabPage6.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
             // 
@@ -5688,9 +5688,9 @@ namespace EDMHardwareControl
             this.groupBox34.Controls.Add(this.zeroPumpPol);
             this.groupBox34.Controls.Add(this.label110);
             this.groupBox34.Controls.Add(this.groupBox35);
-            this.groupBox34.Location = new System.Drawing.Point(349, 6);
+            this.groupBox34.Location = new System.Drawing.Point(698, 11);
             this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(345, 229);
+            this.groupBox34.Size = new System.Drawing.Size(690, 423);
             this.groupBox34.TabIndex = 13;
             this.groupBox34.TabStop = false;
             this.groupBox34.Text = "Pump Polariser";
@@ -5698,17 +5698,17 @@ namespace EDMHardwareControl
             // label108
             // 
             this.label108.AutoSize = true;
-            this.label108.Location = new System.Drawing.Point(271, 30);
+            this.label108.Location = new System.Drawing.Point(542, 55);
             this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(0, 13);
+            this.label108.Size = new System.Drawing.Size(0, 25);
             this.label108.TabIndex = 48;
             // 
             // label109
             // 
             this.label109.AutoSize = true;
-            this.label109.Location = new System.Drawing.Point(15, 35);
+            this.label109.Location = new System.Drawing.Point(30, 65);
             this.label109.Name = "label109";
-            this.label109.Size = new System.Drawing.Size(74, 13);
+            this.label109.Size = new System.Drawing.Size(149, 25);
             this.label109.TabIndex = 47;
             this.label109.Text = "Position Mode";
             // 
@@ -5716,18 +5716,18 @@ namespace EDMHardwareControl
             // 
             this.pumpPolMesAngle.BackColor = System.Drawing.Color.Black;
             this.pumpPolMesAngle.ForeColor = System.Drawing.Color.Chartreuse;
-            this.pumpPolMesAngle.Location = new System.Drawing.Point(111, 180);
+            this.pumpPolMesAngle.Location = new System.Drawing.Point(222, 332);
             this.pumpPolMesAngle.Name = "pumpPolMesAngle";
             this.pumpPolMesAngle.ReadOnly = true;
-            this.pumpPolMesAngle.Size = new System.Drawing.Size(82, 20);
+            this.pumpPolMesAngle.Size = new System.Drawing.Size(164, 31);
             this.pumpPolMesAngle.TabIndex = 43;
             this.pumpPolMesAngle.Text = "0";
             // 
             // updatePumpPolMesAngle
             // 
-            this.updatePumpPolMesAngle.Location = new System.Drawing.Point(199, 178);
+            this.updatePumpPolMesAngle.Location = new System.Drawing.Point(398, 329);
             this.updatePumpPolMesAngle.Name = "updatePumpPolMesAngle";
-            this.updatePumpPolMesAngle.Size = new System.Drawing.Size(75, 23);
+            this.updatePumpPolMesAngle.Size = new System.Drawing.Size(150, 42);
             this.updatePumpPolMesAngle.TabIndex = 6;
             this.updatePumpPolMesAngle.Text = "Update";
             this.updatePumpPolMesAngle.UseVisualStyleBackColor = true;
@@ -5735,9 +5735,9 @@ namespace EDMHardwareControl
             // 
             // zeroPumpPol
             // 
-            this.zeroPumpPol.Location = new System.Drawing.Point(280, 177);
+            this.zeroPumpPol.Location = new System.Drawing.Point(560, 327);
             this.zeroPumpPol.Name = "zeroPumpPol";
-            this.zeroPumpPol.Size = new System.Drawing.Size(44, 23);
+            this.zeroPumpPol.Size = new System.Drawing.Size(88, 42);
             this.zeroPumpPol.TabIndex = 2;
             this.zeroPumpPol.Text = "Zero";
             this.zeroPumpPol.UseVisualStyleBackColor = true;
@@ -5746,9 +5746,9 @@ namespace EDMHardwareControl
             // label110
             // 
             this.label110.AutoSize = true;
-            this.label110.Location = new System.Drawing.Point(12, 183);
+            this.label110.Location = new System.Drawing.Point(24, 338);
             this.label110.Name = "label110";
-            this.label110.Size = new System.Drawing.Size(84, 13);
+            this.label110.Size = new System.Drawing.Size(169, 25);
             this.label110.TabIndex = 7;
             this.label110.Text = "Measured Angle";
             // 
@@ -5765,35 +5765,35 @@ namespace EDMHardwareControl
             this.groupBox35.Controls.Add(this.label114);
             this.groupBox35.Controls.Add(this.setPumpPolAngle);
             this.groupBox35.Controls.Add(this.pumpPolModeSelectSwitch);
-            this.groupBox35.Location = new System.Drawing.Point(6, 11);
+            this.groupBox35.Location = new System.Drawing.Point(12, 20);
             this.groupBox35.Name = "groupBox35";
-            this.groupBox35.Size = new System.Drawing.Size(332, 153);
+            this.groupBox35.Size = new System.Drawing.Size(664, 283);
             this.groupBox35.TabIndex = 50;
             this.groupBox35.TabStop = false;
             // 
             // label124
             // 
             this.label124.AutoSize = true;
-            this.label124.Location = new System.Drawing.Point(118, 55);
+            this.label124.Location = new System.Drawing.Point(236, 102);
             this.label124.Name = "label124";
-            this.label124.Size = new System.Drawing.Size(114, 13);
+            this.label124.Size = new System.Drawing.Size(229, 25);
             this.label124.TabIndex = 54;
             this.label124.Text = "-ve overshoot ( 0 = off)";
             // 
             // pumpBacklashTextBox
             // 
-            this.pumpBacklashTextBox.Location = new System.Drawing.Point(244, 52);
+            this.pumpBacklashTextBox.Location = new System.Drawing.Point(488, 96);
             this.pumpBacklashTextBox.Name = "pumpBacklashTextBox";
-            this.pumpBacklashTextBox.Size = new System.Drawing.Size(75, 20);
+            this.pumpBacklashTextBox.Size = new System.Drawing.Size(150, 31);
             this.pumpBacklashTextBox.TabIndex = 53;
             this.pumpBacklashTextBox.Text = "0";
             // 
             // pumpPolVoltStopButton
             // 
             this.pumpPolVoltStopButton.Enabled = false;
-            this.pumpPolVoltStopButton.Location = new System.Drawing.Point(243, 106);
+            this.pumpPolVoltStopButton.Location = new System.Drawing.Point(486, 196);
             this.pumpPolVoltStopButton.Name = "pumpPolVoltStopButton";
-            this.pumpPolVoltStopButton.Size = new System.Drawing.Size(75, 23);
+            this.pumpPolVoltStopButton.Size = new System.Drawing.Size(150, 42);
             this.pumpPolVoltStopButton.TabIndex = 51;
             this.pumpPolVoltStopButton.Text = "Stop";
             this.pumpPolVoltStopButton.UseVisualStyleBackColor = true;
@@ -5802,63 +5802,63 @@ namespace EDMHardwareControl
             // pumpPolVoltTrackBar
             // 
             this.pumpPolVoltTrackBar.Enabled = false;
-            this.pumpPolVoltTrackBar.Location = new System.Drawing.Point(88, 102);
+            this.pumpPolVoltTrackBar.Location = new System.Drawing.Point(176, 188);
             this.pumpPolVoltTrackBar.Maximum = 100;
             this.pumpPolVoltTrackBar.Minimum = -100;
             this.pumpPolVoltTrackBar.Name = "pumpPolVoltTrackBar";
-            this.pumpPolVoltTrackBar.Size = new System.Drawing.Size(149, 45);
+            this.pumpPolVoltTrackBar.Size = new System.Drawing.Size(298, 90);
             this.pumpPolVoltTrackBar.TabIndex = 51;
             this.pumpPolVoltTrackBar.Scroll += new System.EventHandler(this.pumpPolVoltTrackBar_Scroll);
             // 
             // label111
             // 
             this.label111.AutoSize = true;
-            this.label111.Location = new System.Drawing.Point(9, 126);
+            this.label111.Location = new System.Drawing.Point(18, 233);
             this.label111.Name = "label111";
-            this.label111.Size = new System.Drawing.Size(73, 13);
+            this.label111.Size = new System.Drawing.Size(145, 25);
             this.label111.TabIndex = 49;
             this.label111.Text = "Voltage Mode";
             // 
             // label112
             // 
             this.label112.AutoSize = true;
-            this.label112.Location = new System.Drawing.Point(102, 24);
+            this.label112.Location = new System.Drawing.Point(204, 44);
             this.label112.Name = "label112";
-            this.label112.Size = new System.Drawing.Size(53, 13);
+            this.label112.Size = new System.Drawing.Size(105, 25);
             this.label112.TabIndex = 8;
             this.label112.Text = "Set Angle";
             // 
             // pumpPolSetAngle
             // 
-            this.pumpPolSetAngle.Location = new System.Drawing.Point(161, 19);
+            this.pumpPolSetAngle.Location = new System.Drawing.Point(322, 35);
             this.pumpPolSetAngle.Name = "pumpPolSetAngle";
-            this.pumpPolSetAngle.Size = new System.Drawing.Size(66, 20);
+            this.pumpPolSetAngle.Size = new System.Drawing.Size(132, 31);
             this.pumpPolSetAngle.TabIndex = 13;
             this.pumpPolSetAngle.Text = "0";
             // 
             // label113
             // 
             this.label113.AutoSize = true;
-            this.label113.Location = new System.Drawing.Point(172, 78);
+            this.label113.Location = new System.Drawing.Point(344, 144);
             this.label113.Name = "label113";
-            this.label113.Size = new System.Drawing.Size(55, 13);
+            this.label113.Size = new System.Drawing.Size(109, 25);
             this.label113.TabIndex = 44;
             this.label113.Text = "Clockwise";
             // 
             // label114
             // 
             this.label114.AutoSize = true;
-            this.label114.Location = new System.Drawing.Point(85, 78);
+            this.label114.Location = new System.Drawing.Point(170, 144);
             this.label114.Name = "label114";
-            this.label114.Size = new System.Drawing.Size(75, 13);
+            this.label114.Size = new System.Drawing.Size(149, 25);
             this.label114.TabIndex = 45;
             this.label114.Text = "Anti-clockwise";
             // 
             // setPumpPolAngle
             // 
-            this.setPumpPolAngle.Location = new System.Drawing.Point(243, 17);
+            this.setPumpPolAngle.Location = new System.Drawing.Point(486, 31);
             this.setPumpPolAngle.Name = "setPumpPolAngle";
-            this.setPumpPolAngle.Size = new System.Drawing.Size(75, 23);
+            this.setPumpPolAngle.Size = new System.Drawing.Size(150, 43);
             this.setPumpPolAngle.TabIndex = 5;
             this.setPumpPolAngle.Text = "Set";
             this.setPumpPolAngle.UseVisualStyleBackColor = true;
@@ -5866,9 +5866,9 @@ namespace EDMHardwareControl
             // 
             // pumpPolModeSelectSwitch
             // 
-            this.pumpPolModeSelectSwitch.Location = new System.Drawing.Point(12, 33);
+            this.pumpPolModeSelectSwitch.Location = new System.Drawing.Point(24, 61);
             this.pumpPolModeSelectSwitch.Name = "pumpPolModeSelectSwitch";
-            this.pumpPolModeSelectSwitch.Size = new System.Drawing.Size(64, 96);
+            this.pumpPolModeSelectSwitch.Size = new System.Drawing.Size(128, 177);
             this.pumpPolModeSelectSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.pumpPolModeSelectSwitch.TabIndex = 51;
             this.pumpPolModeSelectSwitch.Value = true;
@@ -5883,9 +5883,9 @@ namespace EDMHardwareControl
             this.groupBox32.Controls.Add(this.zeroProbePol);
             this.groupBox32.Controls.Add(this.label101);
             this.groupBox32.Controls.Add(this.groupBox33);
-            this.groupBox32.Location = new System.Drawing.Point(3, 6);
+            this.groupBox32.Location = new System.Drawing.Point(6, 11);
             this.groupBox32.Name = "groupBox32";
-            this.groupBox32.Size = new System.Drawing.Size(345, 229);
+            this.groupBox32.Size = new System.Drawing.Size(690, 423);
             this.groupBox32.TabIndex = 12;
             this.groupBox32.TabStop = false;
             this.groupBox32.Text = "Probe Polariser";
@@ -5893,17 +5893,17 @@ namespace EDMHardwareControl
             // label106
             // 
             this.label106.AutoSize = true;
-            this.label106.Location = new System.Drawing.Point(271, 30);
+            this.label106.Location = new System.Drawing.Point(542, 55);
             this.label106.Name = "label106";
-            this.label106.Size = new System.Drawing.Size(0, 13);
+            this.label106.Size = new System.Drawing.Size(0, 25);
             this.label106.TabIndex = 48;
             // 
             // label105
             // 
             this.label105.AutoSize = true;
-            this.label105.Location = new System.Drawing.Point(15, 35);
+            this.label105.Location = new System.Drawing.Point(30, 65);
             this.label105.Name = "label105";
-            this.label105.Size = new System.Drawing.Size(74, 13);
+            this.label105.Size = new System.Drawing.Size(149, 25);
             this.label105.TabIndex = 47;
             this.label105.Text = "Position Mode";
             // 
@@ -5911,18 +5911,18 @@ namespace EDMHardwareControl
             // 
             this.probePolMesAngle.BackColor = System.Drawing.Color.Black;
             this.probePolMesAngle.ForeColor = System.Drawing.Color.Chartreuse;
-            this.probePolMesAngle.Location = new System.Drawing.Point(111, 180);
+            this.probePolMesAngle.Location = new System.Drawing.Point(222, 332);
             this.probePolMesAngle.Name = "probePolMesAngle";
             this.probePolMesAngle.ReadOnly = true;
-            this.probePolMesAngle.Size = new System.Drawing.Size(82, 20);
+            this.probePolMesAngle.Size = new System.Drawing.Size(164, 31);
             this.probePolMesAngle.TabIndex = 43;
             this.probePolMesAngle.Text = "0";
             // 
             // updateProbePolMesAngle
             // 
-            this.updateProbePolMesAngle.Location = new System.Drawing.Point(199, 178);
+            this.updateProbePolMesAngle.Location = new System.Drawing.Point(398, 329);
             this.updateProbePolMesAngle.Name = "updateProbePolMesAngle";
-            this.updateProbePolMesAngle.Size = new System.Drawing.Size(75, 23);
+            this.updateProbePolMesAngle.Size = new System.Drawing.Size(150, 42);
             this.updateProbePolMesAngle.TabIndex = 6;
             this.updateProbePolMesAngle.Text = "Update";
             this.updateProbePolMesAngle.UseVisualStyleBackColor = true;
@@ -5930,9 +5930,9 @@ namespace EDMHardwareControl
             // 
             // zeroProbePol
             // 
-            this.zeroProbePol.Location = new System.Drawing.Point(280, 177);
+            this.zeroProbePol.Location = new System.Drawing.Point(560, 327);
             this.zeroProbePol.Name = "zeroProbePol";
-            this.zeroProbePol.Size = new System.Drawing.Size(44, 23);
+            this.zeroProbePol.Size = new System.Drawing.Size(88, 42);
             this.zeroProbePol.TabIndex = 2;
             this.zeroProbePol.Text = "Zero";
             this.zeroProbePol.UseVisualStyleBackColor = true;
@@ -5941,9 +5941,9 @@ namespace EDMHardwareControl
             // label101
             // 
             this.label101.AutoSize = true;
-            this.label101.Location = new System.Drawing.Point(12, 183);
+            this.label101.Location = new System.Drawing.Point(24, 338);
             this.label101.Name = "label101";
-            this.label101.Size = new System.Drawing.Size(84, 13);
+            this.label101.Size = new System.Drawing.Size(169, 25);
             this.label101.TabIndex = 7;
             this.label101.Text = "Measured Angle";
             // 
@@ -5960,35 +5960,35 @@ namespace EDMHardwareControl
             this.groupBox33.Controls.Add(this.label104);
             this.groupBox33.Controls.Add(this.setProbePolAngle);
             this.groupBox33.Controls.Add(this.probePolModeSelectSwitch);
-            this.groupBox33.Location = new System.Drawing.Point(6, 11);
+            this.groupBox33.Location = new System.Drawing.Point(12, 20);
             this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(332, 153);
+            this.groupBox33.Size = new System.Drawing.Size(664, 283);
             this.groupBox33.TabIndex = 50;
             this.groupBox33.TabStop = false;
             // 
             // label123
             // 
             this.label123.AutoSize = true;
-            this.label123.Location = new System.Drawing.Point(117, 55);
+            this.label123.Location = new System.Drawing.Point(234, 102);
             this.label123.Name = "label123";
-            this.label123.Size = new System.Drawing.Size(114, 13);
+            this.label123.Size = new System.Drawing.Size(229, 25);
             this.label123.TabIndex = 52;
             this.label123.Text = "-ve overshoot ( 0 = off)";
             // 
             // probeBacklashTextBox
             // 
-            this.probeBacklashTextBox.Location = new System.Drawing.Point(243, 52);
+            this.probeBacklashTextBox.Location = new System.Drawing.Point(486, 96);
             this.probeBacklashTextBox.Name = "probeBacklashTextBox";
-            this.probeBacklashTextBox.Size = new System.Drawing.Size(75, 20);
+            this.probeBacklashTextBox.Size = new System.Drawing.Size(150, 31);
             this.probeBacklashTextBox.TabIndex = 14;
             this.probeBacklashTextBox.Text = "0";
             // 
             // probePolVoltStopButton
             // 
             this.probePolVoltStopButton.Enabled = false;
-            this.probePolVoltStopButton.Location = new System.Drawing.Point(243, 106);
+            this.probePolVoltStopButton.Location = new System.Drawing.Point(486, 196);
             this.probePolVoltStopButton.Name = "probePolVoltStopButton";
-            this.probePolVoltStopButton.Size = new System.Drawing.Size(75, 23);
+            this.probePolVoltStopButton.Size = new System.Drawing.Size(150, 42);
             this.probePolVoltStopButton.TabIndex = 51;
             this.probePolVoltStopButton.Text = "Stop";
             this.probePolVoltStopButton.UseVisualStyleBackColor = true;
@@ -5997,63 +5997,63 @@ namespace EDMHardwareControl
             // probePolVoltTrackBar
             // 
             this.probePolVoltTrackBar.Enabled = false;
-            this.probePolVoltTrackBar.Location = new System.Drawing.Point(88, 102);
+            this.probePolVoltTrackBar.Location = new System.Drawing.Point(176, 188);
             this.probePolVoltTrackBar.Maximum = 100;
             this.probePolVoltTrackBar.Minimum = -100;
             this.probePolVoltTrackBar.Name = "probePolVoltTrackBar";
-            this.probePolVoltTrackBar.Size = new System.Drawing.Size(149, 45);
+            this.probePolVoltTrackBar.Size = new System.Drawing.Size(298, 90);
             this.probePolVoltTrackBar.TabIndex = 51;
             this.probePolVoltTrackBar.Scroll += new System.EventHandler(this.probePolVoltTrackBar_Scroll);
             // 
             // label107
             // 
             this.label107.AutoSize = true;
-            this.label107.Location = new System.Drawing.Point(9, 126);
+            this.label107.Location = new System.Drawing.Point(18, 233);
             this.label107.Name = "label107";
-            this.label107.Size = new System.Drawing.Size(73, 13);
+            this.label107.Size = new System.Drawing.Size(145, 25);
             this.label107.TabIndex = 49;
             this.label107.Text = "Voltage Mode";
             // 
             // label102
             // 
             this.label102.AutoSize = true;
-            this.label102.Location = new System.Drawing.Point(102, 24);
+            this.label102.Location = new System.Drawing.Point(204, 44);
             this.label102.Name = "label102";
-            this.label102.Size = new System.Drawing.Size(53, 13);
+            this.label102.Size = new System.Drawing.Size(105, 25);
             this.label102.TabIndex = 8;
             this.label102.Text = "Set Angle";
             // 
             // probePolSetAngle
             // 
-            this.probePolSetAngle.Location = new System.Drawing.Point(161, 19);
+            this.probePolSetAngle.Location = new System.Drawing.Point(322, 35);
             this.probePolSetAngle.Name = "probePolSetAngle";
-            this.probePolSetAngle.Size = new System.Drawing.Size(66, 20);
+            this.probePolSetAngle.Size = new System.Drawing.Size(132, 31);
             this.probePolSetAngle.TabIndex = 13;
             this.probePolSetAngle.Text = "0";
             // 
             // label103
             // 
             this.label103.AutoSize = true;
-            this.label103.Location = new System.Drawing.Point(172, 78);
+            this.label103.Location = new System.Drawing.Point(344, 144);
             this.label103.Name = "label103";
-            this.label103.Size = new System.Drawing.Size(55, 13);
+            this.label103.Size = new System.Drawing.Size(109, 25);
             this.label103.TabIndex = 44;
             this.label103.Text = "Clockwise";
             // 
             // label104
             // 
             this.label104.AutoSize = true;
-            this.label104.Location = new System.Drawing.Point(85, 78);
+            this.label104.Location = new System.Drawing.Point(170, 144);
             this.label104.Name = "label104";
-            this.label104.Size = new System.Drawing.Size(75, 13);
+            this.label104.Size = new System.Drawing.Size(149, 25);
             this.label104.TabIndex = 45;
             this.label104.Text = "Anti-clockwise";
             // 
             // setProbePolAngle
             // 
-            this.setProbePolAngle.Location = new System.Drawing.Point(243, 17);
+            this.setProbePolAngle.Location = new System.Drawing.Point(486, 31);
             this.setProbePolAngle.Name = "setProbePolAngle";
-            this.setProbePolAngle.Size = new System.Drawing.Size(75, 23);
+            this.setProbePolAngle.Size = new System.Drawing.Size(150, 43);
             this.setProbePolAngle.TabIndex = 5;
             this.setProbePolAngle.Text = "Set";
             this.setProbePolAngle.UseVisualStyleBackColor = true;
@@ -6061,9 +6061,9 @@ namespace EDMHardwareControl
             // 
             // probePolModeSelectSwitch
             // 
-            this.probePolModeSelectSwitch.Location = new System.Drawing.Point(12, 33);
+            this.probePolModeSelectSwitch.Location = new System.Drawing.Point(24, 61);
             this.probePolModeSelectSwitch.Name = "probePolModeSelectSwitch";
-            this.probePolModeSelectSwitch.Size = new System.Drawing.Size(64, 96);
+            this.probePolModeSelectSwitch.Size = new System.Drawing.Size(128, 177);
             this.probePolModeSelectSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.probePolModeSelectSwitch.TabIndex = 51;
             this.probePolModeSelectSwitch.Value = true;
@@ -6074,9 +6074,9 @@ namespace EDMHardwareControl
             this.tabPage5.BackColor = System.Drawing.Color.Transparent;
             this.tabPage5.Controls.Add(this.groupBox17);
             this.tabPage5.Controls.Add(this.groupBox15);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Location = new System.Drawing.Point(8, 39);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(697, 575);
+            this.tabPage5.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
             // 
@@ -6085,18 +6085,18 @@ namespace EDMHardwareControl
             this.groupBox17.Controls.Add(this.TargetStepButton);
             this.groupBox17.Controls.Add(this.label66);
             this.groupBox17.Controls.Add(this.TargetNumStepsTextBox);
-            this.groupBox17.Location = new System.Drawing.Point(13, 165);
+            this.groupBox17.Location = new System.Drawing.Point(26, 305);
             this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(351, 64);
+            this.groupBox17.Size = new System.Drawing.Size(702, 118);
             this.groupBox17.TabIndex = 47;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = "Target stepper";
             // 
             // TargetStepButton
             // 
-            this.TargetStepButton.Location = new System.Drawing.Point(256, 20);
+            this.TargetStepButton.Location = new System.Drawing.Point(512, 37);
             this.TargetStepButton.Name = "TargetStepButton";
-            this.TargetStepButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetStepButton.Size = new System.Drawing.Size(150, 42);
             this.TargetStepButton.TabIndex = 2;
             this.TargetStepButton.Text = "Step!";
             this.TargetStepButton.UseVisualStyleBackColor = true;
@@ -6105,17 +6105,17 @@ namespace EDMHardwareControl
             // label66
             // 
             this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(19, 25);
+            this.label66.Location = new System.Drawing.Point(38, 46);
             this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(89, 13);
+            this.label66.Size = new System.Drawing.Size(180, 25);
             this.label66.TabIndex = 1;
             this.label66.Text = "Number of pulses";
             // 
             // TargetNumStepsTextBox
             // 
-            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(158, 22);
+            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(316, 41);
             this.TargetNumStepsTextBox.Name = "TargetNumStepsTextBox";
-            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(66, 20);
+            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(132, 31);
             this.TargetNumStepsTextBox.TabIndex = 0;
             this.TargetNumStepsTextBox.Text = "10";
             // 
@@ -6131,35 +6131,35 @@ namespace EDMHardwareControl
             this.groupBox15.Controls.Add(this.yagQDisableButton);
             this.groupBox15.Controls.Add(this.stopYagFlashlampsButton);
             this.groupBox15.Controls.Add(this.yagQEnableButton);
-            this.groupBox15.Location = new System.Drawing.Point(13, 14);
+            this.groupBox15.Location = new System.Drawing.Point(26, 26);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(528, 145);
+            this.groupBox15.Size = new System.Drawing.Size(1056, 268);
             this.groupBox15.TabIndex = 46;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = "YAG";
             // 
             // label33
             // 
-            this.label33.Location = new System.Drawing.Point(16, 31);
+            this.label33.Location = new System.Drawing.Point(32, 57);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(144, 23);
+            this.label33.Size = new System.Drawing.Size(288, 43);
             this.label33.TabIndex = 13;
             this.label33.Text = "Flashlamp voltage (V)";
             // 
             // checkYagInterlockButton
             // 
-            this.checkYagInterlockButton.Location = new System.Drawing.Point(256, 63);
+            this.checkYagInterlockButton.Location = new System.Drawing.Point(512, 116);
             this.checkYagInterlockButton.Name = "checkYagInterlockButton";
-            this.checkYagInterlockButton.Size = new System.Drawing.Size(75, 23);
+            this.checkYagInterlockButton.Size = new System.Drawing.Size(150, 43);
             this.checkYagInterlockButton.TabIndex = 45;
             this.checkYagInterlockButton.Text = "Check";
             this.checkYagInterlockButton.Click += new System.EventHandler(this.checkYagInterlockButton_Click);
             // 
             // yagFlashlampVTextBox
             // 
-            this.yagFlashlampVTextBox.Location = new System.Drawing.Point(160, 31);
+            this.yagFlashlampVTextBox.Location = new System.Drawing.Point(320, 57);
             this.yagFlashlampVTextBox.Name = "yagFlashlampVTextBox";
-            this.yagFlashlampVTextBox.Size = new System.Drawing.Size(64, 20);
+            this.yagFlashlampVTextBox.Size = new System.Drawing.Size(128, 31);
             this.yagFlashlampVTextBox.TabIndex = 12;
             this.yagFlashlampVTextBox.Text = "1220";
             // 
@@ -6167,35 +6167,35 @@ namespace EDMHardwareControl
             // 
             this.interlockStatusTextBox.BackColor = System.Drawing.Color.Black;
             this.interlockStatusTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.interlockStatusTextBox.Location = new System.Drawing.Point(160, 63);
+            this.interlockStatusTextBox.Location = new System.Drawing.Point(320, 116);
             this.interlockStatusTextBox.Name = "interlockStatusTextBox";
             this.interlockStatusTextBox.ReadOnly = true;
-            this.interlockStatusTextBox.Size = new System.Drawing.Size(64, 20);
+            this.interlockStatusTextBox.Size = new System.Drawing.Size(128, 31);
             this.interlockStatusTextBox.TabIndex = 44;
             this.interlockStatusTextBox.Text = "0";
             // 
             // updateFlashlampVButton
             // 
-            this.updateFlashlampVButton.Location = new System.Drawing.Point(256, 31);
+            this.updateFlashlampVButton.Location = new System.Drawing.Point(512, 57);
             this.updateFlashlampVButton.Name = "updateFlashlampVButton";
-            this.updateFlashlampVButton.Size = new System.Drawing.Size(75, 23);
+            this.updateFlashlampVButton.Size = new System.Drawing.Size(150, 43);
             this.updateFlashlampVButton.TabIndex = 14;
             this.updateFlashlampVButton.Text = "Update V";
             this.updateFlashlampVButton.Click += new System.EventHandler(this.updateFlashlampVButton_Click);
             // 
             // label34
             // 
-            this.label34.Location = new System.Drawing.Point(16, 63);
+            this.label34.Location = new System.Drawing.Point(32, 116);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(104, 23);
+            this.label34.Size = new System.Drawing.Size(208, 43);
             this.label34.TabIndex = 43;
             this.label34.Text = "Interlock failed";
             // 
             // startYAGFlashlampsButton
             // 
-            this.startYAGFlashlampsButton.Location = new System.Drawing.Point(16, 103);
+            this.startYAGFlashlampsButton.Location = new System.Drawing.Point(32, 190);
             this.startYAGFlashlampsButton.Name = "startYAGFlashlampsButton";
-            this.startYAGFlashlampsButton.Size = new System.Drawing.Size(112, 23);
+            this.startYAGFlashlampsButton.Size = new System.Drawing.Size(224, 43);
             this.startYAGFlashlampsButton.TabIndex = 15;
             this.startYAGFlashlampsButton.Text = "Start Flashlamps";
             this.startYAGFlashlampsButton.Click += new System.EventHandler(this.startYAGFlashlampsButton_Click);
@@ -6203,9 +6203,9 @@ namespace EDMHardwareControl
             // yagQDisableButton
             // 
             this.yagQDisableButton.Enabled = false;
-            this.yagQDisableButton.Location = new System.Drawing.Point(400, 103);
+            this.yagQDisableButton.Location = new System.Drawing.Point(800, 190);
             this.yagQDisableButton.Name = "yagQDisableButton";
-            this.yagQDisableButton.Size = new System.Drawing.Size(112, 23);
+            this.yagQDisableButton.Size = new System.Drawing.Size(224, 43);
             this.yagQDisableButton.TabIndex = 18;
             this.yagQDisableButton.Text = "Q-switch Disable";
             this.yagQDisableButton.Click += new System.EventHandler(this.yagQDisableButton_Click);
@@ -6213,18 +6213,18 @@ namespace EDMHardwareControl
             // stopYagFlashlampsButton
             // 
             this.stopYagFlashlampsButton.Enabled = false;
-            this.stopYagFlashlampsButton.Location = new System.Drawing.Point(144, 103);
+            this.stopYagFlashlampsButton.Location = new System.Drawing.Point(288, 190);
             this.stopYagFlashlampsButton.Name = "stopYagFlashlampsButton";
-            this.stopYagFlashlampsButton.Size = new System.Drawing.Size(112, 23);
+            this.stopYagFlashlampsButton.Size = new System.Drawing.Size(224, 43);
             this.stopYagFlashlampsButton.TabIndex = 16;
             this.stopYagFlashlampsButton.Text = "Stop Flashlamps";
             this.stopYagFlashlampsButton.Click += new System.EventHandler(this.stopYagFlashlampsButton_Click);
             // 
             // yagQEnableButton
             // 
-            this.yagQEnableButton.Location = new System.Drawing.Point(272, 103);
+            this.yagQEnableButton.Location = new System.Drawing.Point(544, 190);
             this.yagQEnableButton.Name = "yagQEnableButton";
-            this.yagQEnableButton.Size = new System.Drawing.Size(112, 23);
+            this.yagQEnableButton.Size = new System.Drawing.Size(224, 43);
             this.yagQEnableButton.TabIndex = 17;
             this.yagQEnableButton.Text = "Q-switch Enable";
             this.yagQEnableButton.Click += new System.EventHandler(this.yagQEnableButton_Click);
@@ -6234,18 +6234,18 @@ namespace EDMHardwareControl
             this.tabPage9.BackColor = System.Drawing.Color.Transparent;
             this.tabPage9.Controls.Add(this.switchScanTTLSwitch);
             this.tabPage9.Controls.Add(this.label97);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(8, 39);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(697, 575);
+            this.tabPage9.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Misc";
             // 
             // switchScanTTLSwitch
             // 
-            this.switchScanTTLSwitch.Location = new System.Drawing.Point(6, 6);
+            this.switchScanTTLSwitch.Location = new System.Drawing.Point(12, 11);
             this.switchScanTTLSwitch.Name = "switchScanTTLSwitch";
-            this.switchScanTTLSwitch.Size = new System.Drawing.Size(64, 96);
+            this.switchScanTTLSwitch.Size = new System.Drawing.Size(128, 177);
             this.switchScanTTLSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.switchScanTTLSwitch.TabIndex = 2;
             this.switchScanTTLSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.switch1_StateChanged);
@@ -6253,9 +6253,9 @@ namespace EDMHardwareControl
             // label97
             // 
             this.label97.AutoSize = true;
-            this.label97.Location = new System.Drawing.Point(76, 53);
+            this.label97.Location = new System.Drawing.Point(152, 98);
             this.label97.Name = "label97";
-            this.label97.Size = new System.Drawing.Size(90, 13);
+            this.label97.Size = new System.Drawing.Size(174, 25);
             this.label97.TabIndex = 1;
             this.label97.Text = "Switch Scan TTL";
             // 
@@ -6265,18 +6265,18 @@ namespace EDMHardwareControl
             this.tabPage7.Controls.Add(this.clearAlertButton);
             this.tabPage7.Controls.Add(this.alertTextBox);
             this.tabPage7.ImageKey = "(none)";
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Location = new System.Drawing.Point(8, 39);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(697, 575);
+            this.tabPage7.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Alerts";
             // 
             // clearAlertButton
             // 
-            this.clearAlertButton.Location = new System.Drawing.Point(18, 540);
+            this.clearAlertButton.Location = new System.Drawing.Point(36, 997);
             this.clearAlertButton.Name = "clearAlertButton";
-            this.clearAlertButton.Size = new System.Drawing.Size(140, 23);
+            this.clearAlertButton.Size = new System.Drawing.Size(280, 42);
             this.clearAlertButton.TabIndex = 1;
             this.clearAlertButton.Text = "Clear alert status";
             this.clearAlertButton.UseVisualStyleBackColor = true;
@@ -6284,10 +6284,10 @@ namespace EDMHardwareControl
             // 
             // alertTextBox
             // 
-            this.alertTextBox.Location = new System.Drawing.Point(18, 22);
+            this.alertTextBox.Location = new System.Drawing.Point(36, 41);
             this.alertTextBox.Multiline = true;
             this.alertTextBox.Name = "alertTextBox";
-            this.alertTextBox.Size = new System.Drawing.Size(654, 512);
+            this.alertTextBox.Size = new System.Drawing.Size(1308, 945);
             this.alertTextBox.TabIndex = 0;
             // 
             // tabPage10
@@ -6296,9 +6296,9 @@ namespace EDMHardwareControl
             this.tabPage10.Controls.Add(this.groupBox19);
             this.tabPage10.Controls.Add(this.groupBox38);
             this.tabPage10.Controls.Add(this.groupBox37);
-            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Location = new System.Drawing.Point(8, 39);
             this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Size = new System.Drawing.Size(697, 575);
+            this.tabPage10.Size = new System.Drawing.Size(1394, 1062);
             this.tabPage10.TabIndex = 9;
             this.tabPage10.Text = "I2 lock code";
             // 
@@ -6307,38 +6307,38 @@ namespace EDMHardwareControl
             this.groupBox19.Controls.Add(this.UpdateI2BiasVoltage);
             this.groupBox19.Controls.Add(this.I2BiasVoltageTextBox);
             this.groupBox19.Controls.Add(this.I2BiasVoltageTrackBar);
-            this.groupBox19.Location = new System.Drawing.Point(118, 234);
+            this.groupBox19.Location = new System.Drawing.Point(236, 432);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(576, 74);
+            this.groupBox19.Size = new System.Drawing.Size(1152, 137);
             this.groupBox19.TabIndex = 68;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Lock Bias";
             // 
             // UpdateI2BiasVoltage
             // 
-            this.UpdateI2BiasVoltage.Location = new System.Drawing.Point(488, 45);
+            this.UpdateI2BiasVoltage.Location = new System.Drawing.Point(976, 83);
             this.UpdateI2BiasVoltage.Name = "UpdateI2BiasVoltage";
-            this.UpdateI2BiasVoltage.Size = new System.Drawing.Size(75, 23);
+            this.UpdateI2BiasVoltage.Size = new System.Drawing.Size(150, 43);
             this.UpdateI2BiasVoltage.TabIndex = 53;
             this.UpdateI2BiasVoltage.Text = "Update";
             this.UpdateI2BiasVoltage.Click += new System.EventHandler(this.UpdateI2BiasVoltage_Click);
             // 
             // I2BiasVoltageTextBox
             // 
-            this.I2BiasVoltageTextBox.Location = new System.Drawing.Point(488, 18);
+            this.I2BiasVoltageTextBox.Location = new System.Drawing.Point(976, 33);
             this.I2BiasVoltageTextBox.Name = "I2BiasVoltageTextBox";
-            this.I2BiasVoltageTextBox.Size = new System.Drawing.Size(75, 20);
+            this.I2BiasVoltageTextBox.Size = new System.Drawing.Size(150, 31);
             this.I2BiasVoltageTextBox.TabIndex = 52;
             this.I2BiasVoltageTextBox.Text = "0";
             // 
             // I2BiasVoltageTrackBar
             // 
-            this.I2BiasVoltageTrackBar.Location = new System.Drawing.Point(30, 18);
+            this.I2BiasVoltageTrackBar.Location = new System.Drawing.Point(60, 33);
             this.I2BiasVoltageTrackBar.Maximum = 5000;
             this.I2BiasVoltageTrackBar.Minimum = -5000;
             this.I2BiasVoltageTrackBar.Name = "I2BiasVoltageTrackBar";
             this.I2BiasVoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.I2BiasVoltageTrackBar.Size = new System.Drawing.Size(441, 45);
+            this.I2BiasVoltageTrackBar.Size = new System.Drawing.Size(882, 90);
             this.I2BiasVoltageTrackBar.TabIndex = 51;
             this.I2BiasVoltageTrackBar.Scroll += new System.EventHandler(this.I2BiasVoltageTrackBar_Scroll);
             // 
@@ -6346,9 +6346,9 @@ namespace EDMHardwareControl
             // 
             this.groupBox38.Controls.Add(this.intCheckBox);
             this.groupBox38.Controls.Add(this.propCheckBox);
-            this.groupBox38.Location = new System.Drawing.Point(10, 233);
+            this.groupBox38.Location = new System.Drawing.Point(20, 430);
             this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Size = new System.Drawing.Size(102, 75);
+            this.groupBox38.Size = new System.Drawing.Size(204, 139);
             this.groupBox38.TabIndex = 49;
             this.groupBox38.TabStop = false;
             this.groupBox38.Text = "Lock Switches";
@@ -6356,9 +6356,9 @@ namespace EDMHardwareControl
             // intCheckBox
             // 
             this.intCheckBox.AutoSize = true;
-            this.intCheckBox.Location = new System.Drawing.Point(6, 49);
+            this.intCheckBox.Location = new System.Drawing.Point(12, 90);
             this.intCheckBox.Name = "intCheckBox";
-            this.intCheckBox.Size = new System.Drawing.Size(61, 17);
+            this.intCheckBox.Size = new System.Drawing.Size(115, 29);
             this.intCheckBox.TabIndex = 5;
             this.intCheckBox.Text = "Integral";
             this.intCheckBox.UseVisualStyleBackColor = true;
@@ -6367,9 +6367,9 @@ namespace EDMHardwareControl
             // propCheckBox
             // 
             this.propCheckBox.AutoSize = true;
-            this.propCheckBox.Location = new System.Drawing.Point(6, 26);
+            this.propCheckBox.Location = new System.Drawing.Point(12, 48);
             this.propCheckBox.Name = "propCheckBox";
-            this.propCheckBox.Size = new System.Drawing.Size(82, 17);
+            this.propCheckBox.Size = new System.Drawing.Size(160, 29);
             this.propCheckBox.TabIndex = 4;
             this.propCheckBox.Text = "Proportional";
             this.propCheckBox.UseVisualStyleBackColor = true;
@@ -6384,26 +6384,26 @@ namespace EDMHardwareControl
             this.groupBox37.Controls.Add(this.stopI2ErrorSigPollButton);
             this.groupBox37.Controls.Add(this.label80);
             this.groupBox37.Controls.Add(this.startI2ErrorSigPollButton);
-            this.groupBox37.Location = new System.Drawing.Point(3, 3);
+            this.groupBox37.Location = new System.Drawing.Point(6, 6);
             this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Size = new System.Drawing.Size(691, 224);
+            this.groupBox37.Size = new System.Drawing.Size(1382, 413);
             this.groupBox37.TabIndex = 48;
             this.groupBox37.TabStop = false;
             this.groupBox37.Text = "Error Signal";
             // 
             // I2ErrorPollPeriodTextBox
             // 
-            this.I2ErrorPollPeriodTextBox.Location = new System.Drawing.Point(441, 193);
+            this.I2ErrorPollPeriodTextBox.Location = new System.Drawing.Point(882, 356);
             this.I2ErrorPollPeriodTextBox.Name = "I2ErrorPollPeriodTextBox";
-            this.I2ErrorPollPeriodTextBox.Size = new System.Drawing.Size(64, 20);
+            this.I2ErrorPollPeriodTextBox.Size = new System.Drawing.Size(128, 31);
             this.I2ErrorPollPeriodTextBox.TabIndex = 64;
             this.I2ErrorPollPeriodTextBox.Text = "50";
             // 
             // updateI2ErrorSigButton
             // 
-            this.updateI2ErrorSigButton.Location = new System.Drawing.Point(166, 191);
+            this.updateI2ErrorSigButton.Location = new System.Drawing.Point(332, 353);
             this.updateI2ErrorSigButton.Name = "updateI2ErrorSigButton";
-            this.updateI2ErrorSigButton.Size = new System.Drawing.Size(72, 23);
+            this.updateI2ErrorSigButton.Size = new System.Drawing.Size(144, 42);
             this.updateI2ErrorSigButton.TabIndex = 68;
             this.updateI2ErrorSigButton.Text = "Update";
             this.updateI2ErrorSigButton.UseVisualStyleBackColor = true;
@@ -6413,10 +6413,10 @@ namespace EDMHardwareControl
             // 
             this.I2ErrorSigTextBox.BackColor = System.Drawing.Color.Black;
             this.I2ErrorSigTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.I2ErrorSigTextBox.Location = new System.Drawing.Point(23, 193);
+            this.I2ErrorSigTextBox.Location = new System.Drawing.Point(46, 356);
             this.I2ErrorSigTextBox.Name = "I2ErrorSigTextBox";
             this.I2ErrorSigTextBox.ReadOnly = true;
-            this.I2ErrorSigTextBox.Size = new System.Drawing.Size(137, 20);
+            this.I2ErrorSigTextBox.Size = new System.Drawing.Size(274, 31);
             this.I2ErrorSigTextBox.TabIndex = 67;
             this.I2ErrorSigTextBox.Text = "0";
             // 
@@ -6429,11 +6429,11 @@ namespace EDMHardwareControl
             | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
             | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
             | NationalInstruments.UI.GraphInteractionModes.EditRange)));
-            this.I2ErrorSigGraph.Location = new System.Drawing.Point(7, 19);
+            this.I2ErrorSigGraph.Location = new System.Drawing.Point(14, 35);
             this.I2ErrorSigGraph.Name = "I2ErrorSigGraph";
             this.I2ErrorSigGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
             this.I2ErrorSigPlot});
-            this.I2ErrorSigGraph.Size = new System.Drawing.Size(678, 166);
+            this.I2ErrorSigGraph.Size = new System.Drawing.Size(1356, 307);
             this.I2ErrorSigGraph.TabIndex = 49;
             this.I2ErrorSigGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis3});
@@ -6462,9 +6462,9 @@ namespace EDMHardwareControl
             // stopI2ErrorSigPollButton
             // 
             this.stopI2ErrorSigPollButton.Enabled = false;
-            this.stopI2ErrorSigPollButton.Location = new System.Drawing.Point(592, 191);
+            this.stopI2ErrorSigPollButton.Location = new System.Drawing.Point(1184, 353);
             this.stopI2ErrorSigPollButton.Name = "stopI2ErrorSigPollButton";
-            this.stopI2ErrorSigPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopI2ErrorSigPollButton.Size = new System.Drawing.Size(150, 42);
             this.stopI2ErrorSigPollButton.TabIndex = 66;
             this.stopI2ErrorSigPollButton.Text = "Stop poll";
             this.stopI2ErrorSigPollButton.UseVisualStyleBackColor = true;
@@ -6472,17 +6472,17 @@ namespace EDMHardwareControl
             // 
             // label80
             // 
-            this.label80.Location = new System.Drawing.Point(354, 196);
+            this.label80.Location = new System.Drawing.Point(708, 362);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(101, 23);
+            this.label80.Size = new System.Drawing.Size(202, 42);
             this.label80.TabIndex = 63;
             this.label80.Text = "Poll period (ms)";
             // 
             // startI2ErrorSigPollButton
             // 
-            this.startI2ErrorSigPollButton.Location = new System.Drawing.Point(511, 191);
+            this.startI2ErrorSigPollButton.Location = new System.Drawing.Point(1022, 353);
             this.startI2ErrorSigPollButton.Name = "startI2ErrorSigPollButton";
-            this.startI2ErrorSigPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startI2ErrorSigPollButton.Size = new System.Drawing.Size(150, 42);
             this.startI2ErrorSigPollButton.TabIndex = 65;
             this.startI2ErrorSigPollButton.Text = "Start poll";
             this.startI2ErrorSigPollButton.UseVisualStyleBackColor = true;
@@ -6492,7 +6492,7 @@ namespace EDMHardwareControl
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(64, 20);
+            this.textBox1.Size = new System.Drawing.Size(64, 31);
             this.textBox1.TabIndex = 45;
             this.textBox1.Text = "0";
             // 
@@ -6515,11 +6515,12 @@ namespace EDMHardwareControl
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(724, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(724, 40);
             this.menuStrip1.TabIndex = 26;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -6530,27 +6531,27 @@ namespace EDMHardwareControl
             this.saveParametersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 36);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(314, 38);
             this.loadParametersToolStripMenuItem.Text = "Load parameters ...";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(314, 38);
             this.saveParametersToolStripMenuItem.Text = "Save parameters ...";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.SaveParametersMenuClicked);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(314, 38);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitMenuClicked);
             // 
@@ -6628,7 +6629,7 @@ namespace EDMHardwareControl
             // 
             // ControlWindow
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.AutoScaleBaseSize = new System.Drawing.Size(10, 24);
             this.ClientSize = new System.Drawing.Size(724, 626);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
