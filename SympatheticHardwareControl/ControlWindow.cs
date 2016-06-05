@@ -72,6 +72,8 @@ namespace SympatheticHardwareControl
             this.streamButton = new System.Windows.Forms.Button();
             this.snapshotButton = new System.Windows.Forms.Button();
             this.tabLasers = new System.Windows.Forms.TabPage();
+            this.ShutterControlBox = new System.Windows.Forms.GroupBox();
+            this.shutterCheckBox = new System.Windows.Forms.CheckBox();
             this.aom3ControlBox = new System.Windows.Forms.GroupBox();
             this.aom3Label3 = new System.Windows.Forms.Label();
             this.aom3Label1 = new System.Windows.Forms.Label();
@@ -165,11 +167,10 @@ namespace SympatheticHardwareControl
             this.label1 = new System.Windows.Forms.Label();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.shutterCheckBox = new System.Windows.Forms.CheckBox();
-            this.ShutterControlBox = new System.Windows.Forms.GroupBox();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
+            this.ShutterControlBox.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
             this.aom2ControlBox.SuspendLayout();
             this.aom1ControlBox.SuspendLayout();
@@ -186,7 +187,6 @@ namespace SympatheticHardwareControl
             this.initParamsBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
-            this.ShutterControlBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -207,10 +207,10 @@ namespace SympatheticHardwareControl
             this.tabCamera.Controls.Add(this.stopStreamButton);
             this.tabCamera.Controls.Add(this.streamButton);
             this.tabCamera.Controls.Add(this.snapshotButton);
-            this.tabCamera.Location = new System.Drawing.Point(4, 22);
+            this.tabCamera.Location = new System.Drawing.Point(8, 39);
             this.tabCamera.Name = "tabCamera";
             this.tabCamera.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCamera.Size = new System.Drawing.Size(658, 209);
+            this.tabCamera.Size = new System.Drawing.Size(650, 188);
             this.tabCamera.TabIndex = 0;
             this.tabCamera.Text = "Camera Control";
             this.tabCamera.UseVisualStyleBackColor = true;
@@ -253,13 +253,32 @@ namespace SympatheticHardwareControl
             this.tabLasers.Controls.Add(this.aom2ControlBox);
             this.tabLasers.Controls.Add(this.aom1ControlBox);
             this.tabLasers.Controls.Add(this.aom0ControlBox);
-            this.tabLasers.Location = new System.Drawing.Point(4, 22);
+            this.tabLasers.Location = new System.Drawing.Point(8, 39);
             this.tabLasers.Name = "tabLasers";
             this.tabLasers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLasers.Size = new System.Drawing.Size(658, 209);
+            this.tabLasers.Size = new System.Drawing.Size(650, 188);
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
+            // 
+            // ShutterControlBox
+            // 
+            this.ShutterControlBox.Controls.Add(this.shutterCheckBox);
+            this.ShutterControlBox.Location = new System.Drawing.Point(549, 3);
+            this.ShutterControlBox.Name = "ShutterControlBox";
+            this.ShutterControlBox.Size = new System.Drawing.Size(104, 45);
+            this.ShutterControlBox.TabIndex = 22;
+            this.ShutterControlBox.TabStop = false;
+            this.ShutterControlBox.Text = "Zeeman repump";
+            // 
+            // shutterCheckBox
+            // 
+            this.shutterCheckBox.AutoSize = true;
+            this.shutterCheckBox.Location = new System.Drawing.Point(46, 21);
+            this.shutterCheckBox.Name = "shutterCheckBox";
+            this.shutterCheckBox.Size = new System.Drawing.Size(28, 27);
+            this.shutterCheckBox.TabIndex = 21;
+            this.shutterCheckBox.UseVisualStyleBackColor = true;
             // 
             // aom3ControlBox
             // 
@@ -282,7 +301,7 @@ namespace SympatheticHardwareControl
             this.aom3Label3.AutoSize = true;
             this.aom3Label3.Location = new System.Drawing.Point(522, 21);
             this.aom3Label3.Name = "aom3Label3";
-            this.aom3Label3.Size = new System.Drawing.Size(14, 13);
+            this.aom3Label3.Size = new System.Drawing.Size(26, 25);
             this.aom3Label3.TabIndex = 17;
             this.aom3Label3.Text = "V";
             // 
@@ -291,7 +310,7 @@ namespace SympatheticHardwareControl
             this.aom3Label1.AutoSize = true;
             this.aom3Label1.Location = new System.Drawing.Point(260, 21);
             this.aom3Label1.Name = "aom3Label1";
-            this.aom3Label1.Size = new System.Drawing.Size(29, 13);
+            this.aom3Label1.Size = new System.Drawing.Size(56, 25);
             this.aom3Label1.TabIndex = 16;
             this.aom3Label1.Text = "MHz";
             // 
@@ -300,7 +319,7 @@ namespace SympatheticHardwareControl
             this.aom3CheckBox.AutoSize = true;
             this.aom3CheckBox.Location = new System.Drawing.Point(38, 21);
             this.aom3CheckBox.Name = "aom3CheckBox";
-            this.aom3CheckBox.Size = new System.Drawing.Size(15, 14);
+            this.aom3CheckBox.Size = new System.Drawing.Size(28, 27);
             this.aom3CheckBox.TabIndex = 10;
             this.aom3CheckBox.UseVisualStyleBackColor = true;
             // 
@@ -308,7 +327,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom3rfFrequencyTextBox.Location = new System.Drawing.Point(155, 17);
             this.aom3rfFrequencyTextBox.Name = "aom3rfFrequencyTextBox";
-            this.aom3rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
+            this.aom3rfFrequencyTextBox.Size = new System.Drawing.Size(103, 31);
             this.aom3rfFrequencyTextBox.TabIndex = 0;
             this.aom3rfFrequencyTextBox.Text = "200";
             // 
@@ -316,7 +335,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom3rfAmplitudeTextBox.Location = new System.Drawing.Point(421, 17);
             this.aom3rfAmplitudeTextBox.Name = "aom3rfAmplitudeTextBox";
-            this.aom3rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.aom3rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 31);
             this.aom3rfAmplitudeTextBox.TabIndex = 8;
             this.aom3rfAmplitudeTextBox.Text = "0";
             // 
@@ -325,7 +344,7 @@ namespace SympatheticHardwareControl
             this.aom3Label2.AutoSize = true;
             this.aom3Label2.Location = new System.Drawing.Point(348, 20);
             this.aom3Label2.Name = "aom3Label2";
-            this.aom3Label2.Size = new System.Drawing.Size(70, 13);
+            this.aom3Label2.Size = new System.Drawing.Size(141, 25);
             this.aom3Label2.TabIndex = 7;
             this.aom3Label2.Text = "RF Amplitude";
             // 
@@ -334,7 +353,7 @@ namespace SympatheticHardwareControl
             this.aom3Label0.AutoSize = true;
             this.aom3Label0.Location = new System.Drawing.Point(78, 20);
             this.aom3Label0.Name = "aom3Label0";
-            this.aom3Label0.Size = new System.Drawing.Size(74, 13);
+            this.aom3Label0.Size = new System.Drawing.Size(148, 25);
             this.aom3Label0.TabIndex = 6;
             this.aom3Label0.Text = "RF Frequency";
             // 
@@ -359,7 +378,7 @@ namespace SympatheticHardwareControl
             this.aom2Label3.AutoSize = true;
             this.aom2Label3.Location = new System.Drawing.Point(522, 21);
             this.aom2Label3.Name = "aom2Label3";
-            this.aom2Label3.Size = new System.Drawing.Size(14, 13);
+            this.aom2Label3.Size = new System.Drawing.Size(26, 25);
             this.aom2Label3.TabIndex = 17;
             this.aom2Label3.Text = "V";
             // 
@@ -368,7 +387,7 @@ namespace SympatheticHardwareControl
             this.aom2Label1.AutoSize = true;
             this.aom2Label1.Location = new System.Drawing.Point(260, 21);
             this.aom2Label1.Name = "aom2Label1";
-            this.aom2Label1.Size = new System.Drawing.Size(29, 13);
+            this.aom2Label1.Size = new System.Drawing.Size(56, 25);
             this.aom2Label1.TabIndex = 16;
             this.aom2Label1.Text = "MHz";
             // 
@@ -377,7 +396,7 @@ namespace SympatheticHardwareControl
             this.aom2CheckBox.AutoSize = true;
             this.aom2CheckBox.Location = new System.Drawing.Point(38, 21);
             this.aom2CheckBox.Name = "aom2CheckBox";
-            this.aom2CheckBox.Size = new System.Drawing.Size(15, 14);
+            this.aom2CheckBox.Size = new System.Drawing.Size(28, 27);
             this.aom2CheckBox.TabIndex = 10;
             this.aom2CheckBox.UseVisualStyleBackColor = true;
             // 
@@ -385,7 +404,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom2rfFrequencyTextBox.Location = new System.Drawing.Point(155, 17);
             this.aom2rfFrequencyTextBox.Name = "aom2rfFrequencyTextBox";
-            this.aom2rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
+            this.aom2rfFrequencyTextBox.Size = new System.Drawing.Size(103, 31);
             this.aom2rfFrequencyTextBox.TabIndex = 0;
             this.aom2rfFrequencyTextBox.Text = "0";
             // 
@@ -393,7 +412,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom2rfAmplitudeTextBox.Location = new System.Drawing.Point(421, 17);
             this.aom2rfAmplitudeTextBox.Name = "aom2rfAmplitudeTextBox";
-            this.aom2rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.aom2rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 31);
             this.aom2rfAmplitudeTextBox.TabIndex = 8;
             this.aom2rfAmplitudeTextBox.Text = "0";
             // 
@@ -402,7 +421,7 @@ namespace SympatheticHardwareControl
             this.aom2Label2.AutoSize = true;
             this.aom2Label2.Location = new System.Drawing.Point(348, 20);
             this.aom2Label2.Name = "aom2Label2";
-            this.aom2Label2.Size = new System.Drawing.Size(70, 13);
+            this.aom2Label2.Size = new System.Drawing.Size(141, 25);
             this.aom2Label2.TabIndex = 7;
             this.aom2Label2.Text = "RF Amplitude";
             // 
@@ -411,7 +430,7 @@ namespace SympatheticHardwareControl
             this.aom2Label0.AutoSize = true;
             this.aom2Label0.Location = new System.Drawing.Point(78, 20);
             this.aom2Label0.Name = "aom2Label0";
-            this.aom2Label0.Size = new System.Drawing.Size(74, 13);
+            this.aom2Label0.Size = new System.Drawing.Size(148, 25);
             this.aom2Label0.TabIndex = 6;
             this.aom2Label0.Text = "RF Frequency";
             // 
@@ -436,7 +455,7 @@ namespace SympatheticHardwareControl
             this.aom1Label3.AutoSize = true;
             this.aom1Label3.Location = new System.Drawing.Point(522, 21);
             this.aom1Label3.Name = "aom1Label3";
-            this.aom1Label3.Size = new System.Drawing.Size(14, 13);
+            this.aom1Label3.Size = new System.Drawing.Size(26, 25);
             this.aom1Label3.TabIndex = 17;
             this.aom1Label3.Text = "V";
             // 
@@ -445,7 +464,7 @@ namespace SympatheticHardwareControl
             this.aom1Label1.AutoSize = true;
             this.aom1Label1.Location = new System.Drawing.Point(260, 21);
             this.aom1Label1.Name = "aom1Label1";
-            this.aom1Label1.Size = new System.Drawing.Size(29, 13);
+            this.aom1Label1.Size = new System.Drawing.Size(56, 25);
             this.aom1Label1.TabIndex = 16;
             this.aom1Label1.Text = "MHz";
             // 
@@ -454,7 +473,7 @@ namespace SympatheticHardwareControl
             this.aom1CheckBox.AutoSize = true;
             this.aom1CheckBox.Location = new System.Drawing.Point(38, 21);
             this.aom1CheckBox.Name = "aom1CheckBox";
-            this.aom1CheckBox.Size = new System.Drawing.Size(15, 14);
+            this.aom1CheckBox.Size = new System.Drawing.Size(28, 27);
             this.aom1CheckBox.TabIndex = 10;
             this.aom1CheckBox.UseVisualStyleBackColor = true;
             // 
@@ -462,7 +481,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom1rfFrequencyTextBox.Location = new System.Drawing.Point(155, 17);
             this.aom1rfFrequencyTextBox.Name = "aom1rfFrequencyTextBox";
-            this.aom1rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
+            this.aom1rfFrequencyTextBox.Size = new System.Drawing.Size(103, 31);
             this.aom1rfFrequencyTextBox.TabIndex = 0;
             this.aom1rfFrequencyTextBox.Text = "0";
             // 
@@ -470,7 +489,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom1rfAmplitudeTextBox.Location = new System.Drawing.Point(421, 17);
             this.aom1rfAmplitudeTextBox.Name = "aom1rfAmplitudeTextBox";
-            this.aom1rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.aom1rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 31);
             this.aom1rfAmplitudeTextBox.TabIndex = 8;
             this.aom1rfAmplitudeTextBox.Text = "0";
             // 
@@ -479,7 +498,7 @@ namespace SympatheticHardwareControl
             this.aom1Label2.AutoSize = true;
             this.aom1Label2.Location = new System.Drawing.Point(348, 20);
             this.aom1Label2.Name = "aom1Label2";
-            this.aom1Label2.Size = new System.Drawing.Size(70, 13);
+            this.aom1Label2.Size = new System.Drawing.Size(141, 25);
             this.aom1Label2.TabIndex = 7;
             this.aom1Label2.Text = "RF Amplitude";
             // 
@@ -488,7 +507,7 @@ namespace SympatheticHardwareControl
             this.aom1Label0.AutoSize = true;
             this.aom1Label0.Location = new System.Drawing.Point(78, 20);
             this.aom1Label0.Name = "aom1Label0";
-            this.aom1Label0.Size = new System.Drawing.Size(74, 13);
+            this.aom1Label0.Size = new System.Drawing.Size(148, 25);
             this.aom1Label0.TabIndex = 6;
             this.aom1Label0.Text = "RF Frequency";
             // 
@@ -513,7 +532,7 @@ namespace SympatheticHardwareControl
             this.aom0Label3.AutoSize = true;
             this.aom0Label3.Location = new System.Drawing.Point(522, 21);
             this.aom0Label3.Name = "aom0Label3";
-            this.aom0Label3.Size = new System.Drawing.Size(14, 13);
+            this.aom0Label3.Size = new System.Drawing.Size(26, 25);
             this.aom0Label3.TabIndex = 17;
             this.aom0Label3.Text = "V";
             // 
@@ -522,7 +541,7 @@ namespace SympatheticHardwareControl
             this.aom0Label1.AutoSize = true;
             this.aom0Label1.Location = new System.Drawing.Point(260, 21);
             this.aom0Label1.Name = "aom0Label1";
-            this.aom0Label1.Size = new System.Drawing.Size(29, 13);
+            this.aom0Label1.Size = new System.Drawing.Size(56, 25);
             this.aom0Label1.TabIndex = 16;
             this.aom0Label1.Text = "MHz";
             // 
@@ -531,7 +550,7 @@ namespace SympatheticHardwareControl
             this.aom0CheckBox.AutoSize = true;
             this.aom0CheckBox.Location = new System.Drawing.Point(38, 21);
             this.aom0CheckBox.Name = "aom0CheckBox";
-            this.aom0CheckBox.Size = new System.Drawing.Size(15, 14);
+            this.aom0CheckBox.Size = new System.Drawing.Size(28, 27);
             this.aom0CheckBox.TabIndex = 10;
             this.aom0CheckBox.UseVisualStyleBackColor = true;
             // 
@@ -539,7 +558,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom0rfFrequencyTextBox.Location = new System.Drawing.Point(155, 17);
             this.aom0rfFrequencyTextBox.Name = "aom0rfFrequencyTextBox";
-            this.aom0rfFrequencyTextBox.Size = new System.Drawing.Size(103, 20);
+            this.aom0rfFrequencyTextBox.Size = new System.Drawing.Size(103, 31);
             this.aom0rfFrequencyTextBox.TabIndex = 0;
             this.aom0rfFrequencyTextBox.Text = "0";
             // 
@@ -547,7 +566,7 @@ namespace SympatheticHardwareControl
             // 
             this.aom0rfAmplitudeTextBox.Location = new System.Drawing.Point(421, 17);
             this.aom0rfAmplitudeTextBox.Name = "aom0rfAmplitudeTextBox";
-            this.aom0rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.aom0rfAmplitudeTextBox.Size = new System.Drawing.Size(100, 31);
             this.aom0rfAmplitudeTextBox.TabIndex = 8;
             this.aom0rfAmplitudeTextBox.Text = "0";
             // 
@@ -556,7 +575,7 @@ namespace SympatheticHardwareControl
             this.aom0Label2.AutoSize = true;
             this.aom0Label2.Location = new System.Drawing.Point(348, 20);
             this.aom0Label2.Name = "aom0Label2";
-            this.aom0Label2.Size = new System.Drawing.Size(70, 13);
+            this.aom0Label2.Size = new System.Drawing.Size(141, 25);
             this.aom0Label2.TabIndex = 7;
             this.aom0Label2.Text = "RF Amplitude";
             // 
@@ -565,7 +584,7 @@ namespace SympatheticHardwareControl
             this.aom0Label0.AutoSize = true;
             this.aom0Label0.Location = new System.Drawing.Point(78, 20);
             this.aom0Label0.Name = "aom0Label0";
-            this.aom0Label0.Size = new System.Drawing.Size(74, 13);
+            this.aom0Label0.Size = new System.Drawing.Size(148, 25);
             this.aom0Label0.TabIndex = 6;
             this.aom0Label0.Text = "RF Frequency";
             // 
@@ -573,9 +592,9 @@ namespace SympatheticHardwareControl
             // 
             this.tabCoils.Controls.Add(this.coil1GroupBox);
             this.tabCoils.Controls.Add(this.coil0GroupBox);
-            this.tabCoils.Location = new System.Drawing.Point(4, 22);
+            this.tabCoils.Location = new System.Drawing.Point(8, 39);
             this.tabCoils.Name = "tabCoils";
-            this.tabCoils.Size = new System.Drawing.Size(658, 209);
+            this.tabCoils.Size = new System.Drawing.Size(650, 188);
             this.tabCoils.TabIndex = 2;
             this.tabCoils.Text = "Magnetic Field Control";
             this.tabCoils.UseVisualStyleBackColor = true;
@@ -597,7 +616,7 @@ namespace SympatheticHardwareControl
             this.coil1Label1.AutoSize = true;
             this.coil1Label1.Location = new System.Drawing.Point(200, 21);
             this.coil1Label1.Name = "coil1Label1";
-            this.coil1Label1.Size = new System.Drawing.Size(14, 13);
+            this.coil1Label1.Size = new System.Drawing.Size(26, 25);
             this.coil1Label1.TabIndex = 17;
             this.coil1Label1.Text = "A";
             // 
@@ -605,7 +624,7 @@ namespace SympatheticHardwareControl
             // 
             this.coil1CurrentTextBox.Location = new System.Drawing.Point(99, 17);
             this.coil1CurrentTextBox.Name = "coil1CurrentTextBox";
-            this.coil1CurrentTextBox.Size = new System.Drawing.Size(100, 20);
+            this.coil1CurrentTextBox.Size = new System.Drawing.Size(100, 31);
             this.coil1CurrentTextBox.TabIndex = 8;
             this.coil1CurrentTextBox.Text = "0";
             // 
@@ -614,7 +633,7 @@ namespace SympatheticHardwareControl
             this.coil1Label0.AutoSize = true;
             this.coil1Label0.Location = new System.Drawing.Point(40, 20);
             this.coil1Label0.Name = "coil1Label0";
-            this.coil1Label0.Size = new System.Drawing.Size(41, 13);
+            this.coil1Label0.Size = new System.Drawing.Size(83, 25);
             this.coil1Label0.TabIndex = 7;
             this.coil1Label0.Text = "Current";
             // 
@@ -635,7 +654,7 @@ namespace SympatheticHardwareControl
             this.coil0Label1.AutoSize = true;
             this.coil0Label1.Location = new System.Drawing.Point(200, 21);
             this.coil0Label1.Name = "coil0Label1";
-            this.coil0Label1.Size = new System.Drawing.Size(14, 13);
+            this.coil0Label1.Size = new System.Drawing.Size(26, 25);
             this.coil0Label1.TabIndex = 17;
             this.coil0Label1.Text = "A";
             // 
@@ -643,7 +662,7 @@ namespace SympatheticHardwareControl
             // 
             this.coil0CurrentTextBox.Location = new System.Drawing.Point(99, 17);
             this.coil0CurrentTextBox.Name = "coil0CurrentTextBox";
-            this.coil0CurrentTextBox.Size = new System.Drawing.Size(100, 20);
+            this.coil0CurrentTextBox.Size = new System.Drawing.Size(100, 31);
             this.coil0CurrentTextBox.TabIndex = 8;
             this.coil0CurrentTextBox.Text = "0";
             // 
@@ -652,7 +671,7 @@ namespace SympatheticHardwareControl
             this.coil0Label0.AutoSize = true;
             this.coil0Label0.Location = new System.Drawing.Point(40, 20);
             this.coil0Label0.Name = "coil0Label0";
-            this.coil0Label0.Size = new System.Drawing.Size(41, 13);
+            this.coil0Label0.Size = new System.Drawing.Size(83, 25);
             this.coil0Label0.TabIndex = 7;
             this.coil0Label0.Text = "Current";
             // 
@@ -664,9 +683,9 @@ namespace SympatheticHardwareControl
             this.tabTranslationStage.Controls.Add(this.groupBox2);
             this.tabTranslationStage.Controls.Add(this.groupBox1);
             this.tabTranslationStage.Controls.Add(this.initParamsBox);
-            this.tabTranslationStage.Location = new System.Drawing.Point(4, 22);
+            this.tabTranslationStage.Location = new System.Drawing.Point(8, 39);
             this.tabTranslationStage.Name = "tabTranslationStage";
-            this.tabTranslationStage.Size = new System.Drawing.Size(658, 209);
+            this.tabTranslationStage.Size = new System.Drawing.Size(650, 188);
             this.tabTranslationStage.TabIndex = 3;
             this.tabTranslationStage.Text = "Translation Stage Control";
             this.tabTranslationStage.UseVisualStyleBackColor = true;
@@ -688,7 +707,7 @@ namespace SympatheticHardwareControl
             this.AutoTriggerCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AutoTriggerCheckBox.Location = new System.Drawing.Point(6, 22);
             this.AutoTriggerCheckBox.Name = "AutoTriggerCheckBox";
-            this.AutoTriggerCheckBox.Size = new System.Drawing.Size(81, 17);
+            this.AutoTriggerCheckBox.Size = new System.Drawing.Size(156, 29);
             this.AutoTriggerCheckBox.TabIndex = 12;
             this.AutoTriggerCheckBox.Text = "AutoTrigger";
             this.AutoTriggerCheckBox.UseVisualStyleBackColor = true;
@@ -899,7 +918,7 @@ namespace SympatheticHardwareControl
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(218, 98);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.Size = new System.Drawing.Size(63, 25);
             this.label9.TabIndex = 15;
             this.label9.Text = "mm/s";
             // 
@@ -908,7 +927,7 @@ namespace SympatheticHardwareControl
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(218, 72);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(23, 13);
+            this.label8.Size = new System.Drawing.Size(46, 25);
             this.label8.TabIndex = 14;
             this.label8.Text = "mm";
             this.label8.Click += new System.EventHandler(this.label8_Click);
@@ -918,7 +937,7 @@ namespace SympatheticHardwareControl
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(218, 46);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(39, 13);
+            this.label7.Size = new System.Drawing.Size(75, 25);
             this.label7.TabIndex = 13;
             this.label7.Text = "mm/s2";
             // 
@@ -927,7 +946,7 @@ namespace SympatheticHardwareControl
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(218, 21);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(39, 13);
+            this.label6.Size = new System.Drawing.Size(75, 25);
             this.label6.TabIndex = 12;
             this.label6.Text = "mm/s2";
             // 
@@ -936,7 +955,7 @@ namespace SympatheticHardwareControl
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(9, 98);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
+            this.label5.Size = new System.Drawing.Size(88, 25);
             this.label5.TabIndex = 8;
             this.label5.Text = "Velocity";
             // 
@@ -945,7 +964,7 @@ namespace SympatheticHardwareControl
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(8, 72);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.Size = new System.Drawing.Size(179, 25);
             this.label4.TabIndex = 7;
             this.label4.Text = "Distance to travel";
             // 
@@ -954,7 +973,7 @@ namespace SympatheticHardwareControl
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(8, 46);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.Size = new System.Drawing.Size(133, 25);
             this.label3.TabIndex = 6;
             this.label3.Text = "Deceleration";
             // 
@@ -963,7 +982,7 @@ namespace SympatheticHardwareControl
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 20);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.Size = new System.Drawing.Size(131, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "Acceleration";
             // 
@@ -971,7 +990,7 @@ namespace SympatheticHardwareControl
             // 
             this.TSVelTextBox.Location = new System.Drawing.Point(115, 92);
             this.TSVelTextBox.Name = "TSVelTextBox";
-            this.TSVelTextBox.Size = new System.Drawing.Size(100, 20);
+            this.TSVelTextBox.Size = new System.Drawing.Size(100, 31);
             this.TSVelTextBox.TabIndex = 4;
             this.TSVelTextBox.Text = "50";
             // 
@@ -979,7 +998,7 @@ namespace SympatheticHardwareControl
             // 
             this.TSStepsTextBox.Location = new System.Drawing.Point(115, 67);
             this.TSStepsTextBox.Name = "TSStepsTextBox";
-            this.TSStepsTextBox.Size = new System.Drawing.Size(100, 20);
+            this.TSStepsTextBox.Size = new System.Drawing.Size(100, 31);
             this.TSStepsTextBox.TabIndex = 3;
             this.TSStepsTextBox.Text = "10000";
             // 
@@ -987,7 +1006,7 @@ namespace SympatheticHardwareControl
             // 
             this.TSDecTextBox.Location = new System.Drawing.Point(115, 41);
             this.TSDecTextBox.Name = "TSDecTextBox";
-            this.TSDecTextBox.Size = new System.Drawing.Size(100, 20);
+            this.TSDecTextBox.Size = new System.Drawing.Size(100, 31);
             this.TSDecTextBox.TabIndex = 2;
             this.TSDecTextBox.Text = "50";
             // 
@@ -995,7 +1014,7 @@ namespace SympatheticHardwareControl
             // 
             this.TSAccTextBox.Location = new System.Drawing.Point(115, 15);
             this.TSAccTextBox.Name = "TSAccTextBox";
-            this.TSAccTextBox.Size = new System.Drawing.Size(100, 20);
+            this.TSAccTextBox.Size = new System.Drawing.Size(100, 31);
             this.TSAccTextBox.TabIndex = 1;
             this.TSAccTextBox.Text = "50";
             // 
@@ -1017,24 +1036,25 @@ namespace SympatheticHardwareControl
             // 
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.Size = new System.Drawing.Size(100, 31);
             this.textBox1.TabIndex = 0;
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(0, 0);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.Size = new System.Drawing.Size(100, 31);
             this.textBox2.TabIndex = 0;
             // 
             // menuStrip
             // 
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.windowsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(794, 24);
+            this.menuStrip.Size = new System.Drawing.Size(794, 40);
             this.menuStrip.TabIndex = 15;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -1048,44 +1068,44 @@ namespace SympatheticHardwareControl
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 36);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadParametersToolStripMenuItem
             // 
             this.loadParametersToolStripMenuItem.Name = "loadParametersToolStripMenuItem";
-            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.loadParametersToolStripMenuItem.Size = new System.Drawing.Size(355, 38);
             this.loadParametersToolStripMenuItem.Text = "Load parameters";
             this.loadParametersToolStripMenuItem.Click += new System.EventHandler(this.loadParametersToolStripMenuItem_Click);
             // 
             // saveParametersToolStripMenuItem
             // 
             this.saveParametersToolStripMenuItem.Name = "saveParametersToolStripMenuItem";
-            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveParametersToolStripMenuItem.Size = new System.Drawing.Size(355, 38);
             this.saveParametersToolStripMenuItem.Text = "Save parameters on UI";
             this.saveParametersToolStripMenuItem.Click += new System.EventHandler(this.saveParametersToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(352, 6);
             // 
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(355, 38);
             this.saveImageToolStripMenuItem.Text = "Save image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(352, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(355, 38);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1095,20 +1115,20 @@ namespace SympatheticHardwareControl
             this.hardwareMonitorToolStripMenuItem,
             this.openImageViewerToolStripMenuItem});
             this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
-            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(124, 36);
             this.windowsToolStripMenuItem.Text = "Windows";
             // 
             // hardwareMonitorToolStripMenuItem
             // 
             this.hardwareMonitorToolStripMenuItem.Name = "hardwareMonitorToolStripMenuItem";
-            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.hardwareMonitorToolStripMenuItem.Size = new System.Drawing.Size(505, 38);
             this.hardwareMonitorToolStripMenuItem.Text = "Open new hardware monitor";
             this.hardwareMonitorToolStripMenuItem.Click += new System.EventHandler(this.hardwareMonitorToolStripMenuItem_Click);
             // 
             // openImageViewerToolStripMenuItem
             // 
             this.openImageViewerToolStripMenuItem.Name = "openImageViewerToolStripMenuItem";
-            this.openImageViewerToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.openImageViewerToolStripMenuItem.Size = new System.Drawing.Size(505, 38);
             this.openImageViewerToolStripMenuItem.Text = "Start camera and open image viewer";
             this.openImageViewerToolStripMenuItem.Click += new System.EventHandler(this.openImageViewerToolStripMenuItem_Click);
             // 
@@ -1125,7 +1145,7 @@ namespace SympatheticHardwareControl
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(675, 36);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.Size = new System.Drawing.Size(161, 25);
             this.label1.TabIndex = 18;
             this.label1.Text = "Remote Control";
             // 
@@ -1151,25 +1171,6 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
             // 
-            // shutterCheckBox
-            // 
-            this.shutterCheckBox.AutoSize = true;
-            this.shutterCheckBox.Location = new System.Drawing.Point(46, 21);
-            this.shutterCheckBox.Name = "shutterCheckBox";
-            this.shutterCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.shutterCheckBox.TabIndex = 21;
-            this.shutterCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // ShutterControlBox
-            // 
-            this.ShutterControlBox.Controls.Add(this.shutterCheckBox);
-            this.ShutterControlBox.Location = new System.Drawing.Point(549, 3);
-            this.ShutterControlBox.Name = "ShutterControlBox";
-            this.ShutterControlBox.Size = new System.Drawing.Size(104, 45);
-            this.ShutterControlBox.TabIndex = 22;
-            this.ShutterControlBox.TabStop = false;
-            this.ShutterControlBox.Text = "Zeeman repump";
-            // 
             // ControlWindow
             // 
             this.ClientSize = new System.Drawing.Size(794, 419);
@@ -1188,6 +1189,8 @@ namespace SympatheticHardwareControl
             this.shcTabs.ResumeLayout(false);
             this.tabCamera.ResumeLayout(false);
             this.tabLasers.ResumeLayout(false);
+            this.ShutterControlBox.ResumeLayout(false);
+            this.ShutterControlBox.PerformLayout();
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
             this.aom2ControlBox.ResumeLayout(false);
@@ -1213,8 +1216,6 @@ namespace SympatheticHardwareControl
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
-            this.ShutterControlBox.ResumeLayout(false);
-            this.ShutterControlBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

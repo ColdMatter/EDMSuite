@@ -1,0 +1,29 @@
+
+  server = 192.168.1.125:3000
+
+  dds[0].name = ddsq
+  dds[0].type = ad9959
+  dds[0].spi_cs = 0
+  dds[0].spi_fclk = 5000000
+  dds[0].gpio_reset = 24
+  dds[0].reset_duration_usec = 10
+  dds[0].int_upd_gpio = 25
+  dds[0].int_upd_duration_usec = 5
+  dds[0].core_fclk = 400e6
+  dds[0].ramp_stepduration = 1e-6
+  dds[0].ch[0].name = slave0
+  dds[0].ch[1].name = slave1
+  dds[0].ch[2].name = slave2
+  dds[0].ch[3].name = ch3
+
+
+  dds[1].name = dds_raman
+  dds[1].type = ad9852
+  dds[1].spi_cs = 1
+  dds[1].spi_fclk = 5000000
+  dds[1].gpio_reset = 2
+  dds[1].reset_duration_usec = 10
+  dds[1].int_upd_gpio = 3
+  dds[1].int_upd_duration_usec = 5
+  dds[1].core_fclk = 200e6
+

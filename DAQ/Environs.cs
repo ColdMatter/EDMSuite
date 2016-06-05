@@ -205,7 +205,19 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-				default:
+                case "NAVIGATOR-CONTROL":
+                    Hardware = new NavigatorHardware();
+                    FileSystem = new NavigatorFileSystem();
+                    Debug = false;
+                    break;
+
+                case "JS-SURFACE":
+                    Hardware = new NavigatorHardware();
+                    FileSystem = new NavigatorFileSystem();
+                    Debug = true;
+                    break;
+
+                default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
