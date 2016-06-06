@@ -29,8 +29,8 @@ namespace NavigatorHardwareControl
     /// </summary>
     public class Controller : MarshalByRefObject
     {
-        #region setup
-        ControlWindow controlWindow;
+        #region setup 
+        public ControlWindow controlWindow;
 
         //table of digital tasks
         Hashtable digitalTasks = new Hashtable();
@@ -42,6 +42,7 @@ namespace NavigatorHardwareControl
         public enum NavHardwareState { OFF, LOCAL, REMOTE };
         public NavHardwareState hcState = new NavHardwareState();
 
+        public DataStore dataStore;
         hardwareState stateRecord;
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -56,6 +57,7 @@ namespace NavigatorHardwareControl
         //these are used to handle errors from the slave and aom dds processes
         public StreamReader slaveErr;
         public StreamReader aomErr;
+
         public void Start()
         {
             analogoutTasks = new Dictionary<string, Task>();
@@ -106,10 +108,29 @@ namespace NavigatorHardwareControl
                 }
                 
             }
+            muquans = new MuquansCommunicator();
+           
 
-            // make the control controlWindow
-            controlWindow = new ControlWindow();
-            controlWindow.controller = this;
+            //Configures the error handling of the DDS programs
+         //   muquans.ConfigureDDS("slave", 18);
+           // muquans.ConfigureDDS("aom", 20);
+            muquans.slaveDDS.EnableRaisingEvents = true;
+            muquans.aomDDS.EnableRaisingEvents = true;
+            
+            //slaveErr = muquans.slaveDDS.StandardError;
+            //aomErr = muquans.aomDDS.StandardError
+            muquans.Start();
+            muquans.slaveDDS.OutputDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+            muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+
+            //Starts the DDS programs - these port numbers depend on the virtual COM ports use
+            ProcessStartInfo slaveInfo = muquans.ConfigureDDS("slave", 18);
+            ProcessStartInfo aomInfo = muquans.ConfigureDDS("aom", 20);
+
+            muquans.slaveDDS.StartInfo = slaveInfo;
+            muquans.aomDDS.StartInfo = aomInfo;
+            muquans.slaveDDS.Start();
+            muquans.aomDDS.Start();
 
         }
         #endregion
@@ -138,40 +159,32 @@ namespace NavigatorHardwareControl
         #region Parameter Serialisation
         // this isn't really very classy, but it works
         [Serializable]
-        private struct DataStore
+        public struct DataStore
         {
-            public double cPlus;
-            public double cMinus;
-            public double rampDownTime;
-            public double rampDownDelay;
-            public double bleedTime;
-            public double switchTime;
-            public double rampUpTime;
-            public double rampUpDelay;
-            public double frequency;
-            public double amplitude;
-            public double dcfm;
-            public double rf1AttC;
-            public double rf1AttS;
-            public double rf2AttC;
-            public double rf2AttS;
-            public double rf1FMC;
-            public double rf1FMS;
-            public double rf2FMC;
-            public double rf2FMS;
-            public double steppingBias;
-            public double flPZT;
-            public double flPZTStep;
-            public double overshootFactor;
-            public double overshootHold;
-            public double pumpAOM;
-            public double pumpAOMStep;
+            public double slave0freq;
+            public double slave0phase;
+            public double slave1freq;
+            public double slave1phase;
+            public double slave2freq;
+            public double slave2phase;
+            public double ramanfreq;
+            public double ramanphase;
+            public double edfa0lockval;
+            public double edfa1lockval;
+            public double edfa2lockval;
+            public double repumpfreq;
+            public double motAOMfreq;
+            public double ramanAOMfreq;
+            public double motCTRLval;
+            public double repumpCTRLval; 
+            public double ramanCTRLval;
+         
         }
 
         public void SaveParametersWithDialog()
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "edmhc parameters|*.bin";
+            saveFileDialog1.Filter = "nav parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
             String dataStoreDir = settingsPath + "NavHardwareController";
@@ -194,10 +207,6 @@ namespace NavigatorHardwareControl
 
         public void StoreParameters(String dataStoreFilePath)
         {
-            DataStore dataStore = new DataStore();
-            // fill the struct
-          ;
-
             // serialize it
             BinaryFormatter s = new BinaryFormatter();
             try
@@ -240,8 +249,8 @@ namespace NavigatorHardwareControl
               
 
             }
-            catch (Exception)
-            { Console.Out.WriteLine("Unable to load settings"); }
+            catch (Exception e)
+            { Console.Out.WriteLine("Unable to load settings: "+e.Message); }
         }
 
         #endregion
@@ -364,6 +373,7 @@ namespace NavigatorHardwareControl
         {
             //If one of the DDS programs exits, this prints the error output to the console and opens a message box
             controlWindow.WriteToConsole(eventArgs.Data);
+            Console.WriteLine(eventArgs.Data);
             MessageBox.Show("One (or both) of the DDS programs has crashed. Check the console for more information.");
         }
         #endregion

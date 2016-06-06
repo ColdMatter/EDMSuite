@@ -88,6 +88,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TelnetConnection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -142,9 +143,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UKUS Comm\serial_to_dds_gw.exe" />
-    <Resource Include="UKUS Comm\ukus_dds_aom_conf.txt" />
-    <Resource Include="UKUS Comm\ukus_dds_slaves_conf.txt" />
+    <Content Include="UKUS Comm\serial_to_dds_gw.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="UKUS Comm\ukus_dds_aom_conf.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UKUS Comm\ukus_dds_slaves_conf.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
