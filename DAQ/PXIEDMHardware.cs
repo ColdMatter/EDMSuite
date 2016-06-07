@@ -6,6 +6,7 @@ using NationalInstruments.DAQmx;
 using DAQ.Pattern;
 using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
+using DAQ.Remoting;
 
 namespace DAQ.HAL
 {
@@ -17,9 +18,13 @@ namespace DAQ.HAL
     {
                 public override void ConnectApplications()
        {
-           // ask the remoting system for access to TCL2012
+           RemotingHelper.ConnectEDMHardwareControl();
+           //RemotingHelper.ConnectPhaseLock();
+           //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
+          // Type t = Type.GetType("MarshalByRefObject"); 
+                  // ask the remoting system for access to TCL2012
           // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+         //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
        }
  
 
@@ -32,11 +37,11 @@ namespace DAQ.HAL
             Boards.Add("counter", "/PXI1Slot3");
             Boards.Add("aoBoard", "/PXI1Slot4");
             // this drives the rf attenuators
-            Boards.Add("usbDAQ1", "/Dev2");
+            Boards.Add("usbDAQ1", "/Dev6");
             Boards.Add("analogIn", "/PXI1Slot2");
-            Boards.Add("usbDAQ2", "/dev1");
-            Boards.Add("usbDAQ3", "/dev4");
-            Boards.Add("usbDAQ4", "/dev3");
+            Boards.Add("usbDAQ2", "/Dev4");
+            Boards.Add("usbDAQ3", "/Dev2");
+            Boards.Add("usbDAQ4", "/Dev5");
             Boards.Add("tclBoard", "/PXI1Slot9");
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
@@ -72,20 +77,21 @@ namespace DAQ.HAL
             Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL2::INSTR");
+            yag = new BrilliantLaser("ASRL9::INSTR");
 
             // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
+            Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
             Instruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
-            Instruments.Add("BfieldController", new SerialDAQ("ASRL12::INSTR"));
-            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL8::INSTR"));
-            Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL5::INSTR"));
-            Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL3::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL7::INSTR"));
+            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL14::INSTR"));
+            Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL8::INSTR"));
+            Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL11::INSTR"));
 
 
             // map the digital channels
@@ -99,6 +105,7 @@ namespace DAQ.HAL
             // see ModulatedAnalogShotGatherer.cs
             // for details.
             AddDigitalOutputChannel("rfSwitch", pgBoard, 0, 4);
+            AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
             AddDigitalOutputChannel("fmSelect", pgBoard, 1, 0);      // This line selects which fm voltage is
             // sent to the synth.
             AddDigitalOutputChannel("attenuatorSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
@@ -130,8 +137,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("eSwitching", aoBoard, 0, 6);
             AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
             AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
-            AddDigitalOutputChannel("pumpShutter", pgBoard, 3, 3);
-            AddDigitalOutputChannel("probeShutter", pgBoard, 3, 4);
+            AddDigitalOutputChannel("mwEnable", pgBoard, 3, 3);
             AddDigitalOutputChannel("argonShutter", pgBoard, 3, 2);
             AddDigitalOutputChannel("patternTTL", aoBoard, 0, 7);
 
@@ -170,9 +176,9 @@ namespace DAQ.HAL
             // Don't use ai10, cross talk with other channels on this line
 
             // high quality analog inputs (will be) on the S-series analog in board
-            // The last number in AddAnalogInputChannel is an optional calibration which turns VuS 
-            AddAnalogInputChannel("top", analogIn + "/ai0", AITerminalConfiguration.Differential, 0.1);
-            AddAnalogInputChannel("norm", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
+            // The last number in AddAnalogInputChannel is an optional calibration which turns VuS and MHz 
+            AddAnalogInputChannel("topProbe", analogIn + "/ai0", AITerminalConfiguration.Differential, 0.1);
+            AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
@@ -228,6 +234,7 @@ namespace DAQ.HAL
             tcl1.AnalogSampleRate = 50000;
             tcl1.DefaultScanPoints = 300;
             Info.Add("Hamish", tcl1);
+            Info.Add("DefaultCavity", tcl1);
 
             //TCL Lockable lasers - this stuff should not now be needed - leave here for reference just in case
 
@@ -268,8 +275,15 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
 
             //Microwave Control Channels
-            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/a011", -2.5, 2.5);
+            AddAnalogOutputChannel("uWaveDCFM", aoBoard + "/ao11", -2.5, 2.5);
             AddAnalogOutputChannel("uWaveMixerV", aoBoard + "/ao12", 0, 10);
+            AddAnalogOutputChannel("VCO161Amp", aoBoard + "/ao13", 0, 10);
+            AddAnalogOutputChannel("VCO161Freq", aoBoard + "/ao14", 0, 10);
+            AddAnalogOutputChannel("VCO30Amp", aoBoard + "/ao15", 0, 10);
+            AddAnalogOutputChannel("VCO30Freq", aoBoard + "/ao16", 0, 10);
+            AddAnalogOutputChannel("VCO155Amp", aoBoard + "/ao17", 0, 10);
+            AddAnalogOutputChannel("VCO155Freq", aoBoard + "/ao18", 0, 10);
+
         }
 
     }

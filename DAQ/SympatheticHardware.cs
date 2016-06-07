@@ -71,6 +71,7 @@ namespace DAQ.HAL
             tcl1.Ramp = "rampfb";
             tcl1.TCPChannel = 1190;
             Info.Add("Hamish", tcl1);
+            Info.Add("DefaultCavity", tcl1);
 
             //TCL Lockable lasers - I'm not yet sure whether these settings are redundant for the SympatheticHardware - may be using an old version of TransferCavityLock??
             Info.Add("TCLLockableLasers", new string[] { "laser" });
