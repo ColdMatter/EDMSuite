@@ -62,6 +62,7 @@ namespace NavigatorHardwareControl
             string msg = "ukus autolock_" + laser;
             slaveConn.WriteLine(msg);
             TextReader reader = slaveConn.ReadStream();
+            //Returns the reader so other classes can do stuff with the output and then close the reader
             return reader;
         }
         public void ScanMasterLaser()

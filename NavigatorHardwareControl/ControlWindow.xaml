@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Navigator Hardware Control" Height="768" Width="1024">
     <Grid>
-        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="225" >
+        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="225" KeyDown="consoleRichTextBox_KeyDown">
         </RichTextBox>
         <TabControl x:Name="tabControl" Margin="0,25,0,230.5">
             <TabItem Header="Muquans Laser">

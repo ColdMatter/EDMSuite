@@ -82,56 +82,47 @@ namespace NavigatorHardwareControl
                 CreateAnalogInputTask("photodiode");
                 CreateAnalogInputTask("accelpos");
                 CreateAnalogInputTask("accelmin");
-
-                muquans.Start();
-
-                //Configures the error handling of the DDS programs
-                muquans.slaveDDS.EnableRaisingEvents = true;
-                muquans.aomDDS.EnableRaisingEvents = true;
-                slaveErr = muquans.slaveDDS.StandardError;
-                aomErr = muquans.aomDDS.StandardError;
-
-                muquans.slaveDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-                muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-
-                //Starts the DDS programs - these port numbers depend on the virtual COM ports used
                 try
                 {
-                    muquans.ConfigureDDS("slave", 18);
-                    muquans.ConfigureDDS("aom", 20);
-                    muquans.slaveDDS.Start();
-                    muquans.aomDDS.Start();
+                    muquans = new MuquansCommunicator();
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
-                    MessageBox.Show("Couldn't start the DDS programs - Slave DDS should listen on COM 18 and AOM on COM 20");
+                    Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
                 }
+
+
+                //Configures the error handling of the DDS programs
+                //   muquans.ConfigureDDS("slave", 18);
+                // muquans.ConfigureDDS("aom", 20);
+                muquans.slaveDDS.EnableRaisingEvents = true;
+                muquans.aomDDS.EnableRaisingEvents = true;
+
+                //slaveErr = muquans.slaveDDS.StandardError;
+                //aomErr = muquans.aomDDS.StandardError
+                muquans.Start();
+                muquans.slaveDDS.OutputDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+                muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+
+                //Starts the DDS programs - these port numbers depend on the virtual COM ports use
+                ProcessStartInfo slaveInfo = muquans.ConfigureDDS("slave", 18);
+                ProcessStartInfo aomInfo = muquans.ConfigureDDS("aom", 20);
+
+                muquans.slaveDDS.StartInfo = slaveInfo;
+                muquans.aomDDS.StartInfo = aomInfo;
+                muquans.slaveDDS.Start();
+                muquans.aomDDS.Start();
                 
             }
-            muquans = new MuquansCommunicator();
-           
 
-            //Configures the error handling of the DDS programs
-         //   muquans.ConfigureDDS("slave", 18);
-           // muquans.ConfigureDDS("aom", 20);
-            muquans.slaveDDS.EnableRaisingEvents = true;
-            muquans.aomDDS.EnableRaisingEvents = true;
-            
-            //slaveErr = muquans.slaveDDS.StandardError;
-            //aomErr = muquans.aomDDS.StandardError
-            muquans.Start();
-            muquans.slaveDDS.OutputDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-            muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-
-            //Starts the DDS programs - these port numbers depend on the virtual COM ports use
-            ProcessStartInfo slaveInfo = muquans.ConfigureDDS("slave", 18);
-            ProcessStartInfo aomInfo = muquans.ConfigureDDS("aom", 20);
-
-            muquans.slaveDDS.StartInfo = slaveInfo;
-            muquans.aomDDS.StartInfo = aomInfo;
-            muquans.slaveDDS.Start();
-            muquans.aomDDS.Start();
-
+            try
+            {
+                muquans = new MuquansCommunicator();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
+            }
         }
         #endregion
 

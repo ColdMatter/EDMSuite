@@ -26,10 +26,16 @@ namespace NavigatorHardwareControl
     {
        
         public Controller controller;
+        public TextBoxStreamWriter console;
+        private TextReader reader;
         public ControlWindow()
         {
             InitializeComponent();
+            //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = new Controller();
+            console = new TextBoxStreamWriter(consoleRichTextBox);
+            //Sets the Console to stream to the consoleTextBox
+            Console.SetOut(console);
             controller.Start();
         }
        
@@ -59,7 +65,8 @@ namespace NavigatorHardwareControl
 
             if (button.Value)
             {
-               TextReader reader =  controller.muquans.LockLaser("slave0");
+               reader =  controller.muquans.LockLaser("slave0");
+
                WriteToConsole("Locked Slave0");
                
             }
@@ -74,14 +81,9 @@ namespace NavigatorHardwareControl
 
         public void WriteToConsole(string text)
         {
-            consoleRichTextBox.AppendText(">> " + text + "\n");
+            console.WriteLine(text);
         }
 
-        public void OverwriteConsole(string text)
-        {
-            //This overwrites the last line which is useful for some of the Text streams from the Muquans laser
-           
-        }
         private void lockSlave1Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -116,7 +118,7 @@ namespace NavigatorHardwareControl
 
         private void monitorButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This button can be used to monitor the error signal for the PID loop to lock this laser. This is not yet implemented");
+            console.WriteLine("This button can be used to monitor the error signal for the PID loop to lock this laser. This is not yet implemented");
         }
 
         private void edfa0LED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
@@ -159,5 +161,55 @@ namespace NavigatorHardwareControl
         {
 
         }
+
+        private void consoleRichTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //This is used to interrupt any text streams much like a console
+            var textBox = sender as RichTextBox;
+            if(Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.C))
+            {
+                try
+                {
+                    reader.Dispose();
+                }
+                catch (Exception s)
+                {
+                    console.WriteLine("Problem closing a text stream: " + s.Message);
+                }
+            }
+        }
     }
+    public class TextBoxStreamWriter : TextWriter
+    {
+        RichTextBox output = null;
+        /// <summary>
+        /// This implements a TextWriter that can be used to stream text to a TextBox object. In particular, this is useful for streaming Console text to the textbox in the GUI
+        /// </summary>
+        /// <param name="textBox"></param>
+        public TextBoxStreamWriter(RichTextBox textBox)
+        {
+            output = textBox;
+        }
+        //public override void Write(char value)
+        //{
+        //    base.Write(value);
+        //    output.AppendText(value.ToString());
+        //}
+       
+        public override void WriteLine(string value)
+        {
+            base.WriteLine(value);
+            output.AppendText(">>" + value.ToString()+"\n");
+        }
+        public override Encoding Encoding
+        {
+            get
+            {
+                return Encoding.UTF8;
+            }
+        }
+
+    }
+
+    
 }
