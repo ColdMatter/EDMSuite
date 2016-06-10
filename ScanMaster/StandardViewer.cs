@@ -99,6 +99,11 @@ namespace ScanMaster.GUI
 		{
 			// clear the stored data
 			pointsToPlot.Points.Clear();
+            if (avOnTofs != null) avOnTofs = null;
+            if (avOffTofs != null) avOffTofs = null;
+            shotCounter = 0;
+            onAverages = 1;
+            offAverages = 1;
 			// grab the latest settings
 			PluginSettings outputSettings = Controller.GetController().ProfileManager.
 				CurrentProfile.AcquisitorConfig.outputPlugin.Settings;
