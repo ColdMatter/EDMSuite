@@ -39,6 +39,8 @@ namespace ScanMaster.Acquire.Plugins
             settings["switchLineDelay"] = 0;
             settings["padStart"] = 0;
             settings["flashlampPulseLength"] = 100;
+            settings["chirpStart"] = 100;
+            settings["chirpDuration"] = 300;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -69,6 +71,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],
                 (int)settings["switchLineDelay"],
+                (int)settings["chirpStart"],
+                (int)settings["chirpDuration"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
 
