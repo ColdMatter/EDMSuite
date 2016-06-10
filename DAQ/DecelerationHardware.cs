@@ -54,6 +54,7 @@ namespace DAQ.HAL
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
             //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
             tcl2.AddLaser("v21repump", "p12");
+            tcl2.AddLaser("eylsa", "p22");
             tcl2.Trigger = TCLBoard2 + "/PFI0";
             tcl2.Cavity = "cavity2";
             tcl2.MasterLaser = "master2";
@@ -123,10 +124,11 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 			AddDigitalOutputChannel("flash", pgBoard, 0, 0);//Changed from pg board P.0.5 because that appears to have died mysteriously (line dead in ribbon cable?) TEW 06/04/09
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
+            AddDigitalOutputChannel("chirpTrigger", pgBoard, 1, 0);
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
-			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
+			//AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
 			AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
 			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
 			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
@@ -161,9 +163,9 @@ namespace DAQ.HAL
             AddAnalogInputChannel("master2", TCLBoard2 + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cavity2", TCLBoard2 + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p12", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
-            
-
+            AddAnalogInputChannel("p22", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
+            AddAnalogOutputChannel("eylsa", PXIBoard + "/ao2");
             AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
                        
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
