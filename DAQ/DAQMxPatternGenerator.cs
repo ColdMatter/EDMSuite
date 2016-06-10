@@ -181,7 +181,7 @@ namespace DAQ.HAL
 		
 		public void StopPattern()
 		{
-			pgTask.Dispose();
+            pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
         }
 	}
