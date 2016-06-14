@@ -13,48 +13,48 @@
         <TabControl x:Name="tabControl" Margin="0,25,0,230.5">
             <TabItem Header="Muquans Laser">
                 <Grid Background="#FFE5E5E5" Margin="-5,1,5,-1">
-                    <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="10,10,721,57">
+                    <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="10,10,721,57" >
                         <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
                             <GroupBox x:Name="masterBox" Header="Master" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="270">
                                 <StackPanel Margin="0,0,44,0" Orientation="Horizontal">
-                                    <ni:BooleanButton x:Name="scanMasterButton" MinWidth="50" Margin="5">Scan</ni:BooleanButton>
-                                    <ni:BooleanButton x:Name="lockMasterButton" MinWidth="50" Margin="5">Lock</ni:BooleanButton>
+                                    <ni:BooleanButton x:Name="scanMaster" MinWidth="50" Margin="5">Scan</ni:BooleanButton>
+                                    <ni:BooleanButton x:Name="lockMaster" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding Path=dataStore. }">Lock</ni:BooleanButton>
                                 </StackPanel>
                             </GroupBox>
                             <GroupBox x:Name="slave0Box" Header="Slave0" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Height="96" Width="270">
                                 <Grid Height="100" Margin="0,0,0,0" Width="317">
                                     <StackPanel Margin="0,0,252,10" Orientation="Vertical">
-                                        <ni:BooleanButton x:Name="monitorSlave0Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave0Button" MinWidth="50" Margin="5" Click="lockSlave0Button_Click" >Lock</ni:BooleanButton>
+                                        <ni:BooleanButton x:Name="monitorSlave0" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
+                                        <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding Path=DataStore.}">Lock</ni:BooleanButton>
                                     </StackPanel>
                                     <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding Path=edfa0LockButton.Value}"/>
                                     <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
                                     <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding Path=controller.dataStore.edfa0lockval}"/>
-                                    <ni:BooleanButton x:Name="edfa0LockButton" Content="EDFA0 Lock" Margin="66,39,188,41" FontSize="9" Click="edfa0LockButton_Click"/>
+                                    <ni:BooleanButton x:Name="edfa0LockButton" Content="EDFA0 Lock" Margin="66,39,188,41" FontSize="9" Click="edfaLockButton_Click"/>
                                 </Grid>
                             </GroupBox>
                             <GroupBox x:Name="slave1Box" Header="Slave1" HorizontalAlignment="Left" Margin="0,163,0,0" VerticalAlignment="Top" Height="96" Width="270">
                                 <Grid Height="100" Margin="0,0,0,0" Width="317">
                                     <StackPanel Margin="0,0,252,10" Orientation="Vertical">
                                         <ni:BooleanButton x:Name="scanSlave1Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockSlave1Button_Click" >Lock</ni:BooleanButton>
+                                        <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" >Lock</ni:BooleanButton>
                                     </StackPanel>
-                                    <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa1LED_Click" FalseBrush="#FFD52525"/>
+                                    <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" FalseBrush="#FFD52525"/>
                                     <ni:Switch x:Name="edfa1LockType" Content="Switch" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
                                     <TextBox x:Name="edfa1Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.edfa1lockval}" VerticalAlignment="Top" Width="55" Height="20"/>
-                                    <ni:BooleanButton x:Name="edfa1LockButton" Content="EDFA1 Lock" Margin="66,39,188,41" FontSize="9"/>
+                                    <ni:BooleanButton x:Name="edfa1LockButton" Click="edfaLockButton_Click" Content="EDFA1 Lock" Margin="66,39,188,41" FontSize="9"/>
                                 </Grid>
                             </GroupBox>
                             <GroupBox x:Name="slave2Box" Header="Slave2" HorizontalAlignment="Left" Margin="0,263,0,0" VerticalAlignment="Top" Height="96" Width="270">
                                 <Grid Height="100" Margin="0,0,0,0" Width="317">
                                     <StackPanel Margin="0,0,252,10" Orientation="Vertical">
                                         <ni:BooleanButton x:Name="scanSlave2Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockSlave2Button_Click" >Lock</ni:BooleanButton>
+                                        <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" >Lock</ni:BooleanButton>
                                     </StackPanel>
                                     <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa2LED_Click" FalseBrush="#FFD52525"/>
                                     <ni:Switch x:Name="edfa2LockType" Content="Switch" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
                                     <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.edfa2lockval}" VerticalAlignment="Top" Width="55" Height="20"/>
-                                    <ni:BooleanButton x:Name="edfa2LockButton" Content="EDFA2 Lock" Margin="66,39,188,41" FontSize="9"/>
+                                    <ni:BooleanButton x:Name="edfa2LockButton"  Click="edfaLockButton_Click" Content="EDFA2 Lock" Margin="66,39,188,41" FontSize="9"/>
                                 </Grid>
                             </GroupBox>
                             <ni:LED x:Name="motLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="681,138,-387,0" TrueContent="On" VerticalAlignment="Top" Width="23"/>

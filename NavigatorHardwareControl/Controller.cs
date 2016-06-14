@@ -42,7 +42,7 @@ namespace NavigatorHardwareControl
         public enum NavHardwareState { OFF, LOCAL, REMOTE };
         public NavHardwareState hcState = new NavHardwareState();
 
-        public DataStore dataStore;
+        public DataStore dataStore = new DataStore();
         hardwareState stateRecord;
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -148,28 +148,15 @@ namespace NavigatorHardwareControl
         #endregion
 
         #region Parameter Serialisation
-        // this isn't really very classy, but it works
+        // this is basically just a collection of dictionaries to make it a bit easier to add values as necessary. The keys used are the names of the object that represents them in the hardwarecontroller
         [Serializable]
-        public struct DataStore
+        public class DataStore
         {
-            public double slave0freq;
-            public double slave0phase;
-            public double slave1freq;
-            public double slave1phase;
-            public double slave2freq;
-            public double slave2phase;
-            public double ramanfreq;
-            public double ramanphase;
-            public double edfa0lockval;
-            public double edfa1lockval;
-            public double edfa2lockval;
-            public double repumpfreq;
-            public double motAOMfreq;
-            public double ramanAOMfreq;
-            public double motCTRLval;
-            public double repumpCTRLval; 
-            public double ramanCTRLval;
-         
+            public Dictionary<string, double> ddsFreqs = new Dictionary<string,double>();
+            public Dictionary<string, double> ddsPhases = new Dictionary<string,double>();
+            public Dictionary<string, double> laserVals = new Dictionary<string,double>();
+            public Dictionary<string, bool> laserStates = new Dictionary<string,bool>();      
+
         }
 
         public void SaveParametersWithDialog()
@@ -241,7 +228,7 @@ namespace NavigatorHardwareControl
 
             }
             catch (Exception e)
-            { Console.Out.WriteLine("Unable to load settings: "+e.Message); }
+            { Console.WriteLine("Unable to load settings: "+e.Message); }
         }
 
         #endregion
@@ -366,6 +353,27 @@ namespace NavigatorHardwareControl
             controlWindow.WriteToConsole(eventArgs.Data);
             Console.WriteLine(eventArgs.Data);
             MessageBox.Show("One (or both) of the DDS programs has crashed. Check the console for more information.");
+        }
+
+        public void ControllerExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            //If there is an unhandled exception in the controller, it prints this to the console.
+                   //this is designed to handled an exception in a thread and print it to the console. Should help prevent uneccessary terminations
+            try
+            {
+                Exception ex = e.ExceptionObject as Exception;
+                string errorMessage =
+           "Unhandled Exception:\n\n" +
+           ex.Message + "\n\n" +
+           ex.GetType() +
+           "\n\nStack Trace:\n" +
+           ex.StackTrace;
+                Console.WriteLine(errorMessage);
+            }
+            catch
+            {
+                MessageBox.Show("Fatal Error");
+            }
         }
         #endregion
 
