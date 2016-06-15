@@ -27,8 +27,8 @@
                                         <ni:BooleanButton x:Name="monitorSlave0" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
                                         <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding Path=DataStore.}">Lock</ni:BooleanButton>
                                     </StackPanel>
-                                    <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding Path=edfa0LockButton.Value}"/>
-                                    <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
+                                    <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding Path=edfa0LockButton.Value}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                    <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal"/>
                                     <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding Path=controller.dataStore.edfa0lockval}"/>
                                     <ni:BooleanButton x:Name="edfa0LockButton" Content="EDFA0 Lock" Margin="66,39,188,41" FontSize="9" Click="edfaLockButton_Click"/>
                                 </Grid>
@@ -106,8 +106,22 @@
                     <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="568,200,0,0" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Fibre AOMs">
+            <TabItem Header="Raman Optics">
+                <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                    <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="Auto">
+                        <Grid HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+                            <Label Content="Horizontal" HorizontalAlignment="Left" Margin="83,0,0,0" VerticalAlignment="Top"/>
+                            <Label Content="Vertical" HorizontalAlignment="Left" Margin="85,42,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="horizPiezo" HorizontalAlignment="Left" Height="24" Margin="89,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
+                            <TextBox x:Name="vertPiezo" HorizontalAlignment="Left" Height="24" Margin="89,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
+                            <ni:BooleanButton x:Name="piezoAlignButton" Content="Align" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" VerticalAlignment="Top" Width="75"/>
+                            <CheckBox x:Name="piezoDebug" Content="Debug" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="Uses a test image to try and align, rather than measure the fibre output"/>
+                        </Grid>
+                    </GroupBox>
+                    
 
+
+                </Grid>
             </TabItem>
         </TabControl>
         <Menu x:Name="menu" VerticalAlignment="Top">
@@ -115,8 +129,8 @@
                 <MenuItem Header="Save Parameters as Default" Click="SaveDefault_Click"></MenuItem>
                 <MenuItem Header="Save Parameters" Click="SaveParameters_Click"></MenuItem>
                 <MenuItem Header="Load Parameters" Click="LoadParameters_Click"></MenuItem>
-                </MenuItem>
-            
+            </MenuItem>
+
             <MenuItem Header="Settings"/>
         </Menu>
     </Grid>
