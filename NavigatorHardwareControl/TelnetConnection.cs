@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
 using System.IO;
+using System.Diagnostics;
  
 namespace NavigatorHardwareControl
 {
@@ -34,8 +35,15 @@ namespace NavigatorHardwareControl
   
           public TelnetConnection(string Hostname, int Port)
           {
-              tcpSocket = new TcpClient(Hostname, Port);
-  
+              tcpSocket = new TcpClient();
+              var result= tcpSocket.BeginConnect(Hostname, Port, null, null);
+              var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+
+              if (!success)
+              {
+                  throw new Exception("Failed to connect to " + Hostname);
+              }
+              tcpSocket.EndConnect(result);
           }
   
           public string Login(string Username,string Password,int LoginTimeOutMs)

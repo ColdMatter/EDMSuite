@@ -13,7 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Drawing;
 using NationalInstruments.Controls;
+using NationalInstruments.Controls.Primitives;
 
 namespace NavigatorHardwareControl
 {
@@ -28,7 +30,13 @@ namespace NavigatorHardwareControl
         public Controller controller;
         public TextBoxStreamWriter console;
         private TextReader reader;
+        private FibreAligner fibreAlign;
         private bool isReading;
+        public double intensityScale = 1.0;
+
+        private static readonly GraphQueryArgs query = new GraphQueryArgs(
+      PlotsToSearch.Any, SearchDimensions.HorizontalAndVertical,
+      SearchDirections.ForwardAndReverse, isInclusive: true);
 
         public ControlWindow()
         {
@@ -36,10 +44,16 @@ namespace NavigatorHardwareControl
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = new Controller();
             console = new TextBoxStreamWriter(consoleRichTextBox);
+            fibreAlign = new FibreAligner();
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
             controller.Start();
-           
+
+            //Add an event to display the coordinates and intensity over the piezoMap
+            piezoMap.PlotAreaMouseMove += this.OnPlotAreaMouseMove;
+            piezoMap.PlotAreaMouseLeave += delegate { piezoMap.ToolTip = null; };
+            ToolTipService.SetInitialShowDelay(piezoMap, 0);
+            ToolTipService.SetShowDuration(piezoMap, int.MaxValue); 
            
         }
 
@@ -94,6 +108,12 @@ namespace NavigatorHardwareControl
                 bb.Value = controller.dataStore.laserStates[bb.Name];
             }
         }
+
+        public void WriteToConsole(string text)
+        {
+            console.WriteLine(text);
+        }
+
         #region EventHandlers
         private void edfa0LED_Click(object sender, RoutedEventArgs e)
         {
@@ -157,17 +177,40 @@ namespace NavigatorHardwareControl
           
         }
 
-        public void WriteToConsole(string text)
+        private void piezoAlignButton_Click(object sender, RoutedEventArgs e)
         {
-            console.WriteLine(text);
+            double threshold = fibreThreshold.Value;
+            if (piezoDebug.IsChecked.Value && fibreAlign.ScanData==null)
+            {
+                //loads a test image and tries to maximaize that
+                
+                string fibrePath = controller.LoadFibreScanData();
+                if (fibrePath != "")
+                {
+                    fibreAlign.loadFibreScanData(fibrePath);
+                }
+                else
+                {
+                    MessageBox.Show("No Fibre Data Specified");
+                }
+            }
+            else if(!piezoDebug.IsChecked.Value)
+            {
+                fibreAlign.ScanData = null;
+                Console.WriteLine("Alignment using Analog IO not yet implemented");
+            }
+            else
+            {
+                int[] coords = new int[2];
+                coords = fibreAlign.TestScan(threshold);
+                horizPiezo.Text = coords[0].ToString();
+                vertPiezo.Text = coords[1].ToString();
+                //Plots the scan data and the coupling efficiency
+                piezoMap.DataSource = ScanData;
+                iterationGraph.DataSource = FibrePowers;
+
+            }
         }
-
-        private void edfa2LED_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
- 
-
 
         private void monitorButton_Click(object sender, RoutedEventArgs e)
         {
@@ -278,7 +321,22 @@ namespace NavigatorHardwareControl
                 }
             }
         }
+
+        private void OnPlotAreaMouseMove(object sender, MouseEventArgs e)
+        {
+            var graph = sender as IntensityGraph;
+            IPlot plot = graph.AllPlots[0];
+            Point screenPosition = graph.GetPlotAreaPosition(e);
+            Point relativePosition = graph.ScreenToRelative(screenPosition);
+
+            PlotValue nearestValue = graph.FindNearestValue(plot, relativePosition, query);
+            if (nearestValue != null)
+                graph.ToolTip = string.Format(
+                    "Nearest intensity value is {2} at ({0},{1}).",
+                    nearestValue.Value.Cast<object>().ToArray());
+        }
         #endregion
+
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -298,7 +356,21 @@ namespace NavigatorHardwareControl
                 }
             }
         }
+
+        public double[,] ScanData
+        {
+            get { return fibreAlign.ScanData; }
+        }
+        public IEnumerable<double> FibrePowers
+        {
+            get { return fibreAlign.fibrePowers; }
+        }
+
+       
+    
+      
     }
+
     public class TextBoxStreamWriter : TextWriter
     {
         RichTextBox output = null;
@@ -321,6 +393,7 @@ namespace NavigatorHardwareControl
             base.WriteLine(value);
             output.AppendText(">>" + value.ToString()+"\n");
         }
+
         public override Encoding Encoding
         {
             get

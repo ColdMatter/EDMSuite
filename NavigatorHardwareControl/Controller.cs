@@ -231,6 +231,17 @@ namespace NavigatorHardwareControl
             { Console.WriteLine("Unable to load settings: "+e.Message); }
         }
 
+        public string LoadFibreScanData()
+        {
+            //Returns the path to a fibre scan
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.DefaultExt = ".csv";
+            openFile.Title = "Choose Fibre Scan Data to Test";
+            openFile.InitialDirectory = (string)Environs.FileSystem.Paths["settingsPath"];
+            openFile.ShowDialog();
+            return openFile.FileName;
+        }
+
         #endregion
 
         #region Hardware task creation methods

@@ -51,7 +51,7 @@
                                         <ni:BooleanButton x:Name="scanSlave2Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
                                         <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" >Lock</ni:BooleanButton>
                                     </StackPanel>
-                                    <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa2LED_Click" FalseBrush="#FFD52525"/>
+                                    <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38"  FalseBrush="#FFD52525"/>
                                     <ni:Switch x:Name="edfa2LockType" Content="Switch" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
                                     <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.edfa2lockval}" VerticalAlignment="Top" Width="55" Height="20"/>
                                     <ni:BooleanButton x:Name="edfa2LockButton"  Click="edfaLockButton_Click" Content="EDFA2 Lock" Margin="66,39,188,41" FontSize="9"/>
@@ -108,17 +108,49 @@
             </TabItem>
             <TabItem Header="Raman Optics">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                    <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="Auto">
-                        <Grid HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+                    <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="390" Height="300">
+                        <Grid HorizontalAlignment="Left" Height="290" Margin="0,0,-40,-13" VerticalAlignment="Top" Width="400">
                             <Label Content="Horizontal" HorizontalAlignment="Left" Margin="83,0,0,0" VerticalAlignment="Top"/>
                             <Label Content="Vertical" HorizontalAlignment="Left" Margin="85,42,0,0" VerticalAlignment="Top"/>
                             <TextBox x:Name="horizPiezo" HorizontalAlignment="Left" Height="24" Margin="89,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
                             <TextBox x:Name="vertPiezo" HorizontalAlignment="Left" Height="24" Margin="89,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
-                            <ni:BooleanButton x:Name="piezoAlignButton" Content="Align" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ni:BooleanButton x:Name="piezoAlignButton" Content="Align" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" VerticalAlignment="Top" Width="75" Click="piezoAlignButton_Click"/>
                             <CheckBox x:Name="piezoDebug" Content="Debug" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="Uses a test image to try and align, rather than measure the fibre output"/>
+                            <ni:NumericTextBoxDouble x:Name="fibreThreshold" HorizontalAlignment="Left" Height="23" Margin="0,70,0,0" VerticalAlignment="Top" Width="56" ToolTip="Threshold value for alignment"/>
+                            <ni:IntensityGraph x:Name="piezoMap" HorizontalAlignment="Left" Height="166"  Margin="0,106,0,0" VerticalAlignment="Top" Width="230" >
+                                <ni:IntensityGraph.ColorScale>
+                                    <ni:ColorScale>
+                                        <ni:ColorScaleMarker Color="Blue" Value="0"/>
+                                        <ni:ColorScaleMarker Color="Cyan" Value="0.1"/>
+                                        <ni:ColorScaleMarker Color="Green" Value="0.25"/>
+                                        <ni:ColorScaleMarker Color="Lime" Value="0.5"/>
+                                        <ni:ColorScaleMarker Color="Yellow" Value="0.75"/>
+                                        <ni:ColorScaleMarker Color="Orange" Value="0.8"/>
+                                        <ni:ColorScaleMarker Color="Red" Value="1"/>
+                                    </ni:ColorScale>
+                                </ni:IntensityGraph.ColorScale>
+                              
+                                <ni:IntensityGraph.Children>
+                                    <ni:PointAnnotation x:Name="maxIntensity" Visibility="Hidden" Label="Max Value" TargetShape="Cross" TargetSize="10,10" Stroke="#FF02FF10"></ni:PointAnnotation>
+                                </ni:IntensityGraph.Children>
+                            </ni:IntensityGraph>
+                            <ni:Graph x:Name="iterationGraph" HorizontalAlignment="Left" Height="166" Margin="214,106,0,0" VerticalAlignment="Top" Width="166">
+                                <ni:Graph.Axes>
+                                    <ni:AxisDouble x:Name="verticalAxis1" Orientation="Vertical" Label="Coupling Efficiency" Range="0, 1, System.Double"/>
+                                    <ni:AxisDouble x:Name="horizontalAxis1" Orientation="Horizontal" Label="Iterations" Range="0, 30, System.Double"/>
+                                </ni:Graph.Axes>
+                                <ni:Graph.Plots>
+                                    <ni:Plot x:Name="fibrePlot" Label="fibreEff" DataContext="{Binding FibrePowers}">
+                                        <ni:PlotRendererGroup>
+                                            <ni:LinePlotRenderer Stroke="Green"/>
+                                            <ni:PointPlotRenderer Fill="Green"/>
+                                        </ni:PlotRendererGroup>
+                                    </ni:Plot>
+                                </ni:Graph.Plots>
+                            </ni:Graph>
                         </Grid>
                     </GroupBox>
-                    
+
 
 
                 </Grid>
