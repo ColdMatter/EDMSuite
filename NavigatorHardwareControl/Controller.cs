@@ -357,6 +357,183 @@ namespace NavigatorHardwareControl
 
         #endregion
 
+        #region Controlling Hardware with UI
+
+        #region Hardware Update
+            public void ApplyRecordedStateToHardware()
+        {
+            applyToHardware(stateRecord);          
+        }
+
+
+        public void UpdateHardware()
+        {
+            hardwareState uiState = readValuesOnUI();
+
+            hardwareState changes = getDiscrepancies(stateRecord, uiState);
+
+            applyToHardware(changes);
+
+            updateStateRecord(changes);
+
+
+        }
+
+        private void applyToHardware(hardwareState state)
+        {
+            if (state.analogs.Count != 0 || state.digitals.Count != 0)
+            {
+                if (HCState == SHCUIControlState.OFF)
+                {
+
+                    HCState = SHCUIControlState.LOCAL;
+                    controlWindow.UpdateUIState(HCState);
+
+                    applyAnalogs(state);
+                    applyDigitals(state);
+
+                    HCState = SHCUIControlState.OFF;
+                    controlWindow.UpdateUIState(HCState);
+
+                    controlWindow.WriteToConsole("Update finished!");
+                }
+            }
+            else
+            {
+                controlWindow.WriteToConsole("The values on the UI are identical to those on the controller's records. Hardware must be up to date.");
+            }
+        }
+
+        private hardwareState getDiscrepancies(hardwareState oldState, hardwareState newState)
+        {
+            hardwareState state = new hardwareState();
+            state.analogs = new Dictionary<string, double>();
+            state.digitals = new Dictionary<string, bool>();
+            foreach(KeyValuePair<string, double> pairs in oldState.analogs)
+            {
+                if (oldState.analogs[pairs.Key] != newState.analogs[pairs.Key])
+                {
+                    state.analogs[pairs.Key] = newState.analogs[pairs.Key];
+                }
+            }
+            foreach (KeyValuePair<string, bool> pairs in oldState.digitals)
+            {
+                if (oldState.digitals[pairs.Key] != newState.digitals[pairs.Key])
+                {
+                    state.digitals[pairs.Key] = newState.digitals[pairs.Key];
+                }
+            }
+            return state;
+        }
+
+        private void updateStateRecord(hardwareState changes)
+        {
+            foreach (KeyValuePair<string, double> pairs in changes.analogs)
+            {
+                stateRecord.analogs[pairs.Key] = changes.analogs[pairs.Key];
+            }
+            foreach (KeyValuePair<string, bool> pairs in changes.digitals)
+            {
+                stateRecord.digitals[pairs.Key] = changes.digitals[pairs.Key];
+            }
+        }
+
+        
+        private void applyAnalogs(hardwareState state)
+        {
+            List<string> toRemove = new List<string>();  //In case of errors, keep track of things to delete from the list of changes.
+            foreach (KeyValuePair<string, double> pairs in state.analogs)
+            {
+                try
+                {
+                    if (calibrations.ContainsKey(pairs.Key))
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value, true);
+
+                    }
+                    else
+                    {
+                        SetAnalogOutput(pairs.Key, pairs.Value);
+                    }
+                    controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
+                }
+                catch (CalibrationException)
+                {
+                    controlWindow.WriteToConsole("Failed to set channel '"+ pairs.Key.ToString() + "' to new value");                    
+                    toRemove.Add(pairs.Key);
+                }
+            }
+            foreach (string s in toRemove)  //Remove those from the list of changes, as nothing was done to the Hardware.
+            {
+                state.analogs.Remove(s);
+            }
+        }
+
+        private void applyDigitals(hardwareState state)
+        {
+            foreach (KeyValuePair<string, bool> pairs in state.digitals)
+            {
+                SetDigitalLine(pairs.Key, pairs.Value);
+                controlWindow.WriteToConsole("Set channel '" + pairs.Key.ToString() + "' to " + pairs.Value.ToString());
+            }
+        }
+        #endregion 
+
+        #region Reading and Writing to UI
+                private hardwareState readValuesOnUI()
+        {
+            hardwareState state = new hardwareState();
+            state.analogs = readUIAnalogs(stateRecord.analogs.Keys);
+            state.digitals = readUIDigitals(stateRecord.digitals.Keys);
+            return state;
+        }
+        private Dictionary<string, double> readUIAnalogs(Dictionary<string, double>.KeyCollection keys)
+        {
+            Dictionary<string, double> analogs = new Dictionary<string, double>();
+            string[] keyArray = new string[keys.Count];
+            keys.CopyTo(keyArray, 0);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                analogs[keyArray[i]] = controlWindow.ReadAnalog(keyArray[i]);
+            }
+            return analogs;
+        }
+
+        private Dictionary<string, bool> readUIDigitals(Dictionary<string, bool>.KeyCollection keys)
+        {
+            Dictionary<string, bool> digitals = new Dictionary<string,bool>();
+            string[] keyArray = new string[keys.Count];
+            keys.CopyTo(keyArray, 0);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                digitals[keyArray[i]] = controlWindow.ReadDigital(keyArray[i]);
+            }
+            return digitals;
+        }
+       
+
+        private void setValuesDisplayedOnUI(hardwareState state)
+        {
+            setUIAnalogs(state);
+            setUIDigitals(state);
+        }
+        private void setUIAnalogs(hardwareState state)
+        {
+            foreach (KeyValuePair<string, double> pairs in state.analogs)
+            {
+                controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
+            }
+        }
+        private void setUIDigitals(hardwareState state)
+        {
+            foreach (KeyValuePair<string, bool> pairs in state.digitals)
+            {
+                controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
+            }
+        }
+#endregion
+
+        #endregion
         #region Event Handlers
         private void DDSErrorHandler(object sendingProcess, DataReceivedEventArgs eventArgs)
         {
@@ -387,6 +564,7 @@ namespace NavigatorHardwareControl
             }
         }
         #endregion
+
 
     }
 }

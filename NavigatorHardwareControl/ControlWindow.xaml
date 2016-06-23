@@ -7,13 +7,13 @@
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="NavigatorHardwareControl.ControlWindow"
         mc:Ignorable="d"
         Title="Navigator Hardware Control" Height="768" Width="1024">
-    <Grid>
+    <Grid Background="#FFE5E5E5">
         <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="225" KeyDown="consoleRichTextBox_KeyDown">
         </RichTextBox>
-        <TabControl x:Name="tabControl" Margin="0,25,0,230.5">
+        <TabControl x:Name="hardwareControl" Margin="0,25,131,230.5">
             <TabItem Header="Muquans Laser">
-                <Grid Background="#FFE5E5E5" Margin="-5,1,5,-1">
-                    <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="10,10,721,57" >
+                <Grid Background="#FFE5E5E5" Margin="-5,1,0,-1">
+                    <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="10,10,582,57" >
                         <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
                             <GroupBox x:Name="masterBox" Header="Master" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="270">
                                 <StackPanel Margin="0,0,44,0" Orientation="Horizontal">
@@ -57,8 +57,6 @@
                                     <ni:BooleanButton x:Name="edfa2LockButton"  Click="edfaLockButton_Click" Content="EDFA2 Lock" Margin="66,39,188,41" FontSize="9"/>
                                 </Grid>
                             </GroupBox>
-                            <ni:LED x:Name="motLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="681,138,-387,0" TrueContent="On" VerticalAlignment="Top" Width="23"/>
-                            <ni:LED x:Name="mphiLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="776,160,-482,0" TrueContent="On" VerticalAlignment="Top" Width="23"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox x:Name="ddsGroup" Header="DDS Frequencies" HorizontalAlignment="Left" Margin="300,10,0,0" VerticalAlignment="Top" Height="310" Width="210">
@@ -101,9 +99,11 @@
                             <TextBox x:Name="motCTRLTextBox" Margin="61,0,89,77" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.motCTRLval}"/>
                             <TextBox x:Name="repumpCTRLTextBox" Margin="61,0,89,57" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.repumpCTRLval}"/>
                             <TextBox x:Name="ramanCTRLTextBox" Margin="61,0,89,37" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.ramanCTRLval}"/>
+                            <ni:LED x:Name="motLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,5,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52507" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                            <ni:LED x:Name="mphiLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,25,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                            <ni:LED x:Name="ramanLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,45,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
-                    <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="568,200,0,0" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Raman Optics">
@@ -129,7 +129,7 @@
                                         <ni:ColorScaleMarker Color="Red" Value="1"/>
                                     </ni:ColorScale>
                                 </ni:IntensityGraph.ColorScale>
-                              
+
                                 <ni:IntensityGraph.Children>
                                     <ni:PointAnnotation x:Name="maxIntensity" Visibility="Hidden" Label="Max Value" TargetShape="Cross" TargetSize="10,10" Stroke="#FF02FF10"></ni:PointAnnotation>
                                 </ni:IntensityGraph.Children>
@@ -160,10 +160,13 @@
             <MenuItem Header="File">
                 <MenuItem Header="Save Parameters as Default" Click="SaveDefault_Click"></MenuItem>
                 <MenuItem Header="Save Parameters" Click="SaveParameters_Click"></MenuItem>
-                <MenuItem Header="Load Parameters" Click="LoadParameters_Click"></MenuItem>
+                <MenuItem Header="Load Parameters" Click="LoadParameters_Click"/>
             </MenuItem>
-
-            <MenuItem Header="Settings"/>
+            <MenuItem Header="Settings">
+                <MenuItem Header="Configure Hardware Channels" />
+            </MenuItem>
         </Menu>
+        <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="60" Margin="898,102,0,0" TrueContent="On" VerticalAlignment="Top" Width="60" FalseBrush="#FFD52525"/>
+        <Label Content="Remote" HorizontalAlignment="Left" Margin="916,71,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

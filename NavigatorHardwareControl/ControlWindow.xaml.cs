@@ -31,6 +31,8 @@ namespace NavigatorHardwareControl
         public TextBoxStreamWriter console;
         private TextReader reader;
         private FibreAligner fibreAlign;
+        private Dictionary<string, TextBox> aoTextBoxes;
+        private Dictionary<string, LED> doLEDs; 
         private bool isReading;
         public double intensityScale = 1.0;
 
@@ -47,6 +49,17 @@ namespace NavigatorHardwareControl
             fibreAlign = new FibreAligner();
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
+
+            //finds all the graphical objects used to display digital and analog values
+            foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
+            {
+                aoTextBoxes[tb.Name] = tb;
+            }
+            foreach (LED led in FindVisualChildren<LED>(hardwareControl))
+            {
+                doLEDs[led.Name] = led;
+            }
+
             controller.Start();
 
             //Add an event to display the coordinates and intensity over the piezoMap
@@ -57,6 +70,24 @@ namespace NavigatorHardwareControl
            
         }
 
+
+        #region Accessing Digital and Analog values
+        public double ReadAnalog(string name)
+        {
+            return double.Parse(aoTextBoxes[name].Text);
+        }
+        public void SetAnalog(string channelName, double value)
+        {
+           aoTextBoxes[channelName].Text=Convert.ToString(value);
+        }
+        public bool ReadDigital(string channelName)
+        {
+            return doLEDs[channelName].Value;
+        }
+        public void SetDigital(string channelName, bool value)
+        {
+            doLEDs[channelName].Value=value;
+        }
         private void populateDataStore()
         {
             double val;
@@ -108,10 +139,70 @@ namespace NavigatorHardwareControl
                 bb.Value = controller.dataStore.laserStates[bb.Name];
             }
         }
+        #endregion
 
+        #region Updating UI State
+        public void UpdateUIState(Controller.NavHardwareState state)
+        {
+            switch (state)
+            {
+                case Controller.NavHardwareState.OFF:
+
+                    remoteControlLED.Value = false;
+                    hardwareControl.IsEnabled = true;
+
+                    break;
+
+                case Controller.NavHardwareState.LOCAL:
+
+                    remoteControlLED.Value = false;
+                    hardwareControl.IsEnabled=true;
+                    break;
+
+                case Controller.NavHardwareState.REMOTE:
+
+                    remoteControlLED.Value = true;
+                    hardwareControl.IsEnabled = false ;
+
+                    break;
+            }
+        }
+
+       
+        #endregion
         public void WriteToConsole(string text)
         {
             console.WriteLine(text);
+        }
+
+
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+
+        public double[,] ScanData
+        {
+            get { return fibreAlign.ScanData; }
+        }
+        public IEnumerable<double> FibrePowers
+        {
+            get { return fibreAlign.fibrePowers; }
         }
 
         #region EventHandlers
@@ -123,15 +214,15 @@ namespace NavigatorHardwareControl
                 controller.muquans.StopEDFA("edfa0");
             }
             else
-
-            { edfa0LED.Value = true;
+            {
+                edfa0LED.Value = true;
                 controller.muquans.StartEDFA("edfa0");
             }
-           
+
             WriteToConsole("Edfa0LED clicked");
-           
+
         }
-        //TODO make this more general so that it applies to each slave
+       
         private async void lockLaserButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as BooleanButton;
@@ -158,32 +249,32 @@ namespace NavigatorHardwareControl
             }
             if (button.Value)
             {
-               reader =  controller.muquans.LockLaser(laserID);
+                reader = controller.muquans.LockLaser(laserID);
                 isReading = true;
                 while (isReading)
                 {
                     line = reader.ReadLine();
                     await console.WriteLineAsync(line);
                 }
-               WriteToConsole("Locked "+ laserID);
-               
+                WriteToConsole("Locked " + laserID);
+
             }
             else
             {
                 controller.muquans.UnlockLaser(laserID);
-                WriteToConsole("Unlocked "+laserID);
+                WriteToConsole("Unlocked " + laserID);
             }
-           
-          
+
+
         }
 
         private void piezoAlignButton_Click(object sender, RoutedEventArgs e)
         {
             double threshold = fibreThreshold.Value;
-            if (piezoDebug.IsChecked.Value && fibreAlign.ScanData==null)
+            if (piezoDebug.IsChecked.Value && fibreAlign.ScanData == null)
             {
                 //loads a test image and tries to maximaize that
-                
+
                 string fibrePath = controller.LoadFibreScanData();
                 if (fibrePath != "")
                 {
@@ -194,7 +285,7 @@ namespace NavigatorHardwareControl
                     MessageBox.Show("No Fibre Data Specified");
                 }
             }
-            else if(!piezoDebug.IsChecked.Value)
+            else if (!piezoDebug.IsChecked.Value)
             {
                 fibreAlign.ScanData = null;
                 Console.WriteLine("Alignment using Analog IO not yet implemented");
@@ -220,12 +311,12 @@ namespace NavigatorHardwareControl
         private void edfa0LED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
         {
             if (edfa0LED.Value == true)
-            {  
-           //  controller.muquans.StartEDFA("edfa0");
+            {
+                //  controller.muquans.StartEDFA("edfa0");
             }
             else
             {
-              controller.muquans.StopEDFA("edfa0");
+                controller.muquans.StopEDFA("edfa0");
             }
         }
 
@@ -272,14 +363,14 @@ namespace NavigatorHardwareControl
             else
             {
                 edfaLED.Value = !edfaLED.Value;
-                string type =  "";
+                string type = "";
                 bool lockParam = edfaLockType.Value;
                 double lockValue = Double.Parse(edfaText.Text);
                 if (edfaLED.Value)
-                controller.muquans.LockEDFA(edfaID, lockParam,lockValue);
+                    controller.muquans.LockEDFA(edfaID, lockParam, lockValue);
                 if (lockParam)
                 {
-                    type =  "Power";
+                    type = "Power";
                 }
                 else
                 {
@@ -308,7 +399,7 @@ namespace NavigatorHardwareControl
         {
             //This is used to interrupt any text streams much like a console
             var textBox = sender as RichTextBox;
-            if(Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.C))
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.C))
             {
                 try
                 {
@@ -337,38 +428,6 @@ namespace NavigatorHardwareControl
         }
         #endregion
 
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
-
-        public double[,] ScanData
-        {
-            get { return fibreAlign.ScanData; }
-        }
-        public IEnumerable<double> FibrePowers
-        {
-            get { return fibreAlign.fibrePowers; }
-        }
-
-       
-    
-      
     }
 
     public class TextBoxStreamWriter : TextWriter
