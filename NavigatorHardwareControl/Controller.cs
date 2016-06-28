@@ -29,7 +29,12 @@ namespace NavigatorHardwareControl
     /// </summary>
     public class Controller : MarshalByRefObject
     {
-        #region setup 
+        #region Constants
+        private static Hashtable calibrations = Environs.Hardware.Calibrations;
+        private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
+            + "NavigatorHardwareController\\";
+        #endregion
+        #region setup
         public ControlWindow controlWindow;
 
         //table of digital tasks
@@ -42,8 +47,8 @@ namespace NavigatorHardwareControl
         public enum NavHardwareState { OFF, LOCAL, REMOTE };
         public NavHardwareState hcState = new NavHardwareState();
 
-        public DataStore dataStore = new DataStore();
-        hardwareState stateRecord;
+        public HardwareState hardwareState;
+
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
@@ -62,12 +67,13 @@ namespace NavigatorHardwareControl
         {
             analogoutTasks = new Dictionary<string, Task>();
             //initialise the hardware state
-            stateRecord = new hardwareState();
-            stateRecord.analogs = new Dictionary<string, double>();
-            stateRecord.digitals = new Dictionary<string, bool>();
+            hardwareState = new HardwareState();
+            hardwareState.analogs = new Dictionary<string, double>();
+            hardwareState.digitals = new Dictionary<string, bool>();
 
             if (!Environs.Debug)
             {
+         
                 //Only creates these tasks when the Debug flag is set to false. Useful when developing on another computer
                 CreateDigitalTask("motTTL");
                 CreateDigitalTask("mphiTTL");
@@ -126,36 +132,23 @@ namespace NavigatorHardwareControl
         }
         #endregion
 
-        #region keeping track of the state of the hardware!
-
-        /// <summary>
-        /// There's this thing I've called a hardware state. It's something which keeps track of digital and analog values.
-        /// I then have something called stateRecord (defines above as an instance of hardwareState) which keeps track of 
-        /// what the hardware is doing.
-        /// Anytime the hardware gets modified by this program, the stateRecord get updated. Don't hack this. 
+        #region Parameter Serialisation and Hardware State Tracking
+        ///<summary>
+        // this is basically just a collection of dictionaries to make it a bit easier to add values as necessary. The keys used are the names of the object that represents them in the hardwarecontroller.
+        ///Anytime the hardware gets modified by this program, the stateRecord get updated. Don't hack this. 
         /// It's useful to know what the hardware is doing at all times.
         /// When switching to REMOTE, the updates no longer happen. That's why we store the state before switching to REMOTE and apply the state
         /// back again when returning to LOCAL.
         /// </summary>
         [Serializable]
-        private struct hardwareState
+        public class HardwareState
         {
+            //TODO make the objects that reference hardware not controlled via analogue/digital values behave properly
+            public Dictionary<string, double[]> ddsValues = new Dictionary<string,double[]>();
+            public Dictionary<string, double> laserVals = new Dictionary<string,double>();
+            public Dictionary<string, bool> laserStates = new Dictionary<string,bool>();
             public Dictionary<string, double> analogs;
             public Dictionary<string, bool> digitals;
-        }
-
-
-        #endregion
-
-        #region Parameter Serialisation
-        // this is basically just a collection of dictionaries to make it a bit easier to add values as necessary. The keys used are the names of the object that represents them in the hardwarecontroller
-        [Serializable]
-        public class DataStore
-        {
-            public Dictionary<string, double> ddsFreqs = new Dictionary<string,double>();
-            public Dictionary<string, double> ddsPhases = new Dictionary<string,double>();
-            public Dictionary<string, double> laserVals = new Dictionary<string,double>();
-            public Dictionary<string, bool> laserStates = new Dictionary<string,bool>();      
 
         }
 
@@ -165,8 +158,8 @@ namespace NavigatorHardwareControl
             saveFileDialog1.Filter = "nav parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreDir = settingsPath + "NavHardwareController";
-            saveFileDialog1.InitialDirectory = dataStoreDir;
+            String hardwareStateDir = settingsPath + "NavHardwareController";
+            saveFileDialog1.InitialDirectory = hardwareStateDir;
             if (saveFileDialog1.ShowDialog()==true)
             {
                 if (saveFileDialog1.FileName != "")
@@ -178,18 +171,19 @@ namespace NavigatorHardwareControl
 
         public void StoreParameters()
         {
+            hardwareState = readValuesOnUI();
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
-            StoreParameters(dataStoreFilePath);
+            String hardwareStateFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
+            StoreParameters(hardwareStateFilePath);
         }
 
-        public void StoreParameters(String dataStoreFilePath)
+        public void StoreParameters(String hardwareStateFilePath)
         {
             // serialize it
             BinaryFormatter s = new BinaryFormatter();
             try
             {
-                s.Serialize(new FileStream(dataStoreFilePath, FileMode.Create), dataStore);
+                s.Serialize(new FileStream(hardwareStateFilePath, FileMode.Create), hardwareState);
             }
             catch (Exception)
             { Console.Out.WriteLine("Unable to store settings"); }
@@ -201,34 +195,33 @@ namespace NavigatorHardwareControl
             dialog.Filter = "navhc parameters|*.bin";
             dialog.Title = "Load parameters";
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreDir = settingsPath + "NavHardwareController";
-            dialog.InitialDirectory = dataStoreDir;
+            String hardwareStateDir = settingsPath + "NavHardwareController";
+            dialog.InitialDirectory = hardwareStateDir;
             dialog.ShowDialog();
-            if (dialog.FileName != "") LoadParameters(dialog.FileName);
+            if (dialog.FileName != "") hardwareState = LoadParameters(dialog.FileName);
+            setValuesDisplayedOnUI(hardwareState);
         }
 
-        private void LoadParameters()
+        private HardwareState LoadParameters()
         {
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String dataStoreFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
-            LoadParameters(dataStoreFilePath);
+            String hardwareStateFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
+            return LoadParameters(hardwareStateFilePath);
         }
 
-        private void LoadParameters(String dataStoreFilePath)
+        private HardwareState LoadParameters(String hardwareStateFilePath)
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
+            HardwareState hardwareState = new HardwareState();
             // eat any errors in the following, as it's just a convenience function
             try
             {
-                DataStore dataStore = (DataStore)s.Deserialize(new FileStream(dataStoreFilePath, FileMode.Open));
-
-                // copy parameters out of the struct
-              
-
+                hardwareState = (HardwareState)s.Deserialize(new FileStream(hardwareStateFilePath, FileMode.Open));
             }
             catch (Exception e)
             { Console.WriteLine("Unable to load settings: "+e.Message); }
+            return hardwareState;
         }
 
         public string LoadFibreScanData()
@@ -282,19 +275,75 @@ namespace NavigatorHardwareControl
             return task;
         }
 
-        private void SetAnalogOutput(Task task, double voltage)
+        // setting an analog voltage to an output
+        public void SetAnalogOutput(string channel, double voltage)
         {
-            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
-            writer.WriteSingleSample(true, voltage);
-            task.Control(TaskAction.Unreserve);
+            SetAnalogOutput(channel, voltage, false);
         }
-
-        private double ReadAnalogInput(Task task)
+        //Overload for using a calibration before outputting to hardware
+        public void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
         {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+
+            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogoutTasks[channelName].Stream);
+            double output;
+            if (useCalibration)
+            {
+                try
+                {
+                    output = ((Calibration)calibrations[channelName]).Convert(voltage);
+                }
+                catch (DAQ.HAL.Calibration.CalibrationRangeException)
+                {
+                    MessageBox.Show("The number you have typed is out of the calibrated range! \n Try typing something more sensible.");
+                    throw new CalibrationException();
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    throw new CalibrationException();
+                }
+            }
+            else
+            {
+                output = voltage;
+            }
+            try
+            {
+                writer.WriteSingleSample(true, output);
+                analogoutTasks[channelName].Control(TaskAction.Unreserve);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+        public class CalibrationException : ArgumentOutOfRangeException { };
+        // reading an analog voltage from input
+        public double ReadAnalogInput(string channel)
+        {
+            return ReadAnalogInput(channel, false);
+        }
+        public double ReadAnalogInput(string channelName, bool useCalibration)
+        {
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogoutTasks[channelName].Stream);
             double val = reader.ReadSingleSample();
-            task.Control(TaskAction.Unreserve);
-            return val;
+            analogoutTasks[channelName].Control(TaskAction.Unreserve);
+            if (useCalibration)
+            {
+                try
+                {
+                    return ((Calibration)calibrations[channelName]).Convert(val);
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    return val;
+                }
+            }
+            else
+            {
+                return val;
+            }
         }
 
         private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
@@ -320,6 +369,7 @@ namespace NavigatorHardwareControl
 
         private void CreateDigitalTask(String name)
         {
+            hardwareState.digitals[name] = false;
             Task digitalTask = new Task(name);
             ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
             digitalTask.Control(TaskAction.Verify);
@@ -352,9 +402,6 @@ namespace NavigatorHardwareControl
             digitalTask.Control(TaskAction.Unreserve);
         }
 
-
-
-
         #endregion
 
         #region Controlling Hardware with UI
@@ -362,15 +409,15 @@ namespace NavigatorHardwareControl
         #region Hardware Update
             public void ApplyRecordedStateToHardware()
         {
-            applyToHardware(stateRecord);          
+            applyToHardware(hardwareState);          
         }
 
 
         public void UpdateHardware()
         {
-            hardwareState uiState = readValuesOnUI();
+            HardwareState uiState = readValuesOnUI();
 
-            hardwareState changes = getDiscrepancies(stateRecord, uiState);
+            HardwareState changes = getDiscrepancies(hardwareState, uiState);
 
             applyToHardware(changes);
 
@@ -379,21 +426,21 @@ namespace NavigatorHardwareControl
 
         }
 
-        private void applyToHardware(hardwareState state)
+        private void applyToHardware(HardwareState state)
         {
             if (state.analogs.Count != 0 || state.digitals.Count != 0)
             {
-                if (HCState == SHCUIControlState.OFF)
+                if (hcState == NavHardwareState.OFF)
                 {
 
-                    HCState = SHCUIControlState.LOCAL;
-                    controlWindow.UpdateUIState(HCState);
+                    hcState = NavHardwareState.LOCAL;
+                    controlWindow.UpdateUIState(hcState);
 
                     applyAnalogs(state);
                     applyDigitals(state);
 
-                    HCState = SHCUIControlState.OFF;
-                    controlWindow.UpdateUIState(HCState);
+                    hcState = NavHardwareState.OFF;
+                    controlWindow.UpdateUIState(hcState);
 
                     controlWindow.WriteToConsole("Update finished!");
                 }
@@ -404,9 +451,9 @@ namespace NavigatorHardwareControl
             }
         }
 
-        private hardwareState getDiscrepancies(hardwareState oldState, hardwareState newState)
+        private HardwareState getDiscrepancies(HardwareState oldState, HardwareState newState)
         {
-            hardwareState state = new hardwareState();
+            HardwareState state = new HardwareState();
             state.analogs = new Dictionary<string, double>();
             state.digitals = new Dictionary<string, bool>();
             foreach(KeyValuePair<string, double> pairs in oldState.analogs)
@@ -426,20 +473,20 @@ namespace NavigatorHardwareControl
             return state;
         }
 
-        private void updateStateRecord(hardwareState changes)
+        private void updateStateRecord(HardwareState changes)
         {
             foreach (KeyValuePair<string, double> pairs in changes.analogs)
             {
-                stateRecord.analogs[pairs.Key] = changes.analogs[pairs.Key];
+                hardwareState.analogs[pairs.Key] = changes.analogs[pairs.Key];
             }
             foreach (KeyValuePair<string, bool> pairs in changes.digitals)
             {
-                stateRecord.digitals[pairs.Key] = changes.digitals[pairs.Key];
+                hardwareState.digitals[pairs.Key] = changes.digitals[pairs.Key];
             }
         }
 
         
-        private void applyAnalogs(hardwareState state)
+        private void applyAnalogs(HardwareState state)
         {
             List<string> toRemove = new List<string>();  //In case of errors, keep track of things to delete from the list of changes.
             foreach (KeyValuePair<string, double> pairs in state.analogs)
@@ -469,7 +516,7 @@ namespace NavigatorHardwareControl
             }
         }
 
-        private void applyDigitals(hardwareState state)
+        private void applyDigitals(HardwareState state)
         {
             foreach (KeyValuePair<string, bool> pairs in state.digitals)
             {
@@ -480,13 +527,15 @@ namespace NavigatorHardwareControl
         #endregion 
 
         #region Reading and Writing to UI
-                private hardwareState readValuesOnUI()
+
+        private HardwareState readValuesOnUI()
         {
-            hardwareState state = new hardwareState();
-            state.analogs = readUIAnalogs(stateRecord.analogs.Keys);
-            state.digitals = readUIDigitals(stateRecord.digitals.Keys);
+            HardwareState state = new HardwareState();
+            state.analogs = readUIAnalogs(hardwareState.analogs.Keys);
+            state.digitals = readUIDigitals(hardwareState.digitals.Keys);
             return state;
         }
+
         private Dictionary<string, double> readUIAnalogs(Dictionary<string, double>.KeyCollection keys)
         {
             Dictionary<string, double> analogs = new Dictionary<string, double>();
@@ -512,19 +561,19 @@ namespace NavigatorHardwareControl
         }
        
 
-        private void setValuesDisplayedOnUI(hardwareState state)
+        private void setValuesDisplayedOnUI(HardwareState state)
         {
             setUIAnalogs(state);
             setUIDigitals(state);
         }
-        private void setUIAnalogs(hardwareState state)
+        private void setUIAnalogs(HardwareState state)
         {
             foreach (KeyValuePair<string, double> pairs in state.analogs)
             {
                 controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
             }
         }
-        private void setUIDigitals(hardwareState state)
+        private void setUIDigitals(HardwareState state)
         {
             foreach (KeyValuePair<string, bool> pairs in state.digitals)
             {
@@ -533,8 +582,85 @@ namespace NavigatorHardwareControl
         }
 #endregion
 
+        #region Remoting stuff
+
+        /// <summary>
+        /// This is used when you want another program to take control of some/all of the hardware. The hc then just saves the
+        /// last hardware state, then prevents you from making any changes to the UI. Use this if your other program wants direct control of hardware.
+        /// </summary>
+        public void StartRemoteControl()
+        {
+            if (hcState == NavHardwareState.OFF)
+            {
+                StoreParameters(profilesPath + "tempParameters.bin");
+                hcState = NavHardwareState.REMOTE;
+                controlWindow.UpdateUIState(hcState);
+                controlWindow.WriteToConsole("Remoting Started!");
+            }
+            else
+            {
+                MessageBox.Show("Controller is busy");
+            }
+
+        }
+        public void StopRemoteControl()
+        {
+            try
+            {
+                controlWindow.WriteToConsole("Remoting Stopped!");
+                setValuesDisplayedOnUI(LoadParameters(profilesPath + "tempParameters.bin"));
+
+                if (System.IO.File.Exists(profilesPath + "tempParameters.bin"))
+                {
+                    System.IO.File.Delete(profilesPath + "tempParameters.bin");
+                }
+            }
+            catch (Exception)
+            {
+                controlWindow.WriteToConsole("Unable to load Parameters.");
+            }
+            hcState = NavHardwareState.OFF;
+            controlWindow.UpdateUIState(hcState);
+            ApplyRecordedStateToHardware();
+        }
+
+        /// <summary>
+        /// These SetValue functions are for giving commands to the hc from another program, while keeping the hc in control of hardware.
+        /// Use this if you want the HC to keep control, but you want to control the HC from some other program
+        /// </summary>
+        public void SetValue(string channel, double value)
+        {
+            hcState = NavHardwareState.LOCAL;
+            hardwareState.analogs[channel] = value;
+            SetAnalogOutput(channel, value, false);
+            setValuesDisplayedOnUI(hardwareState);
+            hcState = NavHardwareState.OFF;
+
+        }
+        public void SetValue(string channel, double value, bool useCalibration)
+        {
+            hardwareState.analogs[channel] = value;
+            hcState = NavHardwareState.LOCAL;
+            SetAnalogOutput(channel, value, useCalibration);
+            setValuesDisplayedOnUI(hardwareState);
+            hcState = NavHardwareState.OFF;
+
+        }
+        public void SetValue(string channel, bool value)
+        {
+            hcState = NavHardwareState.LOCAL;
+            hardwareState.digitals[channel] = value;
+            SetDigitalLine(channel, value);
+            setValuesDisplayedOnUI(hardwareState);
+            hcState = NavHardwareState.OFF;
+
+        }
         #endregion
+
+        #endregion
+
         #region Event Handlers
+
         private void DDSErrorHandler(object sendingProcess, DataReceivedEventArgs eventArgs)
         {
             //If one of the DDS programs exits, this prints the error output to the console and opens a message box

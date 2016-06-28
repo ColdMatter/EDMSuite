@@ -88,57 +88,7 @@ namespace NavigatorHardwareControl
         {
             doLEDs[channelName].Value=value;
         }
-        private void populateDataStore()
-        {
-            double val;
-            //iterates through each element in the GUI and sets the corresponding item in the dataStore object
-            foreach (TextBox tb in FindVisualChildren<TextBox>(ddsGroup))
-            {
-                if (tb.Text == "")
-                {
-                    val = 0.0;
-                }
-                else
-                {
-                    val = double.Parse(tb.Text);
-                }
-                controller.dataStore.ddsFreqs[tb.Name] = val;
-            }
-            foreach (TextBox tb in FindVisualChildren<TextBox>(lockGroup))
-            {
-                if (tb.Text == "")
-                {
-                    val = 0.0;
-                }
-                else
-                {
-                    val = double.Parse(tb.Text);
-                }
-                controller.dataStore.laserVals[tb.Name] = val;
-            }
-            foreach (BooleanButton bb in FindVisualChildren<BooleanButton>(ddsGroup))
-            {
-                controller.dataStore.laserStates[bb.Name] = bb.Value;
-            }
-            
-        }
 
-        private void populateGUI()
-        {
-            //iterates through each element in the GUI and assigns it a value based on the item in the dataStore object
-            foreach (TextBox tb in FindVisualChildren<TextBox>(ddsGroup))
-            {
-                tb.Text = controller.dataStore.ddsFreqs[tb.Name].ToString();
-            }
-            foreach (TextBox tb in FindVisualChildren<TextBox>(lockGroup))
-            {
-                tb.Text=controller.dataStore.laserVals[tb.Name].ToString();
-            }
-            foreach (BooleanButton bb in FindVisualChildren<BooleanButton>(ddsGroup))
-            {
-                bb.Value = controller.dataStore.laserStates[bb.Name];
-            }
-        }
         #endregion
 
         #region Updating UI State
@@ -219,7 +169,7 @@ namespace NavigatorHardwareControl
                 controller.muquans.StartEDFA("edfa0");
             }
 
-            WriteToConsole("Edfa0LED clicked");
+            
 
         }
        
@@ -382,13 +332,11 @@ namespace NavigatorHardwareControl
 
         private void SaveParameters_Click(object sender, RoutedEventArgs e)
         {
-            populateDataStore();
             controller.SaveParametersWithDialog();
         }
         private void LoadParameters_Click(object sender, RoutedEventArgs e)
         {
             controller.LoadParametersWithDialog();
-            populateGUI();
         }
         private void SaveDefault_Click(object sender, RoutedEventArgs e)
         {
@@ -426,7 +374,28 @@ namespace NavigatorHardwareControl
                     "Nearest intensity value is {2} at ({0},{1}).",
                     nearestValue.Value.Cast<object>().ToArray());
         }
+
+        private void ChannelManager_Click(object sender, RoutedEventArgs e)
+        {
+            Window window = new Window
+            {
+                Title = "Navigator Settings",
+                Content = new ChannelManagerForm(),
+            };
+
+            //  window.Closing += ChannelManagerForm.OnWindowClosing;
+            window.ShowDialog();
+
+        }
         #endregion
+
+        private void ddsupdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO Implement DDS update
+            controller.updateDDS();
+        }
+
+      
 
     }
 

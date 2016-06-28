@@ -31,10 +31,11 @@ namespace DAQ.HAL
             Instruments.Add("muquansSlave", new RS232Instrument("ASRL18::INSTR"));
             Instruments.Add("muquansAOM", new RS232Instrument("ASRL20::INSTR"));
 
+
             //map the digital channels - again these could be defined in a settings file
             AddDigitalOutputChannel("motTTL", multiBoard, 0, 0);
             AddDigitalOutputChannel("mphiTTL", multiBoard, 0, 1);
-            AddDigitalOutputChannel("ramanTTL",multiBoard, 0, 2);
+            AddDigitalOutputChannel("ramanTTL", multiBoard, 0, 2);
             AddDigitalOutputChannel("cameraTTL", multiBoard, 0, 3);
 
             //map the analog output channels

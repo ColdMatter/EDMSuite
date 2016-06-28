@@ -6,91 +6,13 @@
         xmlns:local="clr-namespace:NavigatorHardwareControl"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="NavigatorHardwareControl.ControlWindow"
         mc:Ignorable="d"
-        Title="Navigator Hardware Control" Height="768" Width="1024">
+        Title="Navigator Hardware Control" Height="400" Width="640">
     <Grid Background="#FFE5E5E5">
-        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="225" KeyDown="consoleRichTextBox_KeyDown">
+        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="100" KeyDown="consoleRichTextBox_KeyDown">
         </RichTextBox>
-        <TabControl x:Name="hardwareControl" Margin="0,25,131,230.5">
+        <TabControl x:Name="hardwareControl" Margin="0,25,131,105.5">
             <TabItem Header="Muquans Laser">
-                <Grid Background="#FFE5E5E5" Margin="-5,1,0,-1">
-                    <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="10,10,582,57" >
-                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                            <GroupBox x:Name="masterBox" Header="Master" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="270">
-                                <StackPanel Margin="0,0,44,0" Orientation="Horizontal">
-                                    <ni:BooleanButton x:Name="scanMaster" MinWidth="50" Margin="5">Scan</ni:BooleanButton>
-                                    <ni:BooleanButton x:Name="lockMaster" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding Path=dataStore. }">Lock</ni:BooleanButton>
-                                </StackPanel>
-                            </GroupBox>
-                            <GroupBox x:Name="slave0Box" Header="Slave0" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Height="96" Width="270">
-                                <Grid Height="100" Margin="0,0,0,0" Width="317">
-                                    <StackPanel Margin="0,0,252,10" Orientation="Vertical">
-                                        <ni:BooleanButton x:Name="monitorSlave0" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding Path=DataStore.}">Lock</ni:BooleanButton>
-                                    </StackPanel>
-                                    <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding Path=edfa0LockButton.Value}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                                    <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal"/>
-                                    <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding Path=controller.dataStore.edfa0lockval}"/>
-                                    <ni:BooleanButton x:Name="edfa0LockButton" Content="EDFA0 Lock" Margin="66,39,188,41" FontSize="9" Click="edfaLockButton_Click"/>
-                                </Grid>
-                            </GroupBox>
-                            <GroupBox x:Name="slave1Box" Header="Slave1" HorizontalAlignment="Left" Margin="0,163,0,0" VerticalAlignment="Top" Height="96" Width="270">
-                                <Grid Height="100" Margin="0,0,0,0" Width="317">
-                                    <StackPanel Margin="0,0,252,10" Orientation="Vertical">
-                                        <ni:BooleanButton x:Name="scanSlave1Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" >Lock</ni:BooleanButton>
-                                    </StackPanel>
-                                    <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38" FalseBrush="#FFD52525"/>
-                                    <ni:Switch x:Name="edfa1LockType" Content="Switch" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
-                                    <TextBox x:Name="edfa1Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.edfa1lockval}" VerticalAlignment="Top" Width="55" Height="20"/>
-                                    <ni:BooleanButton x:Name="edfa1LockButton" Click="edfaLockButton_Click" Content="EDFA1 Lock" Margin="66,39,188,41" FontSize="9"/>
-                                </Grid>
-                            </GroupBox>
-                            <GroupBox x:Name="slave2Box" Header="Slave2" HorizontalAlignment="Left" Margin="0,263,0,0" VerticalAlignment="Top" Height="96" Width="270">
-                                <Grid Height="100" Margin="0,0,0,0" Width="317">
-                                    <StackPanel Margin="0,0,252,10" Orientation="Vertical">
-                                        <ni:BooleanButton x:Name="scanSlave2Button" MinWidth="50" Margin="5" Click="monitorButton_Click">Monitor</ni:BooleanButton>
-                                        <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" >Lock</ni:BooleanButton>
-                                    </StackPanel>
-                                    <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="36" Margin="216,16,0,0" TrueContent="On" VerticalAlignment="Top" Width="38"  FalseBrush="#FFD52525"/>
-                                    <ni:Switch x:Name="edfa2LockType" Content="Switch" FalseContent="Current"  HorizontalAlignment="Left" Height="26" Margin="70,4,0,0" TrueContent="Power" VerticalAlignment="Top" Width="135" ToolTip="PID type selector for EDFA lock" Value="True"/>
-                                    <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="135,39,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.edfa2lockval}" VerticalAlignment="Top" Width="55" Height="20"/>
-                                    <ni:BooleanButton x:Name="edfa2LockButton"  Click="edfaLockButton_Click" Content="EDFA2 Lock" Margin="66,39,188,41" FontSize="9"/>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox x:Name="ddsGroup" Header="DDS Frequencies" HorizontalAlignment="Left" Margin="300,10,0,0" VerticalAlignment="Top" Height="310" Width="210">
-                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                            <GroupBox x:Name="lockFreqGroup" Header="Frequency Locks" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Height="133" Width="200" ToolTip="Enter Values in MHz">
-                                <Grid Height="140" Margin="0,0,-2,-3" Width="170">
-                                    <Label x:Name="label" Content="Slave0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                    <Label x:Name="label1" Content="Slave1" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
-                                    <Label x:Name="label2" Content="Slave2" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
-                                    <Label x:Name="label3" Content="Raman" HorizontalAlignment="Left" Margin="0,78,0,0" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="slave0DDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0freq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="slave1DDSFreq" HorizontalAlignment="Left" Margin="50,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1freq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="slave2DDSFreq" HorizontalAlignment="Left" Margin="50,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2freq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="ramanDDSFreq" HorizontalAlignment="Left" Margin="50,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanfreq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="slave0DDSPhase" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                    <TextBox x:Name="slave1DDSPhase" HorizontalAlignment="Left" Margin="110,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                    <TextBox x:Name="slave2DDSPhase" HorizontalAlignment="Left" Margin="110,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                    <TextBox x:Name="ramanDDSPhase" HorizontalAlignment="Left" Margin="110,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanphase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                </Grid>
-                            </GroupBox>
-                            <GroupBox x:Name="aomFreqGroup" Header="AOM/EOM" HorizontalAlignment="Left" Margin="0,150,0,0" VerticalAlignment="Top" Height="97" Width="200" ToolTip="Enter Values in MHz">
-                                <Grid Height="140" Margin="0,0,0,0" Width="170">
-                                    <Label x:Name="label4" Content="Repump EOM" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                    <Label x:Name="label5" Content="MOT AOM" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
-                                    <Label x:Name="label6" Content="Raman AOM" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="repumpDDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.DataStore.repumpfreq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="motAOMDDSFreq" HorizontalAlignment="Left" Margin="78,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.motAOMfreq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="ramanAOMDDSFreq" HorizontalAlignment="Left" Margin="78,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanAOMfreq}" VerticalAlignment="Top" Width="50"/>
-                                    <TextBox x:Name="repumpDetFreq" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                </Grid>
-                            </GroupBox>
-                            <ni:BooleanButton x:Name="ddsupdateButton" Content="Update DDS" HorizontalAlignment="Left" Height="23" Margin="63,260,0,0" VerticalAlignment="Top" Width="75"/>
-                        </Grid>
-                    </GroupBox>
+                <Grid Background="#FFE5E5E5" Margin="0">
                     <GroupBox x:Name="externalGroup" Header="External Control" HorizontalAlignment="Left" Margin="300,325,0,0" VerticalAlignment="Top" Height="122" Width="210">
                         <Grid Height="100" Margin="0,0,0,0" Width="200">
                             <Label x:Name="label7" Content="MOT" Margin="0,0,0,0" />
@@ -104,11 +26,120 @@
                             <ni:LED x:Name="ramanLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,45,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
+                    <TabControl HorizontalAlignment="Left" Height="200" Margin="5" VerticalAlignment="Top" Width="455">
+                        <TabItem Header="Lasers">
+                            <Grid Background="#FFE5E5E5">
+                                <GroupBox x:Name="lockGroup" Header="Laser Locks" Margin="5" >
+                                    <Grid Background="#FFE5E5E5" Margin="5">
+                                        <GroupBox x:Name="masterBox" Header="Master" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="142">
+                                            <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
+                                                <ni:BooleanButton x:Name="scanMaster" MinWidth="50" Margin="5" Content="Scan"/>
+                                                <ni:BooleanButton x:Name="lockMaster" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding dataStore.}" Content="Lock"/>
+                                            </StackPanel>
+                                        </GroupBox>
+                                        <GroupBox x:Name="slave0Box" Header="Slave0" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Height="60" Width="142">
+                                            <Grid Margin="0,0,0,0" Width="317">
+                                                <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
+                                                    <ni:BooleanButton x:Name="monitorSlave0" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
+                                                    <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding DataStore.}" Content="Lock"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox x:Name="slave1Box" Header="Slave1" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Top" Height="60" Width="142">
+                                            <Grid Margin="0,0,0,0" Width="317">
+                                                <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
+                                                    <ni:BooleanButton x:Name="scanSlave1Button" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
+                                                    <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox x:Name="slave2Box" Header="Slave2" HorizontalAlignment="Left" Margin="150,65,0,0" VerticalAlignment="Top" Height="60" Width="142">
+                                            <Grid Margin="0,0,0,0" Width="317">
+                                                <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
+                                                    <ni:BooleanButton x:Name="scanSlave2Button" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
+                                                    <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </GroupBox>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="EDFAs">
+                            <Grid Background="#FFE5E5E5" Margin="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="180"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                </Grid.RowDefinitions>
+                                <GroupBox x:Name="edfa0Box" Header="EDFA0" Margin="1" Width="180" Height="80" Grid.Column="0" Grid.Row="0">
+                                    <Grid Margin="0">
+                                        <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding edfa0LockButton.Value}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                        <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="True" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
+                                        <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding controller.dataStore.edfa0lockval}"/>
+                                        <ni:BooleanButton x:Name="edfa0LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox x:Name="edfa1Box" Header="EDFA1" Margin="1" Width="180" Height="80" Grid.Column="0" Grid.Row="1">
+                                    <Grid Margin="0,0,0,0">
+                                        <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding edfa0LockButton.Value}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                        <ni:Switch x:Name="edfa1LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="True" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
+                                        <TextBox x:Name="edfa1Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding controller.dataStore.edfa0lockval}"/>
+                                        <ni:BooleanButton x:Name="edfa1LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox x:Name="edfa2Box" Header="EDFA2" Margin="1" Width="180" Height="80" Grid.Column="1" Grid.Row="0">
+                                    <Grid Margin="0,0,0,0">
+                                        <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfa0LED_Click" FalseBrush="#FFD52525" ValueChanged="edfa0LED_ValueChanged" Value="{Binding edfa0LockButton.Value}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                        <ni:Switch x:Name="edfa2LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="True" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
+                                        <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding controller.dataStore.edfa0lockval}"/>
+                                        <ni:BooleanButton x:Name="edfa2LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="DDS">
+                            <Grid Background="#FFE5E5E5">
+                                <GroupBox x:Name="lockFreqGroup" Header="Frequency Locks" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Height="133" Width="200" ToolTip="Enter Values in MHz">
+                                    <Grid Height="140" Margin="0,0,-2,-3" Width="170">
+                                        <Label x:Name="label" Content="Slave0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                                        <Label x:Name="label1" Content="Slave1" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
+                                        <Label x:Name="label2" Content="Slave2" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
+                                        <Label x:Name="label3" Content="Raman" HorizontalAlignment="Left" Margin="0,78,0,0" VerticalAlignment="Top"/>
+                                        <TextBox x:Name="slave0DDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0freq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="slave1DDSFreq" HorizontalAlignment="Left" Margin="50,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1freq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="slave2DDSFreq" HorizontalAlignment="Left" Margin="50,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2freq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="ramanDDSFreq" HorizontalAlignment="Left" Margin="50,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanfreq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="slave0DDSPhase" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                        <TextBox x:Name="slave1DDSPhase" HorizontalAlignment="Left" Margin="110,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                        <TextBox x:Name="slave2DDSPhase" HorizontalAlignment="Left" Margin="110,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                        <TextBox x:Name="ramanDDSPhase" HorizontalAlignment="Left" Margin="110,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanphase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox x:Name="aomFreqGroup" Header="AOM/EOM" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top" Height="97" Width="200" ToolTip="Enter Values in MHz">
+                                    <Grid Height="140" Margin="0,0,0,0" Width="170">
+                                        <Label x:Name="label4" Content="Repump EOM" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                                        <Label x:Name="label5" Content="MOT AOM" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
+                                        <Label x:Name="label6" Content="Raman AOM" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
+                                        <TextBox x:Name="repumpDDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.DataStore.repumpfreq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="motAOMDDSFreq" HorizontalAlignment="Left" Margin="78,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.motAOMfreq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="ramanAOMDDSFreq" HorizontalAlignment="Left" Margin="78,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanAOMfreq}" VerticalAlignment="Top" Width="50"/>
+                                        <TextBox x:Name="repumpDetFreq" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                    </Grid>
+                                </GroupBox>
+                                <ni:BooleanButton x:Name="ddsupdateButton" Content="Update DDS" HorizontalAlignment="Left" Height="23" Margin="160,140,0,0" VerticalAlignment="Top" Width="75" Click="ddsupdateButton_Click"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
             <TabItem Header="Raman Optics">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                    <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" Width="390" Height="300">
+                    <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,1,0,-87" VerticalAlignment="Top" Width="390" Height="300">
                         <Grid HorizontalAlignment="Left" Height="290" Margin="0,0,-40,-13" VerticalAlignment="Top" Width="400">
                             <Label Content="Horizontal" HorizontalAlignment="Left" Margin="83,0,0,0" VerticalAlignment="Top"/>
                             <Label Content="Vertical" HorizontalAlignment="Left" Margin="85,42,0,0" VerticalAlignment="Top"/>
@@ -163,10 +194,10 @@
                 <MenuItem Header="Load Parameters" Click="LoadParameters_Click"/>
             </MenuItem>
             <MenuItem Header="Settings">
-                <MenuItem Header="Configure Hardware Channels" />
+                <MenuItem Header="Configure Hardware Channels" Click="ChannelManager_Click" />
             </MenuItem>
         </Menu>
-        <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="60" Margin="898,102,0,0" TrueContent="On" VerticalAlignment="Top" Width="60" FalseBrush="#FFD52525"/>
-        <Label Content="Remote" HorizontalAlignment="Left" Margin="916,71,0,0" VerticalAlignment="Top"/>
+        <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="45" Margin="538,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="45" FalseBrush="#FFD52525"/>
+        <Label Content="Remote" HorizontalAlignment="Left" Margin="534,30,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
