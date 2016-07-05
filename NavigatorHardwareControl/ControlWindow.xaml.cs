@@ -46,6 +46,7 @@ namespace NavigatorHardwareControl
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = new Controller();
             console = new TextBoxStreamWriter(consoleRichTextBox);
+            //TODO include the FibreAligner into a separate acqusition program
             fibreAlign = new FibreAligner();
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
@@ -156,17 +157,19 @@ namespace NavigatorHardwareControl
         }
 
         #region EventHandlers
-        private void edfa0LED_Click(object sender, RoutedEventArgs e)
+        private void edfaLED_Click(object sender, RoutedEventArgs e)
         {
-            if (edfa0LED.Value == true)
+            var button = sender as LED;
+            string id = button.Name.Remove(5, 3);
+            if (button.Value == true)
             {
-                edfa0LED.Value = false;
-                controller.muquans.StopEDFA("edfa0");
+                button.Value = false;
+                controller.StopEDFA(id);
             }
             else
             {
-                edfa0LED.Value = true;
-                controller.muquans.StartEDFA("edfa0");
+                button.Value = true;
+                controller.StartEDFA(id);
             }
 
             
@@ -199,7 +202,8 @@ namespace NavigatorHardwareControl
             }
             if (button.Value)
             {
-                reader = controller.muquans.LockLaser(laserID);
+                //TODO implement a more stable asynchronous reader
+                reader = controller.LockLaser(laserID);
                 isReading = true;
                 while (isReading)
                 {
@@ -211,7 +215,7 @@ namespace NavigatorHardwareControl
             }
             else
             {
-                controller.muquans.UnlockLaser(laserID);
+                controller.UnlockLaser(laserID);
                 WriteToConsole("Unlocked " + laserID);
             }
 
@@ -256,18 +260,6 @@ namespace NavigatorHardwareControl
         private void monitorButton_Click(object sender, RoutedEventArgs e)
         {
             console.WriteLine("This button can be used to monitor the error signal for the PID loop to lock this laser. This is not yet implemented");
-        }
-
-        private void edfa0LED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
-        {
-            if (edfa0LED.Value == true)
-            {
-                //  controller.muquans.StartEDFA("edfa0");
-            }
-            else
-            {
-                controller.muquans.StopEDFA("edfa0");
-            }
         }
 
         private void edfaLockButton_Click(object sender, RoutedEventArgs e)
@@ -317,7 +309,7 @@ namespace NavigatorHardwareControl
                 bool lockParam = edfaLockType.Value;
                 double lockValue = Double.Parse(edfaText.Text);
                 if (edfaLED.Value)
-                    controller.muquans.LockEDFA(edfaID, lockParam, lockValue);
+                    controller.EdfaLock(edfaID, lockParam, lockValue);
                 if (lockParam)
                 {
                     type = "Power";
@@ -392,7 +384,7 @@ namespace NavigatorHardwareControl
         private void ddsupdateButton_Click(object sender, RoutedEventArgs e)
         {
             //TODO Implement DDS update
-            controller.updateDDS();
+            controller.UpdateDDS();
         }
 
       

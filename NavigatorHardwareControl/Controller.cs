@@ -657,6 +657,38 @@ namespace NavigatorHardwareControl
         }
         #endregion
 
+        #region Muquans Control
+        public void UpdateDDS()
+        {
+            //Gets the DDS values to send to the Muquans communicator
+
+        }
+
+        public void EdfaLock(string edfaID, bool lockParam, double lockValue)
+        {
+            muquans.LockEDFA(edfaID, lockParam, lockValue);
+        }
+
+        public void StartEDFA(string id)
+        {
+            muquans.StartEDFA(id);
+        }
+
+        public void StopEDFA(string id)
+        {
+            muquans.StopEDFA(id);
+        }
+
+        public TextReader LockLaser(string laserID)
+        {
+            return muquans.LockLaser(laserID);
+        }
+
+        public void UnlockLaser(string laserID)
+        {
+            muquans.UnlockLaser(laserID);
+        }
+        #endregion
         #endregion
 
         #region Event Handlers
