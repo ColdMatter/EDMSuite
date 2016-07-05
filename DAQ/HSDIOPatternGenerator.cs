@@ -5,7 +5,7 @@ using NationalInstruments.ModularInstruments.Interop;
 
 using DAQ.Environment;
 
-namespace DAQ.HAL;
+namespace DAQ.HAL
 {
     /// <summary>
     /// A class to control the PatternList generator using a HSDIO card. This is designed to operate similarly to the DAQMxPatternGenerator

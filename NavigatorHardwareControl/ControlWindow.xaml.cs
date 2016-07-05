@@ -225,10 +225,10 @@ namespace NavigatorHardwareControl
         private void piezoAlignButton_Click(object sender, RoutedEventArgs e)
         {
             double threshold = fibreThreshold.Value;
-            if (piezoDebug.IsChecked.Value && fibreAlign.ScanData == null)
+            if (piezoDebug.IsChecked.Value)
             {
                 //loads a test image and tries to maximaize that
-
+                Console.WriteLine("Debug Enabled - Attempting to load previous scan data or create new scan");
                 string fibrePath = controller.LoadFibreScanData();
                 if (fibrePath != "")
                 {
@@ -236,18 +236,14 @@ namespace NavigatorHardwareControl
                 }
                 else
                 {
-                    MessageBox.Show("No Fibre Data Specified");
+                    Console.WriteLine("No Fibre Data Specified. Scanning Fibre...");
+                    piezoMap.DataSource = controller.ScanFibre(100, 10000.0, 100);
                 }
-            }
-            else if (!piezoDebug.IsChecked.Value)
-            {
-                fibreAlign.ScanData = null;
-                Console.WriteLine("Alignment using Analog IO not yet implemented");
             }
             else
             {
                 int[] coords = new int[2];
-                coords = fibreAlign.TestScan(threshold);
+                coords = controller.AlignFibre(threshold, !piezoDebug.IsChecked.Value);
                 horizPiezo.Text = coords[0].ToString();
                 vertPiezo.Text = coords[1].ToString();
                 //Plots the scan data and the coupling efficiency

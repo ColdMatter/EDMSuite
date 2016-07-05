@@ -39,15 +39,17 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cameraTTL", multiBoard, 0, 3);
 
             //map the analog output channels
-            AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 5);
-            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao1", 0, 5);
-            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao2", 0, 5);
+            AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
+            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao1", 0, 10);
+            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao2", 0, 10);
+            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao3", 0, 10);
+            AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao4", 0, 10);
 
             //map the analog input channels
             AddAnalogInputChannel("photodiode", aiBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("accelpos", aiBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("accelmin", aiBoard + "/ai2", AITerminalConfiguration.Differential);
-
+            AddAnalogInputChannel("fibrePD", aiBoard + "/ai3", AITerminalConfiguration.Differential);
         }
     }
 }

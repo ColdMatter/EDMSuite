@@ -146,7 +146,7 @@
                             <TextBox x:Name="horizPiezo" HorizontalAlignment="Left" Height="24" Margin="89,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
                             <TextBox x:Name="vertPiezo" HorizontalAlignment="Left" Height="24" Margin="89,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
                             <ni:BooleanButton x:Name="piezoAlignButton" Content="Align" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" VerticalAlignment="Top" Width="75" Click="piezoAlignButton_Click"/>
-                            <CheckBox x:Name="piezoDebug" Content="Debug" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="Uses a test image to try and align, rather than measure the fibre output"/>
+                            <CheckBox x:Name="piezoDebug" Content="Debug" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="If Checked, this will either load a previous scan or make a new one if no file is specified."/>
                             <ni:NumericTextBoxDouble x:Name="fibreThreshold" HorizontalAlignment="Left" Height="23" Margin="0,70,0,0" VerticalAlignment="Top" Width="56" ToolTip="Threshold value for alignment"/>
                             <ni:IntensityGraph x:Name="piezoMap" HorizontalAlignment="Left" Height="166"  Margin="0,106,0,0" VerticalAlignment="Top" Width="230" >
                                 <ni:IntensityGraph.ColorScale>

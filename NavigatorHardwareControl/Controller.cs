@@ -34,6 +34,7 @@ namespace NavigatorHardwareControl
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "NavigatorHardwareController\\";
         #endregion
+
         #region setup
         public ControlWindow controlWindow;
 
@@ -41,7 +42,8 @@ namespace NavigatorHardwareControl
         Hashtable digitalTasks = new Hashtable();
 
         //dictionary of analog output tasks
-        private Dictionary<string, Task> analogoutTasks;
+        private Dictionary<string, Task> analogOutTasks;
+        private Dictionary<string, Task> analogInTasks;
 
         //enumerate the state of the hardware controller for remoting access
         public enum NavHardwareState { OFF, LOCAL, REMOTE };
@@ -59,13 +61,19 @@ namespace NavigatorHardwareControl
 
         //Create the Muquans Communicator
         public MuquansCommunicator muquans;
+
+        //Create an instance of the Fibre Aligner
+        public FibreAligner fibreAlign;
         //these are used to handle errors from the slave and aom dds processes
         public StreamReader slaveErr;
         public StreamReader aomErr;
 
         public void Start()
         {
-            analogoutTasks = new Dictionary<string, Task>();
+            analogOutTasks = new Dictionary<string, Task>();
+            analogInTasks = new Dictionary<string, Task>();
+            digitalTasks = new Hashtable();
+
             //initialise the hardware state
             hardwareState = new HardwareState();
             hardwareState.analogs = new Dictionary<string, double>();
@@ -83,11 +91,14 @@ namespace NavigatorHardwareControl
                 CreateAnalogOutputTask("motCTRL");
                 CreateAnalogOutputTask("mphiCTRL");
                 CreateAnalogOutputTask("ramanCTRL");
+                CreateAnalogOutputTask("horizPiezo");
+                CreateAnalogOutputTask("vertPiezo");
 
                 //these analogin tasks currently use the whole voltage range. perhaps this should be changed as necessary
                 CreateAnalogInputTask("photodiode");
                 CreateAnalogInputTask("accelpos");
                 CreateAnalogInputTask("accelmin");
+                CreateAnalogInputTask("fibrePD");
                 try
                 {
                     muquans = new MuquansCommunicator();
@@ -129,6 +140,9 @@ namespace NavigatorHardwareControl
             {
                 Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
             }
+
+            fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
+            fibreAlign.controller = this;
         }
         #endregion
 
@@ -224,33 +238,24 @@ namespace NavigatorHardwareControl
             return hardwareState;
         }
 
-        public string LoadFibreScanData()
-        {
-            //Returns the path to a fibre scan
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.DefaultExt = ".csv";
-            openFile.Title = "Choose Fibre Scan Data to Test";
-            openFile.InitialDirectory = (string)Environs.FileSystem.Paths["settingsPath"];
-            openFile.ShowDialog();
-            return openFile.FileName;
-        }
 
         #endregion
 
         #region Hardware task creation methods
-        private Task CreateAnalogInputTask(string channel)
+        private void CreateAnalogInputTask(string channel)
         {
-            Task task = new Task("EDMHCIn" + channel);
+
+            Task task = new Task("NavHCIn" + channel);
             ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
                 task,
                 0,
                 10
             );
             task.Control(TaskAction.Verify);
-            return task;
+            analogInTasks.Add(channel, task);
         }
 
-        private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
+        private void CreateAnalogInputTask(string channel, double lowRange, double highRange)
         {
             Task task = new Task("NavHCIn" + channel);
             ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
@@ -259,11 +264,12 @@ namespace NavigatorHardwareControl
                 highRange
             );
             task.Control(TaskAction.Verify);
-            return task;
+            analogInTasks.Add(channel, task);
         }
 
-        private Task CreateAnalogOutputTask(string channel)
+        private void CreateAnalogOutputTask(string channel)
         {
+            hardwareState.analogs[channel] = 0.0;
             Task task = new Task("NavHCOut" + channel);
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
             c.AddToTask(
@@ -272,7 +278,7 @@ namespace NavigatorHardwareControl
                 c.RangeHigh
                 );
             task.Control(TaskAction.Verify);
-            return task;
+            analogOutTasks.Add(channel, task);
         }
 
         // setting an analog voltage to an output
@@ -284,7 +290,7 @@ namespace NavigatorHardwareControl
         public void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
         {
 
-            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogoutTasks[channelName].Stream);
+            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogOutTasks[channelName].Stream);
             double output;
             if (useCalibration)
             {
@@ -310,7 +316,7 @@ namespace NavigatorHardwareControl
             try
             {
                 writer.WriteSingleSample(true, output);
-                analogoutTasks[channelName].Control(TaskAction.Unreserve);
+                analogOutTasks[channelName].Control(TaskAction.Unreserve);
             }
             catch (Exception e)
             {
@@ -325,9 +331,9 @@ namespace NavigatorHardwareControl
         }
         public double ReadAnalogInput(string channelName, bool useCalibration)
         {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogoutTasks[channelName].Stream);
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogOutTasks[channelName].Stream);
             double val = reader.ReadSingleSample();
-            analogoutTasks[channelName].Control(TaskAction.Unreserve);
+            analogOutTasks[channelName].Control(TaskAction.Unreserve);
             if (useCalibration)
             {
                 try
@@ -346,8 +352,9 @@ namespace NavigatorHardwareControl
             }
         }
 
-        private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
+        public double ReadAnalogInput(string channel, double sampleRate, int numOfSamples)
         {
+            Task task = analogInTasks[channel];
             //Configure the timing parameters of the task
             task.Timing.ConfigureSampleClock("", sampleRate,
                 SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, numOfSamples);
@@ -689,6 +696,65 @@ namespace NavigatorHardwareControl
             muquans.UnlockLaser(laserID);
         }
         #endregion
+
+        #region Fibre Alignment
+        /// <summary>
+        /// Scans the piezos for the mirror mount and returns an array of the measured PD values.
+        /// </summary>
+        /// <param name="numSteps">number of voltage steps for piezos</param>
+        /// <param name="numSamp">Number of samples per input</param>
+        public double[,] ScanFibre(int numSteps, double sampleRate, int numSamples)
+        {
+            double horizVolt;
+            double vertVolt;
+            double[,] scanData = new double[numSteps, numSteps];
+            //The voltage range for each piezo is from 0 to 10V
+            for (int i = 0; i < numSteps; i++)
+            {
+                for (int j = 0; j < numSteps; j++)
+                {
+                    vertVolt = 10.0 * j / numSteps;
+                    horizVolt = 10.0 * i / numSteps;
+                    SetAnalogOutput("horizPiezo", horizVolt);
+                    SetAnalogOutput("vertPiezo", vertVolt);
+                    double value = ReadAnalogInput("fibrePD",sampleRate,numSamples);
+                    scanData[i, j] = value;
+                }
+            }
+            fibreAlign.ScanData = scanData;
+            
+            //TODO Implement code to write this scandata to a csv.
+            return scanData;
+        }
+
+        public string LoadFibreScanData()
+        {
+            //Returns the path to a fibre scan
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.DefaultExt = ".csv";
+            openFile.Title = "Choose Fibre Scan Data to Test";
+            openFile.InitialDirectory = (string)Environs.FileSystem.Paths["settingsPath"];
+            openFile.ShowDialog();
+            return openFile.FileName;
+        }
+        /// <summary>
+        /// Aligns the fibre by trying to maximise the input power
+        /// </summary>
+        /// <param name="threshold">Threshold value for alignment. Ideally normalised to 1</param>
+        /// <returns></returns>
+        public int[] AlignFibre(double threshold, bool align)
+        {
+            int[] coords = new int[2];
+
+            //Probably not a good idea to hardcode these here.
+            fibreAlign.sampleRate = 10000.0;
+            fibreAlign.numSamples = 100;
+            coords = fibreAlign.AlignFibre(threshold, align);
+            return coords;
+        }
+
+        #endregion
+
         #endregion
 
         #region Event Handlers

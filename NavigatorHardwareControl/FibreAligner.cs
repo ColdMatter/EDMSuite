@@ -15,9 +15,13 @@ namespace NavigatorHardwareControl
     public class FibreAligner
     {
         private Double[,] scanData;
-        private AOChannel horizPiezo;
-        private AOChannel vertPiezo;
-        private AIChannel refInput;
+        private string horizPiezo;
+        private string vertPiezo;
+        private string refInput;
+        public Controller controller;
+
+        public double sampleRate;
+        public int numSamples;
 
         private List<fibrePower> fibreCoords;
         /// <summary>
@@ -26,7 +30,7 @@ namespace NavigatorHardwareControl
         /// <param name="horizPiezo">Channel used to output the voltage to the Horizontal piezo</param>
         /// <param name="vertPiezo">Channel used to output the voltage to the Vertical piezo</param>
         /// <param name="refInput">Channel used for measuring the reflected power coupled back into the fibre</param>
-        public FibreAligner(AOChannel horizPiezo, AOChannel vertPiezo, AIChannel refInput)
+        public FibreAligner(string horizPiezo, string vertPiezo, string refInput)
         {
             this.horizPiezo = horizPiezo;
             this.vertPiezo = vertPiezo;
@@ -67,20 +71,25 @@ namespace NavigatorHardwareControl
         /// </summary>
         /// <param name="scanData"></param>
         /// <returns>Coordinates of the maximum value</returns>
-        public int[] TestScan(double threshold)
+        public int[] AlignFibre(double threshold, bool align)
         {
             //these are default values which could be modified if necessary
             double refScale = 1.0;
             double expScale = 2.0;
             double contScale = 0.5;
             double shrinkScale=0.5;
+            int maxX = 0;
+            int maxY = 0;
             Random r = new Random();
             Stopwatch timer = new Stopwatch();
             timer.Start();
             //this is a list of accepted points. used to check for convergence at the ordering step.
             fibreCoords = new List<fibrePower>();
-            int maxX = scanData.GetLength(0);
-            int maxY = scanData.GetLength(1);
+            if (!align)
+            {
+                maxX = scanData.GetLength(0);
+                maxY = scanData.GetLength(1);
+            }
             int[] outputCoords = new int[2];
             double outputPower;
 
@@ -88,9 +97,19 @@ namespace NavigatorHardwareControl
             List<fibrePower> simplexCoords = new List<fibrePower>();
             for (int i = 0; i<3; i++)
             {
-                int[] coords = randomCoords(maxX,maxY,r);
-                fibrePower fibre = new fibrePower(coords, 0.0);
-                fibre.power = getPowerFromCoords(fibre, scanData);
+                fibrePower fibre;
+                if (align)
+                {
+                    //recast the coords to doubles
+                    double[] voltages = randomVoltages(10.0,10.0,r);
+                    fibre = new fibrePower(voltages, 0.0);
+                }
+                else {
+                    int[] coords = randomCoords(maxX, maxY, r);
+                    fibre = new fibrePower(coords, 0.0);
+                }
+               
+                fibre.power = getPowerFromCoords(fibre, align);
                 simplexCoords.Add(fibre);
                 fibreCoords.Add(fibre);
              }
@@ -116,10 +135,10 @@ namespace NavigatorHardwareControl
             fibrePower f2 = simplexCoords[2];
             // find the centroid of the first two points
             fibrePower fmid = new fibrePower();
-            fmid = findMidpoint(f1, fMax, true);
+            fmid = findMidpoint(f1, fMax, align);
             // find the reflected point
-            fibrePower fref = reflectedPoint(fmid, f2, refScale, true);
-            fref.power=getPowerFromCoords(fref,scanData);
+            fibrePower fref = reflectedPoint(fmid, f2, refScale, align);
+            fref.power=getPowerFromCoords(fref,align);
             //goes back to the ordering step if the reflected point is the second greatest
             if (fref.power > f1.power && fref.power < fMax.power)
             {
@@ -139,8 +158,8 @@ namespace NavigatorHardwareControl
                 goto Contract;
             }
         Expand:
-            fibrePower fexp = expandedPoint(fmid, fref, expScale, true);
-            fexp.power = getPowerFromCoords(fexp, scanData);
+            fibrePower fexp = expandedPoint(fmid, fref, expScale, align);
+            fexp.power = getPowerFromCoords(fexp, align);
             if (fexp.power > fref.power)
             {
                 //updates the simplex with the expanded point
@@ -163,8 +182,8 @@ namespace NavigatorHardwareControl
             {
                 f2 = fref;
             }
-            fibrePower fcon = expandedPoint(fmid, f2, contScale, true);
-            fcon.power = getPowerFromCoords(fcon, scanData);
+            fibrePower fcon = expandedPoint(fmid, f2, contScale, align);
+            fcon.power = getPowerFromCoords(fcon, align);
             if (fcon.power > f2.power)
             {
                 simplexCoords[2] = fcon;
@@ -177,10 +196,10 @@ namespace NavigatorHardwareControl
             }
         Shrink:
             //if none of these are better, we use the highest point, contracted point and a new point to form the simplex
-            f1 = shrinkPoint(f1, fMax, shrinkScale, true);
-            f2 = shrinkPoint(f2, fMax, shrinkScale, true);
-            f1.power = getPowerFromCoords(f1, scanData);
-            f2.power = getPowerFromCoords(f2, scanData);
+            f1 = shrinkPoint(f1, fMax, shrinkScale, align);
+            f2 = shrinkPoint(f2, fMax, shrinkScale, align);
+            f1.power = getPowerFromCoords(f1, align);
+            f2.power = getPowerFromCoords(f2, align);
             simplexCoords[1] = f1;
             simplexCoords[2] = f2;
 
@@ -205,24 +224,40 @@ namespace NavigatorHardwareControl
             coords[1] = r.Next(0, maxY);
             return coords;
         }
-        
-        private double getPowerFromCoords(fibrePower f1, Double[,] scanData)
+        private double[] randomVoltages(double maxX,double maxY,Random r)
+        {
+            double[] voltages = new double[2];
+            voltages[0] = r.NextDouble() * maxX;
+            voltages[1] = r.NextDouble() * maxY;
+            return voltages;
+        }
+        private double getPowerFromCoords(fibrePower f1, bool align)
         {
             double value;
-            try
+            if (!align)
             {
-                value = scanData[f1.coords[0], f1.coords[1]];
+                try
+                {
+                    value = scanData[f1.coords[0], f1.coords[1]];
+                }
+                catch
+                {
+                    //typically, it will through an exception if the coordinates are outside the bounds of the data. the simplest way to handle this is to return 0, so the algorithm will not use this point
+                    value = 0.0;
+                }
             }
-            catch
+            else
             {
-                //typically, it will through an exception if the coordinates are outside the bounds of the data. the simplest way to handle this is to return 0, so the algorithm will not use this point
-                value = 0.0;
+                controller.SetAnalogOutput("horizPiezo", f1.voltages[0]);
+                controller.SetAnalogOutput("vertPiezo", f1.voltages[1]);
+                value = controller.ReadAnalogInput("fibrePD", sampleRate, numSamples);
             }
+           
             return value;
         }
-        private fibrePower findMidpoint(fibrePower f1, fibrePower f2, bool debug)
+        private fibrePower findMidpoint(fibrePower f1, fibrePower f2, bool align)
         {
-            if (debug)
+            if (!align)
             {
                 int x1 = f1.coords[0];
                 int x2 = f2.coords[0];
@@ -252,9 +287,9 @@ namespace NavigatorHardwareControl
             }
         }
 
-        private fibrePower reflectedPoint(fibrePower mid, fibrePower min,double scaling, bool debug)
+        private fibrePower reflectedPoint(fibrePower mid, fibrePower min,double scaling, bool align)
         {
-            if (debug)
+            if (!align)
             {
                 //again, this might cause problems due to integer arithmetic
                 int[] refCoords = new int[2];
@@ -277,10 +312,10 @@ namespace NavigatorHardwareControl
 
         }
 
-        private fibrePower expandedPoint(fibrePower mid, fibrePower refl, double scaling, bool debug)
+        private fibrePower expandedPoint(fibrePower mid, fibrePower refl, double scaling, bool align)
         {
             //this can also work for contraction if we pass the "max" fibrePower as mid and set the scaling to be less than 0.5
-            if (debug)
+            if (!align)
             {
                 //again, this might cause problems due to integer arithmetic
                 int[] expCoords = new int[2];
@@ -302,10 +337,10 @@ namespace NavigatorHardwareControl
             }
         }
 
-        private fibrePower shrinkPoint(fibrePower point, fibrePower max, double scaling, bool debug)
+        private fibrePower shrinkPoint(fibrePower point, fibrePower max, double scaling, bool align)
         {
             //Shrinks the point based on the scaling value passed. This happens in the rare case thatThis just modifies the coordinates - elsewhere the power at the new point will be obtained.
-            if (debug)
+            if (!align)
             {             
                 point.coords[0] = (int)(max.coords[0] + scaling * (point.coords[0] - max.coords[0]));
                 point.coords[1] = (int)(max.coords[1] + scaling * (point.coords[1] - max.coords[1]));
