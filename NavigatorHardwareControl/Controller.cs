@@ -749,6 +749,11 @@ namespace NavigatorHardwareControl
             //Probably not a good idea to hardcode these here.
             fibreAlign.sampleRate = 10000.0;
             fibreAlign.numSamples = 100;
+            if (Environs.Debug)
+            {
+                //force align to be false so it will use the scan data
+                align = false;
+            }
             coords = fibreAlign.AlignFibre(threshold, align);
             return coords;
         }

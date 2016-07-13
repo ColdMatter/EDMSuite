@@ -146,11 +146,11 @@
                             <TextBox x:Name="horizPiezo" HorizontalAlignment="Left" Height="24" Margin="89,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
                             <TextBox x:Name="vertPiezo" HorizontalAlignment="Left" Height="24" Margin="89,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
                             <ni:BooleanButton x:Name="piezoAlignButton" Content="Align" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" VerticalAlignment="Top" Width="75" Click="piezoAlignButton_Click"/>
-                            <CheckBox x:Name="piezoDebug" Content="Debug" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="If Checked, this will either load a previous scan or make a new one if no file is specified."/>
+                            <CheckBox x:Name="piezoScan" Content="Scan" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" ToolTip="If Checked, this will either load a previous scan or make a new one if no file is specified."/>
                             <ni:NumericTextBoxDouble x:Name="fibreThreshold" HorizontalAlignment="Left" Height="23" Margin="0,70,0,0" VerticalAlignment="Top" Width="56" ToolTip="Threshold value for alignment"/>
-                            <ni:IntensityGraph x:Name="piezoMap" HorizontalAlignment="Left" Height="166"  Margin="0,106,0,0" VerticalAlignment="Top" Width="230" >
+                            <ni:IntensityGraph x:Name="piezoMap" HorizontalAlignment="Left" Height="89"  Margin="0,105,0,0" VerticalAlignment="Top" Width="96" PlotAreaMargin="1">
                                 <ni:IntensityGraph.ColorScale>
-                                    <ni:ColorScale>
+                                    <ni:ColorScale Location="Far" Adjuster="FitVisibleExactly">
                                         <ni:ColorScaleMarker Color="Blue" Value="0"/>
                                         <ni:ColorScaleMarker Color="Cyan" Value="0.1"/>
                                         <ni:ColorScaleMarker Color="Green" Value="0.25"/>
@@ -165,7 +165,7 @@
                                     <ni:PointAnnotation x:Name="maxIntensity" Visibility="Hidden" Label="Max Value" TargetShape="Cross" TargetSize="10,10" Stroke="#FF02FF10"></ni:PointAnnotation>
                                 </ni:IntensityGraph.Children>
                             </ni:IntensityGraph>
-                            <ni:Graph x:Name="iterationGraph" HorizontalAlignment="Left" Height="166" Margin="214,106,0,0" VerticalAlignment="Top" Width="166">
+                            <ni:Graph x:Name="iterationGraph" HorizontalAlignment="Left" Height="166" Margin="214,0,0,0" VerticalAlignment="Top" Width="166">
                                 <ni:Graph.Axes>
                                     <ni:AxisDouble x:Name="verticalAxis1" Orientation="Vertical" Label="Coupling Efficiency" Range="0, 1, System.Double"/>
                                     <ni:AxisDouble x:Name="horizontalAxis1" Orientation="Horizontal" Label="Iterations" Range="0, 30, System.Double"/>

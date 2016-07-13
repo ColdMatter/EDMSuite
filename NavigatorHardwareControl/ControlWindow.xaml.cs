@@ -16,6 +16,7 @@ using System.IO;
 using System.Drawing;
 using NationalInstruments.Controls;
 using NationalInstruments.Controls.Primitives;
+using DAQ.Environment;
 
 namespace NavigatorHardwareControl
 {
@@ -46,8 +47,7 @@ namespace NavigatorHardwareControl
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = new Controller();
             console = new TextBoxStreamWriter(consoleRichTextBox);
-            //TODO include the FibreAligner into a separate acqusition program
-            fibreAlign = new FibreAligner();
+           
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
 
@@ -225,7 +225,7 @@ namespace NavigatorHardwareControl
         private void piezoAlignButton_Click(object sender, RoutedEventArgs e)
         {
             double threshold = fibreThreshold.Value;
-            if (piezoDebug.IsChecked.Value)
+            if (piezoScan.IsChecked.Value || Environs.Debug)
             {
                 //loads a test image and tries to maximaize that
                 Console.WriteLine("Debug Enabled - Attempting to load previous scan data or create new scan");
@@ -243,7 +243,7 @@ namespace NavigatorHardwareControl
             else
             {
                 int[] coords = new int[2];
-                coords = controller.AlignFibre(threshold, !piezoDebug.IsChecked.Value);
+                coords = controller.AlignFibre(threshold, !piezoScan.IsChecked.Value);
                 horizPiezo.Text = coords[0].ToString();
                 vertPiezo.Text = coords[1].ToString();
                 //Plots the scan data and the coupling efficiency
@@ -382,6 +382,8 @@ namespace NavigatorHardwareControl
             //TODO Implement DDS update
             controller.UpdateDDS();
         }
+
+   
 
       
 
