@@ -13,7 +13,7 @@ namespace DAQ.HAL
     public class HSDIOPatternGenerator : PatternGenerator
     {
         //The HSDIO cards do not have Task objects. Instead the card is initialised for generation or acquisition and the waveform is written to the card
-        private niHSDIO hsdio;
+        private niHSDIO hsTask;
         private String device;
         private double clockFrequency;
         private int length;
@@ -25,13 +25,38 @@ namespace DAQ.HAL
         //TODO Implement the configure method in the style of the DAQMxPatternGenerator
         public void Configure(double clockFrequency, bool loop, bool fullWidth, bool lowGroup, int length, bool internalClock, bool triggered)
         {
-            
+            this.clockFrequency = clockFrequency;
+            this.length = length;
+
+            /**** Configure the output lines ****/
+            hsTask = niHSDIO.InitGenerationSession(device, true, true,"");
+            //configure the card for dynamic generation
+            hsTask.AssignDynamicChannels("0-31");
+
+            /**** Configure the clock ****/
+            String clockSource = "";
+            if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("HSClockLine");
+            else clockSource = "";
+
+            /**** Configure regeneration ****/
+            if (loop)
+            {
+                hsTask.ConfigureGenerationRepeat(niHSDIOConstants.Continuous, 1);
+            }
+            hsTask.AllocateNamedWaveform("waveform", length);
+            /**** Configure triggering ****/
+            if (triggered)
+            {
+                hsTask.ConfigureDigitalEdgeStartTrigger((string)Environs.Hardware.GetInfo("HSTrigger"), niHSDIOConstants.RisingEdge);
+            }
+            /*** Write configuration to board ****/
+            hsTask.CommitDynamic();
  	        throw new NotImplementedException();
         }
 
         public void OutputPattern(uint[] pattern)
         {
-            hsdio.WriteNamedWaveformU32("waveform",length,pattern);
+            hsTask.WriteNamedWaveformU32("waveform",length,pattern);
             //To avoid timing issues associated with the different pattern generators, I'll add the sleeop one pattern method here
             SleepOnePattern();
  	        throw new NotImplementedException();
@@ -44,7 +69,7 @@ namespace DAQ.HAL
 		}
         public void StopPattern()
         {
- 	        throw new NotImplementedException();
+            hsTask.Dispose();
         }
     }
 }
