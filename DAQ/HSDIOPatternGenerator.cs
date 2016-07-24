@@ -22,7 +22,7 @@ namespace DAQ.HAL
         {
             this.device = device;
         }
-        //TODO Implement the configure method in the style of the DAQMxPatternGenerator
+        
         public void Configure(double clockFrequency, bool loop, bool fullWidth, bool lowGroup, int length, bool internalClock, bool triggered)
         {
             this.clockFrequency = clockFrequency;
@@ -38,28 +38,54 @@ namespace DAQ.HAL
             if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("HSClockLine");
             else clockSource = "";
 
+            //TODO implement a method to export the sample clock at a lower frequency for other channels
+            hsTask.ConfigureSampleClock(clockSource, clockFrequency);
+            if(!triggered)
+               
+            
             /**** Configure regeneration ****/
             if (loop)
             {
                 hsTask.ConfigureGenerationRepeat(niHSDIOConstants.Continuous, 1);
             }
-            hsTask.AllocateNamedWaveform("waveform", length);
             /**** Configure triggering ****/
             if (triggered)
             {
                 hsTask.ConfigureDigitalEdgeStartTrigger((string)Environs.Hardware.GetInfo("HSTrigger"), niHSDIOConstants.RisingEdge);
+            }
+            else
+            {
+                //This card will trigger the others and uses the trigger line defined in the hardware class
+                hsTask.ExportSignal(niHSDIOConstants.StartTrigger, "", (string)Environs.Hardware.GetInfo("HSTrigger"));
             }
             /*** Write configuration to board ****/
             hsTask.CommitDynamic();
  	        throw new NotImplementedException();
         }
 
-        public void OutputPattern(uint[] pattern)
+        public void OutputPattern(UInt32[] pattern, int[] loopTimes)
         {
-            hsTask.WriteNamedWaveformU32("waveform",length,pattern);
+            //Check lengths are equal
+            if (pattern.Length != loopTimes.Length)
+                throw new Exception("Pattern length not equal to number of loop times");
+            //If this card is triggering others, it won't output its sequence until 32 clock cycles have passed, so the first 32 must be deleted.
+            if (!triggered)
+                loopTimes[0] -= 32;
+            //loop over pattern to write the waveforms to the card and build a script string
+            string script = "script myScript \n";
+            uint[] data = new uint[0];
+            for (int i = 0; i < loopTimes.Length;i++ )
+            {
+                data[0] = pattern[i];
+                hsTask.WriteNamedWaveformU32("waveform_" + i.ToString(), 1, data);
+                script += "\t repeat " + loopTimes[i].ToString() + "\n \t generate waveform_" + i.ToString() + "\n";
+            }
+            //Writes the script to the card
+            hsTask.WriteScript(script);
+            //This assumes the hsdio card triggers the other cards, which is most likely the case
+            hsTask.Initiate();
             //To avoid timing issues associated with the different pattern generators, I'll add the sleeop one pattern method here
             SleepOnePattern();
- 	        throw new NotImplementedException();
         }
 
         private void SleepOnePattern()

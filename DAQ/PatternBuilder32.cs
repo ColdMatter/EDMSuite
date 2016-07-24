@@ -98,7 +98,7 @@ namespace DAQ.Pattern
 			latestTimes = new int[32];
 			for (int i = 0 ; i < 32 ; i++) latestTimes[i] = -1;
 			pattern = null;
-		}
+		} 
 	
 		/** Get the layout for this pattern. */
 		public Layout Layout 
@@ -187,7 +187,7 @@ namespace DAQ.Pattern
 		
 		}
 	
-		private UInt32 GenerateNextInt( UInt32 previousInt, EdgeSet es, bool throwError, int time)
+		public UInt32 GenerateNextInt( UInt32 previousInt, EdgeSet es, bool throwError, int time)
 		{
 			// build a bit mask for the upwards edges
 			UInt32 upMask = 0;

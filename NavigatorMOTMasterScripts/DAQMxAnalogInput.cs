@@ -18,7 +18,7 @@ namespace NavAcquire
 
        void Initialise()
        {
-           analogInputTask.
+         
        }
    }
 }

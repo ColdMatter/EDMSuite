@@ -31,7 +31,7 @@ namespace NavigatorHardwareControl
         public Controller controller;
         public TextBoxStreamWriter console;
         private TextReader reader;
-        private FibreAligner fibreAlign;
+        //private FibreAligner fibreAlign;
         private Dictionary<string, TextBox> aoTextBoxes;
         private Dictionary<string, LED> doLEDs; 
         private bool isReading;
@@ -45,12 +45,13 @@ namespace NavigatorHardwareControl
         {
             InitializeComponent();
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
-            controller = new Controller();
-            console = new TextBoxStreamWriter(consoleRichTextBox);
+            controller = App.controller;
            
+            console = new TextBoxStreamWriter(consoleRichTextBox);
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
 
+            controller.Start();
             //finds all the graphical objects used to display digital and analog values
             foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
             {
@@ -61,7 +62,7 @@ namespace NavigatorHardwareControl
                 doLEDs[led.Name] = led;
             }
 
-            controller.Start();
+            //controller.Start();
 
             //Add an event to display the coordinates and intensity over the piezoMap
             piezoMap.PlotAreaMouseMove += this.OnPlotAreaMouseMove;
@@ -70,7 +71,6 @@ namespace NavigatorHardwareControl
             ToolTipService.SetShowDuration(piezoMap, int.MaxValue); 
            
         }
-
 
         #region Accessing Digital and Analog values
         public double ReadAnalog(string name)
@@ -119,8 +119,6 @@ namespace NavigatorHardwareControl
             }
         }
 
-       
-        #endregion
         public void WriteToConsole(string text)
         {
             console.WriteLine(text);
@@ -146,15 +144,18 @@ namespace NavigatorHardwareControl
                 }
             }
         }
+        #endregion
 
+        #region Accessor Methods
         public double[,] ScanData
         {
-            get { return fibreAlign.ScanData; }
+            get { return controller.fibreAlign.ScanData; }
         }
         public IEnumerable<double> FibrePowers
         {
-            get { return fibreAlign.fibrePowers; }
+            get { return controller.fibreAlign.fibrePowers; }
         }
+        #endregion
 
         #region EventHandlers
         private void edfaLED_Click(object sender, RoutedEventArgs e)
@@ -232,7 +233,7 @@ namespace NavigatorHardwareControl
                 string fibrePath = controller.LoadFibreScanData();
                 if (fibrePath != "")
                 {
-                    fibreAlign.loadFibreScanData(fibrePath);
+                    //
                 }
                 else
                 {
@@ -375,20 +376,16 @@ namespace NavigatorHardwareControl
             window.ShowDialog();
 
         }
-        #endregion
 
         private void ddsupdateButton_Click(object sender, RoutedEventArgs e)
         {
             //TODO Implement DDS update
             controller.UpdateDDS();
         }
-
-   
-
-      
-
+        #endregion
     }
 
+    #region Other ControlWindow classes
     public class TextBoxStreamWriter : TextWriter
     {
         RichTextBox output = null;
@@ -422,5 +419,6 @@ namespace NavigatorHardwareControl
 
     }
 
-    
+#endregion
+
 }
