@@ -127,7 +127,7 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true);
+            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true,true);
             apg.Configure(sequence.AnalogPattern, apgClockFrequency);
         }
 

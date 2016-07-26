@@ -38,5 +38,9 @@ namespace DAQ.HAL
 				ChannelLineGrouping.OneChannelForAllLines
 				);
 		}
+        public string Device
+        {
+            get { return device; }
+        }
 	}
 }

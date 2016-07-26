@@ -17,7 +17,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
  
     }
-    public HSDIOPatternBuilder GetDigitalPattern()
+    public override PatternBuilder32 GetDigitalPattern()
     {
         HSDIOPatternBuilder p = new HSDIOPatternBuilder();
         p.Pulse(0, 0, 1, "AnalogPatternTrigger");

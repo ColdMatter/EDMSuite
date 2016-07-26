@@ -205,13 +205,13 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-                case "NAVIGATOR-CONTROL":
+                case "NAVIGATOR-ANAL":
                     Hardware = new NavigatorHardware();
                     FileSystem = new NavigatorFileSystem();
                     Debug = false;
                     break;
 
-                case "JS-SURFACE":
+                case "JIMMY-SURFACE":
                     Hardware = new NavigatorHardware();
                     FileSystem = new NavigatorFileSystem();
                     Debug = true;

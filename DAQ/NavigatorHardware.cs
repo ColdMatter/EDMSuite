@@ -15,10 +15,10 @@ namespace DAQ.HAL
         public NavigatorHardware()
         {
             //add the boards - perhaps these values can be derived from a settings file
-            Boards.Add("multiDAQ", "/dev1");
-            Boards.Add("analogOut", "/dev2");
-            Boards.Add("hsDigital", "/dev3");
-            Boards.Add("analogIn", "/dev4");
+            Boards.Add("multiDAQ", "/Dev1");
+            Boards.Add("analogOut", "/Dev2");
+            Boards.Add("hsDigital", "Dev3");
+            Boards.Add("analogIn", "/Dev4");
 
             string multiBoard = (string)Boards["multiDAQ"];
             string aoBoard = (string)Boards["analogOut"];
@@ -46,8 +46,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("shutter", hsdioBoard, 0, 7);
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 8);
             AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 9);
-            AddDigitalOutputChannel("z+aomTTL", hsdioBoard, 0, 10);
-            AddDigitalOutputChannel("z-aomTTL", hsdioBoard, 0, 11);
+            AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 10);
+            AddDigitalOutputChannel("zmaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("2daomTTL", hsdioBoard, 0, 13);
 
@@ -66,14 +66,14 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", 0, 10);
             AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", 0, 10);
             AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", 0, 10);
-            AddAnalogOutputChannel("z+aomFreq", aoBoard + "/ao14", 0, 10);
-            AddAnalogOutputChannel("z-aomFreq", aoBoard + "/ao15", 0, 10);
+            AddAnalogOutputChannel("zpaomFreq", aoBoard + "/ao14", 0, 10);
+            AddAnalogOutputChannel("zmaomFreq", aoBoard + "/ao15", 0, 10);
             AddAnalogOutputChannel("2DaomFreq", aoBoard + "/ao16", 0, 10);
             AddAnalogOutputChannel("pushaomFreq", aoBoard + "/ao17", 0, 10);
             AddAnalogOutputChannel("xaomAtten", aoBoard + "/ao18", 0, 10);
             AddAnalogOutputChannel("yaomAtten", aoBoard + "/ao19", 0, 10);
-            AddAnalogOutputChannel("z+aomAtten", aoBoard + "/ao20", 0, 10);
-            AddAnalogOutputChannel("z-aomAtten", aoBoard + "/ao21", 0, 10);
+            AddAnalogOutputChannel("zpaomAtten", aoBoard + "/ao20", 0, 10);
+            AddAnalogOutputChannel("zmaomAtten", aoBoard + "/ao21", 0, 10);
             AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", 0, 10);
             AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", 0, 10);
 

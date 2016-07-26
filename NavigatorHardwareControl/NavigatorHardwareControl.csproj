@@ -99,6 +99,7 @@
       <DependentUpon>ChannelManagerForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="FibreAligner.cs" />
+    <Compile Include="HSDIOStaticController.cs" />
     <Compile Include="TelnetConnection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>

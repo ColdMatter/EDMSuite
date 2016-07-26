@@ -15,12 +15,14 @@ using System.Windows;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
+using NationalInstruments.ModularInstruments.Interop;
 using NationalInstruments.UI;
 using NationalInstruments.VisaNS;
 
 using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
+
 
 namespace NavigatorHardwareControl
 {
@@ -39,7 +41,7 @@ namespace NavigatorHardwareControl
         public ControlWindow controlWindow;
 
         //table of digital tasks
-        Hashtable digitalTasks = new Hashtable();
+        private Dictionary<string,Task> digitalTasks;
 
         //dictionary of analog output tasks
         private Dictionary<string, Task> analogOutTasks;
@@ -61,7 +63,8 @@ namespace NavigatorHardwareControl
 
         //Create the Muquans Communicator
         public MuquansCommunicator muquans;
-
+        //Used for static outputs of the HSDIO card
+        public HSDIOStaticChannelController hsdio;
         //Create an instance of the Fibre Aligner
         public FibreAligner fibreAlign;
         //these are used to handle errors from the slave and aom dds processes
@@ -70,10 +73,11 @@ namespace NavigatorHardwareControl
 
         public void Start()
         {
+            if (Environs.Hardware.GetType() != new DAQ.HAL.NavigatorHardware().GetType())
+                throw new Exception("Hardware class is inconsistent with this Controller. Please check the Environs configuration.");
             analogOutTasks = new Dictionary<string, Task>();
             analogInTasks = new Dictionary<string, Task>();
-            digitalTasks = new Hashtable();
-
+            digitalTasks = new Dictionary<string, Task>();
             //initialise the hardware state
             hardwareState = new HardwareState();
             hardwareState.analogs = new Dictionary<string, double>();
@@ -81,64 +85,59 @@ namespace NavigatorHardwareControl
 
             if (!Environs.Debug)
             {
-         
+            
                 //Only creates these tasks when the Debug flag is set to false. Useful when developing on another computer
-                CreateDigitalTask("motTTL");
-                CreateDigitalTask("mphiTTL");
-                CreateDigitalTask("ramanTTL");
-                CreateDigitalTask("cameraTTL");
+                if (Environs.Hardware.Boards.ContainsKey("hsDigital"))
+                //The simplest thing is to make all the output channels static.Before running a sequence, the output is aborted and configured for dynamic generation
+                {
+                    hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
+                    foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
+                    {
+                        DigitalOutputChannel doChannel = (DigitalOutputChannel)channel.Value;
+                        if (doChannel.Device == (string)Environs.Hardware.Boards["hsDigital"])
+                            hsdio.CreateHSDigitalTask((string)channel.Key,doChannel.BitNumber);
+                        else
+                            CreateDigitalTask((string)channel.Key);
+                       }
+                }
+                else
+                foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys)
+                        CreateDigitalTask(channel);
+                //Create the analogue tasks
+                foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys)
+                    CreateAnalogOutputTask(channel);
+                foreach (string channel in Environs.Hardware.AnalogInputChannels.Keys)
+                    CreateAnalogInputTask(channel);
+               
 
-                CreateAnalogOutputTask("motCTRL");
-                CreateAnalogOutputTask("mphiCTRL");
-                CreateAnalogOutputTask("ramanCTRL");
-                CreateAnalogOutputTask("horizPiezo");
-                CreateAnalogOutputTask("vertPiezo");
-
-                //these analogin tasks currently use the whole voltage range. perhaps this should be changed as necessary
-                CreateAnalogInputTask("photodiode");
-                CreateAnalogInputTask("accelpos");
-                CreateAnalogInputTask("accelmin");
-                CreateAnalogInputTask("fibrePD");
-                try
+               try
                 {
                     muquans = new MuquansCommunicator();
+
+                    muquans.slaveDDS.EnableRaisingEvents = true;
+                    muquans.aomDDS.EnableRaisingEvents = true;
+
+                    //slaveErr = muquans.slaveDDS.StandardError;
+                    //aomErr = muquans.aomDDS.StandardError
+                    muquans.Start();
+                    muquans.slaveDDS.OutputDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+                    muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
+
+                    //Starts the DDS programs - these port numbers depend on the virtual COM ports use
+                    ProcessStartInfo slaveInfo = muquans.ConfigureDDS("slave", 18);
+                    ProcessStartInfo aomInfo = muquans.ConfigureDDS("aom", 20);
+
+                    muquans.slaveDDS.StartInfo = slaveInfo;
+                    muquans.aomDDS.StartInfo = aomInfo;
+                    muquans.slaveDDS.Start();
+                    muquans.aomDDS.Start();
+
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
                 }
-
-
-                //Configures the error handling of the DDS programs
-                //   muquans.ConfigureDDS("slave", 18);
-                // muquans.ConfigureDDS("aom", 20);
-                muquans.slaveDDS.EnableRaisingEvents = true;
-                muquans.aomDDS.EnableRaisingEvents = true;
-
-                //slaveErr = muquans.slaveDDS.StandardError;
-                //aomErr = muquans.aomDDS.StandardError
-                muquans.Start();
-                muquans.slaveDDS.OutputDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-                muquans.aomDDS.ErrorDataReceived += new DataReceivedEventHandler(DDSErrorHandler);
-
-                //Starts the DDS programs - these port numbers depend on the virtual COM ports use
-                ProcessStartInfo slaveInfo = muquans.ConfigureDDS("slave", 18);
-                ProcessStartInfo aomInfo = muquans.ConfigureDDS("aom", 20);
-
-                muquans.slaveDDS.StartInfo = slaveInfo;
-                muquans.aomDDS.StartInfo = aomInfo;
-                muquans.slaveDDS.Start();
-                muquans.aomDDS.Start();
-                
-            }
-
-            try
-            {
-                muquans = new MuquansCommunicator();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
+               
             }
 
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
@@ -383,6 +382,7 @@ namespace NavigatorHardwareControl
             digitalTasks.Add(name, digitalTask);
         }
 
+
         // We won't be using digital inputs but I'll leave this here in case
         //private void CreateDigitalInputTask(String name)
         //{
@@ -403,10 +403,15 @@ namespace NavigatorHardwareControl
 
         private void SetDigitalLine(string name, bool value)
         {
-            Task digitalTask = ((Task)digitalTasks[name]);
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
-            writer.WriteSingleSampleSingleLine(true, value);
-            digitalTask.Control(TaskAction.Unreserve);
+            if (digitalTasks.ContainsKey(name))
+            {
+                Task digitalTask = digitalTasks[name];
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
+                writer.WriteSingleSampleSingleLine(true, value);
+                digitalTask.Control(TaskAction.Unreserve);
+            }
+            else
+                hsdio.SetHSDigitalLine(name, value);
         }
 
         #endregion
