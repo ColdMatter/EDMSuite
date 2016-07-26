@@ -26,7 +26,7 @@ namespace DAQ.Pattern
         }
 
         /** Generates a pattern by dividing the layout into a sequence of static values for each waveform **/
-        public override void BuildPattern(int length)
+        public void BuildHSDIOPattern(int length)
         {
             //Used to check if the sequence starts at zero time.
             bool zeroStart = true;

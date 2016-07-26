@@ -26,30 +26,68 @@ namespace DAQ.HAL
             string aiBoard = (string)Boards["analogIn"];
 
             //add various info - these will be added as I think of them. Things such as trigger channels and so on
-
+            Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
+            Info.Add("analogTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
+            Info.Add("analogTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2"); 
             //Add other instruments such as serial channels
             Instruments.Add("muquansSlave", new RS232Instrument("ASRL18::INSTR"));
             Instruments.Add("muquansAOM", new RS232Instrument("ASRL20::INSTR"));
 
 
-            //map the digital channels - again these could be defined in a settings file
-            AddDigitalOutputChannel("motTTL", multiBoard, 0, 0);
-            AddDigitalOutputChannel("mphiTTL", multiBoard, 0, 1);
-            AddDigitalOutputChannel("ramanTTL", multiBoard, 0, 2);
-            AddDigitalOutputChannel("cameraTTL", multiBoard, 0, 3);
+            //map the digital channels
+            //TODO make these work with HSDIO cards
+            AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
+            AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
+            AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
+            AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
+            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
+            AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
+            AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 6);
+            AddDigitalOutputChannel("shutter", hsdioBoard, 0, 7);
+            AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 8);
+            AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 9);
+            AddDigitalOutputChannel("z+aomTTL", hsdioBoard, 0, 10);
+            AddDigitalOutputChannel("z-aomTTL", hsdioBoard, 0, 11);
+            AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
+            AddDigitalOutputChannel("2daomTTL", hsdioBoard, 0, 13);
 
             //map the analog output channels
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
-            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao1", 0, 10);
-            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao2", 0, 10);
-            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao3", 0, 10);
-            AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
+            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", 0, 10);
+            AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao3", 0, 10);
+            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao5", 0, 10);
+            AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao6", 0, 10);
+            AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao7", 0, 10);
+            AddAnalogOutputChannel("dispenser3D", aoBoard + "/ao8", 0, 10);
+            AddAnalogOutputChannel("dispenser2D", aoBoard + "/ao9", 0, 10);
+            AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);
+            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", 0, 10);
+            AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", 0, 10);
+            AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", 0, 10);
+            AddAnalogOutputChannel("z+aomFreq", aoBoard + "/ao14", 0, 10);
+            AddAnalogOutputChannel("z-aomFreq", aoBoard + "/ao15", 0, 10);
+            AddAnalogOutputChannel("2DaomFreq", aoBoard + "/ao16", 0, 10);
+            AddAnalogOutputChannel("pushaomFreq", aoBoard + "/ao17", 0, 10);
+            AddAnalogOutputChannel("xaomAtten", aoBoard + "/ao18", 0, 10);
+            AddAnalogOutputChannel("yaomAtten", aoBoard + "/ao19", 0, 10);
+            AddAnalogOutputChannel("z+aomAtten", aoBoard + "/ao20", 0, 10);
+            AddAnalogOutputChannel("z-aomAtten", aoBoard + "/ao21", 0, 10);
+            AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", 0, 10);
+            AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", 0, 10);
 
             //map the analog input channels
             AddAnalogInputChannel("photodiode", aiBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("accelpos", aiBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("accelmin", aiBoard + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("fibrePD", aiBoard + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("forwardRamanPD", multiBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("backwardRamanPD", multiBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("motPD", multiBoard + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("slave0Error", multiBoard + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
         }
     }
 }

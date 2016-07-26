@@ -17,6 +17,7 @@ namespace DAQ.HAL
         private String device;
         private double clockFrequency;
         private int length;
+        private int[] loopTimes;
         
         public HSDIOPatternGenerator(String device)
         {
@@ -62,23 +63,28 @@ namespace DAQ.HAL
             hsTask.CommitDynamic();
  	        throw new NotImplementedException();
         }
-
-        public void OutputPattern(UInt32[] pattern, int[] loopTimes)
+        /// <summary>
+        /// Accessor method for loopTimes
+        /// </summary>
+       public int[] LoopTimes
+        {
+            get { return loopTimes; }
+            set { loopTimes = value; }
+        } 
+       
+        public void OutputPattern(uint[] pattern)
         {
             //Check lengths are equal
             if (pattern.Length != loopTimes.Length)
                 throw new Exception("Pattern length not equal to number of loop times");
-            //If this card is triggering others, it won't output its sequence until 32 clock cycles have passed, so the first 32 must be deleted.
-            if (!triggered)
-                loopTimes[0] -= 32;
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
             uint[] data = new uint[0];
             for (int i = 0; i < loopTimes.Length;i++ )
             {
                 data[0] = pattern[i];
-                hsTask.WriteNamedWaveformU32("waveform_" + i.ToString(), 1, data);
-                script += "\t repeat " + loopTimes[i].ToString() + "\n \t generate waveform_" + i.ToString() + "\n";
+                hsTask.WriteNamedWaveformU32("waveform_" + i, 1, data);
+                script += "\t repeat " + loopTimes[i] + "\n \t generate waveform_" + i + "\n";
             }
             //Writes the script to the card
             hsTask.WriteScript(script);

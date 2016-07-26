@@ -91,7 +91,7 @@ namespace MOTMaster
 
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
-
+            //TODO Make this use the hardware class to figure out what pattern generators to define
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQMxAnalogPatternGenerator();
 
