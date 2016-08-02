@@ -11,6 +11,11 @@ namespace MOTMaster
     {
         public abstract PatternBuilder32 GetDigitalPattern();
         public abstract AnalogPatternBuilder GetAnalogPattern();
+
+        public abstract Dictionary<string, PatternBuilder32> GetDigitalPatterns();
+        public abstract Dictionary<string, AnalogPatternBuilder> GetAnalogPatterns();
+        public abstract Dictionary<string, HSDIOPatternBuilder> GetHSDIOPatterns();
+
         public Dictionary<String,Object> Parameters;
 
         public MOTMasterSequence GetSequence()
@@ -18,6 +23,15 @@ namespace MOTMaster
             MOTMasterSequence s = new MOTMasterSequence();
             s.DigitalPattern = GetDigitalPattern();
             s.AnalogPattern = GetAnalogPattern();
+            return s;
+        }
+        public MOTMasterSequence GetMultiSequence()
+        {
+            MOTMasterSequence s = new MOTMasterSequence();
+            s.multipleCards = true;
+            s.DigitalPatterns = GetDigitalPatterns();
+            s.AnalogPatterns = GetAnalogPatterns();
+            s.HSDIOPatterns = GetHSDIOPatterns();
             return s;
         }
 

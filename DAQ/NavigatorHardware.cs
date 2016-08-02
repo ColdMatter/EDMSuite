@@ -17,6 +17,7 @@ namespace DAQ.HAL
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
             Boards.Add("analogOut", "/Dev2");
+            //The HSDIO card cannot be referenced with a leading forward slash like DAQ cards
             Boards.Add("hsDigital", "Dev3");
             Boards.Add("analogIn", "/Dev4");
 

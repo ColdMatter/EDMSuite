@@ -4,5 +4,6 @@ obj
 *.csproj.user
 *.licx
 *.lnk
+*.csv
 iamjack.sh
 iamjoe.sh

@@ -15,6 +15,7 @@ using Microsoft.CSharp;
 using DAQ;
 using DAQ.Environment;
 using DAQ.HAL;
+using DAQ.Pattern;
 using DAQ.Analog;
 using Data;
 using Data.Scans;
@@ -62,12 +63,17 @@ namespace MOTMaster
             pgClockFrequency = 10000;
         private const int
             apgClockFrequency = 10000;
+        private const int hsClockFrequency = 25000000;
 
         ControllerWindow controllerWindow;
 
-        DAQMxPatternGenerator pg;
-        DAQMxAnalogPatternGenerator apg;
+        public DAQMxPatternGenerator pg;
+        public DAQMxAnalogPatternGenerator apg;
 
+        Dictionary<string, DAQMxAnalogPatternGenerator> analogPatterns;
+        Dictionary<string, DAQMxPatternGenerator> digitalPatterns;
+        Dictionary<string,HSDIOPatternGenerator> hsdioPatterns;
+            
         CameraControllable camera;
         TranslationStageControllable tstage;
         ExperimentReportable experimentReporter;
@@ -92,8 +98,8 @@ namespace MOTMaster
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
             //TODO Make this use the hardware class to figure out what pattern generators to define
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
-            apg = new DAQMxAnalogPatternGenerator();
+            //digitalPatterns.Add(new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]));
+            //analogOutPatterns.Add(new DAQMxAnalogPatternGenerator());
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -121,21 +127,91 @@ namespace MOTMaster
 
         private void run(MOTMasterSequence sequence)
         {
-            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            pg.OutputPattern(sequence.DigitalPattern.Pattern);
+            if (sequence.multipleCards)
+            {
+                //TODO Check timings on each write and modify how the hardware triggering is implemented.
+                foreach (string device in digitalPatterns.Keys)
+                    digitalPatterns[device].OutputPattern(sequence.DigitalPatterns[device].Pattern); 
+
+                foreach(string device in hsdioPatterns.Keys)
+                    hsdioPatterns[device].OutputPattern(sequence.HSDIOPatterns[device].Pattern);
+
+                foreach (string device in analogPatterns.Keys)
+                    analogPatterns[device].OutputPatternAndWait(sequence.AnalogPatterns[device].Pattern);  
+            }
+            else
+            {
+                apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+                pg.OutputPattern(sequence.DigitalPattern.Pattern);
+            }
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true,true);
-            apg.Configure(sequence.AnalogPattern, apgClockFrequency);
+            if (sequence.multipleCards)
+            {
+                //This assumes that the key used for each pattern is the device name.
+                if (sequence.DigitalPatterns != null)
+                {
+                    foreach (KeyValuePair<string,PatternBuilder32> entry in sequence.DigitalPatterns)
+                    {
+                        pg = new DAQMxPatternGenerator(entry.Key);
+                        //TODO Change this so that each device card can have a separate clockfrequency or triggering condition - perhaps something that subclasses PatternBuilder32 with more device information.
+                        pg.Configure(pgClockFrequency, false, true, true, entry.Value.Pattern.Length, true, true);
+                        digitalPatterns[entry.Key] = pg;
+
+                    }
+                }
+                if (sequence.AnalogPatterns != null)
+                {
+                    foreach (KeyValuePair<string, AnalogPatternBuilder> entry in sequence.AnalogPatterns)
+                    {
+                        apg = new DAQMxAnalogPatternGenerator();
+                        apg.Configure(entry.Value, apgClockFrequency);
+                        analogPatterns[entry.Key] = apg;
+                    }
+                }
+                if (sequence.HSDIOPatterns != null)
+                {
+                    foreach (KeyValuePair<string, HSDIOPatternBuilder> entry in sequence.HSDIOPatterns)
+                    {
+                        HSDIOPatternGenerator hspg = new HSDIOPatternGenerator(entry.Key);
+                        hspg.Configure(hsClockFrequency, false, true, true, entry.Value.Pattern.Length, true, true);
+                        hsdioPatterns[entry.Key] = hspg;
+                    }
+                }
+            }
+            else
+            {
+                pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+                apg.Configure(sequence.AnalogPattern, apgClockFrequency);
+            }
         }
 
         private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
         {
-            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
-            pg.StopPattern();
-            apg.StopPattern();
+            if (sequence.multipleCards)
+            {
+                foreach (string device in sequence.DigitalPatterns.Keys)
+                {
+                    sequence.DigitalPatterns[device].Clear();
+                    digitalPatterns[device].StopPattern();
+                }
+
+                foreach (string device in sequence.HSDIOPatterns.Keys)
+                { sequence.HSDIOPatterns.Clear();
+                    hsdioPatterns[device].StopPattern();
+                }
+                foreach (DAQMxAnalogPatternGenerator apg in analogPatterns.Values)
+                    apg.StopPattern();
+
+            }
+            else
+            {
+                sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
+                pg.StopPattern();
+                apg.StopPattern();
+            }
         }
 
         #endregion

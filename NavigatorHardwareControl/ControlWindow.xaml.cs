@@ -52,6 +52,7 @@ namespace NavigatorHardwareControl
             Console.SetOut(console);
 
             controller.Start();
+            controller.controlWindow = this;
             //finds all the graphical objects used to display digital and analog values
             foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
             {

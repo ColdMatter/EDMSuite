@@ -248,8 +248,8 @@ namespace NavigatorHardwareControl
             }
             else
             {
-                controller.SetAnalogOutput("horizPiezo", f1.voltages[0]);
-                controller.SetAnalogOutput("vertPiezo", f1.voltages[1]);
+                controller.SetValue("horizPiezo", f1.voltages[0]);
+                controller.SetValue("vertPiezo", f1.voltages[1]);
                 value = controller.ReadAnalogInput("fibrePD", sampleRate, numSamples);
             }
            

@@ -31,6 +31,7 @@ namespace NavigatorHardwareControl
     /// </summary>
     public class Controller : MarshalByRefObject
     {
+        
         #region Constants
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
@@ -154,7 +155,7 @@ namespace NavigatorHardwareControl
         /// back again when returning to LOCAL.
         /// </summary>
         [Serializable]
-        public class HardwareState
+        public class HardwareState : IEnumerable
         {
             //TODO make the objects that reference hardware not controlled via analogue/digital values behave properly
             public Dictionary<string, double[]> ddsValues = new Dictionary<string,double[]>();
@@ -162,6 +163,16 @@ namespace NavigatorHardwareControl
             public Dictionary<string, bool> laserStates = new Dictionary<string,bool>();
             public Dictionary<string, double> analogs;
             public Dictionary<string, bool> digitals;
+
+            //This is useful if we want to loop over this collection
+            public IEnumerator GetEnumerator()
+            {
+                yield return analogs;
+                yield return digitals;
+                yield return laserStates;
+                yield return laserVals;
+                yield return ddsValues;
+            }
 
         }
 
@@ -281,12 +292,12 @@ namespace NavigatorHardwareControl
         }
 
         // setting an analog voltage to an output
-        public void SetAnalogOutput(string channel, double voltage)
+        private void SetAnalogOutput(string channel, double voltage)
         {
             SetAnalogOutput(channel, voltage, false);
         }
         //Overload for using a calibration before outputting to hardware
-        public void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
+        private void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
         {
 
             AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogOutTasks[channelName].Stream);
@@ -330,9 +341,9 @@ namespace NavigatorHardwareControl
         }
         public double ReadAnalogInput(string channelName, bool useCalibration)
         {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogOutTasks[channelName].Stream);
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(analogInTasks[channelName].Stream);
             double val = reader.ReadSingleSample();
-            analogOutTasks[channelName].Control(TaskAction.Unreserve);
+            analogInTasks[channelName].Control(TaskAction.Unreserve);
             if (useCalibration)
             {
                 try
@@ -645,6 +656,8 @@ namespace NavigatorHardwareControl
             hcState = NavHardwareState.LOCAL;
             hardwareState.analogs[channel] = value;
             SetAnalogOutput(channel, value, false);
+            //TODO Fix this so it properly dispatches the call to another thread
+            // controlWindow.console.WriteLine("Set " + channel + " to " + value);
             setValuesDisplayedOnUI(hardwareState);
             hcState = NavHardwareState.OFF;
 
@@ -654,6 +667,7 @@ namespace NavigatorHardwareControl
             hardwareState.analogs[channel] = value;
             hcState = NavHardwareState.LOCAL;
             SetAnalogOutput(channel, value, useCalibration);
+            //controlWindow.console.WriteLine("Set " + channel + " to " + value);
             setValuesDisplayedOnUI(hardwareState);
             hcState = NavHardwareState.OFF;
 
@@ -663,9 +677,48 @@ namespace NavigatorHardwareControl
             hcState = NavHardwareState.LOCAL;
             hardwareState.digitals[channel] = value;
             SetDigitalLine(channel, value);
+            //controlWindow.console.WriteLine("Set " + channel + " to " + value);
             setValuesDisplayedOnUI(hardwareState);
             hcState = NavHardwareState.OFF;
 
+        }
+        /// <summary>
+        /// A generic method to either read the value of an input channel or get the value of one of the outputs using the hardware state
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
+        public object GetValue(string channel)
+        {
+            object value;
+            hcState = NavHardwareState.LOCAL;
+            if (analogInTasks.ContainsKey(channel))
+            {
+                value = ReadAnalogInput(channel);
+                return value;  
+            }
+            foreach( object dict in hardwareState)
+            {
+                Dictionary<string,object> item = dict as Dictionary<string, object>;
+                if (item.ContainsKey(channel))
+                {
+                    return item[channel];
+                }
+            }
+            return "Channel not found in hardware";
+        }
+
+        public object GetValue(string channel,double sampleRate, int samples)
+        {
+            hcState = NavHardwareState.LOCAL;
+            if (analogInTasks.ContainsKey(channel))
+            {
+                double value = ReadAnalogInput(channel,sampleRate,samples);
+                return value;
+            }
+            else
+            {
+                return "Channel not an input channel. Use GetValue(channel)";
+            }
         }
         #endregion
 
