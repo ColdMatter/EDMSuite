@@ -8,7 +8,7 @@ using NationalInstruments.DAQmx;
 
 namespace NavAcquire
 {
-   public class DAQMxAnalogInput()
+   public class DAQMxAnalogInput
    {
        private Task analogInputTask;
 
@@ -16,9 +16,10 @@ namespace NavAcquire
 
        private double[] data;
 
-       void Initialise()
+       public void Initialise()
        {
          
        }
    }
 }
+

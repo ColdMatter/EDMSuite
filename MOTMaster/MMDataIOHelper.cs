@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
-
+using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
@@ -52,7 +52,19 @@ namespace MOTMaster
             //deleteFiles(saveFolder, fileTag);
             deleteFiles(files);
         }
-
+        public void StoreRunJSON(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass, Dictionary<String,Object> dict, Dictionary<String,Object> report)
+        {
+            //Serialises all the data into an XML file
+            string fileTag = getDataID(element, batchNumber);
+            JsonSerializer serializer = new JsonSerializer();
+            using (StreamWriter sw = new StreamWriter(fileTag))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                //For now, this serialises the parameter dictionary and the experiment report.
+                serializer.Serialize(writer, dict);
+                serializer.Serialize(writer, report);
+            }
+        }
         private void deleteFiles(string[] files)
         {
             foreach (string s in files)

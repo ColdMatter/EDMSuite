@@ -126,7 +126,7 @@ namespace DAQ.Pattern
 		}
 
 		/** Generate the pattern. */
-		public void BuildPattern( int length ) 
+		public virtual void BuildPattern( int length ) 
 		{
 			// Are there any events ?
 			if (layout.EventTimes.Count == 0)

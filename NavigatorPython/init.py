@@ -1,13 +1,15 @@
 # Sets up python control of the Nav controller
 
 import clr
+clr.AddReference("IronPython")
+clr.AddReference("IronPython.Modules")
 import sys
 from System.IO import Path
-
+from settings import *
 # Sets references to files
-
-sys.path.append(Path.GetFullPath("..\\NavigatorHardwareControl\\bin\\Debug"))
-sys.path.append(Path.GetFullPath("..\\MOTMaster\\bin\\Debug"))
+#sys.path.append("C:\\Program Files (x86)\\IronPython 2.7\\Lib\\")
+sys.path.append(Path.GetFullPath("..\\NavigatorHardwareControl\\bin\\Nav"))
+sys.path.append(Path.GetFullPath("..\\MOTMaster\\bin\\Nav"))
 path  = "C:\\Users\\Navigator\\Software\\EDMSuite\\"
 #sys.path.append(Path.GetFullPath("NavAnalysis\\bin\\Debug"))
 clr.AddReferenceToFile("NavigatorHardwareControl.exe")
@@ -39,12 +41,19 @@ import System
 import NavigatorHardwareControl
 import MOTMaster
 import NationalInstruments.VisaNS as visa
-#from NavigatorHardwareControl import Controller as hc
-#from MOTMaster import Controller as mm
-#import NavAnalysis 	
-hc = typedproxy(System.Activator.GetObject(NavigatorHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), NavigatorHardwareControl.Controller)
-mm = typedproxy(System.Activator.GetObject(MOTMaster.Controller, 'tcp://localhost:1187/controller.rem'), MOTMaster.Controller)
-#anal = typedproxy(System.Activator.GetObject(NavAnalysis.Controller, 'tcp://localhost:1188/controller.rem'), NavAnalysis.Controller)
+try:
+    if sys.argv[1]:
+        print "using control_ip"
+        ip = control_ip
+    else:
+        print "using localhost"
+        ip = "localhost"
+except:
+    # a hacky way of defaulting to localhost if no extra arguments are passed
+    ip = "localhost"
+    
+hc = typedproxy(System.Activator.GetObject(NavigatorHardwareControl.Controller, 'tcp://'+ip+':1172/controller.rem'), NavigatorHardwareControl.Controller)
+mm = typedproxy(System.Activator.GetObject(MOTMaster.Controller, 'tcp://'+ip+':1187/controller.rem'), MOTMaster.Controller)
 
 
 print "hc object now exists"

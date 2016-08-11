@@ -658,7 +658,7 @@ namespace NavigatorHardwareControl
             SetAnalogOutput(channel, value, false);
             //TODO Fix this so it properly dispatches the call to another thread
             // controlWindow.console.WriteLine("Set " + channel + " to " + value);
-            setValuesDisplayedOnUI(hardwareState);
+            //setValuesDisplayedOnUI(hardwareState);
             hcState = NavHardwareState.OFF;
 
         }

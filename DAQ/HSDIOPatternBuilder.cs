@@ -19,14 +19,15 @@ namespace DAQ.Pattern
         private UInt32[] waveforms;
         // An array of loop times for each waveform
         private int[] loopTimes;
-        
+
+
         public HSDIOPatternBuilder()
         {
             //Clear();
         }
 
         /** Generates a pattern by dividing the layout into a sequence of static values for each waveform **/
-        public void BuildHSDIOPattern(int length)
+        public override void BuildPattern(int length)
         {
             //Used to check if the sequence starts at zero time.
             bool zeroStart = true;

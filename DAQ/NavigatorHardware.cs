@@ -26,15 +26,20 @@ namespace DAQ.HAL
             string hsdioBoard = (string)Boards["hsDigital"];
             string aiBoard = (string)Boards["analogIn"];
 
-            //add various info - these will be added as I think of them. Things such as trigger channels and so on
+            //A list of trigger lines for each card
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
-            Info.Add("analogTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
-            Info.Add("analogTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2"); 
+            Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
+            Info.Add("analogOutTrigger", (string)Boards["analogOut"] + "/PXI_Trig1");
+            Info.Add("analogInTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2");
+            //The sample clock frequencies used by each card - better to define here than in a MOTmaster script
+            Info.Add("hsClockFrequency", 20000000);
+            Info.Add("aoClockFrequency", 100000);
+            Info.Add("aiClockFrequency", 100000); 
             //Add other instruments such as serial channels
             Instruments.Add("muquansSlave", new RS232Instrument("ASRL18::INSTR"));
             Instruments.Add("muquansAOM", new RS232Instrument("ASRL20::INSTR"));
 
-
+            
             //map the digital channels
             //TODO make these work with HSDIO cards
             AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
