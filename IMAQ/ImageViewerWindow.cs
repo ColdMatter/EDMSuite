@@ -127,6 +127,16 @@ namespace IMAQ
 
         }
 
+        private void imageViewer_RoiChanged(object sender, NationalInstruments.Vision.WindowsForms.ContoursChangedEventArgs e)
+        {
+
+        }
+
+        private void consoleRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
       
 

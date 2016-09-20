@@ -44,5 +44,10 @@ namespace DAQ.Analyze
                     " w: " + lastFittedParameters[3].ToString("G3");
             }
         }
+
+        public double returncenter()
+        {
+            return lastFittedParameters[2];
+        }
     }
 }
