@@ -3,8 +3,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
+using DAQ.Environment;
+
 
 
 namespace NavigatorHardwareControl
@@ -20,18 +24,38 @@ namespace NavigatorHardwareControl
         private static string ddsSlaveIPAddress = "192.168.1.125";
         private static string ddsAOMIPAddress = "192.168.1.126";
 
-        public TelnetConnection slaveConn = new TelnetConnection(slaveIPAddress, 23);
-        public TelnetConnection edfaConn = new TelnetConnection(edfaIPAddress, 23);
-        public TelnetConnection ddsSlaveConn = new TelnetConnection(ddsSlaveIPAddress, 23);
-        public TelnetConnection ddsAOMConn = new TelnetConnection(ddsAOMIPAddress, 23);
-
+        public TelnetConnection slaveConn;
+        public TelnetConnection edfaConn;
+        public TelnetConnection ddsSlaveConn;
+        public TelnetConnection ddsAOMConn;
         public Process slaveDDS = new Process();
         public Process aomDDS = new Process();
 
 
         public void Start()
         {
-
+            if (!Environs.Debug)
+            {
+                //Use connections to the Muquans laser
+                slaveConn = new TelnetConnection(slaveIPAddress, 23);
+                edfaConn = new TelnetConnection(edfaIPAddress, 23);
+                ddsSlaveConn = new TelnetConnection(ddsSlaveIPAddress, 23);
+                ddsAOMConn = new TelnetConnection(ddsAOMIPAddress, 23);
+            }
+            else
+            {
+                try
+                {
+                    slaveConn = new TelnetConnection("127.0.0.1", 6000);
+                    edfaConn = new TelnetConnection("127.0.0.1", 6001);
+                    ddsSlaveConn = new TelnetConnection("127.0.0.1", 6002);
+                    ddsAOMConn = new TelnetConnection("127.0.0.1", 6003);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Couldn't start muquans connections: " + e.Message);
+                }
+            }
         }
         public ProcessStartInfo ConfigureDDS(string id, int port)
         {
@@ -56,14 +80,17 @@ namespace NavigatorHardwareControl
         {
 
         }
-
-        public TextReader LockLaser(string laser)
+        
+        public void LockLaser(object laser)
         {
-            string msg = "ukus autolock_" + laser;
+            string msg = "ukus autolock_" + (string)laser;
             slaveConn.WriteLine(msg);
             TextReader reader = slaveConn.ReadStream();
-            //Returns the reader so other classes can do stuff with the output and then close the reader
-            return reader;
+            while (true)
+            {
+                string line = reader.ReadLine();
+                Console.WriteLine(line);
+            }
         }
         public void ScanMasterLaser()
         {
@@ -101,6 +128,30 @@ namespace NavigatorHardwareControl
             edfaConn.WriteLine(msg);
             String val = edfaConn.Read();
             Console.WriteLine(val);
+        }
+        public void UpdateDDS(Dictionary<string,double[]> slaveVals,Dictionary<string,double[]> mphiVals, double[] ramanVals)
+        {
+            if (slaveVals != null)
+            {
+            foreach (KeyValuePair<string,double[]> entry in slaveVals)
+            {
+                string msg = "ukus dds_"+entry.Key+"_set "+entry.Value[0].ToString()+"e6 "+entry.Value[1].ToString();
+                ddsSlaveConn.WriteLine(msg);
+            }
+            }
+            if (mphiVals != null)
+            {
+                foreach (KeyValuePair<string, double[]> entry in mphiVals)
+                {
+                    string msg = "ukus dds_" + entry.Key + "_set " + entry.Value[0].ToString() + " " + entry.Value[1].ToString();
+                    ddsAOMConn.WriteLine(msg);
+                }
+            }
+            if (ramanVals!=null)
+            {
+                string msg = "ukus dds_raman_set " + ramanVals[0].ToString() + "e6 " + ramanVals[1].ToString();
+                ddsSlaveConn.WriteLine(msg);
+            }
         }
     }
 

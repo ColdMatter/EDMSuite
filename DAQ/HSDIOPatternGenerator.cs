@@ -10,21 +10,21 @@ namespace DAQ.HAL
     /// <summary>
     /// A class to control the PatternList generator using a HSDIO card. This is designed to operate similarly to the DAQMxPatternGenerator
     /// </summary>
-    public class HSDIOPatternGenerator : PatternGenerator
+    public class HSDIOPatternGenerator : DAQMxPatternGenerator
     {
         //The HSDIO cards do not have Task objects. Instead the card is initialised for generation or acquisition and the waveform is written to the card
         private niHSDIO hsTask;
-        private String device;
+        private string device;
         private double clockFrequency;
         private int length;
         private int[] loopTimes;
-        
-        public HSDIOPatternGenerator(String device)
+
+        public HSDIOPatternGenerator(String device):base(device)
         {
             this.device = device;
         }
         
-        public void Configure(double clockFrequency, bool loop, bool fullWidth, bool lowGroup, int length, bool internalClock, bool triggered)
+        public void Configure(double clockFrequency, bool loop, int length, bool internalClock, bool triggered)
         {
             this.clockFrequency = clockFrequency;
             this.length = length;

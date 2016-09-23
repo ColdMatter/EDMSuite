@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
@@ -40,8 +40,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SympatheticMOTMasterScripts", "SympatheticMOTMasterScripts\SympatheticMOTMasterScripts.csproj", "{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavigatorHardwareControl", "NavigatorHardwareControl\NavigatorHardwareControl.csproj", "{9B288421-2702-47E7-86FB-CBB85BE743F8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavigatorAcquire", "NavigatorMOTMasterScripts\NavigatorAcquire.csproj", "{3627E413-77E4-47DE-A577-2C365EA0E713}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -973,66 +971,6 @@ Global
 		{9B288421-2702-47E7-86FB-CBB85BE743F8}.Sympathetic|Mixed Platforms.Build.0 = Release|Any CPU
 		{9B288421-2702-47E7-86FB-CBB85BE743F8}.Sympathetic|x86.ActiveCfg = Release|Any CPU
 		{9B288421-2702-47E7-86FB-CBB85BE743F8}.Sympathetic|x86.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.AnritsuVNA|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.AnritsuVNA|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.AnritsuVNA|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.AnritsuVNA|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.AnritsuVNA|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Buffer|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Buffer|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Buffer|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Buffer|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Buffer|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.BufferClassic|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.BufferClassic|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.BufferClassic|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.BufferClassic|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.BufferClassic|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.CaF|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.CaF|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.CaF|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.CaF|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.CaF|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Decelerator|Any CPU.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Decelerator|Any CPU.Build.0 = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Decelerator|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Decelerator|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Decelerator|x86.ActiveCfg = Debug|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDM|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDM|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDM|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDM|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDM|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDMAnalysis|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDMAnalysis|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDMAnalysis|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDMAnalysis|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.EDMAnalysis|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Nav|Any CPU.ActiveCfg = Nav|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Nav|Any CPU.Build.0 = Nav|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Nav|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Nav|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Nav|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Release|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.SrF|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.SrF|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.SrF|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.SrF|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.SrF|x86.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Sympathetic|Any CPU.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Sympathetic|Any CPU.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Sympathetic|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Sympathetic|Mixed Platforms.Build.0 = Release|Any CPU
-		{3627E413-77E4-47DE-A577-2C365EA0E713}.Sympathetic|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

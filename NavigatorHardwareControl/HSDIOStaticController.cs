@@ -26,8 +26,10 @@ namespace NavigatorHardwareControl
             this.deviceName = deviceName;
             this.channelList = channelList;
 
-            my_niHSDIO = niHSDIO.InitGenerationSession(deviceName, true, false, "");
-            my_niHSDIO.AssignStaticChannels(channelList);
+                ReclaimHardware();
+               
+   
+
 
             HSDigitalChannels = new Dictionary<string, int>();
 
@@ -36,7 +38,7 @@ namespace NavigatorHardwareControl
             {
                 ChannelValues[i] = false;
             }
-        }
+            }
 
         public void CreateHSDigitalTask(string name, int channelNumber)
         {
@@ -64,6 +66,7 @@ namespace NavigatorHardwareControl
         public void ReleaseHardware()
         {
             my_niHSDIO.Dispose();
+          
         }
 
         public void ReclaimHardware()

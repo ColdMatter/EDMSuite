@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 using NationalInstruments.DAQmx;
 
@@ -20,21 +21,35 @@ namespace DAQ.HAL
             //The HSDIO card cannot be referenced with a leading forward slash like DAQ cards
             Boards.Add("hsDigital", "Dev3");
             Boards.Add("analogIn", "/Dev4");
-
             string multiBoard = (string)Boards["multiDAQ"];
             string aoBoard = (string)Boards["analogOut"];
             string hsdioBoard = (string)Boards["hsDigital"];
             string aiBoard = (string)Boards["analogIn"];
+            //Collect each type of board into a list - this is useful if we need to loop over each
+            List<string> aoBoards = new List<string>();
+            List<string> aiBoards = new List<string>();
+            List<string> doBoards = new List<string>();
+            aoBoards.Add(multiBoard);
+            aiBoards.Add(aiBoard);
+            aiBoards.Add(multiBoard);
+            doBoards.Add(hsdioBoard);
+
+
 
             //A list of trigger lines for each card
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
             Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
-            Info.Add("analogOutTrigger", (string)Boards["analogOut"] + "/PXI_Trig1");
+            Info.Add("AOPatternTrigger", (string)Boards["analogOut"] + "/PXI_Trig1");
             Info.Add("analogInTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2");
             //The sample clock frequencies used by each card - better to define here than in a MOTmaster script
             Info.Add("hsClockFrequency", 20000000);
-            Info.Add("aoClockFrequency", 100000);
-            Info.Add("aiClockFrequency", 100000); 
+            Info.Add("apgClockFrequency", 100000);
+            Info.Add("aiClockFrequency", 100000);
+            //Add identifiers for each card
+          
+            Info.Add("analogOutBoards", aoBoards);
+            Info.Add("analogInBoards", aiBoards);
+            Info.Add("digitalBoards", doBoards); 
             //Add other instruments such as serial channels
             Instruments.Add("muquansSlave", new RS232Instrument("ASRL18::INSTR"));
             Instruments.Add("muquansAOM", new RS232Instrument("ASRL20::INSTR"));
@@ -48,14 +63,14 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
             AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
-            AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 6);
-            AddDigitalOutputChannel("shutter", hsdioBoard, 0, 7);
-            AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 8);
-            AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 9);
-            AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 10);
-            AddDigitalOutputChannel("zmaomTTL", hsdioBoard, 0, 11);
+            AddDigitalOutputChannel("shutter", hsdioBoard, 0, 6);
+            AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
+            AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 8);
+            AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 9);
+            AddDigitalOutputChannel("zmaomTTL", hsdioBoard, 0, 10);
+            AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
-            AddDigitalOutputChannel("2daomTTL", hsdioBoard, 0, 13);
+            AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
 
             //map the analog output channels
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);

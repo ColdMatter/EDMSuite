@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using System.IO;
 using System.Drawing;
 using NationalInstruments.Controls;
 using NationalInstruments.Controls.Primitives;
+using System.Threading;
 using DAQ.Environment;
 
 namespace NavigatorHardwareControl
@@ -36,6 +38,7 @@ namespace NavigatorHardwareControl
         private Dictionary<string, LED> doLEDs; 
         private bool isReading;
         public double intensityScale = 1.0;
+        public UIData ui;
 
         private static readonly GraphQueryArgs query = new GraphQueryArgs(
       PlotsToSearch.Any, SearchDimensions.HorizontalAndVertical,
@@ -44,6 +47,8 @@ namespace NavigatorHardwareControl
         public ControlWindow()
         {
             InitializeComponent();
+            ui = new UIData();
+            this.DataContext = ui;
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = App.controller;
            
@@ -53,15 +58,16 @@ namespace NavigatorHardwareControl
 
             controller.Start();
             controller.controlWindow = this;
-            //finds all the graphical objects used to display digital and analog values
-            foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
-            {
-                aoTextBoxes[tb.Name] = tb;
-            }
-            foreach (LED led in FindVisualChildren<LED>(hardwareControl))
-            {
-                doLEDs[led.Name] = led;
-            }
+            
+            //TODO fix this based on the UIData class
+            //foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
+            //{
+            //    aoTextBoxes[tb.Name] = tb;
+            //}
+            //foreach (LED led in FindVisualChildren<LED>(hardwareControl))
+            //{
+            //    doLEDs[led.Name] = led;
+            //}
 
             //controller.Start();
 
@@ -69,7 +75,9 @@ namespace NavigatorHardwareControl
             piezoMap.PlotAreaMouseMove += this.OnPlotAreaMouseMove;
             piezoMap.PlotAreaMouseLeave += delegate { piezoMap.ToolTip = null; };
             ToolTipService.SetInitialShowDelay(piezoMap, 0);
-            ToolTipService.SetShowDuration(piezoMap, int.MaxValue); 
+            ToolTipService.SetShowDuration(piezoMap, int.MaxValue);
+
+            Closing += OnWindowClosing; 
            
         }
 
@@ -125,26 +133,6 @@ namespace NavigatorHardwareControl
             console.WriteLine(text);
         }
 
-
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
         #endregion
 
         #region Accessor Methods
@@ -204,14 +192,7 @@ namespace NavigatorHardwareControl
             }
             if (button.Value)
             {
-                //TODO implement a more stable asynchronous reader
-                reader = controller.LockLaser(laserID);
-                isReading = true;
-                while (isReading)
-                {
-                    line = reader.ReadLine();
-                    await console.WriteLineAsync(line);
-                }
+                controller.LockLaser(laserID);
                 WriteToConsole("Locked " + laserID);
 
             }
@@ -365,25 +346,26 @@ namespace NavigatorHardwareControl
                     nearestValue.Value.Cast<object>().ToArray());
         }
 
-        private void ChannelManager_Click(object sender, RoutedEventArgs e)
-        {
-            Window window = new Window
-            {
-                Title = "Navigator Settings",
-                Content = new ChannelManagerForm(),
-            };
-
-            //  window.Closing += ChannelManagerForm.OnWindowClosing;
-            window.ShowDialog();
-
-        }
+       
 
         private void ddsupdateButton_Click(object sender, RoutedEventArgs e)
         {
             //TODO Implement DDS update
+            
             controller.UpdateDDS();
         }
         #endregion
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            if (controller.hsdio != null)
+                controller.hsdio.ReleaseHardware();
+
+        }
+
+        private void StopStream_Click(object sender, RoutedEventArgs e)
+        {
+            controller.CloseLaserThread();
+        }
     }
 
     #region Other ControlWindow classes
@@ -419,7 +401,38 @@ namespace NavigatorHardwareControl
         }
 
     }
+    //This is used to store the values from various text boxes and check boxes in the UI
+    [Serializable]
+    public class UIData
+    {
+        public UIData() { }
 
+        public bool lockMaster { get; set; }
+        public bool lockSlave0 { get; set; }
+        public bool lockSlave1 { get; set; }
+        public bool lockSlave2 { get; set; }
+
+        public bool edfa0lock { get; set; }
+        public bool edfa1lock { get; set; }
+        public bool edfa2lock { get; set; }
+
+        public bool edfa0type { get; set; }
+        public bool edfa1type { get; set; }
+        public bool edfa2type { get; set; }
+
+        public string edfa0value { get; set; }
+        public string edfa1value { get; set; }
+        public string edfa2value { get; set; }
+
+        public string slave0dds { get; set; }
+        public string slave1dds { get; set; }
+        public string slave2dds { get; set; }
+        public string ramandds { get; set; }
+
+        public string mphidds { get; set; }
+        public string aomMOTdds { get; set; }
+        public string aomRamandds { get; set; }
+    }
 #endregion
 
 }

@@ -16,9 +16,10 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|AnyCPU'">
-    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
-    <RemoteDebugEnabled>true</RemoteDebugEnabled>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
     <RemoteDebugMachine>Navigator-ANAL</RemoteDebugMachine>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU'">
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>

@@ -95,19 +95,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelManagerForm.xaml.cs">
-      <DependentUpon>ChannelManagerForm.xaml</DependentUpon>
-    </Compile>
     <Compile Include="FibreAligner.cs" />
     <Compile Include="HSDIOStaticController.cs" />
     <Compile Include="TelnetConnection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ChannelManagerForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ControlWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

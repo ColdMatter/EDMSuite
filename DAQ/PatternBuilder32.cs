@@ -85,8 +85,23 @@ namespace DAQ.Pattern
             return DownPulse(startTime, delay, duration,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channel]).BitNumber);
         }
-		/** Convenience method to determine the channel number from a NI port/line spec. */
-		public static int ChannelFromNIPort(int port, int line) 
+
+        public int Pulse(int clockFrequency,double startTime, double delay, double duration, string channel)
+        {
+
+            return Pulse((int)(startTime * clockFrequency), (int)(delay * clockFrequency), (int)(duration * clockFrequency), channel);
+        }
+        public void AddEdge(string channel, double time, bool sense, int clockFrequency)
+        {
+            AddEdge(channel, (int)(time * clockFrequency), sense);
+        }
+        public int DownPulse(int clockFrequency,double startTime, double delay, double duration, string channel)
+        {
+            return DownPulse((int)(startTime * clockFrequency), (int)(delay * clockFrequency), (int)(duration * clockFrequency), channel);
+        }
+
+        /** Convenience method to determine the channel number from a NI port/line spec. */
+        public static int ChannelFromNIPort(int port, int line) 
 		{
 			return line + (8 * port);
 		}		

@@ -77,6 +77,14 @@ namespace DAQ.HAL
         {
             return Info[key];
         }
+        //A method to check if a certain info item is contained in the hardware.
+        public bool ContainsInfo(object value)
+        {
+            if (Info.ContainsValue(value))
+                return true;
+            else
+                return false;
+        }
 
 		protected void AddAnalogInputChannel(
 			String name,

@@ -26,11 +26,14 @@ namespace DAQ.Pattern
             //Clear();
         }
 
+
+       
         /** Generates a pattern by dividing the layout into a sequence of static values for each waveform **/
         public override void BuildPattern(int length)
         {
             //Used to check if the sequence starts at zero time.
             bool zeroStart = true;
+          
             // Check there are events
             if (Layout.EventTimes.Count == 0)
                 throw new PatternBuildException("No events to build patterns for.");
@@ -39,6 +42,7 @@ namespace DAQ.Pattern
                 throw new PatternBuildException("Pattern will not fit in array of requested length.\n"
                     + "Pattern length is " + Layout.LastEventTime + ". Array length is " + length);
             ArrayList times = Layout.EventTimes;
+            loopTimes = new int[Layout.EventTimes.Count];
             int numberOfEvents = times.Count;
             waveforms = new UInt32[numberOfEvents];
             //make the first waveform before the first event

@@ -43,7 +43,7 @@ namespace NavigatorHardwareControl
 
         //table of digital tasks
         private Dictionary<string,Task> digitalTasks;
-
+        
         //dictionary of analog output tasks
         private Dictionary<string, Task> analogOutTasks;
         private Dictionary<string, Task> analogInTasks;
@@ -72,6 +72,8 @@ namespace NavigatorHardwareControl
         public StreamReader slaveErr;
         public StreamReader aomErr;
 
+        //Used for locking the laser - only one can be running at once
+        private Thread laserThread;
         public void Start()
         {
             if (Environs.Hardware.GetType() != new DAQ.HAL.NavigatorHardware().GetType())
@@ -133,17 +135,43 @@ namespace NavigatorHardwareControl
                     muquans.slaveDDS.Start();
                     muquans.aomDDS.Start();
 
+                   //Adds Muquans parameters to hardwareState - probably a better way to define this
+                    hardwareState.analogs["Slave0dds"] = 0.0;
+                    hardwareState.analogs["Slave1dds"] = 0.0;
+                    hardwareState.analogs["Slave2dds"] = 0.0;
+                    hardwareState.analogs["Ramandds"] = 0.0;
+                    hardwareState.analogs["Mphidds"] = 0.0;
+                    hardwareState.analogs["Motdds"] = 0.0;
+                    hardwareState.analogs["EDFA0Val"] = 0.0;
+                    hardwareState.analogs["EDFA1Val"] = 0.0;
+                    hardwareState.analogs["EDFA2Val"] = 0.0;
+
+                    hardwareState.digitals["MasterLock"] = false;
+                    hardwareState.digitals["Slave0Lock"] = false;
+                    hardwareState.digitals["Slave1Lock"] = false;
+                    hardwareState.digitals["Slave2Lock"] = false;
+                    hardwareState.digitals["EDFA0Lock"] = false;
+                    hardwareState.digitals["EDFA1Lock"] = false;
+                    hardwareState.digitals["EDFA2Lock"] = false;
+
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
                 }
-               
+        
+        
             }
-
+            else
+            {
+                muquans = new MuquansCommunicator();
+                muquans.Start();
+            }
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
+           
         }
+
         #endregion
 
         #region Parameter Serialisation and Hardware State Tracking
@@ -158,26 +186,26 @@ namespace NavigatorHardwareControl
         public class HardwareState : IEnumerable
         {
             //TODO make the objects that reference hardware not controlled via analogue/digital values behave properly
-            public Dictionary<string, double[]> ddsValues = new Dictionary<string,double[]>();
-            public Dictionary<string, double> laserVals = new Dictionary<string,double>();
-            public Dictionary<string, bool> laserStates = new Dictionary<string,bool>();
+
             public Dictionary<string, double> analogs;
             public Dictionary<string, bool> digitals;
+
+            public UIData muquansUI;
+
+          
 
             //This is useful if we want to loop over this collection
             public IEnumerator GetEnumerator()
             {
                 yield return analogs;
                 yield return digitals;
-                yield return laserStates;
-                yield return laserVals;
-                yield return ddsValues;
             }
 
         }
 
         public void SaveParametersWithDialog()
         {
+            readValuesOnUI();
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "nav parameters|*.bin";
             saveFileDialog1.Title = "Save parameters";
@@ -215,6 +243,7 @@ namespace NavigatorHardwareControl
 
         public void LoadParametersWithDialog()
         {
+            //TODO fix deserialisation of binary object for UIData class.
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "navhc parameters|*.bin";
             dialog.Title = "Load parameters";
@@ -290,11 +319,15 @@ namespace NavigatorHardwareControl
             task.Control(TaskAction.Verify);
             analogOutTasks.Add(channel, task);
         }
+        //TODO implement Creation of Task with multiple channels
 
-        // setting an analog voltage to an output
+        // setting an analog voltage to an output. Since the hardware state also keeps track of the muquans laser values which are set elsewhere, for the moment this does nothing with them.
         private void SetAnalogOutput(string channel, double voltage)
         {
-            SetAnalogOutput(channel, voltage, false);
+            if(analogOutTasks.ContainsKey(channel))
+                SetAnalogOutput(channel, voltage, false);
+   
+
         }
         //Overload for using a calibration before outputting to hardware
         private void SetAnalogOutput(string channelName, double voltage, bool useCalibration)
@@ -362,7 +395,7 @@ namespace NavigatorHardwareControl
             }
         }
 
-        public double ReadAnalogInput(string channel, double sampleRate, int numOfSamples)
+        public object ReadAnalogInput(string channel, double sampleRate, int numOfSamples, bool average)
         {
             Task task = analogInTasks[channel];
             //Configure the timing parameters of the task
@@ -373,15 +406,18 @@ namespace NavigatorHardwareControl
             AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
             double[] valArray = reader.ReadMultiSample(numOfSamples);
             task.Control(TaskAction.Unreserve);
-
-            //Calculate the average of the samples
-            double sum = 0;
-            for (int j = 0; j < numOfSamples; j++)
-            {
-                sum = sum + valArray[j];
+            if (!average)
+                return valArray;
+            else
+            {   //Calculate the average of the samples
+                double sum = 0;
+                for (int j = 0; j < numOfSamples; j++)
+                {
+                    sum = sum + valArray[j];
+                }
+                double val = sum / numOfSamples;
+                return val;
             }
-            double val = sum / numOfSamples;
-            return val;
         }
 
         private void CreateDigitalTask(String name)
@@ -422,9 +458,68 @@ namespace NavigatorHardwareControl
                 digitalTask.Control(TaskAction.Unreserve);
             }
             else
-                hsdio.SetHSDigitalLine(name, value);
+                try
+                {
+                    hsdio.SetHSDigitalLine(name, value);
+                }
+                catch (Exception)
+                {
+                    
+                    Console.WriteLine("Couldn't set the ouptut of "+name+". If this is a Muquans laser value, this is expected.");
+                }
+               
+        }
+        /// <summary>
+        /// Creates a separate task for each hardware channel
+        /// </summary>
+        private void CreateAllTasks()
+        {
+            if (Environs.Hardware.Boards.ContainsKey("hsDigital"))
+            //The simplest thing is to make all the output channels static.Before running a sequence, the output is aborted and configured for dynamic generation
+            {
+                hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
+                foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
+                {
+                    DigitalOutputChannel doChannel = (DigitalOutputChannel)channel.Value;
+                    if (doChannel.Device == (string)Environs.Hardware.Boards["hsDigital"])
+                        hsdio.CreateHSDigitalTask((string)channel.Key, doChannel.BitNumber);
+                    else
+                        CreateDigitalTask((string)channel.Key);
+                }
+            }
+            else
+                foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys)
+                    CreateDigitalTask(channel);
+            //Create the analogue tasks
+            foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys)
+                CreateAnalogOutputTask(channel);
+            foreach (string channel in Environs.Hardware.AnalogInputChannels.Keys)
+                CreateAnalogInputTask(channel);
+               
         }
 
+        /// <summary>
+        /// Saves all the parameters from the state record and stops all the tasks
+        /// </summary>
+        private void FinishAllTasks()
+        {
+            foreach (string name in analogOutTasks.Keys)
+            {
+                analogOutTasks[name].Control(TaskAction.Stop);
+            }
+            foreach (string name in digitalTasks.Keys)
+            {
+                digitalTasks[name].Control(TaskAction.Stop);
+            }
+            foreach (string name in analogInTasks.Keys)
+            {
+                analogInTasks[name].Control(TaskAction.Stop);
+            }
+            //Releases the hsdio card
+            hsdio.ReleaseHardware();
+            
+            
+        }
         #endregion
 
         #region Controlling Hardware with UI
@@ -556,6 +651,7 @@ namespace NavigatorHardwareControl
             HardwareState state = new HardwareState();
             state.analogs = readUIAnalogs(hardwareState.analogs.Keys);
             state.digitals = readUIDigitals(hardwareState.digitals.Keys);
+            state.muquansUI = controlWindow.ui;
             return state;
         }
 
@@ -603,6 +699,7 @@ namespace NavigatorHardwareControl
                 controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
             }
         }
+
 #endregion
 
         #region Remoting stuff
@@ -678,7 +775,7 @@ namespace NavigatorHardwareControl
             hardwareState.digitals[channel] = value;
             SetDigitalLine(channel, value);
             //controlWindow.console.WriteLine("Set " + channel + " to " + value);
-            setValuesDisplayedOnUI(hardwareState);
+            //setValuesDisplayedOnUI(hardwareState);
             hcState = NavHardwareState.OFF;
 
         }
@@ -712,13 +809,34 @@ namespace NavigatorHardwareControl
             hcState = NavHardwareState.LOCAL;
             if (analogInTasks.ContainsKey(channel))
             {
-                double value = ReadAnalogInput(channel,sampleRate,samples);
+                double value = (double)ReadAnalogInput(channel,sampleRate,samples,true);
                 return value;
             }
             else
             {
                 return "Channel not an input channel. Use GetValue(channel)";
             }
+        }
+
+        public Dictionary<string,string> GetChannels()
+        {
+            Dictionary<string, string> channels = new Dictionary<string,string>();
+            foreach (DictionaryEntry ao in Environs.Hardware.AnalogOutputChannels)
+            {
+                AnalogOutputChannel aoChan = (AnalogOutputChannel)ao.Value;
+                channels[(string)ao.Key] = aoChan.PhysicalChannel;
+            }
+            foreach (DictionaryEntry dio in Environs.Hardware.DigitalOutputChannels)
+            {
+                DigitalOutputChannel doChan = (DigitalOutputChannel)dio.Value;
+                channels[(string)dio.Key] = doChan.PhysicalChannel;
+            }
+            foreach (DictionaryEntry ai in Environs.Hardware.AnalogInputChannels)
+            {
+                AnalogInputChannel aiChan = (AnalogInputChannel)ai.Value;
+                channels[(string)ai.Key] = aiChan.PhysicalChannel;
+            }
+            return channels;
         }
         #endregion
 
@@ -744,11 +862,32 @@ namespace NavigatorHardwareControl
             muquans.StopEDFA(id);
         }
 
-        public TextReader LockLaser(string laserID)
+        public void LockLaser(string laserID)
         {
-            return muquans.LockLaser(laserID);
+            //Starts this in a new Thread and runs until a user input closes the thread
+            if (laserThread.IsAlive)
+            {
+                Console.WriteLine("A laser is currently being locked. Wait until that has finished before locking another");
+            }
+            else
+            {
+                Console.WriteLine("Starting to lock " + laserID);
+                laserThread = new Thread(new ParameterizedThreadStart(muquans.LockLaser));
+                laserThread.Start(laserID);
+
+            }
+
         }
 
+        public void CloseLaserThread()
+        {
+            if (laserThread != null)
+            {
+                if(laserThread.IsAlive)
+                    laserThread.Abort();
+                    Console.WriteLine("Finished Laser Lock");
+            }
+        }
         public void UnlockLaser(string laserID)
         {
             muquans.UnlockLaser(laserID);
@@ -775,7 +914,7 @@ namespace NavigatorHardwareControl
                     horizVolt = 10.0 * i / numSteps;
                     SetAnalogOutput("horizPiezo", horizVolt);
                     SetAnalogOutput("vertPiezo", vertVolt);
-                    double value = ReadAnalogInput("fibrePD",sampleRate,numSamples);
+                    double value = (double)ReadAnalogInput("fibrePD",sampleRate,numSamples,true);
                     scanData[i, j] = value;
                 }
             }

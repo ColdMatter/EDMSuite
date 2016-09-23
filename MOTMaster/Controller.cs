@@ -26,6 +26,7 @@ using IMAQ;
 using System.Runtime.InteropServices;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Linq;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
@@ -59,15 +60,16 @@ namespace MOTMaster
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        //TODO modify these based on the hardware class
-       private int pgClockFrequency = 10000;
-       private int apgClockFrequency = 10000;
-       private int hsClockFrequency = 25000000;
+       
+       private int pgClockFrequency;
+       private int apgClockFrequency;
+       private int hsClockFrequency;
 
-    ControllerWindow controllerWindow;
+     ControllerWindow controllerWindow;
 
         public DAQMxPatternGenerator pg;
         public DAQMxAnalogPatternGenerator apg;
+        public HSDIOPatternGenerator hs;
 
         List<DAQMxAnalogPatternGenerator> analogPatterns;
         List<DAQMxPatternGenerator> digitalPatterns;
@@ -95,9 +97,26 @@ namespace MOTMaster
 
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
+            //Tries to get these frequencies from the hardware class. If not possible, chooses default values
+            if (Environs.Hardware.ContainsInfo("pgClockFrequency"))
+                pgClockFrequency = (int)Environs.Hardware.GetInfo("pgClockFrequency");
+            else
+             pgClockFrequency = 10000;
+
+            if (Environs.Hardware.ContainsInfo("apgClockFrequency"))
+                apgClockFrequency = (int)Environs.Hardware.GetInfo("apgClockFrequency");
+            else
+            apgClockFrequency = 10000;
+            if (Environs.Hardware.ContainsInfo("hsClockFrequency"))
+                hsClockFrequency = (int)Environs.Hardware.GetInfo("hsClockFrequency");
+            else
+                hsClockFrequency = 25000000;
+
             //TODO Make this use the hardware class to figure out what pattern generators to define
             //digitalPatterns.Add(new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]));
             //analogOutPatterns.Add(new DAQMxAnalogPatternGenerator());
+            analogPatterns = new List<DAQMxAnalogPatternGenerator>();
+            digitalPatterns = new List<DAQMxPatternGenerator>();
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -157,33 +176,45 @@ namespace MOTMaster
                 //This assumes that the key used for each pattern is the device name.
                 if (sequence.DigitalPatterns != null)
                 {
-                    foreach (KeyValuePair<string,PatternBuilder32> entry in sequence.DigitalPatterns)
-                    {
-                        pg = new DAQMxPatternGenerator(entry.Key);
-                        //TODO Change this so that each device card can have a separate clockfrequency or triggering condition - perhaps something that subclasses PatternBuilder32 with more device information.
-                        pg.Configure(pgClockFrequency, false, true, true, entry.Value.Pattern.Length, true, true);
-                        digitalPatterns[entry.Key] = pg;
+                    int i = 0;
+                    try {
+                        List<string> digitalBoards = (List<string>)Environs.Hardware.GetInfo("digitalBoards");
+                        foreach (HSDIOPatternBuilder entry in sequence.DigitalPatterns.OfType<HSDIOPatternBuilder>())
+                        {
+                            hs = new HSDIOPatternGenerator((string)digitalBoards[i]);
+                            i++;
+                            hs.Configure(hsClockFrequency, false, entry.Pattern.Length, true, true);
+                            digitalPatterns.Add(hs);
+                        }
+                        foreach (PatternBuilder32 entry in sequence.DigitalPatterns.OfType<PatternBuilder32>())
+                        {
+                            pg = new DAQMxPatternGenerator((string)digitalBoards[i]);
+                            i++;
+                            //TODO Change this so that each device card can have a separate clockfrequency or triggering condition - perhaps something that subclasses PatternBuilder32 with more device information.
+                            pg.Configure(pgClockFrequency, false, true, true, entry.Pattern.Length, true, true);
+                            digitalPatterns.Add(pg);
+                        }
 
+                    
+                 
+                }
+                catch (Exception e)
+                    {
+                        MessageBox.Show("Couldn't initialise hardware assuming multiple cards - check they defined in the Hardware class. " + e.Message);
                     }
+               
                 }
                 if (sequence.AnalogPatterns != null)
                 {
-                    foreach (KeyValuePair<string, AnalogPatternBuilder> entry in sequence.AnalogPatterns)
+                    foreach (AnalogPatternBuilder entry in sequence.AnalogPatterns)
                     {
                         apg = new DAQMxAnalogPatternGenerator();
-                        apg.Configure(entry.Value, apgClockFrequency);
-                        analogPatterns[entry.Key] = apg;
+                        apg.Configure(entry, apgClockFrequency);
+                        analogPatterns.Add(apg);
                     }
                 }
-                if (sequence.HSDIOPatterns != null)
-                {
-                    foreach (KeyValuePair<string, HSDIOPatternBuilder> entry in sequence.HSDIOPatterns)
-                    {
-                        HSDIOPatternGenerator hspg = new HSDIOPatternGenerator(entry.Key);
-                        hspg.Configure(hsClockFrequency, false, true, true, entry.Value.Pattern.Length, true, true);
-                        hsdioPatterns[entry.Key] = hspg;
-                    }
-                }
+              
+                
             }
             else
             {
@@ -196,18 +227,16 @@ namespace MOTMaster
         {
             if (sequence.multipleCards)
             {
-                foreach (string device in sequence.DigitalPatterns.Keys)
+              for (int i = 0; i<sequence.DigitalPatterns.Count;i++)
                 {
-                    sequence.DigitalPatterns[device].Clear();
-                    digitalPatterns[device].StopPattern();
+                    sequence.DigitalPatterns[i].Clear();
+                    digitalPatterns[i].StopPattern();
                 }
 
-                foreach (string device in sequence.HSDIOPatterns.Keys)
-                { sequence.HSDIOPatterns.Clear();
-                    hsdioPatterns[device].StopPattern();
+              for(int i=0; i<sequence.AnalogPatterns.Count;i++)
+                {
+                    analogPatterns[i].StopPattern();
                 }
-                foreach (DAQMxAnalogPatternGenerator apg in analogPatterns.Values)
-                    apg.StopPattern();
 
             }
             else
@@ -485,9 +514,9 @@ namespace MOTMaster
         {
             if (sequence.multipleCards)
             {
-                foreach (PatternBuilder32 digPattern in sequence.DigitalPatterns.Values)
+                foreach (PatternBuilder32 digPattern in sequence.DigitalPatterns)
                     digPattern.BuildPattern(patternLength);
-                foreach (AnalogPatternBuilder analogPattern in sequence.AnalogPatterns.Values)
+                foreach (AnalogPatternBuilder analogPattern in sequence.AnalogPatterns)
                     analogPattern.BuildPattern();
             }
             else
