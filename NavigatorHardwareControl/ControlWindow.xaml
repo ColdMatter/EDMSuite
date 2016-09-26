@@ -5,29 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NavigatorHardwareControl"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" 
-        x:Class="NavigatorHardwareControl.ControlWindow">
+        x:Class="NavigatorHardwareControl.ControlWindow" Height="449.18" Width="582.925">
     <Window.DataContext>
         <local:UIData/>
     </Window.DataContext>
     <Grid Background="#FFE5E5E5">
-        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="100" KeyDown="consoleRichTextBox_KeyDown">
-        </RichTextBox>
-        <TabControl x:Name="hardwareControl" Margin="0,25,131,105.5">
+        <RichTextBox x:Name="consoleRichTextBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontFamily="Courier New" Background="Black" Foreground="Lime" Height="143" KeyDown="consoleRichTextBox_KeyDown"/>
+        <TabControl x:Name="hardwareControl" Margin="0,25,86,147.5">
             <TabItem Header="Muquans Laser">
                 <Grid Background="#FFE5E5E5" Margin="0">
-                    <GroupBox x:Name="externalGroup" Header="External Control" HorizontalAlignment="Left" Margin="300,325,0,0" VerticalAlignment="Top" Height="122" Width="210">
-                        <Grid Height="100" Margin="0,0,0,0" Width="200">
-                            <Label x:Name="label7" Content="MOT" Margin="0,0,0,0" />
-                            <Label x:Name="label8" Content="Repump" Margin="0,20,0,0"/>
-                            <Label x:Name="label9" Content="Raman" Margin="0,40,0,0"/>
-                            <TextBox x:Name="motCTRLTextBox" Margin="61,0,89,77" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.motCTRLval}"/>
-                            <TextBox x:Name="repumpCTRLTextBox" Margin="61,0,89,57" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.repumpCTRLval}"/>
-                            <TextBox x:Name="ramanCTRLTextBox" Margin="61,0,89,37" Width="50" Height="18" VerticalAlignment="Bottom" Text="{Binding Path=controller.dataStore.ramanCTRLval}"/>
-                            <ni:LED x:Name="motLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,5,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52507" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                            <ni:LED x:Name="mphiLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,25,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                            <ni:LED x:Name="ramanLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="18" Margin="128,45,0,0" TrueContent="On" VerticalAlignment="Top" Width="18" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                        </Grid>
-                    </GroupBox>
                     <TabControl HorizontalAlignment="Left" Height="200" Margin="5" VerticalAlignment="Top" Width="455">
                         <TabItem Header="Lasers" Margin="0,0,-3.5,-2">
                             <Grid Background="#FFE5E5E5">
@@ -140,6 +126,23 @@
                     </TabControl>
                 </Grid>
             </TabItem>
+            <TabItem Header="2D MOT">
+                <Grid Background="#FFE5E5E5" Margin="0">
+                    <GroupBox Header="MOT" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Height="166" Width="146">
+                        <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
+                            <Label Content="Frequency" Margin="0,6,10,102"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" />
+                            <Label Content="Atten" Margin="4,38,82,58"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" />
+
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="3D MOT">
+                <Grid Background="#FFE5E5E5" Margin="0">
+                </Grid>
+            </TabItem>
             <TabItem Header="Raman Optics">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
                     <GroupBox Header="Piezos" HorizontalAlignment="Left" Margin="10,1,0,-87" VerticalAlignment="Top" Width="390" Height="300">
@@ -189,6 +192,12 @@
 
                 </Grid>
             </TabItem>
+            <TabItem Header="Camera">
+                <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                    <Button Content="Stream" Width="75" Height="20"/>
+                    <Button Content="Snap" Width="75" Height="20"/>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Menu x:Name="menu" VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -200,7 +209,7 @@
                 <MenuItem Header="Something"/>
             </MenuItem>
         </Menu>
-        <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="45" Margin="538,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="45" FalseBrush="#FFD52525"/>
-        <Label Content="Remote" HorizontalAlignment="Left" Margin="534,30,0,0" VerticalAlignment="Top"/>
+        <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="45" Margin="503,55,0,0" TrueContent="On" VerticalAlignment="Top" Width="45" FalseBrush="#FFD52525"/>
+        <Label Content="Remote" HorizontalAlignment="Left" Margin="497,23,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
