@@ -185,6 +185,22 @@ namespace Data
             return temp;
         }
 
+        public static TOF operator /(double d,TOF p)
+        {
+            double[] tempData = new double[p.Length];
+            for (int i = 0; i < p.Length; i++)
+            {
+                tempData[i] = d/p.Data[i];
+            }
+            TOF temp = new TOF();
+            temp.Data = tempData;
+            temp.GateStartTime = p.GateStartTime;
+            temp.ClockPeriod = p.ClockPeriod;
+            temp.Calibration = p.Calibration;
+            return temp;
+        }
+
+
         static public TOF operator /(TOF t1, TOF t2)
         {
             TOF temp = new TOF();
