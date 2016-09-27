@@ -40,7 +40,10 @@ namespace IMAQ
         private CameraState state = new CameraState();
         private object streamStopLock = new object();
         public List<VisionImage> imageList = new List<VisionImage>();
-
+        private Dictionary<string, string> registers;
+        public PointContour pointOfInterest;
+        public Roi rectangleROI = new Roi();
+        public Roi pointROI = new Roi();
 
         public CameraController(string cameraName)
         {
@@ -51,6 +54,37 @@ namespace IMAQ
         }
         #endregion
 
+        public void copyContoursToViewerROI()
+        {
+            try
+            {
+                Contour rectContour = rectangleROI.GetContour(0);
+                rectContour.CopyTo(imageWindow.imageViewer.Roi);
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                Contour pointContour = pointROI.GetContour(0);
+                pointContour.CopyTo(imageWindow.imageViewer.Roi);
+            }
+            catch
+            {
+
+            }
+        }
+
+        //public void addLineContoursToROI(LineContour line1, LineContour line2)
+        //{
+        //    Contour line1Contour = new Contour(line1);
+        //    Contour line2Contour = new Contour(line2);
+        //    line1Contour.CopyTo(imageWindow.imageViewer.Roi);
+        //    line2Contour.CopyTo(imageWindow.imageViewer.Roi);
+        //}
+
         #region ImageController functions (Public stuff)
 
         public void Initialize()
@@ -59,13 +93,16 @@ namespace IMAQ
             {
                 initializeCamera();
                 openViewerWindow();
+                registers = new Dictionary<string, string>();
+                AddRegisters();
             }
             catch { }
-            
+
         }
 
         public void Dispose()
         {
+            if (state == CameraState.STREAMING) { StopStream(); }
             imaqdxSession.Dispose();
             closeViewerWindow();
         }
@@ -74,6 +111,7 @@ namespace IMAQ
         {
             SetCameraAttributes(cameraAttributesFilePath);
             imageWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesFilePath);
+            PrintCameraAttributesToConsole();
             imageWindow.WriteToConsole("Streaming from camera");
             if (state == CameraState.FREE)
             {
@@ -87,7 +125,7 @@ namespace IMAQ
                 return false;
             }
         }
-        
+
         public void StopStream()
         {
             if (state == CameraState.STREAMING)
@@ -149,25 +187,55 @@ namespace IMAQ
             }
         }
 
-      
-        
+
+
         public byte[][,] MultipleSnapshot(string attributesPath, int numberOfShots)
         {
             SetCameraAttributes(attributesPath);
+            PrintCameraAttributesToConsole();
             VisionImage[] images = new VisionImage[numberOfShots];
+            for (uint i = 0; i < images.Length; ++i)
+            {
+                images[i] = new VisionImage();
+            }
             Stopwatch watch = new Stopwatch();
             try
             {
 
                 watch.Start();
+
+                // state = CameraState.READY_FOR_ACQUISITION;
+                ////imaqdxSession.Close();
+                //////AttemptedWorkaround
+
+                //ImaqdxSession imaqdxSession2 = new ImaqdxSession("cam2");
+
+                imaqdxSession.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, numberOfShots);
+
+                imaqdxSession.Acquisition.Start();
                 state = CameraState.READY_FOR_ACQUISITION;
-                
-                imaqdxSession.Sequence(images, numberOfShots);
+                ////// Get each image in the sequence
+                for (uint i = 0; i < images.Length; ++i)
+                {
+                    imaqdxSession.Acquisition.GetImageAt(images[i], i);
+                }
+
+                ////// Stop, Unconfigure, and Close the camera
+
+                imaqdxSession.Acquisition.Stop();
+                imaqdxSession.Acquisition.Unconfigure();
+                //imaqdxSession2.Close();
+                ////imaqdxSession = new ImaqdxSession("cam2");
+
+                // imaqdxSession.Sequence(images, numberOfShots);
+
+
+                //  Configure(ImaqdxAcquisitionType.SingleShot, numberOfShots);
                 watch.Stop();
                 if (windowShowing)
                 {
-                long interval = watch.ElapsedMilliseconds;
-                imageWindow.WriteToConsole(interval.ToString());        
+                    long interval = watch.ElapsedMilliseconds;
+                    imageWindow.WriteToConsole(interval.ToString());
                 }
 
                 List<byte[,]> byteList = new List<byte[,]>();
@@ -175,18 +243,18 @@ namespace IMAQ
                 {
                     byteList.Add((i.ImageToArray()).U8);
 
-                   // if (windowShowing)
+                    // if (windowShowing)
                     //{
-                      //  imageWindow.AttachToViewer(i);
+                    //  imageWindow.AttachToViewer(i);
 
-                   // }
+                    // }
 
                 }
                 state = CameraState.FREE;
 
                 return byteList.ToArray();
-                
-                
+
+
             }
             catch (ImaqdxException e)
             {
@@ -223,8 +291,13 @@ namespace IMAQ
 
         public void PrintCameraAttributesToConsole()
         {
-            imageWindow.WriteToConsole(imaqdxSession.Attributes.WriteAttributesToString());
             imageWindow.WriteToConsole("Attributes loaded in camera:");
+            imageWindow.WriteToConsole(imaqdxSession.Attributes.WriteAttributesToString());
+            foreach (string key in registers.Keys)
+            {
+                printRegisterInfo(registers[key]);
+            }
+
         }
 
         public string SetCameraAttributes(string newPath)
@@ -293,7 +366,8 @@ namespace IMAQ
                     catch (InvalidOperationException e)
                     {
                         MessageBox.Show("I have a leftover image without anywhere to display it. Dumping...\n\n" + e.Message);
-                        imaqdxSession.Acquisition.Stop();
+                        if (!(e is ObjectDisposedException))
+                        { imaqdxSession.Acquisition.Stop(); }
                         state = CameraState.FREE;
                         return;
                     }
@@ -312,7 +386,7 @@ namespace IMAQ
         #region Image Viewer (also private)
 
         private ImageViewerWindow imageWindow;
-        bool windowShowing;
+        public bool windowShowing;
 
         private void openViewerWindow()
         {
@@ -342,8 +416,8 @@ namespace IMAQ
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "shc images|*.png";
             saveFileDialog1.Title = "Save Image";
-            String dataPath = (string)Environs.FileSystem.Paths["dataPath"];
-            String dataStoreDir = dataPath + "Single Images";
+            String dataPath = (string)Environs.FileSystem.Paths["DataPath"];
+            String dataStoreDir = dataPath + "SingleImages";
             saveFileDialog1.InitialDirectory = dataStoreDir;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -354,7 +428,7 @@ namespace IMAQ
             }
         }
 
-      
+
 
         public string GetSaveDialogFilename()
         {
@@ -379,7 +453,7 @@ namespace IMAQ
             string filepath = GetSaveDialogFilename();
             string filetext = Path.GetFileName(filepath);
             Directory.CreateDirectory(filepath);
-            string filed = filepath+"\\"+filetext;
+            string filed = filepath + "\\" + filetext;
             StoreImageList(filed);
             imageWindow.WriteToConsole(filed);
         }
@@ -452,21 +526,21 @@ namespace IMAQ
 
 
 
-        
-        
+
+
 
         public void StoreImageList(string savePath)
         {
-            
+
             for (int i = 0; i < imageList.Count; i++)
             {
-                PixelValue2D pval = imageList[i].ImageToArray(); 
-                StoreImageData(savePath+"_" + i.ToString(), pval.U8);
+                PixelValue2D pval = imageList[i].ImageToArray();
+                StoreImageData(savePath + "_" + i.ToString(), pval.U8);
             }
-            imageWindow.WriteToConsole("List of"+ imageList.Count.ToString() +"images saved");
+            imageWindow.WriteToConsole("List of" + imageList.Count.ToString() + "images saved");
         }
 
-       public void StoreImageData(string savePath, byte[,] imageData)
+        public void StoreImageData(string savePath, byte[,] imageData)
         {
             int width = imageData.GetLength(1);
             int height = imageData.GetLength(0);
@@ -478,30 +552,46 @@ namespace IMAQ
                     pixels[(width * j) + i] = imageData[j, i];
                 }
             }
-         
+
 
             FileStream stream = new FileStream(savePath + ".dat", FileMode.Create);
-            stream.Write(pixels,0,width*height);
+            stream.Write(pixels, 0, width * height);
             stream.Dispose();
 
         }
 
 
 
-       public void DisposeImages()
-       {
-           imageList.Clear();
+        public void DisposeImages()
+        {
+            imageList.Clear();
 
-       }
+        }
 
-     
 
+        #region Printing register values
+
+        private void printRegisterInfo(string Adr)
+        {
+            imageWindow.WriteToConsole(Adr + " = " + Convert.ToString(imaqdxSession.ReadRegister((ulong)Convert.ToInt64(Adr, 16)), 2));
+        }
+
+        private void AddRegisters()
+        {
+            registers.Add("Shutter", "F0F0081C");
+            registers.Add("Timebase", "F1000208");
+            registers.Add("SEQUENCE_CTRL", "F1000220");
+            registers.Add("DEFFERED", "F1000260");
+            registers.Add("TRIG_CNTR", "F1000620");
+            registers.Add("SEQUENCE_PARAM", "F1000224");
+        }
+        #endregion
 
 
 
 
         //Load image when opening the controller
-        
+
         #endregion
     }
 }

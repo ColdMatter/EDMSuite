@@ -1,0 +1,1 @@
+start ..\..\RFMOTHardwareControl\bin\RFMOT\RFMOTHardwareControl.exe

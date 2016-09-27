@@ -165,6 +165,10 @@
       <Project>{fce9fc5d-8bc1-4517-b4f6-aa446831a930}</Project>
       <Name>IMAQ</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RFMOTHardwareControl\RFMOTHardwareControl.csproj">
+      <Project>{b9e73de5-9e38-48d0-af97-4fe5242e2723}</Project>
+      <Name>RFMOTHardwareControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
