@@ -235,7 +235,7 @@ namespace RFMOTHardwareControl
                 StartCameraControl();
             }
             imAnalWindow = new ImageAnalysisWindow();
-            imAnalWindow.controller = this;
+            imAnalWindow.controller = ImageController;
             imAnalWindow.Show();
             startImageAnalysis();
         }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IMAQ;
 
 using NationalInstruments.Vision;
 using NationalInstruments;
@@ -16,7 +17,7 @@ namespace RFMOTHardwareControl
 {
     public partial class ImageAnalysisWindow : Form
     {
-        public Controller controller;
+        public CameraController controller;
         private VisionImage currentImage;
         private PixelValue1D verticalPixels;
         private PixelValue1D horizontalPixels;
@@ -45,8 +46,8 @@ namespace RFMOTHardwareControl
 
         public void updateImage()
         {
-            currentImage = controller.ImageController.image;
-            roiArray = currentImage.ImageToArray(controller.ImageController.rectangleROI);
+            currentImage = controller.image;
+            roiArray = currentImage.ImageToArray(controller.rectangleROI);
         }
 
         private void getPixelLines(PointContour poi)
@@ -122,7 +123,7 @@ namespace RFMOTHardwareControl
         public void updateImageAndAnalyse()
         {
             updateImage();
-            getPixelLines(controller.ImageController.pointOfInterest);
+            getPixelLines(controller.pointOfInterest);
             getPixelLineData();
             getROIHistogramAndAverage();
             plotAllGraphs();
@@ -149,7 +150,8 @@ namespace RFMOTHardwareControl
 
         private void ImageAnalysisWindow_FormClosing(object sender, EventArgs e)
         {
-            controller.stopImageAnalysis();
+            //TODO correctly stop analysing once the window closes. 
+            //controller.stopImageAnalysis();
         }
 
         private void waveformGraph1_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)

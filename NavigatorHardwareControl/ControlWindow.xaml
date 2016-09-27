@@ -194,8 +194,19 @@
             </TabItem>
             <TabItem Header="Camera">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                    <Button Content="Stream" Width="75" Height="20"/>
-                    <Button Content="Snap" Width="75" Height="20"/>
+                    <GroupBox Header="Snapshot" Margin="0,0,283,150">
+                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                            <Button Content="Acquire" Width="75" Height="20" Margin="9,14,107,14" Click="cameraSnapshot_Click"/>
+                            <Button Content="Save" Width="75" Height="20" Margin="99,14,17,14" Click="cameraSave_Click"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Stream" Margin="207,0,76,150">
+                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                            <Button Content="Start" Width="75" Height="20" Margin="9,14,107,14" Click="cameraStartStream_Click"/>
+                            <Button Content="Stop" Width="75" Height="20" Margin="99,14,17,14" Click="cameraStopStream_Click"/>
+                        </Grid>
+                    </GroupBox>
+                    <CheckBox Content="Background" Name="BackgroundCheck" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>

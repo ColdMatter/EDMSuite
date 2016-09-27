@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows;
+using IMAQ;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
@@ -33,6 +34,7 @@ namespace NavigatorHardwareControl
     {
         
         #region Constants
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
         private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "NavigatorHardwareController\\";
@@ -71,7 +73,9 @@ namespace NavigatorHardwareControl
         //these are used to handle errors from the slave and aom dds processes
         public StreamReader slaveErr;
         public StreamReader aomErr;
-
+        //Cameras
+        public CameraController ImageController;
+        public ImageViewer imAnalWindow;
         //Used for locking the laser - only one can be running at once
         private Thread laserThread;
         public void Start()
@@ -956,6 +960,187 @@ namespace NavigatorHardwareControl
         }
 
         #endregion
+
+        #endregion
+
+        #region Local camera control
+
+        public void StartCameraControl()
+        {
+            try
+            {
+                ImageController = new CameraController("cam0");
+                ImageController.Initialize();
+                ImageController.PrintCameraAttributesToConsole();
+                controlWindow.WriteToConsole(ImageController.IsCameraFree().ToString());
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Camera Initialization Error");
+         
+
+            }
+        }
+        public void CameraStream()
+        {
+            try
+            {
+                ImageController.Stream(cameraAttributesPath);
+            }
+            catch { }
+        }
+
+        public void StopCameraStream()
+        {
+            try
+            {
+                ImageController.StopStream();
+            }
+            catch { }
+        }
+
+        public void CameraSnapshot(bool background)
+        {
+            //Takes two images and switches off the repump light to take a background
+            if (!background)
+            {
+                try
+                {
+                    
+                    ImageController.SingleSnapshot(cameraAttributesPath);
+                    SetDigitalLine("camTTL", true);
+                    SetDigitalLine("camTTL", false);
+                }
+                catch { }
+            }
+            else
+            {
+                try
+                {
+                    ImageController.MultipleSnapshot(cameraAttributesPath, 2);
+                    SetDigitalLine("camTTL", true);
+                    SetDigitalLine("camTTL", false);
+                    SetDigitalLine("motTTL", false);
+                    SetDigitalLine("camTTL", true);
+                    SetDigitalLine("camTTL", false);
+                    SetDigitalLine("motTTL", true);
+
+                }
+                catch
+                {
+
+                }
+            }
+        }
+        public void CameraSnapshot()
+        {
+            CameraSnapshot(false);
+        }
+
+        #endregion
+
+        #region Saving Images
+
+        public void SaveImageWithDialog(bool background)
+        {
+            if (background)
+                ImageController.StoreImageListWithDialog();
+            else
+                ImageController.SaveImageWithDialog();
+           
+        }
+        public void SaveImageWithDialog()
+        {
+            SaveImageWithDialog(false);
+        }
+        public void SaveImage(string path)
+        {
+            try
+            {
+                ImageController.SaveImage(path);
+            }
+            catch { }
+        }
+        #endregion
+
+        #region ImageAnalysisWindow
+
+        public void OpenNewImageAnalysisWindow()
+        {
+            if (ImageController == null)
+            {
+                StartCameraControl();
+            }
+            imAnalWindow = new ImageViewer();
+            imAnalWindow.imageWindow.controller = ImageController;
+            imAnalWindow.Show();
+            startImageAnalysis();
+        }
+
+        private bool analyseImage = false;
+
+        private void startImageAnalysis()
+        {
+            analyseImage = true;
+            Thread imageAnalThread = new Thread(doImageAnalysis);
+            imageAnalThread.Start();
+        }
+
+        public void stopImageAnalysis()
+        {
+            analyseImage = false;
+        }
+
+        private void doImageAnalysis()
+        {
+            while (analyseImage)
+            {
+                if (ImageController.rectangleROI.Count != 0)
+                {
+                    imAnalWindow.imageWindow.updateImageAndAnalyse();
+                }
+                Thread.Sleep(200);
+
+            }
+        }
+        #endregion
+
+        #region Remote Camera Control
+        //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
+
+        public byte[,] GrabSingleImage(string cameraAttributesPath)
+        {
+            return ImageController.SingleSnapshot(cameraAttributesPath);
+        }
+        public byte[][,] GrabMultipleImages(string cameraAttributesPath, int numberOfShots)
+        {
+            try
+            {
+                byte[][,] images = ImageController.MultipleSnapshot(cameraAttributesPath, numberOfShots);
+                return images;
+            }
+
+            catch (TimeoutException)
+            {
+                FinishRemoteCameraControl();
+                return null;
+            }
+
+        }
+
+        public bool IsReadyForAcquisition()
+        {
+            return ImageController.IsReadyForAcqisition();
+        }
+
+        public void PrepareRemoteCameraControl()
+        {
+            StartRemoteControl();
+        }
+        public void FinishRemoteCameraControl()
+        {
+            StopRemoteControl();
+        }
 
         #endregion
 

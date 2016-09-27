@@ -366,6 +366,27 @@ namespace NavigatorHardwareControl
         {
             controller.CloseLaserThread();
         }
+
+        private void cameraSnapshot_Click(object sender, RoutedEventArgs e)
+        {
+            bool background = BackgroundCheck.IsChecked.Value;
+            controller.CameraSnapshot(background);
+        }
+
+        private void cameraSave_Click(object sender, RoutedEventArgs e)
+        {
+            controller.SaveImageWithDialog();
+        }
+
+        private void cameraStartStream_Click(object sender, RoutedEventArgs e)
+        {
+            controller.CameraStream();
+        }
+
+        private void cameraStopStream_Click(object sender, RoutedEventArgs e)
+        {
+            controller.StopCameraStream();
+        }
     }
 
     #region Other ControlWindow classes
@@ -433,6 +454,7 @@ namespace NavigatorHardwareControl
         public string aomMOTdds { get; set; }
         public string aomRamandds { get; set; }
     }
+
 #endregion
 
 }

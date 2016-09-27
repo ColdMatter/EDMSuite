@@ -288,7 +288,6 @@ namespace IMAQ
                 return false;
             }
         }
-
         public void PrintCameraAttributesToConsole()
         {
             imageWindow.WriteToConsole("Attributes loaded in camera:");

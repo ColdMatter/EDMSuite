@@ -16,6 +16,7 @@ namespace NavigatorHardwareControl
     /// </summary>
     public partial class ImageViewer : Window
     {
+        public ImageAnalysisWindow imageWindow;
         public ImageViewer()
         {
             InitializeComponent();

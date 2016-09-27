@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.UI;
 
+//using NationalInstruments.UI.WindowsForms;
+//using NationalInstruments.UI;
 using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;

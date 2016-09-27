@@ -101,8 +101,8 @@
   <ItemGroup>
     <Compile Include="FibreAligner.cs" />
     <Compile Include="HSDIOStaticController.cs" />
-    <Compile Include="ImageViewer.xaml.cs">
-      <DependentUpon>ImageViewer.xaml</DependentUpon>
+    <Compile Include="ImageAnalysisWindow.xaml.cs">
+      <DependentUpon>ImageAnalysisWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TelnetConnection.cs" />
     <Page Include="App.xaml">
@@ -122,7 +122,7 @@
       <DependentUpon>ControlWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ImageViewer.xaml">
+    <Page Include="ImageAnalysisWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

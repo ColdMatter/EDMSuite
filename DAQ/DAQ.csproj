@@ -124,6 +124,9 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
+    <Reference Include="mcl_FreqCounter64">
+      <HintPath>..\mcl_FreqCounter64.dll</HintPath>
+    </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -194,11 +197,13 @@
     </Compile>
     <Compile Include="HSDIOPatternBuilder.cs" />
     <Compile Include="HSDIOPatternGenerator.cs" />
+    <Compile Include="MiniCircuitsUSBFreqCtr.cs" />
     <Compile Include="NavigatorFileSystem.cs" />
     <Compile Include="NavigatorHardware.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="niHSDIO.cs" />
+    <Compile Include="NovatechSerialPort.cs" />
     <Compile Include="RS232PatternBuilder.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
