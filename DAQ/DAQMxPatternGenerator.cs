@@ -27,7 +27,7 @@ namespace DAQ.HAL
 		}
 
 		// use this method to output a PatternList to the whole PatternList generator
-		public void OutputPattern(UInt32[] pattern)
+		public void OutputPattern(UInt32[] pattern, bool wait)
 		{
 			
             writer.WriteMultiSamplePort(true, pattern);
@@ -39,9 +39,13 @@ namespace DAQ.HAL
 			// it at the moment.
 			// It might be possible to speed it up by understanding the timing of the above call
 			// - when does it return ?
-			SleepOnePattern();
+            if (wait)
+			    SleepOnePattern();
 		}
-
+        public void OutputPattern(UInt32[] pattern)
+        {
+            OutputPattern(pattern, true);
+        }
 		// use this method to output a PatternList to half of the PatternList generator
 		public void OutputPattern(Int16[] pattern)
 		{

@@ -55,7 +55,8 @@ namespace NavigatorHardwareControl
         public NavHardwareState hcState = new NavHardwareState();
 
         public HardwareState hardwareState;
-
+        //Used for keeping track of changes
+        public HardwareState previousState;
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
@@ -89,6 +90,8 @@ namespace NavigatorHardwareControl
             hardwareState = new HardwareState();
             hardwareState.analogs = new Dictionary<string, double>();
             hardwareState.digitals = new Dictionary<string, bool>();
+            hardwareState.muquansAnalog = new Dictionary<string, double>();
+            hardwareState.muquansDigital = new Dictionary<string, bool>();
 
             if (!Environs.Debug)
             {
@@ -140,23 +143,30 @@ namespace NavigatorHardwareControl
                     muquans.aomDDS.Start();
 
                    //Adds Muquans parameters to hardwareState - probably a better way to define this
-                    hardwareState.analogs["Slave0dds"] = 0.0;
-                    hardwareState.analogs["Slave1dds"] = 0.0;
-                    hardwareState.analogs["Slave2dds"] = 0.0;
-                    hardwareState.analogs["Ramandds"] = 0.0;
-                    hardwareState.analogs["Mphidds"] = 0.0;
-                    hardwareState.analogs["Motdds"] = 0.0;
-                    hardwareState.analogs["EDFA0Val"] = 0.0;
-                    hardwareState.analogs["EDFA1Val"] = 0.0;
-                    hardwareState.analogs["EDFA2Val"] = 0.0;
+                    hardwareState.muquansAnalog["Slave0dds"] = 0.0;
+                    hardwareState.muquansAnalog["Slave1dds"] = 0.0;
+                    hardwareState.muquansAnalog["Slave2dds"] = 0.0;
+                    hardwareState.muquansAnalog["Ramandds"] = 0.0;
+                    hardwareState.muquansAnalog["Mphidds"] = 0.0;
+                    hardwareState.muquansAnalog["Motdds"] = 0.0;
+                    hardwareState.muquansAnalog["EDFA0Val"] = 0.0;
+                    hardwareState.muquansAnalog["EDFA1Val"] = 0.0;
+                    hardwareState.muquansAnalog["EDFA2Val"] = 0.0;
+                    hardwareState.muquansAnalog["MOTaomdds"] = 0.0;
+                    hardwareState.muquansAnalog["Ramanaomdds"] = 0.0;
 
-                    hardwareState.digitals["MasterLock"] = false;
-                    hardwareState.digitals["Slave0Lock"] = false;
-                    hardwareState.digitals["Slave1Lock"] = false;
-                    hardwareState.digitals["Slave2Lock"] = false;
-                    hardwareState.digitals["EDFA0Lock"] = false;
-                    hardwareState.digitals["EDFA1Lock"] = false;
-                    hardwareState.digitals["EDFA2Lock"] = false;
+
+                    hardwareState.muquansDigital["MasterLock"] = false;
+                    hardwareState.muquansDigital["Slave0Lock"] = false;
+                    hardwareState.muquansDigital["Slave1Lock"] = false;
+                    hardwareState.muquansDigital["Slave2Lock"] = false;
+                    hardwareState.muquansDigital["EDFA0Lock"] = false;
+                    hardwareState.muquansDigital["EDFA1Lock"] = false;
+                    hardwareState.muquansDigital["EDFA2Lock"] = false;
+                    hardwareState.muquansDigital["EDFA0Type"] = false;
+                    hardwareState.muquansDigital["EDFA1Type"] = false;
+                    hardwareState.muquansDigital["EDFA2Type"] = false;
+
 
                 }
                 catch(Exception e)
@@ -170,6 +180,28 @@ namespace NavigatorHardwareControl
             {
                 muquans = new MuquansCommunicator();
                 muquans.Start();
+
+                hardwareState.muquansAnalog["Slave0dds"] = 0.0;
+                hardwareState.muquansAnalog["Slave1dds"] = 0.0;
+                hardwareState.muquansAnalog["Slave2dds"] = 0.0;
+                hardwareState.muquansAnalog["Ramandds"] = 0.0;
+                hardwareState.muquansAnalog["Mphidds"] = 0.0;
+                hardwareState.muquansAnalog["Motdds"] = 0.0;
+                hardwareState.muquansAnalog["EDFA0Val"] = 0.0;
+                hardwareState.muquansAnalog["EDFA1Val"] = 0.0;
+                hardwareState.muquansAnalog["EDFA2Val"] = 0.0;
+
+                hardwareState.muquansDigital["MasterLock"] = false;
+                hardwareState.muquansDigital["Slave0Lock"] = false;
+                hardwareState.muquansDigital["Slave1Lock"] = false;
+                hardwareState.muquansDigital["Slave2Lock"] = false;
+                hardwareState.muquansDigital["EDFA0Lock"] = false;
+                hardwareState.muquansDigital["EDFA1Lock"] = false;
+                hardwareState.muquansDigital["EDFA2Lock"] = false;
+                hardwareState.muquansDigital["EDFA0Type"] = false;
+                hardwareState.muquansDigital["EDFA1Type"] = false;
+                hardwareState.muquansDigital["EDFA2Type"] = false;
+
             }
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
@@ -187,23 +219,15 @@ namespace NavigatorHardwareControl
         /// back again when returning to LOCAL.
         /// </summary>
         [Serializable]
-        public class HardwareState : IEnumerable
+        public class HardwareState
         {
             //TODO make the objects that reference hardware not controlled via analogue/digital values behave properly
 
-            public Dictionary<string, double> analogs;
-            public Dictionary<string, bool> digitals;
+            public Dictionary<string, double> analogs {get; set;}
+            public Dictionary<string, bool> digitals { get; set; }
 
-            public UIData muquansUI;
-
-          
-
-            //This is useful if we want to loop over this collection
-            public IEnumerator GetEnumerator()
-            {
-                yield return analogs;
-                yield return digitals;
-            }
+            public Dictionary<string, double> muquansAnalog { get; set; }
+            public Dictionary<string, bool> muquansDigital { get; set; }
 
         }
 
@@ -537,15 +561,22 @@ namespace NavigatorHardwareControl
 
         public void UpdateHardware()
         {
-            HardwareState uiState = readValuesOnUI();
-
-            HardwareState changes = getDiscrepancies(hardwareState, uiState);
-
-            applyToHardware(changes);
-
-            updateStateRecord(changes);
-
-
+            if (previousState == null)
+            {
+                previousState = hardwareState;
+                applyToHardware(previousState);
+          
+            }
+            else 
+            {
+                HardwareState uiState = readValuesOnUI();
+                if (uiState.analogs != hardwareState.analogs && uiState.digitals != hardwareState.digitals)
+                    controlWindow.WriteToConsole("UI State doesn't match hardware state. Check the values are bound properly");
+                HardwareState changes = getDiscrepancies(hardwareState, previousState);
+                applyToHardware(changes);
+                updateStateRecord(changes);
+                previousState = hardwareState;
+            }
         }
 
         private void applyToHardware(HardwareState state)
@@ -655,7 +686,6 @@ namespace NavigatorHardwareControl
             HardwareState state = new HardwareState();
             state.analogs = readUIAnalogs(hardwareState.analogs.Keys);
             state.digitals = readUIDigitals(hardwareState.digitals.Keys);
-            state.muquansUI = controlWindow.ui;
             return state;
         }
 
@@ -797,9 +827,17 @@ namespace NavigatorHardwareControl
                 value = ReadAnalogInput(channel);
                 return value;  
             }
-            foreach( object dict in hardwareState)
+            foreach( object dict in hardwareState.analogs)
             {
                 Dictionary<string,object> item = dict as Dictionary<string, object>;
+                if (item.ContainsKey(channel))
+                {
+                    return item[channel];
+                }
+            }
+            foreach (object dict in hardwareState.digitals)
+            {
+                Dictionary<string, object> item = dict as Dictionary<string, object>;
                 if (item.ContainsKey(channel))
                 {
                     return item[channel];
@@ -1008,8 +1046,8 @@ namespace NavigatorHardwareControl
                 {
                     
                     ImageController.SingleSnapshot(cameraAttributesPath);
-                    SetDigitalLine("camTTL", true);
-                    SetDigitalLine("camTTL", false);
+                    SetDigitalLine("cameraTTL", true);
+                    SetDigitalLine("cameraTTL", false);
                 }
                 catch { }
             }
@@ -1018,11 +1056,11 @@ namespace NavigatorHardwareControl
                 try
                 {
                     ImageController.MultipleSnapshot(cameraAttributesPath, 2);
-                    SetDigitalLine("camTTL", true);
-                    SetDigitalLine("camTTL", false);
+                    SetDigitalLine("cameraTTL", true);
+                    SetDigitalLine("cameraTTL", false);
                     SetDigitalLine("motTTL", false);
-                    SetDigitalLine("camTTL", true);
-                    SetDigitalLine("camTTL", false);
+                    SetDigitalLine("cameraTTL", true);
+                    SetDigitalLine("cameraTTL", false);
                     SetDigitalLine("motTTL", true);
 
                 }

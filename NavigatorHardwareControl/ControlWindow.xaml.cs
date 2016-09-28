@@ -38,7 +38,6 @@ namespace NavigatorHardwareControl
         private Dictionary<string, LED> doLEDs; 
         private bool isReading;
         public double intensityScale = 1.0;
-        public UIData ui;
 
         private static readonly GraphQueryArgs query = new GraphQueryArgs(
       PlotsToSearch.Any, SearchDimensions.HorizontalAndVertical,
@@ -47,16 +46,15 @@ namespace NavigatorHardwareControl
         public ControlWindow()
         {
             InitializeComponent();
-            ui = new UIData();
-            this.DataContext = ui;
             //I don't like initialising the controller here, but this seems to be the easiest way to deal with object references
             controller = App.controller;
-           
+            
             console = new TextBoxStreamWriter(consoleRichTextBox);
             //Sets the Console to stream to the consoleTextBox
             Console.SetOut(console);
 
             controller.Start();
+            this.DataContext = controller.hardwareState;
             controller.controlWindow = this;
             
             //TODO fix this based on the UIData class
@@ -136,6 +134,11 @@ namespace NavigatorHardwareControl
         #endregion
 
         #region Accessor Methods
+        public Controller.HardwareState NavHardware
+        {
+            get { return controller.hardwareState; }
+            set { controller.hardwareState = value; }
+        }
         public double[,] ScanData
         {
             get { return controller.fibreAlign.ScanData; }
@@ -144,6 +147,7 @@ namespace NavigatorHardwareControl
         {
             get { return controller.fibreAlign.fibrePowers; }
         }
+
         #endregion
 
         #region EventHandlers
@@ -387,6 +391,16 @@ namespace NavigatorHardwareControl
         {
             controller.StopCameraStream();
         }
+
+        private void startImageAnalysis_Click(object sender, RoutedEventArgs e)
+        {
+            controller.OpenNewImageAnalysisWindow();
+        }
+
+        private void updateHardware_Click(object sender, RoutedEventArgs e)
+        {
+            controller.UpdateHardware();
+        }
     }
 
     #region Other ControlWindow classes
@@ -422,39 +436,7 @@ namespace NavigatorHardwareControl
         }
 
     }
-    //This is used to store the values from various text boxes and check boxes in the UI
-    [Serializable]
-    public class UIData
-    {
-        public UIData() { }
-
-        public bool lockMaster { get; set; }
-        public bool lockSlave0 { get; set; }
-        public bool lockSlave1 { get; set; }
-        public bool lockSlave2 { get; set; }
-
-        public bool edfa0lock { get; set; }
-        public bool edfa1lock { get; set; }
-        public bool edfa2lock { get; set; }
-
-        public bool edfa0type { get; set; }
-        public bool edfa1type { get; set; }
-        public bool edfa2type { get; set; }
-
-        public string edfa0value { get; set; }
-        public string edfa1value { get; set; }
-        public string edfa2value { get; set; }
-
-        public string slave0dds { get; set; }
-        public string slave1dds { get; set; }
-        public string slave2dds { get; set; }
-        public string ramandds { get; set; }
-
-        public string mphidds { get; set; }
-        public string aomMOTdds { get; set; }
-        public string aomRamandds { get; set; }
-    }
-
+  
 #endregion
 
 }

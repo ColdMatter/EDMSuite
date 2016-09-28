@@ -20,7 +20,7 @@ namespace NavigatorHardwareControl
         public ImageViewer()
         {
             InitializeComponent();
-            ImageAnalysisWindow imageWindow = new ImageAnalysisWindow();
+            imageWindow = new ImageAnalysisWindow();
             imageWindow.TopLevel = false;
             imageWindow.FormBorderStyle = FormBorderStyle.None;
             wfHost.Child = imageWindow;

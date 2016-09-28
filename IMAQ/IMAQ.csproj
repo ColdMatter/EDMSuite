@@ -99,6 +99,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|AnyCPU'">
     <OutputPath>bin\Nav\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.AxCWIMAQControlsLib.Interop, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4544464cdeaab541" />

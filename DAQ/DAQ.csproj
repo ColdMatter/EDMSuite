@@ -198,6 +198,9 @@
     <Compile Include="HSDIOPatternBuilder.cs" />
     <Compile Include="HSDIOPatternGenerator.cs" />
     <Compile Include="MiniCircuitsUSBFreqCtr.cs" />
+    <Compile Include="MMAIChannelConfiguration.cs" />
+    <Compile Include="MMAIConfiguration.cs" />
+    <Compile Include="MMAIWrapper.cs" />
     <Compile Include="NavigatorFileSystem.cs" />
     <Compile Include="NavigatorHardware.cs" />
     <Compile Include="HP5350BCounter.cs" />

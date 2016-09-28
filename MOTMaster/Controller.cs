@@ -11,11 +11,11 @@ using System.Text;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.CSharp;
+using System.Linq;
 
 using DAQ;
 using DAQ.Environment;
 using DAQ.HAL;
-using DAQ.Pattern;
 using DAQ.Analog;
 using Data;
 using Data.Scans;
@@ -26,7 +26,6 @@ using IMAQ;
 using System.Runtime.InteropServices;
 using System.CodeDom;
 using System.CodeDom.Compiler;
-using System.Linq;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
@@ -57,28 +56,32 @@ namespace MOTMaster
         private static string
             motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string
+            saveToDirectory = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+        private static string
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-       
-       private int pgClockFrequency;
-       private int apgClockFrequency;
-       private int hsClockFrequency;
+        private const int
+            pgClockFrequency = 100000;
+        private const int
+            apgClockFrequency = 100000;
 
-     ControllerWindow controllerWindow;
+        ControllerWindow controllerWindow;
 
-        public DAQMxPatternGenerator pg;
-        public DAQMxAnalogPatternGenerator apg;
-        public HSDIOPatternGenerator hs;
+        DAQMxPatternGenerator pg;
+        DAQMxPatternGenerator PCIpg;
+        DAQMxAnalogPatternGenerator apg;
+        MMAIWrapper aip;
 
-        List<DAQMxAnalogPatternGenerator> analogPatterns;
-        List<DAQMxPatternGenerator> digitalPatterns;
-            
+        ExportSignals signalExporter;
+
         CameraControllable camera;
         TranslationStageControllable tstage;
         ExperimentReportable experimentReporter;
 
         MMDataIOHelper ioHelper;
+
+        //DaqSystem myDaqSystem;
 
         #endregion
 
@@ -97,26 +100,11 @@ namespace MOTMaster
 
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
-            //Tries to get these frequencies from the hardware class. If not possible, chooses default values
-            if (Environs.Hardware.ContainsInfo("pgClockFrequency"))
-                pgClockFrequency = (int)Environs.Hardware.GetInfo("pgClockFrequency");
-            else
-             pgClockFrequency = 10000;
 
-            if (Environs.Hardware.ContainsInfo("apgClockFrequency"))
-                apgClockFrequency = (int)Environs.Hardware.GetInfo("apgClockFrequency");
-            else
-            apgClockFrequency = 10000;
-            if (Environs.Hardware.ContainsInfo("hsClockFrequency"))
-                hsClockFrequency = (int)Environs.Hardware.GetInfo("hsClockFrequency");
-            else
-                hsClockFrequency = 25000000;
-
-            //TODO Make this use the hardware class to figure out what pattern generators to define
-            //digitalPatterns.Add(new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]));
-            //analogOutPatterns.Add(new DAQMxAnalogPatternGenerator());
-            analogPatterns = new List<DAQMxAnalogPatternGenerator>();
-            digitalPatterns = new List<DAQMxPatternGenerator>();
+            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+            apg = new DAQMxAnalogPatternGenerator();
+            PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
+            aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
 
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -134,7 +122,7 @@ namespace MOTMaster
             ScriptLookupAndDisplay();
 
             Application.Run(controllerWindow);
-
+            
         }
 
         #endregion
@@ -144,107 +132,28 @@ namespace MOTMaster
 
         private void run(MOTMasterSequence sequence)
         {
-            if (sequence.multipleCards)
-            {
-                //TODO Check timings on each write and modify how the hardware triggering is implemented.
-                using (var e1 = digitalPatterns.GetEnumerator())
-                using (var e2 = sequence.DigitalPatterns.GetEnumerator())
-                    while(e1.MoveNext() && e2.MoveNext())
-                    {
-                        e1.Current.OutputPattern(e2.Current.Pattern);
-                    }
-
-                using (var e1 = analogPatterns.GetEnumerator())
-                using (var e2 = sequence.AnalogPatterns.GetEnumerator())
-                    while (e1.MoveNext() && e2.MoveNext())
-                    {
-                        e1.Current.OutputPatternAndWait(e2.Current.Pattern);
-                    }
-
-            }
-            else
-            {
-                apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-                pg.OutputPattern(sequence.DigitalPattern.Pattern);
-            }
+            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+            PCIpg.OutputPattern(sequence.DigitalPatterns["PCI"].Pattern, false); //I dont know if this WriteMultiSamplePort also needs to wait..
+            aip.StartTask();
+            pg.OutputPattern(sequence.DigitalPatterns["PXI"].Pattern, true);
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            if (sequence.multipleCards)
-            {
-                //This assumes that the key used for each pattern is the device name.
-                if (sequence.DigitalPatterns != null)
-                {
-                    int i = 0;
-                    try {
-                        List<string> digitalBoards = (List<string>)Environs.Hardware.GetInfo("digitalBoards");
-                        foreach (HSDIOPatternBuilder entry in sequence.DigitalPatterns.OfType<HSDIOPatternBuilder>())
-                        {
-                            hs = new HSDIOPatternGenerator((string)digitalBoards[i]);
-                            i++;
-                            hs.Configure(hsClockFrequency, false, entry.Pattern.Length, true, true);
-                            digitalPatterns.Add(hs);
-                        }
-                        foreach (PatternBuilder32 entry in sequence.DigitalPatterns.OfType<PatternBuilder32>())
-                        {
-                            pg = new DAQMxPatternGenerator((string)digitalBoards[i]);
-                            i++;
-                            //TODO Change this so that each device card can have a separate clockfrequency or triggering condition - perhaps something that subclasses PatternBuilder32 with more device information.
-                            pg.Configure(pgClockFrequency, false, true, true, entry.Pattern.Length, true, true);
-                            digitalPatterns.Add(pg);
-                        }
-
-                    
-                 
-                }
-                catch (Exception e)
-                    {
-                        MessageBox.Show("Couldn't initialise hardware assuming multiple cards - check they defined in the Hardware class. " + e.Message);
-                    }
-               
-                }
-                if (sequence.AnalogPatterns != null)
-                {
-                    foreach (AnalogPatternBuilder entry in sequence.AnalogPatterns)
-                    {
-                        apg = new DAQMxAnalogPatternGenerator();
-                        apg.Configure(entry, apgClockFrequency);
-                        analogPatterns.Add(apg);
-                    }
-                }
-              
-                
-            }
-            else
-            {
-                pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
-                apg.Configure(sequence.AnalogPattern, apgClockFrequency);
-            }
+            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPatterns["PXI"].Pattern.Length, true, false);
+            PCIpg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPatterns["PCI"].Pattern.Length, false, false);
+            apg.Configure(sequence.AnalogPattern, apgClockFrequency);
+            aip.Configure(sequence.AIConfiguration);
         }
 
         private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
         {
-            if (sequence.multipleCards)
-            {
-              for (int i = 0; i<sequence.DigitalPatterns.Count;i++)
-                {
-                    sequence.DigitalPatterns[i].Clear();
-                    digitalPatterns[i].StopPattern();
-                }
-
-              for(int i=0; i<sequence.AnalogPatterns.Count;i++)
-                {
-                    analogPatterns[i].StopPattern();
-                }
-
-            }
-            else
-            {
-                sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
-                pg.StopPattern();
-                apg.StopPattern();
-            }
+            sequence.DigitalPatterns["PXI"].Clear();//No clearing required for analog (I think).
+            sequence.DigitalPatterns["PCI"].Clear();
+            pg.StopPattern();
+            PCIpg.StopPattern();
+            apg.StopPattern();
+            aip.StopPattern();
         }
 
         #endregion
@@ -263,11 +172,6 @@ namespace MOTMaster
         }
         private string[] scriptLookup()
         {
-            if (scriptListPath == null)
-                {
-                MessageBox.Show("No ScriptListPath found in the FileSystem class. Please modify and re-build.");
-                return null;
-            }
             string[] scriptList = Directory.GetFiles(scriptListPath, "*.cs");
             return scriptList;
         }
@@ -336,7 +240,7 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-       
+
         public void Run()
         {
             if (replicaRun)
@@ -348,23 +252,25 @@ namespace MOTMaster
                 Run(null);
             }
         }
+
+
         public void Run(Dictionary<String, Object> dict)
         {
-            //TODO make a more generic run which doesn't neccesitate a camera
             Stopwatch watch = new Stopwatch();
             MOTMasterScript script = prepareScript(scriptPath, dict);
             if (script != null)
             {
                 MOTMasterSequence sequence = getSequenceFromScript(script);
-               
+
                 try
                 {
                     prepareCameraControl();
 
-                    armTranslationStageForTimedMotion(script);
+                //    armTranslationStageForTimedMotion(script);
 
                     GrabImage((int)script.Parameters["NumberOfFrames"]);
 
+                    
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
                     waitUntilCameraIsReadyForAcquisition();
@@ -372,10 +278,12 @@ namespace MOTMaster
                     watch.Start();
                     runPattern(sequence);
                     watch.Stop();
-                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
+                //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
+                        
                         waitUntilCameraAquisitionIsDone();
+
                         try
                         {
                             checkDataArrived();
@@ -385,58 +293,12 @@ namespace MOTMaster
                             return;
                         }
                         Dictionary<String, Object> report = GetExperimentReport();
-                        save(script, scriptPath, imageData, report);
+                        save(script, scriptPath, imageData, report, aip.GetAnalogData());
 
 
                     }
                     finishCameraControl();
-                    disarmAndReturnTranslationStage();
-                }
-                catch (System.Net.Sockets.SocketException e)
-                {
-                    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
-            }
-            
-        }
-        /// <summary>
-        /// Runs a MOTMaster script without configuring and taking images from a camera. 
-        /// </summary>
-        /// <param name="dict"></param>
-        public void RunWithoutCamera(Dictionary<String, Object> dict)
-        {
-            Stopwatch watch = new Stopwatch();
-            MOTMasterScript script = prepareScript(scriptPath, dict);
-            if (script != null)
-            {
-                MOTMasterSequence sequence = getSequenceFromScript(script);
-
-                try
-                {
-                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-
-                    watch.Start();
-                    runPattern(sequence);
-                    watch.Stop();
-                    if (saveEnable)
-                    {
-                        try
-                        {
-                            //TODO make this more general to check for data from analogInputs
-                            //checkDataArrived();
-                        }
-                        catch (DataNotArrivedFromHardwareControllerException)
-                        {
-                            return;
-                        }
-                        Dictionary<String, Object> report = GetExperimentReport();
-                        //Defaults to save in a JSON file
-                        saveJSON(script, scriptPath, report);
-                    }
+               //     disarmAndReturnTranslationStage();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -449,46 +311,37 @@ namespace MOTMaster
             }
 
         }
-        //This is used to remotely run MOTMaster scripts. Using the paramters dictionary, the user can specify wether or not to load the camera.
-        public void RemoteRun(string scriptPath, Dictionary<string, object> dict,bool useCamera)
-        {
-            SetScriptPath(scriptPath);
-            if (useCamera)
-                Run(dict);
-            else
-                RunWithoutCamera(dict);
-        }
-        public void RemoteRun(string scriptPath, Dictionary<string, object> dict)
-        {
-            RemoteRun(scriptPath, dict, false);
-        }
+        
         #endregion
 
         #region private stuff
 
-
-        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
+        private void updateSaveDirectory(string newDirectory)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
-                script.Parameters, report, cameraAttributesPath, imageData);
-        }
-        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
-        {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, cameraAttributesPath, imageData);
-        }
-        private void saveJSON(MOTMasterScript script, string pathToPattern,Dictionary<String, Object> report,byte[][,]imageData)
-        {
+            saveToDirectory = newDirectory;
+            if (!Directory.Exists(newDirectory))
+            {
+                Directory.CreateDirectory(saveToDirectory);
+            }
 
         }
-        private void saveJSON(MOTMasterScript script, string pathToPattern,Dictionary<String,Object> report)
+
+
+        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report, double[,] aiData)
         {
-            ioHelper.StoreRunJSON(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath, script.Parameters, report);
+            ioHelper.StoreRun(saveToDirectory, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
+                script.Parameters, report, cameraAttributesPath, imageData, aiData);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report, double[,] aiData)
+        {
+            ioHelper.StoreRun(saveToDirectory, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+                script.Parameters, report, cameraAttributesPath, imageData, aiData);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
             initializeHardware(sequence);
             run(sequence);
+            if (saveEnable){ aip.ReadAnalogDataFromBuffer(); }
             releaseHardwareAndClearDigitalPattern(sequence);
 
         }
@@ -512,18 +365,9 @@ namespace MOTMaster
 
         private void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
-            if (sequence.multipleCards)
-            {
-                foreach (PatternBuilder32 digPattern in sequence.DigitalPatterns)
-                    digPattern.BuildPattern(patternLength);
-                foreach (AnalogPatternBuilder analogPattern in sequence.AnalogPatterns)
-                    analogPattern.BuildPattern();
-            }
-            else
-            {
-                sequence.DigitalPattern.BuildPattern(patternLength);
-                sequence.AnalogPattern.BuildPattern();
-            }
+            sequence.DigitalPatterns["PXI"].BuildPattern(patternLength);
+            sequence.DigitalPatterns["PCI"].BuildPattern(patternLength);
+            sequence.AnalogPattern.BuildPattern();
         }
        
         #endregion
@@ -543,16 +387,11 @@ namespace MOTMaster
         private CompilerResults compileFromFile(string scriptPath)
         {
             CompilerParameters options = new CompilerParameters();
-            if (File.Exists(motMasterPath))
-                options.ReferencedAssemblies.Add(motMasterPath);
-            else
-                throw new Exception("motMasterPath incorrectly specified in FileSystem");
-            if (File.Exists(daqPath))
-                options.ReferencedAssemblies.Add(daqPath);
-            else
-                throw new Exception("daqPath incorrectly specified in FileSystem");
 
-            TempFileCollection tempFiles = new TempFileCollection("C://Temp");
+            options.ReferencedAssemblies.Add(motMasterPath);
+            options.ReferencedAssemblies.Add(daqPath);
+
+            TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
             CompilerResults results = new CompilerResults(tempFiles);
             options.GenerateExecutable = false;                         //Creates .dll instead of .exe.
@@ -561,14 +400,6 @@ namespace MOTMaster
             try
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
-                //If the compiler fails to build the assembly, it doesn't throw an error. This checks for a compilation error.
-                if (results.Errors.HasErrors)
-                {
-                    string error = "";
-                    foreach (CompilerError e in results.Errors)
-                        error += e.ErrorText;
-                    MessageBox.Show("Script failed to compile: " + error);
-                }
             }
             catch (Exception e)
             {
@@ -688,7 +519,6 @@ namespace MOTMaster
             return experimentReporter.GetExperimentReport();
         }
 
-        
         #endregion
 
         #region Translation stage
@@ -755,6 +585,32 @@ namespace MOTMaster
             SetReplicaRunBool(false);
             ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
+        #endregion
+
+        #region Remotable Stuff from python
+
+        public void RemoteRun(string scriptName, Dictionary<String, Object> parameters, bool save)
+        {
+            scriptPath = scriptName;
+            saveEnable = save;
+            Run(parameters);
+        }
+
+        public void CloseIt()
+        {
+            controllerWindow.Close();
+        }
+
+        public void SetSaveDirectory(string saveDirectory)
+        {
+            updateSaveDirectory(saveDirectory);
+        }
+
+        public string getSaveDirectory()
+        {
+            return saveToDirectory;
+        }
+
         #endregion
     }
 }

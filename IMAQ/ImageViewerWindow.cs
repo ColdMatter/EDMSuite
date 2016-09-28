@@ -6,13 +6,15 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using NationalInstruments.UI.WindowsForms;
+using NationalInstruments.UI;
 
-//using NationalInstruments.UI.WindowsForms;
-//using NationalInstruments.UI;
 using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
+using NationalInstruments.Vision.WindowsForms;
+using NationalInstruments;
 
 namespace IMAQ
 {
@@ -23,12 +25,58 @@ namespace IMAQ
         public ImageViewerWindow()
         {
             InitializeComponent();
+            imageViewer.ImageMouseDown += displayPointClicked;
+            imageViewer.ShowToolbar = true;
+            //imageViewer.RoiChanged += newRoi;
+            //imageViewer.Conto
         }
 
 
         #region ThreadSafe wrappers
 
         //An irritating number of threadsafe delegates for the viewer controlWindow.
+
+        private void imageViewer_RoiChanged(object sender, ContoursChangedEventArgs e)
+        {
+            if (e.Action == ContoursChangedAction.Add && imageViewer.ActiveTool == ViewerTools.Point)
+            {
+                if (IM.pointROI.Count == 0)
+                {
+                    e.NewItems[0].CopyTo(IM.pointROI);
+                }
+                else
+                {
+                    IM.pointROI.RemoveAt(0);
+                    e.NewItems[0].CopyTo(IM.pointROI);
+                }
+            }
+            if (e.Action == ContoursChangedAction.Add && imageViewer.ActiveTool == ViewerTools.Rectangle)
+            {
+                if (IM.rectangleROI.Count == 0)
+                {
+                    e.NewItems[0].CopyTo(IM.rectangleROI);
+                }
+                else
+                {
+                    IM.rectangleROI.RemoveAt(0);
+                    e.NewItems[0].CopyTo(IM.rectangleROI);
+                }
+            }
+            if (e.Action == ContoursChangedAction.Add)
+            {
+                IM.copyContoursToViewerROI();
+            }
+        }
+
+        private void displayPointClicked(object sender, ImageMouseEventArgs e)
+        {
+            PointContour point = e.Point;
+            IM.pointOfInterest = e.Point;
+
+        }
+
+
+
         private void attachToViewer(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
         {
             viewer.Invoke(new AttachImageToViewerDelegate(AttachImageHelper), new object[] { viewer, image });
@@ -38,7 +86,7 @@ namespace IMAQ
         private void AttachImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
         {
             viewer.Attach(image);
-            
+
         }
         private void setRichTextBox(RichTextBox box, string text)
         {
@@ -60,13 +108,13 @@ namespace IMAQ
             attachToViewer(imageViewer, image);
         }
 
-        private VisionImage disImage =new VisionImage();
+        private VisionImage disImage = new VisionImage();
         public void AttachImagesToViewer(List<VisionImage> images, int frame)
         {
-           
-             disImage=images[frame];
-             attachToViewer(imageViewer, disImage);
-            
+
+            disImage = images[frame];
+            attachToViewer(imageViewer, disImage);
+
 
         }
 
@@ -94,44 +142,40 @@ namespace IMAQ
             IM.Dispose();
         }
 
-           private void hScrollBar_Change(int newScrollValue)
-        {
-            AttachImagesToViewer(IM.imageList, newScrollValue);
+        //   private void hScrollBar_Change(int newScrollValue)
+        //{
+        //    AttachImagesToViewer(IM.imageList, newScrollValue);
 
-            hScrollBar.Maximum = IM.imageList.Count-1;
-            
-        }
+        //    hScrollBar.Maximum = IM.imageList.Count-1;
 
-
-
-        private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-           
-            if(IM.imageList.Count == 0)
-
-            {
-                hScrollBar.Update();
-                hScrollBar.Maximum = 1;
-                
-
-            }
+        //}
 
 
-            else
-            {
-           
-            hScrollBar_Change(e.NewValue);
-            }
-           
-           
 
-        }
+        //private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
+        //{
 
+        //    if(IM.imageList.Count == 0)
 
-      
+        //    {
+        //        hScrollBar.Update();
+        //        hScrollBar.Maximum = 1;
 
 
-        
+        //    }
+
+
+        //    else
+        //    {
+
+        //    hScrollBar_Change(e.NewValue);
+        //    }
+
+
+
+        //}
+
+
 
 
     }

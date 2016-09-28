@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
-using Newtonsoft.Json;
+
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
@@ -28,11 +28,11 @@ namespace MOTMaster
 
         public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[,] imageData)
+            string cameraAttributesPath, byte[,] imageData, double[,] AIData)
         {
-            string fileTag = getDataID(element, batchNumber);
+            string fileTag = getDataID(element, batchNumber,saveFolder);
 
-            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData, AIData);
 
             string[] files = putCopiesOfFilesToZip(saveFolder, fileTag);
 
@@ -41,30 +41,23 @@ namespace MOTMaster
         }
         public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[][,] imageData)
+            string cameraAttributesPath, byte[][,] imageData, double[,] AIData)
         {
-            string fileTag = getDataID(element, batchNumber);
+            string fileTag = getDataID(element, batchNumber,saveFolder);
 
-            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData, AIData);
 
             string[] files = putCopiesOfFilesToZip(saveFolder, fileTag);
 
             //deleteFiles(saveFolder, fileTag);
             deleteFiles(files);
         }
-        public void StoreRunJSON(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass, Dictionary<String,Object> dict, Dictionary<String,Object> report)
+
+        public void SaveAnalogInputData(string filepath, double[,] data)
         {
-            //Serialises all the data into an XML file
-            string fileTag = getDataID(element, batchNumber);
-            JsonSerializer serializer = new JsonSerializer();
-            using (StreamWriter sw = new StreamWriter(fileTag))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                //For now, this serialises the parameter dictionary and the experiment report.
-                serializer.Serialize(writer, dict);
-                serializer.Serialize(writer, report);
-            }
+            storeAIData(filepath, data);
         }
+
         private void deleteFiles(string[] files)
         {
             foreach (string s in files)
@@ -91,7 +84,7 @@ namespace MOTMaster
         }
         private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[,] imageData)
+            string cameraAttributesPath, byte[,] imageData, double[,] AIData)
         {
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
@@ -102,7 +95,7 @@ namespace MOTMaster
         }
         private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[][,] imageData)
+            string cameraAttributesPath, byte[][,] imageData, double[,] AIData)
         {
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
@@ -110,6 +103,7 @@ namespace MOTMaster
             storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
             storeImage(saveFolder + fileTag, imageData);
             storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+            storeAIData(saveFolder + fileTag +"_AIData.txt", AIData);
         }
 
         public string SelectSavedScriptPathDialog()
@@ -213,9 +207,27 @@ namespace MOTMaster
 
         }
 
+        private void storeAIData(String dataStoreFilePath, double[,] AIData)
+        {
+            FileStream stream = new FileStream(dataStoreFilePath, FileMode.Create);
+            StreamWriter writer = new StreamWriter(stream);
+            for (int i = 0; i < AIData.GetLength(0); i++)
+            {
+                for (int j = 0; j < AIData.GetLength(1); j++)
+                {
+                    writer.Write(AIData[i, j]);
+                    if (j != AIData.GetLength(1) - 1)
+                    {
+                        writer.Write(",");
+                    }
+                }
+                writer.WriteLine();
+            }
+            writer.Close();
+            stream.Dispose();
+        }
         
-        
-        private string getDataID(string element, int batchNumber)
+        private string getDataID(string element, int batchNumber,string savefolder)
         {
             DateTime dt = DateTime.Now;
             string dateTag;
@@ -224,7 +236,7 @@ namespace MOTMaster
 
             dateTag = String.Format("{0:ddMMMyy}", dt);
             batchTag = batchNumber.ToString().PadLeft(2, '0');
-            subTag = (Directory.GetFiles(motMasterDataPath, element +
+            subTag = (Directory.GetFiles(savefolder, element +
                 dateTag + batchTag + "*.zip")).Length;
             string id = element + dateTag + batchTag
                 + "_" + subTag.ToString().PadLeft(3, '0');

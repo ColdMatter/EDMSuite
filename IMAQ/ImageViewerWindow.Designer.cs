@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.imageViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.hScrollBar = new System.Windows.Forms.HScrollBar();
             this.SuspendLayout();
             // 
             // imageViewer
@@ -41,41 +39,30 @@
             this.imageViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.imageViewer.Location = new System.Drawing.Point(-2, 0);
             this.imageViewer.Name = "imageViewer";
-            this.imageViewer.Size = new System.Drawing.Size(793, 442);
+            this.imageViewer.ShowScrollbars = true;
+            this.imageViewer.Size = new System.Drawing.Size(793, 433);
             this.imageViewer.TabIndex = 0;
             this.imageViewer.ZoomToFit = true;
+            this.imageViewer.RoiChanged += new System.EventHandler<NationalInstruments.Vision.WindowsForms.ContoursChangedEventArgs>(this.imageViewer_RoiChanged);
             // 
             // consoleRichTextBox
             // 
             this.consoleRichTextBox.BackColor = System.Drawing.Color.Black;
             this.consoleRichTextBox.ForeColor = System.Drawing.Color.Lime;
-            this.consoleRichTextBox.Location = new System.Drawing.Point(0, 448);
+            this.consoleRichTextBox.Location = new System.Drawing.Point(-2, 430);
             this.consoleRichTextBox.Name = "consoleRichTextBox";
             this.consoleRichTextBox.ReadOnly = true;
             this.consoleRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.consoleRichTextBox.Size = new System.Drawing.Size(791, 201);
+            this.consoleRichTextBox.Size = new System.Drawing.Size(793, 185);
             this.consoleRichTextBox.TabIndex = 24;
             this.consoleRichTextBox.Text = "";
-            // 
-           
-           
-
-            // hScrollBar
-            // 
-            this.hScrollBar.Location = new System.Drawing.Point(0, 425);
-            this.hScrollBar.Name = "hScrollBar";
-            this.hScrollBar.Size = new System.Drawing.Size(791, 17);
-            this.hScrollBar.TabIndex = 25;
-            this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
-            
             // 
             // ImageViewerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(793, 647);
-            this.Controls.Add(this.hScrollBar);
+            this.ClientSize = new System.Drawing.Size(790, 612);
             this.Controls.Add(this.consoleRichTextBox);
             this.Controls.Add(this.imageViewer);
             this.Name = "ImageViewerWindow";
@@ -91,6 +78,5 @@
 
         public NationalInstruments.Vision.WindowsForms.ImageViewer imageViewer;
         private System.Windows.Forms.RichTextBox consoleRichTextBox;
-        private System.Windows.Forms.HScrollBar hScrollBar;
     }
 }
