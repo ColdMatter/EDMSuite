@@ -70,6 +70,8 @@ namespace IMAQ
 
         private void displayPointClicked(object sender, ImageMouseEventArgs e)
         {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                WriteToConsole("RightButtonClicked");
             PointContour point = e.Point;
             IM.pointOfInterest = e.Point;
 

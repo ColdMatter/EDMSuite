@@ -82,7 +82,8 @@ namespace NavigatorHardwareControl
         #region Accessing Digital and Analog values
         public double ReadAnalog(string name)
         {
-            return double.Parse(aoTextBoxes[name].Text);
+            return 0.0;
+            //return double.Parse(aoTextBoxes[name].Text);
         }
         public void SetAnalog(string channelName, double value)
         {
@@ -379,7 +380,8 @@ namespace NavigatorHardwareControl
 
         private void cameraSave_Click(object sender, RoutedEventArgs e)
         {
-            controller.SaveImageWithDialog();
+            bool background = BackgroundCheck.IsChecked.Value;
+            controller.SaveImageWithDialog(background);
         }
 
         private void cameraStartStream_Click(object sender, RoutedEventArgs e)
@@ -401,6 +403,13 @@ namespace NavigatorHardwareControl
         {
             controller.UpdateHardware();
         }
+
+        private void startVoltageLogger_Click(object sender, RoutedEventArgs e)
+        {
+            controller.openNewVoltageLoggerWindow();
+
+        }
+
     }
 
     #region Other ControlWindow classes

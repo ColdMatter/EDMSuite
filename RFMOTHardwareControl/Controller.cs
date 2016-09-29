@@ -219,7 +219,6 @@ namespace RFMOTHardwareControl
        public void openNewVoltageLoggerWindow()
         {
             voltageLoggerWindow = new voltageLogger();
-            voltageLoggerWindow.controller = this;
             voltageLoggerWindow.Show();
 
         }

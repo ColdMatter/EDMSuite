@@ -23,6 +23,7 @@ using NationalInstruments.VisaNS;
 using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
+using RFMOTHardwareControl;
 
 
 namespace NavigatorHardwareControl
@@ -684,8 +685,8 @@ namespace NavigatorHardwareControl
         private HardwareState readValuesOnUI()
         {
             HardwareState state = new HardwareState();
-            state.analogs = readUIAnalogs(hardwareState.analogs.Keys);
-            state.digitals = readUIDigitals(hardwareState.digitals.Keys);
+            state.analogs = hardwareState.analogs;
+            state.digitals = hardwareState.digitals;
             return state;
         }
 
@@ -716,23 +717,9 @@ namespace NavigatorHardwareControl
 
         private void setValuesDisplayedOnUI(HardwareState state)
         {
-            setUIAnalogs(state);
-            setUIDigitals(state);
+            hardwareState = state;
         }
-        private void setUIAnalogs(HardwareState state)
-        {
-            foreach (KeyValuePair<string, double> pairs in state.analogs)
-            {
-                controlWindow.SetAnalog(pairs.Key, (double)pairs.Value);
-            }
-        }
-        private void setUIDigitals(HardwareState state)
-        {
-            foreach (KeyValuePair<string, bool> pairs in state.digitals)
-            {
-                controlWindow.SetDigital(pairs.Key, (bool)pairs.Value);
-            }
-        }
+
 
 #endregion
 
@@ -1143,6 +1130,15 @@ namespace NavigatorHardwareControl
         }
         #endregion
 
+        #region Voltage Logging
+        public void openNewVoltageLoggerWindow()
+        {
+            voltageLogger voltageLoggerWindow = new voltageLogger();
+            voltageLoggerWindow.Show();
+
+        }
+
+        #endregion
         #region Remote Camera Control
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
 

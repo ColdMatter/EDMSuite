@@ -14,6 +14,8 @@ namespace DAQ.Environment
             Paths.Add("MOTMasterEXEPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav");
             Paths.Add("cameraAttributesPath", "C:\\Users\\Public\\Documents\\National Instruments\\NI-IMAQdx\\Data\\Pike.icd");
             Paths.Add("daqDLLPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav\\DAQ.dll");
+            Paths.Add("DataPath", "Z:\\Data\\"+DateTime.Today.Year+DateTime.Today.Month+DateTime.Today.Day);
+            
 
             DataSearchPaths.Add(Paths["navDataPath"]);
             DataSearchPaths.Add(Paths["navServerPath"]);

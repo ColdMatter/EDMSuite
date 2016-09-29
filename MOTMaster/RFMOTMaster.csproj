@@ -1,21 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B9E73DE5-9E38-48D0-AF97-4FE5242E2723}</ProjectGuid>
+    <ProjectGuid>{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RFMOTHardwareControl</RootNamespace>
-    <AssemblyName>RFMOTHardwareControl</AssemblyName>
+    <RootNamespace>MOTMaster</RootNamespace>
+    <AssemblyName>MOTMaster</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -39,8 +55,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EDMAnalysis|AnyCPU' ">
     <OutputPath>bin\EDMAnalysis\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Buffer|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,8 +84,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <StartupObject>MOTMaster.Runner</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MM.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BufferClassic|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -85,14 +101,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|AnyCPU'">
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RFMO|AnyCPU'">
     <OutputPath>bin\RFMO\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RFMOT|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -102,79 +114,58 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=13.0.40.188, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=9.6.45.292, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Net, Version=13.0.45.242, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\13.0.45.242\NationalInstruments.Net.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\13.0.45.167\NationalInstruments.VisaNS.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2008\DotNET\Assemblies\Current\NationalInstruments.Vision.Common.dll</HintPath>
+    <Reference Include="NationalInstruments.UI, Version=13.0.45.242, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=13.0.45.242, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
-    <Reference Include="System.Design" />
-    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="voltageLogger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="voltageLogger.Designer.cs">
-      <DependentUpon>voltageLogger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="waveformGraphCollection.cs" />
     <Compile Include="Controller.cs" />
-    <Compile Include="ControlWindow.cs">
+    <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ControlWindow.Designer.cs">
-      <DependentUpon>ControlWindow.cs</DependentUpon>
+    <Compile Include="ControllerWindow.Designer.cs">
+      <DependentUpon>ControllerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="HardwareMonitorWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HardwareMonitorWindow.Designer.cs">
-      <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ImageAnalysisWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImageAnalysisWindow.Designer.cs">
-      <DependentUpon>ImageAnalysisWindow.cs</DependentUpon>
-    </Compile>
+    <Compile Include="MMDataIOHelper.cs" />
+    <Compile Include="MOTMasterScript.cs" />
+    <Compile Include="MOTMasterScriptSnippet.cs" />
+    <Compile Include="MOTMasterSequence.cs" />
+    <Compile Include="PIDController.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ControlWindow.resx">
-      <DependentUpon>ControlWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HardwareMonitorWindow.resx">
-      <DependentUpon>HardwareMonitorWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImageAnalysisWindow.resx">
-      <DependentUpon>ImageAnalysisWindow.cs</DependentUpon>
+    <EmbeddedResource Include="ControllerWindow.resx">
+      <DependentUpon>ControllerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -187,10 +178,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="voltageLogger.resx">
-      <DependentUpon>voltageLogger.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -200,25 +191,47 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SHC.ico" />
+    <Compile Include="MMDataZipper.cs" />
+    <Compile Include="SHLoadMOT.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
-      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
     <ProjectReference Include="..\IMAQ\IMAQ.csproj">
-      <Project>{fce9fc5d-8bc1-4517-b4f6-aa446831a930}</Project>
+      <Project>{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}</Project>
       <Name>IMAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
-      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
-      <Name>RFMOTMaster</Name>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
+      <Name>SharedCode</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Content Include="ICSharpCode.SharpZipLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

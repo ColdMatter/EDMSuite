@@ -193,6 +193,8 @@ namespace IMAQ
         {
             SetCameraAttributes(attributesPath);
             PrintCameraAttributesToConsole();
+            if (imageList.Count < 1)
+                imageList = new List<VisionImage>();
             VisionImage[] images = new VisionImage[numberOfShots];
             for (uint i = 0; i < images.Length; ++i)
             {
@@ -242,7 +244,7 @@ namespace IMAQ
                 foreach (VisionImage i in images)
                 {
                     byteList.Add((i.ImageToArray()).U8);
-
+                    imageList.Add(i);
                     // if (windowShowing)
                     //{
                     //  imageWindow.AttachToViewer(i);
@@ -307,7 +309,10 @@ namespace IMAQ
             }
             return newPath;
         }
-
+        public void SetROI(int xMin, int xMax, int yMin, int yMax)
+        {
+            //imaqdxSession.Attributes.
+        }
         #endregion
 
         #region imaqdxSession (Camera Control. Should be all private)
@@ -433,8 +438,10 @@ namespace IMAQ
         {
             string file = "";
             {
+                
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                 saveFileDialog1.Title = "Save image data";
+                saveFileDialog1.InitialDirectory = (string)Environs.FileSystem.Paths["DataPath"];
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
@@ -450,9 +457,9 @@ namespace IMAQ
         public void StoreImageListWithDialog()
         {
             string filepath = GetSaveDialogFilename();
-            string filetext = Path.GetFileName(filepath);
-            Directory.CreateDirectory(filepath);
-            string filed = filepath + "\\" + filetext;
+            if (!Directory.Exists(filepath))
+                Directory.CreateDirectory(filepath);
+            string filed = filepath + "\\image";
             StoreImageList(filed);
             imageWindow.WriteToConsole(filed);
         }

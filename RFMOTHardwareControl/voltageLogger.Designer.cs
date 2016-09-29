@@ -7,18 +7,7 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+
 
         #region Windows Form Designer generated code
 
@@ -29,9 +18,9 @@
         private void InitializeComponent()
         {
             this.voltageInGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
             this.channelNamesComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,6 +35,8 @@
             this.filenameTB = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.logBtn = new System.Windows.Forms.Button();
+            this.stopButton = new System.Windows.Forms.Button();
+            this.continuousCheck = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.voltageInGraph)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,6 +56,11 @@
             this.voltageInGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
             // 
+            // waveformPlot1
+            // 
+            this.waveformPlot1.XAxis = this.xAxis1;
+            this.waveformPlot1.YAxis = this.yAxis1;
+            // 
             // xAxis1
             // 
             this.xAxis1.Caption = "Sample";
@@ -72,11 +68,6 @@
             // yAxis1
             // 
             this.yAxis1.Caption = "Voltage";
-            // 
-            // waveformPlot1
-            // 
-            this.waveformPlot1.XAxis = this.xAxis1;
-            this.waveformPlot1.YAxis = this.yAxis1;
             // 
             // channelNamesComboBox
             // 
@@ -140,7 +131,7 @@
             // 
             this.saveToTB.Location = new System.Drawing.Point(145, 43);
             this.saveToTB.Name = "saveToTB";
-            this.saveToTB.Size = new System.Drawing.Size(218, 20);
+            this.saveToTB.Size = new System.Drawing.Size(128, 20);
             this.saveToTB.TabIndex = 8;
             // 
             // saveCB
@@ -190,7 +181,7 @@
             // 
             // logBtn
             // 
-            this.logBtn.Location = new System.Drawing.Point(288, 261);
+            this.logBtn.Location = new System.Drawing.Point(157, 261);
             this.logBtn.Name = "logBtn";
             this.logBtn.Size = new System.Drawing.Size(75, 23);
             this.logBtn.TabIndex = 14;
@@ -198,11 +189,33 @@
             this.logBtn.UseVisualStyleBackColor = true;
             this.logBtn.Click += new System.EventHandler(this.logBtn_Click);
             // 
+            // stopButton
+            // 
+            this.stopButton.Location = new System.Drawing.Point(344, 261);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(75, 23);
+            this.stopButton.TabIndex = 15;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
+            // continuousCheck
+            // 
+            this.continuousCheck.AutoSize = true;
+            this.continuousCheck.Location = new System.Drawing.Point(307, 45);
+            this.continuousCheck.Name = "continuousCheck";
+            this.continuousCheck.Size = new System.Drawing.Size(79, 17);
+            this.continuousCheck.TabIndex = 16;
+            this.continuousCheck.Text = "Continuous";
+            this.continuousCheck.UseVisualStyleBackColor = true;
+            // 
             // voltageLogger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(648, 296);
+            this.Controls.Add(this.continuousCheck);
+            this.Controls.Add(this.stopButton);
             this.Controls.Add(this.logBtn);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -246,5 +259,7 @@
         private System.Windows.Forms.TextBox filenameTB;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button logBtn;
+        private System.Windows.Forms.Button stopButton;
+        private System.Windows.Forms.CheckBox continuousCheck;
     }
 }

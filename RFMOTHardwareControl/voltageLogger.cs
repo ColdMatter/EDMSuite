@@ -28,12 +28,15 @@ namespace RFMOTHardwareControl
         private string savePath;
         private double[,] voltages;
         private daqmx.Task voltageInputTask;
+        private daqmx.Task continuousTask;
+        private daqmx.Task runningTask;
         private daqmx.AnalogMultiChannelReader VIReader;
         private string channelToRead;
+        private AsyncCallback callBack;
+        private AnalogWaveform<double>[] data;
 
         private static Hashtable hardware = Environs.Hardware.AnalogInputChannels;
 
-        public Controller controller;
 
         private static string defaultSavePath = (string)Environs.FileSystem.Paths["DataPath"];
 
@@ -134,6 +137,7 @@ namespace RFMOTHardwareControl
 
         }
 
+        
         public void configureVITask(string physicalChan,string taskName,double clockRate)
         {
             voltageInputTask = new daqmx.Task();
@@ -153,10 +157,112 @@ namespace RFMOTHardwareControl
 
 
       #endregion
+        #region Asynchronous Stuff
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+                if (continuousTask != null)
+                {
+                    voltageInputTask = null;
+                    continuousTask.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
+        #endregion
         private void logBtn_Click(object sender, EventArgs e)
         {
-            startVoltageAcquisition();
+            if (!continuousCheck.Checked)
+                startVoltageAcquisition();
+            else
+            {
+                getInfo();
+                try
+                {
+                    string taskName = channelToRead;
+                    configureVITask(channelToRead, "", sampleRate);
+                    continuousTask = voltageInputTask;
+
+                    runningTask = continuousTask;
+                    VIReader = new daqmx.AnalogMultiChannelReader(continuousTask.Stream);
+
+                    callBack = new AsyncCallback(ReadCallBack);
+                    voltageInputTask.Control(daqmx.TaskAction.Verify);
+                    VIReader.SynchronizeCallbacks = true;
+                    VIReader.BeginReadWaveform(Convert.ToInt32(continuousTask.Timing.SamplesPerChannel), callBack, continuousTask);
+
+                    stopButton.Enabled = true;
+                    logBtn.Enabled = false;
+                   
+                }
+                catch (daqmx.DaqException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    continuousTask.Dispose();
+                }
+            }
         }
+        private void stopButton_Click(object sender, System.EventArgs e)
+        {
+            stopButton.Enabled = false;
+            runningTask = null;
+
+            try
+            {
+                continuousTask.Stop();
+            }
+            catch (daqmx.DaqException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            continuousTask.Dispose();
+            logBtn.Enabled = true;
+         
+
+        }
+        public void ReadCallBack(IAsyncResult ar)
+        {
+            try
+            {
+                if (runningTask != null && runningTask == ar.AsyncState)
+                {
+                    data = VIReader.EndReadWaveform(ar);
+                    if (saveData)
+                    {
+                        if (!Directory.Exists(savePath))
+                        {
+                            Directory.CreateDirectory(savePath);
+                        }
+                        MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
+                        iohelper.SaveAnalogInputData(savePath + filename, voltages);
+
+                    }
+                    voltageInGraph.PlotWaveformsAppend(data);
+
+                    VIReader.BeginMemoryOptimizedReadWaveform(Convert.ToInt32(continuousTask.Timing.SamplesPerChannel), callBack, continuousTask, data);
+                }
+            }
+            catch (daqmx.DaqException ex)
+            {
+                MessageBox.Show(ex.Message);
+                continuousTask.Dispose();
+
+                runningTask = null;
+                logBtn.Enabled = true;
+                stopButton.Enabled = false;
+                
+            }
+        }
+
     }
 }
