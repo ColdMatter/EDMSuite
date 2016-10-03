@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Drawing;
 using NationalInstruments.Controls;
 using NationalInstruments.Controls.Primitives;
@@ -34,8 +35,6 @@ namespace NavigatorHardwareControl
         public TextBoxStreamWriter console;
         private TextReader reader;
         //private FibreAligner fibreAlign;
-        private Dictionary<string, TextBox> aoTextBoxes;
-        private Dictionary<string, LED> doLEDs; 
         private bool isReading;
         public double intensityScale = 1.0;
 
@@ -57,15 +56,7 @@ namespace NavigatorHardwareControl
             this.DataContext = controller.hardwareState;
             controller.controlWindow = this;
             
-            //TODO fix this based on the UIData class
-            //foreach (TextBox tb in FindVisualChildren<TextBox>(hardwareControl))
-            //{
-            //    aoTextBoxes[tb.Name] = tb;
-            //}
-            //foreach (LED led in FindVisualChildren<LED>(hardwareControl))
-            //{
-            //    doLEDs[led.Name] = led;
-            //}
+  
 
             //controller.Start();
 
@@ -79,26 +70,6 @@ namespace NavigatorHardwareControl
            
         }
 
-        #region Accessing Digital and Analog values
-        public double ReadAnalog(string name)
-        {
-            return 0.0;
-            //return double.Parse(aoTextBoxes[name].Text);
-        }
-        public void SetAnalog(string channelName, double value)
-        {
-           aoTextBoxes[channelName].Text=Convert.ToString(value);
-        }
-        public bool ReadDigital(string channelName)
-        {
-            return doLEDs[channelName].Value;
-        }
-        public void SetDigital(string channelName, bool value)
-        {
-            doLEDs[channelName].Value=value;
-        }
-
-        #endregion
 
         #region Updating UI State
         public void UpdateUIState(Controller.NavHardwareState state)
@@ -316,7 +287,7 @@ namespace NavigatorHardwareControl
         }
         private void SaveDefault_Click(object sender, RoutedEventArgs e)
         {
-
+            controller.StoreParameters();
         }
 
         private void consoleRichTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -363,7 +334,9 @@ namespace NavigatorHardwareControl
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
             if (controller.hsdio != null)
+            {
                 controller.hsdio.ReleaseHardware();
+            }
 
         }
 
@@ -410,6 +383,13 @@ namespace NavigatorHardwareControl
 
         }
 
+       //Ensures that only numeric values can be entered in certain textboxes
+       private void numberValidationTextBox(object sender, TextCompositionEventArgs e)
+       {
+            Regex regex = new Regex("[^0-9.]+");
+            e.Handled = regex.IsMatch(e.Text);
+        } 
+        
     }
 
     #region Other ControlWindow classes

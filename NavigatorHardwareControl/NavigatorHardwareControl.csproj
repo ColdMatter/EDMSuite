@@ -56,6 +56,18 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JB.Common">
+      <HintPath>..\packages\JB.Common.0.8.103-pre\lib\net45\JB.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="JB.Common.Collections">
+      <HintPath>..\packages\JB.Common.Collections.0.8.103-pre\lib\net45\JB.Common.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="JB.Common.Collections.Reactive">
+      <HintPath>..\packages\JB.Common.Collections.Reactive.0.8.103-pre\lib\net45\JB.Common.Collections.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="JB.Common.Reactive">
+      <HintPath>..\packages\JB.Common.Reactive.0.8.103-pre\lib\net45\JB.Common.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="nationalinstruments.controls.booleans, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -84,6 +96,18 @@
     <Reference Include="SharpDX.DXGI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -106,6 +130,7 @@
     <Compile Include="ImageAnalysisWindow.xaml.cs">
       <DependentUpon>ImageAnalysisWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ObservableDictionary.cs" />
     <Compile Include="TelnetConnection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -149,6 +174,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

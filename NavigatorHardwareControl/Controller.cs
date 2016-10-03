@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows;
+using System.ComponentModel;
 using IMAQ;
 
 using NationalInstruments;
@@ -89,10 +90,10 @@ namespace NavigatorHardwareControl
             digitalTasks = new Dictionary<string, Task>();
             //initialise the hardware state
             hardwareState = new HardwareState();
-            hardwareState.analogs = new Dictionary<string, double>();
-            hardwareState.digitals = new Dictionary<string, bool>();
-            hardwareState.muquansAnalog = new Dictionary<string, double>();
-            hardwareState.muquansDigital = new Dictionary<string, bool>();
+            hardwareState.analogs = new ObservableDictionary<string, double>();
+            hardwareState.digitals = new ObservableDictionary<string, bool>();
+            hardwareState.muquansAnalog = new ObservableDictionary<string, double>();
+            hardwareState.muquansDigital = new ObservableDictionary<string, bool>();
 
             if (!Environs.Debug)
             {
@@ -101,12 +102,18 @@ namespace NavigatorHardwareControl
                 if (Environs.Hardware.Boards.ContainsKey("hsDigital"))
                 //The simplest thing is to make all the output channels static.Before running a sequence, the output is aborted and configured for dynamic generation
                 {
-                    hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
+
+                        hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
+
+         
                     foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
                     {
                         DigitalOutputChannel doChannel = (DigitalOutputChannel)channel.Value;
                         if (doChannel.Device == (string)Environs.Hardware.Boards["hsDigital"])
-                            hsdio.CreateHSDigitalTask((string)channel.Key,doChannel.BitNumber);
+                        {
+                            hardwareState.digitals[doChannel.Name] = false;
+                            hsdio.CreateHSDigitalTask((string)channel.Key, doChannel.BitNumber);
+                        }
                         else
                             CreateDigitalTask((string)channel.Key);
                        }
@@ -168,6 +175,7 @@ namespace NavigatorHardwareControl
                     hardwareState.muquansDigital["EDFA1Type"] = false;
                     hardwareState.muquansDigital["EDFA2Type"] = false;
 
+                    hardwareState = LoadParameters();
 
                 }
                 catch(Exception e)
@@ -191,6 +199,8 @@ namespace NavigatorHardwareControl
                 hardwareState.muquansAnalog["EDFA0Val"] = 0.0;
                 hardwareState.muquansAnalog["EDFA1Val"] = 0.0;
                 hardwareState.muquansAnalog["EDFA2Val"] = 0.0;
+                hardwareState.muquansAnalog["MOTaomdds"] = 0.0;
+                hardwareState.muquansAnalog["Ramanaomdds"] = 0.0;
 
                 hardwareState.muquansDigital["MasterLock"] = false;
                 hardwareState.muquansDigital["Slave0Lock"] = false;
@@ -206,6 +216,8 @@ namespace NavigatorHardwareControl
             }
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
+
+
            
         }
 
@@ -218,18 +230,49 @@ namespace NavigatorHardwareControl
         /// It's useful to know what the hardware is doing at all times.
         /// When switching to REMOTE, the updates no longer happen. That's why we store the state before switching to REMOTE and apply the state
         /// back again when returning to LOCAL.
+        /// The dictionaries are replaced by a custom ObservableDictionary which notifies the UI when a property has been changed
         /// </summary>
         [Serializable]
         public class HardwareState
         {
-            //TODO make the objects that reference hardware not controlled via analogue/digital values behave properly
 
-            public Dictionary<string, double> analogs {get; set;}
-            public Dictionary<string, bool> digitals { get; set; }
 
-            public Dictionary<string, double> muquansAnalog { get; set; }
-            public Dictionary<string, bool> muquansDigital { get; set; }
+            public ObservableDictionary<string, double> analogs { get; set; }
+            public ObservableDictionary<string, bool> digitals { get; set; }
 
+            public ObservableDictionary<string, double> muquansAnalog { get; set; }
+            public ObservableDictionary<string, bool> muquansDigital { get; set; }
+
+            //This constructor is used for copying a state when looking for changes
+            public HardwareState(HardwareState state)
+            {
+                this.analogs = new ObservableDictionary<string,double>();
+                this.digitals =new ObservableDictionary<string,bool>();
+                this.muquansAnalog = new ObservableDictionary<string,double>();
+                this.muquansDigital = new ObservableDictionary<string,bool>();
+
+                foreach (string entry in state.analogs.Keys)
+                {
+                    this.analogs[entry] = state.analogs[entry];
+                }
+                foreach (string entry in state.digitals.Keys)
+                {
+                    this.digitals[entry] = state.digitals[entry];
+                }
+                foreach (string entry in state.muquansAnalog.Keys)
+                {
+                    this.muquansAnalog[entry] = state.muquansAnalog[entry];
+                }
+                foreach (string entry in state.muquansDigital.Keys)
+                {
+                    this.muquansDigital[entry] = state.muquansDigital[entry];
+                }
+
+            }
+
+            public HardwareState()
+            { }
+            
         }
 
         public void SaveParametersWithDialog()
@@ -254,7 +297,7 @@ namespace NavigatorHardwareControl
         {
             hardwareState = readValuesOnUI();
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String hardwareStateFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
+            String hardwareStateFilePath = settingsPath + "\\NavigatorHardwareController\\parameters.bin";
             StoreParameters(hardwareStateFilePath);
         }
 
@@ -266,28 +309,28 @@ namespace NavigatorHardwareControl
             {
                 s.Serialize(new FileStream(hardwareStateFilePath, FileMode.Create), hardwareState);
             }
-            catch (Exception)
-            { Console.Out.WriteLine("Unable to store settings"); }
+            catch (Exception e)
+            { Console.Out.WriteLine("Unable to store settings: "+e.Message+"\n"+e.StackTrace); }
         }
 
         public void LoadParametersWithDialog()
         {
-            //TODO fix deserialisation of binary object for UIData class.
             OpenFileDialog dialog = new OpenFileDialog();
+            HardwareState state = new HardwareState();
             dialog.Filter = "navhc parameters|*.bin";
             dialog.Title = "Load parameters";
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String hardwareStateDir = settingsPath + "NavHardwareController";
+            String hardwareStateDir = settingsPath + "NavigatorHardwareController";
             dialog.InitialDirectory = hardwareStateDir;
             dialog.ShowDialog();
-            if (dialog.FileName != "") hardwareState = LoadParameters(dialog.FileName);
-            setValuesDisplayedOnUI(hardwareState);
+            if (dialog.FileName != "") state = LoadParameters(dialog.FileName);
+            setValuesDisplayedOnUI(state);
         }
 
         private HardwareState LoadParameters()
         {
             String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-            String hardwareStateFilePath = settingsPath + "\\NavHardwareController\\parameters.bin";
+            String hardwareStateFilePath = settingsPath + "\\NavigatorHardwareController\\parameters.bin";
             return LoadParameters(hardwareStateFilePath);
         }
 
@@ -295,15 +338,15 @@ namespace NavigatorHardwareControl
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
-            HardwareState hardwareState = new HardwareState();
+            HardwareState state = new HardwareState();
             // eat any errors in the following, as it's just a convenience function
             try
             {
-                hardwareState = (HardwareState)s.Deserialize(new FileStream(hardwareStateFilePath, FileMode.Open));
+                state = (HardwareState)s.Deserialize(new FileStream(hardwareStateFilePath, FileMode.Open));
             }
             catch (Exception e)
-            { Console.WriteLine("Unable to load settings: "+e.Message); }
-            return hardwareState;
+            { Console.WriteLine("Unable to load settings: "+e.Message+"\n"+e.StackTrace); }
+            return state;
         }
 
 
@@ -564,7 +607,7 @@ namespace NavigatorHardwareControl
         {
             if (previousState == null)
             {
-                previousState = hardwareState;
+                previousState = new HardwareState(hardwareState);
                 applyToHardware(previousState);
           
             }
@@ -576,7 +619,7 @@ namespace NavigatorHardwareControl
                 HardwareState changes = getDiscrepancies(hardwareState, previousState);
                 applyToHardware(changes);
                 updateStateRecord(changes);
-                previousState = hardwareState;
+                previousState = new HardwareState(hardwareState);
             }
         }
 
@@ -608,8 +651,8 @@ namespace NavigatorHardwareControl
         private HardwareState getDiscrepancies(HardwareState oldState, HardwareState newState)
         {
             HardwareState state = new HardwareState();
-            state.analogs = new Dictionary<string, double>();
-            state.digitals = new Dictionary<string, bool>();
+            state.analogs = new ObservableDictionary<string, double>();
+            state.digitals = new ObservableDictionary<string, bool>();
             foreach(KeyValuePair<string, double> pairs in oldState.analogs)
             {
                 if (oldState.analogs[pairs.Key] != newState.analogs[pairs.Key])
@@ -684,40 +727,41 @@ namespace NavigatorHardwareControl
 
         private HardwareState readValuesOnUI()
         {
-            HardwareState state = new HardwareState();
-            state.analogs = hardwareState.analogs;
-            state.digitals = hardwareState.digitals;
-            return state;
-        }
-
-        private Dictionary<string, double> readUIAnalogs(Dictionary<string, double>.KeyCollection keys)
-        {
-            Dictionary<string, double> analogs = new Dictionary<string, double>();
-            string[] keyArray = new string[keys.Count];
-            keys.CopyTo(keyArray, 0);
-            for (int i = 0; i < keys.Count; i++)
-            {
-                analogs[keyArray[i]] = controlWindow.ReadAnalog(keyArray[i]);
-            }
-            return analogs;
-        }
-
-        private Dictionary<string, bool> readUIDigitals(Dictionary<string, bool>.KeyCollection keys)
-        {
-            Dictionary<string, bool> digitals = new Dictionary<string,bool>();
-            string[] keyArray = new string[keys.Count];
-            keys.CopyTo(keyArray, 0);
-            for (int i = 0; i < keys.Count; i++)
-            {
-                digitals[keyArray[i]] = controlWindow.ReadDigital(keyArray[i]);
-            }
-            return digitals;
+            return hardwareState;
         }
        
 
         private void setValuesDisplayedOnUI(HardwareState state)
         {
-            hardwareState = state;
+            if (state.analogs != null)
+            {
+                foreach (KeyValuePair<string, double> entry in state.analogs)
+                {
+                    hardwareState.analogs[entry.Key] = entry.Value;
+                   
+                }
+            }
+            if (state.muquansAnalog != null)
+            {
+                foreach (KeyValuePair<string, double> entry in state.muquansAnalog)
+                {
+                    hardwareState.muquansAnalog[entry.Key] = entry.Value;
+                }
+            }
+            if (state.digitals != null)
+            {
+                foreach (KeyValuePair<string, bool> entry in state.digitals)
+                {
+                    hardwareState.digitals[entry.Key] = entry.Value;
+                }
+            }
+            if (state.muquansDigital != null)
+            {
+                foreach (KeyValuePair<string, bool> entry in state.muquansDigital)
+                {
+                    hardwareState.muquansDigital[entry.Key] = entry.Value;
+                }
+            }
         }
 
 

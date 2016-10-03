@@ -6,7 +6,7 @@ namespace DAQ.Environment
     {
      public NavigatorFileSystem()
         {
-            Paths.Add("settingspath", "%USERPROFILE%\\Settings");
+            Paths.Add("settingsPath", "C:\\Users\\Navigator\\Settings");
             Paths.Add("navDataPath", "%USERPROFILE%\\Data");
             Paths.Add("mathPath", "C:\\Program Files\\Wolfram Research\\Mathematica\\10.4\\mathkernel.exe");
             Paths.Add("navServerPath", "\\155.198.206.40\\Navigator_Data\\Data");

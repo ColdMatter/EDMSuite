@@ -27,7 +27,7 @@ namespace NavigatorHardwareControl
             this.channelList = channelList;
 
                 ReclaimHardware();
-               
+          
    
 
 
@@ -66,12 +66,18 @@ namespace NavigatorHardwareControl
         public void ReleaseHardware()
         {
             my_niHSDIO.Dispose();
+           
           
         }
-
+        public void ResetDevice()
+        {
+            my_niHSDIO.ResetDevice();
+        }
         public void ReclaimHardware()
         {
+
             my_niHSDIO = niHSDIO.InitGenerationSession(deviceName, true, false, "");
+
             my_niHSDIO.AssignStaticChannels(channelList);
         }
     }

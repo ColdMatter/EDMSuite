@@ -19,14 +19,14 @@
                                         <GroupBox x:Name="masterBox" Header="Master" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="142">
                                             <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
                                                 <ni:BooleanButton x:Name="scanMaster" MinWidth="50" Margin="5" Content="Scan"/>
-                                                <ni:BooleanButton x:Name="lockMaster" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding muquansDigital[MasterLock]}" Content="Lock"/>
+                                                <ni:BooleanButton x:Name="lockMaster" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding muquansDigital[MasterLock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Lock"/>
                                             </StackPanel>
                                         </GroupBox>
                                         <GroupBox x:Name="slave0Box" Header="Slave0" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Height="60" Width="142">
                                             <Grid Margin="0,0,0,0" Width="317">
                                                 <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
                                                     <ni:BooleanButton x:Name="monitorSlave0" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
-                                                    <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding muquansDigital[Slave0Lock]}" Content="Lock"/>
+                                                    <ni:BooleanButton x:Name="lockSlave0" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Value="{Binding muquansDigital[Slave0Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Lock"/>
                                                 </StackPanel>
                                             </Grid>
                                         </GroupBox>
@@ -34,7 +34,7 @@
                                             <Grid Margin="0,0,0,0" Width="317">
                                                 <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
                                                     <ni:BooleanButton x:Name="scanSlave1Button" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
-                                                    <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" Value="{Binding muquansDigital[Slave1Lock]}"/>
+                                                    <ni:BooleanButton x:Name="lockSlave1Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" Value="{Binding muquansDigital[Slave1Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
                                             </Grid>
                                         </GroupBox>
@@ -42,7 +42,7 @@
                                             <Grid Margin="0,0,0,0" Width="317">
                                                 <StackPanel Margin="0,0,-2,0" Orientation="Horizontal">
                                                     <ni:BooleanButton x:Name="scanSlave2Button" MinWidth="50" Margin="5" Click="monitorButton_Click" Content="Monitor"/>
-                                                    <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" Value="{Binding muquansDigital[Slave2Lock]}" />
+                                                    <ni:BooleanButton x:Name="lockSlave2Button" MinWidth="50" Margin="5" Click="lockLaserButton_Click" Content="Lock" Value="{Binding muquansDigital[Slave2Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                                                 </StackPanel>
                                             </Grid>
                                         </GroupBox>
@@ -64,26 +64,26 @@
                                 </Grid.RowDefinitions>
                                 <GroupBox x:Name="edfa0Box" Header="EDFA0" Margin="1" Width="180" Height="80" Grid.Column="0" Grid.Row="0">
                                     <Grid Margin="0">
-                                        <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False" Value="{Binding muquansDigital[EDFA0Lock]}"/>
-                                        <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9" Value="{Binding muquansDigital[EDFA0Type]}"/>
-                                        <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA0Val]}"/>
-                                        <ni:BooleanButton x:Name="edfa0LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA0Lock]}"/>
+                                        <ni:LED x:Name="edfa0LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" ClickMode="Press" IsMomentary="False" IsReadOnly="False" Value="{Binding muquansDigital[EDFA0Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <ni:Switch x:Name="edfa0LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9" Value="{Binding muquansDigital[EDFA0Type],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox x:Name="edfa0Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA0Val],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                                        <ni:BooleanButton x:Name="edfa0LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA0Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                     </Grid>
                                 </GroupBox>
                                 <GroupBox x:Name="edfa1Box" Header="EDFA1" Margin="1" Width="180" Height="80" Grid.Column="0" Grid.Row="1">
                                     <Grid Margin="0,0,0,0">
-                                        <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" Value="{Binding muquansDigital[EDFA1Lock]}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                                        <ni:Switch x:Name="edfa1LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="{Binding muquansDigital[EDFA1Type]}" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
-                                        <TextBox x:Name="edfa1Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA1Val]}"/>
-                                        <ni:BooleanButton x:Name="edfa1LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA1Lock]}"/>
+                                        <ni:LED x:Name="edfa1LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" Value="{Binding muquansDigital[EDFA1Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                        <ni:Switch x:Name="edfa1LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="{Binding muquansDigital[EDFA1Type],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
+                                        <TextBox x:Name="edfa1Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA1Val],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <ni:BooleanButton x:Name="edfa1LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA1Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                                     </Grid>
                                 </GroupBox>
                                 <GroupBox x:Name="edfa2Box" Header="EDFA2" Margin="1" Width="180" Height="80" Grid.Column="1" Grid.Row="0">
                                     <Grid Margin="0,0,0,0">
-                                        <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" Value="{Binding muaquansDigital[EDFA2Lock]}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
-                                        <ni:Switch x:Name="edfa2LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="{Binding muquansDigital[EDFA2Type]}" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
-                                        <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA2Val]}"/>
-                                        <ni:BooleanButton x:Name="edfa2LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA2Lock]}"/>
+                                        <ni:LED x:Name="edfa2LED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="130,15,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" Click="edfaLED_Click" FalseBrush="#FFD52525" Value="{Binding muaquansDigital[EDFA2Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsMomentary="False" IsReadOnly="False"/>
+                                        <ni:Switch x:Name="edfa2LockType" FalseContent="Current"  HorizontalAlignment="Left" Height="20" Margin="5" TrueContent="Power" VerticalAlignment="Top" Width="115" ToolTip="PID type selector for EDFA lock" Value="{Binding muquansDigital[EDFA2Type],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" ClickMode="Press" IsMomentary="False" Orientation="Horizontal" ContentVisibility="Visible" FontSize="9"/>
+                                        <TextBox x:Name="edfa2Text" HorizontalAlignment="Left" Margin="5,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Height="20" Text="{Binding muquansAnalog[EDFA2Val],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                                        <ni:BooleanButton x:Name="edfa2LockButton" Width="60" Height="20" Content="Lock" Margin="65,30,43,7" FontSize="9" Click="edfaLockButton_Click" Value="{Binding muquansDigital[EDFA2Lock],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                                     </Grid>
                                 </GroupBox>
                             </Grid>
@@ -96,14 +96,14 @@
                                         <Label x:Name="label1" Content="Slave1" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
                                         <Label x:Name="label2" Content="Slave2" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
                                         <Label x:Name="label3" Content="Raman" HorizontalAlignment="Left" Margin="0,78,0,0" VerticalAlignment="Top"/>
-                                        <TextBox x:Name="slave0DDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave0dds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="slave1DDSFreq" HorizontalAlignment="Left" Margin="50,30,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave1dds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="slave2DDSFreq" HorizontalAlignment="Left" Margin="50,56,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave2dds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="ramanDDSFreq" HorizontalAlignment="Left" Margin="50,82,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Ramandds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="slave0DDSPhase" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                        <TextBox x:Name="slave1DDSPhase" HorizontalAlignment="Left" Margin="110,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                        <TextBox x:Name="slave2DDSPhase" HorizontalAlignment="Left" Margin="110,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
-                                        <TextBox x:Name="ramanDDSPhase" HorizontalAlignment="Left" Margin="110,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanphase}" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                        <TextBox x:Name="slave0DDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave0dds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="slave1DDSFreq" HorizontalAlignment="Left" Margin="50,30,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave1dds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="slave2DDSFreq" HorizontalAlignment="Left" Margin="50,56,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Slave2dds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="ramanDDSFreq" HorizontalAlignment="Left" Margin="50,82,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Ramandds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="slave0DDSPhase" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave0phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="slave1DDSPhase" HorizontalAlignment="Left" Margin="110,30,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave1phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="slave2DDSPhase" HorizontalAlignment="Left" Margin="110,56,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.slave2phase}" VerticalAlignment="Top" Width="50" IsReadOnly="True" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="ramanDDSPhase" HorizontalAlignment="Left" Margin="110,82,0,0" TextWrapping="Wrap" Text="{Binding Path=controller.dataStore.ramanphase}" VerticalAlignment="Top" Width="50" IsReadOnly="True" PreviewTextInput="numberValidationTextBox"/>
                                     </Grid>
                                 </GroupBox>
                                 <GroupBox x:Name="aomFreqGroup" Header="AOM/EOM" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top" Height="97" Width="200" ToolTip="Enter Values in MHz">
@@ -111,10 +111,10 @@
                                         <Label x:Name="label4" Content="Repump EOM" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
                                         <Label x:Name="label5" Content="MOT AOM" HorizontalAlignment="Left" Margin="0,26,0,0" VerticalAlignment="Top"/>
                                         <Label x:Name="label6" Content="Raman AOM" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top"/>
-                                        <TextBox x:Name="repumpDDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Mphidds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="motAOMDDSFreq" HorizontalAlignment="Left" Margin="78,30,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[MOTaomdds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="ramanAOMDDSFreq" HorizontalAlignment="Left" Margin="78,56,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Ramanaomdds]}" VerticalAlignment="Top" Width="50"/>
-                                        <TextBox x:Name="repumpDetFreq" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
+                                        <TextBox x:Name="repumpDDSFreq" HorizontalAlignment="Left" Margin="50,4,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Mphidds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="motAOMDDSFreq" HorizontalAlignment="Left" Margin="78,30,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[MOTaomdds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="ramanAOMDDSFreq" HorizontalAlignment="Left" Margin="78,56,0,0" TextWrapping="Wrap" Text="{Binding muquansAnalog[Ramanaomdds],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="50" PreviewTextInput="numberValidationTextBox"/>
+                                        <TextBox x:Name="repumpDetFreq" HorizontalAlignment="Left" Margin="110,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" IsReadOnly="True" PreviewTextInput="numberValidationTextBox"/>
                                     </Grid>
                                 </GroupBox>
                                 <ni:BooleanButton x:Name="ddsupdateButton" Content="Update DDS" HorizontalAlignment="Left" Height="23" Margin="160,140,0,0" VerticalAlignment="Top" Width="75" Click="ddsupdateButton_Click"/>
@@ -125,22 +125,22 @@
                                 <GroupBox Header="MOT" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="166" Width="146">
                                     <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                                         <Label Content="Value" Margin="0,6,10,102"/>
-                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[motCTRL]}"/>
-                                        <ni:LED x:Name="motMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[motTTL]}"/>
+                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[motCTRL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                                        <ni:LED x:Name="motMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[motTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                                     </Grid>
                                     </GroupBox>
                                 <GroupBox Header="MPhi" HorizontalAlignment="Left" Margin="146,0,0,0" VerticalAlignment="Top" Height="166" Width="146">
                                     <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                                         <Label Content="Value" Margin="0,6,10,102"/>
-                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[mphiCTRL]}"/>
-                                        <ni:LED x:Name="mphiMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[mphiTTL]}"/>
+                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[mphiCTRL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                                        <ni:LED x:Name="mphiMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[mphiTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                                     </Grid>
                                 </GroupBox>
                                 <GroupBox Header="Raman" HorizontalAlignment="Left" Margin="292,0,0,0" VerticalAlignment="Top" Height="166" Width="146">
                                     <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                                         <Label Content="Value" Margin="0,6,10,102"/>
-                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[ramanCTRL]}"/>
-                                        <ni:LED x:Name="ramanMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[ramanTTL]}"/>
+                                        <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[ramanCTRL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                                        <ni:LED x:Name="ramanMuquansLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[ramanTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                                     </Grid>
                                 </GroupBox>
                             </Grid>
@@ -153,27 +153,27 @@
                     <GroupBox Header="MOT" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Height="166" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                             <Label Content="Frequency" Margin="0,6,10,102"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[2DaomFreq]}"/>
-                            <Label Content="Atten" Margin="4,38,82,58"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[2DaomAtten]}" />
-                            <ni:LED x:Name="mot2dLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[2DaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[2DaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <Label Content="Atten" Margin="4,38,82,58" PreviewTextInput="numberValidationTextBox"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[2DaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                            <ni:LED x:Name="mot2dLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[2DaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
 
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Push" HorizontalAlignment="Left" Margin="175,10,0,0" VerticalAlignment="Top" Height="166" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                             <Label Content="Frequency" Margin="0,6,10,102"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[pushaomFreq]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[pushaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Atten" Margin="4,38,82,58"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[pushaomAtten]}"/>
-                            <ni:LED x:Name="pushLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[pushaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[pushaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <ni:LED x:Name="pushLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="40" Margin="22,80,0,0" TrueContent="On" VerticalAlignment="Top" Width="40" FalseBrush="#FFD52525" Value="{Binding digitals[pushaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
 
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Coils" HorizontalAlignment="Left" Margin="325,10,0,0" VerticalAlignment="Top" Height="166" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,10,-2,0">
                             <Label Content="Current" Margin="0,6,10,102"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analog[mot2DCoil]}" />
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[mot2DCoil],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox" />
 
                         </Grid>
                     </GroupBox>
@@ -185,49 +185,49 @@
                     <GroupBox Header="X" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="105" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
                             <Label Content="Frequency" Margin="0,0,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xaomFreq]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Atten" Margin="0,25,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xaomAtten]}" />
-                            <ni:LED x:Name="xaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[xaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <ni:LED x:Name="xaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[xaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Y" HorizontalAlignment="Left" Margin="0,105,0,0" VerticalAlignment="Top" Height="105" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
                             <Label Content="Frequency" Margin="0,0,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[yaomFreq]}" />
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[yaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Atten" Margin="0,25,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[yaomAtten]}"/>
-                            <ni:LED x:Name="yaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[yaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[yaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <ni:LED x:Name="yaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[yaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Z+" HorizontalAlignment="Left" Margin="146,0,0,0" VerticalAlignment="Top" Height="105" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
                             <Label Content="Frequency" Margin="0,0,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zpaomFreq]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zpaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Atten" Margin="0,25,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zpaomAtten]}"/>
-                            <ni:LED x:Name="zpaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[zpaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zpaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <ni:LED x:Name="zpaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[zpaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Z-" HorizontalAlignment="Left" Margin="146,105,0,0" VerticalAlignment="Top" Height="105" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
                             <Label Content="Frequency" Margin="0,0,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zmaomFreq]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zmaomFreq],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Atten" Margin="0,25,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zmaomAtten]}" />
-                            <ni:LED x:Name="zmaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[zmaomTTL]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zmaomAtten],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
+                            <ni:LED x:Name="zmaomLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="20" Margin="92,52,0,0" TrueContent="On" VerticalAlignment="Top" Width="20" FalseBrush="#FFD52525" Value="{Binding digitals[zmaomTTL],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ClickMode="Press" IsReadOnly="False"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Coils" HorizontalAlignment="Left" Margin="292,0,0,0" VerticalAlignment="Top" Height="123" Width="146">
                         <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
                             <Label Content="Current" Margin="0,0,0,0"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[mot3DCoil]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[mot3DCoil],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="X Bias" Margin="0,23,0,-3"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xbiasCoil]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[xbiasCoil],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Y Bias" Margin="0,46,0,-3"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[ybiasCoil]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[ybiasCoil],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                             <Label Content="Z Bias" Margin="0,69,0,-3"/>
-                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zbiasCoil]}"/>
+                            <TextBox HorizontalAlignment="Left" Height="20" Margin="74,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="{Binding analogs[zbiasCoil],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="numberValidationTextBox"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

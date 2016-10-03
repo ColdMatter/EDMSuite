@@ -9885,6 +9885,7 @@ namespace NationalInstruments.ModularInstruments.Interop
                     msg.Capacity = size;
                     PInvoke.GetError(handle, out status, size, msg);
                 }
+          
                 throw new System.Runtime.InteropServices.ExternalException(msg.ToString(), code);
             }
         }
