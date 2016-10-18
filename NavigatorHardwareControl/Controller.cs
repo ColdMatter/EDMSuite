@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows;
+using System.Threading;
 using System.ComponentModel;
 using IMAQ;
 
@@ -267,7 +268,6 @@ namespace NavigatorHardwareControl
                 {
                     this.muquansDigital[entry] = state.muquansDigital[entry];
                 }
-
             }
 
             public HardwareState()
@@ -616,7 +616,7 @@ namespace NavigatorHardwareControl
                 HardwareState uiState = readValuesOnUI();
                 if (uiState.analogs != hardwareState.analogs && uiState.digitals != hardwareState.digitals)
                     controlWindow.WriteToConsole("UI State doesn't match hardware state. Check the values are bound properly");
-                HardwareState changes = getDiscrepancies(hardwareState, previousState);
+                HardwareState changes = getDiscrepancies(previousState, hardwareState);
                 applyToHardware(changes);
                 updateStateRecord(changes);
                 previousState = new HardwareState(hardwareState);
@@ -1055,6 +1055,8 @@ namespace NavigatorHardwareControl
             try
             {
                 ImageController.Stream(cameraAttributesPath);
+                SetDigitalLine("cameraTTL", true);
+                SetDigitalLine("cameraTTL", false);
             }
             catch { }
         }
@@ -1075,7 +1077,6 @@ namespace NavigatorHardwareControl
             {
                 try
                 {
-                    
                     ImageController.SingleSnapshot(cameraAttributesPath);
                     SetDigitalLine("cameraTTL", true);
                     SetDigitalLine("cameraTTL", false);
@@ -1086,18 +1087,24 @@ namespace NavigatorHardwareControl
             {
                 try
                 {
-                    ImageController.MultipleSnapshot(cameraAttributesPath, 2);
+                    ImageController.ClearImageList();
+                    byte[,] fgImage = ImageController.SingleSnapshot(cameraAttributesPath, true);
                     SetDigitalLine("cameraTTL", true);
                     SetDigitalLine("cameraTTL", false);
-                    SetDigitalLine("motTTL", false);
+                    Thread.Sleep(100);
+                    SetDigitalLine("mphiTTL", false);
+                    Thread.Sleep(100);
+                    byte[,] bgImage = ImageController.SingleSnapshot(cameraAttributesPath, true);
                     SetDigitalLine("cameraTTL", true);
                     SetDigitalLine("cameraTTL", false);
-                    SetDigitalLine("motTTL", true);
+                    Thread.Sleep(100);
+                    SetDigitalLine("mphiTTL", true);
+                    ImageController.ShowSubtractedImage(fgImage, bgImage);
 
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    MessageBox.Show("Couldn't Capture Images: " + e.Message);
                 }
             }
         }
@@ -1112,11 +1119,7 @@ namespace NavigatorHardwareControl
 
         public void SaveImageWithDialog(bool background)
         {
-            if (background)
-                ImageController.StoreImageListWithDialog();
-            else
                 ImageController.SaveImageWithDialog();
-           
         }
         public void SaveImageWithDialog()
         {
@@ -1158,6 +1161,7 @@ namespace NavigatorHardwareControl
         public void stopImageAnalysis()
         {
             analyseImage = false;
+            imAnalWindow.Close();
         }
 
         private void doImageAnalysis()
@@ -1168,7 +1172,7 @@ namespace NavigatorHardwareControl
                 {
                     imAnalWindow.imageWindow.updateImageAndAnalyse();
                 }
-                Thread.Sleep(200);
+                Thread.Sleep(10);
 
             }
         }
@@ -1183,6 +1187,7 @@ namespace NavigatorHardwareControl
         }
 
         #endregion
+
         #region Remote Camera Control
         //Written for taking images triggered by TTL. This "Arm" sets the camera so it's expecting a TTL.
 

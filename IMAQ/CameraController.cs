@@ -40,10 +40,12 @@ namespace IMAQ
         private CameraState state = new CameraState();
         private object streamStopLock = new object();
         public List<VisionImage> imageList = new List<VisionImage>();
+        private ImaqdxAttributeCollection attributes;
         private Dictionary<string, string> registers;
         public PointContour pointOfInterest;
         public Roi rectangleROI = new Roi();
         public Roi pointROI = new Roi();
+        public bool roiSet = false;
 
         public CameraController(string cameraName)
         {
@@ -266,7 +268,35 @@ namespace IMAQ
             }
 
         }
-
+        public void ShowSubtractedImage(byte[,] fgImage, byte[,] bgImage)
+        {
+            
+            int height = fgImage.GetLength(0);
+            int width = fgImage.GetLength(1);
+            byte[,] subImage = new byte[height, width];
+            if (fgImage.Length != bgImage.Length)
+            {
+                throw new Exception("Images not the same size");
+            }
+            for (int i=0;i<height;i++)
+            {
+                for (int j=0; j<width;j++)
+                {
+                    subImage[i, j] = (byte)(fgImage[i, j] - bgImage[i, j]); 
+                }
+                
+            }
+            image = new VisionImage();
+            PixelValue2D array = new PixelValue2D(subImage);
+            image.ArrayToImage(array);
+            imageWindow.AttachToViewer(image);
+            imageList.Add(image);
+            imageWindow.WriteToConsole("Showing background subtracted image");
+        }
+        public void ClearImageList()
+        {
+            imageList = new List<VisionImage>();
+        }
         public bool IsReadyForAcqisition()
         {
             if (state == CameraState.READY_FOR_ACQUISITION)
@@ -305,13 +335,40 @@ namespace IMAQ
         {
             lock (this)
             {
-                imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+                if (attributes == null)
+                {
+                    imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+                    attributes = imaqdxSession.Attributes;
+                }
+                else
+                {
+                    attributes.WriteAttributesToFile(newPath);
+                    imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+                }
+
             }
             return newPath;
         }
-        public void SetROI(int xMin, int xMax, int yMin, int yMax)
+      
+        public void SetROI()
         {
-            //imaqdxSession.Attributes.
+            RectangleContour rect = rectangleROI.GetBoundingRectangle();
+            ImaqdxAttributeCollection attr = imaqdxSession.Attributes;
+            attr[attr.IndexOf("OffsetX")].SetValue(rect.Left);
+            attr[attr.IndexOf("OffsetY")].SetValue(rect.Top);
+            attr[attr.IndexOf("Width")].SetValue(rect.Width);
+            attr[attr.IndexOf("Height")].SetValue(rect.Height);
+            roiSet = true;
+        }
+
+        public void ClearROI(int maxWidth,int maxHeight)
+        {
+            ImaqdxAttributeCollection attr = imaqdxSession.Attributes;
+            attr[attr.IndexOf("OffsetX")].SetValue(0);
+            attr[attr.IndexOf("OffsetY")].SetValue(0);
+            attr[attr.IndexOf("Width")].SetValue(maxWidth);
+            attr[attr.IndexOf("Height")].SetValue(maxHeight);
+            roiSet = false;
         }
         #endregion
 
@@ -379,6 +436,7 @@ namespace IMAQ
                     {
                         imaqdxSession.Acquisition.Stop();
                         state = CameraState.FREE;
+                       
                         return;
                     }
                 }
@@ -454,18 +512,20 @@ namespace IMAQ
             return file;
         }
 
-        public void StoreImageListWithDialog()
+        public void StoreImageListWithDialog(bool rawData)
         {
             string filepath = GetSaveDialogFilename();
             if (!Directory.Exists(filepath))
                 Directory.CreateDirectory(filepath);
             string filed = filepath + "\\image";
-            StoreImageList(filed);
+            StoreImageList(filed,rawData);
             imageWindow.WriteToConsole(filed);
         }
 
-
-
+        public void StoreImageListWithDialog()
+        {
+            StoreImageListWithDialog(true);
+        }
         // Quietly.
         public void SaveImage()
         {
@@ -481,7 +541,6 @@ namespace IMAQ
             image.WritePngFile(dataStoreFilePath);
             imageWindow.WriteToConsole("Image saved");
         }
-
         //public void storeImage(string savePath, byte[][,] imageData)
         //{
         //    for (int i = 0; i < imageData.Length; i++)
@@ -535,15 +594,23 @@ namespace IMAQ
 
 
 
-        public void StoreImageList(string savePath)
+        public void StoreImageList(string savePath, bool rawData)
         {
 
             for (int i = 0; i < imageList.Count; i++)
             {
                 PixelValue2D pval = imageList[i].ImageToArray();
-                StoreImageData(savePath + "_" + i.ToString(), pval.U8);
+                if (rawData)
+                    StoreImageData(savePath + "_" + i.ToString(), pval.U8);
+                else
+                    imageList[i].WritePngFile(savePath + "_" + i.ToString()+".png");
             }
             imageWindow.WriteToConsole("List of" + imageList.Count.ToString() + "images saved");
+        }
+
+        public void StoreImageList(string savePath)
+        {
+            StoreImageList(savePath, true);
         }
 
         public void StoreImageData(string savePath, byte[,] imageData)

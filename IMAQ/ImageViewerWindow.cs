@@ -70,8 +70,21 @@ namespace IMAQ
 
         private void displayPointClicked(object sender, ImageMouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-                WriteToConsole("RightButtonClicked");
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && IM.IsCameraFree())
+            {
+                
+                if (!IM.roiSet)
+                {
+                    IM.SetROI();
+                    WriteToConsole("Setting new Region of Interest");
+                }
+                else
+                {
+                    IM.ClearROI(2452, 2054);
+                    WriteToConsole("Clearing Region of Interest");
+                }
+
+            }
             PointContour point = e.Point;
             IM.pointOfInterest = e.Point;
 

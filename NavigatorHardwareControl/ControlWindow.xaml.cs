@@ -337,6 +337,12 @@ namespace NavigatorHardwareControl
             {
                 controller.hsdio.ReleaseHardware();
             }
+            try
+            {
+                controller.stopImageAnalysis();
+            }
+            catch
+            { }
 
         }
 
@@ -354,7 +360,7 @@ namespace NavigatorHardwareControl
         private void cameraSave_Click(object sender, RoutedEventArgs e)
         {
             bool background = BackgroundCheck.IsChecked.Value;
-            controller.SaveImageWithDialog(background);
+            controller.SaveImageWithDialog(false);
         }
 
         private void cameraStartStream_Click(object sender, RoutedEventArgs e)
@@ -388,7 +394,16 @@ namespace NavigatorHardwareControl
        {
             Regex regex = new Regex("[^0-9.]+");
             e.Handled = regex.IsMatch(e.Text);
-        } 
+        }
+
+       private void triggerDDS_Click(object sender, RoutedEventArgs e)
+       {
+           BooleanButton button = sender as BooleanButton;
+           string channel = button.Name;
+           controller.SetValue(channel, true);
+           controller.SetValue(channel, false);
+           WriteToConsole("Pulsed " + channel);
+       } 
         
     }
 

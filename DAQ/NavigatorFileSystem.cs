@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace DAQ.Environment
 {
@@ -16,7 +17,8 @@ namespace DAQ.Environment
             Paths.Add("daqDLLPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav\\DAQ.dll");
             Paths.Add("DataPath", "Z:\\Data\\"+DateTime.Today.Year+DateTime.Today.Month+DateTime.Today.Day);
             
-
+            if (!Directory.Exists((string)Paths["DataPath"]))
+                Directory.CreateDirectory((string)Paths["DataPath"]);
             DataSearchPaths.Add(Paths["navDataPath"]);
             DataSearchPaths.Add(Paths["navServerPath"]);
         }

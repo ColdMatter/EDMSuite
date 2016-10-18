@@ -171,6 +171,7 @@
             // 
             // waveformPlot4
             // 
+            this.waveformPlot4.CanScaleYAxis = false;
             this.waveformPlot4.LineColor = System.Drawing.Color.White;
             this.waveformPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.waveformPlot4.XAxis = this.xAxis4;
@@ -179,11 +180,19 @@
             // xAxis4
             // 
             this.xAxis4.Caption = "Pixel";
+            this.xAxis4.MajorDivisions.GridColor = System.Drawing.Color.Silver;
+            this.xAxis4.MajorDivisions.GridVisible = true;
             // 
             // yAxis4
             // 
             this.yAxis4.Caption = "Integrated Pixel Count";
-            this.yAxis4.Range = new NationalInstruments.UI.Range(0D, 255D);
+            this.yAxis4.MajorDivisions.GridColor = System.Drawing.Color.Silver;
+            this.yAxis4.MajorDivisions.GridVisible = true;
+            this.yAxis4.MinorDivisions.GridColor = System.Drawing.Color.Gray;
+            this.yAxis4.MinorDivisions.GridLineStyle = NationalInstruments.UI.LineStyle.Dash;
+            this.yAxis4.MinorDivisions.GridVisible = true;
+            this.yAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis4.Range = new NationalInstruments.UI.Range(0D, 200D);
             // 
             // waveformGraph3
             // 
@@ -202,6 +211,7 @@
             // 
             // waveformPlot3
             // 
+            this.waveformPlot3.CanScaleYAxis = false;
             this.waveformPlot3.LineColor = System.Drawing.Color.White;
             this.waveformPlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.waveformPlot3.XAxis = this.xAxis3;
@@ -210,10 +220,18 @@
             // xAxis3
             // 
             this.xAxis3.Caption = "Pixel";
+            this.xAxis3.MajorDivisions.GridColor = System.Drawing.Color.Silver;
+            this.xAxis3.MajorDivisions.GridVisible = true;
             // 
             // yAxis3
             // 
-            this.yAxis3.Range = new NationalInstruments.UI.Range(0D, 255D);
+            this.yAxis3.MajorDivisions.GridColor = System.Drawing.Color.Silver;
+            this.yAxis3.MajorDivisions.GridVisible = true;
+            this.yAxis3.MinorDivisions.GridColor = System.Drawing.Color.Silver;
+            this.yAxis3.MinorDivisions.GridLineStyle = NationalInstruments.UI.LineStyle.Dash;
+            this.yAxis3.MinorDivisions.GridVisible = true;
+            this.yAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis3.Range = new NationalInstruments.UI.Range(0D, 200D);
             // 
             // menuStrip1
             // 

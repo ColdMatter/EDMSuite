@@ -59,7 +59,7 @@ namespace DAQ.HAL
             //TODO make these work with HSDIO cards
             AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
-            AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
+            AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 14);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
             AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
@@ -75,7 +75,7 @@ namespace DAQ.HAL
             //map the analog output channels
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
-            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", 0, 10);
+            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao24", 0, 10);
             AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao3", 0, 10);
             AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao4", 0, 10);
             AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao5", 0, 10);
