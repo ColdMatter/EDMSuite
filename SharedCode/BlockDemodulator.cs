@@ -265,6 +265,16 @@ namespace Analysis.EDM
             double brf1fCorrDBG = brf1fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
             TOFChannel brf2fCorrDB = (TOFChannel)tcs.GetChannel( "BRF2FCORRDB" );
             double brf2fCorrDBG = brf2fCorrDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel DBSig = (TOFChannel)tcs.GetChannel("DBSIG");
+            double DBSigG = DBSig.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel DBDBSigSig = (TOFChannel)tcs.GetChannel("DBDBSIGSIG");
+            double DBDBSigSigG = DBDBSigSig.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel SIGDBDB = (TOFChannel)tcs.GetChannel("SIGDBDB");
+            double SIGDBDBG = SIGDBDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel SIGNL = (TOFChannel)tcs.GetChannel("SIGNL");
+            double SIGNLG = SIGNL.Difference.GatedMean(gate.GateLow, gate.GateHigh);
+            TOFChannel ONEOVERDB = (TOFChannel)tcs.GetChannel("ONEOVERDB");
+            double ONEOVERDBG = ONEOVERDB.Difference.GatedMean(gate.GateLow, gate.GateHigh);
 
             //Repeat for top
 
@@ -354,6 +364,8 @@ namespace Analysis.EDM
             double erf1fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF1F" }) / dcv.GetValue(new string[] { "DB" });
             double erf2fDBDBE = dcv.GetError(new string[] { "E", "DB", "RF2F" }) / dcv.GetValue(new string[] { "DB" });
             double BDBE = dcv.GetError(new string[] { "B" }) / dcv.GetValue(new string[] { "DB" });
+            double DBSigE = dcv.GetError(new string[] { "DB" }) / dcv.GetValue(new string[] { "SIG" });
+            double DBDBSigSigE = dcv.GetError(new string[] { "DB" }) / dcv.GetValue(new string[] { "SIG" });
 
             //repeat for top
             DetectorChannelValues dcvt = dblock.ChannelValues[tdi];
@@ -415,7 +427,11 @@ namespace Analysis.EDM
             dblock.ChannelValues[tndi].SpecialValues["LF2DB"] = new double[] { lf2DBG, lf2DBE };
             dblock.ChannelValues[tndi].SpecialValues["LF2DBDB"] = new double[] { lf2DBDBG, lf2DBDBE };
             dblock.ChannelValues[tndi].SpecialValues["BDB"] = new double[] { BDBG, BDBE };
-
+            dblock.ChannelValues[tndi].SpecialValues["DBSIG"] = new double[] { DBSigG, DBSigE };
+            dblock.ChannelValues[tndi].SpecialValues["DBDBSIGSIG"] = new double[] { DBDBSigSigG, DBDBSigSigE };
+            dblock.ChannelValues[tndi].SpecialValues["SIGDBDB"] = new double[] { SIGDBDBG, SIGDBDBG }; //This Error isn't at all right, also note that this channel isn't dimensionless
+            dblock.ChannelValues[tndi].SpecialValues["SIGNL"] = new double[] { SIGNLG, SIGNLG }; //This Error isn't at all right, also note that this channel isn't dimensionless
+            dblock.ChannelValues[tndi].SpecialValues["ONEOVERDB"] = new double[] { ONEOVERDBG, ONEOVERDBG }; //This Error isn't at all right, also note that this channel isn't dimensionless
 
             dblock.ChannelValues[tdi].SpecialValues["EDMDB"] = new double[] { edmDBGtop, edmDBEtop };
             dblock.ChannelValues[tdi].SpecialValues["CORRDB"] = new double[] { corrDBGtop, corrDBEtop };

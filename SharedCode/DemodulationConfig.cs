@@ -97,7 +97,7 @@ namespace Analysis.EDM
             //AddSliceConfig("fwhm", 0, 1);
             //// narrower than fwhm, takes only the center hwhm
             //AddSliceConfig("hwhm", 0, 0.5);
-            //// only the fast half of the fwhm (NOT TRUE - 01Jul08 JH)
+            //// only the fast half of the fwhm (NOT TRUE - 01Jul08JH)
             //AddSliceConfig("fast", -0.5, 0.5);
             //// the slow half of the fwhm (NOT TRUE - 01Jul08 JH)
             //AddSliceConfig("slow", 0.5, 0.5);
@@ -109,6 +109,12 @@ namespace Analysis.EDM
             // for testing out different centred-gate widths
             for (int i = 1; i < 10; i++)
                 AddFixedSliceConfig("wgate" + i, 2190, i * 20);
+
+            for (int i = 1; i < 14; i++)
+                AddFixedSliceConfig("shiftgate" + i, 1850 + i*50, 65);
+
+            for (int i = 1; i < 7; i++)
+                AddFixedSliceConfig("slicegate" + i, 2050 + i * 50, 25);
 
             for (int i = 1; i < 30; i++)
                 AddFixedSliceConfig("pgate" + i, 2090 + i*10, 10);
@@ -287,18 +293,23 @@ namespace Analysis.EDM
                 dg6.Index = 6;
                 dg6.Name = "reflectedrf1Amplitude";
                 dg6.BackgroundSubtract = false;
-                dg6.GateLow = (rf1CT / conFac) - 1;
-                dg6.GateHigh = (rf1CT / conFac) + 1;
+                dg6.GateLow = 800;
+                dg6.GateHigh = 1800;
+                //dg6.GateLow = (rf1CT / conFac) - 1;
+                //dg6.GateHigh = (rf1CT / conFac) + 1;
                 dg7 = new GatedDetectorExtractSpec();
                 dg7.Index = 7 ;
                 dg7.Name = "reflectedrf2Amplitude";
                 dg7.BackgroundSubtract = false;
-                dg7.GateLow = (rf2CT / conFac) - 1;
-                dg7.GateHigh = (rf2CT / conFac) + 1;
+                //dg7.GateLow = (rf2CT / conFac) - 1;
+                //dg7.GateHigh = (rf2CT / conFac) + 1;
+                dg7.GateLow = 800;
+                dg7.GateHigh =1800;
 
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+
                 dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
                 dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
                 dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
@@ -314,6 +325,8 @@ namespace Analysis.EDM
                 dc.PointDetectorChannels.Add("PumpPD");
                 dc.PointDetectorChannels.Add("ProbePD");
                 dc.PointDetectorChannels.Add("PhaseLockFrequency");
+                //dc.PointDetectorChannels.Add("CplusV");
+                //dc.PointDetectorChannels.Add("CminusV");
 
                 return dc;
             };
