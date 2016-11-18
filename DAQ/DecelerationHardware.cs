@@ -28,7 +28,7 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev2");
 			Boards.Add("pg", "/dev1");
-            Boards.Add("usbDev", "/dev3");
+            Boards.Add("usbDev", "/dev4");
             //Boards.Add("PXI6", "/PXI1Slot6_4");
             Boards.Add("PXI6", "/PXI1Slot6");
             Boards.Add("PXI4", "/PXI1Slot4");
@@ -43,7 +43,7 @@ namespace DAQ.HAL
             TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
             tcl1.AddLaser("v00cooling", "p1");
             tcl1.AddLaser("v10repump", "p2");
-            tcl1.AddLaser("spectra", "p3");
+            tcl1.AddLaser("eylsa", "p3");
             tcl1.Trigger = TCLBoard + "/PFI0";
             tcl1.Cavity = "cavity";
             tcl1.MasterLaser = "master";
@@ -54,7 +54,7 @@ namespace DAQ.HAL
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
             //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
             tcl2.AddLaser("v21repump", "p12");
-            tcl2.AddLaser("eylsa", "p22");
+            tcl2.AddLaser("v32repump", "p22");
             tcl2.Trigger = TCLBoard2 + "/PFI0";
             tcl2.Cavity = "cavity2";
             tcl2.MasterLaser = "master2";
@@ -88,6 +88,7 @@ namespace DAQ.HAL
             //Info.Add("TCLTrigger", (string)Boards["PXI4"] + "/PFI0");
             //Info.Add("analogTrigger2", (string)Boards["usbDev"] + "/PFI0"); //Pin 29
             Info.Add("analogTrigger3", (string)Boards["daq"] + "/PFI6"); //Pin 5 - breakout 31
+            Info.Add("usbAnalogTrigger", usbBoard + "/PFI0");
             //distance information
             Info.Add("sourceToDetect", 0.535); //in m
             Info.Add("sourceToSoftwareDecelerator", 0.12); //in m
@@ -128,20 +129,25 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
+            AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel.
 			//AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
-			AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
-			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
-			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
-            AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
+			//AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
+			//AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
+			//AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
+           // AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
             //AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58 Used to be used with AomLevelControlPlugin.
             //AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 3, 0);	// This is the output that the pg
+            AddDigitalOutputChannel("ttlSwitch", pgBoard, 2,2);	// This is the output that the pg
             // will switch if it's switch scanning.
             //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
+            AddDigitalOutputChannel("motAOM", pgBoard, 1, 1); //Pin 17
+            AddDigitalOutputChannel("motRampTrigger", pgBoard, 1, 2); //Pin 51
+            AddDigitalOutputChannel("bTrigger", pgBoard, 1, 3); //Pin 52
+            AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
 
 			// map the analog channels
-			AddAnalogInputChannel("pmt", daqBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pmt2", daqBoard + "/ai2", AITerminalConfiguration.Rse);
+			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pmt2", daqBoard + "/ai1", AITerminalConfiguration.Rse);
 			//AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
@@ -156,7 +162,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao1");
         
             AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
-            AddAnalogOutputChannel("spectra", PXIBoard + "/ao1");
+            AddAnalogOutputChannel("eylsa", PXIBoard + "/ao1");
             
             //second cavity
 
@@ -165,7 +171,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("p12", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p22", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
-            AddAnalogOutputChannel("eylsa", PXIBoard + "/ao2");
+            AddAnalogOutputChannel("v32repump", PXIBoard + "/ao2");
             AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
                        
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
@@ -183,7 +189,15 @@ namespace DAQ.HAL
             AddAnalogInputChannel("30KShield", PXIBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("4KCell", PXIBoard + "/ai5", AITerminalConfiguration.Rse);
 
-
+            //map the channels to monitor the sidebands in deceleration hardware
+            AddAnalogInputChannel("cavityVoltage", usbBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot606", usbBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot628V1", usbBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot628V2", usbBoard + "/ai3", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("mot628V3", usbBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("slowing531", usbBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("slowing628V1", usbBoard + "/ai7", AITerminalConfiguration.Rse);
+            
 		}
 
         

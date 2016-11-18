@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Collections;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 using DAQ.Environment;
 using DAQ.HAL;
 using DAQ.TransferCavityLock;
@@ -25,12 +26,21 @@ namespace DecelerationHardwareControl
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
 
+        public bool sidebandMonitorRunning = false;
+        private string[] sidebandChannelList = {"cavityVoltage","mot606", "mot628V1","slowing531","slowing628V1"};
+        private Task sidebandMonitorTask = new Task("sidebandMonitor");
+        private AnalogMultiChannelReader sidebandReader;
+        private int sidebandMonitorSampleRate = 2500;
+        private int sidebandMonitorSamplesPerChannel = 4000;
+        private int waitBetweenReads = 1000;
+
         private bool analogsAvailable;
         private double lastCavityData;
         private double lastrefCavityData;
         private DateTime cavityTimestamp;
         private DateTime refcavityTimestamp;
         private double laserFrequencyControlVoltage;
+        
 
         private double aomControlVoltage;
         private Task outputTask = new Task("AomControllerOutput");
@@ -112,6 +122,7 @@ namespace DecelerationHardwareControl
             therm30KTemp.AddToTask(thermistor30KPlateTask, -10, 10);
             shieldTemp.AddToTask(shieldTask, -10, 10);
             cellTemp.AddToTask(cellTask, -10, 10);
+            InitializeSidebandRead();
 
             window = new ControlWindow();
             window.controller = this;
@@ -144,18 +155,6 @@ namespace DecelerationHardwareControl
             analogOutputsBlocked[channel] = state;
         }
             
-
-        public bool LaserLocked
-        {
-            get
-            {
-                return window.LaserLockCheckBox.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.LaserLockCheckBox, value);
-            }
-        }
 
         public bool AnalogInputsAvailable
         {
@@ -216,15 +215,7 @@ namespace DecelerationHardwareControl
             }
         }
 
-        public void diodeSaturationError()
-        {
-            window.SetDiodeWarning(window.diodeSaturation, true);
-        }
-        public void diodeSaturation()
-        {
-            window.SetDiodeWarning(window.diodeSaturation, false);
-        }
-
+   
 
         #region TransferCavityLockable Members
 
@@ -353,7 +344,76 @@ namespace DecelerationHardwareControl
             window.monitorColdPlate.Text = VoltageResistanceConversion(analogDataIn6, Vref).ToString("E04", CultureInfo.InvariantCulture);
         }
 
+     
 
+        public void InitializeSidebandRead()
+        {
+            foreach (string channel in sidebandChannelList)
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    sidebandMonitorTask,
+                    0, 10);
+
+            // internal clock, finite acquisition
+            sidebandMonitorTask.Timing.ConfigureSampleClock(
+                "",
+                sidebandMonitorSampleRate,
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples,
+                sidebandMonitorSamplesPerChannel);
+
+            sidebandMonitorTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("usbAnalogTrigger"),
+                DigitalEdgeStartTriggerEdge.Rising);
+
+            sidebandMonitorTask.Control(TaskAction.Verify);
+            
+            sidebandReader = new AnalogMultiChannelReader(sidebandMonitorTask.Stream);
+        }
+
+        public void StartSidebandRead()
+        {
+            Thread readSidebandsThread = new Thread(new ThreadStart(ReadSidebands));
+            readSidebandsThread.Start();
+        }
+
+      
+        private double[,] sidebandData;
+        public void ReadSidebands()
+        {
+            sidebandMonitorRunning = true;
+            while (sidebandMonitorRunning)
+            {
+
+                sidebandMonitorTask.Start();
+                sidebandData = sidebandReader.ReadMultiSample(sidebandMonitorSamplesPerChannel);
+                sidebandMonitorTask.Stop();
+
+                double[] xvals = new double[sidebandMonitorSamplesPerChannel];
+                double[] yvals606 = new double[sidebandMonitorSamplesPerChannel];
+                double[] yvals628V1 = new double[sidebandMonitorSamplesPerChannel];
+                double[] yvals531 = new double[sidebandMonitorSamplesPerChannel];
+                double[] yvals628Slowing = new double[sidebandMonitorSamplesPerChannel];
+                for (int j = 0; j < sidebandMonitorSamplesPerChannel; j++)
+                    xvals[j] = sidebandData[0, j];
+                for (int j = 0; j < sidebandMonitorSamplesPerChannel; j++)
+                    yvals606[j] = sidebandData[1, j];
+                for (int j = 0; j < sidebandMonitorSamplesPerChannel; j++)
+                    yvals628V1[j] = sidebandData[2, j];
+                for (int j = 0; j < sidebandMonitorSamplesPerChannel; j++)
+                    yvals531[j] = sidebandData[3, j];
+                for (int j = 0; j < sidebandMonitorSamplesPerChannel; j++)
+                    yvals628Slowing[j] = sidebandData[4, j];
+
+                window.displaySidebandData(window.scatterGraph1, xvals, yvals606);
+                window.displaySidebandData628V1(window.scatterGraph2, xvals, yvals628V1);
+                window.displaySidebandData531(window.scatterGraph6, xvals, yvals531);
+                window.displaySidebandData628Slowing(window.scatterGraph5, xvals, yvals628Slowing);
+
+                Thread.Sleep(waitBetweenReads);
+            }
+        }
+
+        
         public string GetCommand()
         {
             return window.CommandBox.Text;
