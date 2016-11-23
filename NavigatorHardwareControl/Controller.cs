@@ -37,9 +37,9 @@ namespace NavigatorHardwareControl
     {
         
         #region Constants
-        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
+        public static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
-        private static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
+        public static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
             + "NavigatorHardwareController\\";
         #endregion
 
@@ -104,7 +104,7 @@ namespace NavigatorHardwareControl
                 //The simplest thing is to make all the output channels static.Before running a sequence, the output is aborted and configured for dynamic generation
                 {
 
-                        hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
+                  hsdio = new HSDIOStaticChannelController((string)Environs.Hardware.Boards["hsDigital"], "");
 
          
                     foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
@@ -179,11 +179,12 @@ namespace NavigatorHardwareControl
                     hardwareState = LoadParameters();
 
                 }
+                
                 catch(Exception e)
                 {
                     Console.WriteLine("Couldn't start Muquans communication: " + e.Message);
                 }
-        
+              
         
             }
             else
@@ -780,6 +781,7 @@ namespace NavigatorHardwareControl
                 StoreParameters(profilesPath + "tempParameters.bin");
                 hcState = NavHardwareState.REMOTE;
                 controlWindow.UpdateUIState(hcState);
+                hsdio.ReleaseHardware();
                 controlWindow.WriteToConsole("Remoting Started!");
             }
             else
@@ -805,6 +807,7 @@ namespace NavigatorHardwareControl
                 controlWindow.WriteToConsole("Unable to load Parameters.");
             }
             hcState = NavHardwareState.OFF;
+            hsdio.ReclaimHardware();
             controlWindow.UpdateUIState(hcState);
             ApplyRecordedStateToHardware();
         }
@@ -1058,7 +1061,10 @@ namespace NavigatorHardwareControl
                 SetDigitalLine("cameraTTL", true);
                 SetDigitalLine("cameraTTL", false);
             }
-            catch { }
+            catch(Exception e )
+            {
+                Console.WriteLine("Couldn't Start Camera Stream.\n"+e.Message);
+            }
         }
 
         public void StopCameraStream()
@@ -1067,7 +1073,15 @@ namespace NavigatorHardwareControl
             {
                 ImageController.StopStream();
             }
-            catch { }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't Stop Camera Stream.\n" + e.Message);
+            }
+        }
+
+        public void MultipleSnapshots(int numImages)
+        {
+            ImageController.MultipleSnapshot(cameraAttributesPath, numImages);
         }
 
         public void CameraSnapshot(bool background)
@@ -1081,7 +1095,10 @@ namespace NavigatorHardwareControl
                     SetDigitalLine("cameraTTL", true);
                     SetDigitalLine("cameraTTL", false);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Couldn't Take Single Snapshot.\n" + e.Message);
+                }
             }
             else
             {
@@ -1124,6 +1141,12 @@ namespace NavigatorHardwareControl
         public void SaveImageWithDialog()
         {
             SaveImageWithDialog(false);
+        }
+
+        public void SaveMultipleImagesDialog()
+        {
+            ImageController.StoreImageListWithDialog();
+            ImageController.ClearImageList();
         }
         public void SaveImage(string path)
         {

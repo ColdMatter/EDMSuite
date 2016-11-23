@@ -303,6 +303,12 @@
                         </Grid>
                     </GroupBox>
                     <CheckBox Content="Background" Name="BackgroundCheck" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
+                    <GroupBox Header="Multiple Images" Margin="0,89,283,61">
+                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                            <CheckBox Content="Acquire" Width="75" Height="20" Margin="9,14,100,8" Click="cameraMultiple_Click" />
+                            <ni:NumericTextBoxInt8 Name="imageNumber" Width="75" Height="20" Margin="99,14,10,8"/>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -319,6 +325,14 @@
                 <MenuItem Header="Start Image Analysis" Click="startImageAnalysis_Click"></MenuItem>
                 <MenuItem Header="Start Voltage Logger" Click="startVoltageLogger_Click"></MenuItem>
             </MenuItem>
+            <MenuItem Header="Remote">
+                <MenuItem Header="Start Remote Control" Click="startRemoteControl_Click"></MenuItem>
+                <MenuItem Header="Stop Remote Control" Click="stopRemoteControl_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Debug">
+                <MenuItem  Header="Set Raman Optics Channels" Click="setChannels_Click"/>
+            </MenuItem>
+            
         </Menu>
         <ni:LED x:Name="remoteControlLED" Content="LED" FalseContent="Off" HorizontalAlignment="Left" Height="45" Margin="503,55,0,0" TrueContent="On" VerticalAlignment="Top" Width="45" FalseBrush="#FFD52525"/>
         <Button Content="Update" HorizontalAlignment="Left" Margin="494,129,0,0" VerticalAlignment="Top" Width="71" Click="updateHardware_Click"/>

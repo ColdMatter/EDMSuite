@@ -55,6 +55,7 @@ namespace NavigatorHardwareControl
             controller.Start();
             this.DataContext = controller.hardwareState;
             controller.controlWindow = this;
+            controller.ApplyRecordedStateToHardware();
             
   
 
@@ -403,8 +404,36 @@ namespace NavigatorHardwareControl
            controller.SetValue(channel, true);
            controller.SetValue(channel, false);
            WriteToConsole("Pulsed " + channel);
+       }
+
+       private void startRemoteControl_Click(object sender, RoutedEventArgs e)
+       {
+           controller.StartRemoteControl();
+       }
+       private void stopRemoteControl_Click(object sender, RoutedEventArgs e)
+       {
+           controller.StopRemoteControl();
+       }
+
+       private void cameraMultiple_Click(object sender, RoutedEventArgs e)
+       {
+           CheckBox control = sender as CheckBox;
+           bool value = (bool)(control.IsChecked);
+           if (!value)
+           {
+               int numImage = this.imageNumber.Value;
+               controller.MultipleSnapshots(numImage);
+           }
+           else
+           {
+               controller.StopCameraStream();
+           }
+       }
+
+       private void setChannels_Click(object sender, RoutedEventArgs e)
+       {
+
        } 
-        
     }
 
     #region Other ControlWindow classes

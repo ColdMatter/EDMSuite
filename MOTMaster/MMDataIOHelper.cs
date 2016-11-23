@@ -53,11 +53,15 @@ namespace MOTMaster
             deleteFiles(files);
         }
 
-        public void SaveAnalogInputData(string filepath, double[,] data)
+        public void SaveAnalogInputData(string filepath, double[,] data, bool append)
         {
-            storeAIData(filepath, data);
+            storeAIData(filepath, data, append);
         }
 
+        public void SaveAnalogInputData(string filepath, double[,] data)
+        {
+            storeAIData(filepath, data, false);
+        }
         private void deleteFiles(string[] files)
         {
             foreach (string s in files)
@@ -209,7 +213,20 @@ namespace MOTMaster
 
         private void storeAIData(String dataStoreFilePath, double[,] AIData)
         {
-            FileStream stream = new FileStream(dataStoreFilePath, FileMode.Create);
+            storeAIData(dataStoreFilePath, AIData, false);
+        }
+
+        private void storeAIData(String dataStoreFilePath, double[,] AIData, bool append)
+        {
+            FileStream stream;
+            if (!append)
+            {
+              stream = new FileStream(dataStoreFilePath, FileMode.Create);
+            }
+            else
+            {
+                stream = new FileStream(dataStoreFilePath, FileMode.Append);
+            }
             StreamWriter writer = new StreamWriter(stream);
             for (int i = 0; i < AIData.GetLength(0); i++)
             {
@@ -226,7 +243,6 @@ namespace MOTMaster
             writer.Close();
             stream.Dispose();
         }
-        
         private string getDataID(string element, int batchNumber,string savefolder)
         {
             DateTime dt = DateTime.Now;

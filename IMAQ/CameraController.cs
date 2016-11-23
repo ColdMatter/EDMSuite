@@ -46,6 +46,9 @@ namespace IMAQ
         public Roi rectangleROI = new Roi();
         public Roi pointROI = new Roi();
         public bool roiSet = false;
+        //Used for keeping track of the trigger mode
+        private ImaqdxEnumAttribute triggerMode;
+        private ImaqdxEnumAttributeItem triggerVal;
 
         public CameraController(string cameraName)
         {
@@ -112,6 +115,13 @@ namespace IMAQ
         public bool Stream(string cameraAttributesFilePath)
         {
             SetCameraAttributes(cameraAttributesFilePath);
+            triggerMode = (ImaqdxEnumAttribute)imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")];
+            triggerVal = (ImaqdxEnumAttributeItem)triggerMode.GetValue();
+            if (triggerVal.ToString() == "Mode 0" || triggerVal.ToString() == "Mode 1" || triggerVal.ToString() == "Mode 15")
+            {
+                imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")].SetValue("Off");
+                
+            }
             imageWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesFilePath);
             PrintCameraAttributesToConsole();
             imageWindow.WriteToConsole("Streaming from camera");
@@ -134,6 +144,8 @@ namespace IMAQ
             {
                 state = CameraState.BUSY;
             }
+            imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")].SetValue(triggerVal);
+            imaqdxSession.Acquisition.Stop();
             imageWindow.WriteToConsole("Streaming stopped");
         }
 
@@ -295,7 +307,7 @@ namespace IMAQ
         }
         public void ClearImageList()
         {
-            imageList = new List<VisionImage>();
+            imageList.Clear();
         }
         public bool IsReadyForAcqisition()
         {
@@ -340,7 +352,7 @@ namespace IMAQ
                     imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
                     attributes = imaqdxSession.Attributes;
                 }
-                else
+                else if (attributes != imaqdxSession.Attributes)
                 {
                     attributes.WriteAttributesToFile(newPath);
                     imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
@@ -368,6 +380,7 @@ namespace IMAQ
             attr[attr.IndexOf("OffsetY")].SetValue(0);
             attr[attr.IndexOf("Width")].SetValue(maxWidth);
             attr[attr.IndexOf("Height")].SetValue(maxHeight);
+            attr[attr.IndexOf("PacketSize")].SetValue(8192);
             roiSet = false;
         }
         #endregion
@@ -403,6 +416,13 @@ namespace IMAQ
                 MessageBox.Show(e.Message);
                 return;
             }
+            catch (ImaqdxException e)
+            {
+                MessageBox.Show(e.Message+"Closing Camera...\n");
+                imaqdxSession.Close();
+                state = CameraState.FREE;
+                return;
+            }
             for (; ; )
             {
                 lock (streamStopLock)
@@ -411,10 +431,11 @@ namespace IMAQ
                     {
                         imaqdxSession.Grab(image, true);
                     }
-                    catch (InvalidOperationException e)
+                    catch (Exception e)
                     {
                         MessageBox.Show("Something bad happened. Stopping the image stream.\n" + e.Message);
                         state = CameraState.FREE;
+                        imaqdxSession.Acquisition.Stop();
                         return;
                     }
                     try
@@ -434,7 +455,6 @@ namespace IMAQ
                     }
                     if (state != CameraState.STREAMING)
                     {
-                        imaqdxSession.Acquisition.Stop();
                         state = CameraState.FREE;
                        
                         return;
@@ -466,8 +486,10 @@ namespace IMAQ
             if (windowShowing)
             {
                 windowShowing = false;
+                imageWindow.Close();
             }
         }
+        
 
         #endregion
 

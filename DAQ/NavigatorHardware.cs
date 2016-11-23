@@ -76,11 +76,11 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
             AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao24", 0, 10);
-            AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao3", 0, 10);
-            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao4", 0, 10);
-            AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao5", 0, 10);
-            AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao6", 0, 10);
-            AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao7", 0, 10);
+            AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao3", -10, 10);
+            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao4", -10, 10);
+            AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao5", -10, 10);
+            AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao6", -10, 10);
+            AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao7", -10, 10);
             AddAnalogOutputChannel("dispenser3D", aoBoard + "/ao8", 0, 10);
             AddAnalogOutputChannel("dispenser2D", aoBoard + "/ao9", 0, 10);
             AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);

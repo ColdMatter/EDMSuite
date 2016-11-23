@@ -77,7 +77,7 @@ namespace NavigatorHardwareControl
             double refScale = 1.0;
             double expScale = 2.0;
             double contScale = 0.5;
-            double shrinkScale=0.5;
+            double shrinkScale = 0.5;
             int maxX = 0;
             int maxY = 0;
             Random r = new Random();
@@ -248,12 +248,22 @@ namespace NavigatorHardwareControl
             }
             else
             {
-                controller.SetValue("horizPiezo", f1.voltages[0]);
-                controller.SetValue("vertPiezo", f1.voltages[1]);
-                value = (double)controller.ReadAnalogInput("fibrePD", sampleRate, numSamples,true);
+                try
+                {
+                    controller.SetValue("horizPiezo", f1.voltages[0]);
+                    controller.SetValue("vertPiezo", f1.voltages[1]);
+                    value = (double)controller.ReadAnalogInput("fibrePD", sampleRate, numSamples, true);
+                    return value;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Couldn't Read Voltages: " + e.Message);
+                    return -10000000;
+                }
+                
             }
-           
             return value;
+            
         }
         private fibrePower findMidpoint(fibrePower f1, fibrePower f2, bool align)
         {

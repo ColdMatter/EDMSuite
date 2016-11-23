@@ -26,7 +26,7 @@ namespace NavigatorHardwareControl
             this.deviceName = deviceName;
             this.channelList = channelList;
 
-                ReclaimHardware();
+            ReclaimHardware();
           
    
 

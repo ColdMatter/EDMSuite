@@ -92,6 +92,7 @@ namespace RFMOTHardwareControl
 
         private void startVoltageAcquisition()
         {
+
             getInfo();
             voltages = acquireAnalogInputData(channelToRead, "AITask", sampleRate);
             attachDataToGraph();
@@ -101,9 +102,9 @@ namespace RFMOTHardwareControl
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath,"Rb");
-                iohelper.SaveAnalogInputData(savePath + filename , voltages);
-
+                    MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
+                    iohelper.SaveAnalogInputData(savePath + filename, voltages);
+  
             }
             
         }
@@ -125,9 +126,10 @@ namespace RFMOTHardwareControl
 
         public double[,] acquireAnalogInputData(string physicalChan,string taskName,double clockRate)
         {
-            double[,] aiData;
+            double[,] aiData = new double[1,nSamples];
 
             configureVITask(physicalChan, taskName, clockRate);
+            voltageInputTask.Timing.SamplesPerChannel = nSamples;
             voltageInputTask.Control(daqmx.TaskAction.Verify);
             voltageInputTask.Start();
             aiData = readInVoltages();
@@ -191,7 +193,7 @@ namespace RFMOTHardwareControl
                     string taskName = channelToRead;
                     configureVITask(channelToRead, "", sampleRate);
                     continuousTask = voltageInputTask;
-
+                    continuousTask.Timing.SamplesPerChannel = nSamples;
                     runningTask = continuousTask;
                     VIReader = new daqmx.AnalogMultiChannelReader(continuousTask.Stream);
 
@@ -244,7 +246,7 @@ namespace RFMOTHardwareControl
                             Directory.CreateDirectory(savePath);
                         }
                         MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
-                        iohelper.SaveAnalogInputData(savePath + filename, voltages);
+                        iohelper.SaveAnalogInputData(savePath + filename, voltages, true);
 
                     }
                     voltageInGraph.PlotWaveformsAppend(data);

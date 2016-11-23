@@ -15,7 +15,15 @@ namespace DAQ.Environment
             Paths.Add("MOTMasterEXEPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav");
             Paths.Add("cameraAttributesPath", "C:\\Users\\Public\\Documents\\National Instruments\\NI-IMAQdx\\Data\\Pike.icd");
             Paths.Add("daqDLLPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav\\DAQ.dll");
-            Paths.Add("DataPath", "Z:\\Data\\"+DateTime.Today.Year+DateTime.Today.Month+DateTime.Today.Day);
+            try
+            {
+                Paths.Add("DataPath", "Z:\\Data\\" + DateTime.Today.Year + DateTime.Today.Month + DateTime.Today.Day);
+            }
+         catch
+            {
+                Console.WriteLine("Could not connect to the server. Check it is connected.");
+            }
+
             
             if (!Directory.Exists((string)Paths["DataPath"]))
                 Directory.CreateDirectory((string)Paths["DataPath"]);
