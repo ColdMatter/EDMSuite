@@ -184,10 +184,6 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IMAQ\IMAQ.csproj">
-      <Project>{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}</Project>
-      <Name>IMAQ</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
       <Name>SharedCode</Name>

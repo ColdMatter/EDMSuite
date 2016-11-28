@@ -185,7 +185,6 @@
     </Compile>
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="HP8673BSynth.cs" />
-    <Compile Include="Novatech.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
     <Compile Include="Parker404XR.cs" />

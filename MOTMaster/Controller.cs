@@ -20,7 +20,7 @@ using Data;
 using Data.Scans;
 
 
-using IMAQ;
+//using IMAQ;
 
 using System.Runtime.InteropServices;
 using System.CodeDom;
@@ -58,19 +58,28 @@ namespace MOTMaster
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        private const int
-            pgClockFrequency = 10000;
-        private const int
-            apgClockFrequency = 10000;
+        private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
+
+        private Thread runThread;
+       
+        private int pgClockFrequency;
+        private int apgClockFrequency;
+
+        private bool cameraUsed = true;
+        private bool translationStageUsed = true;
+        private bool reporterUsed = true;
+
+        public enum RunningState { stopped, running};
+        public RunningState status = RunningState.stopped;
 
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
         DAQMxAnalogPatternGenerator apg;
 
-        CameraControllable camera;
-        TranslationStageControllable tstage;
-        ExperimentReportable experimentReporter;
+        CameraControllable camera = null;
+        TranslationStageControllable tstage = null;
+        ExperimentReportable experimentReporter = null;
 
         MMDataIOHelper ioHelper;
 
@@ -95,13 +104,20 @@ namespace MOTMaster
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
             apg = new DAQMxAnalogPatternGenerator();
 
-            camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+            pgClockFrequency = (int)Environs.Hardware.GetInfo("MOTMasterDigitalPatternClockFrequency");
+            apgClockFrequency = (int)Environs.Hardware.GetInfo("MOTMasterAnalogPatternClockFrequency");
+
+            if (Environs.Hardware.GetInfo("MOTMasterCamera") != null) cameraUsed = (bool)Environs.Hardware.GetInfo("MOTMasterCamera");
+            if (Environs.Hardware.GetInfo("MOTMasterTranslationStage") != null) translationStageUsed = (bool)Environs.Hardware.GetInfo("MOTMasterTranslationStage");
+            if (Environs.Hardware.GetInfo("MOTMasterReporter") != null) reporterUsed = (bool)Environs.Hardware.GetInfo("MOTMasterReporter");
+
+            if (cameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
 
-            tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
+            if (translationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
 
-            experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            if (reporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
             
@@ -127,15 +143,25 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true);
-            apg.Configure(sequence.AnalogPattern, apgClockFrequency);
+            
+            pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            apg.Configure(sequence.AnalogPattern, apgClockFrequency, false);
         }
 
-        private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
+
+        private void releaseHardware()
         {
-            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
             pg.StopPattern();
             apg.StopPattern();
+        }
+        private void clearDigitalPattern(MOTMasterSequence sequence)
+        {
+            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
+        }
+        private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
+        {
+            clearDigitalPattern(sequence);
+            releaseHardware();
         }
 
         #endregion
@@ -222,6 +248,14 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
+        public void RunStart()
+        {
+            runThread = new Thread(new ThreadStart(this.Run));
+            runThread.Name = "MOTMaster Controller";
+            runThread.Priority = ThreadPriority.Normal;
+            status = RunningState.running;
+            runThread.Start();
+        }
 
         public void Run()
         {
@@ -244,26 +278,33 @@ namespace MOTMaster
                
                 try
                 {
-                    prepareCameraControl();
+                    if (cameraUsed) prepareCameraControl();
 
-                    armTranslationStageForTimedMotion(script);
+                    if (translationStageUsed) armTranslationStageForTimedMotion(script);
 
-                    GrabImage((int)script.Parameters["NumberOfFrames"]);
+                    if (cameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
-                    waitUntilCameraIsReadyForAcquisition();
+                    if (cameraUsed) waitUntilCameraIsReadyForAcquisition();
 
                     watch.Start();
-                    runPattern(sequence);
+
+                    for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                    {
+                        runPattern(sequence);
+                    }
+                    clearDigitalPattern(sequence);
+
+
                     watch.Stop();
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
-                    if (saveEnable)
+                    if (saveEnable && cameraUsed)
                     {
-                        waitUntilCameraAquisitionIsDone();
+                        if (cameraUsed) waitUntilCameraAquisitionIsDone();
                         try
                         {
-                            checkDataArrived();
+                            if (cameraUsed) checkDataArrived();
                         }
                         catch (DataNotArrivedFromHardwareControllerException)
                         {
@@ -274,8 +315,8 @@ namespace MOTMaster
 
 
                     }
-                    finishCameraControl();
-                    disarmAndReturnTranslationStage();
+                    if (cameraUsed) finishCameraControl();
+                    if (translationStageUsed) disarmAndReturnTranslationStage();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -286,6 +327,7 @@ namespace MOTMaster
             {
                 MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
             }
+            status = RunningState.stopped;
             
         }
         
@@ -306,10 +348,10 @@ namespace MOTMaster
         }
         private void runPattern(MOTMasterSequence sequence)
         {
+            
             initializeHardware(sequence);
             run(sequence);
-            releaseHardwareAndClearDigitalPattern(sequence);
-
+            releaseHardware();
         }
 
         private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)

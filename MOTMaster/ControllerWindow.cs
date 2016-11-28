@@ -76,7 +76,7 @@ namespace MOTMaster
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            controller.Run();
+            controller.RunStart();
         }
 
         private string getScriptPath()
@@ -108,6 +108,11 @@ namespace MOTMaster
             return int.Parse(saveBatchTextBox.Text);
         }
 
+        public int GetIterations()
+        {
+            return int.Parse(iterationsBox.Text);
+        }
+
 
         private void selectScriptButton_Click(object sender, EventArgs e)
         {
@@ -127,6 +132,11 @@ namespace MOTMaster
         private void ReplicateScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
              controller.RunReplica();
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            controller.status = Controller.RunningState.stopped;
         }
 
 

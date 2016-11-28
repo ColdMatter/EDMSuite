@@ -27,7 +27,9 @@ namespace DAQ.HAL
 
 			// add the boards
 			Boards.Add("daq", "/dev2");
+            Boards.Add("multiDAQ", "/dev1");
 			Boards.Add("pg", "/dev1");
+            Boards.Add("aoBoard", "/PXI1Slot5");
             Boards.Add("usbDev", "/dev4");
             //Boards.Add("PXI6", "/PXI1Slot6_4");
             Boards.Add("PXI6", "/PXI1Slot6");
@@ -38,7 +40,8 @@ namespace DAQ.HAL
             string daqBoard = (string)Boards["daq"];
             string PXIBoard = (string)Boards["PXI6"];
             string TCLBoard = (string)Boards["PXI4"];
-            string TCLBoard2 = (string)Boards["PXI5"];
+            string TCLBoard2 = (string)Boards["PXI6"];
+            string aoBoard = (string)Boards["aoBoard"];
 
             TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
             tcl1.AddLaser("v00cooling", "p1");
@@ -52,7 +55,7 @@ namespace DAQ.HAL
             Info.Add("Hamish", tcl1);
 
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
-            //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
+            
             tcl2.AddLaser("v21repump", "p12");
             tcl2.AddLaser("v32repump", "p22");
             tcl2.Trigger = TCLBoard2 + "/PFI0";
@@ -76,6 +79,12 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
+            Info.Add("MOTMasterDigitalPatternClockFrequency", 100000);
+            Info.Add("MOTMasterAnalogPatternClockFrequency", 100000);
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
+            Info.Add("MOTMasterCamera", false);
+            Info.Add("MOTMasterTranslationStage", false);
+            Info.Add("MOTMasterReporter", false);
 
             Info.Add("defaultTOFRange", new double[] {4000, 12000}); // these entries are the two ends of the range for the upper TOF graph
             Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
@@ -94,6 +103,7 @@ namespace DAQ.HAL
             Info.Add("sourceToSoftwareDecelerator", 0.12); //in m
             //information about the molecule
             Info.Add("molecule", "caf");
+            Info.Add("Element", "CaF");
             Info.Add("moleculeMass", 58.961); // this is 40CaF in atomic mass units
             Info.Add("moleculeRotationalConstant", 1.02675E10); //in Hz
             Info.Add("moleculeDipoleMoment", 15400.0); //in Hz/(V/m)
@@ -144,6 +154,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("motRampTrigger", pgBoard, 1, 2); //Pin 51
             AddDigitalOutputChannel("bTrigger", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
+            AddDigitalOutputChannel("AnalogPatternTrigger", pgBoard, 3, 3); //Pin 31
 
 			// map the analog channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -161,8 +172,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v10repump", TCLBoard + "/ao0");
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao1");
         
-            AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
-            AddAnalogOutputChannel("eylsa", PXIBoard + "/ao1");
+            AddAnalogOutputChannel("v00cooling", TCLBoard2 + "/ao2");
+            AddAnalogOutputChannel("eylsa", TCLBoard2 + "/ao3");
+
+            AddAnalogOutputChannel("slowingChirp", aoBoard + "/ao8");
             
             //second cavity
 
@@ -171,7 +184,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("p12", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p22", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
-            AddAnalogOutputChannel("v32repump", PXIBoard + "/ao2");
+            AddAnalogOutputChannel("v32repump", usbBoard + "/ao0", 0 , 5);
             AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
                        
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
