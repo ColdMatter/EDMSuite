@@ -176,7 +176,7 @@ namespace NavigatorHardwareControl
                     hardwareState.muquansDigital["EDFA1Type"] = false;
                     hardwareState.muquansDigital["EDFA2Type"] = false;
 
-                    hardwareState = LoadParameters();
+                    
 
                 }
                 
@@ -216,6 +216,7 @@ namespace NavigatorHardwareControl
                 hardwareState.muquansDigital["EDFA2Type"] = false;
 
             }
+            hardwareState = LoadParameters();
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
 
@@ -598,9 +599,10 @@ namespace NavigatorHardwareControl
         #region Controlling Hardware with UI
 
         #region Hardware Update
-            public void ApplyRecordedStateToHardware()
+        public void ApplyRecordedStateToHardware()
         {
-            applyToHardware(hardwareState);          
+                if (!Environs.Debug)
+                    applyToHardware(hardwareState);          
         }
 
 
@@ -1168,10 +1170,15 @@ namespace NavigatorHardwareControl
             }
             imAnalWindow = new ImageViewer();
             imAnalWindow.imageWindow.controller = ImageController;
+            imAnalWindow.Closing += imAnalWindow_Closing;
             imAnalWindow.Show();
             startImageAnalysis();
         }
 
+        private void imAnalWindow_Closing(Object sender, CancelEventArgs e)
+        {
+            stopImageAnalysis();
+        }
         private bool analyseImage = false;
 
         private void startImageAnalysis()
@@ -1184,7 +1191,8 @@ namespace NavigatorHardwareControl
         public void stopImageAnalysis()
         {
             analyseImage = false;
-            imAnalWindow.Close();
+            imAnalWindow.imageWindow.controller.Dispose();
+            ImageController = null;
         }
 
         private void doImageAnalysis()

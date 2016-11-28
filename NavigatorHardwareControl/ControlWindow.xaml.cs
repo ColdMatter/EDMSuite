@@ -204,8 +204,8 @@ namespace NavigatorHardwareControl
             {
                 int[] coords = new int[2];
                 coords = controller.AlignFibre(threshold, !piezoScan.IsChecked.Value);
-                horizPiezo.Text = coords[0].ToString();
-                vertPiezo.Text = coords[1].ToString();
+                horizPiezo.Value = coords[0];
+                vertPiezo.Value = coords[1];
                 //Plots the scan data and the coupling efficiency
                 piezoMap.DataSource = ScanData;
                 iterationGraph.DataSource = FibrePowers;
@@ -221,7 +221,7 @@ namespace NavigatorHardwareControl
         private void edfaLockButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as BooleanButton;
-            TextBox edfaText;
+            NumericTextBoxDouble edfaText;
             LED edfaLED;
             Switch edfaLockType;
             string edfaID;
@@ -229,7 +229,7 @@ namespace NavigatorHardwareControl
             switch (button.Name)
             {
                 default:
-                    edfaText = new TextBox();
+                    edfaText = new NumericTextBoxDouble();
                     edfaLED = new LED();
                     edfaLockType = new Switch();
                     edfaID = "None";
@@ -254,7 +254,7 @@ namespace NavigatorHardwareControl
                     break;
             }
 
-            if (edfaText.Text == "")
+            if (edfaText.Value == 0)
             {
                 MessageBox.Show("No value entered for PID. EDFA will not turn on without one.");
             }
@@ -263,7 +263,7 @@ namespace NavigatorHardwareControl
                 edfaLED.Value = !edfaLED.Value;
                 string type = "";
                 bool lockParam = edfaLockType.Value;
-                double lockValue = Double.Parse(edfaText.Text);
+                double lockValue = edfaText.Value;
                 if (edfaLED.Value)
                     controller.EdfaLock(edfaID, lockParam, lockValue);
                 if (lockParam)
@@ -458,6 +458,7 @@ namespace NavigatorHardwareControl
         {
             base.WriteLine(value);
             output.AppendText(">>" + value.ToString()+"\n");
+            output.ScrollToEnd();
         }
 
         public override Encoding Encoding

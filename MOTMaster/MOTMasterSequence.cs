@@ -13,5 +13,6 @@ namespace MOTMaster
         public Dictionary<string , PatternBuilder32> DigitalPatterns;
         public AnalogPatternBuilder AnalogPattern;
         public MMAIConfiguration AIConfiguration;
+        public HSDIOPatternBuilder HSDIOPattern;
     }
 }

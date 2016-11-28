@@ -72,6 +72,8 @@ namespace MOTMaster
         DAQMxPatternGenerator PCIpg;
         DAQMxAnalogPatternGenerator apg;
         MMAIWrapper aip;
+        HSDIOPatternGenerator hs;
+
 
         ExportSignals signalExporter;
 
@@ -100,7 +102,6 @@ namespace MOTMaster
 
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
-
             pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);

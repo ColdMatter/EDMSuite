@@ -13,6 +13,7 @@ namespace MOTMaster
         public abstract AnalogPatternBuilder GetAnalogPattern();
         public Dictionary<String,Object> Parameters;
         public abstract MMAIConfiguration GetAIConfiguration();
+        public abstract HSDIOPatternBuilder GetHSDIOPattern();
 
         public MOTMasterSequence GetSequence()
         {
