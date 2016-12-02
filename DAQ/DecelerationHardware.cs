@@ -133,6 +133,7 @@ namespace DAQ.HAL
                         			
 			// map the digital channels
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+            AddDigitalOutputChannel("tclBlock", pgBoard, 0, 6); //Same as valve; deliberately!
 			AddDigitalOutputChannel("flash", pgBoard, 0, 0);//Changed from pg board P.0.5 because that appears to have died mysteriously (line dead in ribbon cable?) TEW 06/04/09
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 1, 0);
@@ -176,6 +177,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("eylsa", TCLBoard2 + "/ao3");
 
             AddAnalogOutputChannel("slowingChirp", aoBoard + "/ao8");
+            AddAnalogOutputChannel("v0IntensityRamp", aoBoard + "/ao9");
             
             //second cavity
 
