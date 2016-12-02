@@ -57,6 +57,7 @@ namespace NavigatorHardwareControl
         public ObservableDictionary()
         {
             _keyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>();
+            FirePropertyChangedNotifications();
         }
 
         public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
@@ -352,7 +353,7 @@ namespace NavigatorHardwareControl
 
         private void FirePropertyChangedNotifications()
         {
-            if (Count != _countCache)
+            if (Count != _countCache || Count == 0)
             {
                 _countCache = Count;
                 OnPropertyChanged("Count");
@@ -597,7 +598,8 @@ namespace NavigatorHardwareControl
                 Collection<DictionaryEntry> entries = (Collection<DictionaryEntry>)
                     _siInfo.GetValue("entries", typeof(Collection<DictionaryEntry>));
                 foreach (DictionaryEntry entry in entries)
-                    AddEntry((TKey)entry.Key, (TValue)entry.Value);
+                    DoAddEntry((TKey)entry.Key, (TValue)entry.Value);
+               
             }
         }
 

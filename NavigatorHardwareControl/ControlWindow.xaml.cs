@@ -34,6 +34,7 @@ namespace NavigatorHardwareControl
         public Controller controller;
         public TextBoxStreamWriter console;
         private TextReader reader;
+        private List<DataStructures.Variable> ciceroVars;
         //private FibreAligner fibreAlign;
         private bool isReading;
         public double intensityScale = 1.0;
@@ -56,10 +57,12 @@ namespace NavigatorHardwareControl
             this.DataContext = controller.hardwareState;
             controller.controlWindow = this;
             controller.ApplyRecordedStateToHardware();
+            ciceroVars = controller.cicero.GetVariables();
+            scanComboBox.ItemsSource = ciceroVars;
+            listEnumBox.ItemsSource = controller.cicero.listNums;
             
-  
-
-            //controller.Start();
+            Console.WriteLine(scanComboBox.ToString());
+ 
 
             //Add an event to display the coordinates and intensity over the piezoMap
             piezoMap.PlotAreaMouseMove += this.OnPlotAreaMouseMove;

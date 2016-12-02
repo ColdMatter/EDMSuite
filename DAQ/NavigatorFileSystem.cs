@@ -7,7 +7,7 @@ namespace DAQ.Environment
     {
      public NavigatorFileSystem()
         {
-            Paths.Add("settingsPath", "C:\\Users\\Navigator\\Settings");
+            Paths.Add("settingsPath", System.Environment.ExpandEnvironmentVariables("%USERPROFILE%\\Settings"));
             Paths.Add("navDataPath", "%USERPROFILE%\\Data");
             Paths.Add("mathPath", "C:\\Program Files\\Wolfram Research\\Mathematica\\10.4\\mathkernel.exe");
             Paths.Add("navServerPath", "\\155.198.206.40\\Navigator_Data\\Data");
@@ -17,7 +17,10 @@ namespace DAQ.Environment
             Paths.Add("daqDLLPath", "C:\\Users\\Navigator\\Software\\EDMSuite\\MOTMaster\\bin\\Nav\\DAQ.dll");
             try
             {
-                Paths.Add("DataPath", "Z:\\Data\\" + DateTime.Today.Year + DateTime.Today.Month + DateTime.Today.Day);
+                string sYear = DateTime.Today.Year.ToString();
+                string sMonth = DateTime.Today.Month.ToString().PadLeft(2, '0');
+                string sDay = DateTime.Today.Day.ToString().PadLeft(2,'0');
+                Paths.Add("DataPath", "Z:\\Data\\" + sYear + sMonth + sDay);
             }
          catch
             {

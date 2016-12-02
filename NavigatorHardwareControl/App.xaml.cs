@@ -25,11 +25,12 @@ namespace NavigatorHardwareControl
             currentDomain.UnhandledException += On_UnhandledException;
             
             controller = new Controller();
-           
+
             // publish the controller to the remoting system
             TcpChannel channel = new TcpChannel(1172);
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
+            
             //Starts the application. Inside the controlWindow, the controller is started
             var application = new App();
             application.InitializeComponent();

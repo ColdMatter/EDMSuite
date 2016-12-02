@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Runtime.Remoting.Lifetime;
+
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
@@ -26,6 +26,7 @@ using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
 using RFMOTHardwareControl;
+using DataStructures;
 
 
 namespace NavigatorHardwareControl
@@ -60,9 +61,12 @@ namespace NavigatorHardwareControl
         public HardwareState hardwareState;
         //Used for keeping track of changes
         public HardwareState previousState;
+        public DataStructures.SequenceData sequenceData;
+        public List<Variable> ciceroVars;
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
+
         public override Object InitializeLifetimeService()
         {
             return null;
@@ -80,8 +84,11 @@ namespace NavigatorHardwareControl
         //Cameras
         public CameraController ImageController;
         public ImageViewer imAnalWindow;
+
         //Used for locking the laser - only one can be running at once
         private Thread laserThread;
+        public CiceroController cicero;
+        public Dictionary<string, Variable> varDict;
         public void Start()
         {
             if (Environs.Hardware.GetType() != new DAQ.HAL.NavigatorHardware().GetType())
@@ -220,8 +227,11 @@ namespace NavigatorHardwareControl
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
 
-
-           
+            cicero = new CiceroController();
+            cicero.controller = this;
+            cicero.ConnectToCicero();
+            ciceroVars = cicero.GetVariables();
+            cicero.ClearRunningList();
         }
 
         #endregion
@@ -249,10 +259,12 @@ namespace NavigatorHardwareControl
             //This constructor is used for copying a state when looking for changes
             public HardwareState(HardwareState state)
             {
+                Dictionary<string,double>.KeyCollection k = state.analogs.Keys;
                 this.analogs = new ObservableDictionary<string,double>();
                 this.digitals =new ObservableDictionary<string,bool>();
                 this.muquansAnalog = new ObservableDictionary<string,double>();
                 this.muquansDigital = new ObservableDictionary<string,bool>();
+
 
                 foreach (string entry in state.analogs.Keys)
                 {
@@ -273,7 +285,9 @@ namespace NavigatorHardwareControl
             }
 
             public HardwareState()
-            { }
+            {
+               
+            }
             
         }
 
@@ -326,6 +340,8 @@ namespace NavigatorHardwareControl
             dialog.InitialDirectory = hardwareStateDir;
             dialog.ShowDialog();
             if (dialog.FileName != "") state = LoadParameters(dialog.FileName);
+            if (Environs.Debug)
+                hardwareState = state;
             setValuesDisplayedOnUI(state);
         }
 
@@ -340,15 +356,16 @@ namespace NavigatorHardwareControl
         {
             // deserialize
             BinaryFormatter s = new BinaryFormatter();
-            HardwareState state = new HardwareState();
+            HardwareState state;
             // eat any errors in the following, as it's just a convenience function
             try
             {
                 state = (HardwareState)s.Deserialize(new FileStream(hardwareStateFilePath, FileMode.Open));
+                return state;
             }
             catch (Exception e)
             { Console.WriteLine("Unable to load settings: "+e.Message+"\n"+e.StackTrace); }
-            return state;
+            return null;   
         }
 
 
@@ -601,29 +618,36 @@ namespace NavigatorHardwareControl
         #region Hardware Update
         public void ApplyRecordedStateToHardware()
         {
-                if (!Environs.Debug)
-                    applyToHardware(hardwareState);          
+            if (!Environs.Debug)
+            {
+                applyToHardware(hardwareState);
+            }
+                    
         }
 
 
         public void UpdateHardware()
         {
-            if (previousState == null)
+            if (!Environs.Debug)
             {
-                previousState = new HardwareState(hardwareState);
-                applyToHardware(previousState);
-          
+                if (previousState == null)
+                {
+                    previousState = new HardwareState(hardwareState);
+                    applyToHardware(previousState);
+
+                }
+                else
+                {
+                    HardwareState uiState = readValuesOnUI();
+                    if (uiState.analogs != hardwareState.analogs && uiState.digitals != hardwareState.digitals)
+                        controlWindow.WriteToConsole("UI State doesn't match hardware state. Check the values are bound properly");
+                    HardwareState changes = getDiscrepancies(previousState, hardwareState);
+                    applyToHardware(changes);
+                    updateStateRecord(changes);
+                    previousState = new HardwareState(hardwareState);
+                }
             }
-            else 
-            {
-                HardwareState uiState = readValuesOnUI();
-                if (uiState.analogs != hardwareState.analogs && uiState.digitals != hardwareState.digitals)
-                    controlWindow.WriteToConsole("UI State doesn't match hardware state. Check the values are bound properly");
-                HardwareState changes = getDiscrepancies(previousState, hardwareState);
-                applyToHardware(changes);
-                updateStateRecord(changes);
-                previousState = new HardwareState(hardwareState);
-            }
+            cicero.SendVariablesToCicero();
         }
 
         private void applyToHardware(HardwareState state)
@@ -635,10 +659,8 @@ namespace NavigatorHardwareControl
 
                     hcState = NavHardwareState.LOCAL;
                     controlWindow.UpdateUIState(hcState);
-
                     applyAnalogs(state);
                     applyDigitals(state);
-
                     hcState = NavHardwareState.OFF;
                     controlWindow.UpdateUIState(hcState);
 
@@ -1256,6 +1278,10 @@ namespace NavigatorHardwareControl
             StopRemoteControl();
         }
 
+        #endregion
+
+        #region Cicero Remoting
+       
         #endregion
 
         #region Event Handlers

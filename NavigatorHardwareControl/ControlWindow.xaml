@@ -311,6 +311,19 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
+            <TabItem Header="Experiments">
+                <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                    <GroupBox Header="Scan">
+                        <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
+                            <ComboBox Width="120" Height="20" Margin="40,11,314,167" Name="scanComboBox" DisplayMemberPath="VariableName" SelectedValuePath="VariableName" SelectedValue="{Binding Path=DataStructures.Variable}"></ComboBox>
+                            <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="20" Margin="180,10,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="20" Margin="260,10,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="20" Margin="340,10,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ComboBox HorizontalAlignment="Left" Margin="0,11,0,0" Name="listEnumBox" VerticalAlignment="Top" Width="30" Height="20"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Menu x:Name="menu" VerticalAlignment="Top">
             <MenuItem Header="File">
