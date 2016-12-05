@@ -217,9 +217,11 @@ namespace MOTMaster
         ///  MOTMaster will fetch the dictionary used in the old experiment and use it as the
         ///  argument for Run(Dictionary<>).        ///  
         /// 
-        
         /// </summary>
+      
         private bool saveEnable = true;
+        private bool debug = true;
+
         public void SaveToggle(System.Boolean value)
         {
             saveEnable = value;
@@ -292,26 +294,45 @@ namespace MOTMaster
 
                     for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                     {
-                        runPattern(sequence);
+                        if(!debug) runPattern(sequence);
                     }
-                    clearDigitalPattern(sequence);
+                    if (!debug) clearDigitalPattern(sequence);
 
 
                     watch.Stop();
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
-                    if (saveEnable && cameraUsed)
+                    if (saveEnable)
                     {
-                        if (cameraUsed) waitUntilCameraAquisitionIsDone();
-                        try
+                        if (cameraUsed)
                         {
-                            if (cameraUsed) checkDataArrived();
+                            waitUntilCameraAquisitionIsDone();
+                            try
+                            {
+                                checkDataArrived();
+                            }
+                            catch (DataNotArrivedFromHardwareControllerException)
+                            {
+                                return;
+                            }
+                            Dictionary<String, Object> report = null;
+                            if (reporterUsed)
+                            {
+                                report = GetExperimentReport();
+                            }
+
+                            save(script, scriptPath, imageData, report);
                         }
-                        catch (DataNotArrivedFromHardwareControllerException)
+                        else
                         {
-                            return;
+                            Dictionary<String, Object> report = null;
+                            if (reporterUsed)
+                            {
+                                report = GetExperimentReport();
+                            }
+
+                            save(script, scriptPath, report);
+
                         }
-                        Dictionary<String, Object> report = GetExperimentReport();
-                        save(script, scriptPath, imageData, report);
 
 
                     }
@@ -345,6 +366,11 @@ namespace MOTMaster
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 script.Parameters, report, cameraAttributesPath, imageData);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
+        {
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+                script.Parameters, report);
         }
         private void runPattern(MOTMasterSequence sequence)
         {

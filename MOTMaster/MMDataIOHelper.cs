@@ -52,7 +52,18 @@ namespace MOTMaster
             //deleteFiles(saveFolder, fileTag);
             deleteFiles(files);
         }
+        public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report)
+        {
+            string fileTag = getDataID(element, batchNumber);
 
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report);
+
+            string[] files = putCopiesOfFilesToZip(saveFolder, fileTag);
+
+            //deleteFiles(saveFolder, fileTag);
+            deleteFiles(files);
+        }
         private void deleteFiles(string[] files)
         {
             foreach (string s in files)
@@ -97,6 +108,15 @@ namespace MOTMaster
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
             storeImage(saveFolder + fileTag, imageData);
+            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+        }
+
+        private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
+            Dictionary<String, Object> dict, Dictionary<String, Object> report)
+        {
+            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
+            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
+            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
 
@@ -187,16 +207,19 @@ namespace MOTMaster
 
         private void storeDictionary(String dataStoreFilePath, Dictionary<string, object> dict)
         {
-            TextWriter output = File.CreateText(dataStoreFilePath);
-            foreach (KeyValuePair<string, object> pair in dict)
+            if (dict != null)
             {
-                output.Write(pair.Key);
-                output.Write('\t');
-                output.Write(pair.Value.ToString());
-                output.Write('\t');
-                output.WriteLine(pair.Value.GetType());
+                TextWriter output = File.CreateText(dataStoreFilePath);
+                foreach (KeyValuePair<string, object> pair in dict)
+                {
+                    output.Write(pair.Key);
+                    output.Write('\t');
+                    output.Write(pair.Value.ToString());
+                    output.Write('\t');
+                    output.WriteLine(pair.Value.GetType());
+                }
+                output.Close();
             }
-            output.Close();
 
 
         }
