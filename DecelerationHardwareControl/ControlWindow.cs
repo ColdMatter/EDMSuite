@@ -14,7 +14,7 @@ namespace DecelerationHardwareControl
 {
     public partial class ControlWindow : Form
     {
-        private double aom_voltage;
+        
         public Controller controller;
         
         public ControlWindow()
@@ -174,7 +174,15 @@ namespace DecelerationHardwareControl
 
         }
 
-        
+        private void aom1UpdateButton_Click(object sender, EventArgs e)
+        {
+            double freq = double.Parse(aom1FreqBox.Text);
+            double amp = double.Parse(aom1AmplitudeBox.Text);
+            controller.SetMOTAOMFreq(freq);
+            controller.SetMOTAOMAmp(amp);
+        }
+
+       
 
         
 

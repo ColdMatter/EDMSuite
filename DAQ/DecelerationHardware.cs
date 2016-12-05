@@ -140,16 +140,8 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
-            AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel.
-			//AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
-			//AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
-			//AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
-			//AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
-           // AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
-            //AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58 Used to be used with AomLevelControlPlugin.
-            //AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 2,2);	// This is the output that the pg
-            // will switch if it's switch scanning.
+            AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel
+            AddDigitalOutputChannel("ttlSwitch", pgBoard, 2,2);	// This is the output that the pg will switch if it's switch scanning.
             //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
             AddDigitalOutputChannel("motAOM", pgBoard, 1, 1); //Pin 17
             AddDigitalOutputChannel("motRampTrigger", pgBoard, 1, 2); //Pin 51
@@ -160,7 +152,6 @@ namespace DAQ.HAL
 			// map the analog channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt2", daqBoard + "/ai1", AITerminalConfiguration.Rse);
-			//AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
             
@@ -189,7 +180,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v32repump", usbBoard + "/ao0", 0 , 5);
             AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
                        
-            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
+           
             
 
             // map the counter channels
@@ -212,6 +203,13 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("mot628V3", usbBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("slowing531", usbBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("slowing628V1", usbBoard + "/ai7", AITerminalConfiguration.Rse);
+
+            //analog output channels controlled by the hardware controller and/or MOTMaster
+            AddAnalogOutputChannel("motAOMFreq", aoBoard + "/ao10");
+            AddAnalogOutputChannel("motAOMAmp", aoBoard + "/ao11");
+
+            AddCalibration("motAOMFreq", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
+            AddCalibration("motAOMAmp", new LinearCalibration(1, 0, 0, -10, 10)); // needs calibrating
             
 		}
 

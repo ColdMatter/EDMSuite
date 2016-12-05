@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
@@ -26,6 +27,8 @@ namespace DecelerationHardwareControl
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
             ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
 
+        private static Hashtable calibrations = Environs.Hardware.Calibrations;
+
         public bool sidebandMonitorRunning = false;
         private string[] sidebandChannelList = {"cavityVoltage","mot606", "mot628V1","slowing531","slowing628V1"};
         private Task sidebandMonitorTask = new Task("sidebandMonitor");
@@ -40,12 +43,15 @@ namespace DecelerationHardwareControl
         private DateTime cavityTimestamp;
         private DateTime refcavityTimestamp;
         private double laserFrequencyControlVoltage;
-        
 
-        private double aomControlVoltage;
-        private Task outputTask = new Task("AomControllerOutput");
-        private AnalogOutputChannel aomChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["highvoltage"];
-        public AnalogSingleChannelWriter aomWriter;
+        private Dictionary<string, Task> analogTasks = new Dictionary<string, Task>();
+
+        private Task motAOMFreqOutputTask = new Task("MOTAOMFrequencyOutput");
+        private AnalogOutputChannel motAOMFreqChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["motAOMFreq"];
+        private Task motAOMAmpOutputTask = new Task("MOTAOMAmplitudeOutput");
+        private AnalogOutputChannel motAOMAmpChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["motAOMAmp"];
+
+        public AnalogSingleChannelWriter analogWriter;
 
 
         private AnalogInputChannel pressureSourceChamber = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["PressureSourceChamber"];
@@ -104,6 +110,13 @@ namespace DecelerationHardwareControl
             return null;
         }
 
+        public void AddAnalogOutput(Task task, AnalogOutputChannel channel, string channelName, double lowLimit, double highLimit)
+        {
+            channel.AddToTask(task, lowLimit, highLimit);
+            task.Control(TaskAction.Verify);
+            analogTasks.Add(channelName, task);
+        }
+
         public void Start()
         {
             analogsAvailable = true;
@@ -112,9 +125,9 @@ namespace DecelerationHardwareControl
             foreach (DictionaryEntry de in Environs.Hardware.AnalogOutputChannels) 
                 analogOutputsBlocked.Add(de.Key, false);
 
-            aomChannel.AddToTask(outputTask, -10, 10);
-            outputTask.Control(TaskAction.Verify);
-            aomWriter = new AnalogSingleChannelWriter(outputTask.Stream);
+            AddAnalogOutput(motAOMFreqOutputTask, motAOMFreqChannel, "motAOMFreq", -10, 10);
+            AddAnalogOutput(motAOMAmpOutputTask, motAOMAmpChannel, "motAOMAmp", -10, 10);
+            
 
             pressureSourceChamber.AddToTask(pressureMonitorTask, -10, 10);
             pressureRough.AddToTask(roughVacuumTask, -10, 10);
@@ -123,6 +136,8 @@ namespace DecelerationHardwareControl
             shieldTemp.AddToTask(shieldTask, -10, 10);
             cellTemp.AddToTask(cellTask, -10, 10);
             InitializeSidebandRead();
+
+           
 
             window = new ControlWindow();
             window.controller = this;
@@ -135,12 +150,6 @@ namespace DecelerationHardwareControl
         {
             get { return laserFrequencyControlVoltage; }
             set { laserFrequencyControlVoltage = value; }
-        }
-
-        public double AOMControlVoltage
-        {
-            get { return aomControlVoltage; }
-            set { aomControlVoltage = value; }
         }
 
         // returns true if the channel is blocked
@@ -193,29 +202,57 @@ namespace DecelerationHardwareControl
             }
         }
 
-        public double AOMVoltage
+        public void SetMOTAOMFreq(double frequency)
         {
-            get
-            {
-                return AOMControlVoltage;
-            }
-            set
-            {
-                if (!Environs.Debug)
-                {
-                    aomWriter.WriteSingleSample(true, value);
-                    outputTask.Control(TaskAction.Unreserve);
-                }
-                else
-                {
-                    // Debug mode, do nothing
-                }
-                aomControlVoltage = value;
-                
-            }
+            SetAnalogOutput("motAOMFreq", frequency, true);
         }
 
-   
+        public void SetMOTAOMAmp(double amplitude)
+        {
+            SetAnalogOutput("motAOMAmp", amplitude, true);
+        }
+
+        public class CalibrationException : ArgumentOutOfRangeException { };
+        public void SetAnalogOutput(string channel, double value, bool useCalibration)
+        {
+
+            analogWriter = new AnalogSingleChannelWriter(analogTasks[channel].Stream);
+            bool changeIt = true;
+            double output = 0.0;
+            if (useCalibration)
+            {
+                try
+                {
+                    output = ((Calibration)calibrations[channel]).Convert(value);
+                }
+                catch (DAQ.HAL.Calibration.CalibrationRangeException)
+                {
+                    MessageBox.Show("The number is outside the calibrated range. The value will not be updated.");
+                    changeIt = false;
+                }
+                catch
+                {
+                    MessageBox.Show("Calibration error");
+                    changeIt = false;
+                }
+            }
+            else
+            {
+                output = value;
+            }
+            if (changeIt)
+            {
+                try
+                {
+                    analogWriter.WriteSingleSample(true, output);
+                    analogTasks[channel].Control(TaskAction.Unreserve);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+        }
 
         #region TransferCavityLockable Members
 

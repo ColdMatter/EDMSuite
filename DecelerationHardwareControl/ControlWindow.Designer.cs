@@ -80,15 +80,24 @@ namespace DecelerationHardwareControl
             this.monitorPressureSourceChamber = new System.Windows.Forms.TextBox();
             this.GetData = new System.Windows.Forms.Button();
             this.PressureSourceChamber = new System.Windows.Forms.Label();
-            this.SynthTab = new System.Windows.Forms.TabPage();
-            this.synthSettingsUpdateButton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.synthOnCheck = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.synthOnAmpBox = new System.Windows.Forms.TextBox();
-            this.synthOnFreqBox = new System.Windows.Forms.TextBox();
+            this.FrequencyTab = new System.Windows.Forms.TabPage();
+            this.aom1Box = new System.Windows.Forms.GroupBox();
+            this.aom1UpdateButton = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.aom1AmplitudeBox = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.aom1FreqBox = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.microwaveSynthGroupBox = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.synthSettingsUpdateButton = new System.Windows.Forms.Button();
+            this.synthOnFreqBox = new System.Windows.Forms.TextBox();
+            this.synthOnCheck = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.synthOnAmpBox = new System.Windows.Forms.TextBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.sideBandTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph6)).BeginInit();
@@ -99,7 +108,9 @@ namespace DecelerationHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph1)).BeginInit();
             this.FlowController.SuspendLayout();
             this.MonitoringTab.SuspendLayout();
-            this.SynthTab.SuspendLayout();
+            this.FrequencyTab.SuspendLayout();
+            this.aom1Box.SuspendLayout();
+            this.microwaveSynthGroupBox.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -584,94 +595,179 @@ namespace DecelerationHardwareControl
             this.PressureSourceChamber.Text = "Pressure Source Chamber :";
             this.PressureSourceChamber.Click += new System.EventHandler(this.PressureSourceChamber_Click);
             // 
-            // SynthTab
+            // FrequencyTab
             // 
-            this.SynthTab.Controls.Add(this.synthSettingsUpdateButton);
-            this.SynthTab.Controls.Add(this.label2);
-            this.SynthTab.Controls.Add(this.label1);
-            this.SynthTab.Controls.Add(this.synthOnCheck);
-            this.SynthTab.Controls.Add(this.label7);
-            this.SynthTab.Controls.Add(this.synthOnAmpBox);
-            this.SynthTab.Controls.Add(this.synthOnFreqBox);
-            this.SynthTab.Controls.Add(this.label8);
-            this.SynthTab.Location = new System.Drawing.Point(4, 22);
-            this.SynthTab.Name = "SynthTab";
-            this.SynthTab.Padding = new System.Windows.Forms.Padding(3);
-            this.SynthTab.Size = new System.Drawing.Size(680, 855);
-            this.SynthTab.TabIndex = 3;
-            this.SynthTab.Text = "Synth";
-            this.SynthTab.UseVisualStyleBackColor = true;
+            this.FrequencyTab.Controls.Add(this.aom1Box);
+            this.FrequencyTab.Controls.Add(this.microwaveSynthGroupBox);
+            this.FrequencyTab.Location = new System.Drawing.Point(4, 22);
+            this.FrequencyTab.Name = "FrequencyTab";
+            this.FrequencyTab.Padding = new System.Windows.Forms.Padding(3);
+            this.FrequencyTab.Size = new System.Drawing.Size(680, 855);
+            this.FrequencyTab.TabIndex = 3;
+            this.FrequencyTab.Text = "Frequencies";
+            this.FrequencyTab.UseVisualStyleBackColor = true;
+            // 
+            // aom1Box
+            // 
+            this.aom1Box.Controls.Add(this.aom1UpdateButton);
+            this.aom1Box.Controls.Add(this.label18);
+            this.aom1Box.Controls.Add(this.aom1AmplitudeBox);
+            this.aom1Box.Controls.Add(this.label17);
+            this.aom1Box.Controls.Add(this.label16);
+            this.aom1Box.Controls.Add(this.aom1FreqBox);
+            this.aom1Box.Controls.Add(this.label15);
+            this.aom1Box.Location = new System.Drawing.Point(11, 21);
+            this.aom1Box.Name = "aom1Box";
+            this.aom1Box.Size = new System.Drawing.Size(201, 104);
+            this.aom1Box.TabIndex = 34;
+            this.aom1Box.TabStop = false;
+            this.aom1Box.Text = "MOT AOM";
+            // 
+            // aom1UpdateButton
+            // 
+            this.aom1UpdateButton.Location = new System.Drawing.Point(76, 78);
+            this.aom1UpdateButton.Name = "aom1UpdateButton";
+            this.aom1UpdateButton.Size = new System.Drawing.Size(64, 23);
+            this.aom1UpdateButton.TabIndex = 33;
+            this.aom1UpdateButton.Text = "Update";
+            this.aom1UpdateButton.UseVisualStyleBackColor = true;
+            this.aom1UpdateButton.Click += new System.EventHandler(this.aom1UpdateButton_Click);
+            // 
+            // label18
+            // 
+            this.label18.Location = new System.Drawing.Point(146, 52);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(44, 23);
+            this.label18.TabIndex = 34;
+            this.label18.Text = "dBm";
+            // 
+            // aom1AmplitudeBox
+            // 
+            this.aom1AmplitudeBox.Location = new System.Drawing.Point(76, 49);
+            this.aom1AmplitudeBox.Name = "aom1AmplitudeBox";
+            this.aom1AmplitudeBox.Size = new System.Drawing.Size(64, 20);
+            this.aom1AmplitudeBox.TabIndex = 33;
+            this.aom1AmplitudeBox.Text = "0";
+            // 
+            // label17
+            // 
+            this.label17.Location = new System.Drawing.Point(6, 52);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(64, 23);
+            this.label17.TabIndex = 33;
+            this.label17.Text = "Amplitude";
+            // 
+            // label16
+            // 
+            this.label16.Location = new System.Drawing.Point(146, 23);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(48, 23);
+            this.label16.TabIndex = 33;
+            this.label16.Text = "MHz";
+            // 
+            // aom1FreqBox
+            // 
+            this.aom1FreqBox.Location = new System.Drawing.Point(76, 23);
+            this.aom1FreqBox.Name = "aom1FreqBox";
+            this.aom1FreqBox.Size = new System.Drawing.Size(64, 20);
+            this.aom1FreqBox.TabIndex = 29;
+            this.aom1FreqBox.Text = "100";
+            // 
+            // label15
+            // 
+            this.label15.Location = new System.Drawing.Point(6, 23);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(64, 23);
+            this.label15.TabIndex = 28;
+            this.label15.Text = "Frequency";
+            // 
+            // microwaveSynthGroupBox
+            // 
+            this.microwaveSynthGroupBox.Controls.Add(this.label8);
+            this.microwaveSynthGroupBox.Controls.Add(this.synthSettingsUpdateButton);
+            this.microwaveSynthGroupBox.Controls.Add(this.synthOnFreqBox);
+            this.microwaveSynthGroupBox.Controls.Add(this.synthOnCheck);
+            this.microwaveSynthGroupBox.Controls.Add(this.label2);
+            this.microwaveSynthGroupBox.Controls.Add(this.label7);
+            this.microwaveSynthGroupBox.Controls.Add(this.label1);
+            this.microwaveSynthGroupBox.Controls.Add(this.synthOnAmpBox);
+            this.microwaveSynthGroupBox.Location = new System.Drawing.Point(11, 148);
+            this.microwaveSynthGroupBox.Name = "microwaveSynthGroupBox";
+            this.microwaveSynthGroupBox.Size = new System.Drawing.Size(201, 107);
+            this.microwaveSynthGroupBox.TabIndex = 33;
+            this.microwaveSynthGroupBox.TabStop = false;
+            this.microwaveSynthGroupBox.Text = "Microwave synthesizer";
+            // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(6, 16);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 23);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "Frequency";
             // 
             // synthSettingsUpdateButton
             // 
-            this.synthSettingsUpdateButton.Location = new System.Drawing.Point(266, 30);
+            this.synthSettingsUpdateButton.Location = new System.Drawing.Point(74, 68);
             this.synthSettingsUpdateButton.Name = "synthSettingsUpdateButton";
-            this.synthSettingsUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.synthSettingsUpdateButton.Size = new System.Drawing.Size(66, 23);
             this.synthSettingsUpdateButton.TabIndex = 32;
             this.synthSettingsUpdateButton.Text = "Update";
             this.synthSettingsUpdateButton.UseVisualStyleBackColor = true;
             this.synthSettingsUpdateButton.Click += new System.EventHandler(this.synthSettingsUpdateButton_Click);
             // 
-            // label2
+            // synthOnFreqBox
             // 
-            this.label2.Location = new System.Drawing.Point(225, 47);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 23);
-            this.label2.TabIndex = 31;
-            this.label2.Text = "dBm";
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(225, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 23);
-            this.label1.TabIndex = 30;
-            this.label1.Text = "GHz";
+            this.synthOnFreqBox.Location = new System.Drawing.Point(74, 16);
+            this.synthOnFreqBox.Name = "synthOnFreqBox";
+            this.synthOnFreqBox.Size = new System.Drawing.Size(64, 20);
+            this.synthOnFreqBox.TabIndex = 24;
+            this.synthOnFreqBox.Text = "14";
             // 
             // synthOnCheck
             // 
-            this.synthOnCheck.Location = new System.Drawing.Point(10, 73);
+            this.synthOnCheck.Location = new System.Drawing.Point(6, 65);
             this.synthOnCheck.Name = "synthOnCheck";
             this.synthOnCheck.Size = new System.Drawing.Size(104, 24);
             this.synthOnCheck.TabIndex = 29;
             this.synthOnCheck.Text = "On/Off";
             this.synthOnCheck.CheckedChanged += new System.EventHandler(this.synthOnCheck_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(142, 42);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 23);
+            this.label2.TabIndex = 31;
+            this.label2.Text = "dBm";
+            // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(7, 47);
+            this.label7.Location = new System.Drawing.Point(6, 39);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(122, 23);
+            this.label7.Size = new System.Drawing.Size(64, 23);
             this.label7.TabIndex = 28;
             this.label7.Text = "Amplitude";
             // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(142, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 23);
+            this.label1.TabIndex = 30;
+            this.label1.Text = "GHz";
+            // 
             // synthOnAmpBox
             // 
-            this.synthOnAmpBox.Location = new System.Drawing.Point(156, 44);
+            this.synthOnAmpBox.Location = new System.Drawing.Point(74, 39);
             this.synthOnAmpBox.Name = "synthOnAmpBox";
             this.synthOnAmpBox.Size = new System.Drawing.Size(64, 20);
             this.synthOnAmpBox.TabIndex = 25;
             this.synthOnAmpBox.Text = "-6";
             // 
-            // synthOnFreqBox
-            // 
-            this.synthOnFreqBox.Location = new System.Drawing.Point(156, 12);
-            this.synthOnFreqBox.Name = "synthOnFreqBox";
-            this.synthOnFreqBox.Size = new System.Drawing.Size(64, 20);
-            this.synthOnFreqBox.TabIndex = 24;
-            this.synthOnFreqBox.Text = "14";
-            // 
-            // label8
-            // 
-            this.label8.Location = new System.Drawing.Point(7, 15);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(122, 23);
-            this.label8.TabIndex = 27;
-            this.label8.Text = "Frequency";
-            // 
             // tabControl
             // 
-            this.tabControl.Controls.Add(this.SynthTab);
+            this.tabControl.Controls.Add(this.FrequencyTab);
             this.tabControl.Controls.Add(this.MonitoringTab);
             this.tabControl.Controls.Add(this.FlowController);
             this.tabControl.Controls.Add(this.sideBandTab);
@@ -702,8 +798,11 @@ namespace DecelerationHardwareControl
             this.FlowController.PerformLayout();
             this.MonitoringTab.ResumeLayout(false);
             this.MonitoringTab.PerformLayout();
-            this.SynthTab.ResumeLayout(false);
-            this.SynthTab.PerformLayout();
+            this.FrequencyTab.ResumeLayout(false);
+            this.aom1Box.ResumeLayout(false);
+            this.aom1Box.PerformLayout();
+            this.microwaveSynthGroupBox.ResumeLayout(false);
+            this.microwaveSynthGroupBox.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -763,7 +862,7 @@ namespace DecelerationHardwareControl
         public System.Windows.Forms.TextBox monitorPressureSourceChamber;
         private System.Windows.Forms.Button GetData;
         private System.Windows.Forms.Label PressureSourceChamber;
-        private System.Windows.Forms.TabPage SynthTab;
+        private System.Windows.Forms.TabPage FrequencyTab;
         public System.Windows.Forms.Button synthSettingsUpdateButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -773,6 +872,15 @@ namespace DecelerationHardwareControl
         public System.Windows.Forms.TextBox synthOnFreqBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.GroupBox aom1Box;
+        public System.Windows.Forms.TextBox aom1FreqBox;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.GroupBox microwaveSynthGroupBox;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label18;
+        public System.Windows.Forms.TextBox aom1AmplitudeBox;
+        private System.Windows.Forms.Label label17;
+        public System.Windows.Forms.Button aom1UpdateButton;
 
     }
 }
