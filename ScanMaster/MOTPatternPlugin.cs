@@ -72,6 +72,7 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["motAOMStart"],
                 (int)settings["motAOMDuration"],
                 (int)settings["motRampStart"],
+                (int)settings["motAOMReStart"],
                 (int)settings["bTrigger"],
                 (int)settings["bDuration"],
                 (int)settings["cameraTrigger"],

@@ -42,10 +42,11 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.3;
 
-        Parameters["v0IntensityRampStartTime"] = 100;
+        Parameters["v0IntensityRampStartTime"] = 3000;
         Parameters["v0IntensityRampDuration"] = 2000;
-        Parameters["v0IntensityRampStartValue"] = 4.0;
-        Parameters["v0IntensityRampEndValue"] = 1.0;
+        Parameters["v0IntensityRampStartValue"] = 0.7;
+        Parameters["v0IntensityRampEndValue"] = 0.4;
+        Parameters["motAOMReStart"] = 30000;
        
        
         
@@ -81,11 +82,12 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("slowingChirp", (int)Parameters["SlowingChirpStartTime"], (int)Parameters["SlowingChirpDuration"], (double)Parameters["SlowingChirpEndValue"]);
         p.AddLinearRamp("slowingChirp", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["SlowingChirpDuration"], (double)Parameters["SlowingChirpStartValue"]);
 
-       // p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
-       // p.AddLinearRamp("v0IntensityRamp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
+       p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
+       p.AddLinearRamp("v0IntensityRamp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
+       p.AddAnalogValue("v0IntensityRamp", (int)Parameters["motAOMReStart"], (double)Parameters["v0IntensityRampStartValue"]);
 
 
-        //p.SwitchAllOffAtEndOfPattern();
+        p.SwitchAllOffAtEndOfPattern();
         return p;
    }
 

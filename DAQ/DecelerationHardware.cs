@@ -43,6 +43,7 @@ namespace DAQ.HAL
             string TCLBoard2 = (string)Boards["PXI6"];
             string aoBoard = (string)Boards["aoBoard"];
 
+            //configure instance 1 of transfer cavity lock
             TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
             tcl1.AddLaser("v00cooling", "p1");
             tcl1.AddLaser("v10repump", "p2");
@@ -54,8 +55,8 @@ namespace DAQ.HAL
             tcl1.TCPChannel = 1190;
             Info.Add("Hamish", tcl1);
 
+            //configure instance 2 of transfer cavity lock
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
-            
             tcl2.AddLaser("v21repump", "p12");
             tcl2.AddLaser("v32repump", "p22");
             tcl2.Trigger = TCLBoard2 + "/PFI0";
@@ -64,6 +65,11 @@ namespace DAQ.HAL
             tcl2.Ramp = "rampfb2";
             tcl2.TCPChannel = 1191;
             Info.Add("Carlos", tcl2);
+
+            //MotMaster configuration
+            MMConfig mmConfig = new MMConfig(false, false, false, false);
+            mmConfig.ExternalFilePattern = "*.tif";
+            Info.Add("MotMasterConfiguration", mmConfig);
 
 
             Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
@@ -79,12 +85,7 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            Info.Add("MOTMasterDigitalPatternClockFrequency", 100000);
-            Info.Add("MOTMasterAnalogPatternClockFrequency", 100000);
             Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
-            Info.Add("MOTMasterCamera", false);
-            Info.Add("MOTMasterTranslationStage", false);
-            Info.Add("MOTMasterReporter", false);
 
             Info.Add("defaultTOFRange", new double[] {4000, 12000}); // these entries are the two ends of the range for the upper TOF graph
             Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
