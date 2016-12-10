@@ -118,6 +118,7 @@
     <Compile Include="LockControlPanel.Designer.cs">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="MasterLaser.cs" />
     <Compile Include="SlaveLaser.cs" />
     <EmbeddedResource Include="LockControlPanel.resx">
       <DependentUpon>LockControlPanel.cs</DependentUpon>

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TransferCavityLock2012
 {
@@ -26,7 +27,8 @@ namespace TransferCavityLock2012
     {
 
         #region Declarations
-        public int default_ScanPoints = 300;
+        public int defaultScanPoints = 300;
+        public double defaultMasterGain = 0;
 
         private MainForm ui;
 
@@ -37,7 +39,7 @@ namespace TransferCavityLock2012
         private Dictionary<string, double[]> fits;              //Somewhere to store all the fits
         public Dictionary<string, SlaveLaser> SlaveLasers;      //Stores all the slave laser classes.
         private Dictionary<string, int> aiChannels;             //All ai channels, including the cavity and the master.
-     
+        public MasterLaser MasterLaser;
         TransferCavity2012Lockable tcl;
 
         public Controller()
@@ -81,10 +83,14 @@ namespace TransferCavityLock2012
             }
             analogs.Add("master", config.MasterLaser);
             analogs.Add("cavity", config.Cavity);
-            
+
+            MasterLaser = new MasterLaser();
             initializeSlaveLaserControl(config.Lasers.Keys);
             initializeAIs(analogs.Values);
-      
+
+            defaultScanPoints = config.DefaultScanPoints;
+            defaultMasterGain = config.DefaultGains["Master"];
+                
             TCLState = ControllerState.STOPPED;
             Application.Run(ui);
         }
@@ -97,6 +103,7 @@ namespace TransferCavityLock2012
             {
                 SlaveLasers.Add(s, new SlaveLaser(s));
                 SlaveLasers[s].controller = this;
+                SlaveLasers[s].Gain = config.DefaultGains[s];
             }
         }
 
@@ -114,12 +121,12 @@ namespace TransferCavityLock2012
 
         public void InitializeUI()
         {
-            ui.SetNumberOfPoints(default_ScanPoints);
+            ui.SetNumberOfPoints(defaultScanPoints);
+            ui.SetMasterGain(defaultMasterGain);
             ui.SetVtoOffsetVoltage(0);
             foreach (KeyValuePair<string, SlaveLaser> laser in SlaveLasers)
             {
                 ui.AddSlaveLaser(laser.Value);
-
             }
             ui.ShowAllTabPanels();
             ui.UpdateUIState(TCLState);
@@ -158,6 +165,7 @@ namespace TransferCavityLock2012
             TCLState = Controller.ControllerState.RUNNING;
             Thread.Sleep(2000);
             Thread mainThread = new Thread(new ThreadStart(mainLoop));
+            mainThread.Priority = ThreadPriority.Highest; 
             ui.UpdateUIState(TCLState);
             
             mainThread.Start();
@@ -191,6 +199,13 @@ namespace TransferCavityLock2012
             ui.SetGain(name, SlaveLasers[name].Gain);
             ui.SetLaserSetPoint(name, SlaveLasers[name].LaserSetPoint);
         }
+        public void RefreshErrorParametersOnUI(string name)
+        {
+            double oldSD = ui.GetLaserSD(name);
+            double newSD = Math.Pow(((Math.Pow(oldSD, 2) * 49 + Math.Pow(1500 * (fits[name + "Fits"][1] - fits["masterFits"][1] - SlaveLasers[name].LaserSetPoint) / config.FSRCalibrations[name], 2)) / 50), 0.5);
+            ui.SetLaserSD(name, newSD);
+        }
+
         #endregion
 
         #region Passing Events from UIs to the correct slave laser class.
@@ -272,6 +287,8 @@ namespace TransferCavityLock2012
             writeMasterVoltageOut(0);
             disposeMasterVoltageOut();
             DateTime previousTime = DateTime.Now;
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
 
             initializeAIHardware(sp);
 
@@ -280,6 +297,9 @@ namespace TransferCavityLock2012
           
             while (TCLState != ControllerState.STOPPED)
             {
+                updateTime(stopWatch);
+                stopWatch.Reset();
+                stopWatch.Start();
                 double[] lastCav= scanData.GetCavityData();
                 
                 scanData = acquireAI(sp);
@@ -289,41 +309,58 @@ namespace TransferCavityLock2012
                 }
                 if (scanData != null)
                 {
-                    plotCavity(scanData);
-                    updateTime(previousTime);
-                    previousTime = DateTime.Now;
+                    if (!ui.dissableGUIupdateCheckBox.Checked) { plotCavity(scanData); };
                     if ((scanData.GetCavityData())[sp.Steps - 1] < config.MaxInputVoltage) // if the cavity ramp voltage exceeds the input voltage - do nothing
                     {
-
-                            
-                        if(checkRampChannel() == true)
+                        if (checkRampChannel() == true)
                         {
+                            switch (MasterLaser.lState)
+                            {
+                                case MasterLaser.LaserState.FREE:
 
-                            //if the cavity length is locked, use the set point to determine what voltage to output
-                            if (ui.masterLockEnableCheck.Checked == true)
-                            {
-                                fits["masterFits"] = fitMaster(scanData);
-                                plotMaster(scanData, fits["masterFits"]);
-                                masterVoltage = calculateNewMasterVoltage(masterVoltage);
-                                setupMasterVoltageOut();
-                                 //write difference to analog output
-                                writeMasterVoltageOut(masterVoltage);
-                                ui.SetVtoOffsetVoltage(masterVoltage);
-                                ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
-                                disposeMasterVoltageOut();
-                            }
-                            //if the cavity length is not locked, allow the voltage out to be scanned
-                            else
-                            {
-                                plotMaster(scanData);
-                                setupMasterVoltageOut();
-                                masterVoltage=ui.GetVtoOffsetVoltage();
-                                writeMasterVoltageOut(masterVoltage);
-                                disposeMasterVoltageOut();
+                                    plotMaster(scanData);
+                                    masterVoltage = ui.GetVtoOffsetVoltage();
+                                    setupMasterVoltageOut();
+                                    writeMasterVoltageOut(masterVoltage);
+                                    disposeMasterVoltageOut();
+                                    break;
+
+                                case MasterLaser.LaserState.LOCKING:
+
+                                    fits["masterFits"] = fitMaster(scanData);
+                                    plotMaster(scanData, fits["masterFits"]);
+                                    masterVoltage = calculateNewMasterVoltage(masterVoltage);
+                                     //write difference to analog output
+                                    setupMasterVoltageOut();
+                                    writeMasterVoltageOut(masterVoltage);
+                                    ui.SetVtoOffsetVoltage(masterVoltage);
+                                    ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
+                                    disposeMasterVoltageOut();
+                                    MasterLaser.Lock();
+                                    break;
+
+                                case MasterLaser.LaserState.LOCKED:
+
+                                    if (ui.fastFitCheckBox.Checked) 
+                                    { 
+                                        fits["masterFits"] = fastfitMaster(scanData, fits["masterFits"]); 
+                                    } 
+                                    else 
+                                    { 
+                                        fits["masterFits"] = fitMaster(scanData); 
+                                    }
+                                    if (!ui.dissableGUIupdateCheckBox.Checked) { plotMaster(scanData, fits["masterFits"]); };
+                                    masterVoltage = calculateNewMasterVoltage(masterVoltage);
+                                     //write difference to analog output
+                                    setupMasterVoltageOut();
+                                    writeMasterVoltageOut(masterVoltage);
+                                    ui.SetVtoOffsetVoltage(masterVoltage);
+                                    ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
+                                    disposeMasterVoltageOut();
+                                    break;
                             }
                         }
-
-
+                            
                         foreach (KeyValuePair<string, SlaveLaser> pair in SlaveLasers)
                         {
                             string slName = pair.Key;
@@ -331,23 +368,19 @@ namespace TransferCavityLock2012
                             
                             
                             //Some rearrangements to fit only when log fit slave lasers parameters on and/or lock slave lasers on.
-                            plotSlaveNoFit(slName, scanData);
                            
                             switch (sl.lState)
                             {
                                 case SlaveLaser.LaserState.FREE:
-                                    
+
+                                    plotSlaveNoFit(slName, scanData);
                                     break;
 
                                 case SlaveLaser.LaserState.LOCKING:
 
                                     fits[slName + "Fits"] = fitSlave(slName, scanData);
-
                                     plotSlave(slName, scanData, fits[slName + "Fits"]);
-
-
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
-                                     
                                     sl.Lock();
                                     RefreshErrorGraph(slName);
                                     count = 0;
@@ -355,14 +388,19 @@ namespace TransferCavityLock2012
 
 
                                 case SlaveLaser.LaserState.LOCKED:
-
-                                    fits[slName + "Fits"] = fitSlave(slName, scanData);
-                                    plotSlave(slName, scanData, fits[slName + "Fits"]);
-
-                                    plotError(slName, new double[] { getErrorCount(slName) }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint });
-                                                                       
+                                    if (ui.fastFitCheckBox.Checked)
+                                    {
+                                        fits[slName + "Fits"] = fastfitSlave(slName, scanData, fits[slName + "Fits"]);
+                                    }
+                                    else
+                                    {
+                                        fits[slName + "Fits"] = fitSlave(slName, scanData);
+                                    }
+                                    if(!ui.dissableGUIupdateCheckBox.Checked){ plotSlave(slName, scanData, fits[slName + "Fits"]);};
+                                    if (!ui.dissableGUIupdateCheckBox.Checked) { plotError(slName, new double[] { getErrorCount(slName) }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint }); };                                   
                                     sl.RefreshLock(fits["masterFits"], fits[slName + "Fits"]);
                                     RefreshLockParametersOnUI(sl.Name);
+                                    RefreshErrorParametersOnUI(sl.Name);
                                     incrementCounter(slName);
                                     count++;
                                     break;
@@ -404,6 +442,12 @@ namespace TransferCavityLock2012
         {
             return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetMasterData());
         }
+
+        private double[] fastfitMaster(CavityScanData data, double[] masterFitParams)
+        {
+            return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetMasterData(), masterFitParams, config.PointsToConsiderEitherSideOfPeakInFWHMs, config.MaximumNLMFSteps);
+        }
+
         private void plotMaster(CavityScanData data, double[] MasterFit)
         {
             double[] cavity = data.GetCavityData();
@@ -431,6 +475,12 @@ namespace TransferCavityLock2012
         {
             return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetSlaveData(name));
         }
+
+        private double[] fastfitSlave(string name, CavityScanData data, double[] SlaveFitParams)
+        {
+            return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetSlaveData(name), SlaveFitParams, config.PointsToConsiderEitherSideOfPeakInFWHMs,config.MaximumNLMFSteps);
+        }
+
         private void plotSlave(string name, CavityScanData data, double[] slaveFit)
         {
             double[] cavity = data.GetCavityData();
@@ -445,12 +495,13 @@ namespace TransferCavityLock2012
             ui.DisplaySlaveDataNoFit(name, cavity, slave);
         }
 
-        private void updateTime(DateTime previousTime)
+        private void updateTime(Stopwatch stopwatch)
         {
-            TimeSpan elapsed = DateTime.Now.Subtract(previousTime);
-            previousTime = DateTime.Now;
-            double seconds = elapsed.Milliseconds;
-            ui.UpdateElapsedTime(Math.Round(1000/seconds,1));
+            TimeSpan elapsed = stopwatch.Elapsed;
+            double freq = 10000000 / elapsed.Ticks;
+            double avfreq = ui.GetElapsedTime();
+            double newAvFreq = (49 * avfreq + freq) / 50;
+            ui.UpdateElapsedTime(newAvFreq);
         }
 
         private void plotError(string name, double[] time, double[] error )
@@ -539,6 +590,42 @@ namespace TransferCavityLock2012
             masterOutputTask.Dispose();
         }
 
+        public void LoadParametersWithDialog()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "tlc parameters|*.bin";
+            dialog.Title = "Load parameters";
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreDir = settingsPath + "TransferCavityLock\\" + config.Name;
+            dialog.InitialDirectory = dataStoreDir;
+            dialog.ShowDialog();
+            DialogResult result;
+            if (dialog.FileName != "")
+            {
+                result = MessageBox.Show("This will unlock all lasers. Do you want to continue?", "Careful now ...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                    LoadParameters(dialog.FileName);
+            }
+        }
+
+        private void LoadParameters(String dataStoreFilePath)
+        {
+            // deserialize
+            BinaryFormatter s = new BinaryFormatter();
+            // eat any errors in the following, as it's just a convenience function
+            try
+            {
+                DataStore dataStore = (DataStore)s.Deserialize(new FileStream(dataStoreFilePath, FileMode.Open));
+
+                // copy parameters out of the struct
+                //CPlusVoltage = dataStore.cPlus;
+
+
+            }
+            catch (Exception)
+            { Console.Out.WriteLine("Unable to load settings"); }
+        }
+
         #endregion
         /// <summary>
         /// The function which gets called at the end, after breaking out of the while loop.
@@ -565,7 +652,7 @@ namespace TransferCavityLock2012
         /// <param name="sp"></param>
         private void initializeAIHardware(ScanParameters sp)
         {
-            tcl.ConfigureReadAI(sp.Steps, config.AnalogSampleRate, false);
+            tcl.ConfigureReadAI(sp.Steps, config.AnalogSampleRate, config.TriggerOnRisingEdge, false);
         }
 
         

@@ -30,7 +30,9 @@
         {
             this.voltageRampControl = new System.Windows.Forms.GroupBox();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label8 = new System.Windows.Forms.Label();
             this.rampStopButton = new System.Windows.Forms.Button();
+            this.updateRateTextBox = new System.Windows.Forms.TextBox();
             this.rampStartButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.NumberOfScanpointsTextBox = new System.Windows.Forms.TextBox();
@@ -61,8 +63,12 @@
             this.label7 = new System.Windows.Forms.Label();
             this.scanAvCheckBox = new System.Windows.Forms.CheckBox();
             this.axisCheckBox = new System.Windows.Forms.CheckBox();
-            this.updateRateTextBox = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.dissableGUIupdateCheckBox = new System.Windows.Forms.CheckBox();
+            this.fastFitCheckBox = new System.Windows.Forms.CheckBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadProfileSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveProfileSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.voltageRampControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MasterLaserIntensityScatterGraph)).BeginInit();
@@ -70,16 +76,19 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CavLockVoltageTrackBar)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // voltageRampControl
             // 
             this.voltageRampControl.Controls.Add(this.rampLED);
+            this.voltageRampControl.Controls.Add(this.label8);
             this.voltageRampControl.Controls.Add(this.rampStopButton);
+            this.voltageRampControl.Controls.Add(this.updateRateTextBox);
             this.voltageRampControl.Controls.Add(this.rampStartButton);
             this.voltageRampControl.Controls.Add(this.label5);
             this.voltageRampControl.Controls.Add(this.NumberOfScanpointsTextBox);
-            this.voltageRampControl.Location = new System.Drawing.Point(580, 12);
+            this.voltageRampControl.Location = new System.Drawing.Point(580, 31);
             this.voltageRampControl.Name = "voltageRampControl";
             this.voltageRampControl.Size = new System.Drawing.Size(384, 76);
             this.voltageRampControl.TabIndex = 2;
@@ -96,6 +105,15 @@
             this.rampLED.Size = new System.Drawing.Size(31, 29);
             this.rampLED.TabIndex = 7;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(102, 51);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(117, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Lock Update Rate (Hz)";
+            // 
             // rampStopButton
             // 
             this.rampStopButton.Location = new System.Drawing.Point(6, 46);
@@ -105,6 +123,15 @@
             this.rampStopButton.Text = "Stop reading";
             this.rampStopButton.UseVisualStyleBackColor = true;
             this.rampStopButton.Click += new System.EventHandler(this.rampStopButton_Click);
+            // 
+            // updateRateTextBox
+            // 
+            this.updateRateTextBox.Enabled = false;
+            this.updateRateTextBox.Location = new System.Drawing.Point(237, 48);
+            this.updateRateTextBox.Name = "updateRateTextBox";
+            this.updateRateTextBox.Size = new System.Drawing.Size(69, 20);
+            this.updateRateTextBox.TabIndex = 56;
+            this.updateRateTextBox.Text = "1";
             // 
             // rampStartButton
             // 
@@ -119,7 +146,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(120, 24);
+            this.label5.Location = new System.Drawing.Point(129, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(90, 13);
             this.label5.TabIndex = 21;
@@ -127,9 +154,9 @@
             // 
             // NumberOfScanpointsTextBox
             // 
-            this.NumberOfScanpointsTextBox.Location = new System.Drawing.Point(216, 21);
+            this.NumberOfScanpointsTextBox.Location = new System.Drawing.Point(237, 21);
             this.NumberOfScanpointsTextBox.Name = "NumberOfScanpointsTextBox";
-            this.NumberOfScanpointsTextBox.Size = new System.Drawing.Size(57, 20);
+            this.NumberOfScanpointsTextBox.Size = new System.Drawing.Size(69, 20);
             this.NumberOfScanpointsTextBox.TabIndex = 22;
             // 
             // MasterLaserIntensityScatterGraph
@@ -199,16 +226,16 @@
             // 
             // slaveLasersTab
             // 
-            this.slaveLasersTab.Location = new System.Drawing.Point(12, 338);
+            this.slaveLasersTab.Location = new System.Drawing.Point(12, 359);
             this.slaveLasersTab.Name = "slaveLasersTab";
             this.slaveLasersTab.SelectedIndex = 0;
-            this.slaveLasersTab.Size = new System.Drawing.Size(952, 334);
+            this.slaveLasersTab.Size = new System.Drawing.Size(952, 313);
             this.slaveLasersTab.TabIndex = 15;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.CavityVoltageReadScatterGraph);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 31);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(562, 158);
             this.groupBox1.TabIndex = 16;
@@ -218,7 +245,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.MasterLaserIntensityScatterGraph);
-            this.groupBox2.Location = new System.Drawing.Point(12, 176);
+            this.groupBox2.Location = new System.Drawing.Point(12, 195);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(562, 156);
             this.groupBox2.TabIndex = 17;
@@ -228,7 +255,7 @@
             // logCheckBox
             // 
             this.logCheckBox.AutoSize = true;
-            this.logCheckBox.Location = new System.Drawing.Point(586, 119);
+            this.logCheckBox.Location = new System.Drawing.Point(586, 138);
             this.logCheckBox.Name = "logCheckBox";
             this.logCheckBox.Size = new System.Drawing.Size(124, 17);
             this.logCheckBox.TabIndex = 18;
@@ -239,7 +266,7 @@
             // MasterSetPointTextBox
             // 
             this.MasterSetPointTextBox.AcceptsReturn = true;
-            this.MasterSetPointTextBox.Location = new System.Drawing.Point(658, 193);
+            this.MasterSetPointTextBox.Location = new System.Drawing.Point(658, 212);
             this.MasterSetPointTextBox.Name = "MasterSetPointTextBox";
             this.MasterSetPointTextBox.Size = new System.Drawing.Size(57, 20);
             this.MasterSetPointTextBox.TabIndex = 29;
@@ -248,7 +275,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(583, 196);
+            this.label3.Location = new System.Drawing.Point(583, 215);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 28;
@@ -257,7 +284,7 @@
             // masterLockEnableCheck
             // 
             this.masterLockEnableCheck.AutoSize = true;
-            this.masterLockEnableCheck.Location = new System.Drawing.Point(721, 195);
+            this.masterLockEnableCheck.Location = new System.Drawing.Point(721, 214);
             this.masterLockEnableCheck.Name = "masterLockEnableCheck";
             this.masterLockEnableCheck.Size = new System.Drawing.Size(50, 17);
             this.masterLockEnableCheck.TabIndex = 35;
@@ -268,7 +295,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(583, 221);
+            this.label1.Location = new System.Drawing.Point(583, 240);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 37;
@@ -277,7 +304,7 @@
             // MasterGainTextBox
             // 
             this.MasterGainTextBox.AcceptsReturn = true;
-            this.MasterGainTextBox.Location = new System.Drawing.Point(658, 221);
+            this.MasterGainTextBox.Location = new System.Drawing.Point(658, 240);
             this.MasterGainTextBox.Name = "MasterGainTextBox";
             this.MasterGainTextBox.Size = new System.Drawing.Size(57, 20);
             this.MasterGainTextBox.TabIndex = 38;
@@ -286,7 +313,7 @@
             // VToOffsetTextBox
             // 
             this.VToOffsetTextBox.CausesValidation = false;
-            this.VToOffsetTextBox.Location = new System.Drawing.Point(871, 221);
+            this.VToOffsetTextBox.Location = new System.Drawing.Point(871, 240);
             this.VToOffsetTextBox.Name = "VToOffsetTextBox";
             this.VToOffsetTextBox.Size = new System.Drawing.Size(93, 20);
             this.VToOffsetTextBox.TabIndex = 39;
@@ -294,7 +321,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(773, 224);
+            this.label2.Location = new System.Drawing.Point(773, 243);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 40;
@@ -303,7 +330,7 @@
             // MasterFitTextBox
             // 
             this.MasterFitTextBox.CausesValidation = false;
-            this.MasterFitTextBox.Location = new System.Drawing.Point(871, 193);
+            this.MasterFitTextBox.Location = new System.Drawing.Point(871, 212);
             this.MasterFitTextBox.Name = "MasterFitTextBox";
             this.MasterFitTextBox.ReadOnly = true;
             this.MasterFitTextBox.Size = new System.Drawing.Size(93, 20);
@@ -312,7 +339,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(773, 187);
+            this.label4.Location = new System.Drawing.Point(773, 206);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(95, 13);
             this.label4.TabIndex = 42;
@@ -321,7 +348,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(773, 200);
+            this.label6.Location = new System.Drawing.Point(773, 219);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(64, 13);
             this.label6.TabIndex = 43;
@@ -330,7 +357,7 @@
             // CavLockVoltageTrackBar
             // 
             this.CavLockVoltageTrackBar.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.CavLockVoltageTrackBar.Location = new System.Drawing.Point(580, 263);
+            this.CavLockVoltageTrackBar.Location = new System.Drawing.Point(580, 282);
             this.CavLockVoltageTrackBar.Maximum = 1000;
             this.CavLockVoltageTrackBar.Minimum = -1000;
             this.CavLockVoltageTrackBar.Name = "CavLockVoltageTrackBar";
@@ -342,7 +369,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(586, 247);
+            this.label7.Location = new System.Drawing.Point(586, 266);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(87, 13);
             this.label7.TabIndex = 53;
@@ -351,7 +378,7 @@
             // scanAvCheckBox
             // 
             this.scanAvCheckBox.AutoSize = true;
-            this.scanAvCheckBox.Location = new System.Drawing.Point(586, 94);
+            this.scanAvCheckBox.Location = new System.Drawing.Point(586, 113);
             this.scanAvCheckBox.Name = "scanAvCheckBox";
             this.scanAvCheckBox.Size = new System.Drawing.Size(133, 17);
             this.scanAvCheckBox.TabIndex = 54;
@@ -361,7 +388,7 @@
             // axisCheckBox
             // 
             this.axisCheckBox.AutoSize = true;
-            this.axisCheckBox.Location = new System.Drawing.Point(751, 94);
+            this.axisCheckBox.Location = new System.Drawing.Point(751, 113);
             this.axisCheckBox.Name = "axisCheckBox";
             this.axisCheckBox.Size = new System.Drawing.Size(118, 17);
             this.axisCheckBox.TabIndex = 55;
@@ -369,30 +396,65 @@
             this.axisCheckBox.UseVisualStyleBackColor = true;
             this.axisCheckBox.CheckedChanged += new System.EventHandler(this.axisCheckBox_CheckedChanged);
             // 
-            // updateRateTextBox
+            // dissableGUIupdateCheckBox
             // 
-            this.updateRateTextBox.Enabled = false;
-            this.updateRateTextBox.Location = new System.Drawing.Point(721, 145);
-            this.updateRateTextBox.Name = "updateRateTextBox";
-            this.updateRateTextBox.Size = new System.Drawing.Size(69, 20);
-            this.updateRateTextBox.TabIndex = 56;
+            this.dissableGUIupdateCheckBox.AutoSize = true;
+            this.dissableGUIupdateCheckBox.Location = new System.Drawing.Point(751, 141);
+            this.dissableGUIupdateCheckBox.Name = "dissableGUIupdateCheckBox";
+            this.dissableGUIupdateCheckBox.Size = new System.Drawing.Size(188, 17);
+            this.dissableGUIupdateCheckBox.TabIndex = 57;
+            this.dissableGUIupdateCheckBox.Text = "Disable GUI updates when locked";
+            this.dissableGUIupdateCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // fastFitCheckBox
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(586, 148);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(117, 13);
-            this.label8.TabIndex = 23;
-            this.label8.Text = "Lock Update Rate (Hz)";
+            this.fastFitCheckBox.AutoSize = true;
+            this.fastFitCheckBox.Location = new System.Drawing.Point(751, 164);
+            this.fastFitCheckBox.Name = "fastFitCheckBox";
+            this.fastFitCheckBox.Size = new System.Drawing.Size(183, 17);
+            this.fastFitCheckBox.TabIndex = 58;
+            this.fastFitCheckBox.Text = "Restrict fit to points close to peak";
+            this.fastFitCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(976, 24);
+            this.menuStrip1.TabIndex = 59;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadProfileSetToolStripMenuItem,
+            this.saveProfileSetToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // loadProfileSetToolStripMenuItem
+            // 
+            this.loadProfileSetToolStripMenuItem.Name = "loadProfileSetToolStripMenuItem";
+            this.loadProfileSetToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.loadProfileSetToolStripMenuItem.Text = "Load parameters";
+            this.loadProfileSetToolStripMenuItem.Click += new System.EventHandler(this.loadProfileSetToolStripMenuItem_Click);
+            // 
+            // saveProfileSetToolStripMenuItem
+            // 
+            this.saveProfileSetToolStripMenuItem.Name = "saveProfileSetToolStripMenuItem";
+            this.saveProfileSetToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.saveProfileSetToolStripMenuItem.Text = "Save parameters";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 677);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.updateRateTextBox);
+            this.Controls.Add(this.fastFitCheckBox);
+            this.Controls.Add(this.dissableGUIupdateCheckBox);
             this.Controls.Add(this.axisCheckBox);
             this.Controls.Add(this.scanAvCheckBox);
             this.Controls.Add(this.label7);
@@ -412,6 +474,8 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.slaveLasersTab);
             this.Controls.Add(this.voltageRampControl);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Transfer Cavity Lock 2012";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -424,6 +488,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.CavLockVoltageTrackBar)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -466,6 +532,12 @@
         public System.Windows.Forms.CheckBox axisCheckBox;
         private System.Windows.Forms.TextBox updateRateTextBox;
         private System.Windows.Forms.Label label8;
+        public System.Windows.Forms.CheckBox dissableGUIupdateCheckBox;
+        public System.Windows.Forms.CheckBox fastFitCheckBox;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadProfileSetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveProfileSetToolStripMenuItem;
     }
 }
 
