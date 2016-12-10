@@ -186,6 +186,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
+    <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
