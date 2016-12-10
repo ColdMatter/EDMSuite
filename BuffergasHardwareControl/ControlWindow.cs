@@ -239,6 +239,16 @@ namespace BuffergasHardwareControl
 
         }
 
+        private void ControlWindow_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void consoleRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
 
 

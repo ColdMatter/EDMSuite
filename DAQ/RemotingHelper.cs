@@ -34,6 +34,14 @@ namespace DAQ.Remoting
                     );
         }
 
+        public static void ConnectShapedPulseMaker()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("ShapedPulseMaker.Controller, ShapedPulseMaker"),
+                    "tcp://localhost:1173/controller.rem"
+                    );
+        }
+
         public static void ConnectBufferGasHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(

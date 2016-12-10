@@ -188,7 +188,7 @@ namespace ScanMaster.Acquire
 
 		private void AcquisitionFinishing(AcquisitorConfiguration config)
 		{
-			config.pgPlugin.AcquisitionFinished();
+            config.pgPlugin.AcquisitionFinished();
 			config.shotGathererPlugin.AcquisitionFinished();
 			config.switchPlugin.AcquisitionFinished();
 			config.yagPlugin.AcquisitionFinished();

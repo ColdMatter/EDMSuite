@@ -32,9 +32,11 @@ namespace ScanMaster.GUI
 		private int onAverages = 1;
 		private int offAverages = 1;
 
-		TOF avOnTof;
-		TOF avOffTof;
-
+		//TOF avOnTof;
+		//TOF avOffTof;
+        ArrayList avOnTofs;
+        ArrayList avOffTofs;
+        
 		// fitting config
 		enum FitMode {None, Shot, Average};
 		FitMode tofFitMode = FitMode.None;
@@ -65,6 +67,7 @@ namespace ScanMaster.GUI
             window.tofFitFunctionCombo.SelectedIndex = 0;
 			window.spectrumFitFunctionCombo.SelectedIndex = 0;
             window.tofFitDataSelectCombo.SelectedIndex = 0;
+            SetTOFAxesRangeToDefault();   
 		}
 
 		private void AddFitter(Fitter f)
@@ -96,6 +99,11 @@ namespace ScanMaster.GUI
 		{
 			// clear the stored data
 			pointsToPlot.Points.Clear();
+            if (avOnTofs != null) avOnTofs = null;
+            if (avOffTofs != null) avOffTofs = null;
+            shotCounter = 0;
+            onAverages = 1;
+            offAverages = 1;
 			// grab the latest settings
 			PluginSettings outputSettings = Controller.GetController().ProfileManager.
 				CurrentProfile.AcquisitorConfig.outputPlugin.Settings;
@@ -115,6 +123,8 @@ namespace ScanMaster.GUI
             startTOFGate = (int)shotSettings["gateStartTime"];
             endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
             window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
+                     
+            
 
 			// disable the fit function selectors
             window.SetTofFitFunctionComboState(false);
@@ -163,33 +173,48 @@ namespace ScanMaster.GUI
 			{
 				if (shotCounter % currentProfile.GUIConfig.updateTOFsEvery == 0) 
 				{
-					if (avOnTof != null)
+					if (avOnTofs != null)
 					{
-						window.PlotOnTOF(avOnTof/onAverages);
+						for (int i = 0; i < avOnTofs.Count; i++) { avOnTofs[i] = ((TOF)avOnTofs[i]) / onAverages; }
+                        window.PlotOnTOF(avOnTofs);
+                        if (avOnTofs.Count > 1)
+                        {
+                            // integral between the signal gates minus the integral between the background gates (adjusted for the relative width of the two gates)
+                            double normVal = (((TOF)avOnTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)avOnTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                            window.PlotNormedOnTOF(((TOF)avOnTofs[0]) / normVal);
+                        }
 					}
-					avOnTof = (TOF) e.point.AverageOnShot.TOFs[0];
+					avOnTofs = e.point.AverageOnShot.TOFs;
 					onAverages = 1;
 
 					if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
 					{
-						if (avOffTof != null)
+						if (avOffTofs != null)
 						{
-							window.PlotOffTOF(avOffTof/offAverages);
+							for (int i = 0; i < avOffTofs.Count; i++) { avOffTofs[i] = ((TOF)avOffTofs[i]) / offAverages; }
+                            window.PlotOffTOF(avOffTofs);
+                            if (avOffTofs.Count > 1)
+                            {
+                                double normVal = (((TOF)avOffTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)avOffTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                                window.PlotNormedOffTOF(((TOF)avOffTofs[0]) / normVal);
+                            }
 						}
-						avOffTof = (TOF) e.point.AverageOffShot.TOFs[0];
+						avOffTofs = e.point.AverageOffShot.TOFs;
 						offAverages = 1;
 					}
 				}
 				else // do the averaging
 				{
-					if (avOnTof != null)
+					if (avOnTofs != null)
 					{
-						avOnTof = avOnTof + ((TOF) e.point.AverageOnShot.TOFs[0]);
-						onAverages++;
+						//avOnTof = avOnTof + ((TOF) e.point.AverageOnShot.TOFs[0]);
+                        for (int i = 0; i < avOnTofs.Count; i++) { avOnTofs[i] = (TOF)avOnTofs[i] + ((TOF)e.point.AverageOnShot.TOFs[i]); }
+                        onAverages++;
 					}
-					if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"] && avOffTof != null)
+					if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"] && avOffTofs != null)
 					{
-						avOffTof = avOffTof + ((TOF) e.point.AverageOffShot.TOFs[0]);
+						//avOffTof = avOffTof + ((TOF) e.point.AverageOffShot.TOFs[0]);
+                        for (int i = 0; i < avOffTofs.Count; i++) { avOffTofs[i] = (TOF)avOffTofs[i] + ((TOF)e.point.AverageOffShot.TOFs[i]); }
 						offAverages++;
 					}
 				}
@@ -199,10 +224,22 @@ namespace ScanMaster.GUI
 			{
 				if (shotCounter % currentProfile.GUIConfig.updateTOFsEvery == 0) 
 				{
-					window.PlotOnTOF((TOF)e.point.AverageOnShot.TOFs[0]);
+                    ArrayList currentTofs = e.point.AverageOnShot.TOFs;
+                    window.PlotOnTOF(currentTofs);
+                    if (currentTofs.Count > 1)
+                    {
+                        double normVal = (((TOF)currentTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                        window.PlotNormedOnTOF(((TOF)currentTofs[0]) / normVal);
+                    }
 					if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
 					{
-						window.PlotOffTOF((TOF)e.point.AverageOffShot.TOFs[0]);
+                        currentTofs = e.point.AverageOffShot.TOFs;
+                        window.PlotOffTOF(currentTofs);
+                        if (currentTofs.Count > 1)
+                        {
+                            double normVal = (((TOF)currentTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                            window.PlotNormedOffTOF(((TOF)currentTofs[0]) / normVal);
+                        }
 					}
 				}
 			}
@@ -446,18 +483,48 @@ namespace ScanMaster.GUI
 			get { return window.TOFGate.Maximum; }
 		}
 
+        public double NormSigGateLow
+        {
+            get { return window.NormSigGate.Minimum; }
+        }
+
+        public double NormSigGateHigh
+        {
+            get { return window.NormSigGate.Maximum; }
+        }
+
+        public double NormBgGateLow
+        {
+            get { return window.NormBgGate.Minimum; }
+        }
+
+        public double NormBgGateHigh
+        {
+            get { return window.NormBgGate.Maximum; }
+        }
+
 		private void UpdateTOFAveragePlots()
 		{
 			Scan averageScan = Controller.GetController().DataStore.AverageScan;
 			if (averageScan.Points.Count == 0) return;
-			TOF tof =
-				(TOF)((ArrayList)averageScan.GetGatedAverageOnShot(startSpectrumGate, endSpectrumGate).TOFs)[0];
-			window.PlotAverageOnTOF(tof);
+			
+            ArrayList currentTOFs = averageScan.GetGatedAverageOnShot(startSpectrumGate, endSpectrumGate).TOFs;
+            window.PlotAverageOnTOF(currentTOFs);
+            if (currentTOFs.Count > 1)
+            {
+                double normVal = (((TOF)currentTOFs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTOFs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                window.PlotAverageNormedOnTOF(((TOF)currentTOFs[0]) / normVal);
+            }
 			Profile p = Controller.GetController().ProfileManager.CurrentProfile;
 			if (p != null && (bool)p.AcquisitorConfig.switchPlugin.Settings["switchActive"]) 
 			{
-				window.PlotAverageOffTOF(
-					(TOF)averageScan.GetGatedAverageOffShot(startSpectrumGate, endSpectrumGate).TOFs[0]);
+                currentTOFs = averageScan.GetGatedAverageOffShot(startSpectrumGate, endSpectrumGate).TOFs;
+                window.PlotAverageOffTOF(currentTOFs);
+                if (currentTOFs.Count > 1)
+                {
+                    double normVal = (((TOF)currentTOFs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTOFs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                    window.PlotAverageNormedOffTOF(((TOF)currentTOFs[0]) / normVal);
+                }
 			}
 		}
 
@@ -550,6 +617,29 @@ namespace ScanMaster.GUI
             double[] defaultGate = (double[])Environs.Hardware.GetInfo("defaultGate");
             window.TOFGate = new NationalInstruments.UI.Range(defaultGate[0] - defaultGate[1],defaultGate[0] + defaultGate[1]);
             TOFCursorMoved();
+            }
+        }
+
+        internal void SetTOFAxesRangeToDefault()
+        {
+            if ((double[])Environs.Hardware.GetInfo("defaultTOFRange") != null)
+            {
+                double[] defaultRange = (double[])Environs.Hardware.GetInfo("defaultTOFRange");
+                window.TOFAxes = new NationalInstruments.UI.Range(defaultRange[0], defaultRange[1]);
+            }
+            else
+            {
+                window.TOFAxes = null;
+            }
+
+            if ((double[])Environs.Hardware.GetInfo("defaultTOF2Range") != null)
+            {
+                double[] defaultRange = (double[])Environs.Hardware.GetInfo("defaultTOF2Range");
+                window.TOF2Axes = new NationalInstruments.UI.Range(defaultRange[0], defaultRange[1]);
+            }
+            else
+            {
+                window.TOF2Axes = null;
             }
         }
 	}

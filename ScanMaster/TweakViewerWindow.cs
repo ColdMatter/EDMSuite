@@ -898,23 +898,25 @@ namespace ScanMaster.GUI
 
         public void UpdateTextBoxes(double onAv, double offAv, double asymAv, double onErr, double offErr, double asymErr )
         {
-            OnAvTextBox.Text = onAv.ToString();
-            OffAvTextBox.Text = offAv.ToString();
-            asymTextBox.Text = asymAv.ToString();
-            OnErrTextBox.Text=onErr.ToString();
-            OffErrTextBox.Text = offErr.ToString();
-            asymErrTextBox.Text = asymErr.ToString();
+            
+            SetTextBox(OnAvTextBox, onAv.ToString());
+            SetTextBox(OffAvTextBox, offAv.ToString());
+            SetTextBox(asymTextBox, asymAv.ToString());
+            SetTextBox(OnErrTextBox, onErr.ToString());
+            SetTextBox(OffErrTextBox, offErr.ToString());
+            SetTextBox(asymErrTextBox, asymErr.ToString());
+
 
             if (asymAv < 0)
             {
-                asymTextBox.BackColor = System.Drawing.Color.Red;
-                asymErrTextBox.BackColor = System.Drawing.Color.Red;
+                SetBoxColour(asymTextBox, System.Drawing.Color.Red);
+                SetBoxColour(asymErrTextBox, System.Drawing.Color.Red);
 
             }
             else
             {
-                asymTextBox.BackColor = System.Drawing.Color.Green;
-                asymErrTextBox.BackColor = System.Drawing.Color.Green;
+                SetBoxColour(asymTextBox, System.Drawing.Color.Green);
+                SetBoxColour(asymErrTextBox, System.Drawing.Color.Green);
             }
         }
 
@@ -1012,6 +1014,26 @@ namespace ScanMaster.GUI
 		{
 			label.Text = text;
 		}
+
+        public void SetTextBox(TextBox box, string text)
+        {
+            box.Invoke(new SetTextBoxDelegate(SetTextBoxHelper), new object[] { box, text });
+        }
+        private delegate void SetTextBoxDelegate(TextBox box, string text);
+        private void SetTextBoxHelper(TextBox box, string text)
+        {
+            box.Text = text;
+        }
+
+        public void SetBoxColour(TextBox box, System.Drawing.Color col)
+        {
+            box.Invoke(new SetBoxColourDelegate(SetBoxColourHelper), new object[] { box, col });
+        }
+        private delegate void SetBoxColourDelegate(TextBox box, System.Drawing.Color col);
+        private void SetBoxColourHelper(TextBox box, System.Drawing.Color col)
+        {
+            box.BackColor = col;
+        }
 
         public void SetStatus(string text)
         {
