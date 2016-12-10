@@ -2,6 +2,7 @@ using System;
 
 
 using DAQ.Environment;
+using System.Threading;
 
 namespace DAQ.HAL
 {
@@ -23,8 +24,9 @@ namespace DAQ.HAL
 				// written to it. It has none standard RMT/LCL handling which might be
 				// something to do with it. Could perhaps figure it out if I could find
 				// the manual.
+				//if (!Environs.Debug) Write("FR" + value + "MZ");
 				if (!Environs.Debug) Write("FR" + value + "MZ");
-				if (!Environs.Debug) Write("FR" + value + "MZ");
+                Thread.Sleep(25);
 			}
 		}
 
@@ -37,8 +39,9 @@ namespace DAQ.HAL
 				// written to it. It has none standard RMT/LCL handling which might be
 				// something to do with it. Could perhaps figure it out if I could find
 				// the manual.
+				//if (!Environs.Debug) Write(s);
 				if (!Environs.Debug) Write(s);
-				if (!Environs.Debug) Write(s);
+                Thread.Sleep(25);
 			}
 		}
 
@@ -48,6 +51,7 @@ namespace DAQ.HAL
 			{
 				// TODO: this could turn the rf off instead
 				if (!value) Amplitude = -120;
+                Thread.Sleep(25);
 			}
 		}
 
