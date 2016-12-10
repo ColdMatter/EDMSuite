@@ -21,7 +21,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>DAQ</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject></StartupObject>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -191,7 +192,6 @@
     <Compile Include="SerialDAQ.cs" />
     <Compile Include="DAQMxAnalogPatternGenerator.cs" />
     <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
-    <Compile Include="DAQMxTCL2012HelperExtTriggeredMultiRead.cs" />
     <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
