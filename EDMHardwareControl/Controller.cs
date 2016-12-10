@@ -92,7 +92,6 @@ namespace EDMHardwareControl
         //Task steppingBBiasAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
         Task probeAOMAnalogOutputTask;
-        Task flAOMAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -110,21 +109,20 @@ namespace EDMHardwareControl
         Task miniFlux3MonitorInputTask;
         Task groundedInputTask;
         Task piMonitorTask;
-        Task diodeCurrentMonInputTask;
         Task MenloPZTOutputTask;
-        //Task flPZT2TempOutputTask;
-        //Task flPZT2CurOutputTask;
-        Task fibreAmpOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
-        Task uWaveMixerAnalogOutputTask;
+        //Task uWaveMixerAnalogOutputTask;
         Task VCO161AmpAnalogOutputTask;
         Task VCO161FreqAnalogOutputTask;
         Task VCO30AmpAnalogOutputTask;
         Task VCO30FreqAnalogOutputTask;
         Task VCO155AmpAnalogOutputTask;
         Task VCO155FreqAnalogOutputTask;
+        Task pumpMicrowaveMixerVoltageAnalogOutputTask;
+        Task bottomProbeMicrowaveMixerVoltageAnalogOutputTask;
+        Task topProbeMicrowaveMixerVoltageAnalogOutputTask;
 
         ControlWindow window;
 
@@ -147,7 +145,11 @@ namespace EDMHardwareControl
             CreateDigitalTask("eBleed");
             CreateDigitalTask("rfSwitch");
             CreateDigitalTask("pumprfSwitch");
+            CreateDigitalTask("rfPowerAndFreqSelectSwitch");
             CreateDigitalTask("mwEnable");
+            CreateDigitalTask("mwSelectPumpChannel");
+            CreateDigitalTask("mwSelectTopProbeChannel");
+            CreateDigitalTask("mwSelectBottomProbeChannel");
             CreateDigitalTask("fmSelect");
             CreateDigitalTask("attenuatorSelect");
             CreateDigitalTask("scramblerEnable");
@@ -162,19 +164,15 @@ namespace EDMHardwareControl
             CreateDigitalTask("targetStepper");
             //CreateDigitalTask("rfCountSwBit1");
             //CreateDigitalTask("rfCountSwBit2");
-            CreateDigitalTask("fibreAmpEnable");
+            
             CreateDigitalTask("ttlSwitch");
-            CreateDigitalTask("I2PropSwitch");
-            CreateDigitalTask("I2IntSwitch");
+            //CreateDigitalTask("I2PropSwitch");
+            //CreateDigitalTask("I2IntSwitch");
             CreateDigitalTask("eSwitching");
             CreateDigitalTask("patternTTL");
 
             // digitial input tasks
-            CreateDigitalInputTask("fibreAmpMasterErr");
-            CreateDigitalInputTask("fibreAmpSeedErr");
-            CreateDigitalInputTask("fibreAmpBackFeflectErr");
-            CreateDigitalInputTask("fibreAmpTempErr");
-            CreateDigitalInputTask("fibreAmpPowerSupplyErr");
+
 
             // initialise the current leakage monitors
             northLeakageMonitor.Initialize();
@@ -200,17 +198,21 @@ namespace EDMHardwareControl
             MenloPZTOutputTask = CreateAnalogOutputTask("MenloPZT");
             //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
-            fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
             i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
             uWaveDCFMAnalogOutputTask = CreateAnalogOutputTask("uWaveDCFM");
-            uWaveMixerAnalogOutputTask = CreateAnalogOutputTask("uWaveMixerV");
+            //uWaveMixerAnalogOutputTask = CreateAnalogOutputTask("uWaveMixerV");
             VCO161AmpAnalogOutputTask = CreateAnalogOutputTask("VCO161Amp");
             VCO161FreqAnalogOutputTask = CreateAnalogOutputTask("VCO161Freq");
             VCO30AmpAnalogOutputTask = CreateAnalogOutputTask("VCO30Amp");
             VCO30FreqAnalogOutputTask = CreateAnalogOutputTask("VCO30Freq");
             VCO155AmpAnalogOutputTask = CreateAnalogOutputTask("VCO155Amp");
             VCO155FreqAnalogOutputTask = CreateAnalogOutputTask("VCO155Freq");
+            pumpMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("pumpMixerV");
+            bottomProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("bottomProbeMixerV");
+            topProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("topProbeMixerV");
+
+
             
 
             // analog inputs
@@ -401,6 +403,16 @@ namespace EDMHardwareControl
             public double overshootHold;
             public double pumpAOM;
             public double pumpAOMStep;
+            public double pumpMicrowaveMixerVoltage;
+            public double topProbeMicrowaveMixerVoltage;
+            public double bottomProbeMicrowaveMixerVoltage;
+            public double vco161Amp;
+            public double vco30Amp;
+            public double vco155Amp;
+            public double vco161Freq;
+            public double vco30Freq;
+            public double vco155Freq; 
+
         }
 
         public void SaveParametersWithDialog()
@@ -457,6 +469,17 @@ namespace EDMHardwareControl
             dataStore.overshootHold = EOvershootHold;
             dataStore.pumpAOM = PumpAOMVoltage;
             dataStore.pumpAOMStep = PumpAOMStep;
+            dataStore.pumpMicrowaveMixerVoltage = pumpMicrowaveMixerVoltage;
+            dataStore.topProbeMicrowaveMixerVoltage = topProbeMicrowaveMixerVoltage;
+            dataStore.bottomProbeMicrowaveMixerVoltage = bottomProbeMicrowaveMixerVoltage;
+            dataStore.vco161Amp = VCO161AmpVoltage;
+            dataStore.vco155Amp = VCO155AmpVoltage;
+            dataStore.vco30Amp = VCO30AmpVoltage;
+            dataStore.vco161Freq = VCO161FreqVoltage;
+            dataStore.vco155Freq = VCO155FreqVoltage;
+            dataStore.vco30Freq = VCO30FreqVoltage; 
+
+
 
             // serialize it
             BinaryFormatter s = new BinaryFormatter();
@@ -523,6 +546,15 @@ namespace EDMHardwareControl
                 EOvershootHold = dataStore.overshootHold;
                 PumpAOMVoltage = dataStore.pumpAOM;
                 PumpAOMStep = dataStore.pumpAOMStep;
+                pumpMicrowaveMixerVoltage = dataStore.pumpMicrowaveMixerVoltage;
+                topProbeMicrowaveMixerVoltage = dataStore.topProbeMicrowaveMixerVoltage;
+                bottomProbeMicrowaveMixerVoltage = dataStore.bottomProbeMicrowaveMixerVoltage;
+                VCO161AmpVoltage = dataStore.vco161Amp;
+                VCO155AmpVoltage = dataStore.vco155Amp;
+                VCO30AmpVoltage = dataStore.vco30Amp;
+                VCO161FreqVoltage = dataStore.vco161Freq;
+                VCO155FreqVoltage = dataStore.vco155Freq;
+                VCO30FreqVoltage = dataStore.vco30Freq; 
 
             }
             catch (Exception)
@@ -992,53 +1024,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double FLAOMVoltage
-        {
-            get
-            {
-                return Double.Parse(window.flAOMVoltageTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.flAOMVoltageTextBox, value.ToString());
-            }
-        }
-
-        public double FLAOMStep
-        {
-            get
-            {
-                return Double.Parse(window.flAOMStepTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.flAOMStepTextBox, value.ToString());
-            }
-        }
-
-        public double FLPZT2Temp
-        {
-            get
-            {
-                return WindowValue(Double.Parse(window.flPZT2TempTextBox.Text), 0, 4);
-            }
-            set
-            {
-                window.flPZT2TempTextBox.Text = WindowValue(value, 0, 4).ToString();
-            }
-        }
-
-        public double FLPZT2Cur
-        {
-            get
-            {
-                return WindowValue(Double.Parse(window.flPZT2CurTextBox.Text), 0, 5);
-            }
-            set
-            {
-                window.flPZT2CurTextBox.Text = WindowValue(value, 0, 5).ToString();
-            }
-        }
+       
 
         public double probeAOMStep
         {
@@ -1078,29 +1064,7 @@ namespace EDMHardwareControl
 
 
 
-        public double diodeRefCavVoltage
-        {
-            get
-            {
-                return Double.Parse(window.MenloPZTTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.MenloPZTTextBox, value.ToString());
-            }
-        }
-
-        public double diodeRefCavStep
-        {
-            get
-            {
-            return Double.Parse(window.MenloPZTStepTextBox.Text);
-            }
-            set
-           {
-               window.SetTextBox(window.MenloPZTStepTextBox, value.ToString());
-            }
-        }
+  
         public double LeakageMonitorMeasurementTime
         {
             set
@@ -1372,15 +1336,39 @@ namespace EDMHardwareControl
             }
         }
 
-        public double uWaveMixerVoltage
+        public double pumpMicrowaveMixerVoltage
         {
             get
             {
-                return Double.Parse(window.mixerVoltageTextBox.Text);
+                return Double.Parse(window.pumpMixerVoltageTextBox.Text);
             }
             set
             {
-                window.SetTextBox(window.mixerVoltageTextBox, value.ToString());
+                window.SetTextBox(window.pumpMixerVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double bottomProbeMicrowaveMixerVoltage
+        {
+            get
+            {
+                return Double.Parse(window.bottomProbeMixerVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.bottomProbeMixerVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double topProbeMicrowaveMixerVoltage
+        {
+            get
+            {
+                return Double.Parse(window.topProbeMixerVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.topProbeMixerVoltageTextBox, value.ToString());
             }
         }
 
@@ -1393,18 +1381,6 @@ namespace EDMHardwareControl
             set
             {
                 window.SetTextBox(window.uWaveDCFMStepTextBox, value.ToString());
-            }
-        }
-
-        public double uWaveMixerIncrement
-        {
-            get
-            {
-                return Double.Parse(window.stepMixerVoltageTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.stepMixerVoltageTextBox, value.ToString());
             }
         }
 
@@ -1786,11 +1762,16 @@ namespace EDMHardwareControl
             EFieldEnabled = false;
         }
 
-        //private bool switchingEfield = false;
+        private bool switchingEfield; 
         public bool SwitchingEfields
         {
+            get
+            {
+                return switchingEfield;
+            }
             set
             {
+                switchingEfield = value;
                 SetDigitalLine("eSwitching", value);
             }
 
@@ -2192,6 +2173,7 @@ namespace EDMHardwareControl
                 newRF2f = RF2FrequencyCentre;
                 RF1FMCentre = windowVoltage(RF1FMCentre + gain * (RF1fGuess - newRF1f), 0, 1);
                 RF2FMCentre = windowVoltage(RF2FMCentre + gain * (RF2fGuess - newRF2f), 0, 1);
+
                 SetFMVoltages();
                 a++;
             }
@@ -2211,6 +2193,15 @@ namespace EDMHardwareControl
         public void UpdateBVoltage()
         {
             hpVoltage=bCurrentMeter.ReadVoltage();
+        }
+
+        public void FlipDB()
+        {
+            CalFlipEnabled = false;
+            System.Threading.Thread.Sleep(1000);
+            CalFlipEnabled = true;
+            System.Threading.Thread.Sleep(1000);
+            CalFlipEnabled = false;
         }
 
         public void UpdateBCurrentMonitor()
@@ -2551,56 +2542,6 @@ namespace EDMHardwareControl
                 new double[] { i2ErrorSigVal });
         }
 
-        public void UpdateFibreAmpFaults()
-        {
-            window.fibreAmpMasterFaultLED.Value =! ReadDigitalLine("fibreAmpMasterErr");
-            window.fibreAmpSeedFaultLED.Value =! ReadDigitalLine("fibreAmpSeedErr");
-            window.fibreAmpBackReflectFaultLED.Value =! ReadDigitalLine("fibreAmpBackFeflectErr");
-            window.fibreAmpTempFaultLED.Value =! ReadDigitalLine("fibreAmpTempErr");
-            window.fibreAmpPowerFaultLED.Value =! ReadDigitalLine("fibreAmpPowerSupplyErr");
-        }
-
-        private Thread diodeCurrentMonitorPollThread;
-        private object diodeCurrentMonitorLock = new object();
-        private bool diodeCurrentMonitorStopFlag = false;
-        private int diodeCurrentMonitorPollPeriod = 200;
-        internal void StartDiodeCurrentPoll()
-        {
-            lock (diodeCurrentMonitorLock)
-            {
-                diodeCurrentMonitorPollThread = new Thread(new ThreadStart(DiodeCurrentMonitorPollWorker));
-                window.EnableControl(window.startDiodeCurrentPollButton, false);
-                window.EnableControl(window.stopDiodeCurrentPollButton, true);
-                diodeCurrentMonitorPollPeriod = Int32.Parse(window.diodeCurrentPollTextBox.Text);
-                diodeCurrentMonitorPollThread.Start();
-            }
-
-        }
-
-        internal void StopDiodeCurrentPoll()
-        {
-            lock (diodeCurrentMonitorLock) diodeCurrentMonitorStopFlag = true;
-        }
-
-        private void DiodeCurrentMonitorPollWorker()
-        {
-            for (; ; )
-            {
-                Thread.Sleep(diodeCurrentMonitorPollPeriod);
-                UpdateDiodeCurrentGraphAndMonitor();
-                lock (diodeCurrentMonitorLock)
-                {
-                    if (diodeCurrentMonitorStopFlag)
-                    {
-                        diodeCurrentMonitorStopFlag = false;
-                        break;
-                    }
-                }
-            }
-            window.EnableControl(window.startDiodeCurrentPollButton, true);
-            window.EnableControl(window.stopDiodeCurrentPollButton, false);
-        }
-
         private Thread i2ErrorSigMonitorPollThread;
         private object i2ErrorSigMonitorLock = new object();
         private bool i2ErrorSigMonitorStopFlag = false;
@@ -2649,58 +2590,10 @@ namespace EDMHardwareControl
             return;
         }
 
-        public void SetMenloPZT(double value)
-        {
-
-                SetAnalogOutput(MenloPZTOutputTask, value);
-                window.MenloPZTTextBox.Text = value.ToString();
-                window.MenloPZTTextBox.BackColor = System.Drawing.Color.LimeGreen;
-        }
-
-        public void SetFLPZT2Temp()
-            //FUNCTION DEPRECIATED
-        {
-           // SetAnalogOutput(flPZT2TempOutputTask, FLPZT2Temp); 
-        }
-
-        public void SetFLPZT2Cur()
-            //FUNCTION DEPRECIATED
-        {
-           // SetAnalogOutput(flPZT2CurOutputTask, FLPZT2Cur);
-        }
+       
 
 
-        public void UpdateMenloPZT()
-        {
-            double refCavVoltage = Double.Parse(window.MenloPZTTextBox.Text);
-            window.MenloPZTTrackBar.Value = (int) (100 * refCavVoltage);
-            if (window.MenloPZTStepMinusButton.Checked) refCavVoltage -= Double.Parse(window.MenloPZTStepTextBox.Text);
-            if (window.MenloPZTStepPlusButton.Checked) refCavVoltage += Double.Parse(window.MenloPZTStepTextBox.Text);
-
-            SetMenloPZT(refCavVoltage);
-        }
-
-        public void SetFibreAmpPwr()
-        {
-            double fibreAmpVoltage = Double.Parse(window.fibreAmpPwrTextBox.Text);
-            // supply must not go below 0V
-            if (fibreAmpVoltage < 0)
-            {
-                SetAnalogOutput(fibreAmpOutputTask, 0.0);
-                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.Red;
-            }
-            else if (fibreAmpVoltage > 5)
-            {
-                SetAnalogOutput(fibreAmpOutputTask, 5.0);
-                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.Red;
-            }
-            else
-            {
-                SetAnalogOutput(fibreAmpOutputTask, fibreAmpVoltage);
-                window.fibreAmpPwrTextBox.BackColor = System.Drawing.Color.LimeGreen;
-            }
-
-        }      
+        
 
         // TODO: I'm not sure whether these button enabling properties are threadsafe.
         // Probably had better wrap them.
@@ -2759,6 +2652,19 @@ namespace EDMHardwareControl
             }
         }
 
+        public void SetTargetStepperHigh()
+        {
+                SetDigitalLine("targetStepper", true);
+                Thread.Sleep(5);
+        }
+
+        public void SetTargetStepperLow()
+        {
+            SetDigitalLine("targetStepper", false);
+            Thread.Sleep(5);
+        }
+
+
         public void UpdateProbeAOMFreqMonitor()
         {
             double diff = 0;
@@ -2797,27 +2703,7 @@ namespace EDMHardwareControl
             window.SetTextBox(window.probeAOMFreqStepTextBox, String.Format("{0:F0}", ((I2PlusFreq - I2MinusFreq) / 2)));
         }
 
-        public void UpdateFLAOMFreqMonitor()
-        {
-            double plusFreq = 0;
-            double minusFreq = 0;
-
-            window.SetRadioButton(window.flAOMStepPlusButton, true);
-            UpdateFLAOM();
-            Thread.Sleep(10);
-            rfCounter.Channel = 2;
-            plusFreq = rfCounter.Frequency; 
-            
-            window.SetRadioButton(window.flAOMStepMinusButton, true);
-            UpdateFLAOM();
-            Thread.Sleep(10);
-            minusFreq = rfCounter.Frequency;
-
-            window.SetTextBox(window.flAOMFreqPlusTextBox, String.Format("{0:F0}", plusFreq));
-            window.SetTextBox(window.flAOMFreqMinusTextBox, String.Format("{0:F0}", minusFreq));
-            window.SetTextBox(window.flAOMFreqCentreTextBox, String.Format("{0:F0}", ((plusFreq + minusFreq) / 2)));
-            window.SetTextBox(window.flAOMFreqStepTextBox, String.Format("{0:F0}", ((plusFreq - minusFreq) / 2)));
-        }
+       
         
 
         public void UpdatePumpAOMFreqMonitor()
@@ -2893,9 +2779,30 @@ namespace EDMHardwareControl
             SetDigitalLine("pumprfSwitch", enable);
         }
 
+        public void ConnectRFToSensorSwitch(bool fromSyntToSensor)
+        {
+            SetDigitalLine("rfPowerAndFreqSelectSwitch", fromSyntToSensor);
+        }
+
+
         public void EnableMicrowaves(bool enable)
         {
             SetDigitalLine("mwEnable", enable);
+        }
+
+        public void SendMicrowavesToPump(bool enable)
+        {
+            SetDigitalLine("mwSelectPumpChannel", enable);
+        }
+
+        public void SendMicrowavesToBottomProbe(bool enable)
+        {
+            SetDigitalLine("mwSelectBottomProbeChannel", enable);
+        }
+
+        public void SendMicrowavesToTopProbe(bool enable)
+        {
+            SetDigitalLine("mwSelectTopProbeChannel", enable);
         }
 
         /*private double lastGPlus = 0;
@@ -2994,11 +2901,7 @@ namespace EDMHardwareControl
             SetDigitalLine("argonShutter", enable);
         }
 
-        internal void SetFibreAmpPowerSwitch(bool enable)
-        {
-            SetDigitalLine("fibreAmpEnable", enable);
-            window.fibreAmpEnableLED.Value = enable;
-        }
+        
 
         public void SetSwitchTTL(bool enable)
         {
@@ -3273,15 +3176,7 @@ namespace EDMHardwareControl
             SetAnalogOutput(probeAOMAnalogOutputTask, v);
         }
 
-        public void UpdateFLAOM()
-        {
-            double voltage = FLAOMVoltage;
-            if (window.flAOMStepMinusButton.Checked) voltage -= FLAOMStep;
-            if (window.flAOMStepPlusButton.Checked) voltage += FLAOMStep;
-            voltage = windowVoltage(voltage, 0, 10);
-            SetAnalogOutput(flAOMAnalogOutputTask, voltage);
-        }
-
+        
         public void UpdatePumpAOM()
         {
             double pumpAOMVoltage = PumpAOMVoltage;
@@ -3374,18 +3269,7 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
 
-        public void SetI2ProportionalLock(bool state)
-        {
-            SetDigitalLine("I2PropSwitch", state);
-            return;
-        }
-
-        public void SetI2IntegralLock(bool state)
-        {
-            SetDigitalLine("I2IntSwitch", state);
-            return;
-        }
-
+        
         public void UpdateVCO161AmpVoltage(double pztVoltage)
         {
             SetAnalogOutput(VCO161AmpAnalogOutputTask, pztVoltage);
@@ -3564,10 +3448,23 @@ namespace EDMHardwareControl
 
         public void UpdateuWaveMixerV()
         {
-            double voltage = uWaveMixerVoltage;
-            voltage = windowVoltage(voltage, 0, 10);
-            SetAnalogOutput(uWaveMixerAnalogOutputTask, voltage);
-            window.mixerVoltageTrackBar.Value = 100 * (int)voltage;
+    
+            double pumpVoltage = windowVoltage(pumpMicrowaveMixerVoltage, 0, 5);
+            double bottomProbeVoltage = windowVoltage(bottomProbeMicrowaveMixerVoltage, 0, 5);
+            double topProbeVoltage = windowVoltage(topProbeMicrowaveMixerVoltage, 0, 5);
+
+            SetAnalogOutput(pumpMicrowaveMixerVoltageAnalogOutputTask, pumpVoltage);
+            SetAnalogOutput(bottomProbeMicrowaveMixerVoltageAnalogOutputTask, bottomProbeVoltage);
+            SetAnalogOutput(topProbeMicrowaveMixerVoltageAnalogOutputTask, topProbeVoltage);
+
+            window.pumpMixerVoltageTrackBar.Value = 100 * (int)pumpVoltage;
+            window.bottomProbeMixerVoltageTrackBar.Value = 100 * (int)bottomProbeVoltage;
+            window.topProbeMixerVoltageTrackBar.Value = 100 * (int)topProbeVoltage;
+
+            pumpMicrowaveMixerVoltage = pumpVoltage;
+            bottomProbeMicrowaveMixerVoltage = bottomProbeVoltage;
+            topProbeMicrowaveMixerVoltage = topProbeVoltage;
+
         }
 
         public void UpdateuWaveDCFMVoltage(double pztVoltage)
@@ -3576,22 +3473,25 @@ namespace EDMHardwareControl
             window.uWaveDCFMTextBox.Text = pztVoltage.ToString();
         }
 
-        public void UpdateuWaveMixerVoltage(double pztVoltage)
+        public void UpdatePumpMicrowaveMixerV(double pztVoltage)
         {
-            SetAnalogOutput(uWaveMixerAnalogOutputTask, pztVoltage);
-            window.mixerVoltageTextBox.Text = pztVoltage.ToString();
+           SetAnalogOutput(pumpMicrowaveMixerVoltageAnalogOutputTask, pztVoltage);
+           window.pumpMixerVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateBottomProbeMicrowaveMixerV(double pztVoltage)
+        {
+            SetAnalogOutput(bottomProbeMicrowaveMixerVoltageAnalogOutputTask, pztVoltage);
+            window.bottomProbeMixerVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateTopProbeMicrowaveMixerV(double pztVoltage)
+        {
+            SetAnalogOutput(topProbeMicrowaveMixerVoltageAnalogOutputTask, pztVoltage);
+            window.topProbeMixerVoltageTextBox.Text = pztVoltage.ToString();
         }
 
 
-        public void IncreaseuWaveVoltage()
-        {
-            plusVoltage++;
-        }
-
-        public void DecreaseuWaveVoltage()
-        {
-            minusVoltage++;
-        }
 
         public void TweakuWaveDCFMVoltage()
         {
@@ -3603,18 +3503,6 @@ namespace EDMHardwareControl
             SetAnalogOutput(uWaveDCFMAnalogOutputTask, newPZTVoltage);
             window.uWaveDCFMTextBox.Text = newPZTVoltage.ToString();
             window.uWaveDCFMTrackBar.Value = 100 * (int)newPZTVoltage;
-        }
-
-        public void TweakMixerVoltage()
-        {
-            double pztVoltage = uWaveMixerVoltage;
-            pztVoltage = windowVoltage(pztVoltage, 0, 10);
-            double newPZTVoltage = pztVoltage + uWaveMixerIncrement * (plusVoltage - minusVoltage);
-            plusVoltage = 0;
-            minusVoltage = 0;
-            SetAnalogOutput(uWaveMixerAnalogOutputTask, newPZTVoltage);
-            window.mixerVoltageTextBox.Text = newPZTVoltage.ToString();
-            window.mixerVoltageTrackBar.Value = 100 * (int)newPZTVoltage;
         }
 
         #endregion
