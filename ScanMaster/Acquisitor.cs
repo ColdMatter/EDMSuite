@@ -78,7 +78,6 @@ namespace ScanMaster.Acquire
 
 				for (int scanNumber = 0 ;; scanNumber++)
 				{
-					
 					// prepare for the scan start
 					config.outputPlugin.ScanStarting();
 					config.pgPlugin.ScanStarting();
@@ -86,11 +85,12 @@ namespace ScanMaster.Acquire
 					config.switchPlugin.ScanStarting();
 					config.yagPlugin.ScanStarting();
 					config.analogPlugin.ScanStarting();
+
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
-					{
-						// calculate the new scan parameter and move the scan along
+					{                    
+                        // calculate the new scan parameter and move the scan along
                         config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
-                       
+
 						// check for a change in the pg parameters
 						lock(this)
 						{
@@ -116,11 +116,10 @@ namespace ScanMaster.Acquire
 
                             // wait for the data gatherer to finish
                             config.shotGathererPlugin.ArmAndWait();
-
+                            
                             // read out the data
-
                             sp.OnShots.Add(config.shotGathererPlugin.Shot);
-
+                            
                             if ((bool)config.switchPlugin.Settings["switchActive"])
                             {
                                 config.switchPlugin.State = false;
@@ -136,7 +135,7 @@ namespace ScanMaster.Acquire
 						// send up the data bundle
 						DataEventArgs evArgs = new DataEventArgs();
 						evArgs.point = sp;
-						OnData(evArgs);
+					    OnData(evArgs);
 
 						// check for exit
 						if (CheckIfStopping()) 

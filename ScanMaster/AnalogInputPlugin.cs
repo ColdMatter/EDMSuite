@@ -14,6 +14,9 @@ namespace ScanMaster.Acquire.Plugin
 	[
     XmlInclude(typeof(DAQMxAnalogInputPlugin)),
     XmlInclude(typeof(NullAnalogInputPlugin)),
+    XmlInclude(typeof(AnalogInputAfterScanPlugin)),
+    XmlInclude(typeof(FastAnalogInputPlugin)),
+    XmlInclude(typeof(AnalogSerialInputPlugin))
 #if DECELERATOR
     XmlInclude(typeof(DecelerationHardwareAnalogInputPlugin))
 #endif

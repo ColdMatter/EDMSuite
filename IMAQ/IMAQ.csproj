@@ -101,6 +101,9 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Microcavity|AnyCPU'">
+    <OutputPath>bin\Microcavity\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2013">
       <HintPath>..\..\..\..\..\Emgu\emgucv-windesktop 3.1.0.2282\bin\Emgu.CV.DebuggerVisualizers.VS2013.dll</HintPath>
@@ -147,6 +150,7 @@
     </Reference>
     <Reference Include="NationalInstruments.Visa, Version=15.5.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Vision.Acquisition.Imaq, Version=4.60.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Vision.Acquisition.Imaqdx, Version=3.40.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>

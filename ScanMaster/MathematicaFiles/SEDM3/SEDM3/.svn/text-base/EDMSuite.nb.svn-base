@@ -1,0 +1,231 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      6830,        222]
+NotebookOptionsPosition[      5668,        177]
+NotebookOutlinePosition[      6044,        193]
+CellTagsIndexPosition[      6001,        190]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["EDMSuite", "Title",
+ CellChangeTimes->{{3.422794262891*^9, 3.422794263977*^9}}],
+
+Cell["\<\
+This package exists to load the EDMSuite .NET code in a predictable way. It \
+also provides functions for connecting to .NET remote programs.\
+\>", "Text",
+ CellChangeTimes->{{3.422794205292*^9, 3.422794220884*^9}, {3.422794266624*^9,
+   3.422794273027*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Package declarations", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", 
+   RowBox[{
+   "\"\<SEDM3`EDMSuite`\>\"", ",", " ", "\"\<NETLink`\>\"", ",", 
+    "\"\<JLink`\>\""}], "]"}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794258844*^9, 3.422794283347*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"initialiseSharedCode", "::", "usage"}], "=", 
+   "\"\<Reinstalls .NET/Link and reloads the EDMSuite dlls.\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"createBlockSerializer", "::", "usage"}], "=", 
+   "\"\<Creates a block serializer, which is available as \
+SEDM3`EDMSuite`$blockSerializer.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"createScanSerializer", "::", "usage"}], "=", 
+   "\"\<Creates a scan serializer, which is available as \
+SEDM3`EDMSuite`$scanSerializer.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"connectToSirCachealot", "::", "usage"}], "=", 
+   "\"\<Creates a .NET remoting connection to SirCachealot. An instance of \
+SirCachealots Controller object is made available as \
+SEDM3`EDMSuite`$sirCachealot.\>\""}], ";"}], "\[IndentingNewLine]"}], "Input",\
+
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.4227942012860003`*^9, {3.422794286242*^9, 3.422794293146*^9}, {
+   3.4227949500369997`*^9, 3.422795042008*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Exposed package variables", "Subsection"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$blockSerializer", "=", "Null"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"$scanSerializer", "=", "Null"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Implementation", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"initialiseSharedCode", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"ReinstallNET", "[", "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"LoadNETAssembly", "[", 
+       RowBox[{
+       "$TopDirectory", "<>", 
+        "\"\<\\\\AddOns\\\\Applications\\\\SEDM3\\\\Libraries\\\\SharedCode.\
+dll\>\""}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"LoadNETAssembly", "[", 
+       RowBox[{
+       "$TopDirectory", "<>", 
+        "\"\<\\\\AddOns\\\\Applications\\\\SEDM3\\\\Libraries\\\\SirCachealot.\
+exe\>\""}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+      "LoadNETType", "[", 
+       "\"\<System.Runtime.Remoting.RemotingConfiguration\>\"", "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"LoadNETType", "[", "\"\<System.Type\>\"", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.42279422898*^9, 3.42279424888*^9}, {3.422795105958*^9, 
+  3.422795106185*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"createBlockSerializer", "[", "]"}], ":=", 
+   RowBox[{"SEDM3`EDMSuite`$blockSerializer", " ", "=", " ", 
+    RowBox[{"NETNew", "[", "\"\<Data.EDM.BlockSerializer\>\"", "]"}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794301408*^9, 3.422794302591*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"createScanSerializer", "[", "]"}], ":=", 
+    RowBox[{"SEDM3`EDMSuite`$scanSerializer", " ", "=", " ", 
+     RowBox[{"NETNew", "[", "\"\<Data.Scans.ScanSerializer\>\"", "]"}]}]}], 
+   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"connectToSirCachealot", "[", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"RemotingConfiguration`RegisterWellKnownClientType", "[", 
+      RowBox[{
+       RowBox[{
+       "Type`GetType", "[", "\"\<SirCachealot.Controller, SirCachealot\>\"", 
+        "]"}], ",", "\"\<tcp://localhost:1180/controller.rem\>\""}], "]"}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"SEDM3`EDMSuite`$sirCachealot", " ", "=", 
+      RowBox[{"NETNew", "[", "\"\<SirCachealot.Controller\>\"", "]"}]}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794303583*^9, 3.4227943052609997`*^9}, {
+  3.422795051947*^9, 3.422795055858*^9}, {3.422795121538*^9, 
+  3.4227951864820004`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Package end", "Section"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{881, 566},
+WindowMargins->{{Automatic, 63}, {Automatic, 9}},
+FrontEndVersion->"6.0 for Microsoft Windows (32-bit) (February 7, 2008)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[590, 23, 85, 1, 83, "Title"],
+Cell[678, 26, 268, 5, 29, "Text"],
+Cell[CellGroupData[{
+Cell[971, 35, 39, 0, 71, "Section"],
+Cell[1013, 37, 268, 7, 31, "Input",
+ InitializationCell->True],
+Cell[1284, 46, 1072, 26, 192, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[2381, 76, 47, 0, 36, "Subsection"],
+Cell[2431, 78, 199, 5, 52, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2679, 89, 33, 0, 71, "Section"],
+Cell[2715, 91, 119, 3, 31, "Input",
+ InitializationCell->True],
+Cell[2837, 96, 1097, 27, 152, "Input",
+ InitializationCell->True],
+Cell[3937, 125, 332, 8, 31, "Input",
+ InitializationCell->True],
+Cell[4272, 135, 1123, 26, 152, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5432, 166, 30, 0, 71, "Section"],
+Cell[5465, 168, 175, 5, 52, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

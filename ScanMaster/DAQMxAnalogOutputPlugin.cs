@@ -32,8 +32,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["flyback"] = "normal";
 			settings["rampSteps"] = 50;
 			settings["rampDelay"] = 20;
-            settings["overshootVoltage"] = 0.0;
-           
+            settings["overshootVoltage"] = 0.0;           
 		}
 
 

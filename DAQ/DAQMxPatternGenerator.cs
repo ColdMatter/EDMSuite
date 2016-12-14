@@ -4,6 +4,7 @@ using System.Threading;
 using NationalInstruments.DAQmx;
 
 using DAQ.Environment;
+using System.Diagnostics;
 
 namespace DAQ.HAL
 {
@@ -23,7 +24,7 @@ namespace DAQ.HAL
 
 		public DAQMxPatternGenerator(String device)
 		{
-			this.device = device;
+            this.device = device;
 		}
 
 		// use this method to output a PatternList to the whole PatternList generator
@@ -58,8 +59,8 @@ namespace DAQ.HAL
 
 		public void Configure( double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock, bool triggered)
-		{	
-			this.clockFrequency = clockFrequency;
+		{
+            this.clockFrequency = clockFrequency;
 			this.length = length;
 
 			pgTask = new Task("pgTask");
@@ -109,6 +110,7 @@ namespace DAQ.HAL
                 {
                     // if an internal clock is requested we generate it using the card's timer/counters.
                     counterTask = new Task();
+                    //string debugstringtest = device + (string)Environs.Hardware.GetInfo("PGClockCounter");
                     counterTask.COChannels.CreatePulseChannelFrequency(
                         device + (string)Environs.Hardware.GetInfo("PGClockCounter"),
                         "PG Clock",
@@ -183,6 +185,11 @@ namespace DAQ.HAL
 		{
             pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
+        }
+
+        public void StopPatternTaskOnly()
+        {
+            pgTask.Dispose();
         }
 	}
 }

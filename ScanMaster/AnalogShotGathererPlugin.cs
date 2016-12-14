@@ -29,6 +29,7 @@ namespace ScanMaster.Acquire.Plugins
 		
 		protected override void InitialiseSettings()
 		{
+            settings["triggered"] = true;
 		}
 
 		public override void AcquisitionStarting()
@@ -48,8 +49,8 @@ namespace ScanMaster.Acquire.Plugins
 						(double)settings["inputRangeLow"],
 						(double)settings["inputRangeHigh"]
 						);
-
-				// internal clock, finite acquisition
+            
+                // internal clock, finite acquisition
 				inputTask.Timing.ConfigureSampleClock(
 					"",
 					(int)settings["sampleRate"],
@@ -57,9 +58,13 @@ namespace ScanMaster.Acquire.Plugins
 					SampleQuantityMode.FiniteSamples,
 					(int)settings["gateLength"]);
 
-				inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                if ((bool)settings["triggered"])
+                {
+                    inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("analogTrigger0"),
-					DigitalEdgeStartTriggerEdge.Rising);
+                    DigitalEdgeStartTriggerEdge.Rising);
+                }
+            
 
 				inputTask.Control(TaskAction.Verify);
 //			}
@@ -86,9 +91,9 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug) 
 				{
-					inputTask.Start();
-					latestData = reader.ReadMultiSample((int)settings["gateLength"]);
-					inputTask.Stop();
+                    inputTask.Start();
+                    latestData = reader.ReadMultiSample((int)settings["gateLength"]);
+                    inputTask.Stop();
 				}
 			}
 		}

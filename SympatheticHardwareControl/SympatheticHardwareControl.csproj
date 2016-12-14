@@ -86,6 +86,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|AnyCPU'">
     <OutputPath>bin\Wavemeter\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Microcavity|AnyCPU'">
+    <OutputPath>bin\Microcavity\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />

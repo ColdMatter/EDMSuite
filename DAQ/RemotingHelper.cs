@@ -66,6 +66,15 @@ namespace DAQ.Remoting
                     );
         }
 
+        public static void ConnectMicrocavityHardwareControl()
+        {
+            //need to put the correct address for this to work
+            RemotingConfiguration.RegisterWellKnownClientType(
+                    Type.GetType("MicrocavityHardwareControl.Controller, MicrocavityHardwareControl"),
+                    "tcp://localhost:1172/controller.rem"
+                    );
+        }
+
         public static void ConnectSympatheticHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(

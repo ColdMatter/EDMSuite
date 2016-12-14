@@ -117,6 +117,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|AnyCPU'">
     <OutputPath>bin\Wavemeter\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Microcavity|AnyCPU'">
+    <OutputPath>bin\Microcavity\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
@@ -173,6 +178,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BathCryostat.cs" />
     <Compile Include="BrilliantLaser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -185,14 +191,18 @@
     <Compile Include="CarmeliteFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CCMQNFileSystem.cs" />
     <Compile Include="ChromeFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DecelerationHardware.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="HP8673BSynth.cs" />
+    <Compile Include="Lab10PCFileSystem.cs" />
+    <Compile Include="MicrocavityHardware.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
     <Compile Include="Parker404XR.cs" />
@@ -218,7 +228,6 @@
     <Compile Include="TCLConfig.cs" />
     <Compile Include="TransferCavityLock2012LaserControllable.cs" />
     <Compile Include="InterferenceFitter.cs" />
-    <Compile Include="Lab10PCFileSystem.cs" />
     <Compile Include="LorentzianFitter.cs" />
     <Compile Include="PeakFitter.cs" />
     <Compile Include="Instrument.cs" />
@@ -252,9 +261,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataFaker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DecelerationHardware.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DigitalInputChannel.cs">

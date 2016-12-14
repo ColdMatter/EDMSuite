@@ -107,7 +107,10 @@ namespace ScanMaster.Acquire.Plugins
 			
 			// if we're using a hardware trigger to synchronize data acquisition, we need to set up the 
 			// trigger parameters on the sample clock.
-            // The first output task is triggered on PFI0 and the second is triggered on PFI1
+            // The first output task is triggered on PFI0 and the second is triggered on PFI1 by default
+            string clockTrigger1Default = "/PFI0";
+            string clockTrigger2Default = "/PFI1";
+
 			if((bool)settings["triggerActive"])
 			{
 				freqOutTask1.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
@@ -115,7 +118,7 @@ namespace ScanMaster.Acquire.Plugins
                 freqOutTask2.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
                 freqOutTask2.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
 				// the trigger is expected to appear on PFI0
-				freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI0";
+                freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI0";
                 // the trigger is expected to appear on PFI1
                 freqOutTask2.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI1";
             }

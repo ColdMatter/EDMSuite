@@ -1,0 +1,1729 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     61486,       1720]
+NotebookOptionsPosition[     57604,       1590]
+NotebookOutlinePosition[     57981,       1606]
+CellTagsIndexPosition[     57938,       1603]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["SEDM3 Analysis", "Title",
+ CellChangeTimes->{3.4229606989519997`*^9}],
+
+Cell["\<\
+This package has the analysis code proper in it. It defines functions that \
+take blocks and produce analysis results.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Package starts", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", 
+   RowBox[{
+   "\"\<SEDM3`Analysis`\>\"", ",", "\"\<SEDM3`EDMSuite`\>\"", ",", 
+    "\"\<SEDM3`Polarisation`\>\"", ",", "\"\<SEDM3`Database`\>\"", ",", 
+    "\"\<SEDM3`Blind`\>\"", ",", "\"\<NETLink`\>\"", ",", "\"\<JLink`\>\""}], 
+   "]"}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.394340993387*^9, 3.394340994237*^9}, {3.394429937999*^9,
+   3.39442995612*^9}, {3.422960692528*^9, 3.422960704167*^9}, {
+  3.422962988383*^9, 3.422962992877*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"weightedMean", "::", "usage"}], "=", 
+   "\"\<Takes  a list of {value, error} pairs and calculates the weighted \
+mean.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"integrateTOF", "::", "usage"}], "=", 
+   "\"\<Takes a block and integrates to TOF profiles for the specified \
+detector. The Boolean parameter returnIntegral determines whether the \
+returned values are the integrals (in V \[Mu]s) or the average values (in V).\
+\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getAverageBG", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getPulseTiming", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getGateTiming", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"integrateTOFBackSubtract", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"extractNoiseData", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getChannelNoisePPM", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"analyseBlock", "::", "usage"}], "=", 
+   "\"\<This function take a block and an extraction function and analyses \
+the block.The extraction function is applied to the block and is expected to \
+return a list of detectorDatas.The detector data is format is defined by \
+integrateTOF.This is the usual way to generate detector data,but other ways \
+can be plugged in if you like-for instance extracting data from the single \
+point values instead of the TOFs.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"generatePulsedRFGates", "::", "usage"}], "=", 
+    "\"\<Calculates the correct gates to exclude molecules more than a given \
+distance from the guard plate centres. The centres are in microseconds, the \
+keep lengths in m. Molecules are selected symmetrically around the centre \
+position. The offset parameter is to deal with a bug in the acquisition \
+software before September 2005. If in doubt, it should be set to zero.\>\""}],
+    ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"basis", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"edmWaveform", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"boolSign", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"extractPhysicalQuantities", "::", "usage"}], "=", "\"\<\>\""}], 
+   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"cField", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"edmFactor", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"rawEDM", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"edmSign", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"rawEDMErr", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"gamma", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"geometricCorrection", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"geometricCorrectionErr", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"correctedEDM", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"correctedEDMErr", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"counts", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"sn", "::", "usage"}], "=", "\"\<\>\""}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3950549198786383`*^9, 3.3950549341686387`*^9}, {
+  3.3950551000526385`*^9, 3.3950551061056385`*^9}, {3.3950552557046385`*^9, 
+  3.3950553152506385`*^9}, {3.399620961617*^9, 3.399620970684*^9}, {
+  3.399621004653*^9, 3.399621014781*^9}, {3.399630825617*^9, 
+  3.399630828951*^9}, {3.399634296513*^9, 3.3996342997209997`*^9}, {
+  3.399638193179*^9, 3.399638198139*^9}, {3.422961106105*^9, 
+  3.422961111752*^9}, {3.422961415591*^9, 3.4229614546219997`*^9}, {
+  3.422961941801*^9, 3.4229619462130003`*^9}, {3.422962116332*^9, 
+  3.422962131*^9}, {3.422962941881*^9, 3.422962947637*^9}, {
+  3.4229632932720003`*^9, 3.422963297072*^9}, {3.42296339735*^9, 
+  3.4229634051870003`*^9}, {3.422963787418*^9, 3.422963791775*^9}, {
+  3.422964056926*^9, 3.422964060032*^9}, {3.422964157446*^9, 
+  3.422964160546*^9}, {3.422966483475*^9, 3.422966486933*^9}, {
+  3.422971257243*^9, 3.422971265375*^9}, {3.4230458579300003`*^9, 
+  3.4230458581210003`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Exposed package variables", "Subsection"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Private", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell["Local Constants", "Subsection"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"electronCharge", "=", 
+   RowBox[{"1.6022", "*", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "19"}]]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"bohrMagneton", "=", 
+   RowBox[{"9.274", "*", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "24"}]]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"saturatedEffectiveField", "=", 
+   RowBox[{"26", "*", 
+    SuperscriptBox["10", "9"]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plateSpacing", "=", "1.1"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"curveHalfWidthCurrent", "=", "0.2356"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kMachineLength", "=", "1.3"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"kRF1Ratio", "=", 
+   RowBox[{"1.103", "*", "2.31"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"kRF2Ratio", "=", "1.103"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Messages", "Subsection"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions", "Section"],
+
+Cell[CellGroupData[{
+
+Cell["Helper functions", "Subsection"],
+
+Cell["\<\
+This generates a switching waveform from a waveform code. The code is passed \
+as a list of True or False values.\
+\>", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"basis", "[", 
+    RowBox[{"bit_", ",", " ", "length_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"Flatten", "[", 
+    RowBox[{"Table", "[", " ", 
+     RowBox[{
+      RowBox[{"{", " ", 
+       RowBox[{
+        RowBox[{"Table", "[", " ", 
+         RowBox[{"1", ",", " ", 
+          RowBox[{"{", 
+           SuperscriptBox["2", 
+            RowBox[{"bit", "-", "1"}]], "}"}]}], "]"}], ",", " ", 
+        RowBox[{"Table", "[", 
+         RowBox[{
+          RowBox[{"-", "1"}], ",", " ", 
+          RowBox[{"{", 
+           SuperscriptBox["2", 
+            RowBox[{"bit", "-", "1"}]], "}"}]}], "]"}]}], "}"}], " ", ",", 
+      " ", 
+      RowBox[{"{", 
+       FractionBox["length", 
+        RowBox[{" ", 
+         SuperscriptBox["2", "bit"]}]], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"edmWaveform", "[", "code_", "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "numWave", "}"}], ",", 
+      RowBox[{
+       RowBox[{"numWave", "=", 
+        RowBox[{
+         UnderoverscriptBox["\[Product]", 
+          RowBox[{"i", " ", "=", " ", "1"}], 
+          RowBox[{"Length", "[", "code", "]"}]], " ", 
+         RowBox[{"If", "[", " ", 
+          RowBox[{
+           RowBox[{
+           "code", "\[LeftDoubleBracket]", "i", "\[RightDoubleBracket]"}], 
+           ",", " ", 
+           RowBox[{"basis", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Length", "[", "code", "]"}], "-", " ", "i", "+", "1"}],
+              ",", " ", 
+             SuperscriptBox["2", 
+              RowBox[{"Length", "[", "code", "]"}]]}], "]"}], ",", " ", 
+           RowBox[{"Table", "[", 
+            RowBox[{"1", ",", 
+             RowBox[{"{", 
+              SuperscriptBox["2", 
+               RowBox[{"Length", "[", "code", "]"}]], "}"}]}], "]"}]}], 
+          "]"}]}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"#", "\[Equal]", "1"}], ")"}], "&"}], "/@", "numWave"}]}]}],
+      "\[IndentingNewLine]", "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"boolSign", "[", "bool_", "]"}], ":=", 
+  RowBox[{"If", "[", 
+   RowBox[{"bool", ",", "1", ",", 
+    RowBox[{"-", "1"}]}], "]"}]}]}], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+Takes a list of {value, error} pairs and calculates the weighted mean.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"weightedMean", "[", "chanList_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"wvr", ",", "wedm", ",", "wse"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"wvr", "=", 
+       RowBox[{"(", 
+        FractionBox["1", 
+         RowBox[{"Plus", "@@", " ", 
+          FractionBox["1", 
+           RowBox[{
+            RowBox[{
+             SuperscriptBox[
+              RowBox[{
+              "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+              "2"], "&"}], "/@", " ", "chanList"}]]}]], ")"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"wedm", " ", "=", 
+       RowBox[{"wvr", 
+        RowBox[{"(", 
+         RowBox[{"Plus", "@@", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              FractionBox[
+               RowBox[{
+               "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+               SuperscriptBox[
+                RowBox[{
+                "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+                "2"]], ")"}], "&"}], "/@", "chanList"}], ")"}]}], ")"}]}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"wse", " ", "=", " ", 
+       SqrtBox["wvr"]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{"wedm", ",", "wse"}], "}"}]}]}], "\[IndentingNewLine]", 
+    "]"}]}], ";"}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions that extract data from the block", "Subsection"],
+
+Cell["\<\
+Takes a block and integrates to TOF profiles for the specified detector. The \
+Boolean parameter returnIntegral determines whether the returned values are \
+the integrals (in V \[Mu]s) or the average values (in V).\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"integrateTOF", "[", 
+    RowBox[{
+    "block_", ",", "detector_Integer", ",", "gateStart_Integer", ",", 
+     "gateEnd_Integer", ",", "returnIntegral_", ",", "detectorName_String"}], 
+    "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"gatedData", ",", "gatePeriod", ",", "dat", ",", "cal"}], "}"}],
+      ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"dat", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{"returnIntegral", ",", "\[IndentingNewLine]", 
+         RowBox[{"gatedData", "=", 
+          RowBox[{"block", "@", 
+           RowBox[{"GetTOFIntegralArray", "[", 
+            RowBox[{"detector", ",", "gateStart", ",", "gateEnd"}], "]"}]}]}],
+          ",", "\[IndentingNewLine]", 
+         RowBox[{"gatedData", "=", 
+          RowBox[{"block", "@", 
+           RowBox[{"GetTOFMeanArray", "[", 
+            RowBox[{"detector", ",", "gateStart", ",", "gateEnd"}], 
+            "]"}]}]}]}], "\[IndentingNewLine]", "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"cal", "=", 
+       RowBox[{"block", "@", 
+        RowBox[{
+         RowBox[{"Points", "[", "0", "]"}], "@", 
+         RowBox[{"Shot", "@", 
+          RowBox[{
+           RowBox[{"TOFs", "[", "detector", "]"}], "@", 
+           "Calibration"}]}]}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"\"\<name\>\"", "\[Rule]", "detectorName"}], ",", 
+        RowBox[{"\"\<data\>\"", "\[Rule]", "dat"}], ",", 
+        RowBox[{"\"\<calibration\>\"", "\[Rule]", "cal"}]}], "}"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3991195405620003`*^9, 3.399119544988*^9}, {
+  3.399124354336*^9, 3.39912440948*^9}}],
+
+Cell["\<\
+This takes a block, a detector and a gate range and it gives the signal in \
+this range averaged over all points.\
+\>", "Text",
+ CellChangeTimes->{{3.399119025916*^9, 3.399119060461*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getAverageBG", "[", 
+   RowBox[{"block_", ",", "detector_", ",", "gateStart_", ",", "gateEnd_"}], 
+   "]"}], ":=", 
+  RowBox[{"Mean", "[", 
+   RowBox[{"\"\<data\>\"", "/.", 
+    RowBox[{"integrateTOF", "[", 
+     RowBox[{
+     "block", ",", "detector", ",", "gateStart", ",", "gateEnd", ",", "False",
+       ",", "\"\<\>\""}], "]"}]}], "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.399119131359*^9, 3.399119194009*^9}, {3.399119378203*^9,
+   3.399119381847*^9}}],
+
+Cell["\<\
+This function integrates a TOF in a given gate window, subtracting off a \
+background defined by the average of the signal in a second gate window. The \
+same background is subtracted from all points in the block - it assumes the \
+background is constant on the timescale of a block. It returns the same \
+structure as integrateTOF with an additional entry that indicates how much \
+background (in V \[Mu]s) was subtracted. This is useful for shot noise level \
+calculations.\
+\>", "Text",
+ CellChangeTimes->{{3.399617958902*^9, 3.399618096054*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"integrateTOFBackSubtract", "[", 
+   RowBox[{
+   "block_", ",", "detector_", ",", "gateStart_", ",", "gateEnd_", ",", 
+    "bgStart_", ",", "bgEnd_", ",", "name_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"integral", ",", "bg", ",", "newData", ",", "subbedBG"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"integral", "=", 
+      RowBox[{"integrateTOF", "[", 
+       RowBox[{
+       "block", ",", "detector", ",", "gateStart", ",", "gateEnd", ",", 
+        "True", ",", "name"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"bg", "=", 
+      RowBox[{"getAverageBG", "[", 
+       RowBox[{"block", ",", "detector", ",", "bgStart", ",", "bgEnd"}], 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"subbedBG", "=", 
+      RowBox[{"(", 
+       RowBox[{"bg", "*", 
+        RowBox[{"(", 
+         RowBox[{"gateEnd", "-", "gateStart"}], ")"}]}], ")"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"newData", "=", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"\"\<data\>\"", "/.", "integral"}], ")"}], "-", 
+       "subbedBG"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<name\>\"", "\[Rule]", "name"}], ",", 
+       RowBox[{"\"\<data\>\"", "\[Rule]", "newData"}], ",", 
+       RowBox[{"\"\<calibration\>\"", "\[Rule]", 
+        RowBox[{"(", 
+         RowBox[{"\"\<calibration\>\"", "/.", "integral"}], ")"}]}], ",", 
+       RowBox[{"\"\<subtractedBG\>\"", "\[Rule]", "subbedBG"}]}], "}"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.399198546481*^9, 3.399198589142*^9}, {3.399198739968*^9,
+   3.3991988785629997`*^9}, {3.399198928633*^9, 3.399198929112*^9}, {
+  3.399199050215*^9, 3.399199094969*^9}, {3.39961691594*^9, 
+  3.399616950543*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions for calculating physical quantities", "Subsection"],
+
+Cell["\<\
+These functions take the block config (and modulations) plus the extracted \
+channel values and calculate physically meaningful values. Most of them are \
+self-explanatory.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"cField", "[", "dblock_", "]"}], ":=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"dblock", "@", 
+      RowBox[{"Config", "@", 
+       RowBox[{"Settings", "[", "\"\<ePlus\>\"", "]"}]}]}], " ", "-", " ", 
+     RowBox[{"dblock", "@", 
+      RowBox[{"Config", "@", 
+       RowBox[{"Settings", "[", "\"\<eMinus\>\"", "]"}]}]}]}], 
+    "plateSpacing"]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422961398058*^9, 3.4229613994309998`*^9}, {
+  3.422961585836*^9, 3.4229616033970003`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"edmFactor", "[", "dblock_", "]"}], ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"dbStep", ",", "magCal"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"dbStep", "=", 
+       RowBox[{"dblock", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{
+          RowBox[{"GetModulationByName", "[", "\"\<DB\>\"", "]"}], "@", 
+          "Step"}]}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"magCal", "=", 
+       RowBox[{"dblock", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{"Settings", "[", "\"\<magnetCalibration\>\"", "]"}]}]}]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       FractionBox["1", "electronCharge"], 
+       RowBox[{"(", 
+        RowBox[{"bohrMagneton", " ", "*", " ", "dbStep", "*", "magCal", "*", 
+         SuperscriptBox["10", 
+          RowBox[{"-", "9"}]]}], ")"}], 
+       FractionBox["1", 
+        RowBox[{"saturatedEffectiveField", " ", 
+         RowBox[{"polarisationFactor", "[", 
+          RowBox[{
+           RowBox[{"cField", "[", "dblock", "]"}], "/", "1000"}], 
+          "]"}]}]]}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.4229619724700003`*^9, 3.422961986417*^9}, {
+  3.422962030835*^9, 3.42296210785*^9}, {3.422962239707*^9, 
+  3.422962329274*^9}, {3.422962852646*^9, 3.422962853123*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"rawEDM", "[", 
+   RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"edmFactor", "[", "dblock", "]"}], " ", 
+     FractionBox[
+      RowBox[{"getChannel", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", ",",
+         "dblock"}], "]"}], 
+      RowBox[{"getChannel", "[", 
+       RowBox[{
+        RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+       "]"}]]}], ")"}], "+", 
+   RowBox[{
+    RowBox[{"edmSign", "[", "dblock", "]"}], 
+    "SEDM3`Blind`blindEDM"}]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.394429846658*^9, 3.394429856443*^9}, {3.394431080439*^9,
+    3.394431083135*^9}, {3.394431161756*^9, 3.394431161882*^9}, 
+   3.422960695473*^9, {3.4229628670480003`*^9, 3.422962936763*^9}, {
+   3.422962971401*^9, 3.4229630035810003`*^9}, {3.422963137112*^9, 
+   3.422963190719*^9}, {3.422963619395*^9, 3.422963643634*^9}, {
+   3.427630917731*^9, 3.427630924278*^9}, {3.4276309657609997`*^9, 
+   3.4276309671940002`*^9}, {3.428241677571*^9, 3.428241679789*^9}, {
+   3.4282419462320004`*^9, 3.428241956127*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"edmSign", "[", "dblock_", "]"}], ":=", " ", 
+   RowBox[{
+    RowBox[{"boolSign", "[", 
+     RowBox[{"dblock", "@", 
+      RowBox[{"Config", "@", 
+       RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], " ", 
+    RowBox[{"boolSign", "[", 
+     RowBox[{"dblock", "@", 
+      RowBox[{"Config", "@", 
+       RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422963259962*^9, 3.422963287705*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"rawEDMErr", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Abs", "[", 
+     RowBox[{
+      RowBox[{"rawEDM", "[", 
+       RowBox[{"dblock", ",", "detector"}], "]"}], "-", 
+      RowBox[{
+       RowBox[{"edmSign", "[", "dblock", "]"}], "SEDM3`Blind`blindEDM"}]}], 
+     "]"}], 
+    RowBox[{"\[Sqrt]", 
+     RowBox[{"(", 
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox[
+          RowBox[{"getError", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", 
+            ",", "dblock"}], "]"}], 
+          RowBox[{"getChannel", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", 
+            ",", "dblock"}], "]"}]], ")"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox[
+          RowBox[{"getError", "[", 
+           RowBox[{
+            RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+            "dblock"}], "]"}], 
+          RowBox[{"getChannel", "[", 
+           RowBox[{
+            RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+            "dblock"}], "]"}]], ")"}], "2"]}], ")"}]}]}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.39442988179*^9, 3.3944298836549997`*^9}, {
+   3.39443108562*^9, 3.39443108683*^9}, {3.39443115924*^9, 3.394431159711*^9},
+    3.4229606961949997`*^9, {3.422963326462*^9, 3.422963388535*^9}, {
+   3.422963653455*^9, 3.422963680727*^9}, 3.427630933572*^9, {
+   3.427630969962*^9, 3.427630987868*^9}, 3.428241967443*^9}],
+
+Cell["\<\
+The gamma factor comes into the e.cal, b.cal, e.b.cal correction.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"gamma", "[", "dblock_", "]"}], ":=", "0"}], 
+  RowBox[{"(*", 
+   FractionBox[
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"curveHalfWidthCurrent", "*", "2"}], "-", 
+      RowBox[{"getModulationParameter", "[", 
+       RowBox[{"\"\<step\>\"", ",", "\"\<B\>\"", ",", "mods"}], "]"}]}], 
+     ")"}], 
+    RowBox[{"getModulationParameter", "[", 
+     RowBox[{"\"\<step\>\"", ",", "\"\<DB\>\"", ",", "mods"}], "]"}]], "*)"}],
+   ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422963413123*^9, 3.422963413712*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"geometricCorrection", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   RowBox[{
+    FractionBox[
+     RowBox[{
+      RowBox[{"getChannel", "[", 
+       RowBox[{
+        RowBox[{"{", "\"\<B\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+       "]"}], " ", 
+      RowBox[{"getChannel", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", 
+        ",", "dblock"}], "]"}]}], 
+     RowBox[{"getChannel", "[", 
+      RowBox[{
+       RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+      "]"}]], "+", 
+    RowBox[{
+     RowBox[{"gamma", "[", "dblock", "]"}], 
+     RowBox[{"(", 
+      RowBox[{
+       FractionBox[
+        RowBox[{
+         RowBox[{"getChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], ",", "detector", 
+           ",", "dblock"}], "]"}], " ", 
+         RowBox[{"getChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", 
+           ",", "dblock"}], "]"}]}], 
+        RowBox[{"getChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+         "]"}]], "-", 
+       RowBox[{"getChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], 
+         ",", "detector", ",", "dblock"}], "]"}]}], ")"}]}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422963420469*^9, 3.422963423203*^9}, {3.422963739288*^9,
+    3.422963780821*^9}, 3.422963817311*^9, {3.422963882145*^9, 
+   3.4229638877130003`*^9}, 3.42763094102*^9, {3.427630979203*^9, 
+   3.4276310072*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"geometricCorrectionErr", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   RowBox[{"\[Sqrt]", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox[
+          RowBox[{
+           RowBox[{"getChannel", "[", 
+            RowBox[{
+             RowBox[{"{", "\"\<B\>\"", "}"}], ",", "detector", ",", 
+             "dblock"}], "]"}], " ", 
+           RowBox[{"getChannel", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+             "detector", ",", "dblock"}], "]"}]}], 
+          RowBox[{"getChannel", "[", 
+           RowBox[{
+            RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+            "dblock"}], "]"}]], ")"}], "2"], 
+       RowBox[{"(", 
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<B\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<B\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}]], ")"}], "2"], "+", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}]], ")"}], "2"], "+", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}]], ")"}], "2"]}], ")"}]}], "+", 
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"gamma", "[", "dblock", "]"}], 
+          FractionBox[
+           RowBox[{
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}], " ", 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}]}], 
+           RowBox[{"getChannel", "[", 
+            RowBox[{
+             RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+             "dblock"}], "]"}]]}], ")"}], "2"], 
+       RowBox[{"(", 
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}]], ")"}], "2"], "+", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<DB\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+              "detector", ",", "dblock"}], "]"}]], ")"}], "2"], "+", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"getError", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}], 
+            RowBox[{"getChannel", "[", 
+             RowBox[{
+              RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+              "dblock"}], "]"}]], ")"}], "2"]}], ")"}]}], "+", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"gamma", "[", "dblock", "]"}], " ", 
+         RowBox[{"getError", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<DB\>\"", ",", "\"\<B\>\"", ",", "\"\<E\>\""}], "}"}],
+            ",", "detector", ",", "dblock"}], "]"}]}], ")"}], "2"]}], 
+     ")"}]}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.422963428315*^9, {3.4229638473529997`*^9, 3.422964045942*^9}, 
+   3.427630946227*^9, {3.427631013238*^9, 3.427631038689*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"correctedEDM", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"edmFactor", "[", "dblock", "]"}], 
+      FractionBox[
+       RowBox[{
+        RowBox[{"getChannel", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector", 
+          ",", "dblock"}], "]"}], "-", 
+        RowBox[{"geometricCorrection", "[", 
+         RowBox[{"dblock", ",", "detector"}], "]"}]}], 
+       RowBox[{"getChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+        "]"}]]}], ")"}], "+", 
+    RowBox[{
+     RowBox[{"edmSign", "[", "dblock", "]"}], "SEDM3`Blind`blindEDM"}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3944299190439997`*^9, 3.394429923961*^9}, 
+   3.394431097573*^9, {3.394431154399*^9, 3.394431154565*^9}, 
+   3.422960697141*^9, {3.422963433332*^9, 3.422963434269*^9}, {
+   3.422964121224*^9, 3.422964149347*^9}, 3.427630949574*^9, {
+   3.4276310425439997`*^9, 3.427631049377*^9}, {3.428241775547*^9, 
+   3.428241778439*^9}, {3.428241977498*^9, 3.4282419849*^9}, {
+   3.4317719572349997`*^9, 3.4317719574040003`*^9}, 3.431772324781*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"correctedEDMErr", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Abs", "[", 
+     RowBox[{
+      RowBox[{"correctedEDM", "[", 
+       RowBox[{"dblock", ",", "detector"}], "]"}], "-", 
+      RowBox[{
+       RowBox[{"edmSign", "[", "dblock", "]"}], "SEDM3`Blind`blindEDM"}]}], 
+     "]"}], " ", 
+    RowBox[{"\[Sqrt]", 
+     RowBox[{"(", 
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox[
+          SqrtBox[
+           RowBox[{
+            SuperscriptBox[
+             RowBox[{"getError", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", 
+               "detector", ",", "dblock"}], "]"}], "2"], "+", 
+            SuperscriptBox[
+             RowBox[{"geometricCorrectionErr", "[", 
+              RowBox[{"dblock", ",", "detector"}], "]"}], "2"]}]], 
+          RowBox[{
+           RowBox[{"getChannel", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}], ",", "detector",
+              ",", "dblock"}], "]"}], "-", 
+           RowBox[{"geometricCorrection", "[", 
+            RowBox[{"dblock", ",", "detector"}], "]"}]}]], ")"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox[
+          RowBox[{"getError", "[", 
+           RowBox[{
+            RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+            "dblock"}], "]"}], 
+          RowBox[{"getChannel", "[", 
+           RowBox[{
+            RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "detector", ",", 
+            "dblock"}], "]"}]], ")"}], "2"]}], ")"}]}]}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.394429926217*^9, 3.394429927521*^9}, 
+   3.394431099352*^9, {3.394431151541*^9, 3.394431151675*^9}, 
+   3.422960697927*^9, 3.422963440638*^9, {3.4229641877650003`*^9, 
+   3.4229641883450003`*^9}, {3.422966421257*^9, 3.422966475321*^9}, 
+   3.427630952861*^9, {3.427631056545*^9, 3.427631070718*^9}, 
+   3.4282419871070004`*^9, 3.431772181821*^9, 3.431772326675*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"counts", "[", 
+    RowBox[{"dblock_", ",", "detector_"}], "]"}], ":=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"getChannel", "[", 
+      RowBox[{
+       RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+      "]"}], " ", 
+     RowBox[{"dblock", "@", 
+      RowBox[{"Config", "@", 
+       RowBox[{"Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}]}], 
+    RowBox[{"dblock", "@", 
+     RowBox[{"DetectorCalibrations", "[", "detector", "]"}]}]]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422966526064*^9, 3.422966532138*^9}, {3.422966855913*^9,
+   3.422966871795*^9}, {3.422971221804*^9, 3.422971232491*^9}, {
+  3.422971460198*^9, 3.42297146152*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"sn", "[", "counts_", "]"}], ":=", 
+   RowBox[{"Abs", "[", 
+    FractionBox["1", 
+     SqrtBox["counts"]], "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+This function bundles the above together and calculates all the physical \
+quantities for a block.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"extractPhysicalQuantities", "[", "dblock_", "]"}], ":=", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"\"\<polarisation\>\"", "\[Rule]", 
+     RowBox[{"polarisationFactor", "[", 
+      RowBox[{
+       RowBox[{"cField", "[", "dblock", "]"}], "/", "1000"}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<rawEDM\>\"", "\[Rule]", 
+     RowBox[{"rawEDM", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<signedEDM\>\"", "\[Rule]", 
+     RowBox[{
+      RowBox[{"edmSign", "[", "dblock", "]"}], 
+      RowBox[{"rawEDM", "[", 
+       RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<rawEDMErr\>\"", "\[Rule]", 
+     RowBox[{"rawEDMErr", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<geometricCorrection\>\"", "\[Rule]", 
+     RowBox[{"geometricCorrection", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<geometricCorrectionError\>\"", "\[Rule]", 
+     RowBox[{"geometricCorrectionErr", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<correctedEDM\>\"", "\[Rule]", 
+     RowBox[{"correctedEDM", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<signedCorrectedEDM\>\"", "->", 
+     RowBox[{
+      RowBox[{"edmSign", "[", "dblock", "]"}], 
+      RowBox[{"correctedEDM", "[", 
+       RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<correctedEDMErr\>\"", "\[Rule]", 
+     RowBox[{"correctedEDMErr", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<rawEDMNormed\>\"", "\[Rule]", 
+     RowBox[{"rawEDM", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<signedEDMNormed\>\"", "\[Rule]", 
+     RowBox[{
+      RowBox[{"edmSign", "[", "dblock", "]"}], 
+      RowBox[{"rawEDM", "[", 
+       RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<rawEDMErrNormed\>\"", "\[Rule]", 
+     RowBox[{"rawEDMErr", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<geometricCorrectionNormed\>\"", "\[Rule]", 
+     RowBox[{"geometricCorrection", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<geometricCorrectionErrorNormed\>\"", "\[Rule]", 
+     RowBox[{"geometricCorrectionErr", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<correctedEDMNormed\>\"", "\[Rule]", 
+     RowBox[{"correctedEDM", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<signedCorrectedEDMNormed\>\"", "->", 
+     RowBox[{
+      RowBox[{"edmSign", "[", "dblock", "]"}], 
+      RowBox[{"correctedEDM", "[", 
+       RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<correctedEDMErrNormed\>\"", "\[Rule]", 
+     RowBox[{"correctedEDMErr", "[", 
+      RowBox[{"dblock", ",", "\"\<topNormed\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\"\<pmtCounts\>\"", "\[Rule]", 
+     RowBox[{"counts", "[", 
+      RowBox[{"dblock", ",", "\"\<top\>\""}], "]"}]}]}], 
+   "\[IndentingNewLine]", "}"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.399652418021*^9, 3.399652487085*^9}, {3.399652569873*^9,
+   3.3996525705880003`*^9}, {3.399652711455*^9, 3.399652712832*^9}, {
+  3.42296657123*^9, 3.422966601876*^9}, {3.422966694674*^9, 
+  3.4229667645150003`*^9}, {3.422966842148*^9, 3.422966842321*^9}, {
+  3.4229712405360003`*^9, 3.4229712434820004`*^9}, {3.427631135733*^9, 
+  3.4276312089849997`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions for characterising noise", "Subsection",
+ CellChangeTimes->{{3.399630242141*^9, 3.399630253532*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"extractNoiseData", "[", "dblock_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "normShotNoiseV\[Mu]sPerShot", ",", "normCal", ",", "topCal", ",", 
+      "highFrequencyNormOverShotNoise", ",", "normFourier", ",", 
+      "normShotNoisePPMPerChannel", ",", "topShotNoiseV\[Mu]sPerShot", ",", 
+      "topShotNoisePPMPerChannel"}], "}"}], ",", "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"normCal", "=", 
+      RowBox[{"1", "/", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"#", "==", "0.08928571428571429`"}], ",", 
+            FractionBox["1", 
+             RowBox[{"1.9", " ", "8.5"}]], ",", "#"}], "]"}], "&"}], "[", 
+         RowBox[{"dblock", "@", 
+          RowBox[{"DetectorCalibrations", "[", "\"\<norm\>\"", "]"}]}], "]"}],
+         ")"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"topCal", "=", 
+      RowBox[{"1", "/", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"#", "==", "0.14492753623188406`"}], ",", 
+            FractionBox["1.97", "6.28"], ",", "#"}], "]"}], "&"}], "[", 
+         RowBox[{"dblock", "@", 
+          RowBox[{"DetectorCalibrations", "[", "\"\<top\>\"", "]"}]}], "]"}], 
+        ")"}]}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"normFourier", "=", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Take", "[", 
+         RowBox[{"#", ",", 
+          RowBox[{"Round", "[", 
+           FractionBox[
+            RowBox[{"Length", "[", "#", "]"}], "2"], "]"}]}], "]"}], "&"}], 
+       "[", 
+       RowBox[{"dblock", "@", 
+        RowBox[{"NormFourier", "@", "FFT"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"normShotNoiseV\[Mu]sPerShot", "=", 
+      RowBox[{"\[Sqrt]", 
+       RowBox[{"(", 
+        RowBox[{
+         FractionBox["1", "normCal"], 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"getChannel", "[", 
+            RowBox[{
+             RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<norm\>\"", ",", 
+             "dblock"}], "]"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"dblock", "@", 
+              RowBox[{"DemodulationConfig", "@", 
+               RowBox[{
+                RowBox[{
+                "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], "@", 
+                "Background"}]}]}], ")"}], "*", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"dblock", "@", 
+               RowBox[{"DemodulationConfig", "@", 
+                RowBox[{
+                 RowBox[{
+                 "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], "@",
+                  "GateHigh"}]}]}], "-", 
+              RowBox[{"dblock", "@", 
+               RowBox[{"DemodulationConfig", "@", 
+                RowBox[{
+                 RowBox[{
+                 "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], "@",
+                  "GateLow"}]}]}]}], ")"}]}]}], ")"}]}], ")"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"highFrequencyNormOverShotNoise", "=", 
+      FractionBox[
+       RowBox[{"Mean", "[", 
+        RowBox[{"Drop", "[", 
+         RowBox[{"normFourier", ",", 
+          RowBox[{"Round", "[", 
+           FractionBox[
+            RowBox[{"Length", "[", "normFourier", "]"}], "4"], "]"}]}], "]"}],
+         "]"}], "normShotNoiseV\[Mu]sPerShot"]}], ";", "\[IndentingNewLine]", 
+     
+     RowBox[{"normShotNoisePPMPerChannel", "=", 
+      RowBox[{
+       SuperscriptBox["10", "6"], 
+       FractionBox["normShotNoiseV\[Mu]sPerShot", 
+        RowBox[{
+         RowBox[{"getChannel", "[", 
+          RowBox[{
+           RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<norm\>\"", ",", 
+           "dblock"}], "]"}], 
+         SqrtBox[
+          RowBox[{"dblock", "@", 
+           RowBox[{"Config", "@", 
+            RowBox[{
+            "Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}]]}]]}]}], ";",
+      "\[IndentingNewLine]", 
+     RowBox[{"topShotNoiseV\[Mu]sPerShot", "=", 
+      SqrtBox[
+       FractionBox[
+        RowBox[{" ", 
+         RowBox[{"getChannel", "[", 
+          RowBox[{
+           RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<top\>\"", ",", 
+           "dblock"}], "]"}]}], "topCal"]]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"topShotNoisePPMPerChannel", "=", 
+      RowBox[{
+       SuperscriptBox["10", "6"], 
+       FractionBox["topShotNoiseV\[Mu]sPerShot", 
+        RowBox[{
+         RowBox[{"getChannel", "[", 
+          RowBox[{
+           RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<top\>\"", ",", 
+           "dblock"}], "]"}], 
+         SqrtBox[
+          RowBox[{"dblock", "@", 
+           RowBox[{"Config", "@", 
+            RowBox[{
+            "Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}]]}]]}]}], ";",
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<normFourier\>\"", "\[Rule]", "normFourier"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+       "\"\<normShotNoiseV\[Mu]sPerShot\>\"", "\[Rule]", 
+        "normShotNoiseV\[Mu]sPerShot"}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+       "\"\<hfNormOverShotNoise\>\"", "\[Rule]", 
+        "highFrequencyNormOverShotNoise"}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+       "\"\<normShotNoisePPMPerChannel\>\"", "\[Rule]", 
+        "normShotNoisePPMPerChannel"}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+       "\"\<topShotNoisePPMPerChannel\>\"", "\[Rule]", 
+        "topShotNoisePPMPerChannel"}]}], "\[IndentingNewLine]", "}"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.399630257329*^9, 3.399630275947*^9}, {3.399630314347*^9,
+    3.399630314494*^9}, {3.3996305427980003`*^9, 3.399630620726*^9}, {
+   3.399631323039*^9, 3.399631381583*^9}, {3.399631430204*^9, 
+   3.399631440315*^9}, {3.399631498167*^9, 3.399631733013*^9}, {
+   3.3996339154969997`*^9, 3.399633940612*^9}, {3.399634023756*^9, 
+   3.399634079347*^9}, {3.399634513954*^9, 3.399634595808*^9}, {
+   3.399634686085*^9, 3.399634881748*^9}, {3.399636594352*^9, 
+   3.399636602449*^9}, {3.399637623574*^9, 3.399637807308*^9}, {
+   3.399637862612*^9, 3.399637864785*^9}, {3.399638239711*^9, 
+   3.3996383022130003`*^9}, {3.3996387861730003`*^9, 3.399638819499*^9}, {
+   3.399638870599*^9, 3.399638906815*^9}, {3.399639479501*^9, 
+   3.3996395043529997`*^9}, {3.399639864973*^9, 3.399639869743*^9}, {
+   3.399639923197*^9, 3.399639924578*^9}, {3.399639964094*^9, 
+   3.399639988924*^9}, {3.39964003351*^9, 3.3996400381949997`*^9}, {
+   3.399640425613*^9, 3.399640429291*^9}, {3.3998715317470627`*^9, 
+   3.399871543227211*^9}, {3.3998723931801977`*^9, 3.399872430333913*^9}, {
+   3.399877873233*^9, 3.3998778926*^9}, 3.399925172215*^9, {
+   3.4003220773929996`*^9, 3.400322125532*^9}, {3.42297149316*^9, 
+   3.4229715454230003`*^9}, {3.4229716454*^9, 3.422971645926*^9}, {
+   3.423044946042*^9, 3.423045042135*^9}, {3.4230452384309998`*^9, 
+   3.4230452645220003`*^9}, {3.42304539376*^9, 3.4230454004*^9}, {
+   3.4230456296359997`*^9, 3.4230456318450003`*^9}, {3.423045703789*^9, 
+   3.423045755245*^9}, {3.423045791865*^9, 3.4230457955*^9}, {
+   3.423047059422*^9, 3.423047088112*^9}, {3.423047135389*^9, 
+   3.423047335472*^9}, {3.42961678765*^9, 3.42961679375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getChannelNoisePPM", "[", 
+   RowBox[{"dblock_", ",", "switches_", ",", "detector_"}], "]"}], ":=", 
+  RowBox[{
+   SuperscriptBox["10", "6"], 
+   FractionBox[
+    RowBox[{"getError", "[", 
+     RowBox[{"switches", ",", "detector", ",", "dblock"}], "]"}], 
+    RowBox[{"getChannel", "[", 
+     RowBox[{
+      RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "detector", ",", "dblock"}], 
+     "]"}]]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.39963814704*^9, 3.399638179926*^9}, {
+  3.3996405841870003`*^9, 3.3996406035220003`*^9}, {3.399640685975*^9, 
+  3.399640687315*^9}, {3.423047386799*^9, 3.423047431543*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Putting it all together", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"analyseBlock", "[", "dblock_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"physicalQuantities", ",", "noiseDat"}], "}"}], ",", 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"physicalQuantities", "=", 
+       RowBox[{"extractPhysicalQuantities", "[", "dblock", "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"noiseDat", "=", 
+       RowBox[{"extractNoiseData", "[", "dblock", "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"\"\<analysisResults\>\"", "\[Rule]", "physicalQuantities"}], 
+        ",", 
+        RowBox[{"\"\<noiseData\>\"", "\[Rule]", "noiseDat"}]}], "}"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3996301440109997`*^9, 3.399630198218*^9}, {
+  3.3996305741800003`*^9, 3.399630575209*^9}, {3.399637857637*^9, 
+  3.399637858193*^9}, {3.4230474387349997`*^9, 3.423047498605*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Gating functions", "Subsection"],
+
+Cell[CellGroupData[{
+
+Cell["Pulsed rf", "Subsubsection"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"generatePulsedRFGates", "[", 
+    RowBox[{
+    "rf1Centre_", ",", "rf2Centre_", ",", "rf1KeepLength_", ",", 
+     "rf2KeepLength_", ",", "offset_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"rf1Gates", ",", "rf2Gates"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"rf1Gates", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"tCut", "[", 
+          RowBox[{"rf1Centre", ",", 
+           FractionBox["kMachineLength", "kRF1Ratio"], ",", "kMachineLength", 
+           ",", "#"}], "]"}], "&"}], "/@", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1"}], ",", "1"}], "}"}], "rf1KeepLength"}], 
+         ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"rf2Gates", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"tCut", "[", 
+          RowBox[{"rf2Centre", ",", 
+           FractionBox["kMachineLength", "kRF2Ratio"], ",", "kMachineLength", 
+           ",", "#"}], "]"}], "&"}], "/@", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1"}], ",", "1"}], "}"}], "rf2KeepLength"}], 
+         ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Round", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Max", "[", 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+             "]"}], "-", "offset"}], ",", 
+           RowBox[{
+            RowBox[{"Min", "[", 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+             "]"}], "-", "offset"}]}], "}"}], "&"}], "[", 
+        RowBox[{"Transpose", "[", 
+         RowBox[{"{", 
+          RowBox[{"rf1Gates", ",", "rf2Gates"}], "}"}], "]"}], "]"}], 
+       "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"generatePulsedRFGates", "[", 
+   RowBox[{
+   "block_", ",", "rf1KeepLength_", ",", "rf2KeepLength_", ",", "offset_"}], 
+   "]"}], ":=", "\[IndentingNewLine]", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "config", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"config", "=", 
+      RowBox[{"extractConfig", "[", "block", "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"generatePulsedRFGates", "[", 
+      RowBox[{
+       RowBox[{"\"\<rf1CentreTime\>\"", "/.", "config"}], ",", 
+       RowBox[{"\"\<rf2CentreTime\>\"", "/.", "config"}], ",", 
+       "rf1KeepLength", ",", "rf2KeepLength", ",", "offset"}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]}], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"tCut", "[", 
+    RowBox[{
+    "tpulse_", ",", "rfLength_", ",", "beamLength_", ",", "keepLength_"}], 
+    "]"}], ":=", 
+   RowBox[{
+    FractionBox["1", 
+     RowBox[{
+      FractionBox["rfLength", "beamLength"], "-", 
+      FractionBox["keepLength", "beamLength"]}]], "tpulse"}]}], 
+  ";"}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+This function takes a block and a detector and returns the centre and width \
+of the average molecular pulse for the block. It is used to generate gate \
+timings. It fits to a Gaussian and returns the centre and the FWHM.\
+\>", "Text",
+ CellChangeTimes->{{3.3991249997320004`*^9, 3.39912505906*^9}, {
+  3.399125305583*^9, 3.3991253246210003`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getPulseTiming", "[", 
+   RowBox[{"block_", ",", "detector_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "model", ",", "tofData", ",", "centreGuess", ",", "widthGuess", ",", 
+      "fit"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"tofData", "=", 
+      RowBox[{"Transpose", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"block", "[", 
+          RowBox[{
+           RowBox[{"GetAverageTOF", "[", "detector", "]"}], "[", "Times", 
+           "]"}], "]"}], ",", 
+         RowBox[{"block", "[", 
+          RowBox[{
+           RowBox[{"GetAverageTOF", "[", "detector", "]"}], "[", "Data", 
+           "]"}], "]"}]}], "}"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"model", "=", 
+      RowBox[{"a", " ", 
+       SuperscriptBox["\[ExponentialE]", 
+        RowBox[{
+         RowBox[{"-", 
+          FractionBox["1", "2"]}], 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox[
+            RowBox[{"x", "-", "b"}], 
+            RowBox[{" ", "c"}]], ")"}], "2"]}]]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"centreGuess", "=", 
+      RowBox[{"Mean", "[", 
+       RowBox[{"First", "/@", "tofData"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"widthGuess", "=", 
+      RowBox[{
+       RowBox[{"First", "[", 
+        RowBox[{
+         RowBox[{"Last", "[", "tofData", "]"}], "-", 
+         RowBox[{"First", "[", "tofData", "]"}]}], "]"}], "/", "50"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"fit", "=", 
+      RowBox[{"Check", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"FindFit", "[", 
+         RowBox[{"tofData", ",", "model", ",", 
+          RowBox[{"{", 
+           RowBox[{"a", ",", 
+            RowBox[{"{", 
+             RowBox[{"b", ",", "centreGuess"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"c", ",", "widthGuess"}], "}"}], ",", "d"}], "}"}], ",", 
+          "x"}], "]"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "Do", " ", "something", " ", "roughly", " ", "sensible", " ", "if", 
+          " ", "the", " ", "fit", " ", 
+          RowBox[{"doesn", "'"}], "t", " ", "converge"}], " ", "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"b", "\[Rule]", "centreGuess"}], ",", 
+          RowBox[{"c", "\[Rule]", 
+           FractionBox[
+            RowBox[{
+             RowBox[{"First", "[", 
+              RowBox[{"Last", "[", "tofData", "]"}], "]"}], "-", 
+             RowBox[{"First", "[", 
+              RowBox[{"First", "[", "tofData", "]"}], "]"}]}], "2"]}]}], 
+         "}"}]}], "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]", 
+     
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"\"\<centre\>\"", "\[Rule]", "b"}], ",", 
+        RowBox[{"\"\<fwhm\>\"", "\[Rule]", 
+         RowBox[{"2", 
+          SqrtBox[
+           RowBox[{"2", 
+            RowBox[{"Log", "[", "2", "]"}]}]], 
+          RowBox[{"Abs", "[", "c", "]"}]}]}]}], "}"}], "/.", "fit"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.39912493598*^9, 3.3991249881289997`*^9}, {
+  3.3991251066800003`*^9, 3.3991251364379997`*^9}, {3.399125198455*^9, 
+  3.399125227249*^9}, {3.399125328635*^9, 3.399125510785*^9}, {
+  3.3991261435690002`*^9, 3.399126164583*^9}, {3.399126264199*^9, 
+  3.3991263317460003`*^9}, {3.399127223799*^9, 3.3991272474119997`*^9}, {
+  3.399127498642*^9, 3.399127538059*^9}, {3.3991911825959997`*^9, 
+  3.399191320567*^9}, {3.399191439*^9, 3.3991914391289997`*^9}, {
+  3.3991982755150003`*^9, 3.3991983601140003`*^9}, {3.399198412428*^9, 
+  3.399198481736*^9}, {3.3993674445*^9, 3.399367469594*^9}}],
+
+Cell["\<\
+This function generates a gate window by fitting the TOF pulse and selecting \
+out the given fraction (which can be more than one) of the FWHM.\
+\>", "Text",
+ CellChangeTimes->{{3.39961791371*^9, 3.39961795626*^9}, 3.399620923916*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getGateTiming", "[", 
+   RowBox[{"block_", ",", "detector_", ",", "w_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"Round", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"\"\<centre\>\"", "-", 
+       RowBox[{"w", 
+        FractionBox["\"\<fwhm\>\"", "2"]}]}], ",", 
+      RowBox[{"\"\<centre\>\"", "+", 
+       RowBox[{"w", 
+        FractionBox["\"\<fwhm\>\"", "2"]}]}]}], "}"}], "]"}], "/.", 
+   RowBox[{"getPulseTiming", "[", 
+    RowBox[{"block", ",", "detector"}], "]"}]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3991999455150003`*^9, 3.399199984725*^9}, {
+  3.399200472361*^9, 3.399200479348*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Closed]]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{925, 514},
+WindowMargins->{{25, Automatic}, {66, Automatic}},
+FrontEndVersion->"6.0 for Microsoft Windows (32-bit) (February 7, 2008)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[590, 23, 75, 1, 83, "Title"],
+Cell[668, 26, 142, 3, 29, "Text"],
+Cell[CellGroupData[{
+Cell[835, 33, 33, 0, 71, "Section"],
+Cell[871, 35, 526, 11, 52, "Input",
+ InitializationCell->True],
+Cell[1400, 48, 5219, 135, 812, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[6644, 187, 47, 0, 36, "Subsection"],
+Cell[6694, 189, 53, 1, 31, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6796, 196, 26, 0, 71, "Section"],
+Cell[6825, 198, 119, 3, 31, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[6969, 205, 37, 0, 36, "Subsection"],
+Cell[7009, 207, 935, 28, 192, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7981, 240, 30, 0, 36, "Subsection"],
+Cell[8014, 242, 53, 1, 31, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8116, 249, 28, 0, 71, "Section"],
+Cell[CellGroupData[{
+Cell[8169, 253, 38, 0, 36, "Subsection"],
+Cell[8210, 255, 137, 3, 29, "Text"],
+Cell[8350, 260, 2357, 69, 231, "Input",
+ InitializationCell->True],
+Cell[10710, 331, 94, 2, 29, "Text"],
+Cell[10807, 335, 1482, 43, 207, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12326, 383, 64, 0, 36, "Subsection"],
+Cell[12393, 385, 238, 4, 47, "Text"],
+Cell[12634, 391, 1855, 45, 252, "Input",
+ InitializationCell->True],
+Cell[14492, 438, 197, 4, 29, "Text"],
+Cell[14692, 444, 519, 13, 52, "Input",
+ InitializationCell->True],
+Cell[15214, 459, 559, 9, 65, "Text"],
+Cell[15776, 470, 1866, 45, 172, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17679, 520, 67, 0, 36, "Subsection"],
+Cell[17749, 522, 196, 4, 47, "Text"],
+Cell[17948, 528, 552, 15, 47, "Input",
+ InitializationCell->True],
+Cell[18503, 545, 1466, 36, 219, "Input",
+ InitializationCell->True],
+Cell[19972, 583, 1216, 29, 69, "Input",
+ InitializationCell->True],
+Cell[21191, 614, 534, 15, 31, "Input",
+ InitializationCell->True],
+Cell[21728, 631, 1700, 45, 69, "Input",
+ InitializationCell->True],
+Cell[23431, 678, 89, 2, 29, "Text"],
+Cell[23523, 682, 576, 16, 38, "Input",
+ InitializationCell->True],
+Cell[24102, 700, 1828, 51, 139, "Input",
+ InitializationCell->True],
+Cell[25933, 753, 5074, 136, 259, "Input",
+ InitializationCell->True],
+Cell[31010, 891, 1304, 32, 90, "Input",
+ InitializationCell->True],
+Cell[32317, 925, 2144, 55, 154, "Input",
+ InitializationCell->True],
+Cell[34464, 982, 748, 20, 47, "Input",
+ InitializationCell->True],
+Cell[35215, 1004, 205, 7, 51, "Input",
+ InitializationCell->True],
+Cell[35423, 1013, 122, 3, 29, "Text"],
+Cell[35548, 1018, 4056, 92, 392, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[39641, 1115, 116, 1, 36, "Subsection"],
+Cell[39760, 1118, 7443, 174, 732, "Input",
+ InitializationCell->True],
+Cell[47206, 1294, 661, 16, 47, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[47904, 1315, 45, 0, 36, "Subsection"],
+Cell[47952, 1317, 1066, 25, 152, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[49055, 1347, 38, 0, 36, "Subsection"],
+Cell[CellGroupData[{
+Cell[49118, 1351, 34, 0, 28, "Subsubsection"],
+Cell[49155, 1353, 2776, 77, 314, "Input",
+ InitializationCell->True],
+Cell[51934, 1432, 376, 13, 57, "Input",
+ InitializationCell->True],
+Cell[52313, 1447, 357, 6, 47, "Text"],
+Cell[52673, 1455, 3790, 96, 311, "Input",
+ InitializationCell->True],
+Cell[56466, 1553, 244, 4, 29, "Text"],
+Cell[56713, 1559, 661, 18, 65, "Input",
+ InitializationCell->True],
+Cell[57377, 1579, 175, 5, 52, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Closed]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

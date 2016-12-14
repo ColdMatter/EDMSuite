@@ -1,0 +1,333 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     10209,        324]
+NotebookOptionsPosition[      8768,        269]
+NotebookOutlinePosition[      9145,        285]
+CellTagsIndexPosition[      9102,        282]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["SEDM3 Utilities", "Title",
+ CellChangeTimes->{{3.422794344323*^9, 3.422794344429*^9}}],
+
+Cell["\<\
+Functions to make your life easier. Anything that seems to come up over and \
+over again, but isn't really part of the analysis or database should go in \
+here.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Package starts", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", "\"\<SEDM3`Utilities`\>\"", "]"}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794872608*^9, 3.4227948938*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"getClusterFiles", "::", "usage"}], "=", 
+   "\"\<Returns a list of files that belong to the named cluster. It expects \
+the files to be stored in the standard structure. It doesn't query the \
+database - it really looks for files on your hard disk.\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getBlockFile", "::", "usage"}], "=", 
+   "\"\<Give it a cluster and cluster index and it'll return the filename for \
+the block. It will only return a value if you have that block in your data \
+root.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"StandardErrorOfSampleMean", "::", "usage"}], "=", 
+   "\"\<Puts the function that they inexplicably removed from 5.2 back in. \
+Calculates the s.d. over sqrt the number of samples.\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"timeStampToDateList", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3943416188269997`*^9, 3.394341618993*^9}, {
+  3.394346947429*^9, 3.39434697604*^9}, {3.425015906085*^9, 
+  3.4250159110109997`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Exposed package variables", "Subsection"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Private", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell["Local Constants", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"kDataVersionString", "=", "\"\<v3\>\""}], ";"}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Messages", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"sedm3", "::", "noBlockFile"}], "=", 
+   "\"\<There is no file corresponding to that block on disk.\>\""}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{3.4227949076689997`*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getClusterFiles", "[", "clusterName_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"FileNames", "[", 
+     RowBox[{
+      RowBox[{"getDirectoryFromBrokenName", "[", 
+       RowBox[{"breakUpClusterName", "[", "#", "]"}], "]"}], "<>", 
+      "\"\<\\\\\>\"", "<>", "#", "<>", "\"\<*.zip\>\""}], "]"}], "&"}], "[", 
+   "clusterName", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getBlockFile", "[", 
+   RowBox[{"clusterName_", ",", "clusterIndex_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "files", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"files", "=", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"FileNames", "[", 
+         RowBox[{
+          RowBox[{"getDirectoryFromBrokenName", "[", 
+           RowBox[{"breakUpClusterName", "[", "#", "]"}], "]"}], "<>", 
+          "\"\<\\\\\>\"", "<>", "#", "<>", "\"\<_\>\"", "<>", 
+          RowBox[{"ToString", "[", "clusterIndex", "]"}], "<>", 
+          "\"\<.zip\>\""}], "]"}], "&"}], "[", "clusterName", "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Length", "[", "files", "]"}], " ", "\[NotEqual]", " ", "1"}],
+        "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"Message", "[", 
+         RowBox[{"sedm3", "::", "noBlockFile"}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"Abort", "[", "]"}], ";"}], "\[IndentingNewLine]", ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+       "files", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}]}], 
+      "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", 
+   "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.4227949158199997`*^9, 3.422794915941*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"breakUpClusterName", "[", "cluster_", "]"}], ":=", 
+    RowBox[{
+     RowBox[{"StringCases", "[", 
+      RowBox[{"cluster", ",", 
+       RowBox[{
+        RowBox[{
+        "RegularExpression", "[", 
+         "\"\<(\\\\d\\\\d)(\\\\w+)(\\\\d\\\\d)(\\\\d\\\\d)\>\"", "]"}], 
+        "\[RuleDelayed]", 
+        RowBox[{"{", 
+         RowBox[{
+         "\"\<$1\>\"", ",", "\"\<$2\>\"", ",", "\"\<$3\>\"", ",", 
+          "\"\<$4\>\""}], "}"}]}]}], "]"}], "\[LeftDoubleBracket]", "1", 
+     "\[RightDoubleBracket]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"monthReps", "=", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"\"\<Jan\>\"", "\[Rule]", "\"\<January\>\""}], ",", "\n", 
+      RowBox[{"\"\<Feb\>\"", "\[Rule]", "\"\<February\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<Mar\>\"", "->", "\"\<March\>\""}], ",", "\n", 
+      RowBox[{"\"\<Apr\>\"", "->", "\"\<April\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<May\>\"", "->", "\"\<May\>\""}], ",", "\n", 
+      RowBox[{"\"\<Jun\>\"", "->", "\"\<June\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<Jul\>\"", "->", "\"\<July\>\""}], ",", "\n", 
+      RowBox[{"\"\<Aug\>\"", "->", "\"\<August\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<Sep\>\"", "->", "\"\<September\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<Oct\>\"", "->", "\"\<October\>\""}], ",", "\n", 
+      RowBox[{"\"\<Nov\>\"", "->", "\"\<November\>\""}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<Dec\>\"", "->", "\"\<December\>\""}]}], 
+     "\[IndentingNewLine]", "}"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"getDirectoryFromBrokenName", "[", "brokenName_", "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "yearString", "}"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"yearString", "=", 
+        RowBox[{"\"\<20\>\"", " ", "<>", 
+         RowBox[{
+         "brokenName", "\[LeftDoubleBracket]", "3", 
+          "\[RightDoubleBracket]"}]}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{
+       "Global`$dataRoot", "<>", "\"\<\\\\sedm\\\\\>\"", "<>", 
+        "kDataVersionString", "<>", "\"\<\\\\\>\"", " ", "<>", "yearString", 
+        "<>", "\"\<\\\\\>\"", "<>", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+          "brokenName", "\[LeftDoubleBracket]", "2", 
+           "\[RightDoubleBracket]"}], "/.", "monthReps"}], ")"}], "<>", 
+        "yearString"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"StandardErrorOfSampleMean", "[", "data_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"StandardDeviation", "[", "data", "]"}], "/", 
+    RowBox[{"Sqrt", "[", 
+     RowBox[{"Length", "[", "data", "]"}], "]"}]}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"timeStampToDateList", "[", "ts_", "]"}], ":=", 
+  RowBox[{"DateList", "[", 
+   RowBox[{
+    RowBox[{
+     FractionBox["ts", 
+      SuperscriptBox["10", "7"]], "+", 
+     RowBox[{"AbsoluteTime", "[", 
+      RowBox[{"{", 
+       RowBox[{"1", ",", "1", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}],
+       "]"}]}], "//", "N"}], "]"}]}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.39434706646*^9, 3.3943470668599997`*^9}, {
+  3.425015898856*^9, 3.425015899269*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{762, 574},
+WindowMargins->{{Automatic, 95}, {Automatic, 35}},
+FrontEndVersion->"6.0 for Microsoft Windows (32-bit) (February 7, 2008)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[590, 23, 92, 1, 83, "Title"],
+Cell[685, 26, 184, 4, 47, "Text"],
+Cell[CellGroupData[{
+Cell[894, 34, 33, 0, 71, "Section"],
+Cell[930, 36, 194, 5, 31, "Input",
+ InitializationCell->True],
+Cell[1127, 43, 1161, 27, 232, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[2313, 74, 47, 0, 36, "Subsection"],
+Cell[2363, 76, 53, 1, 31, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2465, 83, 26, 0, 71, "Section"],
+Cell[2494, 85, 119, 3, 31, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[2638, 92, 37, 0, 36, "Subsection"],
+Cell[2678, 94, 120, 3, 31, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2835, 102, 30, 0, 36, "Subsection"],
+Cell[2868, 104, 244, 7, 31, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3161, 117, 28, 0, 71, "Section"],
+Cell[3192, 119, 415, 11, 72, "Input",
+ InitializationCell->True],
+Cell[3610, 132, 1416, 35, 252, "Input",
+ InitializationCell->True],
+Cell[5029, 169, 3533, 89, 586, "Input",
+ InitializationCell->True],
+Cell[8565, 260, 175, 5, 52, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

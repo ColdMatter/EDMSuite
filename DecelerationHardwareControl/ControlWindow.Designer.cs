@@ -63,13 +63,13 @@ namespace DecelerationHardwareControl
             this.GetData = new System.Windows.Forms.Button();
             this.monitorPressureSourceChamber = new System.Windows.Forms.TextBox();
             this.PressureSourceChamber = new System.Windows.Forms.Label();
+            this.FlowController = new System.Windows.Forms.TabPage();
+            this.ReturnBox = new System.Windows.Forms.TextBox();
+            this.CommandBox = new System.Windows.Forms.TextBox();
+            this.SetFlow = new System.Windows.Forms.Button();
+            this.ReadFlow = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.FlowController = new System.Windows.Forms.TabPage();
-            this.ReadFlow = new System.Windows.Forms.Button();
-            this.SetFlow = new System.Windows.Forms.Button();
-            this.CommandBox = new System.Windows.Forms.TextBox();
-            this.ReturnBox = new System.Windows.Forms.TextBox();
             this.SynthTab.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.LaserTab.SuspendLayout();
@@ -89,10 +89,10 @@ namespace DecelerationHardwareControl
             this.SynthTab.Controls.Add(this.synthOnAmpBox);
             this.SynthTab.Controls.Add(this.synthOnFreqBox);
             this.SynthTab.Controls.Add(this.label8);
-            this.SynthTab.Location = new System.Drawing.Point(4, 22);
+            this.SynthTab.Location = new System.Drawing.Point(4, 40);
             this.SynthTab.Name = "SynthTab";
             this.SynthTab.Padding = new System.Windows.Forms.Padding(3);
-            this.SynthTab.Size = new System.Drawing.Size(347, 225);
+            this.SynthTab.Size = new System.Drawing.Size(347, 207);
             this.SynthTab.TabIndex = 3;
             this.SynthTab.Text = "Synth";
             this.SynthTab.UseVisualStyleBackColor = true;
@@ -166,20 +166,20 @@ namespace DecelerationHardwareControl
             // 
             // DeceleratorTab
             // 
-            this.DeceleratorTab.Location = new System.Drawing.Point(4, 22);
+            this.DeceleratorTab.Location = new System.Drawing.Point(4, 40);
             this.DeceleratorTab.Name = "DeceleratorTab";
             this.DeceleratorTab.Padding = new System.Windows.Forms.Padding(3);
-            this.DeceleratorTab.Size = new System.Drawing.Size(347, 225);
+            this.DeceleratorTab.Size = new System.Drawing.Size(347, 207);
             this.DeceleratorTab.TabIndex = 2;
             this.DeceleratorTab.Text = "Decelerator";
             this.DeceleratorTab.UseVisualStyleBackColor = true;
             // 
             // EFieldTab
             // 
-            this.EFieldTab.Location = new System.Drawing.Point(4, 22);
+            this.EFieldTab.Location = new System.Drawing.Point(4, 40);
             this.EFieldTab.Name = "EFieldTab";
             this.EFieldTab.Padding = new System.Windows.Forms.Padding(3);
-            this.EFieldTab.Size = new System.Drawing.Size(347, 225);
+            this.EFieldTab.Size = new System.Drawing.Size(347, 207);
             this.EFieldTab.TabIndex = 1;
             this.EFieldTab.Text = "Electric Fields";
             this.EFieldTab.UseVisualStyleBackColor = true;
@@ -295,9 +295,9 @@ namespace DecelerationHardwareControl
             this.MonitoringTab.Controls.Add(this.monitorPressureSourceChamber);
             this.MonitoringTab.Controls.Add(this.PressureSourceChamber);
             this.MonitoringTab.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.MonitoringTab.Location = new System.Drawing.Point(4, 22);
+            this.MonitoringTab.Location = new System.Drawing.Point(4, 40);
             this.MonitoringTab.Name = "MonitoringTab";
-            this.MonitoringTab.Size = new System.Drawing.Size(347, 225);
+            this.MonitoringTab.Size = new System.Drawing.Size(347, 207);
             this.MonitoringTab.TabIndex = 4;
             this.MonitoringTab.Text = "Monitor";
             this.MonitoringTab.UseVisualStyleBackColor = true;
@@ -432,10 +432,13 @@ namespace DecelerationHardwareControl
             // 
             // monitorPressureSourceChamber
             // 
+            this.monitorPressureSourceChamber.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.monitorPressureSourceChamber.Location = new System.Drawing.Point(182, 87);
             this.monitorPressureSourceChamber.Name = "monitorPressureSourceChamber";
+            this.monitorPressureSourceChamber.ReadOnly = true;
             this.monitorPressureSourceChamber.Size = new System.Drawing.Size(100, 20);
             this.monitorPressureSourceChamber.TabIndex = 1;
+            this.monitorPressureSourceChamber.TextChanged += new System.EventHandler(this.monitorPressureSourceChamber_TextChanged);
             // 
             // PressureSourceChamber
             // 
@@ -446,20 +449,6 @@ namespace DecelerationHardwareControl
             this.PressureSourceChamber.Size = new System.Drawing.Size(172, 16);
             this.PressureSourceChamber.TabIndex = 0;
             this.PressureSourceChamber.Text = "Pressure Source Chamber :";
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(0, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 23);
-            this.label3.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
             // 
             // FlowController
             // 
@@ -475,15 +464,19 @@ namespace DecelerationHardwareControl
             this.FlowController.Text = " Flow Controller";
             this.FlowController.UseVisualStyleBackColor = true;
             // 
-            // ReadFlow
+            // ReturnBox
             // 
-            this.ReadFlow.Location = new System.Drawing.Point(73, 19);
-            this.ReadFlow.Name = "ReadFlow";
-            this.ReadFlow.Size = new System.Drawing.Size(64, 28);
-            this.ReadFlow.TabIndex = 0;
-            this.ReadFlow.Text = "Read";
-            this.ReadFlow.UseVisualStyleBackColor = true;
-            this.ReadFlow.Click += new System.EventHandler(this.ReadFlow_Click);
+            this.ReturnBox.Location = new System.Drawing.Point(56, 67);
+            this.ReturnBox.Name = "ReturnBox";
+            this.ReturnBox.Size = new System.Drawing.Size(95, 20);
+            this.ReturnBox.TabIndex = 3;
+            // 
+            // CommandBox
+            // 
+            this.CommandBox.Location = new System.Drawing.Point(201, 67);
+            this.CommandBox.Name = "CommandBox";
+            this.CommandBox.Size = new System.Drawing.Size(95, 20);
+            this.CommandBox.TabIndex = 2;
             // 
             // SetFlow
             // 
@@ -495,19 +488,29 @@ namespace DecelerationHardwareControl
             this.SetFlow.UseVisualStyleBackColor = true;
             this.SetFlow.Click += new System.EventHandler(this.SetFlow_Click);
             // 
-            // CommandBox
+            // ReadFlow
             // 
-            this.CommandBox.Location = new System.Drawing.Point(201, 67);
-            this.CommandBox.Name = "CommandBox";
-            this.CommandBox.Size = new System.Drawing.Size(95, 20);
-            this.CommandBox.TabIndex = 2;
+            this.ReadFlow.Location = new System.Drawing.Point(73, 19);
+            this.ReadFlow.Name = "ReadFlow";
+            this.ReadFlow.Size = new System.Drawing.Size(64, 28);
+            this.ReadFlow.TabIndex = 0;
+            this.ReadFlow.Text = "Read";
+            this.ReadFlow.UseVisualStyleBackColor = true;
+            this.ReadFlow.Click += new System.EventHandler(this.ReadFlow_Click);
             // 
-            // ReturnBox
+            // label3
             // 
-            this.ReturnBox.Location = new System.Drawing.Point(56, 67);
-            this.ReturnBox.Name = "ReturnBox";
-            this.ReturnBox.Size = new System.Drawing.Size(95, 20);
-            this.ReturnBox.TabIndex = 3;
+            this.label3.Location = new System.Drawing.Point(0, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 23);
+            this.label3.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(0, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
             // 
             // ControlWindow
             // 

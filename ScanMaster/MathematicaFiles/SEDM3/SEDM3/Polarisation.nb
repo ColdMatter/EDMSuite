@@ -1,0 +1,383 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     12150,        374]
+NotebookOptionsPosition[     10940,        327]
+NotebookOutlinePosition[     11319,        343]
+CellTagsIndexPosition[     11276,        340]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Polarisation Factor", "Title"],
+
+Cell["\<\
+This package provides a function to calculate the polarisation factor, \
+\[Alpha]. See the file \"Rigid Rotor Stark Shift.nb\" for more details.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Package declarations", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", "\"\<SEDM3`Polarisation`\>\"", "]"}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422960534526*^9, 3.422960534623*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"polarisationFactor", "::", "usage"}], "=", 
+   "\"\<polarisationFactor[Efield] gives the polarisation factor for a field \
+EField (kV/cm).\>\""}], ";"}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Implementation", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], ";"}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Calculate the polarisation curve and store it in the Applications directory\
+\>", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"calculateAndCachePolarisation", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "ME", ",", "SubH", ",", "H", ",", "HSmall", ",", "HSmallNum", ",", "ev",
+        ",", "evs", ",", "levels", ",", "groundState", ",", "\[Alpha]"}], 
+      "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Off", "[", 
+       RowBox[{"ClebschGordan", "::", "phy"}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Off", "[", 
+       RowBox[{"ClebschGordan", "::", "tri"}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"ME", "[", " ", 
+        RowBox[{"J_", ",", "j_", ",", "K_", ",", "k_"}], "]"}], ":=", " ", 
+       RowBox[{
+        RowBox[{
+         FractionBox[
+          SuperscriptBox["\[HBar]", "2"], 
+          RowBox[{"2", "A"}]], "J", 
+         RowBox[{"(", 
+          RowBox[{"J", "+", "1"}], ")"}], 
+         RowBox[{"KroneckerDelta", "[", 
+          RowBox[{"J", ",", "K"}], "]"}], 
+         RowBox[{"KroneckerDelta", "[", 
+          RowBox[{"j", ",", "k"}], "]"}]}], "+", 
+        RowBox[{"\[Mu]", "  ", "F", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           RowBox[{"-", "1"}], ")"}], 
+          RowBox[{
+           RowBox[{"2", "J"}], "-", "j"}]], 
+         SqrtBox[
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"2", "J"}], "+", "1"}], ")"}], 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"2", "K"}], "+", "1"}], ")"}]}]], 
+         RowBox[{"ThreeJSymbol", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"J", ",", 
+             RowBox[{"-", "j"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"K", ",", "k"}], "}"}]}], "]"}], 
+         RowBox[{"ThreeJSymbol", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"J", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"K", ",", "0"}], "}"}]}], "]"}]}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"SubH", "[", 
+        RowBox[{"J_", ",", "K_"}], "]"}], ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Abs", "[", 
+           RowBox[{"J", "-", "K"}], "]"}], "\[GreaterEqual]", "2"}], ",", 
+         RowBox[{"Table", "[", " ", 
+          RowBox[{"0", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"j", ",", 
+             RowBox[{"-", "J"}], ",", "J"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"k", ",", 
+             RowBox[{"-", "K"}], ",", "K"}], "}"}]}], "]"}], ",", 
+         RowBox[{"Table", "[", " ", 
+          RowBox[{
+           RowBox[{"ME", "[", 
+            RowBox[{"J", ",", "j", ",", "K", ",", "k"}], "]"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"j", ",", 
+             RowBox[{"-", "J"}], ",", "J"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"k", ",", 
+             RowBox[{"-", "K"}], ",", "K"}], "}"}]}], "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"H", "[", "N_", "]"}], ":=", 
+       RowBox[{"ArrayFlatten", "[", 
+        RowBox[{"Table", "[", 
+         RowBox[{
+          RowBox[{"SubH", "[", 
+           RowBox[{"i", ",", "j"}], "]"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"i", ",", "0", ",", "N"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"j", ",", "0", ",", "N"}], "}"}]}], "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"HSmall", "=", 
+       RowBox[{"H", "[", "7", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"HSmallNum", "[", "f_", "]"}], ":=", 
+       RowBox[{"N", "[", 
+        RowBox[{"HSmall", "/.", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"F", "\[Rule]", "f"}], ",", " ", 
+           RowBox[{"\[Mu]", "\[Rule]", "1"}], ",", 
+           RowBox[{"A", "\[Rule]", "0.5"}], ",", 
+           RowBox[{"\[HBar]", "\[Rule]", "1"}]}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Energy", "[", "f_", "]"}], ":=", 
+       RowBox[{"Eigenvalues", "[", 
+        RowBox[{"HSmallNum", "[", "f", "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ev", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"Energy", "[", "f", "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"f", ",", "0", ",", "20", ",", "0.1"}], "}"}]}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"evs", "=", 
+       RowBox[{"Transpose", "[", 
+        RowBox[{"Sort", "/@", "ev"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"levels", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"Table", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"0.1", 
+              RowBox[{"(", 
+               RowBox[{"i", "-", "1"}], ")"}]}], ",", 
+             RowBox[{
+              RowBox[{
+              "evs", "\[LeftDoubleBracket]", "j", "\[RightDoubleBracket]"}], 
+              "\[LeftDoubleBracket]", "i", "\[RightDoubleBracket]"}]}], "}"}],
+            ",", 
+           RowBox[{"{", 
+            RowBox[{"i", ",", "1", ",", 
+             RowBox[{"Length", "[", 
+              RowBox[{
+              "evs", "\[LeftDoubleBracket]", "j", "\[RightDoubleBracket]"}], 
+              "]"}]}], "}"}]}], "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"j", ",", "1", ",", 
+           RowBox[{"Length", "[", "evs", "]"}]}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"groundState", "=", 
+       RowBox[{"ListInterpolation", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Transpose", "[", 
+           RowBox[{
+           "levels", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+           "]"}], "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], ",",
+          
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Transpose", "[", 
+            RowBox[{
+            "levels", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+            "]"}], "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], 
+          "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"SEDM3`Polarisation`\[Alpha]", "[", "\[Lambda]_", "]"}], "=", 
+       RowBox[{
+        RowBox[{"-", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"groundState", "[", "y", "]"}], ",", "y"}], "]"}]}], "/.", 
+        
+        RowBox[{"y", "\[Rule]", "\[Lambda]"}]}]}], ";", "\[IndentingNewLine]",
+       
+      RowBox[{"SetDirectory", "[", 
+       RowBox[{
+       "$TopDirectory", "<>", "\"\<\\\\AddOns\\\\Applications\\\\\>\""}], 
+       "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"DumpSave", "[", 
+       RowBox[{"\"\<polSEDM3.mx\>\"", ",", "SEDM3`Polarisation`\[Alpha]"}], 
+       "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"On", "[", 
+       RowBox[{"ClebschGordan", "::", "phy"}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"On", "[", 
+       RowBox[{"ClebschGordan", "::", "tri"}], "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.394346257981*^9, 3.394346261151*^9}, {3.394346501814*^9,
+   3.394346501948*^9}, {3.422960546091*^9, 3.42296056844*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Package functions", "Subsection"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Off", "[", 
+   RowBox[{"Get", "::", "\"\<noopen\>\""}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"If", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Get", "[", "\"\<polSEDM3.mx\>\"", "]"}], "\[Equal]", 
+     "$Failed"}], ",", 
+    RowBox[{
+     RowBox[{
+     "Print", "[", "\"\<Calculating rotor Stark shift. First time only.\>\"", 
+      "]"}], ";", 
+     RowBox[{"calculateAndCachePolarisation", "[", "]"}], ";", 
+     RowBox[{"Get", "[", "\"\<polSEDM2.mx\>\"", "]"}], ";", 
+     RowBox[{"Print", "[", "\"\<Cached for next time\>\"", "]"}]}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"On", "[", 
+   RowBox[{"Get", "::", "\"\<noopen\>\""}], "]"}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.4229605496949997`*^9, 3.422960549816*^9}}],
+
+Cell["Export the function.", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"polarisationFactor", "[", "EField_", "]"}], ":=", 
+  RowBox[{"SEDM3`Polarisation`\[Alpha]", "[", 
+   FractionBox[
+    RowBox[{"3.91", "*", "3.335", " ", "*", " ", 
+     SuperscriptBox["10", 
+      RowBox[{"-", "30"}]], " ", "*", " ", "EField", "*", 
+     SuperscriptBox["10", "5"]}], 
+    RowBox[{"7.24", "*", 
+     SuperscriptBox["10", "9"], "*", "6.626", "*", 
+     SuperscriptBox["10", 
+      RowBox[{"-", "34"}]]}]], "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.42296055895*^9, 3.422960559145*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Package end", "Section"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{901, 651},
+WindowMargins->{{-30, Automatic}, {-21, Automatic}},
+FrontEndVersion->"6.0 for Microsoft Windows (32-bit) (February 7, 2008)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[590, 23, 36, 0, 83, "Title"],
+Cell[629, 25, 168, 3, 29, "Text"],
+Cell[CellGroupData[{
+Cell[822, 32, 39, 0, 71, "Section"],
+Cell[864, 34, 199, 5, 31, "Input",
+ InitializationCell->True],
+Cell[1066, 41, 237, 6, 52, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1340, 52, 33, 0, 71, "Section"],
+Cell[1376, 54, 119, 3, 31, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1532, 62, 102, 2, 71, "Section"],
+Cell[1637, 66, 7514, 197, 548, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[9176, 267, 39, 0, 36, "Subsection"],
+Cell[9218, 269, 835, 23, 92, "Input",
+ InitializationCell->True],
+Cell[10056, 294, 36, 0, 29, "Text"],
+Cell[10095, 296, 560, 14, 49, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10704, 316, 30, 0, 71, "Section"],
+Cell[10737, 318, 175, 5, 52, "Input",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

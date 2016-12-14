@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EC42DEF0-3671-40AD-86A1-6CE77E70909F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MicrocavityHardwareControl</RootNamespace>
+    <AssemblyName>MicrocavityHardwareControl</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls.Booleans, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls.Graphs, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls.Numerics, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.Net, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.NetworkVariable, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Tdms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\NationalInstruments.VisaNS\v4.0_13.0.45.167__4febd62461bf11a4\NationalInstruments.VisaNS.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.Vision.Acquisition.Imaq, Version=4.60.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller.cs" />
+    <Compile Include="ControlWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControlWindow.Designer.cs">
+      <DependentUpon>ControlWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Runner.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <EmbeddedResource Include="ControlWindow.resx">
+      <DependentUpon>ControlWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
+      <Name>ScanMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

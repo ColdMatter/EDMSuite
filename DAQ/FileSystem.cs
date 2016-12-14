@@ -17,15 +17,15 @@ namespace DAQ.Environment
 
 		// A helper function to assemble the correct dataPath, creating directories on the
 		// way down if need be
-		public String GetDataDirectory(String baseDir)
+		virtual public String GetDataDirectory(String baseDir)
 		{
 			if ((bool)Environs.FileSystem.SortDataByDate) 
 			{
 				String year = DateTime.Now.ToString("yyyy",DateTimeFormatInfo.InvariantInfo);
 				String month = DateTime.Now.ToString("MMMM",DateTimeFormatInfo.InvariantInfo);
 				String directory = baseDir + year + "\\" + month + year + "\\";
-				if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-				return directory;
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                return directory;			
 			}
 			else
 			{
@@ -35,7 +35,7 @@ namespace DAQ.Environment
 		}
 
 		// 
-		public String GenerateNextDataFileName()
+		virtual public String GenerateNextDataFileName()
 		{
 			if (!(bool)Environs.FileSystem.SortDataByDate) return "";
 			// iterate through the data search paths and find the latest data file

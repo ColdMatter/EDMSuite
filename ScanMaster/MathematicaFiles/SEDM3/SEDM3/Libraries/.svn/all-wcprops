@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/SEDM3/!svn/ver/15/SEDM3/Libraries
+END
+NationalInstruments.Analysis.Enterprise.xml
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/SEDM3/!svn/ver/5/SEDM3/Libraries/NationalInstruments.Analysis.Enterprise.xml
+END
+SirCachealot.exe
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/SEDM3/!svn/ver/15/SEDM3/Libraries/SirCachealot.exe
+END
+ICSharpCode.SharpZipLib.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/SEDM3/!svn/ver/5/SEDM3/Libraries/ICSharpCode.SharpZipLib.dll
+END
+memcached.exe
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/SEDM3/!svn/ver/5/SEDM3/Libraries/memcached.exe
+END
+MySql.Data.dll
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/SEDM3/!svn/ver/5/SEDM3/Libraries/MySql.Data.dll
+END
+NationalInstruments.Common.Native.dll
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/SEDM3/!svn/ver/15/SEDM3/Libraries/NationalInstruments.Common.Native.dll
+END
+SharedCode.dll
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/SEDM3/!svn/ver/15/SEDM3/Libraries/SharedCode.dll
+END
+NationalInstruments.Analysis.Enterprise.dll
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/SEDM3/!svn/ver/15/SEDM3/Libraries/NationalInstruments.Analysis.Enterprise.dll
+END

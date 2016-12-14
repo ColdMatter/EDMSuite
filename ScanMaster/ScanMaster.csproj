@@ -26,6 +26,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -38,11 +41,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +123,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|AnyCPU'">
     <OutputPath>bin\Wavemeter\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Microcavity|AnyCPU'">
+    <OutputPath>bin\Microcavity\</OutputPath>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
@@ -189,6 +196,26 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AnalogInputAfterScanPlugin.cs" />
+    <Compile Include="AnalogSerialInputPlugin.cs" />
+    <Compile Include="CommonRamanPatternBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommonRamanPatternPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FastAnalogInputPlugin.cs" />
+    <Compile Include="FastAnalogShotGathererPlugin.cs" />
+    <Compile Include="FastCountingShotGathererPlugin.cs" />
+    <Compile Include="MicrocavityPatternBuilder.cs" />
+    <Compile Include="MicrocavityPatternPlugin.cs" />
+    <Compile Include="MicrocavityPatternPluginBase.cs" />
+    <Compile Include="MicrocavityViewer.cs" />
+    <Compile Include="MicrocavityViewerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MulitInputShotGathererPlugin.cs" />
+    <Compile Include="OffsetAnalogOutputPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,12 +238,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CommandProcessor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CommonRamanPatternBuilder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CommonRamanPatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controller.cs">
@@ -380,6 +401,7 @@
     <Compile Include="ViewerManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WaveformAnalogOutputPlugin.cs" />
     <Compile Include="YAGPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -387,6 +409,9 @@
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MicrocavityViewerWindow.resx">
+      <DependentUpon>MicrocavityViewerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
@@ -418,6 +443,11 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -431,6 +461,11 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>

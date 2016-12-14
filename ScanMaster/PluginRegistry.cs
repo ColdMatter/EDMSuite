@@ -31,6 +31,8 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
+            scanOutputPlugins.Add("Waveform output", typeof(WaveformAnalogOutputPlugin));
+            scanOutputPlugins.Add("Offset scan output", typeof(OffsetAnalogOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
 #endif
@@ -50,6 +52,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
+            patternPlugins.Add("Microcavity",typeof(MicrocavityPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -61,9 +64,15 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
             shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
+            shotGathererPlugins.Add("Fast Analog gatherer", typeof(FastAnalogShotGathererPlugin));
+            shotGathererPlugins.Add("Fast Counting gatherer", typeof(FastCountingShotGathererPlugin));
+            shotGathererPlugins.Add("Multi Input gatherer", typeof(MultiInputShotGathererPlugin));
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
+            analogInputPlugins.Add("Analog input after scan", typeof(AnalogInputAfterScanPlugin));
+            analogInputPlugins.Add("Fast Analog input", typeof(FastAnalogInputPlugin));
+            analogInputPlugins.Add("Analog and Serial input", typeof(AnalogSerialInputPlugin));
 #if DECELERATOR
             analogInputPlugins.Add("Deceleration hardware analog input", typeof(DecelerationHardwareAnalogInputPlugin));
 #endif

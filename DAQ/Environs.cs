@@ -205,6 +205,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-JFG109":
+                    Hardware = new MicrocavityHardware();
+                    FileSystem = new CCMQNFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

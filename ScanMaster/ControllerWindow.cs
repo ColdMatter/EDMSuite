@@ -81,13 +81,13 @@ namespace ScanMaster.GUI
 				viewerMenu.MenuItems.Add(item);
 			}
 
-			// build the Schon menu
-			foreach (DictionaryEntry de in DataFaker.FakeScans)
-			{
-				MenuItem item = new MenuItem(de.Key.ToString());
-				item.Click +=new EventHandler(schonClicked);
-				schonMenu.MenuItems.Add(item);
-			}
+			//build the Schon menu
+            //foreach (DictionaryEntry de in DataFaker.FakeScans)
+            //{
+            //    MenuItem item = new MenuItem(de.Key.ToString());
+            //    item.Click +=new EventHandler(schonClicked);
+            //    schonMenu.MenuItems.Add(item);
+            //}
 		}
 
 		protected override void Dispose( bool disposing )

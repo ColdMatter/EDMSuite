@@ -126,6 +126,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|AnyCPU'">
     <OutputPath>bin\Wavemeter\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Microcavity|AnyCPU'">
+    <OutputPath>bin\Microcavity\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <Name>ICSharpCode.SharpZipLib</Name>
