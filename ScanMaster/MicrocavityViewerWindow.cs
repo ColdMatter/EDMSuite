@@ -19,27 +19,22 @@ namespace ScanMaster.GUI
 		private MicrocavityViewer viewer;
 		private System.ComponentModel.Container components = null;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph analog1Graph;
-		private NationalInstruments.UI.XAxis xAxis1;
-		private NationalInstruments.UI.YAxis yAxis1;
+		private NationalInstruments.UI.XAxis analog1xAxis;
+		private NationalInstruments.UI.YAxis analog1yAxis;
 		private NationalInstruments.UI.WindowsForms.ScatterGraph analog2Graph;
-		private NationalInstruments.UI.XAxis xAxis2;
-        private NationalInstruments.UI.YAxis yAxis2;
+		private NationalInstruments.UI.XAxis analog2xAxis;
+        private NationalInstruments.UI.YAxis analog2yAxis;
 		private NationalInstruments.UI.ScatterPlot analog1Plot;
         private NationalInstruments.UI.ScatterPlot analog2Plot;
         private NationalInstruments.UI.XAxis pmtXAxis;
-		private NationalInstruments.UI.XAxis xAxis5;
-		private NationalInstruments.UI.WindowsForms.ScatterGraph differenceGraph;
 		private NationalInstruments.UI.WindowsForms.WaveformGraph tofGraph;
 		private NationalInstruments.UI.XAxis xAxis4;
 		private NationalInstruments.UI.WaveformPlot tofOnPlot;
-		private NationalInstruments.UI.WaveformPlot tofOffPlot;
-		private NationalInstruments.UI.ScatterPlot differencePlot;
-		private NationalInstruments.UI.ScatterPlot differenceAvgPlot;
+        private NationalInstruments.UI.WaveformPlot tofOffPlot;
 		private NationalInstruments.UI.XYCursor tofLowCursor;
 		private NationalInstruments.UI.XYCursor tofHighCursor;
 		private NationalInstruments.UI.WaveformPlot tofOnAveragePlot;
         private NationalInstruments.UI.WaveformPlot tofOffAveragePlot;
-		private NationalInstruments.UI.YAxis differenceYAxis;
 		private NationalInstruments.UI.YAxis tofYAxis;
         private NationalInstruments.UI.YAxis tofAvgYAxis;
 		private System.Windows.Forms.Label label1;
@@ -65,25 +60,25 @@ namespace ScanMaster.GUI
         private WaveformGraph tofGraph2;
         private XYCursor normSigGateLow;
         private WaveformPlot tofOnAveragePlot2;
-        private XAxis xAxis6;
-        private YAxis yAxis3;
+        private XAxis tofxAxis2;
+        private YAxis tofAvgyAxis2;
         private XYCursor normSigGateHigh;
         private WaveformPlot tofOnPlot2;
-        private YAxis yAxis4;
+        private YAxis tofyAxis2;
         private WaveformPlot tofOffPlot2;
         private WaveformPlot tofOffAveragePlot2;
         private WaveformPlot tofFitPlot2;
         private WaveformGraph tofGraph3;
         private XYCursor xyCursor3;
-        private WaveformPlot tofOnAverageNormedPlot;
-        private XAxis xAxis7;
-        private YAxis yAxis5;
+        private WaveformPlot tofOnAveragePlot3;
+        private XAxis tofxAxis3;
+        private YAxis tofAvgyAxis3;
         private XYCursor xyCursor4;
-        private WaveformPlot tofOnNormedPlot;
-        private YAxis yAxis6;
-        private WaveformPlot tofOffNormedPlot;
-        private WaveformPlot tofOffAverageNormedPlot;
-        private WaveformPlot tofFitNormedPlot;
+        private WaveformPlot tofOnPlot3;
+        private YAxis tofyAxis3;
+        private WaveformPlot tofOffPlot3;
+        private WaveformPlot tofOffAveragePlot3;
+        private WaveformPlot tofFitPlot3;
         private ToolStripLabel toolStripLabel1;
         private ToolStripPropertyEditor toolStripPropertyEditor1;
         private ToolStripLabel toolStripLabel2;
@@ -93,35 +88,40 @@ namespace ScanMaster.GUI
         private XYCursor normBgGateLow;
         private XYCursor normBgGateHigh;
         private ScatterGraph analog3Graph;
-        private ScatterPlot scatterPlot1;
-        private XAxis xAxis8;
-        private YAxis yAxis7;
+        private ScatterPlot analog3Plot;
+        private XAxis analog3xAxis;
+        private YAxis analog3yAxis;
         private ScatterGraph analog4Graph;
-        private ScatterPlot scatterPlot2;
-        private XAxis xAxis9;
+        private ScatterPlot analog4Plot;
+        private XAxis analog4xAxis;
         private WaveformGraph tofGraph4;
         private XYCursor xyCursor1;
-        private WaveformPlot waveformPlot1;
-        private XAxis xAxis3;
-        private YAxis yAxis9;
+        private WaveformPlot tofOnAveragePlot4;
+        private XAxis tofxAxis4;
+        private YAxis tofAvgyAxis4;
         private XYCursor xyCursor2;
-        private WaveformPlot waveformPlot2;
-        private YAxis yAxis10;
-        private WaveformPlot waveformPlot3;
-        private WaveformPlot waveformPlot4;
-        private WaveformPlot waveformPlot5;
+        private WaveformPlot tofOnPlot4;
+        private YAxis tofyAxis4;
+        private WaveformPlot tofOffPlot4;
+        private WaveformPlot tofOffAveragePlot4;
+        private WaveformPlot tofFitPlot4;
         private WaveformGraph tofGraph5;
         private XYCursor xyCursor5;
-        private WaveformPlot waveformPlot6;
-        private XAxis xAxis10;
-        private YAxis yAxis11;
+        private WaveformPlot tofOnAveragePlot5;
+        private XAxis tofxAxis5;
+        private YAxis tofAvgyAxis5;
         private XYCursor xyCursor6;
-        private WaveformPlot waveformPlot7;
-        private YAxis yAxis12;
-        private WaveformPlot waveformPlot8;
-        private WaveformPlot waveformPlot9;
-        private WaveformPlot waveformPlot10;
-        private YAxis yAxis8;
+        private WaveformPlot tofOnPlot5;
+        private YAxis tofyAxis5;
+        private WaveformPlot tofOffPlot5;
+        private WaveformPlot tofOffAveragePlot5;
+        private WaveformPlot tofFitPlot5;
+        private IntensityGraph superscanGraph;
+        private ColorScale colorScale1;
+        private IntensityPlot superscanPlot;
+        private IntensityXAxis superscanXAxis;
+        private IntensityYAxis superscanYAxis;
+        private YAxis analog4yAxis;
 
 		public MicrocavityViewerWindow(MicrocavityViewer viewer
             )
@@ -153,18 +153,13 @@ namespace ScanMaster.GUI
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MicrocavityViewerWindow));
             this.analog1Graph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.analog1Plot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis1 = new NationalInstruments.UI.XAxis();
-            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.analog1xAxis = new NationalInstruments.UI.XAxis();
+            this.analog1yAxis = new NationalInstruments.UI.YAxis();
             this.analog2Graph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.analog2Plot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis2 = new NationalInstruments.UI.XAxis();
-            this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.analog2xAxis = new NationalInstruments.UI.XAxis();
+            this.analog2yAxis = new NationalInstruments.UI.YAxis();
             this.pmtXAxis = new NationalInstruments.UI.XAxis();
-            this.xAxis5 = new NationalInstruments.UI.XAxis();
-            this.differenceYAxis = new NationalInstruments.UI.YAxis();
-            this.differenceGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.differencePlot = new NationalInstruments.UI.ScatterPlot();
-            this.differenceAvgPlot = new NationalInstruments.UI.ScatterPlot();
             this.tofGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.tofLowCursor = new NationalInstruments.UI.XYCursor();
             this.tofOnAveragePlot = new NationalInstruments.UI.WaveformPlot();
@@ -198,27 +193,27 @@ namespace ScanMaster.GUI
             this.tofGraph2 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.normSigGateLow = new NationalInstruments.UI.XYCursor();
             this.tofOnAveragePlot2 = new NationalInstruments.UI.WaveformPlot();
-            this.xAxis6 = new NationalInstruments.UI.XAxis();
-            this.yAxis3 = new NationalInstruments.UI.YAxis();
+            this.tofxAxis2 = new NationalInstruments.UI.XAxis();
+            this.tofAvgyAxis2 = new NationalInstruments.UI.YAxis();
             this.normSigGateHigh = new NationalInstruments.UI.XYCursor();
             this.normBgGateLow = new NationalInstruments.UI.XYCursor();
             this.tofOnPlot2 = new NationalInstruments.UI.WaveformPlot();
-            this.yAxis4 = new NationalInstruments.UI.YAxis();
+            this.tofyAxis2 = new NationalInstruments.UI.YAxis();
             this.normBgGateHigh = new NationalInstruments.UI.XYCursor();
             this.tofOffPlot2 = new NationalInstruments.UI.WaveformPlot();
             this.tofOffAveragePlot2 = new NationalInstruments.UI.WaveformPlot();
             this.tofFitPlot2 = new NationalInstruments.UI.WaveformPlot();
             this.tofGraph3 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.xyCursor3 = new NationalInstruments.UI.XYCursor();
-            this.tofOnAverageNormedPlot = new NationalInstruments.UI.WaveformPlot();
-            this.xAxis7 = new NationalInstruments.UI.XAxis();
-            this.yAxis5 = new NationalInstruments.UI.YAxis();
+            this.tofOnAveragePlot3 = new NationalInstruments.UI.WaveformPlot();
+            this.tofxAxis3 = new NationalInstruments.UI.XAxis();
+            this.tofAvgyAxis3 = new NationalInstruments.UI.YAxis();
             this.xyCursor4 = new NationalInstruments.UI.XYCursor();
-            this.tofOnNormedPlot = new NationalInstruments.UI.WaveformPlot();
-            this.yAxis6 = new NationalInstruments.UI.YAxis();
-            this.tofOffNormedPlot = new NationalInstruments.UI.WaveformPlot();
-            this.tofOffAverageNormedPlot = new NationalInstruments.UI.WaveformPlot();
-            this.tofFitNormedPlot = new NationalInstruments.UI.WaveformPlot();
+            this.tofOnPlot3 = new NationalInstruments.UI.WaveformPlot();
+            this.tofyAxis3 = new NationalInstruments.UI.YAxis();
+            this.tofOffPlot3 = new NationalInstruments.UI.WaveformPlot();
+            this.tofOffAveragePlot3 = new NationalInstruments.UI.WaveformPlot();
+            this.tofFitPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPropertyEditor1 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
@@ -226,38 +221,42 @@ namespace ScanMaster.GUI
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPropertyEditor3 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
             this.analog3Graph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis8 = new NationalInstruments.UI.XAxis();
-            this.yAxis7 = new NationalInstruments.UI.YAxis();
+            this.analog3Plot = new NationalInstruments.UI.ScatterPlot();
+            this.analog3xAxis = new NationalInstruments.UI.XAxis();
+            this.analog3yAxis = new NationalInstruments.UI.YAxis();
             this.analog4Graph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis9 = new NationalInstruments.UI.XAxis();
-            this.yAxis8 = new NationalInstruments.UI.YAxis();
+            this.analog4Plot = new NationalInstruments.UI.ScatterPlot();
+            this.analog4xAxis = new NationalInstruments.UI.XAxis();
+            this.analog4yAxis = new NationalInstruments.UI.YAxis();
             this.tofGraph4 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.xyCursor1 = new NationalInstruments.UI.XYCursor();
-            this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
-            this.xAxis3 = new NationalInstruments.UI.XAxis();
-            this.yAxis9 = new NationalInstruments.UI.YAxis();
+            this.tofOnAveragePlot4 = new NationalInstruments.UI.WaveformPlot();
+            this.tofxAxis4 = new NationalInstruments.UI.XAxis();
+            this.tofAvgyAxis4 = new NationalInstruments.UI.YAxis();
             this.xyCursor2 = new NationalInstruments.UI.XYCursor();
-            this.waveformPlot2 = new NationalInstruments.UI.WaveformPlot();
-            this.yAxis10 = new NationalInstruments.UI.YAxis();
-            this.waveformPlot3 = new NationalInstruments.UI.WaveformPlot();
-            this.waveformPlot4 = new NationalInstruments.UI.WaveformPlot();
-            this.waveformPlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.tofOnPlot4 = new NationalInstruments.UI.WaveformPlot();
+            this.tofyAxis4 = new NationalInstruments.UI.YAxis();
+            this.tofOffPlot4 = new NationalInstruments.UI.WaveformPlot();
+            this.tofOffAveragePlot4 = new NationalInstruments.UI.WaveformPlot();
+            this.tofFitPlot4 = new NationalInstruments.UI.WaveformPlot();
             this.tofGraph5 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.xyCursor5 = new NationalInstruments.UI.XYCursor();
-            this.waveformPlot6 = new NationalInstruments.UI.WaveformPlot();
-            this.xAxis10 = new NationalInstruments.UI.XAxis();
-            this.yAxis11 = new NationalInstruments.UI.YAxis();
+            this.tofOnAveragePlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.tofxAxis5 = new NationalInstruments.UI.XAxis();
+            this.tofAvgyAxis5 = new NationalInstruments.UI.YAxis();
             this.xyCursor6 = new NationalInstruments.UI.XYCursor();
-            this.waveformPlot7 = new NationalInstruments.UI.WaveformPlot();
-            this.yAxis12 = new NationalInstruments.UI.YAxis();
-            this.waveformPlot8 = new NationalInstruments.UI.WaveformPlot();
-            this.waveformPlot9 = new NationalInstruments.UI.WaveformPlot();
-            this.waveformPlot10 = new NationalInstruments.UI.WaveformPlot();
+            this.tofOnPlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.tofyAxis5 = new NationalInstruments.UI.YAxis();
+            this.tofOffPlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.tofOffAveragePlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.tofFitPlot5 = new NationalInstruments.UI.WaveformPlot();
+            this.superscanGraph = new NationalInstruments.UI.WindowsForms.IntensityGraph();
+            this.superscanXAxis = new NationalInstruments.UI.IntensityXAxis();
+            this.superscanYAxis = new NationalInstruments.UI.IntensityYAxis();
+            this.colorScale1 = new NationalInstruments.UI.ColorScale();
+            this.superscanPlot = new NationalInstruments.UI.IntensityPlot();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).BeginInit();
@@ -285,6 +284,7 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.superscanGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -296,9 +296,9 @@ namespace ScanMaster.GUI
             this.analog1Graph.Size = new System.Drawing.Size(284, 126);
             this.analog1Graph.TabIndex = 0;
             this.analog1Graph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis1});
+            this.analog1xAxis});
             this.analog1Graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis1});
+            this.analog1yAxis});
             // 
             // analog1Plot
             // 
@@ -308,25 +308,25 @@ namespace ScanMaster.GUI
             this.analog1Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog1Plot.PointColor = System.Drawing.Color.Red;
             this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
-            this.analog1Plot.XAxis = this.xAxis1;
-            this.analog1Plot.YAxis = this.yAxis1;
+            this.analog1Plot.XAxis = this.analog1xAxis;
+            this.analog1Plot.YAxis = this.analog1yAxis;
             // 
-            // xAxis1
+            // analog1xAxis
             // 
-            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.analog1xAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
             // analog2Graph
             // 
-            this.analog2Graph.Location = new System.Drawing.Point(376, 138);
+            this.analog2Graph.Location = new System.Drawing.Point(666, 9);
             this.analog2Graph.Name = "analog2Graph";
             this.analog2Graph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.analog2Plot});
             this.analog2Graph.Size = new System.Drawing.Size(284, 125);
             this.analog2Graph.TabIndex = 1;
             this.analog2Graph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis2});
+            this.analog2xAxis});
             this.analog2Graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis2});
+            this.analog2yAxis});
             // 
             // analog2Plot
             // 
@@ -336,54 +336,16 @@ namespace ScanMaster.GUI
             this.analog2Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog2Plot.PointColor = System.Drawing.Color.Blue;
             this.analog2Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
-            this.analog2Plot.XAxis = this.xAxis2;
-            this.analog2Plot.YAxis = this.yAxis2;
+            this.analog2Plot.XAxis = this.analog2xAxis;
+            this.analog2Plot.YAxis = this.analog2yAxis;
             // 
-            // xAxis2
+            // analog2xAxis
             // 
-            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.analog2xAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
             // pmtXAxis
             // 
             this.pmtXAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            // 
-            // xAxis5
-            // 
-            this.xAxis5.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
-            this.xAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            // 
-            // differenceYAxis
-            // 
-            this.differenceYAxis.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
-            // 
-            // differenceGraph
-            // 
-            this.differenceGraph.Location = new System.Drawing.Point(375, 530);
-            this.differenceGraph.Name = "differenceGraph";
-            this.differenceGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.differencePlot,
-            this.differenceAvgPlot});
-            this.differenceGraph.Size = new System.Drawing.Size(585, 255);
-            this.differenceGraph.TabIndex = 15;
-            this.differenceGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis5});
-            this.differenceGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.differenceYAxis});
-            // 
-            // differencePlot
-            // 
-            this.differencePlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.differencePlot.PointColor = System.Drawing.Color.Lime;
-            this.differencePlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.differencePlot.XAxis = this.xAxis5;
-            this.differencePlot.YAxis = this.differenceYAxis;
-            // 
-            // differenceAvgPlot
-            // 
-            this.differenceAvgPlot.LineColor = System.Drawing.Color.Red;
-            this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.differenceAvgPlot.XAxis = this.xAxis5;
-            this.differenceAvgPlot.YAxis = this.differenceYAxis;
             // 
             // tofGraph
             // 
@@ -711,10 +673,10 @@ namespace ScanMaster.GUI
             this.tofGraph2.Size = new System.Drawing.Size(361, 255);
             this.tofGraph2.TabIndex = 34;
             this.tofGraph2.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis6});
+            this.tofxAxis2});
             this.tofGraph2.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis4,
-            this.yAxis3});
+            this.tofyAxis2,
+            this.tofAvgyAxis2});
             // 
             // normSigGateLow
             // 
@@ -729,16 +691,16 @@ namespace ScanMaster.GUI
             // 
             this.tofOnAveragePlot2.LineColor = System.Drawing.Color.Red;
             this.tofOnAveragePlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofOnAveragePlot2.XAxis = this.xAxis6;
-            this.tofOnAveragePlot2.YAxis = this.yAxis3;
+            this.tofOnAveragePlot2.XAxis = this.tofxAxis2;
+            this.tofOnAveragePlot2.YAxis = this.tofAvgyAxis2;
             // 
-            // xAxis6
+            // tofxAxis2
             // 
-            this.xAxis6.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.tofxAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
-            // yAxis3
+            // tofAvgyAxis2
             // 
-            this.yAxis3.Position = NationalInstruments.UI.YAxisPosition.Right;
+            this.tofAvgyAxis2.Position = NationalInstruments.UI.YAxisPosition.Right;
             // 
             // normSigGateHigh
             // 
@@ -764,8 +726,8 @@ namespace ScanMaster.GUI
             this.tofOnPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofOnPlot2.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.tofOnPlot2.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.tofOnPlot2.XAxis = this.xAxis6;
-            this.tofOnPlot2.YAxis = this.yAxis4;
+            this.tofOnPlot2.XAxis = this.tofxAxis2;
+            this.tofOnPlot2.YAxis = this.tofyAxis2;
             // 
             // normBgGateHigh
             // 
@@ -781,15 +743,15 @@ namespace ScanMaster.GUI
             this.tofOffPlot2.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.tofOffPlot2.PointColor = System.Drawing.Color.LawnGreen;
             this.tofOffPlot2.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.tofOffPlot2.XAxis = this.xAxis6;
-            this.tofOffPlot2.YAxis = this.yAxis4;
+            this.tofOffPlot2.XAxis = this.tofxAxis2;
+            this.tofOffPlot2.YAxis = this.tofyAxis2;
             // 
             // tofOffAveragePlot2
             // 
             this.tofOffAveragePlot2.LineColor = System.Drawing.Color.PowderBlue;
             this.tofOffAveragePlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofOffAveragePlot2.XAxis = this.xAxis6;
-            this.tofOffAveragePlot2.YAxis = this.yAxis3;
+            this.tofOffAveragePlot2.XAxis = this.tofxAxis2;
+            this.tofOffAveragePlot2.YAxis = this.tofAvgyAxis2;
             // 
             // tofFitPlot2
             // 
@@ -797,8 +759,8 @@ namespace ScanMaster.GUI
             this.tofFitPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.tofFitPlot2.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
             this.tofFitPlot2.LineWidth = 2F;
-            this.tofFitPlot2.XAxis = this.xAxis6;
-            this.tofFitPlot2.YAxis = this.yAxis3;
+            this.tofFitPlot2.XAxis = this.tofxAxis2;
+            this.tofFitPlot2.YAxis = this.tofAvgyAxis2;
             // 
             // tofGraph3
             // 
@@ -815,18 +777,18 @@ namespace ScanMaster.GUI
             this.tofGraph3.Location = new System.Drawing.Point(8, 530);
             this.tofGraph3.Name = "tofGraph3";
             this.tofGraph3.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.tofOnNormedPlot,
-            this.tofOffNormedPlot,
-            this.tofOnAverageNormedPlot,
-            this.tofOffAverageNormedPlot,
-            this.tofFitNormedPlot});
+            this.tofOnPlot3,
+            this.tofOffPlot3,
+            this.tofOnAveragePlot3,
+            this.tofOffAveragePlot3,
+            this.tofFitPlot3});
             this.tofGraph3.Size = new System.Drawing.Size(361, 255);
             this.tofGraph3.TabIndex = 35;
             this.tofGraph3.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis7});
+            this.tofxAxis3});
             this.tofGraph3.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis6,
-            this.yAxis5});
+            this.tofyAxis3,
+            this.tofAvgyAxis3});
             // 
             // xyCursor3
             // 
@@ -834,23 +796,23 @@ namespace ScanMaster.GUI
             this.xyCursor3.LabelVisible = true;
             this.xyCursor3.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor3.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor3.Plot = this.tofOnAverageNormedPlot;
+            this.xyCursor3.Plot = this.tofOnAveragePlot3;
             this.xyCursor3.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // tofOnAverageNormedPlot
+            // tofOnAveragePlot3
             // 
-            this.tofOnAverageNormedPlot.LineColor = System.Drawing.Color.Red;
-            this.tofOnAverageNormedPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofOnAverageNormedPlot.XAxis = this.xAxis7;
-            this.tofOnAverageNormedPlot.YAxis = this.yAxis5;
+            this.tofOnAveragePlot3.LineColor = System.Drawing.Color.Red;
+            this.tofOnAveragePlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnAveragePlot3.XAxis = this.tofxAxis3;
+            this.tofOnAveragePlot3.YAxis = this.tofAvgyAxis3;
             // 
-            // xAxis7
+            // tofxAxis3
             // 
-            this.xAxis7.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.tofxAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
-            // yAxis5
+            // tofAvgyAxis3
             // 
-            this.yAxis5.Position = NationalInstruments.UI.YAxisPosition.Right;
+            this.tofAvgyAxis3.Position = NationalInstruments.UI.YAxisPosition.Right;
             // 
             // xyCursor4
             // 
@@ -859,41 +821,41 @@ namespace ScanMaster.GUI
             this.xyCursor4.LabelVisible = true;
             this.xyCursor4.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor4.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor4.Plot = this.tofOnAverageNormedPlot;
+            this.xyCursor4.Plot = this.tofOnAveragePlot3;
             this.xyCursor4.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // tofOnNormedPlot
+            // tofOnPlot3
             // 
-            this.tofOnNormedPlot.LineColor = System.Drawing.Color.Blue;
-            this.tofOnNormedPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofOnNormedPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.tofOnNormedPlot.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.tofOnNormedPlot.XAxis = this.xAxis7;
-            this.tofOnNormedPlot.YAxis = this.yAxis6;
+            this.tofOnPlot3.LineColor = System.Drawing.Color.Blue;
+            this.tofOnPlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOnPlot3.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOnPlot3.XAxis = this.tofxAxis3;
+            this.tofOnPlot3.YAxis = this.tofyAxis3;
             // 
-            // tofOffNormedPlot
+            // tofOffPlot3
             // 
-            this.tofOffNormedPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.tofOffNormedPlot.PointColor = System.Drawing.Color.LawnGreen;
-            this.tofOffNormedPlot.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.tofOffNormedPlot.XAxis = this.xAxis7;
-            this.tofOffNormedPlot.YAxis = this.yAxis6;
+            this.tofOffPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOffPlot3.PointColor = System.Drawing.Color.LawnGreen;
+            this.tofOffPlot3.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOffPlot3.XAxis = this.tofxAxis3;
+            this.tofOffPlot3.YAxis = this.tofyAxis3;
             // 
-            // tofOffAverageNormedPlot
+            // tofOffAveragePlot3
             // 
-            this.tofOffAverageNormedPlot.LineColor = System.Drawing.Color.PowderBlue;
-            this.tofOffAverageNormedPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofOffAverageNormedPlot.XAxis = this.xAxis7;
-            this.tofOffAverageNormedPlot.YAxis = this.yAxis5;
+            this.tofOffAveragePlot3.LineColor = System.Drawing.Color.PowderBlue;
+            this.tofOffAveragePlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOffAveragePlot3.XAxis = this.tofxAxis3;
+            this.tofOffAveragePlot3.YAxis = this.tofAvgyAxis3;
             // 
-            // tofFitNormedPlot
+            // tofFitPlot3
             // 
-            this.tofFitNormedPlot.LineColor = System.Drawing.Color.Silver;
-            this.tofFitNormedPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.tofFitNormedPlot.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
-            this.tofFitNormedPlot.LineWidth = 2F;
-            this.tofFitNormedPlot.XAxis = this.xAxis7;
-            this.tofFitNormedPlot.YAxis = this.yAxis5;
+            this.tofFitPlot3.LineColor = System.Drawing.Color.Silver;
+            this.tofFitPlot3.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofFitPlot3.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
+            this.tofFitPlot3.LineWidth = 2F;
+            this.tofFitPlot3.XAxis = this.tofxAxis3;
+            this.tofFitPlot3.YAxis = this.tofAvgyAxis3;
             // 
             // toolStripLabel1
             // 
@@ -940,60 +902,60 @@ namespace ScanMaster.GUI
             // 
             // analog3Graph
             // 
-            this.analog3Graph.Location = new System.Drawing.Point(668, 9);
+            this.analog3Graph.Location = new System.Drawing.Point(376, 140);
             this.analog3Graph.Name = "analog3Graph";
             this.analog3Graph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1});
-            this.analog3Graph.Size = new System.Drawing.Size(291, 125);
+            this.analog3Plot});
+            this.analog3Graph.Size = new System.Drawing.Size(284, 125);
             this.analog3Graph.TabIndex = 2;
             this.analog3Graph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis8});
+            this.analog3xAxis});
             this.analog3Graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis7});
+            this.analog3yAxis});
             // 
-            // scatterPlot1
+            // analog3Plot
             // 
-            this.scatterPlot1.AntiAliased = true;
-            this.scatterPlot1.LineColor = System.Drawing.Color.Blue;
-            this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot1.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.scatterPlot1.PointColor = System.Drawing.Color.Blue;
-            this.scatterPlot1.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
-            this.scatterPlot1.XAxis = this.xAxis8;
-            this.scatterPlot1.YAxis = this.yAxis7;
+            this.analog3Plot.AntiAliased = true;
+            this.analog3Plot.LineColor = System.Drawing.Color.Green;
+            this.analog3Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.analog3Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.analog3Plot.PointColor = System.Drawing.Color.Green;
+            this.analog3Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
+            this.analog3Plot.XAxis = this.analog3xAxis;
+            this.analog3Plot.YAxis = this.analog3yAxis;
             // 
-            // xAxis8
+            // analog3xAxis
             // 
-            this.xAxis8.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.analog3xAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
             // analog4Graph
             // 
-            this.analog4Graph.Location = new System.Drawing.Point(668, 138);
+            this.analog4Graph.Location = new System.Drawing.Point(666, 140);
             this.analog4Graph.Name = "analog4Graph";
             this.analog4Graph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot2});
-            this.analog4Graph.Size = new System.Drawing.Size(291, 125);
+            this.analog4Plot});
+            this.analog4Graph.Size = new System.Drawing.Size(284, 125);
             this.analog4Graph.TabIndex = 4;
             this.analog4Graph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis9});
+            this.analog4xAxis});
             this.analog4Graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis8});
+            this.analog4yAxis});
             this.analog4Graph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.scatterGraph1_PlotDataChanged);
             // 
-            // scatterPlot2
+            // analog4Plot
             // 
-            this.scatterPlot2.AntiAliased = true;
-            this.scatterPlot2.LineColor = System.Drawing.Color.Blue;
-            this.scatterPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot2.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.scatterPlot2.PointColor = System.Drawing.Color.Blue;
-            this.scatterPlot2.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
-            this.scatterPlot2.XAxis = this.xAxis9;
-            this.scatterPlot2.YAxis = this.yAxis8;
+            this.analog4Plot.AntiAliased = true;
+            this.analog4Plot.LineColor = System.Drawing.Color.Blue;
+            this.analog4Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.analog4Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.analog4Plot.PointColor = System.Drawing.Color.Blue;
+            this.analog4Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
+            this.analog4Plot.XAxis = this.analog4xAxis;
+            this.analog4Plot.YAxis = this.analog4yAxis;
             // 
-            // xAxis9
+            // analog4xAxis
             // 
-            this.xAxis9.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.analog4xAxis.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
             // tofGraph4
             // 
@@ -1010,18 +972,18 @@ namespace ScanMaster.GUI
             this.tofGraph4.Location = new System.Drawing.Point(376, 269);
             this.tofGraph4.Name = "tofGraph4";
             this.tofGraph4.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.waveformPlot2,
-            this.waveformPlot3,
-            this.waveformPlot1,
-            this.waveformPlot4,
-            this.waveformPlot5});
+            this.tofOnPlot4,
+            this.tofOffPlot4,
+            this.tofOnAveragePlot4,
+            this.tofOffAveragePlot4,
+            this.tofFitPlot4});
             this.tofGraph4.Size = new System.Drawing.Size(284, 255);
             this.tofGraph4.TabIndex = 36;
             this.tofGraph4.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis3});
+            this.tofxAxis4});
             this.tofGraph4.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis10,
-            this.yAxis9});
+            this.tofyAxis4,
+            this.tofAvgyAxis4});
             // 
             // xyCursor1
             // 
@@ -1029,23 +991,23 @@ namespace ScanMaster.GUI
             this.xyCursor1.LabelVisible = true;
             this.xyCursor1.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor1.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor1.Plot = this.waveformPlot1;
+            this.xyCursor1.Plot = this.tofOnAveragePlot4;
             this.xyCursor1.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // waveformPlot1
+            // tofOnAveragePlot4
             // 
-            this.waveformPlot1.LineColor = System.Drawing.Color.Red;
-            this.waveformPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot1.XAxis = this.xAxis3;
-            this.waveformPlot1.YAxis = this.yAxis9;
+            this.tofOnAveragePlot4.LineColor = System.Drawing.Color.Red;
+            this.tofOnAveragePlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnAveragePlot4.XAxis = this.tofxAxis4;
+            this.tofOnAveragePlot4.YAxis = this.tofAvgyAxis4;
             // 
-            // xAxis3
+            // tofxAxis4
             // 
-            this.xAxis3.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.tofxAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
-            // yAxis9
+            // tofAvgyAxis4
             // 
-            this.yAxis9.Position = NationalInstruments.UI.YAxisPosition.Right;
+            this.tofAvgyAxis4.Position = NationalInstruments.UI.YAxisPosition.Right;
             // 
             // xyCursor2
             // 
@@ -1054,41 +1016,41 @@ namespace ScanMaster.GUI
             this.xyCursor2.LabelVisible = true;
             this.xyCursor2.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor2.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor2.Plot = this.waveformPlot1;
+            this.xyCursor2.Plot = this.tofOnAveragePlot4;
             this.xyCursor2.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // waveformPlot2
+            // tofOnPlot4
             // 
-            this.waveformPlot2.LineColor = System.Drawing.Color.Blue;
-            this.waveformPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot2.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.waveformPlot2.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.waveformPlot2.XAxis = this.xAxis3;
-            this.waveformPlot2.YAxis = this.yAxis10;
+            this.tofOnPlot4.LineColor = System.Drawing.Color.Blue;
+            this.tofOnPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnPlot4.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOnPlot4.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOnPlot4.XAxis = this.tofxAxis4;
+            this.tofOnPlot4.YAxis = this.tofyAxis4;
             // 
-            // waveformPlot3
+            // tofOffPlot4
             // 
-            this.waveformPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.waveformPlot3.PointColor = System.Drawing.Color.LawnGreen;
-            this.waveformPlot3.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.waveformPlot3.XAxis = this.xAxis3;
-            this.waveformPlot3.YAxis = this.yAxis10;
+            this.tofOffPlot4.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOffPlot4.PointColor = System.Drawing.Color.LawnGreen;
+            this.tofOffPlot4.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOffPlot4.XAxis = this.tofxAxis4;
+            this.tofOffPlot4.YAxis = this.tofyAxis4;
             // 
-            // waveformPlot4
+            // tofOffAveragePlot4
             // 
-            this.waveformPlot4.LineColor = System.Drawing.Color.PowderBlue;
-            this.waveformPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot4.XAxis = this.xAxis3;
-            this.waveformPlot4.YAxis = this.yAxis9;
+            this.tofOffAveragePlot4.LineColor = System.Drawing.Color.PowderBlue;
+            this.tofOffAveragePlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOffAveragePlot4.XAxis = this.tofxAxis4;
+            this.tofOffAveragePlot4.YAxis = this.tofAvgyAxis4;
             // 
-            // waveformPlot5
+            // tofFitPlot4
             // 
-            this.waveformPlot5.LineColor = System.Drawing.Color.Silver;
-            this.waveformPlot5.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot5.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
-            this.waveformPlot5.LineWidth = 2F;
-            this.waveformPlot5.XAxis = this.xAxis3;
-            this.waveformPlot5.YAxis = this.yAxis9;
+            this.tofFitPlot4.LineColor = System.Drawing.Color.Silver;
+            this.tofFitPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofFitPlot4.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
+            this.tofFitPlot4.LineWidth = 2F;
+            this.tofFitPlot4.XAxis = this.tofxAxis4;
+            this.tofFitPlot4.YAxis = this.tofAvgyAxis4;
             // 
             // tofGraph5
             // 
@@ -1105,18 +1067,18 @@ namespace ScanMaster.GUI
             this.tofGraph5.Location = new System.Drawing.Point(668, 269);
             this.tofGraph5.Name = "tofGraph5";
             this.tofGraph5.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.waveformPlot7,
-            this.waveformPlot8,
-            this.waveformPlot6,
-            this.waveformPlot9,
-            this.waveformPlot10});
+            this.tofOnPlot5,
+            this.tofOffPlot5,
+            this.tofOnAveragePlot5,
+            this.tofOffAveragePlot5,
+            this.tofFitPlot5});
             this.tofGraph5.Size = new System.Drawing.Size(284, 255);
             this.tofGraph5.TabIndex = 37;
             this.tofGraph5.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis10});
+            this.tofxAxis5});
             this.tofGraph5.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis12,
-            this.yAxis11});
+            this.tofyAxis5,
+            this.tofAvgyAxis5});
             this.tofGraph5.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.waveformGraph2_PlotDataChanged);
             // 
             // xyCursor5
@@ -1125,23 +1087,23 @@ namespace ScanMaster.GUI
             this.xyCursor5.LabelVisible = true;
             this.xyCursor5.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor5.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor5.Plot = this.waveformPlot6;
+            this.xyCursor5.Plot = this.tofOnAveragePlot5;
             this.xyCursor5.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // waveformPlot6
+            // tofOnAveragePlot5
             // 
-            this.waveformPlot6.LineColor = System.Drawing.Color.Red;
-            this.waveformPlot6.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot6.XAxis = this.xAxis10;
-            this.waveformPlot6.YAxis = this.yAxis11;
+            this.tofOnAveragePlot5.LineColor = System.Drawing.Color.Red;
+            this.tofOnAveragePlot5.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnAveragePlot5.XAxis = this.tofxAxis5;
+            this.tofOnAveragePlot5.YAxis = this.tofAvgyAxis5;
             // 
-            // xAxis10
+            // tofxAxis5
             // 
-            this.xAxis10.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.tofxAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
-            // yAxis11
+            // tofAvgyAxis5
             // 
-            this.yAxis11.Position = NationalInstruments.UI.YAxisPosition.Right;
+            this.tofAvgyAxis5.Position = NationalInstruments.UI.YAxisPosition.Right;
             // 
             // xyCursor6
             // 
@@ -1150,46 +1112,68 @@ namespace ScanMaster.GUI
             this.xyCursor6.LabelVisible = true;
             this.xyCursor6.LabelXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.xyCursor6.LabelYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
-            this.xyCursor6.Plot = this.waveformPlot6;
+            this.xyCursor6.Plot = this.tofOnAveragePlot5;
             this.xyCursor6.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
-            // waveformPlot7
+            // tofOnPlot5
             // 
-            this.waveformPlot7.LineColor = System.Drawing.Color.Blue;
-            this.waveformPlot7.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot7.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.waveformPlot7.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.waveformPlot7.XAxis = this.xAxis10;
-            this.waveformPlot7.YAxis = this.yAxis12;
+            this.tofOnPlot5.LineColor = System.Drawing.Color.Blue;
+            this.tofOnPlot5.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOnPlot5.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOnPlot5.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOnPlot5.XAxis = this.tofxAxis5;
+            this.tofOnPlot5.YAxis = this.tofyAxis5;
             // 
-            // waveformPlot8
+            // tofOffPlot5
             // 
-            this.waveformPlot8.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.waveformPlot8.PointColor = System.Drawing.Color.LawnGreen;
-            this.waveformPlot8.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.waveformPlot8.XAxis = this.xAxis10;
-            this.waveformPlot8.YAxis = this.yAxis12;
+            this.tofOffPlot5.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.tofOffPlot5.PointColor = System.Drawing.Color.LawnGreen;
+            this.tofOffPlot5.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.tofOffPlot5.XAxis = this.tofxAxis5;
+            this.tofOffPlot5.YAxis = this.tofyAxis5;
             // 
-            // waveformPlot9
+            // tofOffAveragePlot5
             // 
-            this.waveformPlot9.LineColor = System.Drawing.Color.PowderBlue;
-            this.waveformPlot9.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot9.XAxis = this.xAxis10;
-            this.waveformPlot9.YAxis = this.yAxis11;
+            this.tofOffAveragePlot5.LineColor = System.Drawing.Color.PowderBlue;
+            this.tofOffAveragePlot5.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofOffAveragePlot5.XAxis = this.tofxAxis5;
+            this.tofOffAveragePlot5.YAxis = this.tofAvgyAxis5;
             // 
-            // waveformPlot10
+            // tofFitPlot5
             // 
-            this.waveformPlot10.LineColor = System.Drawing.Color.Silver;
-            this.waveformPlot10.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.waveformPlot10.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
-            this.waveformPlot10.LineWidth = 2F;
-            this.waveformPlot10.XAxis = this.xAxis10;
-            this.waveformPlot10.YAxis = this.yAxis11;
+            this.tofFitPlot5.LineColor = System.Drawing.Color.Silver;
+            this.tofFitPlot5.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.tofFitPlot5.LineStyle = NationalInstruments.UI.LineStyle.DashDot;
+            this.tofFitPlot5.LineWidth = 2F;
+            this.tofFitPlot5.XAxis = this.tofxAxis5;
+            this.tofFitPlot5.YAxis = this.tofAvgyAxis5;
+            // 
+            // superscanGraph
+            // 
+            this.superscanGraph.ColorScales.AddRange(new NationalInstruments.UI.ColorScale[] {
+            this.colorScale1});
+            this.superscanGraph.Location = new System.Drawing.Point(379, 530);
+            this.superscanGraph.Name = "superscanGraph";
+            this.superscanGraph.Plots.AddRange(new NationalInstruments.UI.IntensityPlot[] {
+            this.superscanPlot});
+            this.superscanGraph.Size = new System.Drawing.Size(573, 255);
+            this.superscanGraph.TabIndex = 38;
+            this.superscanGraph.XAxes.AddRange(new NationalInstruments.UI.IntensityXAxis[] {
+            this.superscanXAxis});
+            this.superscanGraph.YAxes.AddRange(new NationalInstruments.UI.IntensityYAxis[] {
+            this.superscanYAxis});
+            // 
+            // superscanPlot
+            // 
+            this.superscanPlot.ColorScale = this.colorScale1;
+            this.superscanPlot.XAxis = this.superscanXAxis;
+            this.superscanPlot.YAxis = this.superscanYAxis;
             // 
             // MicrocavityViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(970, 862);
+            this.Controls.Add(this.superscanGraph);
             this.Controls.Add(this.tofGraph5);
             this.Controls.Add(this.tofGraph4);
             this.Controls.Add(this.analog4Graph);
@@ -1212,7 +1196,6 @@ namespace ScanMaster.GUI
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tofFitModeCombo);
             this.Controls.Add(this.tofGraph);
-            this.Controls.Add(this.differenceGraph);
             this.Controls.Add(this.analog2Graph);
             this.Controls.Add(this.analog1Graph);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1224,7 +1207,6 @@ namespace ScanMaster.GUI
             this.Load += new System.EventHandler(this.StandardViewerWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).EndInit();
@@ -1252,6 +1234,7 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.superscanGraph)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1304,28 +1287,30 @@ namespace ScanMaster.GUI
 			ClearNIGraph(analog1Graph);
 			ClearNIGraph(analog2Graph);
             ClearNIGraph(analog3Graph);
-            ClearNIGraph(analog4Graph);
-			ClearNIGraph(tofGraph);
+            ClearNIGraph(analog4Graph); 
+            ClearNIGraph(tofGraph);
             ClearNIGraph(tofGraph2);
             ClearNIGraph(tofGraph3);
             ClearNIGraph(tofGraph4);
-            ClearNIGraph(tofGraph5);
-            //2D graph
-			ClearNIGraph(differenceGraph);
+            ClearNIGraph(superscanGraph);
+			//ClearNIGraph(differenceGraph);
 		}
 		public void ClearSpectra()
 		{
 			ClearNIGraph(analog1Graph);
 			ClearNIGraph(analog2Graph);
-			ClearNIGraph(pmtGraph);
-			ClearNIGraph(differenceGraph);
+            ClearNIGraph(analog3Graph);
+            ClearNIGraph(analog4Graph);
+            ClearNIGraph(superscanGraph);
+			//ClearNIGraph(pmtGraph);
+			//ClearNIGraph(differenceGraph);
 		}
 
 		public void ClearRealtimeSpectra()
 		{
-			ClearNIPlot(pmtGraph, pmtOnPlot);
-			ClearNIPlot(pmtGraph, pmtOffPlot);
-			ClearNIPlot(differenceGraph, differencePlot);
+			//ClearNIPlot(pmtGraph, pmtOnPlot);
+			//ClearNIPlot(pmtGraph, pmtOffPlot);
+			//ClearNIPlot(differenceGraph, differencePlot);
 			ClearNIPlot(analog1Graph, analog1Plot);
 			ClearNIPlot(analog2Graph, analog2Plot);
 		}
@@ -1336,24 +1321,26 @@ namespace ScanMaster.GUI
 			ClearNIPlot(tofGraph, tofOffPlot);
             ClearNIPlot(tofGraph2, tofOnPlot2);
             ClearNIPlot(tofGraph2, tofOffPlot2);
-			ClearNIPlot(pmtGraph, pmtOnPlot);
-			ClearNIPlot(pmtGraph, pmtOffPlot);
-			ClearNIPlot(differenceGraph, differencePlot);
+			//ClearNIPlot(pmtGraph, pmtOnPlot);
+			//ClearNIPlot(pmtGraph, pmtOffPlot);
+			//ClearNIPlot(differenceGraph, differencePlot);
 		}
 
 		public void ClearSpectrumFit()
 		{
-			ClearNIPlot(pmtGraph, pmtFitPlot);
+			//ClearNIPlot(pmtGraph, pmtFitPlot);
 		}
 
 		public Range SpectrumAxes
 		{
 			set
 			{
-				SetGraphXAxisRange(pmtGraph, value.Minimum, value.Maximum);
-				SetGraphXAxisRange(differenceGraph, value.Minimum, value.Maximum);
+				//SetGraphXAxisRange(pmtGraph, value.Minimum, value.Maximum);
+				//SetGraphXAxisRange(differenceGraph, value.Minimum, value.Maximum);
 				SetGraphXAxisRange(analog1Graph, value.Minimum, value.Maximum);
 				SetGraphXAxisRange(analog2Graph, value.Minimum, value.Maximum);
+                SetGraphXAxisRange(analog3Graph, value.Minimum, value.Maximum);
+                SetGraphXAxisRange(analog4Graph, value.Minimum, value.Maximum);
 			}
 		}
 
@@ -1364,46 +1351,68 @@ namespace ScanMaster.GUI
                 if (value != null)
                 {
                     SetGraphXAxisRange(tofGraph, value.Minimum, value.Maximum);
+                    SetGraphXAxisRange(tofGraph2, value.Minimum, value.Maximum);
                     SetGraphXAxisRange(tofGraph3, value.Minimum, value.Maximum);
+                    SetGraphXAxisRange(tofGraph4, value.Minimum, value.Maximum);
+                    SetGraphXAxisRange(tofGraph5, value.Minimum, value.Maximum);
                 }
                 else
                 {
                     tofGraph.XAxes[0].Mode = AxisMode.AutoScaleLoose;
+                    tofGraph2.XAxes[0].Mode = AxisMode.AutoScaleLoose;
                     tofGraph3.XAxes[0].Mode = AxisMode.AutoScaleLoose;
+                    tofGraph4.XAxes[0].Mode = AxisMode.AutoScaleLoose;
+                    tofGraph5.XAxes[0].Mode = AxisMode.AutoScaleLoose;
                 }
             }
         }
 
-        public Range TOF2Axes
+        //public Range TOF2Axes
+        //{
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            SetGraphXAxisRange(tofGraph2, value.Minimum, value.Maximum);
+        //        }
+        //        else
+        //        {
+        //            tofGraph2.XAxes[0].Mode = AxisMode.AutoScaleLoose;
+        //        }
+        //    }
+        //}
+
+        public Range SpectrumGate
         {
             set
             {
-                if (value != null)
-                {
-                    SetGraphXAxisRange(tofGraph2, value.Minimum, value.Maximum);
-                }
-                else
-                {
-                    tofGraph2.XAxes[0].Mode = AxisMode.AutoScaleLoose;
-                }
+                MoveCursor(tofGraph, tofLowCursor, value.Minimum);
+                MoveCursor(tofGraph, tofHighCursor, value.Maximum);
+            }
+            get
+            {
+                double min = GetCursorPosition(tofGraph, tofLowCursor);
+                double max = GetCursorPosition(tofGraph, tofHighCursor);
+                if (max <= min) max = min + 1; //highly arbitrary
+                return new Range(min, max);
             }
         }
 
-		public Range SpectrumGate
-		{
-			set
-			{
-				MoveCursor(pmtGraph, pmtLowCursor, value.Minimum);
-				MoveCursor(pmtGraph, pmtHighCursor, value.Maximum);
-			}
-			get
-			{
-				double min = GetCursorPosition(pmtGraph, pmtLowCursor);
-				double max = GetCursorPosition(pmtGraph, pmtHighCursor);
-				if (max <= min) max = min + 1; //highly arbitrary
-				return new Range(min, max);
-			}
-		}
+        //public Range SpectrumGate
+        //{
+        //    set
+        //    {
+        //        MoveCursor(pmtGraph, pmtLowCursor, value.Minimum);
+        //        MoveCursor(pmtGraph, pmtHighCursor, value.Maximum);
+        //    }
+        //    get
+        //    {
+        //        double min = GetCursorPosition(pmtGraph, pmtLowCursor);
+        //        double max = GetCursorPosition(pmtGraph, pmtHighCursor);
+        //        if (max <= min) max = min + 1; //highly arbitrary
+        //        return new Range(min, max);
+        //    }
+        //}
 
 		public Range TOFGate
 		{
@@ -1501,10 +1510,10 @@ namespace ScanMaster.GUI
             }
         }
 
-        public void PlotNormedOnTOF(TOF t) { PlotY(tofGraph3, tofOnNormedPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
-        public void PlotNormedOffTOF(TOF t) { PlotY(tofGraph3, tofOffNormedPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
-        public void PlotAverageNormedOnTOF(TOF t) { PlotY(tofGraph3, tofOnAverageNormedPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
-        public void PlotAverageNormedOffTOF(TOF t) { PlotY(tofGraph3, tofOffAverageNormedPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
+        public void PlotNormedOnTOF(TOF t) { PlotY(tofGraph3, tofOnPlot3, t.GateStartTime, t.ClockPeriod, t.Data); }
+        public void PlotNormedOffTOF(TOF t) { PlotY(tofGraph3, tofOffPlot3, t.GateStartTime, t.ClockPeriod, t.Data); }
+        public void PlotAverageNormedOnTOF(TOF t) { PlotY(tofGraph3, tofOnAveragePlot3, t.GateStartTime, t.ClockPeriod, t.Data); }
+        public void PlotAverageNormedOffTOF(TOF t) { PlotY(tofGraph3, tofOffAveragePlot3, t.GateStartTime, t.ClockPeriod, t.Data); }
         
 
 		public void AppendToAnalog1(double[] x, double[] y)
@@ -1516,35 +1525,35 @@ namespace ScanMaster.GUI
 		{
 			PlotXYAppend(analog2Graph, analog2Plot, x, y);
 		}
-		public void AppendToPMTOn(double[] x, double[] y)
-		{
-			PlotXYAppend(pmtGraph, pmtOnPlot, x, y);
-		}
-		public void AppendToPMTOff(double[] x, double[] y)
-		{
-			PlotXYAppend(pmtGraph, pmtOffPlot, x, y);
-		}
-		public void AppendToDifference(double[] x, double[] y)
-		{
-			PlotXYAppend(differenceGraph, differencePlot, x, y);
-		}
+        //public void AppendToPMTOn(double[] x, double[] y)
+        //{
+        //    PlotXYAppend(pmtGraph, pmtOnPlot, x, y);
+        //}
+        //public void AppendToPMTOff(double[] x, double[] y)
+        //{
+        //    PlotXYAppend(pmtGraph, pmtOffPlot, x, y);
+        //}
+        //public void AppendToDifference(double[] x, double[] y)
+        //{
+        //    PlotXYAppend(differenceGraph, differencePlot, x, y);
+        //}
 
-		public void PlotAveragePMTOn(double[] x, double[] y)
-		{
-			PlotXY(pmtGraph, pmtOnAvgPlot, x, y);
-		}
-		public void PlotAveragePMTOff(double[] x, double[] y)
-		{
-			PlotXY(pmtGraph, pmtOffAvgPlot, x, y);
-		}
-		public void PlotAverageDifference(double[] x, double[] y)
-		{
-			PlotXY(differenceGraph, differenceAvgPlot, x, y);
-		}
-		public void PlotSpectrumFit(double[] x, double[] y)
-		{
-			PlotXY(pmtGraph, pmtFitPlot, x, y);
-		}
+        //public void PlotAveragePMTOn(double[] x, double[] y)
+        //{
+        //    PlotXY(pmtGraph, pmtOnAvgPlot, x, y);
+        //}
+        //public void PlotAveragePMTOff(double[] x, double[] y)
+        //{
+        //    PlotXY(pmtGraph, pmtOffAvgPlot, x, y);
+        //}
+        //public void PlotAverageDifference(double[] x, double[] y)
+        //{
+        //    PlotXY(differenceGraph, differenceAvgPlot, x, y);
+        //}
+        public void PlotSpectrumFit(double[] x, double[] y)
+        {
+            //PlotXY(tofGraph, tofFitPlot, x, y);
+        }
 
 		public void ClearTOFFit()
 		{
