@@ -26,7 +26,6 @@ using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
 using RFMOTHardwareControl;
-using DataStructures;
 
 
 namespace NavigatorHardwareControl
@@ -61,8 +60,6 @@ namespace NavigatorHardwareControl
         public HardwareState hardwareState;
         //Used for keeping track of changes
         public HardwareState previousState;
-        public DataStructures.SequenceData sequenceData;
-        public List<Variable> ciceroVars;
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
@@ -88,7 +85,6 @@ namespace NavigatorHardwareControl
         //Used for locking the laser - only one can be running at once
         private Thread laserThread;
         public CiceroController cicero;
-        public Dictionary<string, Variable> varDict;
         public void Start()
         {
             if (Environs.Hardware.GetType() != new DAQ.HAL.NavigatorHardware().GetType())
@@ -226,12 +222,16 @@ namespace NavigatorHardwareControl
             hardwareState = LoadParameters();
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
-
-            cicero = new CiceroController();
-            cicero.controller = this;
-            cicero.ConnectToCicero();
-            ciceroVars = cicero.GetVariables();
-            cicero.ClearRunningList();
+            try
+            {
+                cicero = new CiceroController();
+                cicero.controller = this;
+                cicero.ConnectToCicero();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't connect to cicero");
+            }
         }
 
         #endregion

@@ -84,9 +84,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataStructures">
-      <HintPath>..\..\Cicero-Word-Generator\DataStructures\bin\x64\Release\DataStructures.dll</HintPath>
-    </Reference>
     <Reference Include="JB.Common">
       <HintPath>..\packages\JB.Common.0.8.103-pre\lib\net45\JB.Common.dll</HintPath>
     </Reference>
