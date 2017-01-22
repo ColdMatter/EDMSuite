@@ -19,8 +19,12 @@ namespace DAQ.Analog
     {
         Task analogOutputTask;
 
-
         public void Configure(AnalogPatternBuilder aPattern, int clockRate)
+        {
+            Configure(aPattern, clockRate, false);
+        }
+
+        public void Configure(AnalogPatternBuilder aPattern, int clockRate,  bool loop)
         {
             analogOutputTask = new Task();
             foreach (string keys in aPattern.AnalogPatterns.Keys)
@@ -28,12 +32,27 @@ namespace DAQ.Analog
                 AddToAnalogOutputTask(analogOutputTask, keys);
             }
             string clockSource = "";
+
+            SampleQuantityMode sqm;
+            if(loop)
+            {
+                sqm = SampleQuantityMode.ContinuousSamples;
+                analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
+                
+            }
+            else
+            {
+                sqm = SampleQuantityMode.FiniteSamples;
+                analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
+            }
+
             
             analogOutputTask.Timing.ConfigureSampleClock(clockSource, clockRate,
-                    SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, 
+                    SampleClockActiveEdge.Rising, sqm, 
                     aPattern.PatternLength);
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("AOPatternTrigger"), DigitalEdgeStartTriggerEdge.Rising);
+                       
             analogOutputTask.Control(TaskAction.Verify);
 
         }

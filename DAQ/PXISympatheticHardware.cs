@@ -33,6 +33,8 @@ namespace DAQ.HAL
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("APGClockCounter", aoBoard + "/ctr0");
             Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
+            Info.Add("MOTMasterDigitalPatternClockFrequency", 10000);
+            Info.Add("MOTMasterAnalogPatternClockFrequency", 10000);
 
             Info.Add("Element", "Li");
             //Test this

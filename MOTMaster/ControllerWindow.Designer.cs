@@ -42,18 +42,18 @@
             this.newPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ReplicateScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
-            this.savePathTB = new System.Windows.Forms.TextBox();
+            this.stopButton = new System.Windows.Forms.Button();
+            this.iterationsBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.setSavePathBtn = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // PatternPathTextBox
             // 
-            this.PatternPathTextBox.Location = new System.Drawing.Point(128, 85);
+            this.PatternPathTextBox.Location = new System.Drawing.Point(129, 58);
             this.PatternPathTextBox.Name = "PatternPathTextBox";
             this.PatternPathTextBox.ReadOnly = true;
-            this.PatternPathTextBox.Size = new System.Drawing.Size(513, 20);
+            this.PatternPathTextBox.Size = new System.Drawing.Size(454, 20);
             this.PatternPathTextBox.TabIndex = 4;
             // 
             // scriptListComboBox
@@ -62,13 +62,13 @@
             this.scriptListComboBox.Location = new System.Drawing.Point(16, 24);
             this.scriptListComboBox.MaxDropDownItems = 32;
             this.scriptListComboBox.Name = "scriptListComboBox";
-            this.scriptListComboBox.Size = new System.Drawing.Size(625, 21);
+            this.scriptListComboBox.Size = new System.Drawing.Size(566, 21);
             this.scriptListComboBox.Sorted = true;
             this.scriptListComboBox.TabIndex = 6;
             // 
             // lookupScriptsButton
             // 
-            this.lookupScriptsButton.Location = new System.Drawing.Point(647, 24);
+            this.lookupScriptsButton.Location = new System.Drawing.Point(589, 24);
             this.lookupScriptsButton.Name = "lookupScriptsButton";
             this.lookupScriptsButton.Size = new System.Drawing.Size(137, 23);
             this.lookupScriptsButton.TabIndex = 7;
@@ -78,7 +78,7 @@
             // 
             // runButton
             // 
-            this.runButton.Location = new System.Drawing.Point(647, 83);
+            this.runButton.Location = new System.Drawing.Point(589, 83);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(137, 23);
             this.runButton.TabIndex = 8;
@@ -91,7 +91,7 @@
             this.saveExperimentCheckBox.AutoSize = true;
             this.saveExperimentCheckBox.Checked = true;
             this.saveExperimentCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.saveExperimentCheckBox.Location = new System.Drawing.Point(174, 55);
+            this.saveExperimentCheckBox.Location = new System.Drawing.Point(12, 109);
             this.saveExperimentCheckBox.Name = "saveExperimentCheckBox";
             this.saveExperimentCheckBox.Size = new System.Drawing.Size(148, 17);
             this.saveExperimentCheckBox.TabIndex = 9;
@@ -102,7 +102,7 @@
             // saveBatchTextBox
             // 
             this.saveBatchTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.saveBatchTextBox.Location = new System.Drawing.Point(328, 53);
+            this.saveBatchTextBox.Location = new System.Drawing.Point(166, 107);
             this.saveBatchTextBox.Name = "saveBatchTextBox";
             this.saveBatchTextBox.Size = new System.Drawing.Size(49, 20);
             this.saveBatchTextBox.TabIndex = 10;
@@ -110,7 +110,7 @@
             // 
             // selectScriptButton
             // 
-            this.selectScriptButton.Location = new System.Drawing.Point(4, 51);
+            this.selectScriptButton.Location = new System.Drawing.Point(589, 55);
             this.selectScriptButton.Name = "selectScriptButton";
             this.selectScriptButton.Size = new System.Drawing.Size(137, 23);
             this.selectScriptButton.TabIndex = 12;
@@ -125,7 +125,7 @@
             this.patternsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(796, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(736, 24);
             this.menuStrip1.TabIndex = 13;
             // 
             // fileToolStripMenuItem
@@ -170,46 +170,47 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1, 88);
+            this.label1.Location = new System.Drawing.Point(13, 61);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "Selected Script:";
             // 
-            // savePathTB
+            // stopButton
             // 
-            this.savePathTB.Location = new System.Drawing.Point(462, 53);
-            this.savePathTB.Name = "savePathTB";
-            this.savePathTB.Size = new System.Drawing.Size(240, 20);
-            this.savePathTB.TabIndex = 15;
+            this.stopButton.Location = new System.Drawing.Point(588, 112);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(136, 25);
+            this.stopButton.TabIndex = 15;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
+            // iterationsBox
+            // 
+            this.iterationsBox.Location = new System.Drawing.Point(129, 84);
+            this.iterationsBox.Name = "iterationsBox";
+            this.iterationsBox.Size = new System.Drawing.Size(46, 20);
+            this.iterationsBox.TabIndex = 16;
+            this.iterationsBox.Text = "1";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(405, 56);
+            this.label2.Location = new System.Drawing.Point(45, 88);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(51, 13);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "Save To:";
-            // 
-            // setSavePathBtn
-            // 
-            this.setSavePathBtn.Location = new System.Drawing.Point(708, 51);
-            this.setSavePathBtn.Name = "setSavePathBtn";
-            this.setSavePathBtn.Size = new System.Drawing.Size(75, 23);
-            this.setSavePathBtn.TabIndex = 17;
-            this.setSavePathBtn.Text = "Set";
-            this.setSavePathBtn.UseVisualStyleBackColor = true;
-            this.setSavePathBtn.Click += new System.EventHandler(this.setSavePathBtn_Click);
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Iterations:";
             // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(796, 112);
-            this.Controls.Add(this.setSavePathBtn);
+            this.ClientSize = new System.Drawing.Size(736, 149);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.savePathTB);
+            this.Controls.Add(this.iterationsBox);
+            this.Controls.Add(this.stopButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.selectScriptButton);
             this.Controls.Add(this.saveBatchTextBox);
@@ -246,11 +247,9 @@
         private System.Windows.Forms.ToolStripMenuItem ReplicateScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox savePathTB;
+        private System.Windows.Forms.Button stopButton;
+        private System.Windows.Forms.TextBox iterationsBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button setSavePathBtn;
-
-
     }
 }
 

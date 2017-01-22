@@ -94,7 +94,8 @@ namespace ScanMaster.Acquire.Plugins
 			// check whether to stop flashlamp pattern
 			if ((bool)settings["stopFlashlamps"]) 
 			{
-				pg.StopPattern();
+                loadFlashlampPattern();
+                pg.StopPattern();
 			}
 			else
 			{

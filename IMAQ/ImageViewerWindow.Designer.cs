@@ -56,6 +56,15 @@
             this.consoleRichTextBox.Size = new System.Drawing.Size(793, 185);
             this.consoleRichTextBox.TabIndex = 24;
             this.consoleRichTextBox.Text = "";
+            this.consoleRichTextBox.TextChanged += new System.EventHandler(this.consoleRichTextBox_TextChanged);
+            // 
+            // hScrollBar
+            // 
+            this.hScrollBar.Location = new System.Drawing.Point(0, 425);
+            this.hScrollBar.Name = "hScrollBar";
+            this.hScrollBar.Size = new System.Drawing.Size(791, 17);
+            this.hScrollBar.TabIndex = 25;
+            this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
             // 
             // ImageViewerWindow
             // 

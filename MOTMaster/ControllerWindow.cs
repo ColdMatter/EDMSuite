@@ -17,27 +17,6 @@ namespace MOTMaster
             InitializeComponent();
         }
 
-
-        #region changing save path of runs
-
-        public void WriteToSavePathTextBox(string str)
-        {
-            setTextBox(savePathTB, str);
-        }
-
-        private void setSaveToPath()
-        {
-            string newPath = @savePathTB.Text;
-            controller.SetSaveDirectory(newPath);
-        }
-
-        private void setSavePathBtn_Click(object sender, EventArgs e)
-        {
-            setSaveToPath();
-        }
-
-        #endregion
-
         public void WriteToScriptPath(string str)
         {
             setTextBox(PatternPathTextBox, str);
@@ -97,7 +76,7 @@ namespace MOTMaster
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            controller.Run();
+            controller.RunStart();
         }
 
         private string getScriptPath()
@@ -105,15 +84,10 @@ namespace MOTMaster
             return readComboBox(scriptListComboBox);
         }
 
-        #region startup
-
         private void ControllerWindow_Load(object sender, EventArgs e)
         {
             controller.SetScriptPath(getScriptPath());
-            WriteToSavePathTextBox(controller.getSaveDirectory());
         }
-
-        #endregion
 
         private void saveExperimentCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -132,6 +106,11 @@ namespace MOTMaster
         public int GetSaveBatchNumber()
         {
             return int.Parse(saveBatchTextBox.Text);
+        }
+
+        public int GetIterations()
+        {
+            return int.Parse(iterationsBox.Text);
         }
 
 
@@ -154,5 +133,17 @@ namespace MOTMaster
         {
              controller.RunReplica();
         }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            controller.status = Controller.RunningState.stopped;
+        }
+
+
+
+       
+
+
+
     }
 }

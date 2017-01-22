@@ -227,6 +227,7 @@
             this.consoleRichTextBox.Size = new System.Drawing.Size(575, 79);
             this.consoleRichTextBox.TabIndex = 17;
             this.consoleRichTextBox.Text = "";
+            this.consoleRichTextBox.TextChanged += new System.EventHandler(this.consoleRichTextBox_TextChanged);
             // 
             // label5
             // 
@@ -288,6 +289,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ControlWindow";
             this.Text = "ControlWindow";
+            this.Load += new System.EventHandler(this.ControlWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.FlowVoltageBox)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

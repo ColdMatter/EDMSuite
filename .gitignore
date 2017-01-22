@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 bin
 obj
 *.suo
@@ -7,3 +8,13 @@ obj
 *.csv
 iamjack.sh
 iamjoe.sh
+=======
+bin
+obj
+*.suo
+*.csproj.user
+*.licx
+*.lnk
+iamjack.sh
+iamjoe.sh
+>>>>>>> origin/master
