@@ -21,6 +21,7 @@ namespace ScanMaster.GUI
 		{
 			viewers.Add("StandardViewer", new StandardViewer());
             viewers.Add("TweakViewer", new TweakViewer());
+            viewers.Add("MicrocavityViewer", new MicrocavityViewer());
             //viewers.Add("StatisticsViewer", new StatisticsViewer());
             //viewers.Add("RollViewer", new RollViewer());
 			foreach (DictionaryEntry de in viewers) ((Viewer)(de.Value)).Show();

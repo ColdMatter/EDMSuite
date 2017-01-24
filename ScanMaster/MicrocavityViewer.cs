@@ -51,7 +51,7 @@ namespace ScanMaster.GUI
 
 		public String Name
 		{
-			get { return "Standard"; }
+			get { return "Microcavity"; }
 		}
 
 		public MicrocavityViewer()
@@ -123,7 +123,7 @@ namespace ScanMaster.GUI
             startTOFGate = (int)shotSettings["gateStartTime"];
             endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
             window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
-                     
+            window.InitialiseSuperScan();         
             
 
 			// disable the fit function selectors
@@ -228,8 +228,9 @@ namespace ScanMaster.GUI
                     window.PlotOnTOF(currentTofs);
                     if (currentTofs.Count > 1)
                     {
-                        double normVal = (((TOF)currentTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
-                        window.PlotNormedOnTOF(((TOF)currentTofs[0]) / normVal);
+                        // right now I don't want to plot any averages
+                        // double normVal = (((TOF)currentTofs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTofs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
+                        // window.PlotNormedOnTOF(((TOF)currentTofs[0]) / normVal);
                     }
 					if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
 					{
@@ -253,17 +254,21 @@ namespace ScanMaster.GUI
 				    window.AppendToAnalog1(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(0));
                 if (pointsToPlot.AnalogChannelCount >= 2) 
                     window.AppendToAnalog2(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(1));
-				window.AppendToPMTOn(pointsToPlot.ScanParameterArray,
-					pointsToPlot.GetTOFOnIntegralArray(0,
-					startTOFGate, endTOFGate));
+                if (pointsToPlot.AnalogChannelCount >= 3)
+                    window.AppendToAnalog3(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(2));
+                if (pointsToPlot.AnalogChannelCount >= 4)
+                    window.AppendToAnalog4(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(3));
+                //window.AppendToPMTOn(pointsToPlot.ScanParameterArray,
+                //    pointsToPlot.GetTOFOnIntegralArray(0,
+                //    startTOFGate, endTOFGate));
 				if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
 				{
-					window.AppendToPMTOff(pointsToPlot.ScanParameterArray,
-						pointsToPlot.GetTOFOffIntegralArray(0,
-						startTOFGate, endTOFGate));
-					window.AppendToDifference(pointsToPlot.ScanParameterArray,
-						pointsToPlot.GetDifferenceIntegralArray(0,
-						startTOFGate, endTOFGate));
+                    //window.AppendToPMTOff(pointsToPlot.ScanParameterArray,
+                    //    pointsToPlot.GetTOFOffIntegralArray(0,
+                    //    startTOFGate, endTOFGate));
+                    //window.AppendToDifference(pointsToPlot.ScanParameterArray,
+                    //    pointsToPlot.GetDifferenceIntegralArray(0,
+                    //    startTOFGate, endTOFGate));
 				}
                 // update the spectrum fit if in shot mode.
                 if (spectrumFitMode == FitMode.Shot)
@@ -325,6 +330,7 @@ namespace ScanMaster.GUI
 			// clear the realtime spectra
 			pointsToPlot.Points.Clear();
 			window.ClearRealtimeSpectra();
+            window.ClearSuperscan();
 		}
 
 		private void FitAverageTOF()
@@ -534,18 +540,18 @@ namespace ScanMaster.GUI
 			if (averageScan.Points.Count == 0) return;
             window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.MinimumScanParameter,
                  averageScan.MaximumScanParameter);
-			window.PlotAveragePMTOn(averageScan.ScanParameterArray,
-				averageScan.GetTOFOnIntegralArray(0,
-				startTOFGate, endTOFGate));
+            //window.PlotAveragePMTOn(averageScan.ScanParameterArray,
+            //    averageScan.GetTOFOnIntegralArray(0,
+            //    startTOFGate, endTOFGate));
 			Profile p = Controller.GetController().ProfileManager.CurrentProfile;
 			if (p != null && (bool)p.AcquisitorConfig.switchPlugin.Settings["switchActive"]) 
 			{
-				window.PlotAveragePMTOff(averageScan.ScanParameterArray,
-					averageScan.GetTOFOffIntegralArray(0,
-					startTOFGate, endTOFGate));
-				window.PlotAverageDifference(averageScan.ScanParameterArray,
-					averageScan.GetDifferenceIntegralArray(0,
-					startTOFGate, endTOFGate));
+                //window.PlotAveragePMTOff(averageScan.ScanParameterArray,
+                //    averageScan.GetTOFOffIntegralArray(0,
+                //    startTOFGate, endTOFGate));
+                //window.PlotAverageDifference(averageScan.ScanParameterArray,
+                //    averageScan.GetDifferenceIntegralArray(0,
+                //    startTOFGate, endTOFGate));
 			}
 		}
 
@@ -632,15 +638,15 @@ namespace ScanMaster.GUI
                 window.TOFAxes = null;
             }
 
-            if ((double[])Environs.Hardware.GetInfo("defaultTOF2Range") != null)
-            {
-                double[] defaultRange = (double[])Environs.Hardware.GetInfo("defaultTOF2Range");
-                window.TOF2Axes = new NationalInstruments.UI.Range(defaultRange[0], defaultRange[1]);
-            }
-            else
-            {
-                window.TOF2Axes = null;
-            }
+            //if ((double[])Environs.Hardware.GetInfo("defaultTOF2Range") != null)
+            //{
+            //    double[] defaultRange = (double[])Environs.Hardware.GetInfo("defaultTOF2Range");
+            //    window.TOF2Axes = new NationalInstruments.UI.Range(defaultRange[0], defaultRange[1]);
+            //}
+            //else
+            //{
+            //    window.TOF2Axes = null;
+            //}
         }
 	}
 }
