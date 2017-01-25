@@ -29,6 +29,7 @@ namespace TransferCavityLock2012
 
 		public bool fakeTheData = true;
 		public bool useDerivative = false;						// true = use derivative zero crossing, false = use Lorentzian fitting routines
+		public bool slaveUseDerivative = false;					// same for slave(s)
 
         public int default_ScanPoints = 1000;
 
