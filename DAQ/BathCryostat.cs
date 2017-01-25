@@ -1,5 +1,5 @@
 using System;
-
+using System.Windows.Forms;
 using NationalInstruments.VisaNS;
 
 using DAQ.Environment;
@@ -54,14 +54,24 @@ namespace DAQ.HAL
             if (!connected) Connect();
             if (!Environs.Debug)
             {
-                for (int i = 0; i < sensor.Length; i++)
+                try
                 {
-                    string sensorstring = string.Join("", "R", sensor[i].ToString(),"\r");
-                    byte[] writBytes = System.Text.Encoding.ASCII.GetBytes(sensorstring);
-                    readData[i] = serial.Query(sensorstring, 8);
-                    if (readData[i] != null) dataValue[i] = Convert.ToDouble(readData[i].Substring(1, readData[i].Length-3));
-                    serial.Flush(BufferTypes.InBuffer, true);
-                    serial.Flush(BufferTypes.OutBuffer, true);
+                    for (int i = 0; i < sensor.Length; i++)
+                    {
+                        string sensorstring = string.Join("", "R", sensor[i].ToString(), "\r");
+                        byte[] writBytes = System.Text.Encoding.ASCII.GetBytes(sensorstring);
+                        readData[i] = serial.Query(sensorstring, 8);
+                        if (readData[i] != null) dataValue[i] = Convert.ToDouble(readData[i].Substring(1, readData[i].Length - 3));
+                        serial.Flush(BufferTypes.InBuffer, true);
+                        serial.Flush(BufferTypes.OutBuffer, true);
+                    }
+                }
+                catch (Exception e)
+                {
+                    // bug swatter for intermittance bug in reading from cryostat
+                    Console.Error.Write(e.Message + e.StackTrace);
+                    MessageBox.Show("Bath Cryo Bug:" + e.Message + "\n" + e.StackTrace, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 			Disconnect();
