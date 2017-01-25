@@ -117,6 +117,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'tclTest|AnyCPU'">
+    <OutputPath>bin\tclTest\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
@@ -192,6 +195,10 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PeakFinder.cs" />
+    <Compile Include="DAQmxTCL2012ExtTriggeredMultiReadHelperFake.cs" />
+    <Compile Include="tclTestFileSystem.cs" />
+    <Compile Include="tclTestHardware.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="MMConfig.cs" />

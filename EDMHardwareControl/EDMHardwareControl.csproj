@@ -111,6 +111,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'tclTest|AnyCPU'">
+    <OutputPath>bin\tclTest\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>

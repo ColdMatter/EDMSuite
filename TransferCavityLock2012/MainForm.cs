@@ -364,7 +364,18 @@ namespace TransferCavityLock2012
         private void voltageRampControl_Enter(object sender, EventArgs e)
         {
 
-        } 
+        }
+
+		private void useDerivativeCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			bool boxState = useDerivativeCheckBox.Checked;
+			controller.useDerivative = boxState;
+		}
+
+		private void useDerivativeCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+
+		} 
        
     }
 }

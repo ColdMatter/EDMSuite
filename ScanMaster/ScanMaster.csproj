@@ -123,6 +123,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'tclTest|AnyCPU'">
+    <OutputPath>bin\tclTest\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>

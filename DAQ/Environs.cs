@@ -213,6 +213,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+				case "PH-NFITCH-2":
+					Hardware = new tclTestHardware();
+					FileSystem = new tclTestFileSystem();
+					Debug = false;
+					break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

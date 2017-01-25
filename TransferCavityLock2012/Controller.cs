@@ -26,7 +26,11 @@ namespace TransferCavityLock2012
     {
 
         #region Declarations
-        public int default_ScanPoints = 900;
+
+		public bool fakeTheData = true;
+		public bool useDerivative = false;						// true = use derivative zero crossing, false = use Lorentzian fitting routines
+
+        public int default_ScanPoints = 1000;
 
         private MainForm ui;
 
@@ -102,8 +106,15 @@ namespace TransferCavityLock2012
 
         private void initializeAIs(Dictionary<string,string>.ValueCollection channels)
         {
-            
-            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(channels.ToArray(), config.Trigger);
+			if (!fakeTheData)
+			{
+				tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(channels.ToArray(), config.Trigger);
+			}
+			else
+			{
+				tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelperFake(channels.ToArray());
+			}
+
             aiChannels = new Dictionary<string, int>();
             foreach (string s in channels)
             {
@@ -302,9 +313,19 @@ namespace TransferCavityLock2012
                             //if the cavity length is locked, use the set point to determine what voltage to output
                             if (ui.masterLockEnableCheck.Checked == true)
                             {
-                                fits["masterFits"] = fitMaster(scanData);
-                                plotMaster(scanData, fits["masterFits"]);
-                                masterVoltage = calculateNewMasterVoltage(masterVoltage);
+								// if we are using the derivative to determine the top of the cavity transmission peak
+								if (ui.useDerivativeCheckBox.Checked == true)
+								{
+									fits["masterFits"] = findPeakMaster(scanData);	// not really a fit but imitate that behavior for lock method consistency
+									plotMaster(scanData);
+								}
+								// otherwise we're doing full Lorentzian fitting
+								else
+								{
+									fits["masterFits"] = fitMaster(scanData);
+									plotMaster(scanData, fits["masterFits"]);
+								}
+								masterVoltage = calculateNewMasterVoltage(masterVoltage);
                                 setupMasterVoltageOut();
                                  //write difference to analog output
                                 writeMasterVoltageOut(masterVoltage);
@@ -404,6 +425,10 @@ namespace TransferCavityLock2012
         {
             return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetMasterData());
         }
+		private double[] findPeakMaster(CavityScanData data)
+		{
+			return CavityScanFindPeakHelper.FindPeak(data.GetCavityData(), data.GetMasterData());
+		}
         private void plotMaster(CavityScanData data, double[] MasterFit)
         {
             double[] cavity = data.GetCavityData();
@@ -514,7 +539,6 @@ namespace TransferCavityLock2012
             double masterVoltageShift = masterV - masterGain * (masterSetPoint - masterFit);
             return masterVoltageShift;
         }
-
         
         private Task masterOutputTask;
         private AnalogOutputChannel masterChannel;
