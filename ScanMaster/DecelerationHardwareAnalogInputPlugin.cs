@@ -128,11 +128,11 @@ namespace ScanMaster.Acquire.Plugins
                     //check that photodiode is not saturating
                     if (latestData[lockCavityChannel] > 4.7)
                     {
-                        hardwareControl.diodeSaturationError();
+                       // hardwareControl.diodeSaturationError();
                     }
                     else
                     {
-                        hardwareControl.diodeSaturation();
+                        // hardwareControl.diodeSaturation();
                     }
                     // send the new lock cavity data to the hardware controller
                     normalized_Data = latestData[lockCavityChannel] / latestData[refCavityChannel];

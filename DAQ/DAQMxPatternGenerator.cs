@@ -30,7 +30,6 @@ namespace DAQ.HAL
 		// use this method to output a PatternList to the whole PatternList generator
 		public void OutputPattern(UInt32[] pattern)
 		{
-			
             writer.WriteMultiSamplePort(true, pattern);
 			// This Sleep is important (or at least it may be). It's here to guarantee that the correct PatternList is
 			// being output by the time this call returns. This is needed to make the tweak
@@ -136,11 +135,13 @@ namespace DAQ.HAL
 			{
 				sqm = SampleQuantityMode.ContinuousSamples;
 				pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
+                
 			}
 			else
 			{
 				sqm = SampleQuantityMode.FiniteSamples;
 				pgTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
+               
 			}
 
 			pgTask.Timing.ConfigureSampleClock(

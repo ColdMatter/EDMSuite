@@ -93,6 +93,7 @@ namespace Analysis.EDM
                 int lf1Index = modNames.IndexOf("LF1");
                 int lf2Index = modNames.IndexOf("LF2");
 
+                int sigChannel = 0;
                 int bChannel = (1 << bIndex);
                 int dbChannel = (1 << dbIndex);
                 int ebChannel = (1 << eIndex) + (1 << bIndex);
@@ -115,7 +116,7 @@ namespace Analysis.EDM
                 int lf1Channel = (1 << lf1Index);
                 int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
 
-                channelsToAnalyse = new List<int>() { bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
+                channelsToAnalyse = new List<int>() { sigChannel, bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
                     dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
                     rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
                     dbrf2aChannel, lf1Channel, dblf1Channel,
@@ -174,6 +175,8 @@ namespace Analysis.EDM
             TOFChannel c_dbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2F" });
             TOFChannel c_b = (TOFChannel)tcs.GetChannel(new string[] { "B" });
             TOFChannel c_db = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
+            TOFChannel c_sig = (TOFChannel)tcs.GetChannel(new string[] { "SIG" });
+
             TOFChannel c_brf1f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF1F" });
             TOFChannel c_brf2f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF2F" });
             TOFChannel c_edbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
@@ -338,6 +341,29 @@ namespace Analysis.EDM
             TOFChannel brf2fCorrDB = (c_brf2f / c_db) - ((c_b * c_dbrf2f) / (c_db * c_db));
             tcs.AddChannel(new string[] { "BRF2FCORRDB" }, brf2fCorrDB);
 
+            //Some extra channels for various shot noise calculations, these are a bit weird
+
+
+            tcs.AddChannel(new string[] { "SIGNL" }, c_sig);
+
+            tcs.AddChannel(new string[] { "ONEOVERDB" }, 1/c_db);
+
+            TOFChannel dbSigNL = new TOFChannel();
+            dbSigNL.On = c_db.On/c_sig.On;
+            dbSigNL.Off = c_db.Off/c_sig.On;;
+            dbSigNL.Difference = c_db.Difference / c_sig.Difference;
+            tcs.AddChannel(new string[] { "DBSIG" }, dbSigNL);
+
+
+            TOFChannel dbdbSigSigNL = dbSigNL * dbSigNL;
+            tcs.AddChannel(new string[] { "DBDBSIGSIG" }, dbdbSigSigNL);
+
+
+            TOFChannel SigdbdbNL = new TOFChannel();
+            SigdbdbNL.On = c_sig.On / ( c_db.On* c_db.On);
+            SigdbdbNL.Off = c_sig.On / ( c_db.Off * c_db.Off);
+            SigdbdbNL.Difference = c_sig.Difference / (c_db.Difference * c_db.Difference);
+            tcs.AddChannel(new string[] { "SIGDBDB" }, SigdbdbNL);
             return tcs;
         }
     }

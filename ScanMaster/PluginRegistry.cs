@@ -52,7 +52,8 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
-            patternPlugins.Add("Microcavity",typeof(MicrocavityPatternPlugin));
+            patternPlugins.Add("Microcavity", typeof(MicrocavityPatternPlugin));
+            patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

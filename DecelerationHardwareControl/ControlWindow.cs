@@ -14,7 +14,7 @@ namespace DecelerationHardwareControl
 {
     public partial class ControlWindow : Form
     {
-        private double aom_voltage;
+        
         public Controller controller;
         
         public ControlWindow()
@@ -53,20 +53,6 @@ namespace DecelerationHardwareControl
             led.Value = state;
         }
 
-        private void AomVoltageBox_ValueChanged(object sender, EventArgs e)
-        {
-            //the conversion factor below is liable to change over time. It will definitely change
-            //if the gain on the voltage amplifier that aom_voltage goes through is changed.
-            aom_voltage = ((double)AomVoltageBox.Value - 83.2) / 22.9143;
-            controller.AOMVoltage = aom_voltage;
-            //diodeSaturationError();
-        }
-
-        private void laserBlockCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetAnalogOutputBlockedStatus("laser", laserBlockCheckBox.Checked);
-        }
-
         private void synthOnCheck_CheckedChanged(object sender, EventArgs e)
         {
             controller.EnableSynth(synthOnCheck.Checked);
@@ -97,6 +83,111 @@ namespace DecelerationHardwareControl
 
         }
 
+        private void PressureSourceChamber_Click(object sender, EventArgs e)
+        {
+
+        }
+              
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            controller.StartSidebandRead();
+        }
+
+        private void scatterGraph1_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void scatterGraph2_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+        
+        private void scatterGraph5_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }        
+        
+        private void scatterGraph6_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private delegate void plotScatterGraphDelegate(ScatterPlot plot, double[] x, double[] y);
+        private void plotScatterGraphHelper(ScatterPlot plot,
+            double[] x, double[] y)
+        {
+            lock (this)
+            {
+                plot.ClearData();
+                
+                plot.PlotXY(x, y);
+            }
+        }
+
+
+        private void scatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
+        {
+            graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] { plot, x, y });
+        }
+
+        public void displaySidebandData(ScatterGraph graph, double[] xvals, double[] data)
+        {
+            scatterGraphPlot(graph, scatterPlot1, xvals, data);
+            
+        }
+         
+
+        public void displaySidebandData628V1(ScatterGraph graph, double[] xvals, double[] data)
+        {
+           scatterGraphPlot(graph, scatterPlot2, xvals, data);
+        }
+        
+        public void displaySidebandData531(ScatterGraph graph, double[] xvals, double[] data)
+        {
+            scatterGraphPlot(graph, scatterPlot5, xvals, data);
+        }
+        
+        public void displaySidebandData628Slowing(ScatterGraph graph, double[] xvals, double[] data)
+        {
+            scatterGraphPlot(graph, scatterPlot6, xvals, data);
+        }
+
+        private void scatterGraph4_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void scatterGraph1_PlotDataChanged_1(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void stopReadingButton_Click(object sender, EventArgs e)
+        {
+            controller.sidebandMonitorRunning = false;
+        }
+
+        private void sideBandTab_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aom1UpdateButton_Click(object sender, EventArgs e)
+        {
+            double freq = double.Parse(aom1FreqBox.Text);
+            double amp = double.Parse(aom1AmplitudeBox.Text);
+            controller.SetMOTAOMFreq(freq);
+            controller.SetMOTAOMAmp(amp);
+        }
+
+       
+
+        
+
+        
+        
        
     }
 }

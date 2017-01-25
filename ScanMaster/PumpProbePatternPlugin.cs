@@ -31,6 +31,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["aomOnStart"] = 100;
 			settings["aomOnDuration"] = 100;
 			settings["aomOffStart"] = 140;
+            settings["aom2OffStart"] = 140;
 			settings["aomOffDuration"] = 20;
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 5;
@@ -66,12 +67,13 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
 				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
 				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
+                (int)settings["aom2OffStart"] - (int)settings["aomOnStart"],
                 GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],
                 (int)settings["switchLineDelay"],
-                (int)settings["chirpStart"],
+                (int)settings["chirpStart"], 
                 (int)settings["chirpDuration"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);

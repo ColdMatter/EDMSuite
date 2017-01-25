@@ -107,6 +107,14 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
+                case "PH-CJH211":
+                    Hardware = new EDMTestCrateHardware();
+                    FileSystem = new PixieFileSystem();
+                    Debug = false;
+                    //ExperimentType = "edm";
+                    break;
+
+
 				case "PH-JKITE":
 					Hardware = new EDMHardware();
 					FileSystem = new PHJKiteFileSystem();
