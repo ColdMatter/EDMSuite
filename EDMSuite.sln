@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
@@ -174,11 +174,11 @@ Global
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMAnalysis|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMAnalysis|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMAnalysis|x86.ActiveCfg = EDMAnalysis|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Any CPU.ActiveCfg = EDMTestCrate|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Any CPU.Build.0 = EDMTestCrate|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Mixed Platforms.Build.0 = EDMTestCrate|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Any CPU.Build.0 = EDMAnalysis|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|Mixed Platforms.Build.0 = EDMAnalysis|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.EDMTestCrate|x86.ActiveCfg = EDMAnalysis|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Release|Any CPU.ActiveCfg = SrF|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Release|Any CPU.Build.0 = SrF|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Release|Mixed Platforms.ActiveCfg = SrF|Any CPU
@@ -749,10 +749,11 @@ Global
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMAnalysis|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMAnalysis|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMAnalysis|x86.ActiveCfg = EDMAnalysis|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Any CPU.ActiveCfg = EDMTestCrate|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Any CPU.Build.0 = EDMTestCrate|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Any CPU.Build.0 = EDMAnalysis|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Mixed Platforms.Build.0 = EDMAnalysis|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|x86.ActiveCfg = EDMAnalysis|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Release|Any CPU.ActiveCfg = SrF|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Release|Any CPU.Build.0 = SrF|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Release|Mixed Platforms.ActiveCfg = SrF|Any CPU
