@@ -130,6 +130,7 @@ namespace IMAQ
             if (state == CameraState.STREAMING)
             {
                 state = CameraState.BUSY;
+            }
             imageWindow.WriteToConsole("Streaming stopped");
         }
 

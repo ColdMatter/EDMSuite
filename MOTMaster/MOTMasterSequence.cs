@@ -10,7 +10,7 @@ namespace MOTMaster
     [Serializable]
     public class MOTMasterSequence
     {
-        public Dictionary<string , PatternBuilder32> DigitalPatterns;
+        public PatternBuilder32 DigitalPattern;
         public AnalogPatternBuilder AnalogPattern;
         public MMAIConfiguration AIConfiguration;
         public HSDIOPatternBuilder HSDIOPattern;

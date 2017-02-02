@@ -141,10 +141,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
-    <Compile Include="ControllerWindow.cs" />
+    <Compile Include="ControllerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ControllerWindow.Designer.cs">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="MMAIConfiguration.cs" />
     <Compile Include="MMDataIOHelper.cs" />
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />

@@ -287,12 +287,15 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EDMTestCrateFileSystem.cs" />
+    <Compile Include="EDMTestCrateHardware.cs" />
     <Compile Include="HSDIOPatternBuilder.cs" />
     <Compile Include="HSDIOPatternGenerator.cs" />
     <Compile Include="MiniCircuitsUSBFreqCtr.cs" />
     <Compile Include="MMAIChannelConfiguration.cs" />
     <Compile Include="MMAIConfiguration.cs" />
     <Compile Include="MMAIWrapper.cs" />
+    <Compile Include="MMConfig.cs" />
     <Compile Include="NavigatorFileSystem.cs" />
     <Compile Include="NavigatorHardware.cs" />
     <Compile Include="HP5350BCounter.cs" />
