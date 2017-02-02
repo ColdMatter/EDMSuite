@@ -120,8 +120,8 @@
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|AnyCPU'">
-    <OutputPath>bin\Nav\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
+    <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
@@ -186,6 +186,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MOTPatternBuilder.cs" />
+    <Compile Include="MOTPatternPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -101,7 +101,7 @@ namespace IMAQ
         private void AttachImageHelper(NationalInstruments.Vision.WindowsForms.ImageViewer viewer, VisionImage image)
         {
             viewer.Attach(image);
-
+            
         }
         private void setRichTextBox(RichTextBox box, string text)
         {
@@ -126,10 +126,10 @@ namespace IMAQ
         private VisionImage disImage = new VisionImage();
         public void AttachImagesToViewer(List<VisionImage> images, int frame)
         {
-
+           
             disImage = images[frame];
-            attachToViewer(imageViewer, disImage);
-
+             attachToViewer(imageViewer, disImage);
+            
 
         }
 
@@ -162,10 +162,10 @@ namespace IMAQ
         //    AttachImagesToViewer(IM.imageList, newScrollValue);
 
         //    hScrollBar.Maximum = IM.imageList.Count-1;
-
+           
         //}
 
-
+                
 
         //private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
         //{
@@ -175,22 +175,30 @@ namespace IMAQ
         //    {
         //        hScrollBar.Update();
         //        hScrollBar.Maximum = 1;
-
-
+           
+           
         //    }
-
+           
 
         //    else
         //    {
 
-        //    hScrollBar_Change(e.NewValue);
-        //    }
+        private void imageViewer_RoiChanged(object sender, NationalInstruments.Vision.WindowsForms.ContoursChangedEventArgs e)
+        {
+
+        }
+
+        private void consoleRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
 
 
+      
 
         //}
 
-
+        
 
 
     }

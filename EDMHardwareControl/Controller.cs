@@ -979,7 +979,7 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.rf2FMIncTextBox, value.ToString());
             }
         }
-        
+
         public double probeAOMVoltage
         {
             get

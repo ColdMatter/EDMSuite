@@ -27,8 +27,10 @@ namespace DAQ.HAL
 
 			// add the boards
 			Boards.Add("daq", "/dev2");
+            Boards.Add("multiDAQ", "/dev1");
 			Boards.Add("pg", "/dev1");
-            Boards.Add("usbDev", "/dev3");
+            Boards.Add("aoBoard", "/PXI1Slot5");
+            Boards.Add("usbDev", "/dev4");
             //Boards.Add("PXI6", "/PXI1Slot6_4");
             Boards.Add("PXI6", "/PXI1Slot6");
             Boards.Add("PXI4", "/PXI1Slot4");
@@ -38,12 +40,14 @@ namespace DAQ.HAL
             string daqBoard = (string)Boards["daq"];
             string PXIBoard = (string)Boards["PXI6"];
             string TCLBoard = (string)Boards["PXI4"];
-            string TCLBoard2 = (string)Boards["PXI5"];
+            string TCLBoard2 = (string)Boards["PXI6"];
+            string aoBoard = (string)Boards["aoBoard"];
 
+            //configure instance 1 of transfer cavity lock
             TCLConfig tcl1 = new TCLConfig("Hamish McCavity");
             tcl1.AddLaser("v00cooling", "p1");
             tcl1.AddLaser("v10repump", "p2");
-            tcl1.AddLaser("spectra", "p3");
+            tcl1.AddLaser("eylsa", "p3");
             tcl1.Trigger = TCLBoard + "/PFI0";
             tcl1.Cavity = "cavity";
             tcl1.MasterLaser = "master";
@@ -51,17 +55,21 @@ namespace DAQ.HAL
             tcl1.TCPChannel = 1190;
             Info.Add("Hamish", tcl1);
 
+            //configure instance 2 of transfer cavity lock
             TCLConfig tcl2 = new TCLConfig("Carlos the Cavity");
-            //All the following settings need to be changes appropriately. They are just copies of tcl1 for now
-            tcl2.AddLaser("v00cooling", "p1");
-            tcl2.AddLaser("v10repump", "p2");
-            tcl2.AddLaser("spectra", "p3");
-            tcl2.Trigger = TCLBoard + "/PFI0";
-            tcl2.Cavity = "cavity";
-            tcl2.MasterLaser = "master";
-            tcl2.Ramp = "rampfb";
+            tcl2.AddLaser("v21repump", "p12");
+            tcl2.AddLaser("v32repump", "p22");
+            tcl2.Trigger = TCLBoard2 + "/PFI0";
+            tcl2.Cavity = "cavity2";
+            tcl2.MasterLaser = "master2";
+            tcl2.Ramp = "rampfb2";
             tcl2.TCPChannel = 1191;
             Info.Add("Carlos", tcl2);
+
+            //MotMaster configuration
+           // MMConfig mmConfig = new MMConfig(false, false, false, false);
+           // mmConfig.ExternalFilePattern = "*.tif";
+            Info.Add("MotMasterConfiguration", mmConfig);
 
 
             Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
@@ -77,7 +85,11 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
+
+            Info.Add("defaultTOFRange", new double[] {4000, 12000}); // these entries are the two ends of the range for the upper TOF graph
+            Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
+            Info.Add("defaultGate", new double[] { 6000, 2000 }); // the first entry is the centre of the gate, the second is the half width of the gate (upper TOF graph)
             
 
             // the analog triggers
@@ -86,11 +98,13 @@ namespace DAQ.HAL
             //Info.Add("TCLTrigger", (string)Boards["PXI4"] + "/PFI0");
             //Info.Add("analogTrigger2", (string)Boards["usbDev"] + "/PFI0"); //Pin 29
             Info.Add("analogTrigger3", (string)Boards["daq"] + "/PFI6"); //Pin 5 - breakout 31
+            Info.Add("usbAnalogTrigger", usbBoard + "/PFI0");
             //distance information
             Info.Add("sourceToDetect", 0.535); //in m
             Info.Add("sourceToSoftwareDecelerator", 0.12); //in m
             //information about the molecule
             Info.Add("molecule", "caf");
+            Info.Add("Element", "CaF");
             Info.Add("moleculeMass", 58.961); // this is 40CaF in atomic mass units
             Info.Add("moleculeRotationalConstant", 1.02675E10); //in Hz
             Info.Add("moleculeDipoleMoment", 15400.0); //in Hz/(V/m)
@@ -120,26 +134,25 @@ namespace DAQ.HAL
                         			
 			// map the digital channels
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+            AddDigitalOutputChannel("tclBlock", pgBoard, 0, 6); //Same as valve; deliberately!
 			AddDigitalOutputChannel("flash", pgBoard, 0, 0);//Changed from pg board P.0.5 because that appears to have died mysteriously (line dead in ribbon cable?) TEW 06/04/09
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
+            AddDigitalOutputChannel("chirpTrigger", pgBoard, 1, 0);
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
-			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
-			AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
-			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
-			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
-            AddDigitalOutputChannel("cavityTriggerOut", usbBoard, 0, 1);//Pin 18
-            //AddDigitalOutputChannel("ttl1", pgBoard, 2, 2); //Pin 58 Used to be used with AomLevelControlPlugin.
-            //AddDigitalOutputChannel("ttl2", pgBoard, 2, 1); //Pin 57
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 3, 0);	// This is the output that the pg
-            // will switch if it's switch scanning.
+            AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel
+            AddDigitalOutputChannel("ttlSwitch", pgBoard, 2,2);	// This is the output that the pg will switch if it's switch scanning.
             //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
+            AddDigitalOutputChannel("motAOM", pgBoard, 1, 1); //Pin 17
+            AddDigitalOutputChannel("motRampTrigger", pgBoard, 1, 2); //Pin 51
+            AddDigitalOutputChannel("bTrigger", pgBoard, 1, 3); //Pin 52
+            AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
+            AddDigitalOutputChannel("AnalogPatternTrigger", pgBoard, 3, 3); //Pin 31
 
 			// map the analog channels
-			AddAnalogInputChannel("pmt", daqBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pmt2", daqBoard + "/ai2", AITerminalConfiguration.Rse);
-			//AddAnalogInputChannel("longcavity", daqBoard + "/ai3", AITerminalConfiguration.Rse);
+			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pmt2", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refcavity", daqBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("lockcavity", daqBoard + "/ai2", AITerminalConfiguration.Rse);
             
@@ -152,11 +165,23 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v10repump", TCLBoard + "/ao0");
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao1");
         
-            AddAnalogOutputChannel("v00cooling", PXIBoard + "/ao0");
-            AddAnalogOutputChannel("spectra", PXIBoard + "/ao1");
-                        
+            AddAnalogOutputChannel("v00cooling", TCLBoard2 + "/ao2");
+            AddAnalogOutputChannel("eylsa", TCLBoard2 + "/ao3");
+
+            AddAnalogOutputChannel("slowingChirp", aoBoard + "/ao8");
+            AddAnalogOutputChannel("v0IntensityRamp", aoBoard + "/ao9");
+            
+            //second cavity
+
+            AddAnalogInputChannel("master2", TCLBoard2 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cavity2", TCLBoard2 + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p12", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p22", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogOutputChannel("v21repump", TCLBoard2 + "/ao0");
+            AddAnalogOutputChannel("v32repump", usbBoard + "/ao0", 0 , 5);
+            AddAnalogOutputChannel("rampfb2", TCLBoard2 + "/ao1");
+                       
            
-            AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1");// hardwareController has "highvoltage" hardwired into it and so needs to see this ao, otherwise it crashes. Need to fix this.
             
 
             // map the counter channels
@@ -171,7 +196,22 @@ namespace DAQ.HAL
             AddAnalogInputChannel("30KShield", PXIBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("4KCell", PXIBoard + "/ai5", AITerminalConfiguration.Rse);
 
+            //map the channels to monitor the sidebands in deceleration hardware
+            AddAnalogInputChannel("cavityVoltage", usbBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot606", usbBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot628V1", usbBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("mot628V2", usbBoard + "/ai3", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("mot628V3", usbBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("slowing531", usbBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("slowing628V1", usbBoard + "/ai7", AITerminalConfiguration.Rse);
 
+            //analog output channels controlled by the hardware controller and/or MOTMaster
+            AddAnalogOutputChannel("motAOMFreq", aoBoard + "/ao10");
+            AddAnalogOutputChannel("motAOMAmp", aoBoard + "/ao11");
+
+            AddCalibration("motAOMFreq", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
+            AddCalibration("motAOMAmp", new LinearCalibration(1, 0, 0, -10, 10)); // needs calibrating
+            
 		}
 
         

@@ -26,7 +26,7 @@ namespace TransferCavityLock2012
     {
 
         #region Declarations
-        public int default_ScanPoints = 300;
+        public int default_ScanPoints = 900;
 
         private MainForm ui;
 

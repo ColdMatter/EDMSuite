@@ -20,6 +20,7 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
+//using NationalInstruments.Vision.Common;
 
 
 namespace IMAQ
@@ -41,14 +42,10 @@ namespace IMAQ
         private object streamStopLock = new object();
         public List<VisionImage> imageList = new List<VisionImage>();
         private ImaqdxAttributeCollection attributes;
-        private Dictionary<string, string> registers;
         public PointContour pointOfInterest;
         public Roi rectangleROI = new Roi();
         public Roi pointROI = new Roi();
         public bool roiSet = false;
-        //Used for keeping track of the trigger mode
-        private ImaqdxEnumAttribute triggerMode;
-        private ImaqdxEnumAttributeItem triggerVal;
 
         public CameraController(string cameraName)
         {
@@ -98,11 +95,9 @@ namespace IMAQ
             {
                 initializeCamera();
                 openViewerWindow();
-                registers = new Dictionary<string, string>();
-                AddRegisters();
             }
             catch { }
-
+            
         }
 
         public void Dispose()
@@ -115,15 +110,7 @@ namespace IMAQ
         public bool Stream(string cameraAttributesFilePath)
         {
             SetCameraAttributes(cameraAttributesFilePath);
-            triggerMode = (ImaqdxEnumAttribute)imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")];
-            triggerVal = (ImaqdxEnumAttributeItem)triggerMode.GetValue();
-            if (triggerVal.ToString() == "Mode 0" || triggerVal.ToString() == "Mode 1" || triggerVal.ToString() == "Mode 15")
-            {
-                imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")].SetValue("Off");
-                
-            }
             imageWindow.WriteToConsole("Applied camera attributes from " + cameraAttributesFilePath);
-            PrintCameraAttributesToConsole();
             imageWindow.WriteToConsole("Streaming from camera");
             if (state == CameraState.FREE)
             {
@@ -137,15 +124,12 @@ namespace IMAQ
                 return false;
             }
         }
-
+        
         public void StopStream()
         {
             if (state == CameraState.STREAMING)
             {
                 state = CameraState.BUSY;
-            }
-            imaqdxSession.Attributes[imaqdxSession.Attributes.IndexOf("TriggerMode")].SetValue(triggerVal);
-            imaqdxSession.Acquisition.Stop();
             imageWindow.WriteToConsole("Streaming stopped");
         }
 
@@ -162,24 +146,32 @@ namespace IMAQ
             try
             {
 
-                if (state == CameraState.FREE)
+                if (state == CameraState.FREE || state == CameraState.READY_FOR_ACQUISITION)
                 {
                     image = new VisionImage();
+                    
                     state = CameraState.READY_FOR_ACQUISITION;
                     try
                     {
                         imaqdxSession.Snap(image);
+                       
                         if (windowShowing)
                         {
                             imageWindow.AttachToViewer(image);
+                     
                         }
                         if (addToImageList)
                         {
                             imageList.Add(image);
                         }
+                        image.WriteFile("test.bmp");
+                        
                         PixelValue2D pval = image.ImageToArray();
+                        byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                        double max = Getthearray.Findthemaximum(u8array);
+                        imageWindow.WriteToConsole(max.ToString("F6"));
                         state = CameraState.FREE;
-                        return pval.U8;
+                        return u8array;
                     }
                     catch (ObjectDisposedException e)
                     {
@@ -191,6 +183,11 @@ namespace IMAQ
                         MessageBox.Show(e.Message);
                         throw new ImaqdxException();
                     }
+                    catch (VisionException e)
+                    {
+                        MessageBox.Show(e.VisionErrorText);
+                        throw e;
+                    }
                 }
                 else return null;
 
@@ -201,76 +198,45 @@ namespace IMAQ
             }
         }
 
-
-
+      
+        
         public byte[][,] MultipleSnapshot(string attributesPath, int numberOfShots)
         {
             SetCameraAttributes(attributesPath);
-            PrintCameraAttributesToConsole();
-            if (imageList.Count < 1)
-                imageList = new List<VisionImage>();
             VisionImage[] images = new VisionImage[numberOfShots];
-            for (uint i = 0; i < images.Length; ++i)
-            {
-                images[i] = new VisionImage();
-            }
             Stopwatch watch = new Stopwatch();
             try
             {
 
                 watch.Start();
-
-                // state = CameraState.READY_FOR_ACQUISITION;
-                ////imaqdxSession.Close();
-                //////AttemptedWorkaround
-
-                //ImaqdxSession imaqdxSession2 = new ImaqdxSession("cam2");
-
-                imaqdxSession.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, numberOfShots);
-
-                imaqdxSession.Acquisition.Start();
                 state = CameraState.READY_FOR_ACQUISITION;
-                ////// Get each image in the sequence
-                for (uint i = 0; i < images.Length; ++i)
-                {
-                    imaqdxSession.Acquisition.GetImageAt(images[i], i);
-                }
-
-                ////// Stop, Unconfigure, and Close the camera
-
-                imaqdxSession.Acquisition.Stop();
-                imaqdxSession.Acquisition.Unconfigure();
-                //imaqdxSession2.Close();
-                ////imaqdxSession = new ImaqdxSession("cam2");
-
-                // imaqdxSession.Sequence(images, numberOfShots);
-
-
-                //  Configure(ImaqdxAcquisitionType.SingleShot, numberOfShots);
+                
+                
+                imaqdxSession.Sequence(images, numberOfShots);
                 watch.Stop();
                 if (windowShowing)
                 {
-                    long interval = watch.ElapsedMilliseconds;
-                    imageWindow.WriteToConsole(interval.ToString());
+                long interval = watch.ElapsedMilliseconds;
+                imageWindow.WriteToConsole(interval.ToString());        
                 }
 
                 List<byte[,]> byteList = new List<byte[,]>();
                 foreach (VisionImage i in images)
                 {
                     byteList.Add((i.ImageToArray()).U8);
-                    imageList.Add(i);
-                    // if (windowShowing)
-                    //{
-                    //  imageWindow.AttachToViewer(i);
 
-                    // }
+                   // if (windowShowing)
+                    //{
+                      //  imageWindow.AttachToViewer(i);
+
+                   // }
 
                 }
                 state = CameraState.FREE;
 
                 return byteList.ToArray();
-
-
+                
+                
             }
             catch (ImaqdxException e)
             {
@@ -282,7 +248,7 @@ namespace IMAQ
         }
         public void ShowSubtractedImage(byte[,] fgImage, byte[,] bgImage)
         {
-            
+
             int height = fgImage.GetLength(0);
             int width = fgImage.GetLength(1);
             byte[,] subImage = new byte[height, width];
@@ -355,13 +321,13 @@ namespace IMAQ
                 else if (attributes != imaqdxSession.Attributes)
                 {
                     attributes.WriteAttributesToFile(newPath);
-                    imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
-                }
+                imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
+            }
 
             }
             return newPath;
         }
-      
+
         public void SetROI()
         {
             RectangleContour rect = rectangleROI.GetBoundingRectangle();
@@ -404,6 +370,13 @@ namespace IMAQ
 
         }
 
+        private void Getthemaximum()
+        {
+            PixelValue2D pval = image.ImageToArray();
+            byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                       
+        }
+
         private void stream()
         {
             image = new VisionImage();
@@ -430,6 +403,14 @@ namespace IMAQ
                     try
                     {
                         imaqdxSession.Grab(image, true);
+                        if (analyse)
+                        {
+                            PixelValue2D pval = image.ImageToArray();
+                            byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                            max = Getthearray.Findthemaximum(u8array);
+                            imageWindow.WriteToConsole(max.ToString("F6"));
+
+                        }
                     }
                     catch (Exception e)
                     {
@@ -489,7 +470,7 @@ namespace IMAQ
                 imageWindow.Close();
             }
         }
-        
+
 
         #endregion
 
@@ -512,7 +493,7 @@ namespace IMAQ
             }
         }
 
-
+      
 
         public string GetSaveDialogFilename()
         {
@@ -538,7 +519,7 @@ namespace IMAQ
         {
             string filepath = GetSaveDialogFilename();
             if (!Directory.Exists(filepath))
-                Directory.CreateDirectory(filepath);
+            Directory.CreateDirectory(filepath);
             string filed = filepath + "\\image";
             StoreImageList(filed,rawData);
             imageWindow.WriteToConsole(filed);
@@ -613,29 +594,29 @@ namespace IMAQ
 
 
 
-
-
+        
+        
 
         public void StoreImageList(string savePath, bool rawData)
         {
-
+            
             for (int i = 0; i < imageList.Count; i++)
             {
-                PixelValue2D pval = imageList[i].ImageToArray();
+                PixelValue2D pval = imageList[i].ImageToArray(); 
                 if (rawData)
                     StoreImageData(savePath + "_" + i.ToString(), pval.U8);
                 else
                     imageList[i].WritePngFile(savePath + "_" + i.ToString()+".png");
             }
             imageWindow.WriteToConsole("List of" + imageList.Count.ToString() + "images saved");
-        }
+            }
 
         public void StoreImageList(string savePath)
         {
             StoreImageList(savePath, true);
         }
 
-        public void StoreImageData(string savePath, byte[,] imageData)
+       public void StoreImageData(string savePath, byte[,] imageData)
         {
             int width = imageData.GetLength(1);
             int height = imageData.GetLength(0);
@@ -647,7 +628,7 @@ namespace IMAQ
                     pixels[(width * j) + i] = imageData[j, i];
                 }
             }
-
+         
 
             FileStream stream = new FileStream(savePath + ".dat", FileMode.Create);
             stream.Write(pixels, 0, width * height);
@@ -657,15 +638,15 @@ namespace IMAQ
 
 
 
-        public void DisposeImages()
-        {
-            imageList.Clear();
+       public void DisposeImages()
+       {
+           imageList.Clear();
 
-        }
+       }
 
 
         #region Printing register values
-
+     
         private void printRegisterInfo(string Adr)
         {
             imageWindow.WriteToConsole(Adr + " = " + Convert.ToString(imaqdxSession.ReadRegister((ulong)Convert.ToInt64(Adr, 16)), 2));
@@ -686,7 +667,7 @@ namespace IMAQ
 
 
         //Load image when opening the controller
-
+        
         #endregion
     }
 }

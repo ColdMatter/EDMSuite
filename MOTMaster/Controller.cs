@@ -61,10 +61,21 @@ namespace MOTMaster
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
+<<<<<<< HEAD
         private const int
             pgClockFrequency = 100000;
         private const int
             apgClockFrequency = 100000;
+=======
+        private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
+
+        private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
+
+        private Thread runThread;
+
+        public enum RunningState { stopped, running};
+        public RunningState status = RunningState.stopped;
+>>>>>>> navigator_temp
 
         ControllerWindow controllerWindow;
 
@@ -74,12 +85,18 @@ namespace MOTMaster
         MMAIWrapper aip;
         HSDIOPatternGenerator hs;
 
+<<<<<<< HEAD
 
         ExportSignals signalExporter;
 
         CameraControllable camera;
         TranslationStageControllable tstage;
         ExperimentReportable experimentReporter;
+=======
+        CameraControllable camera = null;
+        TranslationStageControllable tstage = null;
+        ExperimentReportable experimentReporter = null;
+>>>>>>> navigator_temp
 
         MMDataIOHelper ioHelper;
 
@@ -107,6 +124,7 @@ namespace MOTMaster
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
 
+<<<<<<< HEAD
             camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
 
@@ -114,6 +132,15 @@ namespace MOTMaster
                 "tcp://localhost:1172/controller.rem");
 
             experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+=======
+            if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+                "tcp://localhost:1172/controller.rem");
+
+            if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
+                "tcp://localhost:1172/controller.rem");
+
+            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+>>>>>>> navigator_temp
                 "tcp://localhost:1172/controller.rem");
 
             
@@ -123,7 +150,11 @@ namespace MOTMaster
             ScriptLookupAndDisplay();
 
             Application.Run(controllerWindow);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> navigator_temp
         }
 
         #endregion
@@ -141,6 +172,7 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
+<<<<<<< HEAD
             pg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPatterns["PXI"].Pattern.Length, true, false);
             PCIpg.Configure(pgClockFrequency, false, true, true, sequence.DigitalPatterns["PCI"].Pattern.Length, false, false);
             apg.Configure(sequence.AnalogPattern, apgClockFrequency);
@@ -151,11 +183,33 @@ namespace MOTMaster
         {
             sequence.DigitalPatterns["PXI"].Clear();//No clearing required for analog (I think).
             sequence.DigitalPatterns["PCI"].Clear();
+=======
+            
+            pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
+        }
+
+
+        private void releaseHardware()
+        {
+>>>>>>> navigator_temp
             pg.StopPattern();
             PCIpg.StopPattern();
             apg.StopPattern();
             aip.StopPattern();
         }
+<<<<<<< HEAD
+=======
+        private void clearDigitalPattern(MOTMasterSequence sequence)
+        {
+            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
+        }
+        private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
+        {
+            clearDigitalPattern(sequence);
+            releaseHardware();
+        }
+>>>>>>> navigator_temp
 
         #endregion
 
@@ -210,9 +264,16 @@ namespace MOTMaster
         ///  MOTMaster will fetch the dictionary used in the old experiment and use it as the
         ///  argument for Run(Dictionary<>).        ///  
         /// 
+<<<<<<< HEAD
         
         /// </summary>
         private bool saveEnable = true;
+=======
+        /// </summary>
+      
+        private bool saveEnable = true;
+      
+>>>>>>> navigator_temp
         public void SaveToggle(System.Boolean value)
         {
             saveEnable = value;
@@ -241,6 +302,17 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
+<<<<<<< HEAD
+=======
+        public void RunStart()
+        {
+            runThread = new Thread(new ThreadStart(this.Run));
+            runThread.Name = "MOTMaster Controller";
+            runThread.Priority = ThreadPriority.Normal;
+            status = RunningState.running;
+            runThread.Start();
+        }
+>>>>>>> navigator_temp
 
         public void Run()
         {
@@ -262,6 +334,7 @@ namespace MOTMaster
             if (script != null)
             {
                 MOTMasterSequence sequence = getSequenceFromScript(script);
+<<<<<<< HEAD
 
                 try
                 {
@@ -270,19 +343,48 @@ namespace MOTMaster
                 //    armTranslationStageForTimedMotion(script);
 
                     GrabImage((int)script.Parameters["NumberOfFrames"]);
+=======
+               
+                try
+                {
+                    if (config.CameraUsed) prepareCameraControl();
+
+                    if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
+
+                    if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+>>>>>>> navigator_temp
 
                     
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
+<<<<<<< HEAD
                     waitUntilCameraIsReadyForAcquisition();
 
                     watch.Start();
                     runPattern(sequence);
+=======
+                    if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+
+                    watch.Start();
+
+                    for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                    {
+                        if(!config.Debug) runPattern(sequence);
+                    }
+                    if (!config.Debug) clearDigitalPattern(sequence);
+
+
+>>>>>>> navigator_temp
                     watch.Stop();
                 //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
+<<<<<<< HEAD
                         
+=======
+                        if (config.CameraUsed)
+                        {
+>>>>>>> navigator_temp
                         waitUntilCameraAquisitionIsDone();
 
                         try
@@ -293,6 +395,7 @@ namespace MOTMaster
                         {
                             return;
                         }
+<<<<<<< HEAD
                         Dictionary<String, Object> report = GetExperimentReport();
                         save(script, scriptPath, imageData, report, aip.GetAnalogData());
 
@@ -300,6 +403,32 @@ namespace MOTMaster
                     }
                     finishCameraControl();
                //     disarmAndReturnTranslationStage();
+=======
+                            Dictionary<String, Object> report = null;
+                            if (config.ReporterUsed)
+                            {
+                                report = GetExperimentReport();
+                            }
+
+                            save(script, scriptPath, imageData, report);
+                        }
+                        else
+                        {
+                            Dictionary<String, Object> report = null;
+                            if (config.ReporterUsed)
+                            {
+                                report = GetExperimentReport();
+                            }
+
+                            save(script, scriptPath, report);
+
+                        }
+
+
+                    }
+                    if (config.CameraUsed) finishCameraControl();
+                    if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+>>>>>>> navigator_temp
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -310,7 +439,12 @@ namespace MOTMaster
             {
                 MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
             }
+<<<<<<< HEAD
 
+=======
+            status = RunningState.stopped;
+            
+>>>>>>> navigator_temp
         }
         
         #endregion
@@ -330,6 +464,7 @@ namespace MOTMaster
 
         private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report, double[,] aiData)
         {
+<<<<<<< HEAD
             ioHelper.StoreRun(saveToDirectory, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
                 script.Parameters, report, cameraAttributesPath, imageData, aiData);
         }
@@ -345,6 +480,27 @@ namespace MOTMaster
             if (saveEnable){ aip.ReadAnalogDataFromBuffer(); }
             releaseHardwareAndClearDigitalPattern(sequence);
 
+=======
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
+                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report, double[,] aiData)
+        {
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
+        {
+            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+                script.Parameters, report, config.ExternalFilePattern);
+        }
+        private void runPattern(MOTMasterSequence sequence)
+        {
+            
+            initializeHardware(sequence);
+            run(sequence);
+            releaseHardware();
+>>>>>>> navigator_temp
         }
 
         private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
