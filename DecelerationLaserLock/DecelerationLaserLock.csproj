@@ -142,9 +142,9 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DecelerationHardwareControl\DecelerationHardwareControl.csproj">
+    <ProjectReference Include="..\DecelerationHardwareControl\MoleculeMOTHardwareControl.csproj">
       <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
-      <Name>DecelerationHardwareControl</Name>
+      <Name>MoleculeMOTHardwareControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
       <Project>{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}</Project>

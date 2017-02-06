@@ -58,10 +58,10 @@ namespace DAQ.Remoting
                 );
         }
 
-        public static void ConnectDecelerationHardwareControl()
+        public static void ConnectMoleculeMOTHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(
-                    Type.GetType("DecelerationHardwareControl.Controller, DecelerationHardwareControl"),
+                    Type.GetType("MoleculeMOTHardwareControl.Controller, MoleculeMOTHardwareControl"),
                     "tcp://localhost:1172/controller.rem"
                     );
         }

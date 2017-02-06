@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace DecelerationHardwareControl
+namespace MoleculeMOTHardwareControl
 {
     public partial class ControlWindow : Form
     {
