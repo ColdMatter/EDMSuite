@@ -76,7 +76,7 @@ namespace MOTMaster
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            controller.RunStart();
+            controller.Run();
         }
 
         private string getScriptPath()
