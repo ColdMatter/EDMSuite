@@ -29,9 +29,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
-    <OutputPath>bin\EDMTestCrate\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,8 +39,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MOTBasic.cs" />
+    <Compile Include="MOTBasicExperimental.cs" />
+    <Compile Include="MOTBlueMolasses.cs" />
+    <Compile Include="MOTBlueMolassesNumber.cs" />
+    <Compile Include="MOTBlueMolassesRamp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MOTBlueMolassesRedMolasses.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitch.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitchNumber.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitchRamp.cs" />
+    <Compile Include="MOTFreqScan.cs" />
+    <Compile Include="MOTMagTrapLifetime.cs" />
+    <Compile Include="MOTOscillation.cs" />
+    <Compile Include="MOTOscillationExperimental.cs" />
     <Compile Include="MOTRampIntensity.cs" />
-    <None Include="MOTRampIntensityB.cs" />
+    <Compile Include="MOTRampIntensityB.cs" />
+    <Compile Include="MOTRampIntensityNumber.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +71,13 @@
       <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
       <Name>MOTMaster</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\MoleculeMOTMasterScripts.dll" />
+    <Content Include="bin\Debug\MoleculeMOTMasterScripts.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -72,7 +72,7 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\EDM\EDMSuite\DAQ\DAQ.csproj">
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
