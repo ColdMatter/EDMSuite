@@ -112,6 +112,10 @@ namespace MOTMaster
         {
             return int.Parse(iterationsBox.Text);
         }
+        public void SetIterations(int number)
+        {
+            setTextBox(iterationsBox, Convert.ToString(number));
+        }
 
         public bool RunUntilStoppedState
         {

@@ -221,6 +221,10 @@ namespace MOTMaster
             batchNumber = number;
             controllerWindow.WriteToSaveBatchTextBox(number);  
         }
+        public void SetIterations(Int32 number)
+        {
+            controllerWindow.SetIterations(number);
+        }
         public void SetRunUntilStopped(bool state)
         {
             controllerWindow.RunUntilStoppedState = state;
