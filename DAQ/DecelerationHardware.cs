@@ -230,7 +230,6 @@ namespace DAQ.HAL
           // ask the remoting system for access to TCL2012
        //     Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
           //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
-            
         }
 
 	}

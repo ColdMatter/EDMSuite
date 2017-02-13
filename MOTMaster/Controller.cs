@@ -67,6 +67,7 @@ namespace MOTMaster
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
 
+
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
@@ -92,7 +93,6 @@ namespace MOTMaster
 
         public void StartApplication()
         {
-
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
@@ -207,8 +207,9 @@ namespace MOTMaster
         /// 
         /// </summary>
       
+       
+        
         private bool saveEnable = true;
-      
         public void SaveToggle(System.Boolean value)
         {
             saveEnable = value;
@@ -219,6 +220,10 @@ namespace MOTMaster
         {
             batchNumber = number;
             controllerWindow.WriteToSaveBatchTextBox(number);  
+        }
+        public void SetRunUntilStopped(bool state)
+        {
+            controllerWindow.RunUntilStoppedState = state;
         }
         private string scriptPath = "";
         public void SetScriptPath(String path)
@@ -255,6 +260,11 @@ namespace MOTMaster
             return null;
         }
 
+        public void Stop()
+        {
+            status = RunningState.stopped;
+        }
+
         public void Go()
         {
             if (replicaRun)
@@ -289,10 +299,21 @@ namespace MOTMaster
 
                     watch.Start();
 
-                    for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                    if(controllerWindow.RunUntilStoppedState)
                     {
-                        if(!config.Debug) runPattern(sequence);
+                        while(status == RunningState.running)
+                        {
+                            if (!config.Debug) runPattern(sequence);
+                        }
                     }
+                    else
+                    {
+                        for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                        {
+                            if (!config.Debug) runPattern(sequence);
+                        }
+                    }
+                   
                     if (!config.Debug) clearDigitalPattern(sequence);
 
 

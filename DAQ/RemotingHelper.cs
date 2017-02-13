@@ -78,7 +78,7 @@ namespace DAQ.Remoting
         {
             RemotingConfiguration.RegisterWellKnownClientType(
                     Type.GetType("MOTMaster.Controller, MOTMaster"),
-                    "tcp://localhost:1181/controller.rem"
+                    "tcp://localhost:1187/controller.rem"
                     );
         }
 
