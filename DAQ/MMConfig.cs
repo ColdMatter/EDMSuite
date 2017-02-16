@@ -22,6 +22,8 @@ namespace DAQ
             DigitalPatternClockFrequency = 100000; //default value
             AnalogPatternClockFrequency = 100000; //default value
             ExternalFilePattern = null;
+            hsdioCard = false;
+            useAI = false;
         }
 
         private bool debug;
@@ -72,6 +74,21 @@ namespace DAQ
         {
             get { return externalFilePattern; }
             set { externalFilePattern = value; }
+        }
+
+        private bool hsdioCard;
+        //Used to flag if an NI-HSDIO card is used to generate digital patterns
+        public bool HSDIOCard
+        {
+            get { return hsdioCard; }
+            set { hsdioCard = value; }
+        }
+        //Used to flag analog inputs
+        private bool useAI;
+        public bool UseAI
+        {
+            get { return useAI; }
+            set { useAI = value; }
         }
     }
 }

@@ -115,28 +115,14 @@
     <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Nav\</OutputPath>
+    <OutputPath>bin\Nav\</OutputPath>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Emgu.CV.DebuggerVisualizers.VS2013">
-      <HintPath>..\..\..\..\..\Emgu\emgucv-windesktop 3.1.0.2282\bin\Emgu.CV.DebuggerVisualizers.VS2013.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\..\Emgu\emgucv-windesktop 3.1.0.2282\bin\Emgu.CV.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI.GL">
-      <HintPath>..\..\..\..\..\Emgu\emgucv-windesktop 3.1.0.2282\bin\Emgu.CV.UI.GL.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.World">
-      <HintPath>..\..\..\..\..\Emgu\emgucv-windesktop 3.1.0.2282\bin\Emgu.CV.World.dll</HintPath>
-    </Reference>
-    <Reference Include="Ivi.Driver, Version=1.1.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
-    <Reference Include="Ivi.Visa, Version=5.6.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Analysis.Enterprise, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.AxCWIMAQControlsLib.Interop, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4544464cdeaab541" />
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
@@ -164,20 +150,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Vision.Acquisition.Imaqdx, Version=3.40.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2008\DotNET\Assemblies\Current\NationalInstruments.Vision.Acquisition.Imaqdx.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2008\DotNET\Assemblies\Current\NationalInstruments.Vision.Common.dll</HintPath>
-    </Reference>
     <Reference Include="NationalInstruments.Visa, Version=15.5.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Vision, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.Vision.Acquisition.Imaqdx, Version=3.40.35.49153, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2008\DotNET\Assemblies\Current\NationalInstruments.Vision.Common.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
     <Reference Include="PresentationCore" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />

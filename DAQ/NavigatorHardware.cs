@@ -15,6 +15,13 @@ namespace DAQ.HAL
     {
         public NavigatorHardware()
         {
+          
+            //add information for MMConfig
+            MMConfig config = new MMConfig(false, false, false, false);
+            config.HSDIOCard = true;
+            config.UseAI = false;
+            config.DigitalPatternClockFrequency = 20000000;
+            Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
             Boards.Add("analogOut", "/Dev2");
@@ -34,7 +41,7 @@ namespace DAQ.HAL
             aiBoards.Add(multiBoard);
             doBoards.Add(hsdioBoard);
 
-
+           
 
             //A list of trigger lines for each card
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
@@ -71,7 +78,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
-
+            AddDigitalOutputChannel("digitalTest", hsdioBoard, 0, 14);
             //map the analog output channels
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
@@ -97,6 +104,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("zmaomAtten", aoBoard + "/ao21", 0, 10);
             AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", 0, 10);
             AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", 0, 10);
+            AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
             AddAnalogInputChannel("photodiode", aiBoard + "/ai0", AITerminalConfiguration.Differential);

@@ -75,6 +75,13 @@
     <DebugSymbols>true</DebugSymbols>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Nav|AnyCPU' ">
+    <OutputPath>bin\Nav\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Buffer|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Buffer\</OutputPath>

@@ -20,7 +20,7 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
-//using NationalInstruments.Vision.Common;
+
 
 
 namespace IMAQ
@@ -41,6 +41,8 @@ namespace IMAQ
         private CameraState state = new CameraState();
         private object streamStopLock = new object();
         public List<VisionImage> imageList = new List<VisionImage>();
+        public bool analyse = false;
+        public double max = 0.0;
         private ImaqdxAttributeCollection attributes;
         public PointContour pointOfInterest;
         public Roi rectangleROI = new Roi();
@@ -303,11 +305,6 @@ namespace IMAQ
         {
             imageWindow.WriteToConsole("Attributes loaded in camera:");
             imageWindow.WriteToConsole(imaqdxSession.Attributes.WriteAttributesToString());
-            foreach (string key in registers.Keys)
-            {
-                printRegisterInfo(registers[key]);
-            }
-
         }
 
         public string SetCameraAttributes(string newPath)
@@ -648,20 +645,20 @@ namespace IMAQ
 
         #region Printing register values
      
-        private void printRegisterInfo(string Adr)
-        {
-            imageWindow.WriteToConsole(Adr + " = " + Convert.ToString(imaqdxSession.ReadRegister((ulong)Convert.ToInt64(Adr, 16)), 2));
-        }
+        //private void printRegisterInfo(string Adr)
+        //{
+        //    imageWindow.WriteToConsole(Adr + " = " + Convert.ToString(imaqdxSession.ReadRegister((ulong)Convert.ToInt64(Adr, 16)), 2));
+        //}
 
-        private void AddRegisters()
-        {
-            registers.Add("Shutter", "F0F0081C");
-            registers.Add("Timebase", "F1000208");
-            registers.Add("SEQUENCE_CTRL", "F1000220");
-            registers.Add("DEFFERED", "F1000260");
-            registers.Add("TRIG_CNTR", "F1000620");
-            registers.Add("SEQUENCE_PARAM", "F1000224");
-        }
+        //private void AddRegisters()
+        //{
+        //    registers.Add("Shutter", "F0F0081C");
+        //    registers.Add("Timebase", "F1000208");
+        //    registers.Add("SEQUENCE_CTRL", "F1000220");
+        //    registers.Add("DEFFERED", "F1000260");
+        //    registers.Add("TRIG_CNTR", "F1000620");
+        //    registers.Add("SEQUENCE_PARAM", "F1000224");
+        //}
         #endregion
 
 

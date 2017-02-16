@@ -30,6 +30,7 @@
         {
             this.imageViewer = new NationalInstruments.Vision.WindowsForms.ImageViewer();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.hScrollBar = new System.Windows.Forms.HScrollBar();
             this.SuspendLayout();
             // 
             // imageViewer
@@ -87,5 +88,6 @@
 
         public NationalInstruments.Vision.WindowsForms.ImageViewer imageViewer;
         private System.Windows.Forms.RichTextBox consoleRichTextBox;
+        private System.Windows.Forms.HScrollBar hScrollBar;
     }
 }

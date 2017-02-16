@@ -247,11 +247,6 @@
       <Name>Wolfram.NETLink</Name>
       <HintPath>Wolfram.NETLink.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Name>SharedCode</Name>
-      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveXPatternGeneratorForm.cs">
@@ -476,6 +471,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Wolfram.NETLink.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -20,7 +20,7 @@ namespace DAQ.Pattern
         private bool timeOrdered = true;
         [NonSerialized]
         private Layout layout;
-		private UInt32[] pattern;
+		protected UInt32[] pattern;
         private Int16[] patternInt16;
         private byte[] bytePattern;
         [NonSerialized]

@@ -17,17 +17,16 @@ namespace DAQ.HAL
         private string device;
         private double clockFrequency;
         private int length;
-        private int[] loopTimes;
 
         public HSDIOPatternGenerator(String device):base(device)
         {
             this.device = device;
         }
         
-        public void Configure(double clockFrequency, bool loop, int length, bool internalClock, bool triggered)
+        public void Configure(double clockFrequency, bool loop, bool internalClock, bool triggered)
         {
             this.clockFrequency = clockFrequency;
-            this.length = length;
+           // this.length = length;
 
             /**** Configure the output lines ****/
             hsTask = niHSDIO.InitGenerationSession(device, true, true,"");
@@ -61,37 +60,46 @@ namespace DAQ.HAL
             }
             /*** Write configuration to board ****/
             hsTask.CommitDynamic();
- 	        throw new NotImplementedException();
         }
-        /// <summary>
-        /// Accessor method for loopTimes
-        /// </summary>
-       public int[] LoopTimes
-        {
-            get { return loopTimes; }
-            set { loopTimes = value; }
-        } 
+
+
        
-        public void OutputPattern(uint[] pattern)
+        public void OutputPattern(uint[] pattern, int[] loopTimes)
         {
             //Check lengths are equal
             if (pattern.Length != loopTimes.Length)
                 throw new Exception("Pattern length not equal to number of loop times");
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
-            uint[] data = new uint[0];
+            uint[] data = new uint[4];
+            length = pattern.Length;
             for (int i = 0; i < loopTimes.Length;i++ )
             {
-                data[0] = pattern[i];
-                hsTask.WriteNamedWaveformU32("waveform_" + i, 1, data);
-                script += "\t repeat " + loopTimes[i] + "\n \t generate waveform_" + i + "\n";
-            }
+                if (loopTimes[i]%4!=0)
+                {
+                    throw new Exception("Loop time not a multiple of 4 master clock cycles. Change this to avoid digital pattern timing errors.");
+                }
+                for (int j = 0; j < 4;j++ )
+                {
+                    data[j] = pattern[i];
+                }
+                hsTask.WriteNamedWaveformU32("waveform" + i, 4, data);
+                if (loopTimes[i] == 0)
+                    script += "\t generate waveform" + i + "\n";
+                else 
+                    script += "\t Repeat " + loopTimes[i]/100 + "\n \t generate waveform" + i +"\n\t end repeat \n";
+                }
+            script += "end script";
             //Writes the script to the card
             hsTask.WriteScript(script);
+            
             //This assumes the hsdio card triggers the other cards, which is most likely the case
+            hsTask.ConfigureScriptToGenerate("myScript");
+            hsTask.SetGenerationMode("", niHSDIOConstants.Scripted);
+            
             hsTask.Initiate();
             //To avoid timing issues associated with the different pattern generators, I'll add the sleeop one pattern method here
-            SleepOnePattern();
+            //SleepOnePattern();
         }
 
         private void SleepOnePattern()
@@ -101,7 +109,11 @@ namespace DAQ.HAL
 		}
         public void StopPattern()
         {
+            hsTask.reset();
             hsTask.Dispose();
+            
+
         }
+
     }
 }

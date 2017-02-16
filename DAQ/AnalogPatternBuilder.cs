@@ -129,11 +129,9 @@ namespace DAQ.Analog
                 double dval = AnalogPatterns[channel][events[i]];
                 for (int j = 0; j < timeUntilNextEvent; j++)
                 {
-                    try
-                    {
+                    if (calibrations.ContainsKey(channel))
                         d[events[i] + j] = ((Calibration)calibrations[channel]).Convert(dval);
-                    }
-                    catch
+                    else
                     {
                         d[events[i] + j] = dval;
                     }

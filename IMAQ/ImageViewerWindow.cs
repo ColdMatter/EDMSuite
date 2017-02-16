@@ -157,36 +157,36 @@ namespace IMAQ
             IM.Dispose();
         }
 
-        //   private void hScrollBar_Change(int newScrollValue)
-        //{
-        //    AttachImagesToViewer(IM.imageList, newScrollValue);
-
-        //    hScrollBar.Maximum = IM.imageList.Count-1;
-           
-        //}
-
-                
-
-        //private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
-        //{
-
-        //    if(IM.imageList.Count == 0)
-
-        //    {
-        //        hScrollBar.Update();
-        //        hScrollBar.Maximum = 1;
-           
-           
-        //    }
-           
-
-        //    else
-        //    {
-
-        private void imageViewer_RoiChanged(object sender, NationalInstruments.Vision.WindowsForms.ContoursChangedEventArgs e)
+           private void hScrollBar_Change(int newScrollValue)
         {
+            AttachImagesToViewer(IM.imageList, newScrollValue);
+
+            hScrollBar.Maximum = IM.imageList.Count-1;
 
         }
+
+
+
+           private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
+           {
+
+               if (IM.imageList.Count == 0)
+               {
+                   hScrollBar.Update();
+                   hScrollBar.Maximum = 1;
+
+
+               }
+
+
+               else
+               {
+               }
+           }
+        //private void imageViewer_RoiChanged(object sender, NationalInstruments.Vision.WindowsForms.ContoursChangedEventArgs e)
+        //{
+
+        //}
 
         private void consoleRichTextBox_TextChanged(object sender, EventArgs e)
         {

@@ -75,10 +75,10 @@ namespace MOTMaster
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
+        HSDIOPatternGenerator hs;
         DAQMxPatternGenerator PCIpg;
         DAQMxAnalogPatternGenerator apg;
         MMAIWrapper aip;
-        HSDIOPatternGenerator hs;
 
 
         CameraControllable camera = null;
@@ -107,7 +107,9 @@ namespace MOTMaster
 
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+
+            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+            else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
@@ -139,23 +141,29 @@ namespace MOTMaster
         private void run(MOTMasterSequence sequence)
         {
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            aip.StartTask();
-            pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
-        }
+            if (config.UseAI) aip.StartTask();
+            if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
+            else
+            {
+                int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
+                hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
+            }
 
+        }
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 
 
         private void releaseHardware()
         {
-            pg.StopPattern();
-            PCIpg.StopPattern();
+            if (!config.HSDIOCard) pg.StopPattern();
+            else hs.StopPattern();
             apg.StopPattern();
-            aip.StopPattern();
+            if (config.UseAI) aip.StopPattern();
         }
 
         private void clearDigitalPattern(MOTMasterSequence sequence)
@@ -286,7 +294,7 @@ namespace MOTMaster
             MOTMasterScript script = prepareScript(scriptPath, dict);
             if (script != null)
             {
-                MOTMasterSequence sequence = getSequenceFromScript(script);               
+                MOTMasterSequence sequence = getSequenceFromScript(script);
                 try
                 {
                     if (config.CameraUsed) prepareCameraControl();
@@ -501,7 +509,7 @@ namespace MOTMaster
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
-            MOTMasterSequence sequence = script.GetSequence();
+            MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard);
             return sequence;
         }
 
@@ -681,4 +689,3 @@ namespace MOTMaster
         #endregion
     }
 }
-

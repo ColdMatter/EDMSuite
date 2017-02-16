@@ -61,7 +61,7 @@ namespace DAQ.HAL
 			Thread.Sleep(sleepTime);
 		}
 
-		public void Configure( double clockFrequency, bool loop, bool fullWidth,
+		public virtual void Configure( double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock, bool triggered)
 		{	
 			this.clockFrequency = clockFrequency;

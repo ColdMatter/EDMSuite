@@ -17,13 +17,18 @@ namespace MOTMaster
 
         public MOTMasterSequence GetSequence()
         {
+            return GetSequence(false);
+        }
+
+        public MOTMasterSequence GetSequence(bool hsdio)
+        {
             MOTMasterSequence s = new MOTMasterSequence();
-            s.DigitalPattern = GetDigitalPattern();
+            if (hsdio) s.DigitalPattern = GetHSDIOPattern();
+            else s.DigitalPattern = GetDigitalPattern();
             s.AnalogPattern = GetAnalogPattern();
             s.AIConfiguration = GetAIConfiguration();
             return s;
         }
-
         public void EditDictionary(Dictionary<String, Object> dictionary)
         {
             foreach (KeyValuePair<string, object> k in dictionary)
