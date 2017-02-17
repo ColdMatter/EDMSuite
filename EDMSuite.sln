@@ -409,7 +409,6 @@ Global
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Buffer|Mixed Platforms.Build.0 = Buffer|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Buffer|x86.ActiveCfg = Buffer|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.BufferClassic|Any CPU.ActiveCfg = BufferClassic|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.BufferClassic|Any CPU.Build.0 = BufferClassic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.BufferClassic|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.BufferClassic|x86.ActiveCfg = BufferClassic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.CaF|Any CPU.ActiveCfg = CaF|Any CPU
@@ -615,6 +614,7 @@ Global
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Buffer|Mixed Platforms.ActiveCfg = Buffer|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Buffer|x86.ActiveCfg = Buffer|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.BufferClassic|Any CPU.ActiveCfg = BufferClassic|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.BufferClassic|Any CPU.Build.0 = BufferClassic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.BufferClassic|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.BufferClassic|x86.ActiveCfg = BufferClassic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|Any CPU.ActiveCfg = CaF|Any CPU
@@ -710,7 +710,6 @@ Global
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Buffer|Mixed Platforms.Build.0 = Buffer|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Buffer|x86.ActiveCfg = Buffer|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.BufferClassic|Any CPU.ActiveCfg = BufferClassic|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.BufferClassic|Any CPU.Build.0 = BufferClassic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.BufferClassic|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.BufferClassic|x86.ActiveCfg = BufferClassic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.CaF|Any CPU.ActiveCfg = CaF|Any CPU
@@ -754,7 +753,6 @@ Global
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Buffer|Mixed Platforms.ActiveCfg = Buffer|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Buffer|x86.ActiveCfg = Buffer|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.BufferClassic|Any CPU.ActiveCfg = BufferClassic|Any CPU
-		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.BufferClassic|Any CPU.Build.0 = BufferClassic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.BufferClassic|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.BufferClassic|x86.ActiveCfg = BufferClassic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.CaF|Any CPU.ActiveCfg = CaF|Any CPU
@@ -796,7 +794,6 @@ Global
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Buffer|Mixed Platforms.ActiveCfg = Buffer|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Buffer|x86.ActiveCfg = Buffer|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.BufferClassic|Any CPU.ActiveCfg = BufferClassic|Any CPU
-		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.BufferClassic|Any CPU.Build.0 = BufferClassic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.BufferClassic|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.BufferClassic|x86.ActiveCfg = BufferClassic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.CaF|Any CPU.ActiveCfg = CaF|Any CPU

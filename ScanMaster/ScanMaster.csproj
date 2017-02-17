@@ -178,6 +178,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DualAomPatternBuilder.cs" />
+    <Compile Include="DualAomPatternPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

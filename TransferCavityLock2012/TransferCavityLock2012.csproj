@@ -82,6 +82,7 @@
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=9.1.40.204, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Vision.Common, Version=11.0.20.102, Culture=neutral, PublicKeyToken=4544464cdeaab541, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Data" />
