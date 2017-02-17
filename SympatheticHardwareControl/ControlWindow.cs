@@ -72,6 +72,8 @@ namespace SympatheticHardwareControl
             this.streamButton = new System.Windows.Forms.Button();
             this.snapshotButton = new System.Windows.Forms.Button();
             this.tabLasers = new System.Windows.Forms.TabPage();
+            this.ShutterControlBox = new System.Windows.Forms.GroupBox();
+            this.shutterCheckBox = new System.Windows.Forms.CheckBox();
             this.aom3ControlBox = new System.Windows.Forms.GroupBox();
             this.aom3Label3 = new System.Windows.Forms.Label();
             this.aom3Label1 = new System.Windows.Forms.Label();
@@ -165,11 +167,10 @@ namespace SympatheticHardwareControl
             this.label1 = new System.Windows.Forms.Label();
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.shutterCheckBox = new System.Windows.Forms.CheckBox();
-            this.ShutterControlBox = new System.Windows.Forms.GroupBox();
             this.shcTabs.SuspendLayout();
             this.tabCamera.SuspendLayout();
             this.tabLasers.SuspendLayout();
+            this.ShutterControlBox.SuspendLayout();
             this.aom3ControlBox.SuspendLayout();
             this.aom2ControlBox.SuspendLayout();
             this.aom1ControlBox.SuspendLayout();
@@ -186,7 +187,6 @@ namespace SympatheticHardwareControl
             this.initParamsBox.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
-            this.ShutterControlBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // shcTabs
@@ -260,6 +260,25 @@ namespace SympatheticHardwareControl
             this.tabLasers.TabIndex = 1;
             this.tabLasers.Text = "Laser Control";
             this.tabLasers.UseVisualStyleBackColor = true;
+            // 
+            // ShutterControlBox
+            // 
+            this.ShutterControlBox.Controls.Add(this.shutterCheckBox);
+            this.ShutterControlBox.Location = new System.Drawing.Point(549, 3);
+            this.ShutterControlBox.Name = "ShutterControlBox";
+            this.ShutterControlBox.Size = new System.Drawing.Size(104, 45);
+            this.ShutterControlBox.TabIndex = 22;
+            this.ShutterControlBox.TabStop = false;
+            this.ShutterControlBox.Text = "Zeeman repump";
+            // 
+            // shutterCheckBox
+            // 
+            this.shutterCheckBox.AutoSize = true;
+            this.shutterCheckBox.Location = new System.Drawing.Point(46, 21);
+            this.shutterCheckBox.Name = "shutterCheckBox";
+            this.shutterCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.shutterCheckBox.TabIndex = 21;
+            this.shutterCheckBox.UseVisualStyleBackColor = true;
             // 
             // aom3ControlBox
             // 
@@ -1151,25 +1170,6 @@ namespace SympatheticHardwareControl
             this.consoleRichTextBox.TabIndex = 23;
             this.consoleRichTextBox.Text = "";
             // 
-            // shutterCheckBox
-            // 
-            this.shutterCheckBox.AutoSize = true;
-            this.shutterCheckBox.Location = new System.Drawing.Point(46, 21);
-            this.shutterCheckBox.Name = "shutterCheckBox";
-            this.shutterCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.shutterCheckBox.TabIndex = 21;
-            this.shutterCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // ShutterControlBox
-            // 
-            this.ShutterControlBox.Controls.Add(this.shutterCheckBox);
-            this.ShutterControlBox.Location = new System.Drawing.Point(549, 3);
-            this.ShutterControlBox.Name = "ShutterControlBox";
-            this.ShutterControlBox.Size = new System.Drawing.Size(104, 45);
-            this.ShutterControlBox.TabIndex = 22;
-            this.ShutterControlBox.TabStop = false;
-            this.ShutterControlBox.Text = "Zeeman repump";
-            // 
             // ControlWindow
             // 
             this.ClientSize = new System.Drawing.Size(794, 419);
@@ -1188,6 +1188,8 @@ namespace SympatheticHardwareControl
             this.shcTabs.ResumeLayout(false);
             this.tabCamera.ResumeLayout(false);
             this.tabLasers.ResumeLayout(false);
+            this.ShutterControlBox.ResumeLayout(false);
+            this.ShutterControlBox.PerformLayout();
             this.aom3ControlBox.ResumeLayout(false);
             this.aom3ControlBox.PerformLayout();
             this.aom2ControlBox.ResumeLayout(false);
@@ -1213,8 +1215,6 @@ namespace SympatheticHardwareControl
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).EndInit();
-            this.ShutterControlBox.ResumeLayout(false);
-            this.ShutterControlBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

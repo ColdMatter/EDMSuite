@@ -20,6 +20,7 @@ using NationalInstruments.Vision;
 using NationalInstruments.Vision.Acquisition.Imaqdx;
 using NationalInstruments.Vision.Internal;
 using NationalInstruments.Vision.WindowsForms.Internal;
+//using NationalInstruments.Vision.Common;
 
 
 namespace IMAQ
@@ -40,6 +41,8 @@ namespace IMAQ
         private CameraState state = new CameraState();
         private object streamStopLock = new object();
         public List<VisionImage> imageList = new List<VisionImage>();
+        public bool analyse = false;
+        private double max = 0;
 
 
         public CameraController(string cameraName)
@@ -110,24 +113,32 @@ namespace IMAQ
             try
             {
 
-                if (state == CameraState.FREE)
+                if (state == CameraState.FREE || state == CameraState.READY_FOR_ACQUISITION)
                 {
                     image = new VisionImage();
+                    
                     state = CameraState.READY_FOR_ACQUISITION;
                     try
                     {
                         imaqdxSession.Snap(image);
+                       
                         if (windowShowing)
                         {
                             imageWindow.AttachToViewer(image);
+                     
                         }
                         if (addToImageList)
                         {
                             imageList.Add(image);
                         }
+                        image.WriteFile("test.bmp");
+                        
                         PixelValue2D pval = image.ImageToArray();
+                        byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                        double max = Getthearray.Findthemaximum(u8array);
+                        imageWindow.WriteToConsole(max.ToString("F6"));
                         state = CameraState.FREE;
-                        return pval.U8;
+                        return u8array;
                     }
                     catch (ObjectDisposedException e)
                     {
@@ -138,6 +149,11 @@ namespace IMAQ
                     {
                         MessageBox.Show(e.Message);
                         throw new ImaqdxException();
+                    }
+                    catch (VisionException e)
+                    {
+                        MessageBox.Show(e.VisionErrorText);
+                        throw e;
                     }
                 }
                 else return null;
@@ -161,6 +177,7 @@ namespace IMAQ
 
                 watch.Start();
                 state = CameraState.READY_FOR_ACQUISITION;
+
                 
                 imaqdxSession.Sequence(images, numberOfShots);
                 watch.Stop();
@@ -257,6 +274,13 @@ namespace IMAQ
 
         }
 
+        private void Getthemaximum()
+        {
+            PixelValue2D pval = image.ImageToArray();
+            byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                       
+        }
+
         private void stream()
         {
             image = new VisionImage();
@@ -276,6 +300,14 @@ namespace IMAQ
                     try
                     {
                         imaqdxSession.Grab(image, true);
+                        if (analyse)
+                        {
+                            PixelValue2D pval = image.ImageToArray();
+                            byte[,] u8array = Getthearray.convertToU8(pval.Rgb32);
+                            max = Getthearray.Findthemaximum(u8array);
+                            imageWindow.WriteToConsole(max.ToString("F6"));
+
+                        }
                     }
                     catch (InvalidOperationException e)
                     {

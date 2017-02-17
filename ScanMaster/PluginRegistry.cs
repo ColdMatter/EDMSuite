@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
+            patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
 #endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
@@ -50,7 +51,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
-            patternPlugins.Add("Dual AOM switch", typeof(DualAomPatternPlugin));
+            patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

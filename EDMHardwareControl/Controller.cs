@@ -117,7 +117,14 @@ namespace EDMHardwareControl
         Task fibreAmpOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
-      //  Task uWaveDCFMOutputTask;
+        Task uWaveDCFMAnalogOutputTask;
+        Task uWaveMixerAnalogOutputTask;
+        Task VCO161AmpAnalogOutputTask;
+        Task VCO161FreqAnalogOutputTask;
+        Task VCO30AmpAnalogOutputTask;
+        Task VCO30FreqAnalogOutputTask;
+        Task VCO155AmpAnalogOutputTask;
+        Task VCO155FreqAnalogOutputTask;
 
         ControlWindow window;
 
@@ -139,6 +146,8 @@ namespace EDMHardwareControl
             CreateDigitalTask("notEPol");
             CreateDigitalTask("eBleed");
             CreateDigitalTask("rfSwitch");
+            CreateDigitalTask("pumprfSwitch");
+            CreateDigitalTask("mwEnable");
             CreateDigitalTask("fmSelect");
             CreateDigitalTask("attenuatorSelect");
             CreateDigitalTask("scramblerEnable");
@@ -149,8 +158,6 @@ namespace EDMHardwareControl
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
             CreateDigitalTask("notPIFlipEnable");
-            CreateDigitalTask("pumpShutter");
-            CreateDigitalTask("probeShutter");
             CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
             //CreateDigitalTask("rfCountSwBit1");
@@ -196,7 +203,14 @@ namespace EDMHardwareControl
             fibreAmpOutputTask = CreateAnalogOutputTask("fibreAmpPwr");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
             i2BiasOutputTask = CreateAnalogOutputTask("I2LockBias");
-       //     uWaveDCFMOutputTask = CreateAnalogOutputTask("uWaveDCFM");
+            uWaveDCFMAnalogOutputTask = CreateAnalogOutputTask("uWaveDCFM");
+            uWaveMixerAnalogOutputTask = CreateAnalogOutputTask("uWaveMixerV");
+            VCO161AmpAnalogOutputTask = CreateAnalogOutputTask("VCO161Amp");
+            VCO161FreqAnalogOutputTask = CreateAnalogOutputTask("VCO161Freq");
+            VCO30AmpAnalogOutputTask = CreateAnalogOutputTask("VCO30Amp");
+            VCO30FreqAnalogOutputTask = CreateAnalogOutputTask("VCO30Freq");
+            VCO155AmpAnalogOutputTask = CreateAnalogOutputTask("VCO155Amp");
+            VCO155FreqAnalogOutputTask = CreateAnalogOutputTask("VCO155Freq");
             
 
             // analog inputs
@@ -245,7 +259,7 @@ namespace EDMHardwareControl
         internal void WindowClosing()
         {
             StoreParameters();
-            ReturnPolarizersToZero();
+            /*ReturnPolarizersToZero();*/
             
             
         }
@@ -671,6 +685,11 @@ namespace EDMHardwareControl
             window.SetCheckBox(window.eBleedCheck, enabled);
         }
 
+        public void ChangePolarity(bool polarity)
+        {
+            window.SetCheckBox(window.ePolarityCheck, polarity);
+        }
+
         public double CPlusVoltage
         {
             get
@@ -743,29 +762,6 @@ namespace EDMHardwareControl
             }
         }
 
-        public bool PumpShutter
-        {
-            get
-            {
-                return window.pumpShutterCheck.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.pumpShutterCheck, value);
-            }
-        }
-
-        public bool Pump2Shutter
-        {
-            get
-            {
-                return window.probeShutterCheck.Checked;
-            }
-            set
-            {
-                window.SetCheckBox(window.probeShutterCheck, value);
-            }
-        }
 
         public double ProbeAOMFrequencyCentre
         {
@@ -1221,6 +1217,197 @@ namespace EDMHardwareControl
 
         }
 
+        public double VCO161AmpVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO161AmpVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO161AmpVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double VCO161FreqVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO161FreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO161FreqTextBox, value.ToString());
+            }
+        }
+
+        public double VCO30AmpVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO30AmpVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO30AmpVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double VCO30FreqVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO30FreqVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO30FreqVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double VCO155AmpVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO155AmpVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO155AmpVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double VCO155FreqVoltage
+        {
+            get
+            {
+                return Double.Parse(window.VCO155FreqVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO155FreqVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double VCO161AmpIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO161AmpStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO161AmpStepTextBox, value.ToString());
+            }
+        }
+
+        public double VCO161FreqIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO161FreqStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO161FreqStepTextBox, value.ToString());
+            }
+        }
+
+        public double VCO30AmpIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO30AmpStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO30AmpStepTextBox, value.ToString());
+            }
+        }
+
+        public double VCO30FreqIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO30FreqStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO30FreqStepTextBox, value.ToString());
+            }
+        }
+        public double VCO155AmpIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO155AmpStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO155AmpStepTextBox, value.ToString());
+            }
+        }
+
+        public double VCO155FreqIncrement
+        {
+            get
+            {
+                return Double.Parse(window.VCO155FreqStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.VCO155FreqStepTextBox, value.ToString());
+            }
+        }
+
+        public double uWaveDCFMVoltage
+        {
+            get
+            {
+                return Double.Parse(window.uWaveDCFMTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.uWaveDCFMTextBox, value.ToString());
+            }
+        }
+
+        public double uWaveMixerVoltage
+        {
+            get
+            {
+                return Double.Parse(window.mixerVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.mixerVoltageTextBox, value.ToString());
+            }
+        }
+
+        public double uWaveDCFMIncrement
+        {
+            get
+            {
+                return Double.Parse(window.uWaveDCFMStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.uWaveDCFMStepTextBox, value.ToString());
+            }
+        }
+
+        public double uWaveMixerIncrement
+        {
+            get
+            {
+                return Double.Parse(window.stepMixerVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.stepMixerVoltageTextBox, value.ToString());
+            }
+        }
+
 
         #endregion
 
@@ -1330,6 +1517,16 @@ namespace EDMHardwareControl
 
         private double cPlusMonitorVoltage;
         private double cMinusMonitorVoltage;
+
+        private double hpVoltage;
+        public double HPVoltage
+        {
+         get
+         {
+             return hpVoltage;
+         }
+        }
+
 
         public double CPlusMonitorVoltage
         {
@@ -2010,6 +2207,12 @@ namespace EDMHardwareControl
             return rawReading;
         }
         */
+
+        public void UpdateBVoltage()
+        {
+            hpVoltage=bCurrentMeter.ReadVoltage();
+        }
+
         public void UpdateBCurrentMonitor()
         {
             // DB0 dB0
@@ -2685,6 +2888,16 @@ namespace EDMHardwareControl
             SetDigitalLine("rfSwitch", enable);
         }
 
+        public void EnablePumpRFSwitch(bool enable)
+        {
+            SetDigitalLine("pumprfSwitch", enable);
+        }
+
+        public void EnableMicrowaves(bool enable)
+        {
+            SetDigitalLine("mwEnable", enable);
+        }
+
         /*private double lastGPlus = 0;
         private double lastGMinus = 0;
         private double lastCPlus = 0;
@@ -2774,15 +2987,7 @@ namespace EDMHardwareControl
             SetDigitalLine("scramblerEnable", enable);
         }
 
-        internal void SetPumpShutter(bool enable)
-        {
-            SetDigitalLine("pumpShutter", enable);
-        }
 
-        internal void SetProbeShutter(bool enable)
-        {
-            SetDigitalLine("probeShutter", enable);
-        }
 
         public void SetArgonShutter(bool enable)
         {
@@ -3179,6 +3384,237 @@ namespace EDMHardwareControl
         {
             SetDigitalLine("I2IntSwitch", state);
             return;
+        }
+
+        public void UpdateVCO161AmpVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO161AmpAnalogOutputTask, pztVoltage);
+            window.VCO161AmpVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO161FreqVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO161FreqAnalogOutputTask, pztVoltage);
+            window.VCO161FreqTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO30AmpVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO30AmpAnalogOutputTask, pztVoltage);
+            window.VCO30AmpVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO30FreqVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO30FreqAnalogOutputTask, pztVoltage);
+            window.VCO30FreqVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO155AmpVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO155AmpAnalogOutputTask, pztVoltage);
+            window.VCO155AmpVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO155FreqVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(VCO155FreqAnalogOutputTask, pztVoltage);
+            window.VCO155FreqVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateVCO161AmpV()
+        {
+            double pztVoltage = VCO161AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO161AmpAnalogOutputTask, pztVoltage);
+            window.VCO161AmpTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        public void UpdateVCO161FreqV()
+        {
+            double pztVoltage = VCO161FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO161FreqAnalogOutputTask, pztVoltage);
+            window.VCO161FreqTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        public void UpdateVCO30AmpV()
+        {
+            double pztVoltage = VCO30AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO30AmpAnalogOutputTask, pztVoltage);
+            window.VCO30AmpTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        public void UpdateVCO30FreqV()
+        {
+            double pztVoltage = VCO30FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO30FreqAnalogOutputTask, pztVoltage);
+            window.VCO30FreqTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        public void UpdateVCO155AmpV()
+        {
+            double pztVoltage = VCO155AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO155AmpAnalogOutputTask, pztVoltage);
+            window.VCO155AmpTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        public void UpdateVCO155FreqV()
+        {
+            double pztVoltage = VCO155FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            SetAnalogOutput(VCO155FreqAnalogOutputTask, pztVoltage);
+            window.VCO155FreqTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        private int plusVoltage = 0;//For tweaking voltages in hardware controller
+        private int minusVoltage = 0;
+
+        public void IncreaseVCOVoltage()
+        {
+            plusVoltage++;
+        }
+
+        public void DecreaseVCOVoltage()
+        {
+            minusVoltage++;
+        }
+
+        public void TweakVCO161AmpV()
+        {
+            double pztVoltage = VCO161AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO161AmpIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO161AmpAnalogOutputTask, newPZTVoltage);
+            window.VCO161AmpVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.VCO161AmpTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void TweakVCO161FreqV()
+        {
+            double pztVoltage = VCO161FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO161FreqIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO161FreqAnalogOutputTask, newPZTVoltage);
+            window.VCO161FreqTextBox.Text = newPZTVoltage.ToString();
+            window.VCO161FreqTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void TweakVCO30AmpV()
+        {
+            double pztVoltage = VCO30AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO30AmpIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO30AmpAnalogOutputTask, newPZTVoltage);
+            window.VCO30AmpVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.VCO30AmpTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void TweakVCO30FreqV()
+        {
+            double pztVoltage = VCO30FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO30FreqIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO30FreqAnalogOutputTask, newPZTVoltage);
+            window.VCO30FreqVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.VCO30FreqTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+        public void TweakVCO155AmpV()
+        {
+            double pztVoltage = VCO155AmpVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO155AmpIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO155AmpAnalogOutputTask, newPZTVoltage);
+            window.VCO155AmpVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.VCO155AmpTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void TweakVCO155FreqV()
+        {
+            double pztVoltage = VCO155FreqVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + VCO155FreqIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(VCO155FreqAnalogOutputTask, newPZTVoltage);
+            window.VCO155FreqVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.VCO155FreqTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void UpdateuWaveDCFMV()
+        {
+            double voltage = uWaveDCFMVoltage;
+            voltage = windowVoltage(voltage, -2.5, 2.5);
+            SetAnalogOutput(uWaveDCFMAnalogOutputTask, voltage);
+            window.uWaveDCFMTrackBar.Value = 100 * (int)voltage;
+        }
+
+        public void UpdateuWaveMixerV()
+        {
+            double voltage = uWaveMixerVoltage;
+            voltage = windowVoltage(voltage, 0, 10);
+            SetAnalogOutput(uWaveMixerAnalogOutputTask, voltage);
+            window.mixerVoltageTrackBar.Value = 100 * (int)voltage;
+        }
+
+        public void UpdateuWaveDCFMVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(uWaveDCFMAnalogOutputTask, pztVoltage);
+            window.uWaveDCFMTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateuWaveMixerVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(uWaveMixerAnalogOutputTask, pztVoltage);
+            window.mixerVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+
+        public void IncreaseuWaveVoltage()
+        {
+            plusVoltage++;
+        }
+
+        public void DecreaseuWaveVoltage()
+        {
+            minusVoltage++;
+        }
+
+        public void TweakuWaveDCFMVoltage()
+        {
+            double pztVoltage = uWaveDCFMVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -2.5, 2.5);
+            double newPZTVoltage = pztVoltage + uWaveDCFMIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(uWaveDCFMAnalogOutputTask, newPZTVoltage);
+            window.uWaveDCFMTextBox.Text = newPZTVoltage.ToString();
+            window.uWaveDCFMTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void TweakMixerVoltage()
+        {
+            double pztVoltage = uWaveMixerVoltage;
+            pztVoltage = windowVoltage(pztVoltage, 0, 10);
+            double newPZTVoltage = pztVoltage + uWaveMixerIncrement * (plusVoltage - minusVoltage);
+            plusVoltage = 0;
+            minusVoltage = 0;
+            SetAnalogOutput(uWaveMixerAnalogOutputTask, newPZTVoltage);
+            window.mixerVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.mixerVoltageTrackBar.Value = 100 * (int)newPZTVoltage;
         }
 
         #endregion

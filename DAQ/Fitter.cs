@@ -80,6 +80,8 @@ namespace DAQ.Analyze
             {
                 fittedValues = new double[ydata.Length];
                 for (int i = 0; i < ydata.Length; i++) fittedValues[i] = 1;
+
+
             }
         }
 
