@@ -21,7 +21,8 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(BasicBeamPatternPlugin)),
      XmlInclude(typeof(AomModulatedPatternPlugin)),
      XmlInclude(typeof(AomLevelControlPatternPlugin)),
-     XmlInclude(typeof(ImagingPatternPlugin))]
+     XmlInclude(typeof(ImagingPatternPlugin)),
+     XmlInclude(typeof(DualAomPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{
 
