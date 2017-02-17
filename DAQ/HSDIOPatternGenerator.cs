@@ -71,7 +71,8 @@ namespace DAQ.HAL
                 throw new Exception("Pattern length not equal to number of loop times");
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
-            uint[] data = new uint[4];
+            int width = 4;
+            uint[] data = new uint[width];
             length = pattern.Length;
             for (int i = 0; i < loopTimes.Length;i++ )
             {
@@ -79,27 +80,28 @@ namespace DAQ.HAL
                 {
                     throw new Exception("Loop time not a multiple of 4 master clock cycles. Change this to avoid digital pattern timing errors.");
                 }
-                for (int j = 0; j < 4;j++ )
+                for (int j = 0; j < width;j++ )
                 {
                     data[j] = pattern[i];
                 }
-                hsTask.WriteNamedWaveformU32("waveform" + i, 4, data);
+                hsTask.WriteNamedWaveformU32("waveform" + i, width, data);
                 if (loopTimes[i] == 0)
                     script += "\t generate waveform" + i + "\n";
                 else 
-                    script += "\t Repeat " + loopTimes[i]/100 + "\n \t generate waveform" + i +"\n\t end repeat \n";
+                    script += "\t Repeat " + loopTimes[i]/2 + "\n \t generate waveform" + i +"\n\t end repeat \n";
                 }
             script += "end script";
             //Writes the script to the card
+            hsTask.SetGenerationMode("", niHSDIOConstants.Scripted);
             hsTask.WriteScript(script);
             
             //This assumes the hsdio card triggers the other cards, which is most likely the case
             hsTask.ConfigureScriptToGenerate("myScript");
-            hsTask.SetGenerationMode("", niHSDIOConstants.Scripted);
+            
             
             hsTask.Initiate();
             //To avoid timing issues associated with the different pattern generators, I'll add the sleeop one pattern method here
-            //SleepOnePattern();
+           // SleepOnePattern();
         }
 
         private void SleepOnePattern()
@@ -109,9 +111,15 @@ namespace DAQ.HAL
 		}
         public void StopPattern()
         {
-            hsTask.reset();
-            hsTask.Dispose();
+            //This is a pretty bad way of waiting until the sequence has finished before trying to delete the waveforms
             
+            int done = hsTask.WaitUntilDone(1000);
+            while (done!=0)
+            {
+                done = hsTask.WaitUntilDone(1000);
+            }
+            hsTask.Dispose();
+
 
         }
 
