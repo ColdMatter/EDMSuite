@@ -103,7 +103,7 @@ namespace RFMOTHardwareControl
                     Directory.CreateDirectory(savePath);
                 }
                     MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
-                    iohelper.SaveAnalogInputData(savePath + filename, voltages);
+                    //iohelper.SaveAnalogInputData(savePath + filename, voltages);
   
             }
             
@@ -246,7 +246,7 @@ namespace RFMOTHardwareControl
                             Directory.CreateDirectory(savePath);
                         }
                         MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
-                        iohelper.SaveAnalogInputData(savePath + filename, voltages, true);
+                       // iohelper.SaveAnalogInputData(savePath + filename, voltages, true);
 
                     }
                     voltageInGraph.PlotWaveformsAppend(data);

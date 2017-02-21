@@ -21,6 +21,7 @@ namespace DAQ.HAL
             config.HSDIOCard = true;
             config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
+            config.UseMuquans = true;
             Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
@@ -48,18 +49,16 @@ namespace DAQ.HAL
             Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
             Info.Add("AOPatternTrigger", (string)Boards["analogOut"] + "/PXI_Trig1");
             Info.Add("analogInTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2");
-            //The sample clock frequencies used by each card - better to define here than in a MOTmaster script
-            Info.Add("hsClockFrequency", 20000000);
-            Info.Add("apgClockFrequency", 100000);
-            Info.Add("aiClockFrequency", 100000);
+            Info.Add("HSTrigger", "PXI_Trig1");
+          
             //Add identifiers for each card
           
             Info.Add("analogOutBoards", aoBoards);
             Info.Add("analogInBoards", aiBoards);
             Info.Add("digitalBoards", doBoards); 
             //Add other instruments such as serial channels
-            Instruments.Add("muquansSlave", new RS232Instrument("ASRL18::INSTR"));
-            Instruments.Add("muquansAOM", new RS232Instrument("ASRL20::INSTR"));
+            Instruments.Add("muquansSlave", new MuquansRS232("ASRL18::INSTR","slave"));
+            Instruments.Add("muquansAOM", new MuquansRS232("ASRL20::INSTR","aom"));
 
             
             //map the digital channels
@@ -83,13 +82,13 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
             AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", 0, 10);
-            AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao3", -10, 10);
-            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao4", -10, 10);
-            AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao5", -10, 10);
-            AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao6", -10, 10);
-            AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao7", -10, 10);
-            AddAnalogOutputChannel("xbiasCoil2D", aoBoard + "/ao8", -10, 10);
-            AddAnalogOutputChannel("ybiasCoil2D", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao8", -10, 10);
+            AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao6", -10, 10);
+            AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao7", -10, 10);
+            AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao5", -10, 10);
+            AddAnalogOutputChannel("xbiasCoil2D", aoBoard + "/ao3", -10, 10);
+            AddAnalogOutputChannel("ybiasCoil2D", aoBoard + "/ao4", -10, 10);
             AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);
             AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", 0, 10);
             AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", 0, 10);

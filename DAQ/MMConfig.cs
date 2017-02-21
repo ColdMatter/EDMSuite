@@ -24,6 +24,7 @@ namespace DAQ
             ExternalFilePattern = null;
             hsdioCard = false;
             useAI = false;
+            useMuquans = false;
         }
 
         private bool debug;
@@ -89,6 +90,13 @@ namespace DAQ
         {
             get { return useAI; }
             set { useAI = value; }
+        }
+
+        private bool useMuquans;
+        public bool UseMuquans
+        {
+            get { return useMuquans; }
+            set { useMuquans = value; }
         }
     }
 }

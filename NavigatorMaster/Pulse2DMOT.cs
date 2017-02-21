@@ -8,37 +8,38 @@ using DAQ.Pattern;
 using DAQ.Analog;
 
 
-namespace NavigatorMaster
+namespace NavigatorMaster.Testing
 {
     public class Patterns : MOTMasterScript
     {
         public Patterns()
         {
+            
             Parameters = new Dictionary<string, object>();
             //Digital clock frequency divided by analogue clock frequency
-            Parameters["ScaleFactor"] = 2000000 / 100000;
+            Parameters["ScaleFactor"] = 20000000 / 100000;
             //This is the legnth of the digital pattern which is written to the HSDIO card, clocked at 20MHz
-            Parameters["PatternLength"] = 100000;
+            Parameters["PatternLength"] = 46000000;
             //This is the length of the analogue pattern, clocked at 100 kHz
-            Parameters["AnalogLength"] = 1000;
+            Parameters["AnalogLength"] = 100000;
             Parameters["NumberOfFrames"] = 2;
            
             Parameters["XBias"] = 0.0;
             Parameters["YBias"] = 0.0;
             Parameters["ZBias"] = 0.0;
             //All times are in units of cycles of the 100 kHz clock. Times for digital channels are rescaled
-            Parameters["2DLoadTime"] = 1000;
-            Parameters["PushTime"] = 1000;
+            Parameters["2DLoadTime"] = 10000;
+            Parameters["PushTime"] = 100;
             Parameters["AtomMoveTime"] = 1000;
             Parameters["3DLoadTime"] = 1000;
 
             Parameters["ExposureTime"] = 500;
-            Parameters["BackgroundDwellTime"] = 1000;
+            Parameters["BackgroundDwellTime"] = 20000;
 
             Parameters["MotPower"] = 2.0;
             Parameters["RepumpPower"] = 0.26;
             Parameters["2DBfield"] = 0.0;
-            Parameters["3DBfield"] = 10.0;
+            Parameters["3DBfield"] = 3.7;
 
             //Frequencies and attenuator voltages for the fibre AOMs
             Parameters["XAtten"] = 5.2;
@@ -52,42 +53,49 @@ namespace NavigatorMaster
             Parameters["ZMFreq"] = 3.78;
 
             Parameters["PushAtten"] = 5.0;
-            Parameters["PushFreq"] = 7.41;
-            Parameters["2DMotFreq"] = 7.35;
+            Parameters["PushFreq"] = 7.42;
+            Parameters["2DMotFreq"] = 7.36;
             Parameters["2DMotAtten"] = 5.7;
 
-
+            Parameters["MOTdetuning"] = -13.5;
+            Parameters["Molassesdetuning"] = -163.5;
                
 
         }
 
         public override HSDIOPatternBuilder GetHSDIOPattern()
-        {
+            {
+      
             int loadtime2D = (int)Parameters["2DLoadTime"] * (int)Parameters["ScaleFactor"];
             int pushtime =  (int)Parameters["PushTime"] * (int)Parameters["ScaleFactor"];
             int movetime = (int)Parameters["AtomMoveTime"]*(int)Parameters["ScaleFactor"];
             int loadtime3D =(int)Parameters["3DLoadTime"] * (int)Parameters["ScaleFactor"];
             int backgroundtime=(int)Parameters["BackgroundDwellTime"]*(int)Parameters["ScaleFactor"];
+            int exposuretime = (int)Parameters["ExposureTime"] * (int)Parameters["ScaleFactor"];
             HSDIOPatternBuilder hs = new HSDIOPatternBuilder();
             
             hs.AddEdge("motTTL", 0,true);
             hs.AddEdge("mphiTTL", 0, true);
-            hs.AddEdge("xaomTTL", 0, true);
-            hs.AddEdge("yaomTTL", 0, true);
-            hs.AddEdge("zpaomTTL", 0, true);
-            hs.AddEdge("zmaomTTL", 0, true);
-            hs.AddEdge("pushaomTTL", 0, false);
-            hs.AddEdge("2DaomTTL", 0, true);
+            //Note the aom TTLs have an opposite sense
+            hs.AddEdge("xaomTTL", 0, false);
+            hs.AddEdge("yaomTTL", 0, false);
+            hs.AddEdge("zpaomTTL", 0, false);
+            hs.AddEdge("zmaomTTL", 0, false);
+            hs.AddEdge("pushaomTTL", 0, true);
+            hs.AddEdge("2DaomTTL", 0, false);
 
+            //These pulses trigger the start of the DDS
+            hs.Pulse(4,0,200,"aomDDSTrig");
+            hs.Pulse(4, 0, 200, "slaveDDSTrig");
             //Pulse push beam
-            hs.Pulse(loadtime2D,0,pushtime, "pushTTL");
+            hs.DownPulse(loadtime2D,0,pushtime, "pushaomTTL");
 
             //Image the 3D mot after waiting for it to load
-            hs.Pulse(movetime, loadtime2D, (int)Parameters["ExposureTime"], "cameraTTL");
+            hs.Pulse(loadtime3D + loadtime2D + movetime, 0, exposuretime, "cameraTTL");
 
             //Switch off repump before taking background
-            hs.AddEdge("mphiTTL", loadtime3D+ loadtime2D + movetime, false);
-            hs.Pulse(backgroundtime, loadtime3D+loadtime2D+movetime, (int)Parameters["ExposureTime"], "cameraTTL");
+            hs.AddEdge("mphiTTL", loadtime3D+ loadtime2D + movetime+exposuretime, false);
+            hs.Pulse(loadtime2D+ + movetime +loadtime3D+ exposuretime + backgroundtime, 0, exposuretime, "cameraTTL");
             return hs;
         }
 
@@ -111,6 +119,12 @@ namespace NavigatorMaster
             p.AddChannel("zmaomAtten");
             p.AddChannel("2DaomAtten");
             p.AddChannel("pushaomAtten");
+            p.AddChannel("xaomFreq");
+            p.AddChannel("yaomFreq");
+            p.AddChannel("zpaomFreq");
+            p.AddChannel("zmaomFreq");
+            p.AddChannel("2DaomFreq");
+            p.AddChannel("pushaomFreq");
 
             //Switch on the light and magnetic fields
             p.AddAnalogValue("motCTRL", 0, (double)Parameters["MotPower"]);
@@ -133,11 +147,21 @@ namespace NavigatorMaster
             p.AddAnalogValue("pushaomFreq", 0, (double)Parameters["PushFreq"]);
             p.AddAnalogValue("2DaomFreq", 0, (double)Parameters["2DMotFreq"]);
 
- 
+            p.AddLinearRamp("motCTRL",(int)Parameters["2DLoadTime"]+(int)Parameters["3DLoadTime"]+(int)Parameters["AtomMoveTime"],1000,0);
 
             return p;
         }
+        
+        public override MuquansBuilder GetMuquansCommands()
+        {
+            MuquansBuilder mu = new MuquansBuilder();
 
+            mu.SetFrequency("slave0", -13.5);
+            mu.SetFrequency("mphi", 0.0);
+
+            return mu;
+            
+        }
         public override PatternBuilder32 GetDigitalPattern()
         {
             throw new NotImplementedException();

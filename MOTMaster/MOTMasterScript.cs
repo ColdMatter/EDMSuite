@@ -14,19 +14,22 @@ namespace MOTMaster
         public Dictionary<String,Object> Parameters;
         public abstract MMAIConfiguration GetAIConfiguration();
         public abstract HSDIOPatternBuilder GetHSDIOPattern();
+        public abstract MuquansBuilder GetMuquansCommands();
 
         public MOTMasterSequence GetSequence()
         {
-            return GetSequence(false);
+            return GetSequence(false,false);
         }
 
-        public MOTMasterSequence GetSequence(bool hsdio)
+        public MOTMasterSequence GetSequence(bool hsdio,bool muquans)
         {
             MOTMasterSequence s = new MOTMasterSequence();
             if (hsdio) s.DigitalPattern = GetHSDIOPattern();
             else s.DigitalPattern = GetDigitalPattern();
             s.AnalogPattern = GetAnalogPattern();
             s.AIConfiguration = GetAIConfiguration();
+            if (muquans)
+                s.MuquansPattern = GetMuquansCommands();
             return s;
         }
         public void EditDictionary(Dictionary<String, Object> dictionary)

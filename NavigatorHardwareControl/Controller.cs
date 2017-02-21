@@ -84,7 +84,7 @@ namespace NavigatorHardwareControl
 
         //Used for locking the laser - only one can be running at once
         private Thread laserThread;
-        public CiceroController cicero;
+        
         public void Start()
         {
             if (Environs.Hardware.GetType() != new DAQ.HAL.NavigatorHardware().GetType())
@@ -222,16 +222,7 @@ namespace NavigatorHardwareControl
             hardwareState = LoadParameters();
             fibreAlign = new FibreAligner("horizPiezo", "vertPiezo", "fibrePD");
             fibreAlign.controller = this;
-            try
-            {
-                cicero = new CiceroController();
-                cicero.controller = this;
-                cicero.ConnectToCicero();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Couldn't connect to cicero");
-            }
+          
         }
 
         #endregion
@@ -647,7 +638,7 @@ namespace NavigatorHardwareControl
                     previousState = new HardwareState(hardwareState);
                 }
             }
-            cicero.SendVariablesToCicero();
+      
         }
 
         private void applyToHardware(HardwareState state)

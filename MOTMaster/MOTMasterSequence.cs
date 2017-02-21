@@ -14,5 +14,6 @@ namespace MOTMaster
         public AnalogPatternBuilder AnalogPattern;
         public MMAIConfiguration AIConfiguration;
         public HSDIOPatternBuilder HSDIOPattern;
+        public MuquansBuilder MuquansPattern;
     }
 }

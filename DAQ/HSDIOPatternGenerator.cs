@@ -29,7 +29,9 @@ namespace DAQ.HAL
            // this.length = length;
 
             /**** Configure the output lines ****/
-            hsTask = niHSDIO.InitGenerationSession(device, true, true,"");
+            hsTask = niHSDIO.InitGenerationSession(device, true, true, "");
+
+  
             //configure the card for dynamic generation
             hsTask.AssignDynamicChannels("0-31");
 
@@ -88,7 +90,7 @@ namespace DAQ.HAL
                 if (loopTimes[i] == 0)
                     script += "\t generate waveform" + i + "\n";
                 else 
-                    script += "\t Repeat " + loopTimes[i]/2 + "\n \t generate waveform" + i +"\n\t end repeat \n";
+                    script += "\t Repeat " + loopTimes[i]/4 + "\n \t generate waveform" + i +"\n\t end repeat \n";
                 }
             script += "end script";
             //Writes the script to the card

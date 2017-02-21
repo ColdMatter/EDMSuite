@@ -32,6 +32,7 @@ namespace DAQ.Environment
             if (!Directory.Exists((string)Paths["DataPath"]))
                 Directory.CreateDirectory((string)Paths["DataPath"]);
             Paths.Add("MOTMasterDataPath", (string)Paths["DataPath"]);
+            Paths.Add("MuquansExePath", "Z:\\Software\\ukus_dds_comm_gw");
             DataSearchPaths.Add(Paths["navDataPath"]);
             DataSearchPaths.Add(Paths["navServerPath"]);
         }

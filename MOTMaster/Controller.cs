@@ -33,6 +33,7 @@ using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using System.Runtime.Serialization.Formatters.Binary;
 
+
 namespace MOTMaster
 {
     /// <summary>
@@ -48,7 +49,7 @@ namespace MOTMaster
         #region Class members
 
         private static string
-            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
+            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "\\MotMaster.exe";
         private static string
             daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
         private static string
@@ -85,6 +86,7 @@ namespace MOTMaster
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
+        MuquansController muquans = null;
 
         MMDataIOHelper ioHelper;
 
@@ -124,7 +126,8 @@ namespace MOTMaster
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            
+            if (config.UseMuquans) muquans = new MuquansController();
+
             ioHelper = new MMDataIOHelper(motMasterDataPath, 
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -140,6 +143,8 @@ namespace MOTMaster
 
         private void run(MOTMasterSequence sequence)
         {
+            if (config.UseMuquans)
+                muquans.OutputCommands(sequence.MuquansPattern.commands);
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
             if (config.UseAI) aip.StartTask();
             if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
@@ -509,7 +514,7 @@ namespace MOTMaster
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
-            MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard);
+            MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard,config.UseMuquans);
             return sequence;
         }
 
@@ -668,6 +673,7 @@ namespace MOTMaster
         {
             scriptPath = scriptName;
             saveEnable = save;
+            status = RunningState.running;
             Run(parameters);
         }
 

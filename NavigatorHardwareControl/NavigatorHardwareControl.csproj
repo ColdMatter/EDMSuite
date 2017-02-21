@@ -153,7 +153,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CiceroController.cs" />
     <Compile Include="FibreAligner.cs" />
     <Compile Include="HSDIOStaticController.cs" />
     <Compile Include="ImageAnalysisWindow.xaml.cs">
@@ -226,17 +225,6 @@
       <Project>{b9e73de5-9e38-48d0-af97-4fe5242e2723}</Project>
       <Name>RFMOTHardwareControl</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="UKUS Comm\serial_to_dds_gw.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="UKUS Comm\ukus_dds_aom_conf.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UKUS Comm\ukus_dds_slaves_conf.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

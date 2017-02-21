@@ -59,7 +59,7 @@ namespace NavigatorHardwareControl
         };
             controller.controlWindow = this;
             controller.ApplyRecordedStateToHardware();
-            listEnumBox.ItemsSource = controller.cicero.listNums;
+           
             
  
 
