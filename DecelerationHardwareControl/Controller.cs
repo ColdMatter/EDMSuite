@@ -11,7 +11,7 @@ using DAQ.TransferCavityLock;
 using NationalInstruments.DAQmx;
 using NationalInstruments;
 
-namespace DecelerationHardwareControl
+namespace MoleculeMOTHardwareControl
 {
     public class Controller : MarshalByRefObject, TransferCavityLockable
     {

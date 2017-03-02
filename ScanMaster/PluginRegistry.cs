@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
+            patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
 #endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));

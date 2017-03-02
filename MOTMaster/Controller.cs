@@ -67,6 +67,7 @@ namespace MOTMaster
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
 
+
         ControllerWindow controllerWindow;
 
         DAQMxPatternGenerator pg;
@@ -92,7 +93,6 @@ namespace MOTMaster
 
         public void StartApplication()
         {
-
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
@@ -207,8 +207,9 @@ namespace MOTMaster
         /// 
         /// </summary>
       
+       
+        
         private bool saveEnable = true;
-      
         public void SaveToggle(System.Boolean value)
         {
             saveEnable = value;
@@ -219,6 +220,14 @@ namespace MOTMaster
         {
             batchNumber = number;
             controllerWindow.WriteToSaveBatchTextBox(number);  
+        }
+        public void SetIterations(Int32 number)
+        {
+            controllerWindow.SetIterations(number);
+        }
+        public void SetRunUntilStopped(bool state)
+        {
+            controllerWindow.RunUntilStoppedState = state;
         }
         private string scriptPath = "";
         public void SetScriptPath(String path)
@@ -237,28 +246,43 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public void RunStart()
+        public void Run()
         {
-            runThread = new Thread(new ThreadStart(this.Run));
+            runThread = new Thread(new ThreadStart(this.Go));
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Normal;
-            status = RunningState.running;
+            
             runThread.Start();
         }
 
-        public void Run()
+        public Thread Run(Dictionary<String, Object> dict)
+        {
+            var t = new Thread(() => Go(dict));
+           // status = RunningState.running;
+            t.Start();
+            //t.Join(); //Blocks calling thread until finished so that doesn't return until finished
+            return null;
+        }
+
+        public void Stop()
+        {
+            status = RunningState.stopped;
+        }
+
+        public void Go()
         {
             if (replicaRun)
             {
-                Run(ioHelper.LoadDictionary(dictionaryPath));
+                Go(ioHelper.LoadDictionary(dictionaryPath));
             }
             else
             {
-                Run(null);
+                Go(null);
             }
         }
-        public void Run(Dictionary<String, Object> dict)
+        public void Go(Dictionary<String, Object> dict)
         {
+            status = RunningState.running;
             Stopwatch watch = new Stopwatch();
             MOTMasterScript script = prepareScript(scriptPath, dict);
             if (script != null)
@@ -279,10 +303,21 @@ namespace MOTMaster
 
                     watch.Start();
 
-                    for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                    if(controllerWindow.RunUntilStoppedState)
                     {
-                        if(!config.Debug) runPattern(sequence);
+                        while(status == RunningState.running)
+                        {
+                            if (!config.Debug) runPattern(sequence);
+                        }
                     }
+                    else
+                    {
+                        for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                        {
+                            if (!config.Debug) runPattern(sequence);
+                        }
+                    }
+                   
                     if (!config.Debug) clearDigitalPattern(sequence);
 
 

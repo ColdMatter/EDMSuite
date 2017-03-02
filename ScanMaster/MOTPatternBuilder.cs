@@ -26,7 +26,7 @@ namespace ScanMaster.Acquire.Patterns
 
             public int ShotSequence(int startTime, int numberOfOnOffShots, int padShots, int padStart, int flashlampPulseInterval,
                 int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int slowingAOMStart1, int slowingAOMDuration1,
-                int slowingAOMStart2, int slowingAOMDuration2, int slowingRepumpAOMDuration1, int motAOMStart, int motAOMDuration, int motRampStart, int motAOMReStart,
+                int slowingAOMStart2, int slowingAOMDuration2, int slowingRepumpAOMDuration1, int motAOMStart, int motAOMDuration, int motRampStart,
                 int bTrigger,int bDuration, int cameraTrigger, int delayToDetectorTrigger,
                 int chirpStart, int chirpDuration, bool modulation)
             {
@@ -43,7 +43,7 @@ namespace ScanMaster.Acquire.Patterns
                 {
                    
                     // first the pulse with the Q switch triggered
-                    Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart, motAOMReStart,
+                    Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart,
                         bTrigger, bDuration, cameraTrigger, delayToDetectorTrigger, chirpStart, chirpDuration, "detector", true);
                     time += flashlampPulseInterval;
                     for (int p = 0; p < padShots; p++)
@@ -54,7 +54,7 @@ namespace ScanMaster.Acquire.Patterns
                     // now the pulse with the Q switch not triggered, if modulation is true (otherwise another one as before)
                     if (modulation)
                     {
-                        Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart, motAOMReStart,
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart,
                        bTrigger, bDuration, cameraTrigger, delayToDetectorTrigger, chirpStart, chirpDuration, "detectorprime", false);
                         time += flashlampPulseInterval;
                         for (int p = 0; p < padShots; p++)
@@ -65,7 +65,7 @@ namespace ScanMaster.Acquire.Patterns
                     }
                     else
                     {
-                        Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart, motAOMReStart,
+                        Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, slowingAOMStart1, slowingAOMDuration1, slowingAOMStart2, slowingAOMDuration2, slowingRepumpAOMDuration1, motAOMStart, motAOMDuration, motRampStart,
                        bTrigger, bDuration, cameraTrigger, delayToDetectorTrigger, chirpStart, chirpDuration, "detector", true);
                         time += flashlampPulseInterval;
                         for (int p = 0; p < padShots; p++)
@@ -87,7 +87,7 @@ namespace ScanMaster.Acquire.Patterns
 
             public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int slowingAOMStart1, int slowingAOMDuration1,
                 int slowingAOMStart2, int slowingAOMDuration2, int slowingRepumpAOMDuration1, 
-                int motAOMStart, int motAOMDuration, int motRampStart, int motAOMReStart,
+                int motAOMStart, int motAOMDuration, int motRampStart,
                 int bTrigger, int bDuration, int cameraTrigger,
                 int delayToDetectorTrigger, int chirpStart, int chirpDuration, string detectorTriggerSource, bool qTrig)
             {

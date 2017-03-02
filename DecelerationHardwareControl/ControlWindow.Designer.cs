@@ -1,4 +1,4 @@
-namespace DecelerationHardwareControl
+namespace MoleculeMOTHardwareControl
 {
     partial class ControlWindow
     {
@@ -786,7 +786,7 @@ namespace DecelerationHardwareControl
             this.Controls.Add(this.tabControl);
             this.MaximizeBox = false;
             this.Name = "ControlWindow";
-            this.Text = "Decelerator Control";
+            this.Text = "Molecule MOT Hardware Controller";
             this.sideBandTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph5)).EndInit();

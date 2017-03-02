@@ -25,7 +25,7 @@ namespace ScanMaster.Acquire.Plugins
         [NonSerialized]
         private double normalized_Data;
         [NonSerialized]
-        private DecelerationHardwareControl.Controller hardwareControl;
+        private MoleculeMOTHardwareControl.Controller hardwareControl;
         [NonSerialized]
         private int lockCavityChannel;
         [NonSerialized]
@@ -41,7 +41,7 @@ namespace ScanMaster.Acquire.Plugins
         public override void AcquisitionStarting()
         {
             //connect to the hardware controller
-            hardwareControl = new DecelerationHardwareControl.Controller();
+            hardwareControl = new MoleculeMOTHardwareControl.Controller();
             
             // configure the analog input
             inputTask = new Task("analog inputs");

@@ -1,23 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}</ProjectGuid>
+    <ProjectGuid>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DecelerationLaserLock</RootNamespace>
-    <AssemblyName>DecelerationLaserLock</AssemblyName>
-    <StartupObject>DecelerationLaserLock.Runner</StartupObject>
+    <RootNamespace>MoleculeMOTHardwareControl</RootNamespace>
+    <AssemblyName>MoleculeMOTHardwareControl</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <ApplicationRevision>0</ApplicationRevision>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -82,15 +80,9 @@
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
-    <OutputPath>bin\EDMTestCrate\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -105,18 +97,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LaserController.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Controller.cs" />
+    <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="ControlWindow.Designer.cs">
+      <DependentUpon>ControlWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="ControlWindow.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>ControlWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -144,18 +136,6 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DecelerationHardwareControl\MoleculeMOTHardwareControl.csproj">
-      <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
-      <Name>MoleculeMOTHardwareControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
-      <Project>{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}</Project>
-      <Name>ScanMaster</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
-      <Name>SharedCode</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

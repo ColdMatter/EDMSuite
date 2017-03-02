@@ -26,7 +26,7 @@ namespace ScanMaster.Acquire.Plugins
         [NonSerialized]
         private AnalogSingleChannelWriter writer;
         [NonSerialized]
-        private DecelerationHardwareControl.Controller hardwareControl;
+        private MoleculeMOTHardwareControl.Controller hardwareControl;
 
         protected override void InitialiseSettings()
         {
@@ -40,7 +40,7 @@ namespace ScanMaster.Acquire.Plugins
         public override void AcquisitionStarting()
         {
             //connect to the hardware controller
-            hardwareControl = new DecelerationHardwareControl.Controller();
+            hardwareControl = new MoleculeMOTHardwareControl.Controller();
             
             // initialise the output hardware, full scale -10 to 10 volts
             outputTask = new Task("analog output");

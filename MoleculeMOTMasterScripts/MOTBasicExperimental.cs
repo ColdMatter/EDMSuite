@@ -25,10 +25,6 @@ public class Patterns : MOTMasterScript
         // Camera
         Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
-        
-        //PMT
-        Parameters["PMTTrigger"] = 4000;
-        Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
@@ -41,8 +37,8 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
-        Parameters["SlowingChirpDuration"] = 1160;
+        Parameters["SlowingChirpStartTime"] = 540;
+        Parameters["SlowingChirpDuration"] = 960;
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.3;
         //-1.3
@@ -76,9 +72,9 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyRampStartTime"] = 10000;
         Parameters["v0FrequencyRampDuration"] = 2000;
         Parameters["v0FrequencyRampStartValue"] = 9.0;
-        Parameters["v0FrequencyRampEndValue"] = 9.0; 
-       
-        
+        Parameters["v0FrequencyRampEndValue"] = 9.0;
+
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -87,10 +83,9 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-      
+
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
-          
         return p;
     }
 
@@ -101,7 +96,7 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
-        
+
         p.AddChannel("v0IntensityRamp");
         p.AddChannel("v0FrequencyRamp");
         p.AddChannel("xShimCoilCurrent");
@@ -124,14 +119,14 @@ public class Patterns : MOTMasterScript
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
-        
+
         // v0 Frequency Ramp
         p.AddAnalogValue("v0FrequencyRamp", 0, (double)Parameters["v0FrequencyRampStartValue"]);
 
 
-        
+
         p.SwitchAllOffAtEndOfPattern();
         return p;
-   }
+    }
 
 }
