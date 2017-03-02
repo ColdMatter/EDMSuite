@@ -32,18 +32,20 @@ namespace DAQ.HAL
         {
 
             // add the boards
+            Boards.Add("rfPulseGenerator", "PXI1Slot4");
             Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");
-            Boards.Add("counter", "/PXI1Slot3");
-            Boards.Add("aoBoard", "/PXI1Slot4");
+            Boards.Add("counter", "/PXI1Slot16");
+            Boards.Add("aoBoard", "/PXI1Slot2");
             // this drives the rf attenuators
             Boards.Add("usbDAQ1", "/Dev6");
-            Boards.Add("analogIn", "/PXI1Slot2");
+            Boards.Add("analogIn", "/PXI1Slot15");
             Boards.Add("usbDAQ2", "/Dev1");
             Boards.Add("usbDAQ3", "/Dev2");
             Boards.Add("usbDAQ4", "/Dev5");
             Boards.Add("tclBoardPump", "/PXI1Slot17");
             Boards.Add("tclBoardProbe", "/PXI1Slot9");
+            string rfPulseGenerator = (string)Boards["rfPulseGenerator"];
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string counterBoard = (string)Boards["counter"];
@@ -79,7 +81,7 @@ namespace DAQ.HAL
             Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL9::INSTR");
+            yag = new BrilliantLaser("ASRL21::INSTR");
 
             // add the GPIB/RS232 instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
@@ -90,8 +92,8 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
-            Instruments.Add("BfieldController", new SerialDAQ("ASRL7::INSTR"));
-            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL14::INSTR"));
+            Instruments.Add("BfieldController", new SerialDAQ("ASRL19::INSTR"));
+            Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL17::INSTR"));
             Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL8::INSTR"));
             Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL11::INSTR"));
 
@@ -225,7 +227,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("Pumpp2", tclBoardPump + "/ai3", AITerminalConfiguration.Rse); 
 
             // Lasers locked to pump cavity
-            AddAnalogOutputChannel("899ExternalScan", tclBoardPump + "/ao2", -5, 5); //tick
+            AddAnalogOutputChannel("KeopsysDiodeLaser", tclBoardPump + "/ao2", -4, 4); //tick
             AddAnalogOutputChannel("MenloPZT", tclBoardPump + "/ao0", 0, 10); //tick
 
             // Length stabilisation for pump cavity
@@ -234,7 +236,7 @@ namespace DAQ.HAL
             //TCL configuration for pump cavity
             TCLConfig tcl1 = new TCLConfig("Pump Cavity");
             tcl1.AddLaser("MenloPZT", "Pumpp1");
-            tcl1.AddLaser("899ExternalScan", "Pumpp2");
+            tcl1.AddLaser("KeopsysDiodeLaser", "Pumpp2");
             tcl1.Trigger = tclBoardPump + "/PFI0";
             tcl1.Cavity = "PumpCavityRampVoltage";
             tcl1.MasterLaser = "Pumpmaster";
@@ -246,10 +248,10 @@ namespace DAQ.HAL
             tcl1.PointsToConsiderEitherSideOfPeakInFWHMs = 2.5;
             tcl1.TriggerOnRisingEdge = false;
             tcl1.AddFSRCalibration("MenloPZT", 3.84);
-            tcl1.AddFSRCalibration("899ExternalScan", 3.84);
+            tcl1.AddFSRCalibration("KeopsysDiodeLaser", 3.84);
             tcl1.AddDefaultGain("Master", 0.3);
             tcl1.AddDefaultGain("MenloPZT", -0.2);
-            tcl1.AddDefaultGain("899ExternalScan", 4);
+            tcl1.AddDefaultGain("KeopsysDiodeLaser", 4);
             Info.Add("PumpCavity", tcl1);
             Info.Add("DefaultCavity", tcl1);
 
@@ -273,7 +275,7 @@ namespace DAQ.HAL
             tcl2.AnalogSampleRate = 61250/2;
             tcl2.DefaultScanPoints = 250;
             tcl2.MaximumNLMFSteps = 20;
-            tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 6;
+            tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
             tcl2.AddFSRCalibration("TopticaSHGPZT", 3.84);
             tcl2.TriggerOnRisingEdge = false;
             tcl2.AddDefaultGain("Master", 0.4);
