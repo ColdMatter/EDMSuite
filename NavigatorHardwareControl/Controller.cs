@@ -25,7 +25,7 @@ using NationalInstruments.VisaNS;
 using DAQ;
 using DAQ.HAL;
 using DAQ.Environment;
-using RFMOTHardwareControl;
+
 
 
 namespace NavigatorHardwareControl
@@ -33,14 +33,14 @@ namespace NavigatorHardwareControl
     /// <summary>
     /// This is the interface to the Navigator hardware controller and is based largely on the sympathetic hardware controller.
     /// </summary>
-    public class Controller : MarshalByRefObject
+    public class Controller : MarshalByRefObject, CameraControllable
     {
         
         #region Constants
         public static string cameraAttributesPath = (string)Environs.FileSystem.Paths["cameraAttributesPath"];
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
         public static string profilesPath = (string)Environs.FileSystem.Paths["settingsPath"]
-            + "NavigatorHardwareController\\";
+            + "\\NavigatorHardwareController\\";
         #endregion
 
         #region setup
@@ -1262,18 +1262,22 @@ namespace NavigatorHardwareControl
 
         public void PrepareRemoteCameraControl()
         {
-            StartRemoteControl();
+            if (ImageController == null)
+                MessageBox.Show("Camera not Initialialised. Open using the Hardware Controller");
+            else
+            {StartRemoteControl();
+            ImageController.SetAttribute("Trigger Mode","Mode 1");
+            }
+            
         }
         public void FinishRemoteCameraControl()
         {
             StopRemoteControl();
+            ImageController.SetAttribute("Trigger Mode", "Off");
         }
 
         #endregion
 
-        #region Cicero Remoting
-       
-        #endregion
 
         #region Event Handlers
 

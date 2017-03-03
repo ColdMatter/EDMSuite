@@ -75,9 +75,7 @@ namespace NavigatorHardwareControl
         }
         public void ReclaimHardware()
         {
-
             my_niHSDIO = niHSDIO.InitGenerationSession(deviceName, true, false, "");
-
             my_niHSDIO.AssignStaticChannels(channelList);
         }
     }

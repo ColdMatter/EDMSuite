@@ -90,8 +90,6 @@
             // saveExperimentCheckBox
             // 
             this.saveExperimentCheckBox.AutoSize = true;
-            this.saveExperimentCheckBox.Checked = true;
-            this.saveExperimentCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.saveExperimentCheckBox.Location = new System.Drawing.Point(12, 109);
             this.saveExperimentCheckBox.Name = "saveExperimentCheckBox";
             this.saveExperimentCheckBox.Size = new System.Drawing.Size(148, 17);
@@ -126,7 +124,7 @@
             this.patternsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(736, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(731, 24);
             this.menuStrip1.TabIndex = 13;
             // 
             // fileToolStripMenuItem
@@ -208,7 +206,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(736, 149);
+            this.ClientSize = new System.Drawing.Size(731, 218);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.iterationsBox);
             this.Controls.Add(this.stopButton);

@@ -115,6 +115,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
     </Reference>
+    <Reference Include="NationalInstruments.Vision, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.Vision.Common, Version=13.1.35.100, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86" />
     <Reference Include="SharpDX, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
     <Reference Include="SharpDX.D3DCompiler, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
@@ -124,6 +125,7 @@
     <Reference Include="SharpDX.DXGI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive.Core">
       <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
     </Reference>
@@ -155,11 +157,24 @@
   <ItemGroup>
     <Compile Include="FibreAligner.cs" />
     <Compile Include="HSDIOStaticController.cs" />
+    <Compile Include="ImageAnalysisWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageAnalysisWindow.Designer.cs">
+      <DependentUpon>ImageAnalysisWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageAnalysisWindow.xaml.cs">
       <DependentUpon>ImageAnalysisWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObservableDictionary.cs" />
     <Compile Include="TelnetConnection.cs" />
+    <Compile Include="voltageLogger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="voltageLogger.Designer.cs">
+      <DependentUpon>voltageLogger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="waveformGraphCollection.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -197,10 +212,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="ImageAnalysisWindow.resx">
+      <DependentUpon>ImageAnalysisWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="voltageLogger.resx">
+      <DependentUpon>voltageLogger.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -221,9 +242,9 @@
       <Project>{fce9fc5d-8bc1-4517-b4f6-aa446831a930}</Project>
       <Name>IMAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RFMOTHardwareControl\RFMOTHardwareControl.csproj">
-      <Project>{b9e73de5-9e38-48d0-af97-4fe5242e2723}</Project>
-      <Name>RFMOTHardwareControl</Name>
+    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
+      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
+      <Name>MOTMaster</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

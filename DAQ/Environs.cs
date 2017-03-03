@@ -219,7 +219,7 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-                case "JIMMY-SURFACE":
+                case "PH-LAB-015":
                     Hardware = new NavigatorHardware();
                     FileSystem = new NavigatorFileSystem();
                     Debug = true;

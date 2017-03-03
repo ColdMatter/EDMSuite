@@ -43,7 +43,7 @@ namespace IMAQ
         public List<VisionImage> imageList = new List<VisionImage>();
         public bool analyse = false;
         public double max = 0.0;
-        private ImaqdxAttributeCollection attributes;
+        public ImaqdxAttributeCollection attributes;
         public PointContour pointOfInterest;
         public Roi rectangleROI = new Roi();
         public Roi pointROI = new Roi();
@@ -315,6 +315,7 @@ namespace IMAQ
                 {
                     imaqdxSession.Attributes.ReadAttributesFromFile(newPath);
                     attributes = imaqdxSession.Attributes;
+                    
                 }
                 else if (attributes != imaqdxSession.Attributes)
                 {
@@ -325,7 +326,11 @@ namespace IMAQ
             }
             return newPath;
         }
-
+        public void SetAttribute(string attribute,string value)
+        {
+            ImaqdxAttributeCollection attr = imaqdxSession.Attributes; 
+            attr[attr.IndexOf(attribute)].SetValue(value);
+        }
         public void SetROI()
         {
             RectangleContour rect = rectangleROI.GetBoundingRectangle();

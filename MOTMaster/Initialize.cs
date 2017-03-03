@@ -8,7 +8,7 @@ using MOTMaster;
 using MOTMaster.SnippetLibrary;
 
 
-namespace NavigatorMaster
+namespace MOTMaster.SnippetLibrary
 {
     public class Initialize : MOTMasterScriptSnippet
     {
@@ -39,8 +39,9 @@ namespace NavigatorMaster
             hs.AddEdge("2DaomTTL", 0, false);
 
             //These pulses trigger the start of the DDS
-            hs.Pulse(4, 0, 200, "aomDDSTrig");
-            hs.Pulse(4, 0, 200, "slaveDDSTrig");
+            hs.Pulse(4, 0, 500, "serialPreTrigger");
+            hs.Pulse(1000, 0, 500, "aomDDSTrig");
+            hs.Pulse(1000, 0, 500, "slaveDDSTrig");
 
         }
 
