@@ -7,7 +7,7 @@ using DAQ.Analog;
 using MOTMaster.SnippetLibrary;
 using MOTMaster;
 
-namespace NavigatorMaster
+namespace MOTMaster.SnippetLibrary
 {
     public class Load2DMOT : MOTMasterScriptSnippet
     {
@@ -27,10 +27,10 @@ namespace NavigatorMaster
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             int loadtime2D = (int)parameters["2DLoadTime"] * (int)parameters["ScaleFactor"];
-            int pushtime = (int)parameters["PushTime"] * (int)parameters["ScaleFactor"];
+           
             
-            //Pulse push beam
-            hs.DownPulse(loadtime2D, 0, pushtime, "pushaomTTL");
+            //Pulse push beam for the duration of the 2D mot loading time
+            hs.DownPulse(4, 0, loadtime2D, "pushaomTTL");
 
         }
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)

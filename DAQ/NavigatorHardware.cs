@@ -77,7 +77,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
-            AddDigitalOutputChannel("digitalTest", hsdioBoard, 0, 14);
+            AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 14);
+
             //map the analog output channels
             AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
@@ -116,6 +117,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave0Error", multiBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
+
+            AddCounterChannel("Counter", multiBoard + "/ctr0");
+
+
+            
         }
     }
 }

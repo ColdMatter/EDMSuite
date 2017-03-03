@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Drawing;
 using NationalInstruments.Controls;
 using NationalInstruments.Controls.Primitives;
 using System.Threading;
@@ -77,33 +76,38 @@ namespace NavigatorHardwareControl
         #region Updating UI State
         public void UpdateUIState(Controller.NavHardwareState state)
         {
-            switch (state)
+            this.Dispatcher.Invoke(() =>
             {
-                case Controller.NavHardwareState.OFF:
+                switch (state)
+                {
+                    case Controller.NavHardwareState.OFF:
 
-                    remoteControlLED.Value = false;
-                    hardwareControl.IsEnabled = true;
+                        remoteControlLED.Value = false;
+                        hardwareControl.IsEnabled = true;
 
-                    break;
+                        break;
 
-                case Controller.NavHardwareState.LOCAL:
+                    case Controller.NavHardwareState.LOCAL:
 
-                    remoteControlLED.Value = false;
-                    hardwareControl.IsEnabled=true;
-                    break;
+                        remoteControlLED.Value = false;
+                        hardwareControl.IsEnabled = true;
+                        break;
 
-                case Controller.NavHardwareState.REMOTE:
+                    case Controller.NavHardwareState.REMOTE:
 
-                    remoteControlLED.Value = true;
-                    hardwareControl.IsEnabled = false ;
+                        remoteControlLED.Value = true;
+                        hardwareControl.IsEnabled = false;
 
-                    break;
-            }
+                        break;
+                }
+
+            });
+            
         }
 
         public void WriteToConsole(string text)
         {
-            console.WriteLine(text);
+            this.Dispatcher.Invoke(() => { console.WriteLine(text); });
         }
 
         #endregion
@@ -392,13 +396,7 @@ namespace NavigatorHardwareControl
 
         }
 
-       //Ensures that only numeric values can be entered in certain textboxes
-       private void numberValidationTextBox(object sender, TextCompositionEventArgs e)
-       {
-            Regex regex = new Regex("[^0-9.]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
+      
        private void triggerDDS_Click(object sender, RoutedEventArgs e)
        {
            BooleanButton button = sender as BooleanButton;

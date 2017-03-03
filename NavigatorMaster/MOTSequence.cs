@@ -23,37 +23,39 @@ namespace NavigatorMaster
             Parameters["NumberOfFrames"] = 2;
 
             Parameters["XBias"] = 0.0;
-            Parameters["YBias"] = 0.0;
-            Parameters["ZBias"] = 0.0;
+            Parameters["YBias"] = 1.2;
+            Parameters["ZBias"] = 0.9;
 
             //All times are in milliseconds and then multiplied by the 100 KHz clock frequency
-            Parameters["2DLoadTime"] = 100 * 100;
-            Parameters["PushTime"] = 1 * 100;
-            Parameters["AtomMoveTime"] = 30 * 100;
-
-            Parameters["ImageTime"] = (int)Parameters["2DLoadTime"] + (int)Parameters["PushTime"];
-            Parameters["ExposureTime"] = 5 * 100;
-            Parameters["BackgroundDwellTime"] = 200 * 100;
+            Parameters["2DLoadTime"] = 500 * 100;
+            
+            Parameters["3DLoadTime"] = 100 * 100;
+            Parameters["BfieldSwitchOffTime"] = (int)Parameters["2DLoadTime"] + (int)Parameters["3DLoadTime"];
+            Parameters["BfieldDelayTime"] = 25 * 10;
+            
+            Parameters["ImageTime"] = 0;
+            Parameters["ExposureTime"] = 1 * 100;
+            Parameters["BackgroundDwellTime"] = 1000 * 100;
 
             Parameters["MotPower"] = 2.0;
             Parameters["RepumpPower"] = 0.26;
-            Parameters["2DBfield"] = 0.0;
-            Parameters["3DBfield"] = 3.7;
+            Parameters["2DBfield"] = 2.0;
+            Parameters["3DBfield"] = 3.3;
 
             //Frequencies and attenuator voltages for the fibre AOMs
-            Parameters["XAtten"] = 5.2;
-            Parameters["YAtten"] = 5.6;
-            Parameters["ZPAtten"] = 4.25;
-            Parameters["ZMAtten"] = 3.78;
+            Parameters["XAtten"] = 3.66;
+            Parameters["YAtten"] = 4.36;
+            Parameters["ZPAtten"] = 3.38;
+            Parameters["ZMAtten"] = 3.05;
 
             Parameters["XFreq"] = 6.84;
             Parameters["YFreq"] = 6.95;
             Parameters["ZPFreq"] = 6.95;
-            Parameters["ZMFreq"] = 3.78;
+            Parameters["ZMFreq"] = 7.090;
 
-            Parameters["PushAtten"] = 5.0;
-            Parameters["PushFreq"] = 7.42;
-            Parameters["2DMotFreq"] = 7.36;
+            Parameters["PushAtten"] = 5.75;
+            Parameters["PushFreq"] = 7.41;
+            Parameters["2DMotFreq"] = 7.35;
             Parameters["2DMotAtten"] = 5.7;
 
             Parameters["MOTdetuning"] = -13.5;
@@ -62,19 +64,21 @@ namespace NavigatorMaster
 
         public override HSDIOPatternBuilder GetHSDIOPattern()
         {
+ 
             HSDIOPatternBuilder hs = new HSDIOPatternBuilder();
 
-            MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
+                MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
+                MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
 
-            MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
+                MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
+
             return hs;
         }
 
         public override AnalogPatternBuilder GetAnalogPattern()
         {
-            AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
+            AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
 
             MOTMasterScriptSnippet init = new Initialize(p, Parameters);
 
@@ -89,7 +93,7 @@ namespace NavigatorMaster
         public override MuquansBuilder GetMuquansCommands()
         {
             MuquansBuilder mu = new MuquansBuilder();
-
+     
             MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
 
             MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
@@ -102,7 +106,7 @@ namespace NavigatorMaster
 
         public override MMAIConfiguration GetAIConfiguration()
         {
-            throw new NotImplementedException();
+            return null;
         }
         public override PatternBuilder32 GetDigitalPattern()
         {

@@ -42,10 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Imaging.cs" />
-    <Compile Include="Initialize.cs" />
-    <Compile Include="Load2DMOT.cs" />
-    <Compile Include="MOTSeqeunce.cs" />
+    <Compile Include="MOTSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pulse2DMOT.cs" />
   </ItemGroup>

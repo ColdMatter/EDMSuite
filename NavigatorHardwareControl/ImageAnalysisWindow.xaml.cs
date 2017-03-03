@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using IMAQ;
-using RFMOTHardwareControl;
 
 namespace NavigatorHardwareControl
 {

@@ -88,27 +88,27 @@ namespace DecelerationLaserLock
             this.lockToolStripMenuItem,
             this.unlockToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(54, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(59, 20);
             this.toolStripMenuItem1.Text = "Actions";
             // 
             // parkToolStripMenuItem
             // 
             this.parkToolStripMenuItem.Name = "parkToolStripMenuItem";
-            this.parkToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.parkToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
             this.parkToolStripMenuItem.Text = "Park";
             this.parkToolStripMenuItem.Click += new System.EventHandler(this.parkToolStripMenuItem_Click);
             // 
             // lockToolStripMenuItem
             // 
             this.lockToolStripMenuItem.Name = "lockToolStripMenuItem";
-            this.lockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.lockToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
             this.lockToolStripMenuItem.Text = "Lock";
             this.lockToolStripMenuItem.Click += new System.EventHandler(this.lockToolStripMenuItem_Click);
             // 
             // unlockToolStripMenuItem
             // 
             this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
-            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.unlockToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
             this.unlockToolStripMenuItem.Text = "Unlock";
             this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockToolStripMenuItem_Click);
             // 
@@ -124,12 +124,12 @@ namespace DecelerationLaserLock
             // 
             // controlVoltageNumericEditor
             // 
-            this.controlVoltageNumericEditor.CoercionInterval = 0.005;
+            this.controlVoltageNumericEditor.CoercionInterval = 0.005D;
             this.controlVoltageNumericEditor.FormatMode = NationalInstruments.UI.NumericFormatMode.CreateSimpleDoubleMode(3);
             this.controlVoltageNumericEditor.Location = new System.Drawing.Point(91, 26);
             this.controlVoltageNumericEditor.Name = "controlVoltageNumericEditor";
             this.controlVoltageNumericEditor.OutOfRangeMode = NationalInstruments.UI.NumericOutOfRangeMode.CoerceToRange;
-            this.controlVoltageNumericEditor.Range = new NationalInstruments.UI.Range(-10, 10);
+            this.controlVoltageNumericEditor.Range = new NationalInstruments.UI.Range(-10D, 10D);
             this.controlVoltageNumericEditor.Size = new System.Drawing.Size(61, 20);
             this.controlVoltageNumericEditor.TabIndex = 4;
             this.controlVoltageNumericEditor.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.controlVoltageNumericEditor_AfterChangeValue);
@@ -260,9 +260,9 @@ namespace DecelerationLaserLock
             // 
             // dSlider
             // 
-            this.dSlider.CoercionInterval = 0.1;
-            this.dSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
-                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
+            this.dSlider.CoercionInterval = 0.1D;
+            this.dSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer) 
+            | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
             this.dSlider.Location = new System.Drawing.Point(121, 19);
             this.dSlider.Name = "dSlider";
             this.dSlider.PointerColor = System.Drawing.SystemColors.HotTrack;
@@ -271,9 +271,9 @@ namespace DecelerationLaserLock
             // 
             // iSlider
             // 
-            this.iSlider.CoercionInterval = 0.1;
-            this.iSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
-                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
+            this.iSlider.CoercionInterval = 0.1D;
+            this.iSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer) 
+            | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
             this.iSlider.Location = new System.Drawing.Point(78, 19);
             this.iSlider.Name = "iSlider";
             this.iSlider.PointerColor = System.Drawing.SystemColors.HotTrack;
@@ -285,9 +285,9 @@ namespace DecelerationLaserLock
             // 
             this.pSlider.CaptionBackColor = System.Drawing.SystemColors.Control;
             this.pSlider.CaptionForeColor = System.Drawing.SystemColors.ControlText;
-            this.pSlider.CoercionInterval = 0.1;
-            this.pSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer)
-                        | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
+            this.pSlider.CoercionInterval = 0.1D;
+            this.pSlider.InteractionMode = ((NationalInstruments.UI.LinearNumericPointerInteractionModes)(((NationalInstruments.UI.LinearNumericPointerInteractionModes.DragPointer | NationalInstruments.UI.LinearNumericPointerInteractionModes.SnapPointer) 
+            | NationalInstruments.UI.LinearNumericPointerInteractionModes.EditRange)));
             this.pSlider.Location = new System.Drawing.Point(33, 19);
             this.pSlider.Name = "pSlider";
             this.pSlider.OutOfRangeMode = NationalInstruments.UI.NumericOutOfRangeMode.CoerceToRange;
@@ -318,7 +318,7 @@ namespace DecelerationLaserLock
             // xAxis1
             // 
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 100);
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0D, 100D);
             // 
             // yAxis1
             // 
@@ -335,11 +335,11 @@ namespace DecelerationLaserLock
             // 
             // setpointNumericEdit
             // 
-            this.setpointNumericEdit.CoercionInterval = 0.01;
+            this.setpointNumericEdit.CoercionInterval = 0.01D;
             this.setpointNumericEdit.FormatMode = NationalInstruments.UI.NumericFormatMode.CreateSimpleDoubleMode(3);
             this.setpointNumericEdit.Location = new System.Drawing.Point(257, 26);
             this.setpointNumericEdit.Name = "setpointNumericEdit";
-            this.setpointNumericEdit.Range = new NationalInstruments.UI.Range(-100, 100);
+            this.setpointNumericEdit.Range = new NationalInstruments.UI.Range(-100D, 100D);
             this.setpointNumericEdit.Size = new System.Drawing.Size(59, 20);
             this.setpointNumericEdit.TabIndex = 11;
             this.setpointNumericEdit.AfterChangeValue += new NationalInstruments.UI.AfterChangeNumericValueEventHandler(this.setpointNumericEdit_AfterChangeValue);

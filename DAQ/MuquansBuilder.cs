@@ -18,8 +18,6 @@ namespace DAQ.Pattern
         public int aomTrigCount;
         public int ramanTrigCount;
 
-
-
         public MuquansBuilder()
         {
             commands = new List<MuquansCommand>();

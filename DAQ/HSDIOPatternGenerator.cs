@@ -115,10 +115,10 @@ namespace DAQ.HAL
         {
             //This is a pretty bad way of waiting until the sequence has finished before trying to delete the waveforms
             
-            int done = hsTask.WaitUntilDone(1000);
+            int done = hsTask.WaitUntilDone(10000);
             while (done!=0)
             {
-                done = hsTask.WaitUntilDone(1000);
+                done = hsTask.WaitUntilDone(10000);
             }
             hsTask.Dispose();
 

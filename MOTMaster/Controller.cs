@@ -33,6 +33,7 @@ using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using MOTMaster.SnippetLibrary;
 
 namespace MOTMaster
 {
@@ -62,6 +63,8 @@ namespace MOTMaster
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
+        private static string
+            snippetPath = (string)Environs.FileSystem.Paths["scriptSnippetPath"];
 
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
 
@@ -144,7 +147,7 @@ namespace MOTMaster
         private void run(MOTMasterSequence sequence)
         {
             if (config.UseMuquans)
-                muquans.OutputCommands(sequence.MuquansPattern.commands);
+                muquans.StartOutput();
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
             if (config.UseAI) aip.StartTask();
             if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
@@ -159,6 +162,7 @@ namespace MOTMaster
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
+            if (config.UseMuquans) muquans.Configure(sequence.MuquansPattern.commands);
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 
@@ -169,6 +173,7 @@ namespace MOTMaster
             else hs.StopPattern();
             apg.StopPattern();
             if (config.UseAI) aip.StopPattern();
+            if (config.UseMuquans) muquans.StopOutput();
         }
 
         private void clearDigitalPattern(MOTMasterSequence sequence)
@@ -308,7 +313,6 @@ namespace MOTMaster
 
                     if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-
                     
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
@@ -321,8 +325,6 @@ namespace MOTMaster
                         if(!config.Debug) runPattern(sequence);
                     }
                     if (!config.Debug) clearDigitalPattern(sequence);
-
-
 
                     watch.Stop();
                 //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
@@ -367,6 +369,7 @@ namespace MOTMaster
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+        
 
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -417,7 +420,7 @@ namespace MOTMaster
         private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, config.ExternalFilePattern, imageData, cameraAttributesPath);
+                script.Parameters, report, cameraAttributesPath, imageData ,config.ExternalFilePattern);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
@@ -433,13 +436,15 @@ namespace MOTMaster
             CompilerResults results = compileFromFile(pathToPattern);
             if (results != null)
             {
-                script = loadScriptFromDLL(results);
-                if (dict != null)
-                {
-                    script.EditDictionary(dict);
-                    
-                }
-                return script;
+                
+                    script = loadScriptFromDLL(results);
+                    if (dict != null)
+                    {
+                        script.EditDictionary(dict);
+
+                    }
+                    return script;
+               
             }
             return null;
         }
@@ -470,6 +475,8 @@ namespace MOTMaster
 
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
+            if (snippetPath != null)
+                options.ReferencedAssemblies.Add(snippetPath);
 
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
@@ -480,6 +487,10 @@ namespace MOTMaster
             try
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
+                if (results.Errors.Count >0)
+                {
+                    MessageBox.Show("Error in MOTMaster Script Compilation");
+                }
             }
             catch (Exception e)
             {
