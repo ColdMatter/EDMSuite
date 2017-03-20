@@ -22,12 +22,16 @@ public class Patterns : MOTMasterScript
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
 
-        Parameters["MOTSwitchOffTime"] = 7500;
-        Parameters["ExpansionTime"] = 500;
+        Parameters["MOTSwitchOffTime"] = 8000;
+        Parameters["ExpansionTime"] = 1;
 
         // Camera
         //Parameters["Frame0Trigger"] = 8000;
         Parameters["Frame0TriggerDuration"] = 10;
+
+        //PMT
+        Parameters["PMTTrigger"] = 4000;
+        Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
@@ -47,29 +51,16 @@ public class Patterns : MOTMasterScript
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        //Parameters["MOTCoilsSwitchOff"] = 8000;
-        Parameters["MOTCoilsRampActive"] = false;
-        Parameters["MOTCoilsCurrentRampStartTime"] = 6000;
-        Parameters["MOTCoilsCurrentRampDuration"] = 2000;
-        Parameters["MOTCoilsCurrentRampStartValue"] = 0.8;
-        Parameters["MOTCoilsCurrentRampEndValue"] = 1.2;
-
-        Parameters["MOTBOPCoilsCurrentStartValue"] = 10.0;
-
-        // v0 Light Switch
-        //Parameters["MOTAOMStartTime"] = 8000;
-        //Parameters["MOTAOMDuration"] = Parameters["ExpansionTime"];
+        Parameters["MOTCoilsCurrentRampStartTime"] = 4000;
+        Parameters["MOTCoilsCurrentRampDuration"] = 1000;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.75;
+        Parameters["MOTCoilsCurrentRampEndValue"] = 0.75;
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 5000;
+        Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 8.75;
-
-        //ramp extension
-        //Parameters["v0IntensityRampDuration2"] = 500;
-        //Parameters["v0IntensityRampEndValue2"] = 9.59;
-
+        Parameters["v0IntensityRampEndValue"] = 7.54;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -82,11 +73,9 @@ public class Patterns : MOTMasterScript
         Parameters["calibGradient"] = 5.55075;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -3.9;
-        Parameters["zShimLoadCurrent"] = 1.9;
-        Parameters["xShimMolassesCurrent"] = -3.9;
-        Parameters["zShimMolassesCurrent"] = 1.9;
-        Parameters["shimFieldSwitchTime"] = 7200;
+        Parameters["xShimLoadCurrent"] = 0.37;
+        Parameters["yShimLoadCurrent"] = 0.0;
+        Parameters["zShimLoadCurrent"] = -0.4;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -113,16 +102,13 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v0IntensityRamp");
         p.AddChannel("v0FrequencyRamp");
         p.AddChannel("xShimCoilCurrent");
+        p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
 
         // B Field
-        // For the delta electronica box (bottom MOT coil) - top coil is in digital section
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], 0);
-
-        // For BOP
-        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTBOPCoilsCurrentStartValue"]);
-        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], 0);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
@@ -131,9 +117,8 @@ public class Patterns : MOTMasterScript
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-        //p.AddAnalogValue("xShimCoilCurrent", (int)Parameters["shimFieldSwitchTime"], (double)Parameters["xShimMolassesCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        //p.AddAnalogValue("zShimCoilCurrent", (int)Parameters["shimFieldSwitchTime"], (double)Parameters["zShimMolassesCurrent"]);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v0FrequencyRamp", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -79,6 +80,7 @@ namespace MOTMaster
             string[] datafiles = Directory.GetFiles(saveFolder, fileTag + "*");
             if(externalFilePattern != null)
             {
+                Thread.Sleep(2000); // Wait long enough for the external files to arrive.
                 string[] imagefiles = Directory.GetFiles(saveFolder, externalFilePattern);
                 files = datafiles.Concat(imagefiles).ToArray();
             }

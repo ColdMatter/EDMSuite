@@ -174,10 +174,9 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v0FrequencyRamp", aoBoard + "/ao12");
 
             AddAnalogOutputChannel("MOTCoilsCurrent", aoBoard + "/ao13");
-            AddAnalogOutputChannel("MOTBOPCoilsCurrent", aoBoard + "/ao16");
 
-
-            AddAnalogOutputChannel("xShimCoilCurrent", aoBoard + "/ao14");
+            AddAnalogOutputChannel("xShimCoilCurrent", aoBoard + "/ao17");
+            AddAnalogOutputChannel("yShimCoilCurrent", aoBoard + "/ao16");
             AddAnalogOutputChannel("zShimCoilCurrent", aoBoard + "/ao15");
             
             //second cavity

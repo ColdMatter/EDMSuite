@@ -50,15 +50,17 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
         Parameters["MOTCoilsRampActive"] = false;
-        Parameters["MOTCoilsCurrentRampStartTime"] = 1500;
+        Parameters["MOTCoilsCurrentRampStartTime"] = 1500; //1500 for normal MOT
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
-        Parameters["MOTCoilsCurrentRampStartValue"] = 0.65;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.8; //0.8 for normal MOT - data taken until 17/02/17
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.2;
 
+        Parameters["MOTBOPCoilsCurrentStartValue"] = 10.0; //10.0 for normal MOT - data taken until 17/02/17
+        Parameters["MOTBOPCoilsCurrentEndValue"] = 0.2;
+
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.37;
-        Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.4;
+        Parameters["xShimLoadCurrent"] = -3.9;
+        Parameters["zShimLoadCurrent"] = 1.9;
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -68,7 +70,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 5.0;
+        Parameters["v0IntensityRampEndValue"] = 10.0;
 
         // v0 Light Frequency
         Parameters["v0FrequencyRampStartTime"] = 10000;
@@ -103,18 +105,21 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v0IntensityRamp");
         p.AddChannel("v0FrequencyRamp");
         p.AddChannel("xShimCoilCurrent");
-        p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
 
 
         // B Field
         // For the delta electronica box (bottom MOT coil) - top coil is in digital section
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
+
+        // For BOP
+        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTBOPCoilsCurrentStartValue"]);
+        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], (double)Parameters["MOTBOPCoilsCurrentEndValue"]);
+
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
         // v0 Intensity Ramp
