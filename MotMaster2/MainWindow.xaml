@@ -1,0 +1,60 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Name="frmMain" x:Class="MOTMaster2.MainWindow"
+        Title="MOTMaster2" Height="271.143" Width="760.429" ResizeMode="NoResize">
+    <Grid Margin="0,0,-5.286,-0.429">
+        <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,22,0,0" VerticalAlignment="Top" Width="111"/>
+        <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,53,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" />
+        <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="582,53,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click"/>
+        <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="665,53,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click"/>
+        <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="108" Margin="10,124,0,0" VerticalAlignment="Top" Width="730" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">
+            <TabItem x:Name="tbRepeat" Header="  Repeat  " Width="70" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100*"/>
+                        <ColumnDefinition Width="42*"/>
+                        <ColumnDefinition Width="581*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="tbIterNumb" HorizontalAlignment="Left" Height="24" Margin="27.571,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Grid.ColumnSpan="2" Text="1" Grid.Column="1"/>
+                    <Button x:Name="btnRun" Content="Run" Grid.Column="2" HorizontalAlignment="Left" Height="33" Margin="96.714,22,0,0" VerticalAlignment="Top" Width="83" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tbScan" Header="   Scan   " Width="70" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="43*"/>
+                        <ColumnDefinition Width="681*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="19,25,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2" SelectedIndex="0">
+                        <System:String>dummy</System:String>
+                    </ComboBox>
+                    <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
+                    <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="316.714,25,0,0" VerticalAlignment="Top" Width="42" Grid.Column="1"/>
+                    <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="358.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Text="0" Grid.Column="1"/>
+                    <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="416.714,25,0,0" VerticalAlignment="Top" Width="29" Grid.Column="1"/>
+                    <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="512.714,25,0,0" VerticalAlignment="Top" Width="28" RenderTransformOrigin="0.546,0.5" Grid.Column="1"/>
+                    <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="589.714,21,0,0" VerticalAlignment="Top" Width="81" FontWeight="Bold" Background="#FF99E699" Click="btnScan_Click" Grid.Column="1"/>
+                    <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="445.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" Text="100" Grid.Column="1"/>
+                    <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="540.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Text="1" Grid.Column="1"/>
+                    <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="24" Margin="253.143,25,0,0" VerticalAlignment="Top" Width="59" FontWeight="Bold" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tbManual" Header=" Manual  " HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="111*"/>
+                        <ColumnDefinition Width="613*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cbParamsManual" HorizontalAlignment="Left" Height="27" Margin="79,24,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2"/>
+                    <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,25,0,0" VerticalAlignment="Top" Width="64"/>
+                    <Button Content="Update" HorizontalAlignment="Left" Margin="418.143,22,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Grid.Column="1"/>
+                    <Label Content="Value:" HorizontalAlignment="Left" Height="26" Margin="260.286,25,0,0" VerticalAlignment="Top" Width="43" Grid.Column="1"/>
+                    <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="308.286,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" Text="0" FontWeight="Bold" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
