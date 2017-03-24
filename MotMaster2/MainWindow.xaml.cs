@@ -39,7 +39,7 @@ namespace MOTMaster2
         public void InitVisuals()
         {
             controller = new Controller();
-           
+            controller.StartApplication();
             btnRefresh_Click(null,null);
             tcMain.SelectedIndex = 0;
         }
@@ -57,6 +57,8 @@ namespace MOTMaster2
         //TODO fun one cycle with defined parameters
         private bool SingleShot() // true if OK
         {
+
+            controller.RunStart();
             return true;
         }
 
@@ -232,7 +234,10 @@ namespace MOTMaster2
         {
             //Load the new script
             if (cbPatternScript.Text != "")
-                controller.script = controller.prepareScript(cbPatternScript.Text, null);
+            {
+                controller.script = controller.prepareScript((string)cbPatternScript.SelectedItem, null);
+                controller.SetScriptPath((string)cbPatternScript.SelectedItem);
+            }
             //Change parameters
             tcMain.SelectedIndex = 0;           
         }

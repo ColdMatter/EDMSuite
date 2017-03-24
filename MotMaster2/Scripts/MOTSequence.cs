@@ -33,20 +33,20 @@ namespace MOTMaster2
             Parameters["BfieldSwitchOffTime"] = (int)Parameters["2DLoadTime"] + (int)Parameters["3DLoadTime"];
             Parameters["BfieldDelayTime"] = 25 * 10;
             
-            Parameters["ImageTime"] = 0;
+            Parameters["ImageTime"] = 1000;
             Parameters["ExposureTime"] = 1 * 100;
             Parameters["BackgroundDwellTime"] = 1000 * 100;
 
             Parameters["MotPower"] = 2.0;
-            Parameters["RepumpPower"] = 0.26;
+            Parameters["RepumpPower"] = 0.0;
             Parameters["2DBfield"] = 2.0;
             Parameters["3DBfield"] = 3.3;
 
             //Frequencies and attenuator voltages for the fibre AOMs
-            Parameters["XAtten"] = 3.66;
-            Parameters["YAtten"] = 4.36;
-            Parameters["ZPAtten"] = 3.38;
-            Parameters["ZMAtten"] = 3.05;
+            Parameters["XAtten"] = 5.2;
+            Parameters["YAtten"] = 5.6;
+            Parameters["ZPAtten"] = 4.25;
+            Parameters["ZMAtten"] = 3.78;
 
             Parameters["XFreq"] = 6.84;
             Parameters["YFreq"] = 6.95;
@@ -70,7 +70,7 @@ namespace MOTMaster2
                 MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
 
                 MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
-
+                MOTMasterScriptSnippet molasses = new Molasses(hs, Parameters);
                 MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
 
             return hs;
@@ -83,7 +83,7 @@ namespace MOTMaster2
             MOTMasterScriptSnippet init = new Initialize(p, Parameters);
 
             MOTMasterScriptSnippet mot2d = new Load2DMOT(p, Parameters);
-
+            MOTMasterScriptSnippet molasses = new Molasses(p, Parameters);
             MOTMasterScriptSnippet image = new Imaging(p, Parameters);
 
             return p;
@@ -97,7 +97,7 @@ namespace MOTMaster2
             MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
 
             MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
-
+            MOTMasterScriptSnippet molasses = new Molasses(mu, Parameters);
             MOTMasterScriptSnippet image = new Imaging(mu, Parameters);
 
             return mu;

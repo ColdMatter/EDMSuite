@@ -41,11 +41,14 @@ namespace MOTMaster2.SnippetLibrary
 
             
             //Switch off light during the expansiontime
-            if ((int)parameters["ImageTime"]!=0)
-                hs.DownPulse(switchOffTime, 0, (int)parameters["ImageTime"] * (int)parameters["ScaleFactor"]+delaytime, "motTTL");
-
+            //if ((int)parameters["ImageTime"]!=0)
+            //    hs.DownPulse(switchOffTime, 0, (int)parameters["ImageTime"] * (int)parameters["ScaleFactor"]+delaytime, "motTTL");
+            hs.Pulse(imagetime - 40000, delaytime, 200, "serialPreTrigger");
+            hs.Pulse(imagetime - 40000, delaytime, 200, "digTest");
+           
             //Trigger laser jump
             hs.Pulse(imagetime - 200, delaytime, 200, "slaveDDSTrig");
+            hs.Pulse(imagetime - 200, delaytime, 200, "digTest");
            
             //Image the atoms
             hs.Pulse(imagetime, delaytime, exposuretime, "cameraTTL");
@@ -58,13 +61,14 @@ namespace MOTMaster2.SnippetLibrary
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
 
-            p.AddAnalogValue("mot3DCoil", (int)parameters["BfieldSwitchOffTime"], 0.0);
+           
         }
 
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             //Shifts the light to resonance with the 2->3 transition - note the extra 1.5MHz comes from a frequency shift with the AOM
-           // mu.SetFrequency("slave0",1.5);
+           //mu.SetFrequency("slave0",1.5);
+            mu.SweepFrequency("slave0", 100, 100);
         }
     }
 }

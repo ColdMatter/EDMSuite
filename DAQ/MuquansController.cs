@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
 using NationalInstruments.DAQmx;
+using System.Threading;
 
 using DAQ.Environment;
 
@@ -17,8 +18,16 @@ namespace DAQ.HAL
         public MuquansRS232(string visaAddress, string id) : base(visaAddress)
         { 
             this.id = id;
+            this.baudrate = 2304000;
+
         }
 
+        public void Output(string message)
+        {
+            this.serial.Write(message);
+            Console.WriteLine(message);
+            
+        }
 
        
         
@@ -26,7 +35,7 @@ namespace DAQ.HAL
     /// <summary>
     /// An interface to control the muquans laser using serial communication to onboard DDS. These are used to program the frequency/phase of each laser 
     /// </summary>
-    public class MuquansController
+    public class MuquansController :MarshalByRefObject
     {
         public MuquansRS232 slaveComm;
         public MuquansRS232 aomComm;
@@ -36,12 +45,10 @@ namespace DAQ.HAL
         private Task runningTask;
         private List<string> slaveCommands;
         private List<string> aomCommands;
-        private int[] counts;
-        private CounterReader reader;
-        int numberofSamplesRead = 0;
-        int samplestoRead = 100;
+        private int counts;
+        int serialCounter = 0;
 
-        private AsyncCallback countCallback;
+       
 
 
         public MuquansController()
@@ -56,7 +63,8 @@ namespace DAQ.HAL
             aomDDS = new Process();
             aomDDS.StartInfo = ConfigureDDS(path, "aom", 21);
             aomDDS.Start();
-           
+            slaveCommands = new List<string>();
+            aomCommands = new List<string>();
 
         }
         public ProcessStartInfo ConfigureDDS(string path,string id, int port)
@@ -138,47 +146,45 @@ namespace DAQ.HAL
             aomCommands.Add(SweepFrequency("mphi", ddsVal, time));
         }
         #endregion
-
-        public void Configure(List<MuquansCommand> commands)
+        /// <summary>
+        /// Configures the counter task on a specified counter channel. The sample clock for this task is the PFI channel used to trigger serial communication
+        /// </summary>
+        public void Configure()
         {
+           
             counterTask = new Task();
-            counts = new int[1000];
+
+          
             CounterChannel counter = (CounterChannel)Environs.Hardware.CounterChannels["Counter"];
             counterTask.CIChannels.CreateCountEdgesChannel(counter.PhysicalChannel, counter.Name, CICountEdgesActiveEdge.Rising, 0, CICountEdgesCountDirection.Up);
-            counterTask.CIChannels[0].CountEdgesTerminal = (string)Environs.Hardware.Boards["multiDAQ"] + "/pfi0";
-           
-            reader = new CounterReader(counterTask.Stream);
-            counterTask.Timing.ConfigureSampleClock("/Dev1/PXI_Trig0",100000, SampleClockActiveEdge.Rising,
-                    SampleQuantityMode.ContinuousSamples,1000);
-            reader.SynchronizeCallbacks = true;
-           
-            countCallback = new AsyncCallback(CounterReadCallback);
-            reader.BeginMemoryOptimizedReadMultiSampleInt32(samplestoRead,countCallback, counterTask, counts);
-           
+            counterTask.CIChannels[0].CountEdgesTerminal = (string)Environs.Hardware.Boards["analogOut"] + "/pfi1";
+
+            counterTask.SampleClock += new SampleClockEventHandler(counterTask_Sample);
+        
+            counterTask.Timing.ConfigureSampleClock((string)Environs.Hardware.Boards["analogOut"] + "/pfi1", 100000, SampleClockActiveEdge.Rising, SampleQuantityMode.HardwareTimedSinglePoint);
+
             counterTask.Control(TaskAction.Verify);
+           
+      
             
         }
 
         
-        public void CounterReadCallback(IAsyncResult ar)
+        void counterTask_Sample(object sender, SampleClockEventArgs e)
         {
-             try
-            {
-                if (runningTask != null && runningTask == ar.AsyncState)
-                {
-                    counts = reader.EndMemoryOptimizedReadMultiSampleInt32(ar,out numberofSamplesRead);
-
-                    reader.BeginMemoryOptimizedReadMultiSampleInt32(samplestoRead, countCallback, counterTask, counts);
-                }
-            }
-            catch(DaqException exception)
-            {
-                counterTask.Dispose();
-                MessageBox.Show(exception.Message);
-                runningTask = null;
-            }
-        
+            if (serialCounter < slaveCommands.Count)
+                slaveComm.Output(slaveCommands[serialCounter]);
+            if (serialCounter < aomCommands.Count)
+                aomComm.Output(aomCommands[serialCounter]);
+            serialCounter++;
+           
+            
         }
+
+        /// <summary>
+        /// Builds the string messages used for each command to the Muquans laser. These are added to a list of each DDS
+        /// </summary>
+        /// <param name="commands"></param>
         public void BuildCommands(List<MuquansCommand> commands)
         {
             foreach (MuquansCommand command in commands)
@@ -207,44 +213,31 @@ namespace DAQ.HAL
         }
         public void StartOutput()
         {
-            //counterTask.Start();
-            runningTask = counterTask;
+
+            
+            serialCounter = 0;
+            slaveComm.Connect();
+            aomComm.Connect();
+            //Outputs the first commands then waits 10ms before returning
+            aomComm.Output(aomCommands[serialCounter]);
+            slaveComm.Output(slaveCommands[serialCounter]);
+            serialCounter++;
+            Thread.Sleep(10);
+            counterTask.Start();
+            
         }
+
         public void StopOutput()
         {
-            runningTask = null;
-            System.Console.Write(counts.Last());
             counterTask.Dispose();
+            slaveComm.Disconnect();
+            aomComm.Disconnect();
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
 
         }
-        public void OutputCommands(List<MuquansCommand> commands)
-        {
-            foreach (MuquansCommand command in commands)
-            {
-                if (command.instruction == Instruction.set)
-                {
-                    if (command.laser == "mphi")
-                        SetMPhiFrequency(command.frequency);
-                    else if (command.laser == "raman")
-                        throw new NotImplementedException();
-                    else
-                        SetMOTFrequency(command.frequency);
-                }
-                else if (command.instruction == Instruction.sweep)
-                {
-                    if (command.laser == "mphi")
-                        SweepMphiFrequency(command.frequency, command.sweeptime);
-                    else if (command.laser == "raman")
-                        throw new NotImplementedException();
-                    else
-                        SweepMOTFrequency(command.frequency, command.sweeptime);
-                }
-                else
-                    throw new NotImplementedException();
-            }
-        }
+      
+       
     }
       public enum Instruction: byte {sweep,set,phase};
     public struct MuquansCommand
@@ -252,7 +245,6 @@ namespace DAQ.HAL
             public string laser;
             public double frequency;
             public double sweeptime;
-            public double outputtime;
             public Instruction instruction;
      
             public MuquansCommand(string laser,double frequency, Instruction type, double time)
@@ -261,7 +253,6 @@ namespace DAQ.HAL
                     this.frequency = frequency;
                     this.sweeptime = time;
                     this.instruction = type;
-                    this.outputtime = 0.0;
                    
                 }
            public MuquansCommand(string laser,double frequency, Instruction type)
@@ -270,8 +261,6 @@ namespace DAQ.HAL
                 this.frequency = frequency;
                 this.sweeptime = 0.0;
                 this.instruction = type;
-                this.outputtime = 0.0;
-
             }
         }
    

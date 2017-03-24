@@ -83,6 +83,7 @@
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
     <Compile Include="Scripts\Pulse2DMOT.cs" />
+    <Compile Include="Scripts\Snippets\Molasses.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
