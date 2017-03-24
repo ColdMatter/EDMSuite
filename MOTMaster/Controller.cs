@@ -162,7 +162,7 @@ namespace MOTMaster
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
-            if (config.UseMuquans) muquans.Configure(sequence.MuquansPattern.commands);
+            if (config.UseMuquans) muquans.Configure();
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 
@@ -475,8 +475,7 @@ namespace MOTMaster
 
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
-            if (snippetPath != null)
-                options.ReferencedAssemblies.Add(snippetPath);
+           
 
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;

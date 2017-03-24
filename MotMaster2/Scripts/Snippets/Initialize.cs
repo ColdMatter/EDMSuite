@@ -5,7 +5,7 @@ using System.Text;
 using DAQ.Pattern;
 using DAQ.Analog;
 using MOTMaster2;
-using MOTMaster2.SnippetLibrary;
+
 
 
 namespace MOTMaster2.SnippetLibrary
@@ -32,7 +32,7 @@ namespace MOTMaster2.SnippetLibrary
         }
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
-            hs.AddEdge("motTTL", 0, true);
+           // hs.AddEdge("motTTL", 0, true);
             hs.AddEdge("mphiTTL", 0, true);
             //Note the aom TTLs have an opposite sense
             hs.AddEdge("xaomTTL", 0, false);
@@ -43,9 +43,8 @@ namespace MOTMaster2.SnippetLibrary
             hs.AddEdge("2DaomTTL", 0, false);
 
             //These pulses trigger the start of the DDS
-            hs.Pulse(4, 0, 500, "serialPreTrigger");
-            hs.Pulse(1000, 0, 500, "aomDDSTrig");
-            hs.Pulse(1000, 0, 500, "slaveDDSTrig");
+            hs.Pulse(4, 0, 500, "aomDDSTrig");
+            hs.Pulse(4, 0, 500, "slaveDDSTrig");
 
         }
 

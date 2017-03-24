@@ -125,10 +125,10 @@ namespace MOTMaster2
         private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             Dictionary<String, Object> dict, Dictionary<String, Object> report)
         {
-            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
-            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
-            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
+            //storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
+            //File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
+            //File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
+            //storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
 
         public string SelectSavedScriptPathDialog()

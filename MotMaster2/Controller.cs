@@ -156,7 +156,7 @@ namespace MOTMaster2
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
-            if (config.UseMuquans) muquans.Configure(sequence.MuquansPattern.commands);
+            if (config.UseMuquans) muquans.Configure();
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 
@@ -254,7 +254,7 @@ namespace MOTMaster2
         private string scriptPath = "";
         public void SetScriptPath(String path)
         {
-            //scriptPath = path;
+            scriptPath = path;
             //controllerWindow.WriteToScriptPath(path);
         }
         private bool replicaRun = false;
@@ -293,13 +293,14 @@ namespace MOTMaster2
 
         public void Run(Dictionary<String, Object> dict)
         {
-            Run(dict, 0,0);
+            Run(dict, 1,0);
         }
 
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
         {
             Stopwatch watch = new Stopwatch();
-            script = prepareScript(scriptPath, dict);
+            if (script == null)
+                script = prepareScript(scriptPath, dict);
             if (script != null)
             {
                 MOTMasterSequence sequence = getSequenceFromScript(script);
@@ -343,7 +344,7 @@ namespace MOTMaster2
                             return;
                         }
 
-                            Dictionary<String, Object> report = null;
+                            Dictionary<String, Object> report = new Dictionary<string,object>();
                             if (config.ReporterUsed)
                             {
                                 report = GetExperimentReport();
@@ -353,7 +354,7 @@ namespace MOTMaster2
                         }
                         else
                         {
-                            Dictionary<String, Object> report = null;
+                            Dictionary<String, Object> report = new Dictionary<string,object>();
                             if (config.ReporterUsed)
                             {
                                 report = GetExperimentReport();
@@ -451,6 +452,7 @@ namespace MOTMaster2
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
+            if (config.UseMuquans) muquans.BuildCommands(sequence.MuquansPattern.commands);
         }
        
         #endregion

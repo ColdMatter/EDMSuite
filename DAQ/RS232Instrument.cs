@@ -14,6 +14,7 @@ namespace DAQ.HAL
         protected SerialSession serial;
         protected string address;
         protected bool connected = false;
+        protected int baudrate = 9600;
 
         public RS232Instrument(String visaAddress)
         {
@@ -31,7 +32,7 @@ namespace DAQ.HAL
                 if (!Environs.Debug)
                 {
                     serial = new SerialSession(address);
-                    serial.BaudRate = 9600;
+                    serial.BaudRate = this.baudrate;
                     serial.DataBits = 8;
                     serial.StopBits = StopBitType.One;
                     serial.ReadTermination = method;
