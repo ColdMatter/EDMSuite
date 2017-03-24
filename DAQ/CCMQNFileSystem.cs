@@ -13,7 +13,7 @@ namespace DAQ
         {
             //Paths.Add("mathPath", "c:\\Program Files\\Wolfram Research\\Mathematica\\7.0\\mathkernel.exe");
             //Paths.Add("UNCPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\");
-            Paths.Add("settingsPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\SoftwareSettings\\");
+            Paths.Add("settingsPath", "c:\\Program Files\\ScanMaster\\ScanMaster\\bin\\Microcavity\\");
             Paths.Add("scanMasterDataPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\");
             Paths.Add("fakeData", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\\\examples\\");
 

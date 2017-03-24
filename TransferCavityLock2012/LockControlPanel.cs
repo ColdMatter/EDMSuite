@@ -28,7 +28,7 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit)
+        public LockControlPanel(string name, int lowerVoltageLimit, int upperVoltageLimit)
         {
             this.name = name;
             this.upperVoltageLimit = upperVoltageLimit;
@@ -135,7 +135,14 @@ namespace TransferCavityLock2012
         {
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
-                controller.EngageLock(name);
+                try
+                {
+                    controller.EngageLock(name);
+                }
+                catch (Exception)
+                {
+
+                }
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
@@ -186,7 +193,7 @@ namespace TransferCavityLock2012
         private void VoltageTrackBar_Scroll(object sender, EventArgs e)
         {
             
-            SetLaserVoltage((((double)VoltageTrackBar.Value) / 1000)*(upperVoltageLimit-lowerVoltageLimit));
+            SetLaserVoltage((((double)VoltageTrackBar.Value)/1000)*(upperVoltageLimit-lowerVoltageLimit)+lowerVoltageLimit);
         }
 
         #endregion

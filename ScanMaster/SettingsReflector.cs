@@ -40,6 +40,11 @@ namespace ScanMaster.Acquire.Plugin
 			{
 				return false;
 			}
+            catch (System.NullReferenceException)
+            {
+                return false;
+            }
+
 		}
 
 		public object GetField(AcquisitorPlugin plugin, String fieldName)

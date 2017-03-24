@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using System.Collections;
+using System.Diagnostics; //Timing Code
 using DAQ.Environment;
 using Data;
 using Data.Scans;
@@ -85,11 +86,18 @@ namespace ScanMaster.Acquire
 					config.switchPlugin.ScanStarting();
 					config.yagPlugin.ScanStarting();
 					config.analogPlugin.ScanStarting();
+                    Stopwatch timer = new System.Diagnostics.Stopwatch();
+                    timer.Start();
+                    Stopwatch shottimer = new System.Diagnostics.Stopwatch();
+                    shottimer.Start();
 
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
-					{                    
+					{
+                        double pointstart = timer.ElapsedMilliseconds;
+                        
                         // calculate the new scan parameter and move the scan along
                         config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
+                        double movestart = timer.ElapsedMilliseconds - pointstart;
 
 						// check for a change in the pg parameters
 						lock(this)
@@ -105,20 +113,32 @@ namespace ScanMaster.Acquire
 								tweakFlag = false;
 							}
 						}
+                        double tweak = timer.ElapsedMilliseconds - movestart;
 
                         ScanPoint sp = new ScanPoint();
 						sp.ScanParameter = config.outputPlugin.ScanParameter;
+                        double dataprep = timer.ElapsedMilliseconds;
+
+                        if((bool)config.shotGathererPlugin.Settings["preArm"])
+                        {
+                            config.switchPlugin.State = true; 
+                            config.shotGathererPlugin.PreArm();
+                        }
 
                         for (int shotNum = 0; shotNum < (int)(config.outputPlugin.Settings["shotsPerPoint"]); shotNum++)
                         {
+                            shottimer.Restart();
+
                             // Set the switch state
                             config.switchPlugin.State = true;
 
                             // wait for the data gatherer to finish
                             config.shotGathererPlugin.ArmAndWait();
-                            
+                            double gather = shottimer.ElapsedMilliseconds; 
+
                             // read out the data
                             sp.OnShots.Add(config.shotGathererPlugin.Shot);
+                            double readout = shottimer.ElapsedMilliseconds;
                             
                             if ((bool)config.switchPlugin.Settings["switchActive"])
                             {
@@ -127,15 +147,24 @@ namespace ScanMaster.Acquire
                                 sp.OffShots.Add(config.shotGathererPlugin.Shot);
                             }
                         }
+                        double shotsend = timer.ElapsedMilliseconds - dataprep;
+
+                        if ((bool)config.shotGathererPlugin.Settings["preArm"])
+                        {
+                            config.switchPlugin.State = true; 
+                            config.shotGathererPlugin.PostArm();
+                        }
 
 						// sample the analog channels and add them to the ScanPoint
 						config.analogPlugin.ArmAndWait();
 						sp.Analogs.AddRange(config.analogPlugin.Analogs);
+                        double analogs = timer.ElapsedMilliseconds - shotsend;
 
 						// send up the data bundle
 						DataEventArgs evArgs = new DataEventArgs();
 						evArgs.point = sp;
 					    OnData(evArgs);
+                        double dataout = timer.ElapsedMilliseconds - analogs;
 
 						// check for exit
 						if (CheckIfStopping()) 
@@ -156,6 +185,7 @@ namespace ScanMaster.Acquire
                     // I should probably be less cheezy and put a lock in, but I'm not really
                     // sure that I know what the bug is as it's intermittent (and rare).
                     Thread.Sleep(750);
+                    double scanfinish = timer.ElapsedMilliseconds;
 
 					// check if we are finished scanning
 					if (scanNumber + 1 == numberOfScans)

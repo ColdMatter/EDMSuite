@@ -61,17 +61,18 @@ namespace DAQ.HAL
                         string sensorstring = string.Join("", "R", sensor[i].ToString(), "\r");
                         byte[] writBytes = System.Text.Encoding.ASCII.GetBytes(sensorstring);
                         readData[i] = serial.Query(sensorstring, 8);
-                        if (readData[i] != null) dataValue[i] = Convert.ToDouble(readData[i].Substring(1, readData[i].Length - 3));
+                        if (readData[i] != null && readData[i].Length != 0) dataValue[i] = Convert.ToDouble(readData[i].Substring(1, readData[i].Length - 3));
                         serial.Flush(BufferTypes.InBuffer, true);
                         serial.Flush(BufferTypes.OutBuffer, true);
                     }
                 }
                 catch (Exception e)
                 {
-                    // bug swatter for intermittance bug in reading from cryostat
+                    // bug swatter for intermittance bug in reading from cryostat writes to stack trace
+                    // but doesn't stop program
                     Console.Error.Write(e.Message + e.StackTrace);
-                    MessageBox.Show("Bath Cryo Bug:" + e.Message + "\n" + e.StackTrace, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //MessageBox.Show("Bath Cryo Bug:" + e.Message + "\n" + e.StackTrace, "Error",
+                    //    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 			Disconnect();

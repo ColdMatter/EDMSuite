@@ -59,17 +59,20 @@ namespace DAQ.TransferCavityLock2012
 
             if (autostart == false)
             {
-                 readAIsTask.Timing.ConfigureSampleClock(
+                readAIsTask.Timing.ConfigureSampleClock(
                     "",
                     sampleRate,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples, numberOfMeasurements);
-
+                
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     trigger,
                     DigitalEdgeStartTriggerEdge.Rising);
             }
             readAIsTask.Control(TaskAction.Verify);
+
+            double convertrate = readAIsTask.Timing.AIConvertRate;
+
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
         }
        

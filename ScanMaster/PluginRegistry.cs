@@ -65,13 +65,14 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
             shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
-            shotGathererPlugins.Add("Fast Analog gatherer", typeof(FastAnalogShotGathererPlugin));
-            shotGathererPlugins.Add("Fast Counting gatherer", typeof(FastCountingShotGathererPlugin));
+            //shotGathererPlugins.Add("Fast Analog gatherer", typeof(FastAnalogShotGathererPlugin)); //Retired
+            //shotGathererPlugins.Add("Fast Counting gatherer", typeof(FastCountingShotGathererPlugin)); //Retired
             shotGathererPlugins.Add("Multi Input gatherer", typeof(MultiInputShotGathererPlugin));
+            shotGathererPlugins.Add("Fast Multi Input gatherer", typeof(FastMultiInputShotGathererPlugin));
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
-            analogInputPlugins.Add("Analog input after scan", typeof(AnalogInputAfterScanPlugin));
+            //analogInputPlugins.Add("Analog input after scan", typeof(AnalogInputAfterScanPlugin)); //Retired
             analogInputPlugins.Add("Fast Analog input", typeof(FastAnalogInputPlugin));
             analogInputPlugins.Add("Analog and Serial input", typeof(AnalogSerialInputPlugin));
 #if DECELERATOR

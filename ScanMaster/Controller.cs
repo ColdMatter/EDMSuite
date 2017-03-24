@@ -245,7 +245,14 @@ namespace ScanMaster
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.Filter = "xml profile set|*.xml";
 			dialog.Title = "Open profile set";
-			dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "ScanMaster";
+            if (Directory.Exists(Environs.FileSystem.Paths["settingsPath"] + "ScanMaster"))
+            { 
+                dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "ScanMaster";
+            }
+            else
+            {
+                dialog.InitialDirectory = Environs.FileSystem.Paths["settingsPath"] + "";
+            }
 			dialog.ShowDialog();
 			if(dialog.FileName != "")
 			{

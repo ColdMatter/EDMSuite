@@ -130,6 +130,9 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCL|AnyCPU'">
+    <OutputPath>bin\TCL\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
@@ -195,6 +198,7 @@
     </Compile>
     <Compile Include="AnalogInputAfterScanPlugin.cs" />
     <Compile Include="AnalogSerialInputPlugin.cs" />
+    <Compile Include="FastMulitInputShotGathererPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
     <Compile Include="CommonRamanPatternBuilder.cs">

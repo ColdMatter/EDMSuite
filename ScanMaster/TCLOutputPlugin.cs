@@ -25,6 +25,7 @@ namespace ScanMaster.Acquire.Plugins
         {
             settings["channel"] = "laser";
             settings["cavity"] = "Hamish";
+            settings["settlingTime"] = 50;
         }
 
 
@@ -60,7 +61,7 @@ namespace ScanMaster.Acquire.Plugins
             set
             {
                 scanParameter = value;
-                if (!Environs.Debug) setV(value, 50);
+                if (!Environs.Debug) setV(value, (int)settings["settlingTime"]);
             }
             get { return scanParameter; }
         }

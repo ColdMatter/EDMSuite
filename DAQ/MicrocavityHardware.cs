@@ -30,9 +30,27 @@ namespace DAQ.HAL
 			// add the boards
 			Boards.Add("daq", "/dev1");
             Boards.Add("pg", "/dev1");
+            Boards.Add("TCLBoard", "/dev2");
 			string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
-                                 			
+            string TCLBoard = (string)Boards["TCLBoard"];
+
+            //TCL Configuration
+            TCLConfig tcl = new TCLConfig("Microcavity McCavity");
+            tcl.AddLaser("tclTiSapphControl", "tclpdTiSapph");
+            tcl.AddLaser("tclECDLControl", "tclpdECDL");
+            tcl.Trigger = TCLBoard + "/PFI0";
+            tcl.Cavity = "cavityRampMonitor";
+            tcl.MasterLaser = "master";
+            tcl.Ramp = "rampfb";
+            tcl.AnalogSampleRate = 100000;
+            tcl.TCPChannel = 1190;
+            tcl.DefaultScanPoints = 4000;
+            tcl.SlaveVoltageUpperLimit = 10;
+            tcl.SlaveVoltageLowerLimit = -10;
+            Info.Add("Microcavitytcl", tcl);
+            Info.Add("DefaultCavity", tcl);
+         			
 			// map the digital channels
             //AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 
@@ -48,20 +66,40 @@ namespace DAQ.HAL
             AddAnalogInputChannel("uCavityVoltage", daqBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("TiSapphMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("QuartzRefCavity", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+
+            AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("tclpdTiSapph", TCLBoard + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cavityRampMonitor", TCLBoard + "/ai7", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("tclpdECDL", TCLBoard + "/ai3", AITerminalConfiguration.Differential);
+
+            //map the analogue output channels
             AddAnalogOutputChannel("TiSappControl", daqBoard + "/ao2");
             AddAnalogOutputChannel("uCavityControl", daqBoard + "/ao3");
             AddAnalogOutputChannel("ECDLControl", daqBoard + "/ao1");
 
+            AddAnalogOutputChannel("tclTiSapphControl", TCLBoard + "/ao0",-10,10);
+            AddAnalogOutputChannel("tclECDLControl", TCLBoard + "/ao1",0,10);
+            AddAnalogOutputChannel("rampfb", TCLBoard + "/ao2");
+
             // map the counter channels
             AddCounterChannel("uCavityReflectionAPD", daqBoard + "/ctr0");
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
+            AddCounterChannel("shot gate", daqBoard + "/ctr3");
 
             // the analog triggers that is channel that wait for a trigger before acquisition
             Info.Add("analogTrigger0", (string)Boards["daq"] + "/PFI1");// pin PFI.1
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI2");// pin PFI.2
 
+            //sample clock reader to syncronise analog and digital channels
+            Info.Add("sample clock reader", daqBoard + "/PFI9");
+
+            // the pause trigger for the counter channel
+            Info.Add("shotTrigger0", daqBoard + "/PFI10");
+
             //pattern board trigger
-            Info.Add("PGTrigger", (string)Boards["daq"] + "/PFI5");
+            Info.Add("PGTrigger", (string)Boards["daq"] + "/PFI4");
+            //AddDigitalInputChannel("PGTrigger", daqBoard, 0, 3);
+            
 
             //counter triggers
             //Info.Add("counterSampleClockTrigger1", (string)Boards["daq"] + "/PFI3");

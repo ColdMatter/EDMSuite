@@ -78,7 +78,10 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionFinished()
 		{
-            pg.StopPatternTaskOnly();
+            if (pg != null)
+            {
+                pg.StopPatternTaskOnly();
+            }
 		}
 
 		public override void ReloadPattern()

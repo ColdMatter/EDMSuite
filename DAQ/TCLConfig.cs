@@ -98,7 +98,6 @@ namespace DAQ.TransferCavityLock2012
             set { analogSampleRate = value; }
         }
 
-
         private string trigger;
         public string Trigger
         {
@@ -127,20 +126,22 @@ namespace DAQ.TransferCavityLock2012
             Lasers.Add(name, photodiode);
         }
 
-       
 
 
-       
-
-        
-
-        
-
-      
-       
-
-        
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+        public int AIConvertRate { get; set; }
     }
 }

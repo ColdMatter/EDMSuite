@@ -519,7 +519,7 @@ namespace ScanMaster.GUI
             if (currentTOFs.Count > 1)
             {
                 double normVal = (((TOF)currentTOFs[1]).Integrate(NormSigGateLow, NormSigGateHigh)) - (((TOF)currentTOFs[1]).Integrate(NormBgGateLow, NormBgGateHigh)) * (NormSigGateHigh - NormSigGateLow) / (NormBgGateHigh - NormBgGateLow);
-                window.PlotAverageNormedOnTOF(((TOF)currentTOFs[0]) / normVal);
+                //window.PlotAverageNormedOnTOF(((TOF)currentTOFs[0]) / normVal);
             }
 			Profile p = Controller.GetController().ProfileManager.CurrentProfile;
 			if (p != null && (bool)p.AcquisitorConfig.switchPlugin.Settings["switchActive"]) 

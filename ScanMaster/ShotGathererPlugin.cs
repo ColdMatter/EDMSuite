@@ -16,7 +16,8 @@ namespace ScanMaster.Acquire.Plugin
 	[XmlInclude(typeof(AnalogShotGathererPlugin)), XmlInclude(typeof(NullShotGathererPlugin)), 
 	XmlInclude(typeof(ModulatedAnalogShotGathererPlugin)), XmlInclude(typeof(BufferedEventCountingShotGathererPlugin)),
     XmlInclude(typeof(ImageGrabbingAnalogShotGathererPlugin)),XmlInclude(typeof(FastAnalogShotGathererPlugin)),
-    XmlInclude(typeof(FastCountingShotGathererPlugin)),XmlInclude(typeof(MultiInputShotGathererPlugin))]
+    XmlInclude(typeof(FastCountingShotGathererPlugin)), XmlInclude(typeof(MultiInputShotGathererPlugin)),
+    XmlInclude(typeof(FastMultiInputShotGathererPlugin))]
 	public abstract class ShotGathererPlugin : AcquisitorPlugin
 	{
 		protected override void InitialiseBaseSettings()
@@ -28,6 +29,7 @@ namespace ScanMaster.Acquire.Plugin
 			settings["channel"] = "pmt";
 			settings["inputRangeLow"] = -1.0;
 			settings["inputRangeHigh"] = 1.0;
+            settings["preArm"] = false;
 		}
 		
 		/// <summary>
@@ -35,6 +37,20 @@ namespace ScanMaster.Acquire.Plugin
 		/// is safe for the acquisitor to read the shot data out.
 		/// </summary>
 		public abstract void ArmAndWait();
+
+        /// <summary>
+        /// This seperately starts the Task for quick acquisitions
+        /// </summary>
+        public virtual void PreArm()
+        {
+        }
+
+        /// <summary>
+        /// This sepereately stops the Task for quick acquisitions
+        /// </summary>
+        public virtual void PostArm()
+        {
+        }
 
 		/// <summary>
 		/// The most recently acquired shot.
