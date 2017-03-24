@@ -115,7 +115,34 @@ namespace DAQ.Analog
                 throw new InsufficientPatternLengthException();
             }
         }
+  
+        public void AddFunction(string channel, int startTime, int endTime, Func<int,double> function)
+        {
+            if (PatternLength > endTime)
+            {
+                double startValue = GetValue(channel, startTime);
+                if (Math.Abs(startValue-function(startTime))>=Math.Pow(2,-12))
+                {
+                    throw new ConflictInPatternException();
+                }
+                for (int i = 0; i<endTime-startTime;i++)
+                {
+                    if (AnalogPatterns[channel].ContainsKey(startTime + i) == false)
+                    {
+                        AddAnalogValue(channel, startTime + i,function(startTime+i));
+                    }
+                    else
+                    {
+                        throw new ConflictInPatternException();
+                    }
+                }
 
+            }
+            else
+            {
+                throw new InsufficientPatternLengthException();
+            }
+        }
         //For a single channel, gets a sequence of events (changes to the output value) and builds a pattern.
         private double[] buildSinglePattern(string channel)
         {

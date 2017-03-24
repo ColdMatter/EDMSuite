@@ -32,6 +32,10 @@ namespace MOTMaster2
             Parameters["3DLoadTime"] = 100 * 100;
             Parameters["BfieldSwitchOffTime"] = (int)Parameters["2DLoadTime"] + (int)Parameters["3DLoadTime"];
             Parameters["BfieldDelayTime"] = 25 * 10;
+            //By default the Intensity is ramped 5ms after the molasses is switched off
+            Parameters["IntensityRampStartTime"] = (int)Parameters["BfieldSwitchOffTime"] + 5 * 100;
+            //Duration of the molasses ramp in milliseconds
+            Parameters["MolassesRampDuration"] = 5.0;
             
             Parameters["ImageTime"] = 1000;
             Parameters["ExposureTime"] = 1 * 100;
