@@ -18,7 +18,6 @@ namespace DAQ.Environment
             Paths.Add("cameraAttributesPath", "C:\\Users\\Public\\Documents\\National Instruments\\NI-IMAQdx\\Data\\cam0.icd");
             Paths.Add("CameraAttributesPath", "C:\\Users\\Public\\Documents\\National Instruments\\NI-IMAQdx\\Data\\cam0_remote.icd");
             Paths.Add("daqDLLPath", "Z:\\Software\\EDMSuite\\MotMaster2\\bin\\Nav\\DAQ.dll");
-          
                 string sYear = DateTime.Today.Year.ToString();
                 string sMonth = DateTime.Today.Month.ToString().PadLeft(2, '0');
                 string sDay = DateTime.Today.Day.ToString().PadLeft(2,'0');
@@ -36,7 +35,8 @@ namespace DAQ.Environment
             }
             Paths.Add("MOTMasterDataPath", (string)Paths["DataPath"]+"\\");
             Paths.Add("MuquansExePath", "Z:\\Software\\ukus_dds_comm_gw");
-            //Paths.Add("scriptSnippetPath", (string)Paths["scriptListPath"] + "\\bin\\Nav\\NavigatorMaster.dll");
+            Paths.Add("scriptSnippetPath", (string)Paths["scriptListPath"] + "\\bin\\Nav\\NavigatorMaster.dll");
+
             Paths.Add("HardwareClassPath", user+"\\Software\\EDMSuite\\DAQ\\NavigatorHardware.cs");
             DataSearchPaths.Add(Paths["navDataPath"]);
             DataSearchPaths.Add(Paths["navServerPath"]);
