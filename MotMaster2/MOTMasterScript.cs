@@ -47,6 +47,7 @@ namespace MOTMaster2
                 }
             }
         }
+ 
         public class ParameterNotInOriginalDictionaryException : ApplicationException { }
     }
 }

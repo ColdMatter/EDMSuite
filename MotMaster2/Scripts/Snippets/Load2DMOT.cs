@@ -29,7 +29,8 @@ namespace MOTMaster2.SnippetLibrary
         }
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
-            int loadtime2D = (int)parameters["2DLoadTime"] * (int)parameters["ScaleFactor"];
+            int clock = (int)parameters["HSClockFrequency"];
+            int loadtime2D = ConvertToSampleTime((double)parameters["2DLoadTime"],clock);
            
             
             //Pulse push beam for the duration of the 2D mot loading time
@@ -44,6 +45,11 @@ namespace MOTMaster2.SnippetLibrary
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
            
+        }
+
+        public int ConvertToSampleTime(double time, int frequency)
+        {
+            return (int)(time * frequency);
         }
     }
 }

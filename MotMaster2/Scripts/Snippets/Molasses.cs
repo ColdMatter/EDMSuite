@@ -33,9 +33,13 @@ namespace MOTMaster2.SnippetLibrary
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             //Switch off the magnetic field and wait some time
-            int switchOffTime = (int)parameters["BfieldSwitchOffTime"] * (int)parameters["ScaleFactor"];
+            int clock = (int)parameters["HSClockFrequency"];
+            int switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
+           
+          
+        
+            int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
 
-            int delaytime = (int)parameters["BfieldDelayTime"] * (int)parameters["ScaleFactor"];
 
             //Ramp the frequency of the Light to -150 MHz
             hs.Pulse((int)switchOffTime, 0, 200, "serialPreTrigger");
@@ -50,6 +54,9 @@ namespace MOTMaster2.SnippetLibrary
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
+            int clock = (int)parameters["AnalogClockFrequency"];
+            int switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
+            int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
 
             p.AddAnalogValue("mot3DCoil", (int)parameters["BfieldSwitchOffTime"], 0.0);
 
@@ -63,6 +70,11 @@ namespace MOTMaster2.SnippetLibrary
             mu.SweepFrequency("Slave0", (double)parameters["Molassesdetuning"], 5.0);
             mu.SweepFrequency("mphi", (double)parameters["Molassesdetuning"], 5.0);
 
+        }
+
+        public int ConvertToSampleTime(double time, int frequency)
+        {
+            return (int)(time * frequency);
         }
     }
 }

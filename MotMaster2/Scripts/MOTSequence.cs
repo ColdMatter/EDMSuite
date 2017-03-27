@@ -14,8 +14,8 @@ namespace MOTMaster2
         public Patterns()
         {
             Parameters = new Dictionary<string, object>();
-            //Digital clock frequency divided by analogue clock frequency
-            Parameters["ScaleFactor"] = 20000000 / 100000;
+            Parameters["HSClockFrequency"] = 20000000;
+            Parameters["AnalogClockFrequency"] = 100000;
             //This is the legnth of the digital pattern which is written to the HSDIO card, clocked at 20MHz
             Parameters["PatternLength"] = 46000000;
             //This is the length of the analogue pattern, clocked at 100 kHz
@@ -26,16 +26,17 @@ namespace MOTMaster2
             Parameters["YBias"] = 1.2;
             Parameters["ZBias"] = 0.9;
 
-            //All times are in milliseconds and then multiplied by the 100 KHz clock frequency
-            Parameters["2DLoadTime"] = 500 * 100;
+            //All times are in milliseconds
+            Parameters["2DLoadTime"] = 200.0;
             
-            Parameters["3DLoadTime"] = 100 * 100;
-            Parameters["BfieldSwitchOffTime"] = (int)Parameters["2DLoadTime"] + (int)Parameters["3DLoadTime"];
-            Parameters["BfieldDelayTime"] = 25 * 10;
+            Parameters["3DLoadTime"] = 100.0;
+            Parameters["BfieldSwitchOffTime"] = (double)Parameters["2DLoadTime"] + (double)Parameters["3DLoadTime"];
+            Parameters["BfieldDelayTime"] = 2.5;
             
-            Parameters["ImageTime"] = 1000;
-            Parameters["ExposureTime"] = 1 * 100;
-            Parameters["BackgroundDwellTime"] = 1000 * 100;
+            //This is the time to image the atoms AFTER the Bfield is switched off
+            Parameters["ImageTime"] = 10.0;
+            Parameters["ExposureTime"] = 0.1;
+            Parameters["BackgroundDwellTime"] = 500.0;
 
             Parameters["MotPower"] = 2.0;
             Parameters["RepumpPower"] = 0.0;

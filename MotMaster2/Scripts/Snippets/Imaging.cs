@@ -32,12 +32,14 @@ namespace MOTMaster2.SnippetLibrary
          }
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
+            
             //The Image time is defined as the length of time we wait after switching off the MOT B field
-            int switchOffTime = (int)parameters["BfieldSwitchOffTime"] * (int)parameters["ScaleFactor"];
-            int imagetime = ((int)parameters["BfieldSwitchOffTime"] + (int)parameters["ImageTime"]) * (int)parameters["ScaleFactor"];
-            int backgroundtime = (int)parameters["BackgroundDwellTime"] * (int)parameters["ScaleFactor"];
-            int exposuretime = (int)parameters["ExposureTime"] * (int)parameters["ScaleFactor"];
-            int delaytime = (int)parameters["BfieldDelayTime"] * (int)parameters["ScaleFactor"];
+            int clock = (int)parameters["HSClockFrequency"];
+            int switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"],clock);
+            int imagetime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"] + (double)parameters["ImageTime"], clock);
+            int backgroundtime = ConvertToSampleTime((double)parameters["BackgroundDwellTime"],clock);
+            int exposuretime = ConvertToSampleTime((double)parameters["ExposureTime"],clock);
+            int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
 
             
             //Switch off light during the expansiontime
@@ -69,6 +71,11 @@ namespace MOTMaster2.SnippetLibrary
             //Shifts the light to resonance with the 2->3 transition - note the extra 1.5MHz comes from a frequency shift with the AOM
            //mu.SetFrequency("slave0",1.5);
             mu.SweepFrequency("slave0", 100, 100);
+        }
+
+        public int ConvertToSampleTime(double time, int frequency)
+        {
+            return (int)(time * frequency);
         }
     }
 }
