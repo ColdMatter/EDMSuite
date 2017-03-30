@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using DAQ.Pattern;
 using DAQ.Analog;
 
-namespace MOTMaster2.MOTSequence
+namespace MOTMaster2.MolassesSequence
 {
     public class Patterns : MOTMasterScript
     {
@@ -33,7 +33,7 @@ namespace MOTMaster2.MOTSequence
             Parameters["2DLoadTime"] = 200.0;
             Parameters["3DLoadTime"] = 100.0;
             Parameters["BfieldSwitchOffTime"] = (double)Parameters["2DLoadTime"] + (double)Parameters["3DLoadTime"];
-            Parameters["BfieldDelayTime"] = 2.0;
+            Parameters["BfieldDelayTime"] = 2.5;
 
             //Duration of the molasses ramp in milliseconds
             Parameters["MolassesFreqDuration"] = 2.0;
@@ -42,7 +42,7 @@ namespace MOTMaster2.MOTSequence
 
            
             //This is the time to image the atoms AFTER the Bfield is switched off
-            Parameters["ImageStartTime"] = (double)Parameters["BfieldSwitchOffTime"] + (double)Parameters["BfieldDelayTime"];
+            Parameters["ImageStartTime"] = (double)Parameters["BfieldSwitchOffTime"] + (double)Parameters["BfieldDelayTime"] + (double)Parameters["MolassesFreqDuration"] + (double)Parameters["IntensityRampTime"];
             Parameters["ImageTime"] = 10.0;
             Parameters["ExposureTime"] = 0.1;
             Parameters["BackgroundDwellTime"] = 500.0;
@@ -57,6 +57,7 @@ namespace MOTMaster2.MOTSequence
             Parameters["YAtten"] = 4.49;
             Parameters["ZPAtten"] = 3.36;
             Parameters["ZMAtten"] = 3.05;
+
 
             Parameters["XFreq"] = 6.828;
             Parameters["YFreq"] = 6.927;
@@ -80,7 +81,7 @@ namespace MOTMaster2.MOTSequence
                 MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
 
                 MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
-               
+                MOTMasterScriptSnippet molasses = new Molasses(hs, Parameters);
                 MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
 
             return hs;
@@ -93,7 +94,7 @@ namespace MOTMaster2.MOTSequence
             MOTMasterScriptSnippet init = new Initialize(p, Parameters);
 
             MOTMasterScriptSnippet mot2d = new Load2DMOT(p, Parameters);
-           
+            MOTMasterScriptSnippet molasses = new Molasses(p, Parameters);
             MOTMasterScriptSnippet image = new Imaging(p, Parameters);
 
             return p;
@@ -107,7 +108,7 @@ namespace MOTMaster2.MOTSequence
             MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
 
             MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
-           
+            MOTMasterScriptSnippet molasses = new Molasses(mu, Parameters);
             MOTMasterScriptSnippet image = new Imaging(mu, Parameters);
 
             return mu;

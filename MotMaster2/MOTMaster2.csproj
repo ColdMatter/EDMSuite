@@ -74,6 +74,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller.cs" />
+    <Compile Include="Scripts\MolassesSequence.cs" />
     <Compile Include="Scripts\Snippets\Imaging.cs" />
     <Compile Include="Scripts\Snippets\Initialize.cs" />
     <Compile Include="Scripts\Snippets\Load2DMOT.cs" />

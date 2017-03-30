@@ -32,7 +32,7 @@ namespace MOTMaster2.SnippetLibrary
         }
         public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
-           // hs.AddEdge("motTTL", 0, true);
+            hs.AddEdge("motTTL", 0, true);
             hs.AddEdge("mphiTTL", 0, true);
             //Note the aom TTLs have an opposite sense
             hs.AddEdge("xaomTTL", 0, false);
@@ -72,13 +72,17 @@ namespace MOTMaster2.SnippetLibrary
             p.AddChannel("zmaomFreq");
             p.AddChannel("2DaomFreq");
             p.AddChannel("pushaomFreq");
+            p.AddChannel("horizPiezo");
 
             //Switch on the light and magnetic fields
             p.AddAnalogValue("motCTRL", 0, (double)parameters["MotPower"]);
             p.AddAnalogValue("mphiCTRL", 0, (double)parameters["RepumpPower"]);
             p.AddAnalogValue("mot3DCoil", 0, (double)parameters["3DBfield"]);
             p.AddAnalogValue("mot2DCoil", 0, (double)parameters["2DBfield"]);
+            p.AddAnalogValue("xbiasCoil2D", 0, (double)parameters["XBias2D"]);
+            p.AddAnalogValue("ybiasCoil2D", 0, (double)parameters["YBias2D"]);
 
+            p.AddAnalogValue("horizPiezo", 0, 9.0);
             //Attenuate the MOT beams to balance the powers
             p.AddAnalogValue("xaomAtten", 0, (double)parameters["XAtten"]);
             p.AddAnalogValue("yaomAtten", 0, (double)parameters["YAtten"]);

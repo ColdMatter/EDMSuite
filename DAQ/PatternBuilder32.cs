@@ -47,8 +47,8 @@ namespace DAQ.Pattern
 			if (timeOrdered) 
 			{
 				// check the time ordering
-				if ( time > latestTimes[channel] ) latestTimes[channel] = time;
-				else throw new TimeOrderException();
+                if (time > latestTimes[channel]) latestTimes[channel] = time;
+                else throw new TimeOrderException();
 			}
 			// add the edge
 			layout.AddEdge(channel, time, sense);

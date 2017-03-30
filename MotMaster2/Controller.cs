@@ -519,7 +519,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.Message+e.InnerException.Message,"Error in loading script DLL");
                 return null;
             }
             return (MOTMasterScript)loadedInstance;
