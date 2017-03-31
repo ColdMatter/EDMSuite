@@ -22,9 +22,9 @@ namespace MOTMaster2.MolassesSequence
             Parameters["AnalogLength"] = 100000;
             Parameters["NumberOfFrames"] = 2;
 
-            Parameters["XBias"] = 0.76;
-            Parameters["YBias"] = -0.28;
-            Parameters["ZBias"] = -0.45;
+            Parameters["XBias"] = 0.8;
+            Parameters["YBias"] = -0.3;
+            Parameters["ZBias"] = -0.47;
 
             Parameters["XBias2D"] = 1.7;
             Parameters["YBias2D"] = -1.55;
@@ -53,10 +53,10 @@ namespace MOTMaster2.MolassesSequence
             Parameters["3DBfield"] = 3.3;
 
             //Frequencies and attenuator voltages for the fibre AOMs
-            Parameters["XAtten"] = 3.5;
-            Parameters["YAtten"] = 4.49;
-            Parameters["ZPAtten"] = 3.36;
-            Parameters["ZMAtten"] = 3.05;
+            Parameters["XAtten"] = 3.85;
+            Parameters["YAtten"] = 5.4;
+            Parameters["ZPAtten"] = 3.58;
+            Parameters["ZMAtten"] = 3.17;
 
 
             Parameters["XFreq"] = 6.828;

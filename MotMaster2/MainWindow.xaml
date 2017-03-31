@@ -4,6 +4,14 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Name="frmMain" x:Class="MOTMaster2.MainWindow"
         Title="MOTMaster2" Height="271.143" Width="760.429" ResizeMode="NoResize">
     <Grid Margin="0,0,-5.286,-0.429">
+        <Menu>
+            <Menu Height="20" Width="749">
+                <MenuItem Header="File" Margin="0">
+                <MenuItem Header="Save Parameters" Click="SaveParameters_Click"></MenuItem>
+                    <MenuItem Header="Load Parameters" Click="LoadParameters_Click"></MenuItem>
+                    </MenuItem>
+            </Menu>
+        </Menu>
         <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,22,0,0" VerticalAlignment="Top" Width="111"/>
         <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,53,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" />
         <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="582,53,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click"/>

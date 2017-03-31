@@ -56,12 +56,12 @@ namespace MOTMaster2.SnippetLibrary
             //Switch off light during the expansiontime
             if ((double)parameters["ImageTime"] != 0.0)
                 hs.DownPulse(switchOffTime, 0, imagetime - switchOffTime , "motTTL");
-            hs.Pulse(imagetime - 40000, 0, 200, "serialPreTrigger");
-            hs.Pulse(imagetime - 40000, 0, 200, "digTest");
+            hs.Pulse(imagetime - 100000, 0, 200, "serialPreTrigger");
+           
            
             //Trigger laser jump
             hs.Pulse(imagetime - 200, 0, 200, "slaveDDSTrig");
-            hs.Pulse(imagetime - 200, 0, 200, "digTest");
+        
            
             //Image the atoms
             hs.Pulse(imagetime, 0, exposuretime, "cameraTTL");
@@ -97,8 +97,8 @@ namespace MOTMaster2.SnippetLibrary
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             //Shifts the light to resonance with the 2->3 transition - note the extra 1.5MHz comes from a frequency shift with the AOM
-           mu.SetFrequency("slave0",1.5);
-           mu.SetFrequency("mphi", 0.0);
+            mu.SetFrequency("slave0",1.5);
+            mu.SetFrequency("mphi", 0.0);
          
         }
 

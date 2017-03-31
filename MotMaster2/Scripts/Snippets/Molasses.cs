@@ -47,7 +47,7 @@ namespace MOTMaster2.SnippetLibrary
 
 
             //Ramp the frequency of the Light to -150 MHz
-            hs.Pulse((int)switchOffTime, 0, 200, "serialPreTrigger");
+            hs.Pulse((int)switchOffTime-40000, 0, 200, "serialPreTrigger");
 
             hs.Pulse((int)switchOffTime , serialWait, 200, "slaveDDSTrig");
             hs.Pulse((int)switchOffTime, serialWait, 200, "aomDDSTrig");
@@ -92,16 +92,17 @@ namespace MOTMaster2.SnippetLibrary
         public double LinearMolassesRamp(int currentTime)
         {
             //TODO Check this is actually linearly ramping down the intensity
-            double startTime = this.molassesIntensityRampStartTime/(int)parameters["AnalogClockFrequency"];
-            double endTime = currentTime / (int)parameters["AnalogClockFrequency"];
+            double startTime = this.molassesIntensityRampStartTime*1e3/(int)parameters["AnalogClockFrequency"];
+            double endTime = currentTime*1e3 / (int)parameters["AnalogClockFrequency"];
             double a = 0.461751;
             double b = 0.405836;
             double c = 0.346444;
             double d = 0.742407- 0.02148; //slight correction to the inital control voltage
-            double e = 4.47747;
+            //double e = 4.47747;
+            double e = 5.5;
             //Rescales the time so that the intensity ramps over the total ramp time.
-            double time_scale = (e*(endTime-startTime) /(2* (double)parameters["IntensityRampTime"]));
-
+            double time_scale = (e*(endTime-startTime) /((double)parameters["IntensityRampTime"]));
+          
             return (a / Math.Tan(b * time_scale + c) + d);
         }
     }

@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 using DAQ.Environment;
 
 namespace MOTMaster2
@@ -263,6 +265,61 @@ namespace MOTMaster2
                 cbParamsManual.SelectedIndex = 0;
             }
             paramCheck = false;
+        }
+
+        private void LoadParameters_Click(object sender, RoutedEventArgs e)
+        {
+            if (controller.script != null)
+            { // Configure open file dialog box
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.FileName = ""; // Default file name
+                dlg.DefaultExt = ".csv"; // Default file extension
+                dlg.Filter = "Parameters (.csv)|*.csv,*.txt"; // Filter files by extension
+
+                // Show open file dialog box
+                Nullable<bool> result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    string filename = dlg.FileName;
+                    string[] text = File.ReadAllLines(filename);
+                    
+                    Dictionary<String,Object> LoadedParameters = new Dictionary<string,object>();
+                    string json = File.ReadAllText(filename);
+                    LoadedParameters = (Dictionary<String,Object>)JsonConvert.DeserializeObject(json,typeof(Dictionary<String,Object>));
+                    if (controller.script != null)
+                        controller.script.Parameters = LoadedParameters;
+                    else
+                        MessageBox.Show("You have tried to load parameters without loading a script");
+                }
+            }
+        }
+
+
+        private void SaveParameters_Click(object sender, RoutedEventArgs e)
+        {
+            if (controller.script != null)
+            { // Configure open file dialog box
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = ""; // Default file name
+                dlg.DefaultExt = ".csv"; // Default file extension
+                dlg.Filter = "Parameters (.csv)|*.csv,*.txt"; // Filter files by extension
+
+                // Show open file dialog box
+                Nullable<bool> result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    string filename = dlg.FileName;
+                    string json = JsonConvert.SerializeObject(controller.script.Parameters,Formatting.Indented);
+                    File.WriteAllText(filename, json);
+                }
+            }
+            else
+                MessageBox.Show("You have tried to save parmaters before loading a script");
+
         }
 
     }

@@ -150,7 +150,7 @@ namespace MOTMaster2
                 int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
                 hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
             }
-
+            Console.WriteLine("starting");
         }
         private void initializeHardware(MOTMasterSequence sequence)
         {
