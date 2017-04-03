@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 
 namespace MotMaster2
 {
@@ -22,6 +23,7 @@ namespace MotMaster2
         public Options()
         {
             InitializeComponent();
+          
         }
     }
 }
