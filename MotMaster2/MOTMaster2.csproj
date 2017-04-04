@@ -7,8 +7,8 @@
     <ProjectGuid>{699D21D2-55DB-4A38-B091-BCC1883065AA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MotMaster2</RootNamespace>
-    <AssemblyName>MotMaster2</AssemblyName>
+    <RootNamespace>MOTMaster2</RootNamespace>
+    <AssemblyName>MOTMaster2</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -153,6 +153,29 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\DAQ.Environment.CarmeliteFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.ChromeFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.ClamFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.CrashFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.Environs.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.FileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.GanymedeFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.NavigatorFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.OysterFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.PHCDSLapFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.PHJKiteFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.PhkaraFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.PHRHENDRIC02FileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.PHRHENDRIC0FileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.SchnapsFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.SealClubberFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.SunshineFileSystem.datasource" />
+    <None Include="Properties\DataSources\DAQ.Environment.YBFFileSystem.datasource" />
+    <None Include="Properties\DataSources\MOTMaster2.App.datasource" />
+    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Imaging.datasource" />
+    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Initialize.datasource" />
+    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Load2DMOT.datasource" />
+    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Molasses.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -171,6 +194,9 @@
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

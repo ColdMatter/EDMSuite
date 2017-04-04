@@ -7,9 +7,18 @@
         <Menu>
             <Menu Height="20" Width="749">
                 <MenuItem Header="File" Margin="0">
-                <MenuItem Header="Save Parameters" Click="SaveParameters_Click"></MenuItem>
-                    <MenuItem Header="Load Parameters" Click="LoadParameters_Click"></MenuItem>
-                    </MenuItem>
+                    <MenuItem Header="Open Parameters..." Click="LoadParameters_Click"/>
+                    <MenuItem Header="Save Parameters As..." Click="SaveParameters_Click"/>
+                    <MenuItem Header="Open Environment" Click="LoadEnvironment_Click"/>
+                    <MenuItem Header="Save Environment" Click="SaveEnvironment_Click"/>
+                    
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Options" Click="EditOptions_Click"/>
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header=" About..." Click="About_Click"/>
+                </MenuItem>
             </Menu>
         </Menu>
         <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,22,0,0" VerticalAlignment="Top" Width="111"/>

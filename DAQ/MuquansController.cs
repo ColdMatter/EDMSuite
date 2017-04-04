@@ -11,10 +11,12 @@ using DAQ.Environment;
 
 namespace DAQ.HAL
 {
+    [Serializable]
     public class MuquansRS232 : RS232Instrument
     {
         string id;
- 
+
+
         public MuquansRS232(string visaAddress, string id) : base(visaAddress)
         { 
             this.id = id;
@@ -76,8 +78,8 @@ namespace DAQ.HAL
             /// </summary>
 
             ProcessStartInfo info = new ProcessStartInfo();
-            info.Arguments = path+"\\ukus_dds_" + id + "_conf.txt comm " + port;
-            info.FileName = path+"\\serial_to_dds_gw.exe";
+            info.Arguments = path+"ukus_dds_" + id + "_conf.txt comm " + port;
+            info.FileName = path+"serial_to_dds_gw.exe";
             info.WindowStyle = ProcessWindowStyle.Hidden;
             info.UseShellExecute = false;
             info.RedirectStandardError = true;

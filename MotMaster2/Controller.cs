@@ -32,6 +32,7 @@ using NationalInstruments.DAQmx;
 using NationalInstruments.UI;
 //using NationalInstruments.UI.WindowsForms;
 using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 using MOTMaster2.SnippetLibrary;
 
@@ -50,21 +51,19 @@ namespace MOTMaster2
         #region Class members
 
         private static string
-            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "\\MotMaster2.exe";
+            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "MOTMaster2.exe";
         private static string
             daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
         private static string
             scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
         private static string
-            motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+            motMasterDataPath = (string)Environs.FileSystem.Paths["DataPath"];
         private static string
             saveToDirectory = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string
             cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        private static string
-            snippetPath = (string)Environs.FileSystem.Paths["scriptSnippetPath"];
 
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
 
@@ -109,6 +108,10 @@ namespace MOTMaster2
 
         public void StartApplication()
         {
+            if (Environs.Debug && config == null)
+            {
+                LoadEnvironment();
+            }
                 if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
                 else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
                 apg = new DAQMxAnalogPatternGenerator();
@@ -703,6 +706,35 @@ namespace MOTMaster2
         public string getSaveDirectory()
         {
             return saveToDirectory;
+        }
+
+        #endregion
+
+        #region Environment Loading
+        public void LoadEnvironment()
+        {
+
+            string fileJson = File.ReadAllText("filesystem.json");
+            string hardwareJson = File.ReadAllText("hardware.json");
+            string configJson = File.ReadAllText("config.json");
+
+            LoadEnvironment(fileJson, hardwareJson, configJson);
+        }
+
+        public void LoadEnvironment(string fileJson, string hardwareJson,string configJson)
+        {
+            DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
+            DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
+            config = JsonConvert.DeserializeObject<MMConfig>(configJson);
+        }
+        public void SaveEnvironment()
+        {
+            string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem,Formatting.Indented);
+            string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware,Formatting.Indented);
+            string configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText("filesystem.json", fileJson);
+            File.WriteAllText("hardware.json", hardwareJson);
+            File.WriteAllText("config.json", configJson);
         }
 
         #endregion

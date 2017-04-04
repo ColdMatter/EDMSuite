@@ -321,6 +321,22 @@ namespace MOTMaster2
                 MessageBox.Show("You have tried to save parmaters before loading a script");
 
         }
-
+        private void SaveEnvironment_Click(object sender, RoutedEventArgs e)
+        {
+            controller.SaveEnvironment();
+        }
+        private void LoadEnvironment_Click(object sender, RoutedEventArgs e)
+        {
+            controller.LoadEnvironment();
+        }
+        private void EditOptions_Click(object sender, RoutedEventArgs e)
+        {
+            Options optionsWindow = new Options();
+            optionsWindow.Show();
+        }
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Latest MOTMaster Version");
+        }
     }
 }
