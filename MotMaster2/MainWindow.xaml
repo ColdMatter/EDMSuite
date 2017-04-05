@@ -44,8 +44,7 @@
                         <ColumnDefinition Width="43*"/>
                         <ColumnDefinition Width="681*"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="19,25,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2" SelectedIndex="0">
-                        <System:String>dummy</System:String>
+                    <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="19,25,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="cbParamsScan_SelectionChanged">
                     </ComboBox>
                     <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
                     <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="316.714,25,0,0" VerticalAlignment="Top" Width="42" Grid.Column="1"/>
@@ -64,9 +63,9 @@
                         <ColumnDefinition Width="111*"/>
                         <ColumnDefinition Width="613*"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="cbParamsManual" HorizontalAlignment="Left" Height="27" Margin="79,24,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2"/>
+                    <ComboBox x:Name="cbParamsManual" HorizontalAlignment="Left" Height="27" Margin="79,24,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2" SelectionChanged="cbParamsManual_SelectionChanged"/>
                     <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,25,0,0" VerticalAlignment="Top" Width="64"/>
-                    <Button Content="Update" HorizontalAlignment="Left" Margin="418.143,22,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Grid.Column="1"/>
+                    <Button Content="Update" HorizontalAlignment="Left" Margin="418.143,22,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Grid.Column="1" Click="UpdateButton_Click"/>
                     <Label Content="Value:" HorizontalAlignment="Left" Height="26" Margin="260.286,25,0,0" VerticalAlignment="Top" Width="43" Grid.Column="1"/>
                     <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="308.286,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" Text="0" FontWeight="Bold" Grid.Column="1"/>
                 </Grid>

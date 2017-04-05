@@ -153,7 +153,7 @@ namespace MOTMaster2
                 int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
                 hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
             }
-            Console.WriteLine("starting");
+
         }
         private void initializeHardware(MOTMasterSequence sequence)
         {
@@ -271,7 +271,13 @@ namespace MOTMaster2
             dictionaryPath = path;
         }
 
-
+        public bool IsRunning()
+        {
+            if (status == RunningState.running)
+                return true;
+            else
+                return false;
+        }
         public void RunStart()
         {
             runThread = new Thread(new ThreadStart(this.Run));
@@ -279,11 +285,13 @@ namespace MOTMaster2
             runThread.Priority = ThreadPriority.Normal;
             status = RunningState.running;
             runThread.Start();
+            
         }
 
 
         public void Run()
         {
+            status = RunningState.running;
             if (replicaRun)
             {
                 Run(ioHelper.LoadDictionary(dictionaryPath));

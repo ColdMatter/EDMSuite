@@ -120,6 +120,7 @@ namespace DAQ.HAL
             {
                 done = hsTask.WaitUntilDone(10000);
             }
+
             hsTask.Dispose();
 
 
