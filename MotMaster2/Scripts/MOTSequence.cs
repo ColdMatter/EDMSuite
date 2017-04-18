@@ -79,9 +79,9 @@ namespace MOTMaster2.MotSequence
 
                 SequenceStep init = new Initialize(hs, Parameters);
 
-                SequenceStep mot2d = new Load2DMOT(hs, Parameters);
+                SequenceStep mot2d = new Load2DMOT(hs, Parameters,init.SequenceEndTime);
                
-                SequenceStep image = new Imaging(hs, Parameters,mot2d.DigitalEndTime);
+                SequenceStep image = new Imaging(hs, Parameters,mot2d.SequenceEndTime);
 
             return hs;
         }
@@ -92,9 +92,9 @@ namespace MOTMaster2.MotSequence
 
             SequenceStep init = new Initialize(p, Parameters);
 
-            SequenceStep mot2d = new Load2DMOT(p, Parameters);
+            SequenceStep mot2d = new Load2DMOT(p, Parameters,init.SequenceEndTime);
            
-            SequenceStep image = new Imaging(p, Parameters,mot2d.AnalogEndTime);
+            SequenceStep image = new Imaging(p, Parameters,mot2d.SequenceEndTime);
 
             return p;
 

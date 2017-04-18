@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using System.Linq;
 using DAQ.HAL;
 using DAQ.Environment;
 
@@ -92,6 +93,16 @@ namespace DAQ.Analog
                 }
             }
             return val;
+        }
+        public int GetLastEventTime()
+        {
+            List<int> latestTimesPerChannel = new List<int>();
+            foreach (Dictionary<int,double> entry in AnalogPatterns.Values)
+            {
+                if (entry.Keys.Count >0)
+                    latestTimesPerChannel.Add(entry.Keys.Max());
+            }
+            return latestTimesPerChannel.Max();
         }
         public void AddLinearRamp(string channel, int startTime, int steps, double finalValue)
         {

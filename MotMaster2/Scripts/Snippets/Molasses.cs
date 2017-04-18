@@ -15,34 +15,16 @@ namespace MOTMaster2.SnippetLibrary
         Dictionary<String, Object> parameters;
 
         int molassesIntensityRampStartTime;
-        public Molasses()
-        {
-            Console.WriteLine("No parameter");
-        }
-        public Molasses(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters,int startTime)
-        {
-            this.parameters = parameters;
-            this.DigitalStartTime = startTime;
-            AddDigitalSnippet(hs, parameters);
-        }
 
-        public Molasses(AnalogPatternBuilder p, Dictionary<String, Object> parameters, int startTime)
-        {
-            this.parameters = parameters;
-            this.AnalogStartTime = startTime;
-            AddAnalogSnippet(p, parameters);
-        }
+        public Molasses(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime):base(hs,parameters,startTime){}
+        public Molasses(AnalogPatternBuilder p, Dictionary<String, Object> parameters, double startTime) : base(p, parameters, startTime) { }
+        public Molasses(MuquansBuilder mu, Dictionary<String, Object> parameters) : base(mu, parameters) { }
 
-        public Molasses(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            this.parameters = parameters;
-            AddMuquansCommands(mu, parameters);
-        }
         public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             //Switch off the magnetic field and wait some time
             int clock = (int)parameters["HSClockFrequency"];
-            int switchOffTime = this.DigitalStartTime;
+            int switchOffTime = ConvertToSampleTime(this.SequenceStartTime,clock);
             int serialWait = ConvertToSampleTime(2.0,clock);
           
         
@@ -54,7 +36,8 @@ namespace MOTMaster2.SnippetLibrary
 
             hs.Pulse((int)switchOffTime , serialWait, 200, "slaveDDSTrig");
             hs.Pulse((int)switchOffTime, serialWait, 200, "aomDDSTrig");
-          //  hs.Pulse(imagetime - 10 * (int)parameters["ScaleFactor"], 0, 200, "serialPreTrigger");
+
+            SetSequenceEndTime(hs.Layout.LastEventTime, clock);
 
 
            
@@ -64,7 +47,7 @@ namespace MOTMaster2.SnippetLibrary
         {
             this.parameters = parameters;
             int clock = (int)parameters["AnalogClockFrequency"];
-            int switchOffTime = this.AnalogStartTime;
+            int switchOffTime = ConvertToSampleTime(this.SequenceStartTime, clock);
 
             int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
             int intensityRampDuration = ConvertToSampleTime((double)parameters["IntensityRampTime"], clock);
@@ -77,7 +60,7 @@ namespace MOTMaster2.SnippetLibrary
             p.AddAnalogValue("mphiCTRL", switchOffTime, 0.15);
             //TODO Make the time depend on a parameter
             p.AddFunction("motCTRL",molassesIntensityRampStartTime,molassesIntensityRampStartTime+intensityRampDuration, LinearMolassesRamp);
-
+            SetSequenceEndTime(p.GetLastEventTime(), clock); 
             
         }
 
@@ -89,10 +72,7 @@ namespace MOTMaster2.SnippetLibrary
 
         }
 
-        public int ConvertToSampleTime(double time, int frequency)
-        {
-            return (int)(time * frequency/1000);
-        }
+    
         //Helper function to give a linear intensity ramp using a control voltage to an AOM. Returns control voltage as a function of time
         public double LinearMolassesRamp(int currentTime)
         {

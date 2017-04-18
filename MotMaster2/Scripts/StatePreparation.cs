@@ -11,9 +11,12 @@ namespace MOTMaster2.Preparation
 {
     public class Patterns : MOTMasterScript
     {
+        private Dictionary<string, double> SequenceEndTimes;
         public Patterns()
         {
-             Parameters["HSClockFrequency"] = 20000000;
+            SequenceEndTimes = new Dictionary<string, double>();
+            Parameters = new Dictionary<string, object>();
+            Parameters["HSClockFrequency"] = 20000000;
             Parameters["AnalogClockFrequency"] = 100000;
             //This is the legnth of the digital pattern which is written to the HSDIO card, clocked at 20MHz
             Parameters["PatternLength"] = 46000000;
@@ -69,7 +72,7 @@ namespace MOTMaster2.Preparation
             Parameters["2DMotAtten"] = 5.7;
 
             Parameters["MOTdetuning"] = -13.5;
-            Parameters["Molassesdetuning"] = -163.5;  Parameters = new Dictionary<string, object>();
+            Parameters["Molassesdetuning"] = -163.5;  
           
         }
 
@@ -80,13 +83,20 @@ namespace MOTMaster2.Preparation
 
             SequenceStep init = new Initialize(hs, Parameters);
 
-            SequenceStep mot2d = new Load2DMOT(hs, Parameters);
+            SequenceStep mot2d = new Load2DMOT(hs, Parameters,init.SequenceEndTime);
 
-            SequenceStep molasses = new Molasses(hs,Parameters,mot2d.DigitalEndTime);
+            SequenceStep molasses = new Molasses(hs,Parameters,mot2d.SequenceEndTime);
 
-            SequenceStep prep = new StatePreparation(hs,Parameters,molasses.DigitalEndTime);
+            SequenceStep prep = new StatePreparation(hs,Parameters,molasses.SequenceEndTime);
 
-            SequenceStep detect = new Detection(hs, Parameters,prep.DigitalEndTime);
+            SequenceStep detect = new Detection(hs, Parameters,prep.SequenceEndTime);
+
+            //GetHSDIOPattern always gets called first, so the sequence end times can be stored here.
+            SequenceEndTimes["init"] = init.SequenceEndTime;
+            SequenceEndTimes["mot2D"] = mot2d.SequenceEndTime;
+            SequenceEndTimes["molasses"] = molasses.SequenceEndTime;
+            SequenceEndTimes["prep"] = prep.SequenceEndTime;
+            SequenceEndTimes["detect"] = detect.SequenceEndTime;
 
             return hs;
         }
@@ -97,13 +107,13 @@ namespace MOTMaster2.Preparation
 
             SequenceStep init = new Initialize(p, Parameters);
 
-            SequenceStep mot2d = new Load2DMOT(p, Parameters);
+            SequenceStep mot2d = new Load2DMOT(p, Parameters,SequenceEndTimes["init"]);
 
-            SequenceStep molasses = new Molasses(p,Parameters,mot2d.AnalogEndTime);
+            SequenceStep molasses = new Molasses(p,Parameters,SequenceEndTimes["mot2D"]);
 
-            SequenceStep prep = new StatePreparation(p,Parameters,molasses.AnalogEndTime);
+            SequenceStep prep = new StatePreparation(p,Parameters,SequenceEndTimes["molasses"]);
 
-            SequenceStep detect = new Detection(p, Parameters,prep.AnalogEndTime);
+            SequenceStep detect = new Detection(p, Parameters,SequenceEndTimes["prep"]);
 
             return p;
 
@@ -113,15 +123,15 @@ namespace MOTMaster2.Preparation
         {
             MuquansBuilder mu = new MuquansBuilder();
 
-            MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
+            SequenceStep init = new Initialize(mu, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
+            SequenceStep mot2d = new Load2DMOT(mu, Parameters);
 
-            MOTMasterScriptSnippet molasses = new Imaging(mu, Parameters);
+            SequenceStep molasses = new Imaging(mu, Parameters);
 
-            MOTMasterScriptSnippet prep = new StatePreparation(mu,Parameters);
+            SequenceStep prep = new StatePreparation(mu,Parameters);
 
-            MOTMasterScriptSnippet detect = new Detection(mu, Parameters);
+            SequenceStep detect = new Detection(mu, Parameters);
 
             return mu;
 

@@ -11,8 +11,11 @@ namespace MOTMaster2.MolassesSequence
 {
     public class Patterns : MOTMasterScript
     {
+        private Dictionary<string, double> SequenceEndTimes;
         public Patterns()
         {
+            SequenceEndTimes = new Dictionary<string, double>();
+            Parameters = new Dictionary<string, object>();
             Parameters["HSClockFrequency"] = 20000000;
             Parameters["AnalogClockFrequency"] = 100000;
             //This is the legnth of the digital pattern which is written to the HSDIO card, clocked at 20MHz
@@ -69,7 +72,7 @@ namespace MOTMaster2.MolassesSequence
             Parameters["2DMotAtten"] = 5.7;
 
             Parameters["MOTdetuning"] = -13.5;
-            Parameters["Molassesdetuning"] = -163.5;  Parameters = new Dictionary<string, object>();
+            Parameters["Molassesdetuning"] = -163.5;  
           
         }
 
@@ -80,9 +83,13 @@ namespace MOTMaster2.MolassesSequence
 
             SequenceStep init = new Initialize(hs, Parameters);
 
-            SequenceStep mot2d = new Load2DMOT(hs, Parameters);
-            SequenceStep molasses = new Molasses(hs, Parameters,mot2d.DigitalEndTime);
-            SequenceStep image = new Imaging(hs, Parameters,molasses.DigitalEndTime);
+            SequenceStep mot2d = new Load2DMOT(hs, Parameters,init.SequenceEndTime);
+            SequenceStep molasses = new Molasses(hs, Parameters,mot2d.SequenceEndTime);
+            SequenceStep image = new Imaging(hs, Parameters,molasses.SequenceEndTime);
+            SequenceEndTimes["init"] = init.SequenceEndTime;
+            SequenceEndTimes["mot2D"] = mot2d.SequenceEndTime;
+            SequenceEndTimes["molasses"] = molasses.SequenceEndTime;
+
 
             return hs;
         }
@@ -93,9 +100,9 @@ namespace MOTMaster2.MolassesSequence
 
             SequenceStep init = new Initialize(p, Parameters);
 
-            SequenceStep mot2d = new Load2DMOT(p, Parameters);
-            SequenceStep molasses = new Molasses(p, Parameters,mot2d.AnalogEndTime);
-            SequenceStep image = new Imaging(p, Parameters,molasses.AnalogEndTime);
+            SequenceStep mot2d = new Load2DMOT(p, Parameters,SequenceEndTimes["init"]);
+            SequenceStep molasses = new Molasses(p, Parameters,SequenceEndTimes["mot2D"]);
+            SequenceStep image = new Imaging(p, Parameters,SequenceEndTimes["molasses"]);
 
             return p;
 

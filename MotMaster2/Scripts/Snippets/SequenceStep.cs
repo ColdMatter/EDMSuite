@@ -13,33 +13,19 @@ namespace MOTMaster2.SnippetLibrary
     /// </summary>
     public class SequenceStep : MOTMasterScriptSnippet
     {
-        private int analogEndTime;
-        public int AnalogEndTime
+        private double sequenceStartTime;
+        public double SequenceStartTime
         {
-            get { return analogEndTime; }
-            set { analogEndTime = value; }
+            get { return sequenceStartTime; }
+            set { sequenceStartTime = value; }
         }
 
-        private int analogStartTime;
-        public int AnalogStartTime
+        private double sequenceEndTime;
+        public double SequenceEndTime
         {
-            get { return analogStartTime; }
-            set { analogStartTime = value; }
+            get { return sequenceEndTime; }
+            set { sequenceEndTime = value; }
         }
-        private int digitalStartTime;
-        
-        private int digitalEndTime;
-        public int DigitalStartTime
-        {
-            get { return digitalStartTime; }
-            set { digitalStartTime = value; }
-        }
-        public int DigitalEndTime
-        {
-            get { return digitalEndTime; }
-            set { digitalEndTime = value; }
-        }
-
         public virtual void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
             throw new NotImplementedException();
@@ -49,10 +35,48 @@ namespace MOTMaster2.SnippetLibrary
         {
             throw new NotImplementedException();
         }
+        public virtual void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        {
+ 
+        }
+
+        public SequenceStep(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime)
+        {
+            this.SequenceStartTime = startTime;
+            AddDigitalSnippet(hs, parameters);
+        }
+
+        public SequenceStep(AnalogPatternBuilder p, Dictionary<String, Object> parameters, double startTime)
+        {
+            this.SequenceStartTime = startTime;
+            AddAnalogSnippet(p, parameters);
+        }
+
+        public SequenceStep(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        {
+            AddMuquansCommands(mu, parameters);
+        }
+
+        public SequenceStep()
+        {
+            throw new Exception("No Parameters or Pattern Builder Passed to Sequence Constructor");
+        }
 
         public int ConvertToSampleTime(double time, int frequency)
         {
             return (int)(time * frequency / 1000);
+        }
+        public double ConvertToRealTime(int sampleTime, int frequency)
+        {
+            return sampleTime * 1000.0/frequency;
+        }
+
+        public void SetSequenceEndTime(int sampleTime, int frequency)
+        {
+            double endTime = ConvertToRealTime(sampleTime, frequency);
+
+            if (endTime > this.SequenceEndTime)
+                this.SequenceEndTime = endTime;
         }
     }
 }

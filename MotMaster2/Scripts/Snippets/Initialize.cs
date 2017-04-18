@@ -12,24 +12,16 @@ namespace MOTMaster2.SnippetLibrary
 {
     public class Initialize : SequenceStep
     {
-        public Initialize()
+
+        public Initialize(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters):base(hs,parameters,-1)
         {
-            Console.WriteLine("No Parameter");
-        }
-        public Initialize(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters)
-        {
-            AddDigitalSnippet(hs, parameters);
         }
 
-        public Initialize(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public Initialize(AnalogPatternBuilder p, Dictionary<String, Object> parameters):base(p,parameters,-1)
         {
-            AddAnalogSnippet(p, parameters);
         }
+        public Initialize(MuquansBuilder mu, Dictionary<String, Object> parameters) : base(mu, parameters) { }
 
-        public Initialize(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            AddMuquansCommands(mu, parameters);
-        }
         public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             hs.AddEdge("motTTL", 0, true);
@@ -45,6 +37,7 @@ namespace MOTMaster2.SnippetLibrary
             //These pulses trigger the start of the DDS
             hs.Pulse(4, 0, 500, "aomDDSTrig");
             hs.Pulse(4, 0, 500, "slaveDDSTrig");
+            this.SequenceEndTime = (double)hs.Layout.LastEventTime/(int)parameters["HSClockFrequency"];
 
         }
 

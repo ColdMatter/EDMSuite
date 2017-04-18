@@ -16,29 +16,19 @@ namespace MOTMaster2.SnippetLibrary
         {
             Console.WriteLine("No parameter");
         }
-         public Imaging(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters,int startTime)
-         {
-             this.DigitalStartTime = startTime;
-             AddDigitalSnippet(hs,parameters);
-         }
+        public Imaging(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters, double startTime) : base(hs, parameters, startTime) { }
 
-         public Imaging(AnalogPatternBuilder p, Dictionary<String,Object> parameters,int startTime)
-         {
-             this.AnalogStartTime = startTime;
-             AddAnalogSnippet(p,parameters);
-         }
+         public Imaging(AnalogPatternBuilder p, Dictionary<String,Object> parameters,double startTime): base(p,parameters,startTime){}
 
-         public Imaging(MuquansBuilder mu, Dictionary<String, Object> parameters)
-         {
-             AddMuquansCommands(mu,parameters);
-         }
+         public Imaging(MuquansBuilder mu, Dictionary<String, Object> parameters):base(mu,parameters){}
+
          public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             
             //The Image time is defined as the length of time we wait after switching off the MOT B field
           
             int clock = (int)parameters["HSClockFrequency"];
-            int switchOffTime = this.DigitalStartTime;
+            int switchOffTime = ConvertToSampleTime(this.SequenceStartTime, clock);
             int imagetime = ConvertToSampleTime((double)parameters["ImageTime"], clock)+switchOffTime;
             
 
@@ -70,7 +60,7 @@ namespace MOTMaster2.SnippetLibrary
         {
             int clock = (int)parameters["AnalogClockFrequency"];
 
-            int switchOffTime = this.AnalogStartTime;
+            int switchOffTime = ConvertToSampleTime(this.SequenceStartTime, clock);
             int backgroundtime = ConvertToSampleTime((double)parameters["BackgroundDwellTime"], clock);
             int exposuretime = ConvertToSampleTime((double)parameters["ExposureTime"], clock);
             int imagetime = ConvertToSampleTime((double)parameters["ImageTime"], clock)+switchOffTime;

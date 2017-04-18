@@ -12,35 +12,23 @@ namespace MOTMaster2.SnippetLibrary
 {
     public class StatePreparation : SequenceStep
     {
- 
-        public StatePreparation()
-        {
-            Console.WriteLine("No Parameter");
-        }
-        public StatePreparation(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters,int startTime)
-        {
-            this.DigitalStartTime = startTime;
-            AddDigitalSnippet(hs, parameters);
-        }
-
-        public StatePreparation(AnalogPatternBuilder p, Dictionary<String, Object> parameters,int startTime)
-        {
-            this.AnalogStartTime = startTime;
-            AddAnalogSnippet(p, parameters);
-        }
-
-        public StatePreparation(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            AddMuquansCommands(mu, parameters);
-        }
+        public StatePreparation(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime):base(hs,parameters,startTime){}
+        public StatePreparation(AnalogPatternBuilder p, Dictionary<String, Object> parameters, double startTime) : base(p, parameters, startTime) { }
+        public StatePreparation(MuquansBuilder mu, Dictionary<String, Object> parameters) : base(mu, parameters) { }
         public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
+            //Switch off the magnetic field and wait some time
+            int clock = (int)parameters["HSClockFrequency"];
+            
 
+            SetSequenceEndTime(hs.Layout.LastEventTime, clock);
         }
 
         public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
-           
+            int clock = (int)parameters["AnalogClockFrequency"];
+            
+            SetSequenceEndTime(p.GetLastEventTime(), clock); 
         }
 
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)

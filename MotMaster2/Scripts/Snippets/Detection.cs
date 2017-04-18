@@ -13,26 +13,9 @@ namespace MOTMaster2.SnippetLibrary
     public class Detection : SequenceStep
     {
 
-        public Detection()
-        {
-            Console.WriteLine("No Parameter");
-        }
-        public Detection(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters,int startTime)
-        {
-            this.DigitalStartTime = startTime;
-            AddDigitalSnippet(hs, parameters);
-        }
-
-        public Detection(AnalogPatternBuilder p, Dictionary<String, Object> parameters,int startTime)
-        {
-            this.AnalogStartTime = startTime;
-            AddAnalogSnippet(p, parameters);
-        }
-
-        public Detection(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            AddMuquansCommands(mu, parameters);
-        }
+        public Detection(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime):base(hs,parameters,startTime){}
+        public Detection(AnalogPatternBuilder p, Dictionary<String, Object> parameters, double startTime) : base(p, parameters, startTime) { }
+        public Detection(MuquansBuilder mu, Dictionary<String, Object> parameters) : base(mu, parameters) { }
         public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
 
