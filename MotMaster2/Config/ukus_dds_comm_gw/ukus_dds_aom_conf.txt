@@ -1,0 +1,19 @@
+
+
+  server = 192.168.1.126:3000
+
+  dds[0].name = ddsq
+  dds[0].type = ad9959
+  dds[0].spi_cs = 0
+  dds[0].spi_fclk = 5000000
+  dds[0].gpio_reset = 24
+  dds[0].reset_duration_usec = 10
+  dds[0].int_upd_gpio = 25
+  dds[0].int_upd_duration_usec = 5
+  dds[0].core_fclk = 400e6
+  dds[0].ramp_stepduration = 1e-6
+  dds[0].ch[0].name = mphi
+  dds[0].ch[1].name = antenna
+  dds[0].ch[2].name = aom_mot
+  dds[0].ch[3].name = aom_raman
+
