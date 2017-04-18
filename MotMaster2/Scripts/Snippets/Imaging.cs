@@ -10,19 +10,21 @@ using MOTMaster2.SnippetLibrary;
 
 namespace MOTMaster2.SnippetLibrary
 {
-    public class Imaging : MOTMasterScriptSnippet
+    public class Imaging : SequenceStep
     {
         public Imaging()
         {
             Console.WriteLine("No parameter");
         }
-         public Imaging(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters)
+         public Imaging(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters,int startTime)
          {
+             this.DigitalStartTime = startTime;
              AddDigitalSnippet(hs,parameters);
          }
 
-         public Imaging(AnalogPatternBuilder p, Dictionary<String,Object> parameters)
+         public Imaging(AnalogPatternBuilder p, Dictionary<String,Object> parameters,int startTime)
          {
+             this.AnalogStartTime = startTime;
              AddAnalogSnippet(p,parameters);
          }
 
@@ -30,23 +32,15 @@ namespace MOTMaster2.SnippetLibrary
          {
              AddMuquansCommands(mu,parameters);
          }
-        public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
+         public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             
             //The Image time is defined as the length of time we wait after switching off the MOT B field
+          
             int clock = (int)parameters["HSClockFrequency"];
-            int imagetime = 0;
-            int switchOffTime = 0;
-            if (parameters.ContainsKey("ImageStartTime"))
-            {
-                imagetime = ConvertToSampleTime((double)parameters["ImageStartTime"] + (double)parameters["ImageTime"], clock);
-                switchOffTime = ConvertToSampleTime((double)parameters["ImageStartTime"], clock);
-            }
-            else
-            {
-                switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
-                imagetime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"] + (double)parameters["BfieldDelayTime"] + (double)parameters["ImageTime"], clock);
-            }
+            int switchOffTime = this.DigitalStartTime;
+            int imagetime = ConvertToSampleTime((double)parameters["ImageTime"], clock)+switchOffTime;
+            
 
             int backgroundtime = ConvertToSampleTime((double)parameters["BackgroundDwellTime"],clock);
             int exposuretime = ConvertToSampleTime((double)parameters["ExposureTime"],clock);
@@ -72,23 +66,16 @@ namespace MOTMaster2.SnippetLibrary
             hs.Pulse(imagetime + exposuretime + backgroundtime, 0, exposuretime, "cameraTTL");
         }
 
-        public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             int clock = (int)parameters["AnalogClockFrequency"];
-            int imagetime = 0;
-            int switchOffTime = 0;
+
+            int switchOffTime = this.AnalogStartTime;
             int backgroundtime = ConvertToSampleTime((double)parameters["BackgroundDwellTime"], clock);
             int exposuretime = ConvertToSampleTime((double)parameters["ExposureTime"], clock);
-            if (parameters.ContainsKey("ImageStartTime"))
-            {
-                imagetime = ConvertToSampleTime((double)parameters["ImageStartTime"] + (double)parameters["ImageTime"], clock);
-                switchOffTime = ConvertToSampleTime((double)parameters["ImageStartTime"], clock);
-            }
-            else
-            {
-                switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
-                imagetime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"] + (double)parameters["BfieldDelayTime"] + (double)parameters["ImageTime"], clock);
-            }
+            int imagetime = ConvertToSampleTime((double)parameters["ImageTime"], clock)+switchOffTime;
+          
+            
             p.AddAnalogValue("motCTRL", imagetime, 2.0);
             p.AddAnalogValue("motCTRL", imagetime + exposuretime + backgroundtime + exposuretime, 0.0);
            
@@ -100,11 +87,6 @@ namespace MOTMaster2.SnippetLibrary
             mu.SetFrequency("slave0",1.5);
             mu.SetFrequency("mphi", 0.0);
          
-        }
-
-        public int ConvertToSampleTime(double time, int frequency)
-        {
-            return (int)(time * frequency/1000);
         }
     }
 }

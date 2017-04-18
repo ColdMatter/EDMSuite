@@ -9,7 +9,7 @@ using MOTMaster2;
 
 namespace MOTMaster2.SnippetLibrary
 {
-    public class Load2DMOT : MOTMasterScriptSnippet
+    public class Load2DMOT : SequenceStep
     {
         public Load2DMOT(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters)
         {
@@ -28,7 +28,7 @@ namespace MOTMaster2.SnippetLibrary
             Console.WriteLine("No Parameters");
         }
 
-        public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
+        public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             int clock = (int)parameters["HSClockFrequency"];
             int loadtime2D = ConvertToSampleTime((double)parameters["2DLoadTime"],clock);
@@ -38,7 +38,7 @@ namespace MOTMaster2.SnippetLibrary
             hs.DownPulse(4, 0, loadtime2D, "pushaomTTL");
 
         }
-        public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
 
         }

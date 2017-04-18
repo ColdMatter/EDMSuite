@@ -106,6 +106,7 @@
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scripts\MolassesSequence.cs" />
+    <Compile Include="Scripts\Snippets\Detection.cs" />
     <Compile Include="Scripts\Snippets\Imaging.cs" />
     <Compile Include="Scripts\Snippets\Initialize.cs" />
     <Compile Include="Scripts\Snippets\Load2DMOT.cs" />
@@ -114,8 +115,10 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
-    <Compile Include="Scripts\Pulse2DMOT.cs" />
     <Compile Include="Scripts\Snippets\Molasses.cs" />
+    <Compile Include="Scripts\Snippets\SequenceStep.cs" />
+    <Compile Include="Scripts\Snippets\StatePreparation.cs" />
+    <Compile Include="Scripts\StatePreparation.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

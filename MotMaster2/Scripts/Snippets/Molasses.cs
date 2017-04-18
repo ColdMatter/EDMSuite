@@ -10,23 +10,26 @@ using MOTMaster2.SnippetLibrary;
 
 namespace MOTMaster2.SnippetLibrary
 {
-    public class Molasses : MOTMasterScriptSnippet
+    public class Molasses : SequenceStep
     {
         Dictionary<String, Object> parameters;
+
         int molassesIntensityRampStartTime;
         public Molasses()
         {
             Console.WriteLine("No parameter");
         }
-        public Molasses(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters)
+        public Molasses(HSDIOPatternBuilder hs, Dictionary<String, Object> parameters,int startTime)
         {
             this.parameters = parameters;
+            this.DigitalStartTime = startTime;
             AddDigitalSnippet(hs, parameters);
         }
 
-        public Molasses(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public Molasses(AnalogPatternBuilder p, Dictionary<String, Object> parameters, int startTime)
         {
             this.parameters = parameters;
+            this.AnalogStartTime = startTime;
             AddAnalogSnippet(p, parameters);
         }
 
@@ -35,11 +38,11 @@ namespace MOTMaster2.SnippetLibrary
             this.parameters = parameters;
             AddMuquansCommands(mu, parameters);
         }
-        public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
+        public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             //Switch off the magnetic field and wait some time
             int clock = (int)parameters["HSClockFrequency"];
-            int switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
+            int switchOffTime = this.DigitalStartTime;
             int serialWait = ConvertToSampleTime(2.0,clock);
           
         
@@ -57,12 +60,12 @@ namespace MOTMaster2.SnippetLibrary
            
         }
 
-        public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             this.parameters = parameters;
             int clock = (int)parameters["AnalogClockFrequency"];
-            int switchOffTime = ConvertToSampleTime((double)parameters["BfieldSwitchOffTime"], clock);
-            //int intensityRampTime = ConvertToSampleTime((double)parameters["IntensityRampTime"], clock);
+            int switchOffTime = this.AnalogStartTime;
+
             int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
             int intensityRampDuration = ConvertToSampleTime((double)parameters["IntensityRampTime"], clock);
             this.molassesIntensityRampStartTime = switchOffTime + delaytime;
@@ -74,6 +77,8 @@ namespace MOTMaster2.SnippetLibrary
             p.AddAnalogValue("mphiCTRL", switchOffTime, 0.15);
             //TODO Make the time depend on a parameter
             p.AddFunction("motCTRL",molassesIntensityRampStartTime,molassesIntensityRampStartTime+intensityRampDuration, LinearMolassesRamp);
+
+            
         }
 
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
@@ -105,5 +110,7 @@ namespace MOTMaster2.SnippetLibrary
           
             return (a / Math.Tan(b * time_scale + c) + d);
         }
+
+      
     }
 }

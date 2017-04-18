@@ -79,6 +79,7 @@ namespace DAQ.Analog
 
             return ints;
         }
+
         public double GetValue(string channel, int time)
         {
             List<int> events = getSortedListOfEvents(channel);

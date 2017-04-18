@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using DAQ.Pattern;
 using DAQ.Analog;
 
-namespace MOTMaster2.MOTSequence
+namespace MOTMaster2.MotSequence
 {
     public class Patterns : MOTMasterScript
     {
@@ -77,11 +77,11 @@ namespace MOTMaster2.MOTSequence
  
             HSDIOPatternBuilder hs = new HSDIOPatternBuilder();
 
-                MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
+                SequenceStep init = new Initialize(hs, Parameters);
 
-                MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
+                SequenceStep mot2d = new Load2DMOT(hs, Parameters);
                
-                MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
+                SequenceStep image = new Imaging(hs, Parameters,mot2d.DigitalEndTime);
 
             return hs;
         }
@@ -90,11 +90,11 @@ namespace MOTMaster2.MOTSequence
         {
             AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
 
-            MOTMasterScriptSnippet init = new Initialize(p, Parameters);
+            SequenceStep init = new Initialize(p, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(p, Parameters);
+            SequenceStep mot2d = new Load2DMOT(p, Parameters);
            
-            MOTMasterScriptSnippet image = new Imaging(p, Parameters);
+            SequenceStep image = new Imaging(p, Parameters,mot2d.AnalogEndTime);
 
             return p;
 
@@ -104,11 +104,11 @@ namespace MOTMaster2.MOTSequence
         {
             MuquansBuilder mu = new MuquansBuilder();
 
-            MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
+            SequenceStep init = new Initialize(mu, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
+            SequenceStep mot2d = new Load2DMOT(mu, Parameters);
            
-            MOTMasterScriptSnippet image = new Imaging(mu, Parameters);
+            SequenceStep image = new Imaging(mu, Parameters);
 
             return mu;
 
