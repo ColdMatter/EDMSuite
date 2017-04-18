@@ -59,8 +59,10 @@ namespace MOTMaster2
         //TODO fun one cycle with defined parameters
         private bool SingleShot() // true if OK
         {
-
-            controller.RunStart();
+            //Would like to use RunStart as this Runs in a new thread
+            controller.Run();
+ 
+                
             return true;
         }
 
@@ -155,8 +157,11 @@ namespace MOTMaster2
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
+                
+                string parameter = cbParamsScan.Text;
+                object defaultValue = controller.script.Parameters[parameter];
                 //TODO check type of parameter for looping parameter
-                if (true) // type of Parameter is int
+                if (defaultValue is int) // type of Parameter is int
                 {
                    // integer param
                    int fromScanI = int.Parse(tbFromScan.Text);
@@ -174,15 +179,16 @@ namespace MOTMaster2
                        return;
                    }
 
-                   for (int i = fromScanI; i < toScanI + 1; )
+                   for (int i = fromScanI; i < toScanI + byScanI; )
                    {
                       // update scan param
-
+                       controller.script.Parameters[parameter] = i;
                       // single shot
                       SingleShot();
                       
                       tbCurValue.Content = i.ToString();
                       i += byScanI;
+                     
                       DoEvents();
                       if (!ScanFlag) break;
                     }
@@ -205,19 +211,22 @@ namespace MOTMaster2
                         return;
                     }
 
-                    for (double d = fromScanD; d < toScanD + 1; )
+                    for (double d = fromScanD; d < toScanD + byScanD; )
                     {
                        // update scan param
-
+                        controller.script.Parameters[parameter] = d;
                        // single shot
                        SingleShot();
 
                        tbCurValue.Content = d.ToString();
                        d += byScanD;
-                       DoEvents();  
+                       DoEvents();
+                      
                        if (!ScanFlag) break;
                     }
                 }
+                controller.script.Parameters[parameter] = defaultValue;
+                tbCurValue.Content = defaultValue.ToString();
                 btnScan.Content = "Scan";
                 btnScan.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -247,24 +256,30 @@ namespace MOTMaster2
         private bool paramCheck=false;
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (paramCheck)
-                return;
-            paramCheck = true;
-            if (tcMain.SelectedIndex==1)
+            if (e.OriginalSource.GetType() == typeof(TabControl))
             {
-                cbParamsScan.Items.Clear();
-                foreach (string param in ParamsArray)
-                    cbParamsScan.Items.Add(param);
-                cbParamsScan.SelectedIndex = 0;
+                if (paramCheck)
+                    return;
+                paramCheck = true;
+                if (tcMain.SelectedIndex==1)
+                {
+                    cbParamsScan.Items.Clear();
+                    foreach (string param in ParamsArray)
+                        cbParamsScan.Items.Add(param);
+                   cbParamsScan.SelectedIndex = 0;
+                }
+                if (tcMain.SelectedIndex == 2)
+                {
+                    cbParamsManual.Items.Clear();
+                    foreach (string param in ParamsArray)
+                        cbParamsManual.Items.Add(param);
+                    cbParamsManual.Text = ParamsArray[0];
+                   cbParamsManual.SelectedIndex = 0;
+               
+                }
+                paramCheck = false;
             }
-            if (tcMain.SelectedIndex == 2)
-            {
-                cbParamsManual.Items.Clear();
-                foreach (string param in ParamsArray)
-                    cbParamsManual.Items.Add(param);
-                cbParamsManual.SelectedIndex = 0;
-            }
-            paramCheck = false;
+
         }
 
         private void LoadParameters_Click(object sender, RoutedEventArgs e)
@@ -289,7 +304,8 @@ namespace MOTMaster2
                     string json = File.ReadAllText(filename);
                     LoadedParameters = (Dictionary<String,Object>)JsonConvert.DeserializeObject(json,typeof(Dictionary<String,Object>));
                     if (controller.script != null)
-                        controller.script.Parameters = LoadedParameters;
+                        foreach (string key in LoadedParameters.Keys)
+                            controller.script.Parameters[key] = LoadedParameters[key];
                     else
                         MessageBox.Show("You have tried to load parameters without loading a script");
                 }
@@ -337,6 +353,31 @@ namespace MOTMaster2
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Latest MOTMaster Version");
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            string parameter = cbParamsManual.Text;
+            if (controller.script.Parameters[parameter].GetType() == typeof(int))
+            {
+                controller.script.Parameters[parameter] = int.Parse(tbValue.Text);
+            }
+            else if (controller.script.Parameters[parameter].GetType() == typeof(double))
+            {
+                controller.script.Parameters[parameter] = double.Parse(tbValue.Text);
+            }
+        }
+
+        private void cbParamsManual_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
+                tbValue.Text = controller.script.Parameters[cbParamsManual.SelectedItem.ToString()].ToString();
+        }
+
+        private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+             if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
+                tbCurValue.Content = controller.script.Parameters[cbParamsScan.SelectedItem.ToString()].ToString();
         }
     }
 }

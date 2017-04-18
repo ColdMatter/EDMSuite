@@ -13,7 +13,6 @@ namespace MOTMaster2.MolassesSequence
     {
         public Patterns()
         {
-            Parameters = new Dictionary<string, object>();
             Parameters["HSClockFrequency"] = 20000000;
             Parameters["AnalogClockFrequency"] = 100000;
             //This is the legnth of the digital pattern which is written to the HSDIO card, clocked at 20MHz
@@ -70,7 +69,8 @@ namespace MOTMaster2.MolassesSequence
             Parameters["2DMotAtten"] = 5.7;
 
             Parameters["MOTdetuning"] = -13.5;
-            Parameters["Molassesdetuning"] = -163.5;
+            Parameters["Molassesdetuning"] = -163.5;  Parameters = new Dictionary<string, object>();
+          
         }
 
         public override HSDIOPatternBuilder GetHSDIOPattern()
@@ -78,11 +78,11 @@ namespace MOTMaster2.MolassesSequence
  
             HSDIOPatternBuilder hs = new HSDIOPatternBuilder();
 
-                MOTMasterScriptSnippet init = new Initialize(hs, Parameters);
+            SequenceStep init = new Initialize(hs, Parameters);
 
-                MOTMasterScriptSnippet mot2d = new Load2DMOT(hs, Parameters);
-                MOTMasterScriptSnippet molasses = new Molasses(hs, Parameters);
-                MOTMasterScriptSnippet image = new Imaging(hs, Parameters);
+            SequenceStep mot2d = new Load2DMOT(hs, Parameters);
+            SequenceStep molasses = new Molasses(hs, Parameters,mot2d.DigitalEndTime);
+            SequenceStep image = new Imaging(hs, Parameters,molasses.DigitalEndTime);
 
             return hs;
         }
@@ -91,11 +91,11 @@ namespace MOTMaster2.MolassesSequence
         {
             AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
 
-            MOTMasterScriptSnippet init = new Initialize(p, Parameters);
+            SequenceStep init = new Initialize(p, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(p, Parameters);
-            MOTMasterScriptSnippet molasses = new Molasses(p, Parameters);
-            MOTMasterScriptSnippet image = new Imaging(p, Parameters);
+            SequenceStep mot2d = new Load2DMOT(p, Parameters);
+            SequenceStep molasses = new Molasses(p, Parameters,mot2d.AnalogEndTime);
+            SequenceStep image = new Imaging(p, Parameters,molasses.AnalogEndTime);
 
             return p;
 
@@ -105,11 +105,11 @@ namespace MOTMaster2.MolassesSequence
         {
             MuquansBuilder mu = new MuquansBuilder();
 
-            MOTMasterScriptSnippet init = new Initialize(mu, Parameters);
+            SequenceStep init = new Initialize(mu, Parameters);
 
-            MOTMasterScriptSnippet mot2d = new Load2DMOT(mu, Parameters);
-            MOTMasterScriptSnippet molasses = new Molasses(mu, Parameters);
-            MOTMasterScriptSnippet image = new Imaging(mu, Parameters);
+            SequenceStep mot2d = new Load2DMOT(mu, Parameters);
+            SequenceStep molasses = new Molasses(mu, Parameters);
+            SequenceStep image = new Imaging(mu, Parameters);
 
             return mu;
 

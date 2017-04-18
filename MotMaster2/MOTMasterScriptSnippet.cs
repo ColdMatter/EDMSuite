@@ -15,5 +15,4 @@ namespace MOTMaster2.SnippetLibrary
 
     }
 
-
 }

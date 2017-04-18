@@ -287,6 +287,7 @@ namespace MOTMaster
 
         public void Run()
         {
+            status = RunningState.running;
             if (replicaRun)
             {
                 Run(ioHelper.LoadDictionary(dictionaryPath));

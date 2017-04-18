@@ -10,7 +10,7 @@ using MOTMaster2;
 
 namespace MOTMaster2.SnippetLibrary
 {
-    public class Initialize : MOTMasterScriptSnippet
+    public class Initialize : SequenceStep
     {
         public Initialize()
         {
@@ -30,7 +30,7 @@ namespace MOTMaster2.SnippetLibrary
         {
             AddMuquansCommands(mu, parameters);
         }
-        public void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
+        public override void AddDigitalSnippet(PatternBuilder32 hs, Dictionary<String, Object> parameters)
         {
             hs.AddEdge("motTTL", 0, true);
             hs.AddEdge("mphiTTL", 0, true);
@@ -48,7 +48,7 @@ namespace MOTMaster2.SnippetLibrary
 
         }
 
-        public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             p.AddChannel("motCTRL");
             p.AddChannel("ramanCTRL");
