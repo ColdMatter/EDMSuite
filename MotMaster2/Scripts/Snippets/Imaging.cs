@@ -40,6 +40,10 @@ namespace MOTMaster2.SnippetLibrary
             //Switch off light during the expansiontime
             if ((double)parameters["ImageTime"] != 0.0)
                 hs.DownPulse(switchOffTime, 0, imagetime - switchOffTime , "motTTL");
+
+            hs.AddEdge("xaomTTL", switchOffTime, false);
+            hs.AddEdge("yaomTTL", switchOffTime, false);
+            
             hs.Pulse(imagetime - 100000, 0, 200, "serialPreTrigger");
            
            
@@ -50,7 +54,8 @@ namespace MOTMaster2.SnippetLibrary
             //Image the atoms
             hs.Pulse(imagetime, 0, exposuretime, "cameraTTL");
 
-            
+            hs.Pulse(imagetime + exposuretime, 0, backgroundtime, "xaomTTL");
+            hs.Pulse(imagetime + exposuretime, 0, backgroundtime, "yaomTTL");
             //hs.AddEdge("mphiTTL", imagetime + exposuretime, false);
             //Image background
             hs.Pulse(imagetime + exposuretime + backgroundtime, 0, exposuretime, "cameraTTL");

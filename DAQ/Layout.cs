@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace DAQ.Pattern
@@ -51,6 +52,23 @@ namespace DAQ.Pattern
 			return (EdgeSet)eventList[time];
 		}
 
+        public Dictionary<int,Dictionary<int,bool>> GetEdgeDictionary()
+        {
+           Dictionary<int,Dictionary<int,bool>> edgeDict = new Dictionary<int,Dictionary<int,bool>>();
+            foreach (DictionaryEntry ev in eventList)
+            {
+                int time = (int)ev.Key;
+                EdgeSet es = (EdgeSet)ev.Value;
+                for (int i = 0; i < channels; i++)
+                {
+                    EdgeSense sense = es.GetEdge(i);
+                    if (sense != EdgeSense.NC && !edgeDict.ContainsKey(i)) edgeDict[i] = new Dictionary<int, bool>();
+                    if (sense == EdgeSense.UP) edgeDict[i].Add(time, true);
+                    else if (sense == EdgeSense.DOWN) edgeDict[i].Add(time, false);
+                }
+            }
+            return edgeDict;
+        }
 		public override String ToString() 
 		{
 			StringBuilder sb = new StringBuilder();

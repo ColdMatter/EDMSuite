@@ -333,6 +333,7 @@ namespace MOTMaster2
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
                         if(!config.Debug) runPattern(sequence);
+                        else ioHelper.SaveRawSequence((string)(Environs.FileSystem.Paths["DathPath"]),i,sequence);
                     }
                     if (!config.Debug) clearDigitalPattern(sequence);
 

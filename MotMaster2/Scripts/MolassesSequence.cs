@@ -24,9 +24,9 @@ namespace MOTMaster2.MolassesSequence
             Parameters["AnalogLength"] = 100000;
             Parameters["NumberOfFrames"] = 2;
 
-            Parameters["XBias"] = 0.8;
-            Parameters["YBias"] = -0.3;
-            Parameters["ZBias"] = -0.47;
+            Parameters["XBias"] = 0.78;
+            Parameters["YBias"] = -0.29;
+            Parameters["ZBias"] = -0.4;
 
             Parameters["XBias2D"] = 1.7;
             Parameters["YBias2D"] = -1.55;
@@ -46,13 +46,13 @@ namespace MOTMaster2.MolassesSequence
             //This is the time to image the atoms AFTER the Bfield is switched off
             Parameters["ImageStartTime"] = (double)Parameters["BfieldSwitchOffTime"] + (double)Parameters["BfieldDelayTime"] + (double)Parameters["MolassesFreqDuration"] + (double)Parameters["IntensityRampTime"];
             Parameters["ImageTime"] = 10.0;
-            Parameters["ExposureTime"] = 0.1;
+            Parameters["ExposureTime"] = 0.3;
             Parameters["BackgroundDwellTime"] = 500.0;
 
             Parameters["MotPower"] = 2.0;
-            Parameters["RepumpPower"] = 0.21;
+            Parameters["RepumpPower"] = 0.22;
             Parameters["2DBfield"] = 2.0;
-            Parameters["3DBfield"] = 3.3;
+            Parameters["3DBfield"] = 2.8;
 
             //Frequencies and attenuator voltages for the fibre AOMs
             Parameters["XAtten"] = 3.85;

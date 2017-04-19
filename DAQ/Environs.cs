@@ -225,9 +225,9 @@ namespace DAQ.Environment
                     Debug = true;
                     break;
                 case "JIMMY-SURFACE":
+                    Debug = true;
                     Hardware = new NavigatorHardware();
                     FileSystem = new NavigatorFileSystem();
-                    Debug = false;
                     break;
                 default:
 					Hardware = new EDMHardware();

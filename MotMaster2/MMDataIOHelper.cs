@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using Newtonsoft.Json;
 
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -253,6 +255,41 @@ namespace MOTMaster2
             return id;
         }
 
-        
+        public void SaveRawSequence(string filepath,int index,MOTMasterSequence sequence)
+        {
+            string sequencePath = filepath + index+"_raw_sequence.json";
+            Dictionary<string,object> rawSequence = new Dictionary<string,object>();
+            Dictionary<string,Dictionary<int,double>> analogPatternBySample = sequence.AnalogPattern.AnalogPatterns;
+            Dictionary<int, Dictionary<int, bool>> digitalPatternByID = sequence.DigitalPattern.Layout.GetEdgeDictionary();
+            Dictionary<string,object> digitalPattern = new Dictionary<string,object>();
+            Dictionary<string,object> analogPattern  = new Dictionary<string,object>();
+            Dictionary<int, string> nameDict = new Dictionary<int, string>();
+
+            foreach (DictionaryEntry ent in DAQ.Environment.Environs.Hardware.DigitalOutputChannels)
+            {
+                DAQ.HAL.DigitalOutputChannel digChan = (DAQ.HAL.DigitalOutputChannel)ent.Value;
+                nameDict[digChan.line] = (string)ent.Key;
+            }
+            foreach (KeyValuePair<int,Dictionary<int,bool>> digId in digitalPatternByID)
+            {
+                Dictionary<int, bool> val = digId.Value;
+                digitalPattern[nameDict[digId.Key]] = new Tuple<double[], bool[]>(val.Keys.Select(v => (double)v).ToArray(), val.Values.ToArray());
+            }
+            foreach (KeyValuePair<string, Dictionary<int, double>> analogId in analogPatternBySample)
+            {
+                Dictionary<int, double> val = analogId.Value;
+                analogPattern[analogId.Key] = new Tuple<double[],double[]>(val.Keys.Select(v => (double)v).ToArray(),val.Values.ToArray());
+            }
+            rawSequence["analog"] = analogPattern;
+            rawSequence["digital"] = digitalPattern;
+            string json = JsonConvert.SerializeObject(rawSequence,Formatting.Indented);
+            File.WriteAllText(sequencePath, json);
+
+        }
+        public void SaveRawSequence(string filepath, MOTMasterSequence sequence)
+        {
+            SaveRawSequence(filepath, 0, sequence);
+
+        }
     }
 }

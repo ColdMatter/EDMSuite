@@ -17,7 +17,7 @@ namespace DAQ.HAL
         {
           
             //add information for MMConfig
-            MMConfig config = new MMConfig(false, false, false, false);
+            MMConfig config = new MMConfig(false, false, false, Environment.Environs.Debug);
             config.HSDIOCard = true;
             config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
@@ -62,7 +62,7 @@ namespace DAQ.HAL
 
             
             //map the digital channels
-            //TODO make these work with HSDIO cards
+
             AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
