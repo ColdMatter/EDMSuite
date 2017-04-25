@@ -50,9 +50,9 @@ namespace MOTMaster2.Preparation
             Parameters["BackgroundDwellTime"] = 500.0;
 
             Parameters["MotPower"] = 2.0;
-            Parameters["RepumpPower"] = 0.21;
-            Parameters["2DBfield"] = 2.0;
-            Parameters["3DBfield"] = 3.3;
+            Parameters["RepumpPower"] = 0.22;
+            Parameters["2DBfield"] = 9.0;
+            Parameters["3DBfield"] = 2.8;
 
             //Frequencies and attenuator voltages for the fibre AOMs
             Parameters["XAtten"] = 3.85;
@@ -72,7 +72,10 @@ namespace MOTMaster2.Preparation
             Parameters["2DMotAtten"] = 5.7;
 
             Parameters["MOTdetuning"] = -13.5;
-            Parameters["Molassesdetuning"] = -163.5;  
+            Parameters["Molassesdetuning"] = -163.5;
+
+            Parameters["PrepRepumpDuration"] = 5.0;
+            Parameters["22PumpTime"] = 4e-3;
           
         }
 

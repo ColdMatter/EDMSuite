@@ -60,7 +60,11 @@ namespace MOTMaster2
         private bool SingleShot() // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
-            controller.Run();
+            if (controller.IsRunning())
+            {
+                controller.WaitForRunToFinish();
+            }
+            controller.RunStart();
  
                 
             return true;
@@ -160,70 +164,54 @@ namespace MOTMaster2
                 
                 string parameter = cbParamsScan.Text;
                 object defaultValue = controller.script.Parameters[parameter];
-                //TODO check type of parameter for looping parameter
-                if (defaultValue is int) // type of Parameter is int
+                int scanLength;
+                object[] scanArray;
+                if (defaultValue is int)
                 {
-                   // integer param
-                   int fromScanI = int.Parse(tbFromScan.Text);
-                   int toScanI = int.Parse(tbToScan.Text);
-                   if (fromScanI >= toScanI)
-                   {
-                       MessageBox.Show("<From> value must be smaller than <To> value.");
-                       return;
-                   }
-
-                   int byScanI = int.Parse(tbByScan.Text);
-                   if (byScanI <= 0)
-                   {
-                       MessageBox.Show("<Step> must be of positive value.");
-                       return;
-                   }
-
-                   for (int i = fromScanI; i < toScanI + byScanI; )
-                   {
-                      // update scan param
-                       controller.script.Parameters[parameter] = i;
-                      // single shot
-                      SingleShot();
-                      
-                      tbCurValue.Content = i.ToString();
-                      i += byScanI;
-                     
-                      DoEvents();
-                      if (!ScanFlag) break;
-                    }
+                    int fromScanI = int.Parse(tbFromScan.Text);
+                    int toScanI = int.Parse(tbToScan.Text);
+                    int byScanI = int.Parse(tbByScan.Text);
+                    scanLength = (toScanI - fromScanI) /byScanI+1;
+                    if (scanLength < 0)
+                        {
+                            MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                            return;
+                        }
+                    scanArray = new object[scanLength+1];
+                    for (int i = 0; i<scanLength;i++ )
+                    {
+                        scanArray[i] = fromScanI;
+                        fromScanI+=byScanI;
+                    }   
+                
                 }
                 else
                 {
-                    // double param
                     double fromScanD = double.Parse(tbFromScan.Text);
                     double toScanD = double.Parse(tbToScan.Text);
-                    if (fromScanD >= toScanD)
-                    {
-                        MessageBox.Show("<From> value must be smaller than <To> value.");
-                        return;
-                    }
-
                     double byScanD = double.Parse(tbByScan.Text);
-                    if (byScanD <= 0)
+                    scanLength = (int)((toScanD - fromScanD) / byScanD)+1;
+                    if (scanLength < 0)
                     {
-                        MessageBox.Show("<Step> must be of positive value.");
+                        MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
                         return;
                     }
+                    scanArray = new object[scanLength];
 
-                    for (double d = fromScanD; d < toScanD + byScanD; )
+                    for (int i = 0; i<scanLength;i++ )
                     {
-                       // update scan param
-                        controller.script.Parameters[parameter] = d;
-                       // single shot
-                       SingleShot();
-
-                       tbCurValue.Content = d.ToString();
-                       d += byScanD;
-                       DoEvents();
-                      
-                       if (!ScanFlag) break;
+                        scanArray[i] = fromScanD;
+                        fromScanD+=byScanD;
                     }
+                
+                 }
+                foreach (object scanParam in scanArray)
+                {
+                    controller.script.Parameters[parameter] = scanParam;
+                    SingleShot();
+                    tbCurValue.Content = scanParam.ToString();
+                    DoEvents();
+                    if (!ScanFlag) break;
                 }
                 controller.script.Parameters[parameter] = defaultValue;
                 tbCurValue.Content = defaultValue.ToString();

@@ -51,9 +51,14 @@ namespace MOTMaster2.SnippetLibrary
 
             int delaytime = ConvertToSampleTime((double)parameters["BfieldDelayTime"], clock);
             int intensityRampDuration = ConvertToSampleTime((double)parameters["IntensityRampTime"], clock);
-            this.molassesIntensityRampStartTime = switchOffTime + delaytime;
+            //This time ensures that the DDS has finished the frequency ramp before ramping the intensity
+            int waitTime = ConvertToSampleTime(1.5, clock);
+            molassesIntensityRampStartTime = switchOffTime + delaytime+waitTime;
             //This is the time from the start of the sequence when the cloud is free to expand - i.e. after molasses
-            parameters["ImageStartTime"] = (double)(molassesIntensityRampStartTime + intensityRampDuration)*1e3/clock;
+
+            p.AddAnalogValue("xbiasCoil2D", switchOffTime, 0.0);
+            p.AddAnalogValue("ybiasCoil2D", switchOffTime, 0.0);
+            p.AddAnalogValue("mot2DCoil", switchOffTime, (double)parameters["2DBfield"]);
             p.AddLinearRamp("mot3DCoil", switchOffTime, (int)(0.9*1e-3*clock),-8.0);
             p.AddAnalogValue("mot3DCoil", switchOffTime + (int)(0.9 * 1e-3 * clock), 0.0);
 

@@ -13,7 +13,7 @@ namespace DAQ.HAL
 	{
 		private string device;
 		private int port;
-		private int line;
+		public int line;
 
 		public DigitalOutputChannel( string name, string device, int port, int line )
 		{

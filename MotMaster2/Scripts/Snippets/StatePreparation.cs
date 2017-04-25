@@ -19,7 +19,27 @@ namespace MOTMaster2.SnippetLibrary
         {
             //Switch off the magnetic field and wait some time
             int clock = (int)parameters["HSClockFrequency"];
+            int startTime = ConvertToSampleTime(this.SequenceStartTime, clock);
+            int serialWait = ConvertToSampleTime(1.0, clock);
+            int repumpTime = ConvertToSampleTime((double)parameters["PrepRepumpDuration"], clock);
+            int pumptime22 = ConvertToSampleTime((double)parameters["22PumpTime"],clock);
+            hs.Pulse(startTime - 40000, 0, 200, "serialPreTrigger");
+
+            hs.Pulse(startTime, serialWait, 200, "slaveDDSTrig");
+            hs.Pulse(startTime, serialWait, 200, "aomDDSTrig");
+
+            hs.AddEdge("xaomTTL", startTime + repumpTime, true);
+            hs.AddEdge("yaomTTL", startTime + repumpTime, true);
+            hs.AddEdge("zpaomTTL", startTime + repumpTime, true);
+            hs.AddEdge("zmaomTTL", startTime + repumpTime, true);
+
+            hs.DownPulse(startTime+repumpTime+serialWait,0,pumptime22,"zpaomTTL");
+            hs.DownPulse(startTime + repumpTime + serialWait, 0, pumptime22, "zmaomTTL");
+
+            hs.AddEdge("motTTL", startTime + repumpTime +serialWait+ pumptime22, false);
+            hs.AddEdge("mphiTTL", startTime + repumpTime +serialWait+ pumptime22, false);
             
+
 
             SetSequenceEndTime(hs.Layout.LastEventTime, clock);
         }
@@ -27,18 +47,21 @@ namespace MOTMaster2.SnippetLibrary
         public override void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             int clock = (int)parameters["AnalogClockFrequency"];
-            
+            int startTime = ConvertToSampleTime(this.SequenceStartTime,clock);
+            int repumpTime = ConvertToSampleTime((double)parameters["PrepRepumpDuration"],clock);
+            p.AddAnalogPulse("mphiCTRL", startTime, repumpTime, 0.35, (double)parameters["RepumpPower"]);
+            p.AddAnalogValue("motCTRL", startTime, (double)parameters["MotPower"]);
             SetSequenceEndTime(p.GetLastEventTime(), clock); 
         }
 
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
-
+            //Sets slave0 on to 2->2 taking account of the extra 1.5 MHz detuning from the Fibre AOMs
+            mu.SetFrequency("Slave0", -268.151);
+            //Puts the mphi sideband at the 1->0 transition
+            mu.SetFrequency("mphi", -37.421);
         }
 
-        public int ConvertToSampleTime(double time, int frequency)
-        {
-            return (int)(time * frequency / 1000);
-        }
+       
     }
 }

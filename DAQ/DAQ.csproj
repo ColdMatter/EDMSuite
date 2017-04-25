@@ -227,6 +227,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Z:\Software\EDMSuite\MotMaster2\bin\Nav\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -284,10 +287,12 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DCSController.cs" />
     <Compile Include="EDMTestCrateFileSystem.cs" />
     <Compile Include="EDMTestCrateHardware.cs" />
     <Compile Include="HSDIOPatternBuilder.cs" />
     <Compile Include="HSDIOPatternGenerator.cs" />
+    <Compile Include="ICEBLOCCommunicator.cs" />
     <Compile Include="MiniCircuitsUSBFreqCtr.cs" />
     <Compile Include="MMAIChannelConfiguration.cs" />
     <Compile Include="MMAIConfiguration.cs" />

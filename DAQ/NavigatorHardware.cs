@@ -77,7 +77,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
-            AddDigitalOutputChannel("digTest", hsdioBoard, 0, 14);
+            AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 
             //map the analog output channels
@@ -85,14 +85,14 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
             AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", 0, 10);
             AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao9", -10, 10);
-            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao8", -10, 10);
+            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao11", -10, 10);
             AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao6", -10, 10);
             AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao7", -10, 10);
             AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao5", -10, 10);
             AddAnalogOutputChannel("xbiasCoil2D", aoBoard + "/ao3", -10, 10);
             AddAnalogOutputChannel("ybiasCoil2D", aoBoard + "/ao4", -10, 10);
             AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);
-            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", 0, 10);
+            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao8", 0, 10);
             AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", 0, 10);
             AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", 0, 10);
             AddAnalogOutputChannel("zpaomFreq", aoBoard + "/ao14", 0, 10);

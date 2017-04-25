@@ -274,7 +274,10 @@ namespace MOTMaster2
         public bool IsRunning()
         {
             if (status == RunningState.running)
+            {
+                Console.WriteLine("Thread Running");
                 return true;
+            }
             else
                 return false;
         }
@@ -282,12 +285,17 @@ namespace MOTMaster2
         {
             runThread = new Thread(new ThreadStart(this.Run));
             runThread.Name = "MOTMaster Controller";
-            runThread.Priority = ThreadPriority.Normal;
+            runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
             runThread.Start();
+            Console.WriteLine("Thread Starting");
             
         }
-
+        public void WaitForRunToFinish()
+        {
+            runThread.Join();
+            Console.WriteLine("Thread Waiting");
+        }
 
         public void Run()
         {
