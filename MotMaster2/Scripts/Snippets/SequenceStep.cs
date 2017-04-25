@@ -37,7 +37,7 @@ namespace MOTMaster2.SnippetLibrary
         }
         public virtual void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
- 
+            throw new NotImplementedException();
         }
 
         public SequenceStep(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime)

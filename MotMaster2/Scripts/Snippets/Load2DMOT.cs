@@ -37,7 +37,7 @@ namespace MOTMaster2.SnippetLibrary
 
         }
 
-        public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
            
         }

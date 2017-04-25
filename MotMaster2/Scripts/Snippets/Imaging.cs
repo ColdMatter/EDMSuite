@@ -76,7 +76,7 @@ namespace MOTMaster2.SnippetLibrary
            
         }
 
-        public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             //Shifts the light to resonance with the 2->3 transition - note the extra 1.5MHz comes from a frequency shift with the AOM
             mu.SetFrequency("slave0",1.5);

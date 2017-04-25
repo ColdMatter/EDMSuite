@@ -54,7 +54,7 @@ namespace MOTMaster2.SnippetLibrary
             SetSequenceEndTime(p.GetLastEventTime(), clock); 
         }
 
-        public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             //Sets slave0 on to 2->2 taking account of the extra 1.5 MHz detuning from the Fibre AOMs
             mu.SetFrequency("Slave0", -268.151);

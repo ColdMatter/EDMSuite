@@ -92,7 +92,7 @@ namespace MOTMaster2.SnippetLibrary
             p.AddAnalogValue("2DaomFreq", 0, (double)parameters["2DMotFreq"]);
         }
 
-        public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
+        public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             mu.SetFrequency("slave0", (double)parameters["MOTdetuning"]);
             mu.SetFrequency("mphi", 0.0);
