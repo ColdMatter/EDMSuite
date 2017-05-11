@@ -20,10 +20,10 @@ namespace ScanMaster.GUI
 	public class ControllerWindow : System.Windows.Forms.Form
 	{
 
-		// the application controller
-		private Controller controller;
+        // the application controller
+        private Controller controller;
 
-		private String latestLine;
+        private String latestLine;
 		private bool newLineAvailable = false;
 		private ProfileManager manager;
 		public String Prompt = ":> ";
