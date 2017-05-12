@@ -22,5 +22,89 @@ namespace MicrocavityScanner.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string FastAxisStartBind {
+            get {
+                return ((string)(this["FastAxisStartBind"]));
+            }
+            set {
+                this["FastAxisStartBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public string FastAxisEndBind {
+            get {
+                return ((string)(this["FastAxisEndBind"]));
+            }
+            set {
+                this["FastAxisEndBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public string FastAxisResBind {
+            get {
+                return ((string)(this["FastAxisResBind"]));
+            }
+            set {
+                this["FastAxisResBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string SlowAxisStart {
+            get {
+                return ((string)(this["SlowAxisStart"]));
+            }
+            set {
+                this["SlowAxisStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public string SlowAxisEndBind {
+            get {
+                return ((string)(this["SlowAxisEndBind"]));
+            }
+            set {
+                this["SlowAxisEndBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public string SlowAxisResBind {
+            get {
+                return ((string)(this["SlowAxisResBind"]));
+            }
+            set {
+                this["SlowAxisResBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public string ExposureBind {
+            get {
+                return ((string)(this["ExposureBind"]));
+            }
+            set {
+                this["ExposureBind"] = value;
+            }
+        }
     }
 }

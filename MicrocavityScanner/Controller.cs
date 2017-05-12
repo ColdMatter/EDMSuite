@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using DAQ;
 using DAQ.Environment;
@@ -14,8 +15,8 @@ namespace MicrocavityScanner
 {
     /// <summary>
         /// The controller is the main part of MicrocavityScanner. This Program interacts
-        /// with ScanMaster to control scans of multiple parameters that are not limited
-        /// to the hardware in the way that ScanMaster is. 
+        /// with ScanMaster to control scans of multiple parameters that are much simpler
+        /// than what ScanMaster can do. 
         /// </summary>
     public class Controller : MarshalByRefObject
     {
@@ -29,10 +30,11 @@ namespace MicrocavityScanner
             get { return scanitor; }
         }
 
+        public Dictionary<string, double> scanSettings = new Dictionary<string, double>();
+
         private static Controller controllerInstance;
         public AppState appState = AppState.stopped;
         
-
         #endregion
 
         #region Initialisation
@@ -91,5 +93,6 @@ namespace MicrocavityScanner
         { 
 
         }
+        #endregion
     }
 }
