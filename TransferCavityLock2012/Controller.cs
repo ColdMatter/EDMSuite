@@ -243,6 +243,11 @@ namespace TransferCavityLock2012
             SlaveLasers[laserName].LaserSetPoint = newSetpoint;
         }
 
+        public double GetLaserSetpoint(string laserName)
+        {
+            return SlaveLasers[laserName].LaserSetPoint;
+        }
+
         #endregion
 
         #region SCAN! (MAIN PART OF PROGRAM. If reading through code, start here)

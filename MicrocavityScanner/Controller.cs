@@ -31,6 +31,7 @@ namespace MicrocavityScanner
         }
 
         public Dictionary<string, double> scanSettings = new Dictionary<string, double>();
+        public Dictionary<string, string> laserSettings = new Dictionary<string, string>();
 
         private static Controller controllerInstance;
         public AppState appState = AppState.stopped;
@@ -75,7 +76,7 @@ namespace MicrocavityScanner
 
             // run the main event loop
             Application.Run(mainForm);
-
+           
         }
         // When the main window gets told to shut, it calls this function.
         // In here things that need to be done before the application stops

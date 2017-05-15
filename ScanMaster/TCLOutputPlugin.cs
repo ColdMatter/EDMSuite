@@ -72,7 +72,10 @@ namespace ScanMaster.Acquire.Plugins
             Thread.Sleep(waitTime);
         }
 
-
+        private double getV()
+        {
+            return tclController.GetLaserSetpoint((string)settings["channel"]);
+        }
 
 
     }

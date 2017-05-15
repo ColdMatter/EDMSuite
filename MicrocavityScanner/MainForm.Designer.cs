@@ -232,6 +232,7 @@
             this.FastAxisSelectCombo.Name = "FastAxisSelectCombo";
             this.FastAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
             this.FastAxisSelectCombo.TabIndex = 1;
+            this.FastAxisSelectCombo.SelectedIndexChanged += new System.EventHandler(this.FastAxisSelectCombo_SelectedIndexChanged);
             // 
             // FastAxisStartVoltLabel
             // 
@@ -313,6 +314,7 @@
             this.SlowAxisSelectCombo.Name = "SlowAxisSelectCombo";
             this.SlowAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
             this.SlowAxisSelectCombo.TabIndex = 5;
+            this.SlowAxisSelectCombo.SelectedIndexChanged += new System.EventHandler(this.SlowAxisSelectCombo_SelectedIndexChanged);
             // 
             // TimingCont
             // 
@@ -371,6 +373,7 @@
             this.Exposure.Size = new System.Drawing.Size(100, 20);
             this.Exposure.TabIndex = 9;
             this.Exposure.Text = global::MicrocavityScanner.Properties.Settings.Default.ExposureBind;
+            this.Exposure.TextChanged += new System.EventHandler(this.Exposure_TextChanged);
             // 
             // SlowAxisRes
             // 
@@ -380,6 +383,7 @@
             this.SlowAxisRes.Size = new System.Drawing.Size(88, 20);
             this.SlowAxisRes.TabIndex = 8;
             this.SlowAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisResBind;
+            this.SlowAxisRes.TextChanged += new System.EventHandler(this.SlowAxisRes_TextChanged);
             // 
             // SlowAxisEnd
             // 
@@ -389,6 +393,7 @@
             this.SlowAxisEnd.Size = new System.Drawing.Size(71, 20);
             this.SlowAxisEnd.TabIndex = 7;
             this.SlowAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisEndBind;
+            this.SlowAxisEnd.TextChanged += new System.EventHandler(this.SlowAxisEnd_TextChanged);
             // 
             // SlowAxisStart
             // 
@@ -398,6 +403,7 @@
             this.SlowAxisStart.Size = new System.Drawing.Size(71, 20);
             this.SlowAxisStart.TabIndex = 6;
             this.SlowAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisStart;
+            this.SlowAxisStart.TextChanged += new System.EventHandler(this.SlowAxisStart_TextChanged);
             // 
             // FastAxisRes
             // 
@@ -407,6 +413,7 @@
             this.FastAxisRes.Size = new System.Drawing.Size(88, 20);
             this.FastAxisRes.TabIndex = 4;
             this.FastAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisResBind;
+            this.FastAxisRes.TextChanged += new System.EventHandler(this.FastAxisRes_TextChanged);
             // 
             // FastAxisEnd
             // 
@@ -416,6 +423,7 @@
             this.FastAxisEnd.Size = new System.Drawing.Size(71, 20);
             this.FastAxisEnd.TabIndex = 3;
             this.FastAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisEndBind;
+            this.FastAxisEnd.TextChanged += new System.EventHandler(this.FastAxisEnd_TextChanged);
             // 
             // FastAxisStart
             // 
@@ -425,6 +433,7 @@
             this.FastAxisStart.Size = new System.Drawing.Size(71, 20);
             this.FastAxisStart.TabIndex = 2;
             this.FastAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisStartBind;
+            this.FastAxisStart.TextChanged += new System.EventHandler(this.FastAxisStart_TextChanged);
             // 
             // MainForm
             // 
