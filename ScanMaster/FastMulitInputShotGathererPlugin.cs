@@ -69,10 +69,19 @@ namespace ScanMaster.Acquire.Plugins
 		
 		protected override void InitialiseSettings()
 		{
-			settings["triggerActive"] = true;
+			settings["triggerActive"] = false;
             //settings["pointsPerScan"] = 1000;
             settings["analogChannel"] = "uCavityReflectionECDL,uCavityReflectionTiSapph";
-		}
+            settings["preArm"] = true;
+            settings["channel"] = "uCavityReflectionAPD";
+            settings["gateLength"] = 100;
+            settings["sampleRate"] = 200000;
+        }
+
+        public void ReInitialiseSettings()
+        {
+            InitialiseSettings();
+        }
 
 		public override void AcquisitionStarting()
 		{
@@ -267,15 +276,23 @@ namespace ScanMaster.Acquire.Plugins
 
                 // Get the sample clock ready. If the trigger is inactive, the clock will start its output immediately.
                 // If the trigger is active, there is no output until the counter is triggered
-                // Which output task runs depends on the switch-state.           
-                if (config.switchPlugin.State)
+                // Which output task runs depends on the switch-state. 
+                try
                 {
-                    freqOutTask1.Start();
+                    if (config.switchPlugin.State)
+                    {
+                        freqOutTask1.Start();
+                    }
+                    else
+                    {
+                        freqOutTask2.Start();
+                    }
                 }
-                else
+                catch (NullReferenceException e)
                 {
                     freqOutTask2.Start();
                 }
+               
 
                 //prepare shot gate 
                 shotGateTask.Start();
@@ -320,15 +337,22 @@ namespace ScanMaster.Acquire.Plugins
                 shotGateTask.Stop();
 
                 // stop the sample clock
-                if (config.switchPlugin.State)
+                try
                 {
-                    freqOutTask1.Stop();
+                    if (config.switchPlugin.State)
+                    {
+                        freqOutTask1.Stop();
+                    }
+                    else
+                    {
+                        freqOutTask2.Stop();
+                    }
                 }
-                else
+                catch (NullReferenceException e)
                 {
                     freqOutTask2.Stop();
                 }
-                
+
                 // stop the counter; the job's done
                 countingTask.Stop();
 

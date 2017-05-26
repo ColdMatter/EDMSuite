@@ -63,10 +63,10 @@ namespace ScanMaster.Acquire.Plugins
 		
 		protected override void InitialiseSettings()
 		{
-			settings["triggerActive"] = true;
+			settings["triggerActive"] = false;
             //settings["pointsPerScan"] = 1000;
             settings["analogChannel"] = "uCavityReflectionECDL,uCavityReflectionTiSapph";
-		}
+        }
 
 		public override void AcquisitionStarting()
 		{

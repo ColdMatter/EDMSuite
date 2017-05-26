@@ -37,7 +37,7 @@ namespace MicrocavityScanner.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string FastAxisEndBind {
             get {
                 return ((string)(this["FastAxisEndBind"]));
@@ -104,6 +104,30 @@ namespace MicrocavityScanner.Properties {
             }
             set {
                 this["ExposureBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int FastAxisLaserBind {
+            get {
+                return ((int)(this["FastAxisLaserBind"]));
+            }
+            set {
+                this["FastAxisLaserBind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SlowAxisLaserBind {
+            get {
+                return ((int)(this["SlowAxisLaserBind"]));
+            }
+            set {
+                this["SlowAxisLaserBind"] = value;
             }
         }
     }

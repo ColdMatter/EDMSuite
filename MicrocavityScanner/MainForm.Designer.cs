@@ -34,6 +34,8 @@
             this.acquireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scatterGraph1 = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
@@ -46,29 +48,29 @@
             this.intensityYAxis1 = new NationalInstruments.UI.IntensityYAxis();
             this.SuperScanCont = new System.Windows.Forms.GroupBox();
             this.FastAxis = new System.Windows.Forms.GroupBox();
+            this.FastAxisRes = new System.Windows.Forms.TextBox();
+            this.FastAxisResLabel = new System.Windows.Forms.Label();
+            this.FastAxisEndVoltLabel = new System.Windows.Forms.Label();
+            this.FastAxisStartVoltLabel = new System.Windows.Forms.Label();
+            this.FastAxisEnd = new System.Windows.Forms.TextBox();
             this.FastAxisEndLabel = new System.Windows.Forms.Label();
+            this.FastAxisStart = new System.Windows.Forms.TextBox();
             this.FastAxisStartLabel = new System.Windows.Forms.Label();
             this.FastAxisSelectCombo = new System.Windows.Forms.ComboBox();
-            this.FastAxisStartVoltLabel = new System.Windows.Forms.Label();
-            this.FastAxisEndVoltLabel = new System.Windows.Forms.Label();
             this.SlowAxisCont = new System.Windows.Forms.GroupBox();
+            this.SlowAxisRes = new System.Windows.Forms.TextBox();
+            this.SlowAxisResLabel = new System.Windows.Forms.Label();
             this.SlowAxisEndVoltLabel = new System.Windows.Forms.Label();
             this.SlowAxisStartVoltLabel = new System.Windows.Forms.Label();
+            this.SlowAxisEnd = new System.Windows.Forms.TextBox();
             this.SlowAxisEndLabel = new System.Windows.Forms.Label();
+            this.SlowAxisStart = new System.Windows.Forms.TextBox();
             this.SlowAxisStartLabel = new System.Windows.Forms.Label();
             this.SlowAxisSelectCombo = new System.Windows.Forms.ComboBox();
             this.TimingCont = new System.Windows.Forms.GroupBox();
-            this.FastAxisResLabel = new System.Windows.Forms.Label();
-            this.SlowAxisResLabel = new System.Windows.Forms.Label();
-            this.ExposureLabel = new System.Windows.Forms.Label();
             this.ExposureUnitsLabel = new System.Windows.Forms.Label();
             this.Exposure = new System.Windows.Forms.TextBox();
-            this.SlowAxisRes = new System.Windows.Forms.TextBox();
-            this.SlowAxisEnd = new System.Windows.Forms.TextBox();
-            this.SlowAxisStart = new System.Windows.Forms.TextBox();
-            this.FastAxisRes = new System.Windows.Forms.TextBox();
-            this.FastAxisEnd = new System.Windows.Forms.TextBox();
-            this.FastAxisStart = new System.Windows.Forms.TextBox();
+            this.ExposureLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph1)).BeginInit();
             this.CurrentScanLine.SuspendLayout();
@@ -83,7 +85,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.acquireToolStripMenuItem});
+            this.acquireToolStripMenuItem,
+            this.dataToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(758, 24);
@@ -101,7 +104,7 @@
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -117,14 +120,31 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
+            // dataToolStripMenuItem
+            // 
+            this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveScanToolStripMenuItem});
+            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.dataToolStripMenuItem.Text = "Data";
+            // 
+            // saveScanToolStripMenuItem
+            // 
+            this.saveScanToolStripMenuItem.Name = "saveScanToolStripMenuItem";
+            this.saveScanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.saveScanToolStripMenuItem.Text = "Save Scan";
+            this.saveScanToolStripMenuItem.Click += new System.EventHandler(this.saveScanToolStripMenuItem_Click);
             // 
             // scatterGraph1
             // 
@@ -205,6 +225,53 @@
             this.FastAxis.TabStop = false;
             this.FastAxis.Text = "Fast Axis";
             // 
+            // FastAxisRes
+            // 
+            this.FastAxisRes.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisResBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.FastAxisRes.Location = new System.Drawing.Point(4, 98);
+            this.FastAxisRes.Name = "FastAxisRes";
+            this.FastAxisRes.Size = new System.Drawing.Size(88, 20);
+            this.FastAxisRes.TabIndex = 4;
+            this.FastAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisResBind;
+            this.FastAxisRes.TextChanged += new System.EventHandler(this.FastAxisRes_TextChanged);
+            // 
+            // FastAxisResLabel
+            // 
+            this.FastAxisResLabel.AutoSize = true;
+            this.FastAxisResLabel.Location = new System.Drawing.Point(6, 82);
+            this.FastAxisResLabel.Name = "FastAxisResLabel";
+            this.FastAxisResLabel.Size = new System.Drawing.Size(57, 13);
+            this.FastAxisResLabel.TabIndex = 13;
+            this.FastAxisResLabel.Text = "Resolution";
+            // 
+            // FastAxisEndVoltLabel
+            // 
+            this.FastAxisEndVoltLabel.AutoSize = true;
+            this.FastAxisEndVoltLabel.Location = new System.Drawing.Point(183, 62);
+            this.FastAxisEndVoltLabel.Name = "FastAxisEndVoltLabel";
+            this.FastAxisEndVoltLabel.Size = new System.Drawing.Size(14, 13);
+            this.FastAxisEndVoltLabel.TabIndex = 12;
+            this.FastAxisEndVoltLabel.Text = "V";
+            // 
+            // FastAxisStartVoltLabel
+            // 
+            this.FastAxisStartVoltLabel.AutoSize = true;
+            this.FastAxisStartVoltLabel.Location = new System.Drawing.Point(83, 62);
+            this.FastAxisStartVoltLabel.Name = "FastAxisStartVoltLabel";
+            this.FastAxisStartVoltLabel.Size = new System.Drawing.Size(14, 13);
+            this.FastAxisStartVoltLabel.TabIndex = 11;
+            this.FastAxisStartVoltLabel.Text = "V";
+            // 
+            // FastAxisEnd
+            // 
+            this.FastAxisEnd.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisEndBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.FastAxisEnd.Location = new System.Drawing.Point(106, 59);
+            this.FastAxisEnd.Name = "FastAxisEnd";
+            this.FastAxisEnd.Size = new System.Drawing.Size(71, 20);
+            this.FastAxisEnd.TabIndex = 3;
+            this.FastAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisEndBind;
+            this.FastAxisEnd.TextChanged += new System.EventHandler(this.FastAxisEnd_TextChanged);
+            // 
             // FastAxisEndLabel
             // 
             this.FastAxisEndLabel.AutoSize = true;
@@ -214,6 +281,16 @@
             this.FastAxisEndLabel.TabIndex = 9;
             this.FastAxisEndLabel.Text = "End";
             this.FastAxisEndLabel.Click += new System.EventHandler(this.label1_Click_1);
+            // 
+            // FastAxisStart
+            // 
+            this.FastAxisStart.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisStartBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.FastAxisStart.Location = new System.Drawing.Point(4, 59);
+            this.FastAxisStart.Name = "FastAxisStart";
+            this.FastAxisStart.Size = new System.Drawing.Size(71, 20);
+            this.FastAxisStart.TabIndex = 2;
+            this.FastAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisStartBind;
+            this.FastAxisStart.TextChanged += new System.EventHandler(this.FastAxisStart_TextChanged);
             // 
             // FastAxisStartLabel
             // 
@@ -228,29 +305,14 @@
             // FastAxisSelectCombo
             // 
             this.FastAxisSelectCombo.FormattingEnabled = true;
-            this.FastAxisSelectCombo.Location = new System.Drawing.Point(4, 19);
+            this.FastAxisSelectCombo.Items.AddRange(new object[] {
+            "tclECDLControl",
+            "tclTiSapphControl"});
+            this.FastAxisSelectCombo.Location = new System.Drawing.Point(9, 19);
             this.FastAxisSelectCombo.Name = "FastAxisSelectCombo";
             this.FastAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
             this.FastAxisSelectCombo.TabIndex = 1;
             this.FastAxisSelectCombo.SelectedIndexChanged += new System.EventHandler(this.FastAxisSelectCombo_SelectedIndexChanged);
-            // 
-            // FastAxisStartVoltLabel
-            // 
-            this.FastAxisStartVoltLabel.AutoSize = true;
-            this.FastAxisStartVoltLabel.Location = new System.Drawing.Point(83, 62);
-            this.FastAxisStartVoltLabel.Name = "FastAxisStartVoltLabel";
-            this.FastAxisStartVoltLabel.Size = new System.Drawing.Size(14, 13);
-            this.FastAxisStartVoltLabel.TabIndex = 11;
-            this.FastAxisStartVoltLabel.Text = "V";
-            // 
-            // FastAxisEndVoltLabel
-            // 
-            this.FastAxisEndVoltLabel.AutoSize = true;
-            this.FastAxisEndVoltLabel.Location = new System.Drawing.Point(183, 62);
-            this.FastAxisEndVoltLabel.Name = "FastAxisEndVoltLabel";
-            this.FastAxisEndVoltLabel.Size = new System.Drawing.Size(14, 13);
-            this.FastAxisEndVoltLabel.TabIndex = 12;
-            this.FastAxisEndVoltLabel.Text = "V";
             // 
             // SlowAxisCont
             // 
@@ -271,6 +333,25 @@
             this.SlowAxisCont.Text = "Slow Axis";
             this.SlowAxisCont.Enter += new System.EventHandler(this.groupBox1_Enter_1);
             // 
+            // SlowAxisRes
+            // 
+            this.SlowAxisRes.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisResBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SlowAxisRes.Location = new System.Drawing.Point(4, 98);
+            this.SlowAxisRes.Name = "SlowAxisRes";
+            this.SlowAxisRes.Size = new System.Drawing.Size(88, 20);
+            this.SlowAxisRes.TabIndex = 8;
+            this.SlowAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisResBind;
+            this.SlowAxisRes.TextChanged += new System.EventHandler(this.SlowAxisRes_TextChanged);
+            // 
+            // SlowAxisResLabel
+            // 
+            this.SlowAxisResLabel.AutoSize = true;
+            this.SlowAxisResLabel.Location = new System.Drawing.Point(6, 82);
+            this.SlowAxisResLabel.Name = "SlowAxisResLabel";
+            this.SlowAxisResLabel.Size = new System.Drawing.Size(57, 13);
+            this.SlowAxisResLabel.TabIndex = 15;
+            this.SlowAxisResLabel.Text = "Resolution";
+            // 
             // SlowAxisEndVoltLabel
             // 
             this.SlowAxisEndVoltLabel.AutoSize = true;
@@ -289,6 +370,16 @@
             this.SlowAxisStartVoltLabel.TabIndex = 11;
             this.SlowAxisStartVoltLabel.Text = "V";
             // 
+            // SlowAxisEnd
+            // 
+            this.SlowAxisEnd.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisEndBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SlowAxisEnd.Location = new System.Drawing.Point(106, 59);
+            this.SlowAxisEnd.Name = "SlowAxisEnd";
+            this.SlowAxisEnd.Size = new System.Drawing.Size(71, 20);
+            this.SlowAxisEnd.TabIndex = 7;
+            this.SlowAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisEndBind;
+            this.SlowAxisEnd.TextChanged += new System.EventHandler(this.SlowAxisEnd_TextChanged);
+            // 
             // SlowAxisEndLabel
             // 
             this.SlowAxisEndLabel.AutoSize = true;
@@ -297,6 +388,16 @@
             this.SlowAxisEndLabel.Size = new System.Drawing.Size(26, 13);
             this.SlowAxisEndLabel.TabIndex = 9;
             this.SlowAxisEndLabel.Text = "End";
+            // 
+            // SlowAxisStart
+            // 
+            this.SlowAxisStart.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisStart", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SlowAxisStart.Location = new System.Drawing.Point(4, 59);
+            this.SlowAxisStart.Name = "SlowAxisStart";
+            this.SlowAxisStart.Size = new System.Drawing.Size(71, 20);
+            this.SlowAxisStart.TabIndex = 6;
+            this.SlowAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisStart;
+            this.SlowAxisStart.TextChanged += new System.EventHandler(this.SlowAxisStart_TextChanged);
             // 
             // SlowAxisStartLabel
             // 
@@ -310,6 +411,9 @@
             // SlowAxisSelectCombo
             // 
             this.SlowAxisSelectCombo.FormattingEnabled = true;
+            this.SlowAxisSelectCombo.Items.AddRange(new object[] {
+            "tclECDLControl",
+            "tclTiSapphControl"});
             this.SlowAxisSelectCombo.Location = new System.Drawing.Point(4, 19);
             this.SlowAxisSelectCombo.Name = "SlowAxisSelectCombo";
             this.SlowAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
@@ -327,33 +431,6 @@
             this.TimingCont.TabIndex = 7;
             this.TimingCont.TabStop = false;
             this.TimingCont.Text = "Timing";
-            // 
-            // FastAxisResLabel
-            // 
-            this.FastAxisResLabel.AutoSize = true;
-            this.FastAxisResLabel.Location = new System.Drawing.Point(6, 82);
-            this.FastAxisResLabel.Name = "FastAxisResLabel";
-            this.FastAxisResLabel.Size = new System.Drawing.Size(57, 13);
-            this.FastAxisResLabel.TabIndex = 13;
-            this.FastAxisResLabel.Text = "Resolution";
-            // 
-            // SlowAxisResLabel
-            // 
-            this.SlowAxisResLabel.AutoSize = true;
-            this.SlowAxisResLabel.Location = new System.Drawing.Point(6, 82);
-            this.SlowAxisResLabel.Name = "SlowAxisResLabel";
-            this.SlowAxisResLabel.Size = new System.Drawing.Size(57, 13);
-            this.SlowAxisResLabel.TabIndex = 15;
-            this.SlowAxisResLabel.Text = "Resolution";
-            // 
-            // ExposureLabel
-            // 
-            this.ExposureLabel.AutoSize = true;
-            this.ExposureLabel.Location = new System.Drawing.Point(6, 17);
-            this.ExposureLabel.Name = "ExposureLabel";
-            this.ExposureLabel.Size = new System.Drawing.Size(51, 13);
-            this.ExposureLabel.TabIndex = 0;
-            this.ExposureLabel.Text = "Exposure";
             // 
             // ExposureUnitsLabel
             // 
@@ -375,65 +452,14 @@
             this.Exposure.Text = global::MicrocavityScanner.Properties.Settings.Default.ExposureBind;
             this.Exposure.TextChanged += new System.EventHandler(this.Exposure_TextChanged);
             // 
-            // SlowAxisRes
+            // ExposureLabel
             // 
-            this.SlowAxisRes.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisResBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SlowAxisRes.Location = new System.Drawing.Point(4, 98);
-            this.SlowAxisRes.Name = "SlowAxisRes";
-            this.SlowAxisRes.Size = new System.Drawing.Size(88, 20);
-            this.SlowAxisRes.TabIndex = 8;
-            this.SlowAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisResBind;
-            this.SlowAxisRes.TextChanged += new System.EventHandler(this.SlowAxisRes_TextChanged);
-            // 
-            // SlowAxisEnd
-            // 
-            this.SlowAxisEnd.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisEndBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SlowAxisEnd.Location = new System.Drawing.Point(106, 59);
-            this.SlowAxisEnd.Name = "SlowAxisEnd";
-            this.SlowAxisEnd.Size = new System.Drawing.Size(71, 20);
-            this.SlowAxisEnd.TabIndex = 7;
-            this.SlowAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisEndBind;
-            this.SlowAxisEnd.TextChanged += new System.EventHandler(this.SlowAxisEnd_TextChanged);
-            // 
-            // SlowAxisStart
-            // 
-            this.SlowAxisStart.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisStart", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SlowAxisStart.Location = new System.Drawing.Point(4, 59);
-            this.SlowAxisStart.Name = "SlowAxisStart";
-            this.SlowAxisStart.Size = new System.Drawing.Size(71, 20);
-            this.SlowAxisStart.TabIndex = 6;
-            this.SlowAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisStart;
-            this.SlowAxisStart.TextChanged += new System.EventHandler(this.SlowAxisStart_TextChanged);
-            // 
-            // FastAxisRes
-            // 
-            this.FastAxisRes.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisResBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.FastAxisRes.Location = new System.Drawing.Point(4, 98);
-            this.FastAxisRes.Name = "FastAxisRes";
-            this.FastAxisRes.Size = new System.Drawing.Size(88, 20);
-            this.FastAxisRes.TabIndex = 4;
-            this.FastAxisRes.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisResBind;
-            this.FastAxisRes.TextChanged += new System.EventHandler(this.FastAxisRes_TextChanged);
-            // 
-            // FastAxisEnd
-            // 
-            this.FastAxisEnd.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisEndBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.FastAxisEnd.Location = new System.Drawing.Point(106, 59);
-            this.FastAxisEnd.Name = "FastAxisEnd";
-            this.FastAxisEnd.Size = new System.Drawing.Size(71, 20);
-            this.FastAxisEnd.TabIndex = 3;
-            this.FastAxisEnd.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisEndBind;
-            this.FastAxisEnd.TextChanged += new System.EventHandler(this.FastAxisEnd_TextChanged);
-            // 
-            // FastAxisStart
-            // 
-            this.FastAxisStart.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisStartBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.FastAxisStart.Location = new System.Drawing.Point(4, 59);
-            this.FastAxisStart.Name = "FastAxisStart";
-            this.FastAxisStart.Size = new System.Drawing.Size(71, 20);
-            this.FastAxisStart.TabIndex = 2;
-            this.FastAxisStart.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisStartBind;
-            this.FastAxisStart.TextChanged += new System.EventHandler(this.FastAxisStart_TextChanged);
+            this.ExposureLabel.AutoSize = true;
+            this.ExposureLabel.Location = new System.Drawing.Point(6, 17);
+            this.ExposureLabel.Name = "ExposureLabel";
+            this.ExposureLabel.Size = new System.Drawing.Size(51, 13);
+            this.ExposureLabel.TabIndex = 0;
+            this.ExposureLabel.Text = "Exposure";
             // 
             // MainForm
             // 
@@ -510,6 +536,8 @@
         private System.Windows.Forms.Label ExposureUnitsLabel;
         private System.Windows.Forms.TextBox Exposure;
         private System.Windows.Forms.Label ExposureLabel;
+        private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveScanToolStripMenuItem;
     }
 }
 

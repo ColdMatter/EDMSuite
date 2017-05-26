@@ -123,13 +123,19 @@ namespace DAQ.HAL
         
        public override void ConnectApplications()
         {
-           //Commented out for debugging to get ScanMaster to compile
-           //RemotingHelper.ConnectMicrocavityHardwareControl();
-          
-        // ask the remoting system for access to TCL2012
-       //     Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
-            
+            //Commented out for debugging to get ScanMaster to compile
+            //RemotingHelper.ConnectMicrocavityHardwareControl();
+
+            RemotingHelper.ConnectScanMaster();
+
+            // ask the remoting system for access to TCL2012
+            Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+
+            // ask the remoting system for access to ScanMaster
+            //Type p = Type.GetType("ScanMaster.Controller, ScanMaster");
+            //RemotingConfiguration.RegisterWellKnownClientType(p, "tcp://localhost:1170/controller.rem");
+
         }
     }
 }

@@ -254,6 +254,7 @@ namespace ScanMaster
 
 	}
 
+    [Serializable]
 	public class TweakEventArgs : EventArgs
 	{
 		public String parameter;

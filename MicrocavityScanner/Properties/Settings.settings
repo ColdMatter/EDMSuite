@@ -6,7 +6,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="FastAxisEndBind" Type="System.String" Scope="User">
-      <Value Profile="(Default)">10</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="FastAxisResBind" Type="System.String" Scope="User">
       <Value Profile="(Default)">1000</Value>
@@ -22,6 +22,12 @@
     </Setting>
     <Setting Name="ExposureBind" Type="System.String" Scope="User">
       <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="FastAxisLaserBind" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="SlowAxisLaserBind" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

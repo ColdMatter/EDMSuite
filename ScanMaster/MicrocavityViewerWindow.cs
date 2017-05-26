@@ -1627,17 +1627,17 @@ namespace ScanMaster.GUI
 
         public double[,] DecimateData(double[,] data)
         {
-            double divis = data.Length / (2*1000);
+            double divis = data.Length / (2 * 1000);
             int skip = Convert.ToInt32(Math.Ceiling(divis));
-            double[,] decimated = new double[1000,1];
+            double[,] decimated = new double[1000, 1];
             for (int i = 0; i <= 999; i++)
             {
-                decimated[i, 0] = data[skip*i,1];
+                decimated[i, 0] = data[skip * i, 1];
                 //decimated[i, 1] = data[skip*i, 1];
             }
             return decimated;
         }
-        
+
         public void PlotOnTOF(TOF t) { PlotY(tofGraph, tofOnPlot, t.GateStartTime, t.ClockPeriod, t.Data); }
         public void PlotOnTOF(ArrayList t) 
         { 

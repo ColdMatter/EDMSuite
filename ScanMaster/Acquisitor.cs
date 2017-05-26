@@ -22,6 +22,7 @@ namespace ScanMaster.Acquire
 	/// and Mike can use exactly the same code, with our own custom plugins. I'm not sure
 	/// whether it will work or not.
 	/// </summary>
+    [Serializable]
 	public class Acquisitor
 	{
 		public event DataEventHandler Data;
@@ -35,7 +36,7 @@ namespace ScanMaster.Acquire
             get { return config; }
 		}
 
-		private Thread acquireThread;
+		[NonSerialized()] private Thread acquireThread;
 		private int numberOfScans = 0;
 		
 		enum AcquisitorState {stopped, running, stopping};
@@ -116,7 +117,7 @@ namespace ScanMaster.Acquire
                         double tweak = timer.ElapsedMilliseconds - movestart;
 
                         ScanPoint sp = new ScanPoint();
-						sp.ScanParameter = config.outputPlugin.ScanParameter;
+                        sp.ScanParameter = config.outputPlugin.ScanParameter;
                         double dataprep = timer.ElapsedMilliseconds;
 
                         if((bool)config.shotGathererPlugin.Settings["preArm"])
@@ -320,8 +321,7 @@ namespace ScanMaster.Acquire
 				tweakFlag = true;
 			}
 		}
-
-
+        
 		protected virtual void OnData( DataEventArgs e ) 
 		{
 			if (Data != null) Data(this, e);
@@ -330,7 +330,6 @@ namespace ScanMaster.Acquire
 		{
 			if (ScanFinished != null) ScanFinished(this, new EventArgs());
 		}
-
 	}
 
 	/// <summary>
