@@ -25,7 +25,7 @@ namespace DAQ.Environment
             string sMonth = DateTime.Today.Month.ToString().PadLeft(2, '0');
             string sDay = DateTime.Today.Day.ToString().PadLeft(2,'0');
             Paths.Add("DataPath", dataPath + sYear + sMonth + sDay);
-           
+            Paths.Add("settingsPath", user + "\\Settings");
 
             if (!Directory.Exists((string)Paths["DataPath"]))
             {

@@ -9,11 +9,15 @@ using MOTMaster2;
 namespace MOTMaster2.SnippetLibrary
 {
     /// <summary>
-    /// Base class for MOTMaster sequences
+    /// A class to encapsulate MOTMasterScriptSnippets. This is used so that a full script can be defined with relative timings and step names.
     /// </summary>
-    public class SequenceStep : MOTMasterScriptSnippet
+    public class SequenceStep 
     {
+        private MOTMasterScriptSnippet snippet;
+        private string name;
+        private string description;
         private double sequenceStartTime;
+        public bool enabled { get; set; }
         public double SequenceStartTime
         {
             get { return sequenceStartTime; }
@@ -26,42 +30,33 @@ namespace MOTMaster2.SnippetLibrary
             get { return sequenceEndTime; }
             set { sequenceEndTime = value; }
         }
-        public virtual void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
-        {
-            throw new NotImplementedException();
-        }
 
-        public virtual void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        /// <summary>
+        /// Constructs a SequenceStep
+        /// </summary>
+        /// <param name="name">Name of the step</param>
+        /// <param name="description">Description of the step</param>
+        /// <param name="startTime">Starting time in milliseconds</param>
+        /// <param name="parameters">Dictionary of parameters used for the step</param>
+        public SequenceStep(string name, string description, double startTime, Dictionary<string,object> parameters,List<string>channels)
         {
-            throw new NotImplementedException();
+            this.name = name;
+            this.description = description;
+            this.sequenceStartTime = startTime;   
         }
-        public virtual void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SequenceStep(HSDIOPatternBuilder hs, Dictionary<String,Object> parameters, double startTime)
-        {
-            this.SequenceStartTime = startTime;
-            AddDigitalSnippet(hs, parameters);
-        }
-
-        public SequenceStep(AnalogPatternBuilder p, Dictionary<String, Object> parameters, double startTime)
-        {
-            this.SequenceStartTime = startTime;
-            AddAnalogSnippet(p, parameters);
-        }
-
-        public SequenceStep(MuquansBuilder mu, Dictionary<String, Object> parameters)
-        {
-            AddMuquansCommands(mu, parameters);
-        }
+        
 
         public SequenceStep()
         {
             throw new Exception("No Parameters or Pattern Builder Passed to Sequence Constructor");
         }
 
+        /// <summary>
+        /// Converts a time from milliseconds into number of samples
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="frequency"></param>
+        /// <returns></returns>
         public int ConvertToSampleTime(double time, int frequency)
         {
             return (int)(time * frequency / 1000);

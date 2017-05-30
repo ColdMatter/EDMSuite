@@ -95,7 +95,7 @@ namespace MOTMaster.SnippetLibrary
         public void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
             mu.SetFrequency("slave0", (double)parameters["MOTdetuning"]);
-            mu.SetFrequency("mphi", 0.0);
+            mu.SetFrequency("mphi", (double)parameters["MPhiDetuning"];
         }
     }
 }

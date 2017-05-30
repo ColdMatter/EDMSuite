@@ -25,10 +25,13 @@ namespace MOTMaster2.SnippetLibrary
         {
             int clock = (int)parameters["HSClockFrequency"];
             int loadtime2D = ConvertToSampleTime((double)parameters["2DLoadTime"],clock);
-
+            int loadtime3D = ConvertToSampleTime((double)parameters["3DLoadTime"], clock);
             
             //Pulse push beam for the duration of the 2D mot loading time
             hs.DownPulse(4, 0, loadtime2D, "pushaomTTL");
+            //Adds a very short pulse just to set the sequence end after the 3D MOT loads
+            hs.Pulse(loadtime2D + loadtime3D - 4, 0, 4, "shutter");
+          
             SetSequenceEndTime(hs.Layout.LastEventTime, clock);
 
         }

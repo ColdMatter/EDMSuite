@@ -141,10 +141,7 @@
     </Reference>
     <Reference Include="NationalInstruments.NetworkVariable, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Tdms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI, Version=9.0.40.292, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
-    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>

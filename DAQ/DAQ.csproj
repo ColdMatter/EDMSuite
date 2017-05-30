@@ -227,8 +227,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Z:\Software\EDMSuite\MotMaster2\bin\Nav\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -486,6 +487,9 @@
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

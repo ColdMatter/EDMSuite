@@ -127,25 +127,25 @@ namespace DAQ.HAL
 
         public void SetMOTFrequency(double freq)
         {
-            double ddsVal = 88.8125 - 0.0625 * freq;
-            slaveCommands.Add(SetFrequency("slave0", ddsVal));
+            //ddsVal = 88.8125 - 0.0625 * freq;
+            slaveCommands.Add(SetFrequency("slave0", freq));
         }
         public void SetMPhiFrequency(double freq)
         {
-            double ddsVal =  107.975 + 0.25 * freq;
-            aomCommands.Add(SetFrequency("mphi", ddsVal));
+           //double ddsVal = 107.975 + 0.25 * freq;
+            aomCommands.Add(SetFrequency("mphi", freq));
         }
 
-        public void SweepMOTFrequency(double freq,double time)
+        public void SweepMOTFrequency(double freq, double time)
         {
-            double ddsVal = 88.8125 - 0.0625 * freq;
-            slaveCommands.Add(SweepFrequency("slave0", ddsVal, time));
+            //double ddsVal = 88.8125 - 0.0625 * freq;
+            slaveCommands.Add(SweepFrequency("slave0", freq, time));
         }
 
         public void SweepMphiFrequency(double freq, double time)
         {
-            double ddsVal = 107.975 + 0.25 * freq;
-            aomCommands.Add(SweepFrequency("mphi", ddsVal, time));
+            //double ddsVal = 107.975 + 0.25 * freq;
+            aomCommands.Add(SweepFrequency("mphi", freq, time));
         }
         #endregion
         /// <summary>

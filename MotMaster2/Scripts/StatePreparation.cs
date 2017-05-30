@@ -32,8 +32,8 @@ namespace MOTMaster2.Preparation
             Parameters["YBias2D"] = -1.55;
 
             //All times are in milliseconds
-            Parameters["2DLoadTime"] = 200.0;
-            Parameters["3DLoadTime"] = 100.0;
+            Parameters["2DLoadTime"] = 500.0;
+            Parameters["3DLoadTime"] = 150.0;
             Parameters["BfieldSwitchOffTime"] = (double)Parameters["2DLoadTime"] + (double)Parameters["3DLoadTime"];
             Parameters["BfieldDelayTime"] = 2.5;
 
@@ -55,10 +55,10 @@ namespace MOTMaster2.Preparation
             Parameters["3DBfield"] = 2.8;
 
             //Frequencies and attenuator voltages for the fibre AOMs
-            Parameters["XAtten"] = 3.85;
-            Parameters["YAtten"] = 5.4;
-            Parameters["ZPAtten"] = 3.58;
-            Parameters["ZMAtten"] = 3.17;
+            Parameters["XAtten"] = 2.8;
+            Parameters["YAtten"] = 6.5;
+            Parameters["ZPAtten"] = 3.9;
+            Parameters["ZMAtten"] = 4.2;
 
 
             Parameters["XFreq"] = 6.828;
@@ -71,12 +71,22 @@ namespace MOTMaster2.Preparation
             Parameters["2DMotFreq"] = 7.35;
             Parameters["2DMotAtten"] = 5.7;
 
-            Parameters["MOTdetuning"] = -13.5;
-            Parameters["Molassesdetuning"] = -163.5;
-
             Parameters["PrepRepumpDuration"] = 5.0;
-            Parameters["22PumpTime"] = 4e-3;
-          
+            Parameters["22PumpTime"] = 2e-3;
+
+            Parameters["BRamanFieldSwitchTime"] = 2.0;
+            Parameters["MicrowaveDuration"] = 0.15;
+
+            Parameters["Pump|1,0>"] = false;
+
+            Parameters["MOTdetuning"] = 89.3229;
+            Parameters["MPhidetuning"] = 105.6170;
+            Parameters["MolassesSlavedetuning"] = 98.7500;
+            Parameters["MolassesMPhidetuning"] = 70.1500;
+            Parameters["StatePrepSlavedetuning"] = 105.2400;
+            Parameters["StatePrepMPhidetuning"] = 99.0;
+            Parameters["DetectionSlavedetuning"] = 88.6354;
+            Parameters["DetectionMPhidetuning"] = 106.9920;
         }
 
         public override HSDIOPatternBuilder GetHSDIOPattern()
@@ -130,7 +140,7 @@ namespace MOTMaster2.Preparation
 
             SequenceStep mot2d = new Load2DMOT(mu, Parameters);
 
-            SequenceStep molasses = new Imaging(mu, Parameters);
+            SequenceStep molasses = new Molasses(mu, Parameters);
 
             SequenceStep prep = new StatePreparation(mu,Parameters);
 

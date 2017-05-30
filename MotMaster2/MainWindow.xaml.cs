@@ -120,6 +120,8 @@ namespace MOTMaster2
         {
             if (btnRun.Content.Equals("Run"))
             {
+                Interferometer.Patterns p = new Interferometer.Patterns();
+                p.GetHSDIOPattern();
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;

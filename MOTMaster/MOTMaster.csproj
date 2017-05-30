@@ -125,10 +125,6 @@
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -187,7 +183,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ED7BD5BA-7F85-4F26-9B84-A258269B60E3}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ICEBLOCTest</RootNamespace>
     <AssemblyName>ICEBLOCTest</AssemblyName>
@@ -36,8 +36,21 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Nav|AnyCPU'">
     <OutputPath>bin\Nav\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -54,6 +67,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DCSTests.cs" />
+    <Compile Include="ICEBloc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +75,9 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

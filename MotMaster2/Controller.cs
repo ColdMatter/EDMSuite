@@ -341,7 +341,15 @@ namespace MOTMaster2
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
                         if(!config.Debug) runPattern(sequence);
-                        else ioHelper.SaveRawSequence((string)(Environs.FileSystem.Paths["DathPath"]),i,sequence);
+                        if (i==0)
+                        {
+                            if (Environs.FileSystem.Paths.Contains("DataPath"))
+                            {
+                                Console.WriteLine("yes");
+                            }
+                            string filepath =  (string)(Environs.FileSystem.Paths["DataPath"]);
+                            ioHelper.SaveRawSequence(filepath, i, sequence);
+                        }
                     }
                     if (!config.Debug) clearDigitalPattern(sequence);
 
@@ -445,7 +453,14 @@ namespace MOTMaster2
         {
             
             initializeHardware(sequence);
-            run(sequence);
+            try
+            {
+                run(sequence);
+            }
+            catch
+            {
+                MessageBox.Show("Error when running sequence. Continuing and releasing hardware...");
+            }
             releaseHardware();
         }
 

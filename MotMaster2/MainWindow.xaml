@@ -51,7 +51,7 @@
                     <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="358.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Text="0" Grid.Column="1"/>
                     <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="416.714,25,0,0" VerticalAlignment="Top" Width="29" Grid.Column="1"/>
                     <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="512.714,25,0,0" VerticalAlignment="Top" Width="28" RenderTransformOrigin="0.546,0.5" Grid.Column="1"/>
-                    <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="589.714,21,0,0" VerticalAlignment="Top" Width="81" FontWeight="Bold" Background="#FF99E699" Click="btnScan_Click" Grid.Column="1"/>
+                    <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="589.714,21,0,0" VerticalAlignment="Top" Width="81" FontWeight="Bold" Background="#FFF1E352" Click="btnScan_Click" Grid.Column="1"/>
                     <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="445.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" Text="100" Grid.Column="1"/>
                     <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="540.714,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Text="1" Grid.Column="1"/>
                     <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="24" Margin="253.143,25,0,0" VerticalAlignment="Top" Width="59" FontWeight="Bold" Grid.Column="1"/>
@@ -65,7 +65,7 @@
                     </Grid.ColumnDefinitions>
                     <ComboBox x:Name="cbParamsManual" HorizontalAlignment="Left" Height="27" Margin="79,24,0,0" VerticalAlignment="Top" Width="266" Grid.ColumnSpan="2" SelectionChanged="cbParamsManual_SelectionChanged"/>
                     <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,25,0,0" VerticalAlignment="Top" Width="64"/>
-                    <Button Content="Update" HorizontalAlignment="Left" Margin="418.143,22,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Grid.Column="1" Click="UpdateButton_Click"/>
+                    <Button Content="Update" HorizontalAlignment="Left" Margin="418.143,22,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Grid.Column="1" Click="UpdateButton_Click" Background="#FFADE8F1"/>
                     <Label Content="Value:" HorizontalAlignment="Left" Height="26" Margin="260.286,25,0,0" VerticalAlignment="Top" Width="43" Grid.Column="1"/>
                     <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="308.286,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" Text="0" FontWeight="Bold" Grid.Column="1"/>
                 </Grid>

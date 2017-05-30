@@ -34,8 +34,8 @@ namespace MOTMaster2.SnippetLibrary
             //Ramp the frequency of the Light to -150 MHz
             hs.Pulse((int)switchOffTime-40000, 0, 200, "serialPreTrigger");
 
-            hs.Pulse((int)switchOffTime , serialWait, 200, "slaveDDSTrig");
-            hs.Pulse((int)switchOffTime, serialWait, 200, "aomDDSTrig");
+            hs.Pulse((int)switchOffTime , 0, 200, "slaveDDSTrig");
+            hs.Pulse((int)switchOffTime, 0, 200, "aomDDSTrig");
 
             SetSequenceEndTime(hs.Layout.LastEventTime, clock);
 
@@ -58,7 +58,7 @@ namespace MOTMaster2.SnippetLibrary
 
             p.AddAnalogValue("xbiasCoil2D", switchOffTime, 0.0);
             p.AddAnalogValue("ybiasCoil2D", switchOffTime, 0.0);
-            p.AddAnalogValue("mot2DCoil", switchOffTime, (double)parameters["2DBfield"]);
+            p.AddAnalogValue("mot2DCoil", switchOffTime, 0.0);
             p.AddLinearRamp("mot3DCoil", switchOffTime, (int)(0.9*1e-3*clock),-8.0);
             p.AddAnalogValue("mot3DCoil", switchOffTime + (int)(0.9 * 1e-3 * clock), 0.0);
 
@@ -71,9 +71,8 @@ namespace MOTMaster2.SnippetLibrary
 
         public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
-            //Shifts the light to resonance with the 2->3 transition - note the extra 1.5MHz comes from a frequency shift with the AOM
-            mu.SweepFrequency("Slave0", (double)parameters["Molassesdetuning"], (double)parameters["MolassesFreqDuration"]);
-            mu.SweepFrequency("mphi", (double)parameters["Molassesdetuning"], (double)parameters["MolassesFreqDuration"]);
+            mu.SweepFrequency("Slave0", (double)parameters["MolassesSlavedetuning"], (double)parameters["MolassesFreqDuration"]);
+            mu.SweepFrequency("mphi", (double)parameters["MolassesMPhidetuning"], (double)parameters["MolassesFreqDuration"]);
 
         }
 

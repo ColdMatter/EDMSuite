@@ -73,16 +73,31 @@ namespace DAQ.HAL
                 throw new Exception("Pattern length not equal to number of loop times");
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
-            int width = 4;
-            uint[] data = new uint[width];
+            int width;
+            uint[] data;
             length = pattern.Length;
             for (int i = 0; i < loopTimes.Length;i++ )
             {
-                if (loopTimes[i]%4!=0)
+                if (loopTimes[i] % 4 != 0)
                 {
-                    throw new Exception("Loop time not a multiple of 4 master clock cycles. Change this to avoid digital pattern timing errors.");
+                    width = 8;
+                    data = new uint[width];
+                    if (loopTimes[i] % 2 == 0)
+                    {
+                        loopTimes[i] = loopTimes[i] / 2;
+
+                    }
+                    else
+                    {
+                        throw new Exception("Loop time not a multiple of 4 master clock cycles. Change this to avoid digital pattern timing errors.");
+                    }
                 }
-                for (int j = 0; j < width;j++ )
+                else
+                {
+                   width = 4;
+                   data = new uint[width];
+                }
+                for (int j = 0; j < width; j++)
                 {
                     data[j] = pattern[i];
                 }

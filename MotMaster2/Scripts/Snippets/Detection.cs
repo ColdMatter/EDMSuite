@@ -57,8 +57,8 @@ namespace MOTMaster2.SnippetLibrary
 
         public override void AddMuquansCommands(MuquansBuilder mu, Dictionary<String, Object> parameters)
         {
-            mu.SetFrequency("slave0",1.5);
-            mu.SetFrequency("mphi", 0.0);
+            mu.SetFrequency("slave0",(double)parameters["DetectionSlavedetuning"]);
+            mu.SetFrequency("mphi", (double)parameters["DetectionMPhidetuning"]);
         }
 
       

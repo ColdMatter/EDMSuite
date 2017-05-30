@@ -67,7 +67,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
-            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
+            AddDigitalOutputChannel("microwaveTrigger", hsdioBoard, 0, 4);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
             AddDigitalOutputChannel("shutter", hsdioBoard, 0, 6);
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
