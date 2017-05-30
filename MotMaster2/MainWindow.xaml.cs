@@ -25,7 +25,7 @@ namespace MOTMaster2
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Controller controller;
+        public static Controller controller;
         public MainWindow()
         {
             InitializeComponent();

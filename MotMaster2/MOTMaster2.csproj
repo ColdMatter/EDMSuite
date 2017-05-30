@@ -120,27 +120,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BindableDynamicDictionary.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scripts\InterferometerFull.cs" />
-    <Compile Include="Scripts\MolassesSequence.cs" />
-    <Compile Include="Scripts\Snippets\Detection.cs" />
-    <Compile Include="Scripts\Snippets\Imaging.cs" />
-    <Compile Include="Scripts\Snippets\Initialize.cs" />
-    <Compile Include="Scripts\Snippets\Load2DMOT.cs" />
     <Compile Include="MMDataIOHelper.cs" />
     <Compile Include="MMDataZipper.cs" />
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
-    <Compile Include="Scripts\Snippets\Molasses.cs" />
     <Compile Include="Scripts\Snippets\SequenceStep.cs" />
-    <Compile Include="Scripts\Snippets\Interferometer.cs" />
-    <Compile Include="Scripts\Snippets\StatePreparation.cs" />
-    <Compile Include="Scripts\Interferometer.cs" />
-    <Compile Include="Scripts\StatePreparation.cs" />
     <Compile Include="SequenceDataGrid.xaml.cs">
       <DependentUpon>SequenceDataGrid.xaml</DependentUpon>
     </Compile>
@@ -166,7 +157,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Scripts\MOTSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -221,6 +211,10 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NavigatorHardwareControl\NavigatorHardwareControl.csproj">
+      <Project>{9b288421-2702-47e7-86fb-cbb85be743f8}</Project>
+      <Name>NavigatorHardwareControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>

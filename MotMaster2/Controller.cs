@@ -33,7 +33,6 @@ using NationalInstruments.UI;
 //using NationalInstruments.UI.WindowsForms;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
-
 using MOTMaster2.SnippetLibrary;
 
 namespace MOTMaster2
@@ -74,6 +73,8 @@ namespace MOTMaster2
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
 
+        public List<string> analogChannels;
+        public List<string> digitalChannels;
         public MOTMasterScript script=null;
        // ControllerWindow controllerWindow;
 
@@ -117,7 +118,8 @@ namespace MOTMaster2
                 apg = new DAQMxAnalogPatternGenerator();
                 PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
                 aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-
+                analogChannels =
+                digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
                 if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                     "tcp://localhost:1172/controller.rem");
@@ -557,12 +559,14 @@ namespace MOTMaster2
                 MessageBox.Show(e.Message+e.InnerException.Message,"Error in loading script DLL");
                 return null;
             }
+           
             return (MOTMasterScript)loadedInstance;
         }
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
             MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard,config.UseMuquans);
+            
             return sequence;
         }
 

@@ -1,8 +1,10 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Name="frmMain" x:Class="MOTMaster2.MainWindow"
-        Title="MOTMaster2" Height="271.143" Width="760.429" ResizeMode="NoResize">
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Name="frmMain" 
+        x:Class="MOTMaster2.MainWindow"
+        xmlns:controls="clr-namespace:MOTMaster2"
+        Title="MOTMaster2" Height="840" Width="760.429" ResizeMode="NoResize">
     <Grid Margin="0,0,-5.286,-0.429">
         <Menu>
             <Menu Height="20" Width="749">
@@ -71,6 +73,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-
+        <controls:SequenceDataGrid x:Name="SequenceData" Margin="10,237,10.286,10.429" />
     </Grid>
 </Window>
