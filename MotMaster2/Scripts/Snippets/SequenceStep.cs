@@ -70,12 +70,11 @@ namespace MOTMaster2.Sequence
             return sampleTime * 1000.0/frequency;
         }
 
-        public static ObservableCollection<SequenceStep> GetSequenceSteps()
+
+        public AnalogChannelSelector GetAnalogChannels(string name)
         {
-            var sequenceSteps = new ObservableCollection<SequenceStep>();
-            sequenceSteps.Add(new SequenceStep() {name = "Init", description = "Intialisation", duration = 1.0, enabled = true });
-            sequenceSteps.Add(new SequenceStep() { name = "Second", description = "False", duration = 2.0, enabled = false });
-            return sequenceSteps;
+            
+            return this.analogValueTypes[name];
         }
 
     }
