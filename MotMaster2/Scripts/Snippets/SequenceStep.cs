@@ -22,14 +22,16 @@ namespace MOTMaster2.Sequence
         public bool enabled { get; set; }
         public double duration { get; set; }
         public TimebaseUnits timebase { get; set; }
-        public ObservableDictionary<string, AnalogChannelSelector> analogValueTypes = new ObservableDictionary<string,AnalogChannelSelector>();
-        public ObservableDictionary<string, DigitalChannelSelector> digitalValueTypes = new ObservableDictionary<string,DigitalChannelSelector>();
-        private Dictionary<string, AnalogValueArgs> analogData = new Dictionary<string,AnalogValueArgs>();
-        private Dictionary<string, bool> digitalData = new Dictionary<string,bool>();
+        public ObservableDictionary<string, AnalogChannelSelector> analogValueTypes { get; set; }
+        public ObservableDictionary<string, DigitalChannelSelector> digitalValueTypes { get; set; }
+        public Dictionary<string, AnalogValueArgs> analogData = new Dictionary<string,AnalogValueArgs>();
+        public Dictionary<string, bool> digitalData = new Dictionary<string,bool>();
 
         
         public SequenceStep()
         {
+             digitalValueTypes=new ObservableDictionary<string,DigitalChannelSelector>();
+             analogValueTypes= new ObservableDictionary<string,AnalogChannelSelector>();
             foreach (string analog in Environs.Hardware.AnalogOutputChannels.Keys.Cast<string>().ToList())
             {
                 analogValueTypes[analog] = new AnalogChannelSelector();
@@ -99,8 +101,8 @@ namespace MOTMaster2.Sequence
     //Enumerates the state of each digital channel. For now, this is either on/off, but we may want to add the option of including pulses within a single step   
      public enum DigitalChannelSelector
     {
-        On,
-        Off
+        Off,
+        On
     }
 
     public struct AnalogValueArgs

@@ -13,7 +13,7 @@
                     <MenuItem Header="Save Parameters As..." Click="SaveParameters_Click"/>
                     <MenuItem Header="Open Environment" Click="LoadEnvironment_Click"/>
                     <MenuItem Header="Save Environment" Click="SaveEnvironment_Click"/>
-                    
+
                 </MenuItem>
                 <MenuItem Header="Edit">
                     <MenuItem Header="Options" Click="EditOptions_Click"/>
@@ -73,6 +73,25 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <controls:SequenceDataGrid x:Name="SequenceData" Margin="10,237,10.286,10.429" />
+        <controls:SequenceDataGrid x:Name="SequenceData" Margin="-270,237,10.286,10.429" Width="450"/>
+        <TabControl x:Name="tcLog" HorizontalAlignment="Left" Height="336" Margin="473,232,0,0" VerticalAlignment="Top" Width="286" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">
+            <TabItem Header="Log">
+                <RichTextBox >
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run x:Name="tbLog" Text=">Welcome to MOTMaster" Background="Black" Foreground="Lime"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+            </TabItem>
+            <TabItem Header="Property">
+                <Grid>
+                    <Label x:Name="noPropLabel" Content="Select an analog channel&#xD;&#xA;in a timestep to modify &#xD;&#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
+                    <DataGrid  Name="propertyGrid" Visibility="Hidden"/>
+                </Grid>
+            </TabItem>
+
+
+        </TabControl>
     </Grid>
 </Window>

@@ -369,5 +369,14 @@ namespace MOTMaster2
              if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
                 tbCurValue.Content = controller.script.Parameters[cbParamsScan.SelectedItem.ToString()].ToString();
         }
+
+        private void CreateAnalogPropertyTable(Sequence.SequenceStep selectedStep, string channelName,Sequence.AnalogChannelSelector analogType )
+        {
+            tcLog.SelectedIndex = 1;
+            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
+            propertyGrid = new DataGrid();
+            propertyGrid.DataContext = selectedStep.analogData[channelName];
+
+        }
     }
 }

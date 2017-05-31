@@ -25,6 +25,10 @@ namespace DAQ.HAL
             this.client = new TcpClient();
             Enable();
         }
+        public ICEBLOCCommunicator()
+        {
+            throw new NotImplementedException();
+        }
         public void Configure(string ipaddress, int port)
         {
             this.ipaddress = ipaddress;
@@ -89,10 +93,10 @@ namespace DAQ.HAL
     public class ICEBLOCMessage
     {
         public string op { get; set; }
-        public int[] transmission_id { get; set; }
+        public string transmission_id { get; set; }
         public Dictionary<String, Object> parameters { get; set; }
 
-        public ICEBLOCMessage(string op, int[] transmission_id,Dictionary<string,object> parameters)
+        public ICEBLOCMessage(string op, string transmission_id,Dictionary<string,object> parameters)
         {
             this.op = op;
             this.transmission_id = transmission_id;
