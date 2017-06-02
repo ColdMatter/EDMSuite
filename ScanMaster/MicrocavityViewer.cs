@@ -245,7 +245,6 @@ namespace ScanMaster.GUI
 				}
 			}
 
-
 			// update the spectra
 			pointsToPlot.Points.Add(e.point);
 			if (shotCounter % currentProfile.GUIConfig.updateSpectraEvery == 0)
@@ -301,7 +300,6 @@ namespace ScanMaster.GUI
             string[] info =  {"top:", OverShotNoise0.ToString("G3"), "norm:",OverShotNoise1.ToString("G3"), "Normed:", OverShotNoise01.ToString("G3")};
             window.SetLabel(window.noiseResultsLabel, String.Join(" ", info));
         }
-
 
 		public void ScanFinished()
 		{

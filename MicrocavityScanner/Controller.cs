@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using DAQ;
@@ -23,8 +24,8 @@ namespace MicrocavityScanner
         #region Class members
         private TransferCavityLock2012.Controller tclController;
         private ScanMaster.Controller smController;
-
-        public enum AppState { stopped, running };
+        public ScanSerializer serializer = new ScanSerializer();
+        public enum AppState { stopped, running, starting };
         private MainForm mainForm;
         private Acquire.Scanitor scanitor;
         public Acquire.Scanitor Scanitor
@@ -77,7 +78,6 @@ namespace MicrocavityScanner
 
             // make an scanitor and connect ourself to its events
             scanitor = new Scanitor();
-            //I haven't written these events yet:
             scanitor.Data += new DataEventHandler(DataHandler);
             //acquisitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
 
@@ -102,16 +102,20 @@ namespace MicrocavityScanner
 
         public void StartAcquire()
         {
-            appState = AppState.running;
+            appState = AppState.starting;
+            mainForm.UpdateStatusBar();
+            mainForm.ClearAll();
+            dataStore.ClearAll();
             scanitor.StartScan();
         }
 
         public void StopAcquire()
         {
-            if (appState == AppState.running)
+            if (appState != AppState.stopped)
             {
                 scanitor.StopScan();
                 appState = AppState.stopped;
+                mainForm.UpdateStatusBar();
             }
         }
 
@@ -130,22 +134,51 @@ namespace MicrocavityScanner
             }
         }
 
-        // Selecting Acquire->Stop on the front panel will result in this function being called.
-        public void AcquireStop()
+        public void SaveData()
         {
-            if (appState == AppState.running)
+            //smController = (ScanMaster.Controller)(Activator.GetObject(typeof(ScanMaster.Controller), "tcp://localhost:1170/controller.rem"));
+            //scanitor.smController.SaveData();
+
+            // saves a zip file containing each scan, plus the average
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "zipped xml data file|*.zip";
+            saveFileDialog1.Title = "Save scan data";
+            saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
+                                                (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                scanitor.StopScan();
-                appState = AppState.stopped;
+                if (saveFileDialog1.FileName != "")
+                {
+                    SaveData(saveFileDialog1.FileName);
+                }
+
             }
         }
 
-        public void SaveData()
+        // Saves the scan data to the specified file
+        public void SaveData(string filename)
         {
-            smController = (ScanMaster.Controller)(Activator.GetObject(typeof(ScanMaster.Controller), "tcp://localhost:1170/controller.rem"));
-            smController.SaveData();
+            System.IO.FileStream fs = new FileStream(filename, FileMode.Create);
+            serializer.PrepareZip(fs);
+            string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+            for (int k = 1; k <= DataStore.NumberOfScans; k++)
+            {
+                Scan sc = serializer.DeserializeScanAsBinary(tempPath + "\\scan_" + k.ToString());
+                serializer.AppendToZip(sc, "scan_" + k.ToString() + ".xml");
+            }
+            serializer.AppendToZip(DataStore.AverageScan, "average.xml");
+            serializer.CloseZip();
+            fs.Close();
+            //Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
         }
 
-        #endregion
+        public void GUIUpdate()
+        {
+            mainForm.FormatGraphs();
+            mainForm.UpdateStatusBar();
+        }
     }
+
+        #endregion
 }

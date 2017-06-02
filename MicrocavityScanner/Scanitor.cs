@@ -11,6 +11,7 @@ using ScanMaster.Acquire.Plugins;
 using MicrocavityScanner.GUI;
 using Data;
 using Data.Scans;
+using System.Diagnostics; //for stopwatch
 
 namespace MicrocavityScanner.Acquire
 {
@@ -22,7 +23,7 @@ namespace MicrocavityScanner.Acquire
         public object ScanitorMonitorLock = new Object();
 
         private TransferCavityLock2012.Controller tclController;
-        private ScanMaster.Controller smController;
+        public ScanMaster.Controller smController;
 
         private ScanMaster.Acquire.Acquisitor smAcquisitor;
 
@@ -37,7 +38,7 @@ namespace MicrocavityScanner.Acquire
 
         public double slowLaserValue;
         public double fastLaserValue;
-               
+        
         public void StartScan()
         {
             ConnectRemoting();
@@ -57,20 +58,21 @@ namespace MicrocavityScanner.Acquire
             {
                 backendState = ScanitorState.stopping;
             }
-            Monitor.Pulse(ScanitorMonitorLock);
-            Monitor.Exit(ScanitorMonitorLock);
+            //Monitor.Pulse(ScanitorMonitorLock);
+            //Monitor.Exit(ScanitorMonitorLock);
         }
 
         private void Acquire()
         {
+            Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+
             // lock a monitor onto the acquisitor, to synchronise with the controller
             // when acquiring a set number of scans - the monitor is released in
             // AcquisitionFinishing()
             Monitor.Enter(ScanitorMonitorLock);
 
             //get hold of the plugins
-            //*** this is wrong I need to get hold of the instances 
-            //that already exist not create new ones***
             FastAnalogInputPlugin directanalogPlugin = new FastAnalogInputPlugin();
             FastMultiInputShotGathererPlugin directshotPlugin = new FastMultiInputShotGathererPlugin();
             //MicrocavityPatternPlugin directpgPlugin = new MicrocavityPatternPlugin();
@@ -97,11 +99,11 @@ namespace MicrocavityScanner.Acquire
             //****Here*****
             string thestate = Convert.ToString(smController.appState);
             directanalogPlugin.AcquisitionStarting();
-            directshotPlugin.ReInitialiseSettings();
+            directshotPlugin.ReInitialiseSettings(Controller.GetController().scanSettings["Exposure"]);
             directshotPlugin.AcquisitionStarting();
 
             //directpgPlugin.AcquisitionStarting();
-            
+
             //smAcquisitor.AcquireStart(1);
             //object listofchannels = smConfig.analogPlugin.Settings["channelList"];
             //smConfig.analogPlugin.AcquisitionStarting();
@@ -111,6 +113,11 @@ namespace MicrocavityScanner.Acquire
             //    shotGathererPlugin.AcquisitionStarting();
             //analogPlugin.AcquisitionStarting();
             //shotPlugin.AcquisitionStarting();
+
+            long timerInitialise = timer.ElapsedMilliseconds;
+
+            controllerInstance.appState = Controller.AppState.running;
+            controllerInstance.GUIUpdate();
 
             //loop for slow axis
             for (double slowNumber = 0;
@@ -144,9 +151,11 @@ namespace MicrocavityScanner.Acquire
                 //pattern generator start
                 //directpgPlugin.ScanStarting();             
 
+                long timerSlowMove = timer.ElapsedMilliseconds;
+
                 //loop for fast axis
                 for (double fastNumber = 0;
-                    fastNumber < Controller.GetController().scanSettings["FastAxisRes"];
+                    fastNumber < controllerInstance.scanSettings["FastAxisRes"];
                     fastNumber++)
                 {
                     //move to new fast axis point
@@ -157,6 +166,8 @@ namespace MicrocavityScanner.Acquire
                         Controller.GetController().scanSettings["FastAxisRes"];
                     tclController.SetLaserSetpoint(Controller.GetController().
                         laserSettings["FastLaser"],currentfastpoint);
+
+                    long timerFastMove = timer.ElapsedMilliseconds;
 
                     //start the shot plugin
                     //smController.Acquisitor.Configuration.
@@ -188,14 +199,55 @@ namespace MicrocavityScanner.Acquire
                     directshotPlugin.PostArm();
                     //directpgPlugin.ScanFinished();
 
+                    long timerTakeShot = timer.ElapsedMilliseconds;
+
                     // send up the data bundle
                     DataEventArgs evArgs = new DataEventArgs();
                     evArgs.point = sp;
                     OnData(evArgs);
+
+                    long timerProcessShot = timer.ElapsedMilliseconds;
+
+                    // check for exit
+                    if (CheckIfStopping())
+                    {
+                        directanalogPlugin.AcquisitionFinished();
+                        directshotPlugin.AcquisitionFinished();
+                        AcquisitionFinishing();
+                        return;
+                    }
                 }
-            }  
+            }
+            directanalogPlugin.AcquisitionFinished();
+            directshotPlugin.AcquisitionFinished();
+
+            AcquisitionFinishing();
         }
-        
+
+        private void AcquisitionFinishing()
+        {
+            Monitor.Pulse(ScanitorMonitorLock);
+            Monitor.Exit(ScanitorMonitorLock);
+        }
+
+        private bool CheckIfStopping()
+        {
+            lock (this)
+            {
+                if (backendState == ScanitorState.stopping)
+                {
+                    backendState = ScanitorState.stopped;
+                    return true;
+                }
+                else return false;
+            }
+        }
+
+        public void DisconnectRemoting()
+        {
+            GC.Collect();
+        }
+
         public void ConnectRemoting()
         {
             // connect the TCL controller over remoting network connection

@@ -75,12 +75,15 @@ namespace ScanMaster.Acquire.Plugins
             settings["preArm"] = true;
             settings["channel"] = "uCavityReflectionAPD";
             settings["gateLength"] = 100;
-            settings["sampleRate"] = 200000;
+            settings["sampleRate"] = 1000;
         }
 
-        public void ReInitialiseSettings()
+        public void ReInitialiseSettings(double exp)
         {
             InitialiseSettings();
+            settings["gateLength"] = (int)Convert.ToInt64(exp * 0.001 
+                * Convert.ToDouble((int)settings["sampleRate"]));
+            int settingscheck = (int)settings["gateLength"];
         }
 
 		public override void AcquisitionStarting()
@@ -96,6 +99,7 @@ namespace ScanMaster.Acquire.Plugins
                 //gate is done to let daq card transfer the 
                 //acquired data
                 Convert.ToDouble((int)settings["gateLength"] + 1) / Convert.ToDouble((int)settings["sampleRate"]));
+
 
             shotGateTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
 
@@ -248,14 +252,22 @@ namespace ScanMaster.Acquire.Plugins
             // release the analog input
             inputTask.Dispose();
 
-            if (config.switchPlugin.State)
+            try
             {
-                freqOutTask1.Stop();
+                if (config.switchPlugin.State)
+                {
+                    freqOutTask1.Stop();
+                }
+                else
+                {
+                    freqOutTask2.Stop();
+                }
             }
-            else
+            catch (NullReferenceException e)
             {
                 freqOutTask2.Stop();
             }
+            
 			freqOutTask1.Dispose();
             freqOutTask2.Dispose();
 
@@ -318,11 +330,11 @@ namespace ScanMaster.Acquire.Plugins
 
 				// Each element of the buffer holds the incremental count. Discard the first value and calculate
 				// the counts per bin by subtracting the count in each bin by the count in the previous bin.
-				// Calculate the rate in kHz.
+				// Calculate the rate in Hz.
 
                 latestData = new double[tempdata.Length - 1];
                 for (int k = 0; k < latestData.Length; k++)
-                    latestData[k] = (tempdata[k + 1] - tempdata[k]) * (int)settings["sampleRate"] / 1000;
+                    latestData[k] = (tempdata[k + 1] - tempdata[k]) * (int)settings["sampleRate"] ;
 
                 //string datamanip = stopwatch.Elapsed.ToString(@"mm\:ss\.ffffff");                
 			}

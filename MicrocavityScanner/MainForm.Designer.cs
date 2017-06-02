@@ -71,6 +71,8 @@
             this.ExposureUnitsLabel = new System.Windows.Forms.Label();
             this.Exposure = new System.Windows.Forms.TextBox();
             this.ExposureLabel = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph1)).BeginInit();
             this.CurrentScanLine.SuspendLayout();
@@ -79,6 +81,7 @@
             this.FastAxis.SuspendLayout();
             this.SlowAxisCont.SuspendLayout();
             this.TimingCont.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -120,14 +123,14 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
@@ -165,6 +168,10 @@
             this.scatterPlot1.XAxis = this.xAxis1;
             this.scatterPlot1.YAxis = this.yAxis1;
             // 
+            // xAxis1
+            // 
+            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
             // CurrentScanLine
             // 
             this.CurrentScanLine.Controls.Add(this.scatterGraph1);
@@ -190,6 +197,10 @@
             this.intensityXAxis1});
             this.SuperScanGraph.YAxes.AddRange(new NationalInstruments.UI.IntensityYAxis[] {
             this.intensityYAxis1});
+            // 
+            // colorScale1
+            // 
+            this.colorScale1.Mode = NationalInstruments.UI.ColorScaleMode.AutoScaleLoose;
             // 
             // intensityPlot1
             // 
@@ -461,11 +472,27 @@
             this.ExposureLabel.TabIndex = 0;
             this.ExposureLabel.Text = "Exposure";
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 524);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(758, 22);
+            this.statusStrip1.TabIndex = 8;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // statusLabel1
+            // 
+            this.statusLabel1.Name = "statusLabel1";
+            this.statusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 533);
+            this.ClientSize = new System.Drawing.Size(758, 546);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.TimingCont);
             this.Controls.Add(this.SlowAxisCont);
             this.Controls.Add(this.FastAxis);
@@ -488,6 +515,8 @@
             this.SlowAxisCont.PerformLayout();
             this.TimingCont.ResumeLayout(false);
             this.TimingCont.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -538,6 +567,8 @@
         private System.Windows.Forms.Label ExposureLabel;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveScanToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel1;
     }
 }
 
