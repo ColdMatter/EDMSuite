@@ -46,11 +46,11 @@ namespace DAQ.HAL
             throw new NotImplementedException();
         }
 
-        public DCSController(string ipaddress, int port)
-        {
-            Configure(ipaddress, port);
-            this.client = new TcpClient();
-        }
+        //public DCSController(string ipaddress, int port)
+        //{
+        //    Configure(ipaddress, port);
+        //    this.client = new TcpClient();
+        //}
 
         public ICEBLOCMessage SendMessage(ICEBLOCMessage message)
         {

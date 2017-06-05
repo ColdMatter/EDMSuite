@@ -84,18 +84,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JB.Common">
-      <HintPath>..\packages\JB.Common.0.8.103-pre\lib\net45\JB.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="JB.Common.Collections">
-      <HintPath>..\packages\JB.Common.Collections.0.8.103-pre\lib\net45\JB.Common.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="JB.Common.Collections.Reactive">
-      <HintPath>..\packages\JB.Common.Collections.Reactive.0.8.103-pre\lib\net45\JB.Common.Collections.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="JB.Common.Reactive">
-      <HintPath>..\packages\JB.Common.Reactive.0.8.103-pre\lib\net45\JB.Common.Reactive.dll</HintPath>
-    </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="nationalinstruments.controls.booleans, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />

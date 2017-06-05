@@ -33,6 +33,8 @@ namespace MOTMaster2
                 s.MuquansPattern = GetMuquansCommands();
             return s;
         }
+
+        
         public void EditDictionary(Dictionary<String, Object> dictionary)
         {
             foreach (KeyValuePair<string, object> k in dictionary)
@@ -49,5 +51,7 @@ namespace MOTMaster2
         }
  
         public class ParameterNotInOriginalDictionaryException : ApplicationException { }
+
+
     }
 }

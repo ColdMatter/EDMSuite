@@ -122,6 +122,9 @@
     </ApplicationDefinition>
     <Compile Include="BindableDynamicDictionary.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="dotMath\EqCompiler.cs" />
+    <Compile Include="dotMath\FunctionLib.cs" />
+    <Compile Include="dotMath\Parser.cs" />
     <Compile Include="Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -131,7 +134,9 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
-    <Compile Include="Scripts\Snippets\SequenceStep.cs" />
+    <Compile Include="SequenceData\SeqeunceBuilder.cs" />
+    <Compile Include="SequenceData\SequenceParser.cs" />
+    <Compile Include="SequenceData\SequenceStep.cs" />
     <Compile Include="SequenceDataGrid.xaml.cs">
       <DependentUpon>SequenceDataGrid.xaml</DependentUpon>
     </Compile>
@@ -224,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Scripts\Snippets\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

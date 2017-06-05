@@ -13,7 +13,7 @@
                     <MenuItem Header="Save Parameters As..." Click="SaveParameters_Click"/>
                     <MenuItem Header="Open Environment" Click="LoadEnvironment_Click"/>
                     <MenuItem Header="Save Environment" Click="SaveEnvironment_Click"/>
-                    
+
                 </MenuItem>
                 <MenuItem Header="Edit">
                     <MenuItem Header="Options" Click="EditOptions_Click"/>
@@ -22,6 +22,7 @@
                     <MenuItem Header=" About..." Click="About_Click"/>
                 </MenuItem>
             </Menu>
+            
         </Menu>
         <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,22,0,0" VerticalAlignment="Top" Width="111"/>
         <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,53,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" />
@@ -73,6 +74,35 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <controls:SequenceDataGrid x:Name="SequenceData" Margin="10,237,10.286,10.429" />
+        <controls:SequenceDataGrid x:Name="SequenceData" Margin="-270,237,10.286,10.429" Width="450"/>
+        <TabControl x:Name="tcLog" HorizontalAlignment="Left" Height="336" Margin="473,232,0,0" VerticalAlignment="Top" Width="286" SelectedIndex="0">
+            <TabItem Header="Log">
+                <RichTextBox Name="tbLogger" Background="Black" Foreground="Lime">
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run x:Name="tbLog" Text=">Welcome to MOTMaster" Background="Black" Foreground="Lime"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+            </TabItem>
+            <TabItem Header="Property">
+                <Grid>
+                    <Label x:Name="noPropLabel" Content="Select an analog channel&#xD;&#xA;in a timestep to modify &#xD;&#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
+                    <Label x:Name="propLabel" FontSize="12">
+                        
+                    </Label>
+                    <DataGrid  Name="propertyGrid" Visibility="Visible" Margin="0,33,0,180" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="propertyNames" Binding="{Binding Path=Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="propertyValues" Binding="{Binding Path=Value}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="setPropertyBtn" Content="Set" Width="75" Height="20" Click="setProperty_Click" Visibility="Hidden"/>
+                </Grid>
+            </TabItem>
+
+
+        </TabControl>
+        <Button Name="buildBtn"  Content="Build" Height="20" Width="75" Margin="582,615,102.786,176.929" Click="buildBtn_Click"/>
     </Grid>
 </Window>

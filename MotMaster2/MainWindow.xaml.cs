@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 using DAQ.Environment;
+using MOTMaster2.SequenceData;
+
 
 namespace MOTMaster2
 {
@@ -29,7 +31,8 @@ namespace MOTMaster2
         public MainWindow()
         {
             InitializeComponent();
-            InitVisuals();           
+            InitVisuals();
+            this.AddHandler(SequenceDataGrid.ChangedAnalogChannelCellEvent, new RoutedEventHandler(this.sequenceData_AnalogValuesChanged));
         }
 
         public static void DoEvents()
@@ -368,6 +371,60 @@ namespace MOTMaster2
         {
              if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
                 tbCurValue.Content = controller.script.Parameters[cbParamsScan.SelectedItem.ToString()].ToString();
+        }
+
+        //Creates a table of values for the selected analog parameters
+        private void CreateAnalogPropertyTable(SequenceStep selectedStep, string channelName,AnalogChannelSelector analogType )
+        {
+           // SequenceData.sequenceDataGrid.IsReadOnly = true;
+            setPropertyBtn.Visibility = System.Windows.Visibility.Visible;
+            tcLog.SelectedIndex = 1;
+            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible;  }
+            propLabel.Content = string.Format("{0}: {1} with {2}", selectedStep.Name, channelName, analogType.ToString());
+            List<AnalogArgItem> data = selectedStep.GetAnalogData(channelName, analogType);
+            propertyGrid.DataContext = data;
+        }
+
+        private void sequenceData_AnalogValuesChanged(object sender, RoutedEventArgs e)
+        {
+            SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+            KeyValuePair<string, AnalogChannelSelector> analogChannel = model.SelectedAnalogChannel;
+            SequenceStep step = model.SelectedSequenceStep;
+            CreateAnalogPropertyTable(step, analogChannel.Key, analogChannel.Value);
+        }
+
+        private void Log(string text)
+        {
+            tbLogger.AppendText("> " + text + "\n");
+        }
+
+        private void setProperty_Click(object sender, RoutedEventArgs e)
+        {
+            SequenceParser sqnParser = new SequenceParser();
+            //Checks the validity of all the values, but does not assign them until the sequence is built
+            foreach (AnalogArgItem analogItem in (List<AnalogArgItem>)propertyGrid.DataContext)
+            {
+                double analogRawValue;
+                if (Double.TryParse(analogItem.Value, out analogRawValue)) continue;
+                if (controller.script != null && controller.script.Parameters.Keys.Contains(analogItem.Value)) continue;
+                //Tries to parse the function string
+                if (analogItem.Name == "Function")
+                {
+                    if (sqnParser.CheckFunction(analogItem.Value)) continue;
+                }
+                MessageBox.Show(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name));
+                return;
+            }
+            SequenceData.sequenceDataGrid.IsReadOnly = false;
+
+        }
+
+        private void buildBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (controller.script == null) { MessageBox.Show("No script loaded!"); return; }
+            List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+            controller.BuildMOTMasterSequence(steps);
+
         }
     }
 }

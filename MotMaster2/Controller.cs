@@ -34,6 +34,7 @@ using NationalInstruments.UI;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 using MOTMaster2.SnippetLibrary;
+using MOTMaster2.SequenceData;
 
 namespace MOTMaster2
 {
@@ -75,8 +76,7 @@ namespace MOTMaster2
 
         public List<string> analogChannels;
         public List<string> digitalChannels;
-        public MOTMasterScript script=null;
-       // ControllerWindow controllerWindow;
+        public MOTMasterScript script;
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -93,7 +93,7 @@ namespace MOTMaster2
 
         MMDataIOHelper ioHelper;
 
-        //DaqSystem myDaqSystem;
+        SequenceBuilder builder;
 
         #endregion
 
@@ -570,6 +570,13 @@ namespace MOTMaster2
             return sequence;
         }
 
+        public void BuildMOTMasterSequence(List<SequenceStep> steps)
+        {
+            builder = new SequenceBuilder(script, steps);
+            builder.BuildSequence();
+            MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
+
+        }
         #endregion
 
         #region CameraControl
