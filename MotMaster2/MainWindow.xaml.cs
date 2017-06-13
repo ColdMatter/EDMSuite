@@ -385,9 +385,9 @@ namespace MOTMaster2
         {
             controller.LoadEnvironment();
         }
-        private void EditOptions_Click(object sender, RoutedEventArgs e)
+        private void EditHardware_Click(object sender, RoutedEventArgs e)
         {
-            Options optionsWindow = new Options();
+            HardwareOptions optionsWindow = new HardwareOptions();
             optionsWindow.Show();
         }
         private void About_Click(object sender, RoutedEventArgs e)
@@ -535,6 +535,12 @@ namespace MOTMaster2
             List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
             controller.SaveSequenceAsDefault(steps);
 
+        }
+
+        private void EditParameters_Click(object sender, RoutedEventArgs e)
+        {
+            ParametersWindow paramWindow = new ParametersWindow();
+            paramWindow.Show();
         }
     }
 }

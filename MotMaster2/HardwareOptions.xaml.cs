@@ -20,9 +20,9 @@ namespace MOTMaster2
     /// <summary>
     /// Interaction logic for Options.xaml
     /// </summary>
-    public partial class Options : Window
+    public partial class HardwareOptions : Window
     {
-        public Options()
+        public HardwareOptions()
         {
             InitializeComponent();
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem);

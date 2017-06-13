@@ -43,7 +43,7 @@ namespace MOTMaster2
             get { return _selectedAnalogChannel; }
             set
             {
-                _selectedAnalogChannel = value; 
+                _selectedAnalogChannel = value;
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs("SelectedAnalogChannel"));
             }
@@ -61,125 +61,97 @@ namespace MOTMaster2
             }
         }
 
-    public SequenceStepViewModel()
-    {
-        
-        if (Controller.sequenceData == null)
+        public SequenceStepViewModel()
         {
-            SequenceSteps = new ObservableCollection<SequenceStep>();
+
+            if (Controller.sequenceData == null)
+            {
+                SequenceSteps = new ObservableCollection<SequenceStep>();
+                SequenceSteps.Add(new SequenceStep());
+
+            }
+            else
+            {
+                SequenceSteps = new ObservableCollection<SequenceStep>(Controller.sequenceData.Steps);
+            }
+
+            this.PropertyChanged += SequenceStep.SequenceStep_PropertyChanged;
+        }
+
+
+        private RelayCommand newSequenceStep;
+        public RelayCommand NewSequenceStep
+        {
+            get
+            {
+                if (newSequenceStep == null)
+                {
+                    newSequenceStep = new RelayCommand(param => this.AddStep());
+                }
+                return newSequenceStep;
+            }
+        }
+
+        public void AddStep()
+        {
             SequenceSteps.Add(new SequenceStep());
-           
-        }
-        else
-        {
-            SequenceSteps = new ObservableCollection<SequenceStep>(Controller.sequenceData.Steps);
         }
 
-        this.PropertyChanged += SequenceStep.SequenceStep_PropertyChanged;
-    }
-    
-    
-    private RelayCommand newSequenceStep;
-    public RelayCommand NewSequenceStep
-    {
-        get
+        private RelayCommand deleteSequenceStep;
+        public RelayCommand DeleteSequenceStep
         {
-            if (newSequenceStep == null)
+            get
             {
-                newSequenceStep = new RelayCommand(param => this.AddStep());
+                if (deleteSequenceStep == null)
+                {
+                    deleteSequenceStep = new RelayCommand(param => this.DeleteStep());
+                }
+                return deleteSequenceStep;
             }
-            return newSequenceStep;
         }
-    }
-    
-    public void AddStep()
-    {
-        SequenceSteps.Add(new SequenceStep());
-    }
+        public void DeleteStep()
+        {
+            SequenceSteps.Remove(_selectedStep);
+        }
 
-    private RelayCommand deleteSequenceStep;
-    public RelayCommand DeleteSequenceStep
-    {
-        get
+        private RelayCommand duplicateSequenceStep;
+        public RelayCommand DuplicateSequenceStep
         {
-            if (deleteSequenceStep == null)
+            get
             {
-                deleteSequenceStep = new RelayCommand(param => this.DeleteStep());
+                if (duplicateSequenceStep == null)
+                {
+                    duplicateSequenceStep = new RelayCommand(param => this.DuplicateStep());
+                }
+                return duplicateSequenceStep;
             }
-            return deleteSequenceStep;
         }
-    }
-    public void DeleteStep()
-    {
-        SequenceSteps.Remove(_selectedStep);
-    }
-
-    private RelayCommand duplicateSequenceStep;
-    public RelayCommand DuplicateSequenceStep
-    {
-        get
+        public void DuplicateStep()
         {
-            if (duplicateSequenceStep == null)
-            {
-                duplicateSequenceStep = new RelayCommand(param => this.DuplicateStep());
-            }
-            return duplicateSequenceStep;
+            int index = SequenceSteps.IndexOf(_selectedStep);
+            SequenceSteps.Insert(index, _selectedStep);
         }
-    }
-    public void DuplicateStep()
-    {
-        int index = SequenceSteps.IndexOf(_selectedStep);
-        SequenceSteps.Insert(index,_selectedStep);
-    }
-    public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Updates the selected property (analog channel, rs232 commands) with the given arguments
         /// </summary>
         /// <param name="arguments"></param>
-    internal void UpdateChannelValues(object arguments)
-    {
-        if (arguments.GetType() == typeof(List<AnalogArgItem>))
+        internal void UpdateChannelValues(object arguments)
         {
-            List<AnalogArgItem> items = arguments as List<AnalogArgItem>;
-            _selectedStep.SetAnalogDataItem(_selectedAnalogChannel.Key, _selectedAnalogChannel.Value, arguments);
-         
+            if (arguments.GetType() == typeof(List<AnalogArgItem>))
+            {
+                List<AnalogArgItem> items = arguments as List<AnalogArgItem>;
+                _selectedStep.SetAnalogDataItem(_selectedAnalogChannel.Key, _selectedAnalogChannel.Value, arguments);
+
+            }
+            else if (arguments.GetType() == typeof(List<SerialItem>))
+            {
+                List<SerialItem> items = arguments as List<SerialItem>;
+                _selectedStep.SetSerialCommands(items);
+            }
+            else throw new Exception("Incorrect argument passed to UpdateChannelValues");
         }
-        else if (arguments.GetType() == typeof(List<SerialItem>))
-        { List<SerialItem> items = arguments as List<SerialItem>;
-        _selectedStep.SetSerialCommands(items);
-        }
-        else throw new Exception("Incorrect argument passed to UpdateChannelValues");
-    }
     }
 
-    public class RelayCommand : ICommand
-    {
-        #region Fields
-        readonly Action<object> _execute;
-        readonly Predicate<object> _canExecute;
-        #endregion // Fields
-        #region Constructors
-        public RelayCommand(Action<object> execute) : this(execute, null) { }
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
-        {
-            if (execute == null)
-                throw new ArgumentNullException("execute");
-            _execute = execute; _canExecute = canExecute;
-        }
-        #endregion // Constructors
-        #region ICommand Members
-        [DebuggerStepThrough]
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null ? true : _canExecute(parameter);
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        public void Execute(object parameter) { _execute(parameter); }
-        #endregion // ICommand Members
-    }
 }

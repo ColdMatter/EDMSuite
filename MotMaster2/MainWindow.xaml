@@ -13,9 +13,9 @@
                     <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click"/>
                 </MenuItem>
                 <MenuItem Header="Edit">
-                    <MenuItem Header="Options" Click="EditOptions_Click"/>
+                    <MenuItem Header="Sequence Parameters" Click="EditParameters_Click"/>
+                    <MenuItem Header="Hardware / File System" Click="EditHardware_Click"/>
                 </MenuItem>
-                <MenuItem Header="Options"/>
                 <MenuItem Header="Help">
                     <MenuItem Header=" About..." Click="About_Click"/>
                 </MenuItem>
