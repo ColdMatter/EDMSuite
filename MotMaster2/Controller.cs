@@ -575,7 +575,7 @@ namespace MOTMaster2
 
         public void BuildMOTMasterSequence(List<SequenceStep> steps)
         {
-            builder = new SequenceBuilder(script, steps);
+            builder = new SequenceBuilder(sequenceData);
             builder.BuildSequence();
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
             if (sequenceData == null)

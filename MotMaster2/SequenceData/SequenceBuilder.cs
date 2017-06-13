@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DAQ.Environment;
 using DAQ.Analog;
 using DAQ.Pattern;
@@ -27,15 +25,16 @@ namespace MOTMaster2.SequenceData
             Parameters = prms;
         }
 
-        public SequenceBuilder(MOTMasterScript script, List<SequenceStep> steps)
+        public SequenceBuilder(Sequence sequenceData)
         {
             sequence = new MOTMasterSequence();
-            sequenceSteps = steps;
-            Parameters = script.Parameters;
+            sequenceSteps = sequenceData.Steps;
+            Parameters = sequenceData.CreateParameterDictionary();
         }
 
         public void CreatePatternBuilders()
         {
+           
             analogPB = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
             hsPB = new HSDIOPatternBuilder();  
             muPB = new MuquansBuilder();
@@ -134,6 +133,8 @@ namespace MOTMaster2.SequenceData
         private void AddAnalogChannelStep(double timeMultiplier, int analogClock, SequenceStep step, string analogChannel)
         {
                             AnalogChannelSelector channelType = step.GetAnalogChannelType(analogChannel);
+            //Does not try to add anything if the channel does not do anything during this time
+                            if (channelType == AnalogChannelSelector.Continue) return;
                             double startTime = step.GetAnalogStartTime(analogChannel);
                             int analogStartTime = ConvertToSampleTime(currentTime+startTime,analogClock);
                             double value = 0.0;

@@ -17,7 +17,11 @@ namespace MOTMaster2.SequenceData
         {
             Dictionary<string,object> paramDict = new Dictionary<string,object>();
             foreach (Parameter p in Parameters)
+            {
+                //Converts a 64-bit int to 32-bit
+                if (p.Value.GetType() == typeof(Int64)) p.Value = Convert.ToInt32(p.Value);
                 paramDict[p.Name] = p.Value;
+            }
             return paramDict;
         }
 

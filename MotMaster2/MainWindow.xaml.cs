@@ -60,7 +60,7 @@ namespace MOTMaster2
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
-                     pa= Controller.sequenceData.Parameters.Select(t=>t.Name).ToArray(); 
+                     pa= Controller.sequenceData.Parameters.Where(t=>!t.IsHidden).Select(t=>t.Name).ToArray(); 
                 return pa;               
             }
         }
@@ -173,7 +173,8 @@ namespace MOTMaster2
                 ScanFlag = true;
                 
                 string parameter = cbParamsScan.Text;
-                object defaultValue = controller.script.Parameters[parameter];
+                Parameter param = Controller.sequenceData.Parameters.Where(t=>t.Name==parameter).First();
+                object defaultValue = param.Value;
                 int scanLength;
                 object[] scanArray;
                 if (defaultValue is int)
@@ -217,13 +218,13 @@ namespace MOTMaster2
                  }
                 foreach (object scanParam in scanArray)
                 {
-                    controller.script.Parameters[parameter] = scanParam;
+                    param.Value = scanParam;
                     SingleShot();
                     tbCurValue.Content = scanParam.ToString();
                     DoEvents();
                     if (!ScanFlag) break;
                 }
-                controller.script.Parameters[parameter] = defaultValue;
+                param.Value = defaultValue;
                 tbCurValue.Content = defaultValue.ToString();
                 btnScan.Content = "Scan";
                 btnScan.Background = Brushes.LightGreen;
@@ -398,26 +399,27 @@ namespace MOTMaster2
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string parameter = cbParamsManual.Text;
-            if (controller.script.Parameters[parameter].GetType() == typeof(int))
+            Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
+            if (param.Value.GetType() == typeof(int))
             {
-                controller.script.Parameters[parameter] = int.Parse(tbValue.Text);
+                param.Value = int.Parse(tbValue.Text);
             }
-            else if (controller.script.Parameters[parameter].GetType() == typeof(double))
+            else if (param.Value.GetType() == typeof(double))
             {
-                controller.script.Parameters[parameter] = double.Parse(tbValue.Text);
+                param.Value = double.Parse(tbValue.Text);
             }
         }
 
         private void cbParamsManual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
-                tbValue.Text = controller.script.Parameters[cbParamsManual.SelectedItem.ToString()].ToString();
+                tbValue.Text = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsManual.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
         }
 
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
-                tbCurValue.Content = controller.script.Parameters[cbParamsScan.SelectedItem.ToString()].ToString();
+             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
+                tbCurValue.Content = Controller.sequenceData.Parameters.Where(t=>t.Name==cbParamsScan.SelectedItem.ToString()).Select(t=>t.Value).First().ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -508,7 +510,7 @@ namespace MOTMaster2
             {
                 double analogRawValue;
                 if (Double.TryParse(analogItem.Value, out analogRawValue)) continue;
-                if (controller.script != null && controller.script.Parameters.Keys.Contains(analogItem.Value)) continue;
+                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.Select(t=>t.Name).Contains(analogItem.Value)) continue;
                 //Tries to parse the function string
                 if (analogItem.Name == "Function")
                 {
@@ -523,7 +525,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.script == null) { MessageBox.Show("No script loaded!"); return; }
+           // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
             controller.BuildMOTMasterSequence(steps);
 

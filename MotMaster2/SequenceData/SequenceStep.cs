@@ -221,6 +221,7 @@ namespace MOTMaster2.SequenceData
         public List<AnalogArgItem> LinearRamp { get; set; }
         public List<AnalogArgItem> Pulse { get; set; }
         public List<AnalogArgItem> Function { get; set; }
+        [JsonProperty]
         private List<AnalogArgItem> _selectedItem;
 
         public AnalogValueArgs()
@@ -238,21 +239,29 @@ namespace MOTMaster2.SequenceData
           
         }
 
+        public double ParseOrGetParameter(string value)
+        {
+            double number = 0.0;
+            bool result = Double.TryParse(value,out number);
+            if (result) return number;
+            else return (double)Controller.sequenceData.Parameters.Where(t=>t.Name==value).Select(t=>t.Value).First();
+        }
         public double GetStartTime()
         {
-            return Double.Parse(_selectedItem[0].Value);
+            return ParseOrGetParameter(_selectedItem[0].Value);
         }
 
         public double GetDuration()
         {
+            if (_selectedItem == null) return 0.0;
             if (_selectedItem == Value) throw new Exception("Channel arguments do not have a Duration");
-            return Double.Parse(_selectedItem[1].Value);
+            return ParseOrGetParameter(_selectedItem[1].Value);
         }
 
         public double GetValue()
         {
-            if (_selectedItem.Count == 2) return Double.Parse(_selectedItem[1].Value);
-            else return Double.Parse(_selectedItem[2].Value);
+            if (_selectedItem.Count == 2) return ParseOrGetParameter(_selectedItem[1].Value);
+            else return ParseOrGetParameter(_selectedItem[2].Value);
         }
 
         public string GetFunction()
@@ -264,7 +273,7 @@ namespace MOTMaster2.SequenceData
         public double GetFinalValue()
         {
             if (_selectedItem != Pulse) throw new Exception("Channel arguments do not have a final value.");
-            else return Double.Parse(_selectedItem[3].Value);
+            else return ParseOrGetParameter(_selectedItem[3].Value);
         }
 
         public void SetArgType(AnalogChannelSelector channelType)
