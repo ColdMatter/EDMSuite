@@ -14,7 +14,7 @@ namespace DAQ.Environment
             string dataPath = basePath + "\\Data\\";
 
             Paths.Add("mathPath", "C:\\Program Files\\Wolfram Research\\Mathematica\\10.4\\mathkernel.exe");
-            Paths.Add("scriptListPath",basePath+"\\Scripts");
+            Paths.Add("scriptListPath",dataPath+"\\Scripts");
             Paths.Add("MOTMasterEXEPath", relativePath);
          
             Paths.Add("cameraAttributesPath", configPath+"cam0.icd");
@@ -24,7 +24,7 @@ namespace DAQ.Environment
             string sYear = DateTime.Today.Year.ToString();
             string sMonth = DateTime.Today.Month.ToString().PadLeft(2, '0');
             string sDay = DateTime.Today.Day.ToString().PadLeft(2,'0');
-            Paths.Add("DataPath", dataPath + sYear + sMonth + sDay);
+            Paths.Add("DataPath", dataPath + "\\"+ sYear + "\\" + sMonth + "\\" +sDay);
             Paths.Add("settingsPath", user + "\\Settings");
 
             if (!Directory.Exists((string)Paths["DataPath"]))

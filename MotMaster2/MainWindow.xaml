@@ -4,20 +4,18 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Name="frmMain" 
         x:Class="MOTMaster2.MainWindow"
         xmlns:controls="clr-namespace:MOTMaster2"
-        Title="MOTMaster2" Height="840" Width="760.429" ResizeMode="NoResize">
+        Title="MOTMaster2" Height="840" Width="760.429" ResizeMode="NoResize" Closing="frmMain_Closing">
     <Grid Margin="0,0,-5.286,-0.429">
         <Menu>
             <Menu Height="20" Width="749">
                 <MenuItem Header="File" Margin="0">
-                    <MenuItem Header="Open Parameters..." Click="LoadParameters_Click"/>
-                    <MenuItem Header="Save Parameters As..." Click="SaveParameters_Click"/>
-                    <MenuItem Header="Open Environment" Click="LoadEnvironment_Click"/>
-                    <MenuItem Header="Save Environment" Click="SaveEnvironment_Click"/>
-
+                    <MenuItem Header="Open Sequence..." Click="LoadSequence_Click"/>
+                    <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click"/>
                 </MenuItem>
                 <MenuItem Header="Edit">
                     <MenuItem Header="Options" Click="EditOptions_Click"/>
                 </MenuItem>
+                <MenuItem Header="Options"/>
                 <MenuItem Header="Help">
                     <MenuItem Header=" About..." Click="About_Click"/>
                 </MenuItem>

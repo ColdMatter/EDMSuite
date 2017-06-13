@@ -65,6 +65,8 @@ namespace MOTMaster2
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
 
+        private static string defaultScriptPath = scriptListPath + "\\defaultScript.json";
+
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
@@ -77,6 +79,7 @@ namespace MOTMaster2
         public List<string> analogChannels;
         public List<string> digitalChannels;
         public MOTMasterScript script;
+        public static Sequence sequenceData;
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -575,6 +578,12 @@ namespace MOTMaster2
             builder = new SequenceBuilder(script, steps);
             builder.BuildSequence();
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
+            if (sequenceData == null)
+            {
+                sequenceData = new Sequence();
+                sequenceData.Steps = steps;
+                sequenceData.CreateParameterList(script.Parameters);
+            }
 
         }
         #endregion
@@ -780,6 +789,42 @@ namespace MOTMaster2
             File.WriteAllText("config.json", configJson);
         }
 
+        public void LoadDefaultSequence()
+        {
+            if (File.Exists(defaultScriptPath)) LoadSequenceFromPath(defaultScriptPath);
+        }
+
+        public void LoadSequenceFromPath(string path)
+        {
+            string sequenceJson = File.ReadAllText(path);
+            sequenceData = JsonConvert.DeserializeObject<Sequence>(sequenceJson);
+            //script.Parameters = sequenceData.CreateParameterDictionary();
+           
+        }
+        public void SaveSequenceAsDefault(List<SequenceStep> steps)
+        {
+            SaveSequenceToPath(defaultScriptPath, steps);
+        }
+
+        public void SaveSequenceToPath(string path, List<SequenceStep> steps)
+        {
+            if (sequenceData == null)
+            {
+                sequenceData = new Sequence();
+                sequenceData.CreateParameterList(script.Parameters);
+                sequenceData.Steps = steps;
+            }
+            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented);
+            File.WriteAllText(path, sequenceJson);
+        }
+
+        public void SaveSequenceToPath(string path)
+        {
+            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented);
+            File.WriteAllText(path, sequenceJson);
+        }
         #endregion
+
+        
     }
 }

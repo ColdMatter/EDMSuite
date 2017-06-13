@@ -48,6 +48,9 @@ namespace MOTMaster2.SequenceData
             double timeMultiplier = 1.0;
             int analogClock = (int)Parameters["AnalogClockFrequency"];
             int digitalClock = (int)Parameters["HSClockFrequency"];
+            //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
+            int serialPreTrigger = ConvertToSampleTime(4, digitalClock);
+            int serialWait = ConvertToSampleTime(2, digitalClock);
             SequenceStep previousStep = null;
             foreach (SequenceStep step in sequenceSteps)
             {
@@ -71,7 +74,26 @@ namespace MOTMaster2.SequenceData
                 {
                     AddDigitalChannelStep(step, digitalStartTime, digitalChannel);
                 }
+                //Adds the Muquans string commands as well as the required serial pulses
+                if (step.RS232Commands)
+                {
+                    string laserID = "";
+                    foreach (SerialItem serialCommand in step.GetSerialData())
+                    {
+                        
+                        if (serialCommand.Name == "Slave") laserID = "slave0";
+                        else if (serialCommand.Name == "AOM") laserID = "mphi";
+                        string[] valueArr = serialCommand.Value.Split(' ');
+                        if (valueArr[0] == "Set") muPB.SetFrequency(laserID, Double.Parse(valueArr[1]));
+                        else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, Double.Parse(valueArr[1]), Double.Parse(valueArr[2]));
 
+                        hsPB.Pulse(digitalStartTime, serialPreTrigger+serialWait, 200, "serialPreTrigger");
+                        hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                        hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                    }
+                }
+
+                
                 //Adds the time of the sequence step to the total running time
                 currentTime += step.Duration * timeMultiplier;
                 previousStep = step;
@@ -114,7 +136,8 @@ namespace MOTMaster2.SequenceData
                             AnalogChannelSelector channelType = step.GetAnalogChannelType(analogChannel);
                             double startTime = step.GetAnalogStartTime(analogChannel);
                             int analogStartTime = ConvertToSampleTime(currentTime+startTime,analogClock);
-                            double value = step.GetAnalogValue(analogChannel);
+                            double value = 0.0;
+                            if (channelType != AnalogChannelSelector.Function) value = step.GetAnalogValue(analogChannel);
                             int duration;
                             switch (channelType)
                             {

@@ -30,9 +30,13 @@ namespace MOTMaster2
         public static Controller controller;
         public MainWindow()
         {
+            controller = new Controller();
+            controller.StartApplication();
+            controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
             this.AddHandler(SequenceDataGrid.ChangedAnalogChannelCellEvent, new RoutedEventHandler(this.sequenceData_AnalogValuesChanged));
+            this.AddHandler(SequenceDataGrid.ChangedRS232CellEvent,new RoutedEventHandler(this.sequenceData_RS232Changed));
         }
 
         public static void DoEvents()
@@ -43,10 +47,11 @@ namespace MOTMaster2
 
         public void InitVisuals()
         {
-            controller = new Controller();
-            controller.StartApplication();
+            
             btnRefresh_Click(null,null);
             tcMain.SelectedIndex = 0;
+            
+            
         }
         
         private string[] ParamsArray
@@ -54,8 +59,8 @@ namespace MOTMaster2
             get
             {
                 string[] pa = { "param1", "param2", "param3" };
-                if (controller.script != null)
-                     pa= controller.script.Parameters.Keys.ToArray(); 
+                if (Controller.sequenceData != null)
+                     pa= Controller.sequenceData.Parameters.Select(t=>t.Name).ToArray(); 
                 return pa;               
             }
         }
@@ -330,6 +335,48 @@ namespace MOTMaster2
                 MessageBox.Show("You have tried to save parmaters before loading a script");
 
         }
+        private void SaveSequence_Click(object sender, RoutedEventArgs e)
+        {
+            if (Controller.sequenceData != null)
+            { // Configure open file dialog box
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = ""; // Default file name
+                dlg.DefaultExt = ".json"; // Default file extension
+                dlg.Filter = "Sequence (.json)|*.json,*.txt"; // Filter files by extension
+                //dlg.InitialDirectory = Controller.scriptListPath;
+
+                // Show open file dialog box
+                Nullable<bool> result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    string filename = dlg.FileName;
+                    controller.SaveSequenceToPath(filename);
+                }
+            }
+            else
+                MessageBox.Show("You have tried to save a Sequence before loading a script");
+
+        }
+        private void LoadSequence_Click(object sender, RoutedEventArgs e)
+        {
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.FileName = ""; // Default file name
+                dlg.DefaultExt = ".json"; // Default file extension
+                dlg.Filter = "Sequence (.json)|*.json,*.txt"; // Filter files by extension
+
+                // Show open file dialog box
+                Nullable<bool> result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    string filename = dlg.FileName;
+                    controller.LoadSequenceFromPath(filename);
+                }
+         
+        }
         private void SaveEnvironment_Click(object sender, RoutedEventArgs e)
         {
             controller.SaveEnvironment();
@@ -385,6 +432,21 @@ namespace MOTMaster2
             propertyGrid.DataContext = data;
         }
 
+        //Creates a table of values for the selected analog parameters
+        private void CreateSerialPropertyTable(SequenceStep selectedStep)
+        {
+            // SequenceData.sequenceDataGrid.IsReadOnly = true;
+            setPropertyBtn.Visibility = System.Windows.Visibility.Visible;
+            tcLog.SelectedIndex = 1;
+            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
+            propLabel.Content = string.Format("Edit Serial Commands for {0}", selectedStep.Name);
+            List<SerialItem> data = selectedStep.GetSerialData();
+            propertyGrid.DataContext = data;
+            ToolTip tool = new ToolTip();
+            tool.Content = "Enter commands separated by a space or comma. Frequencies in MHz, time in ms";
+            propertyGrid.ToolTip = tool;
+        }
+
         private void sequenceData_AnalogValuesChanged(object sender, RoutedEventArgs e)
         {
             SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
@@ -392,7 +454,12 @@ namespace MOTMaster2
             SequenceStep step = model.SelectedSequenceStep;
             CreateAnalogPropertyTable(step, analogChannel.Key, analogChannel.Value);
         }
-
+        private void sequenceData_RS232Changed(object sender, RoutedEventArgs e)
+        {
+            SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+            SequenceStep step = model.SelectedSequenceStep;
+            CreateSerialPropertyTable(step);
+        }
         private void Log(string text)
         {
             tbLogger.AppendText("> " + text + "\n");
@@ -401,7 +468,42 @@ namespace MOTMaster2
         private void setProperty_Click(object sender, RoutedEventArgs e)
         {
             SequenceParser sqnParser = new SequenceParser();
+            bool verified=false;
             //Checks the validity of all the values, but does not assign them until the sequence is built
+            //TODO: Add a type check to make this work for AnalogItems or SerialItems
+            if (propertyGrid.DataContext.GetType() == typeof(List<AnalogArgItem>)) verified=ParseAnalogItems(sqnParser);
+            else if (propertyGrid.DataContext.GetType() == typeof(List<SerialItem>)) verified=ParseSerialItems(sqnParser);
+            if (verified)
+            {
+                SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+                object newArgs = propertyGrid.ItemsSource;
+                model.UpdateChannelValues(newArgs);
+                SequenceData.sequenceDataGrid.IsReadOnly = false;
+            }
+
+        }
+
+        private bool ParseSerialItems(SequenceParser sqnParser)
+        {
+            foreach (SerialItem item in (List<SerialItem>)propertyGrid.DataContext)
+            {
+                string value = item.Value;
+                try
+                {
+                    if (sqnParser.CheckMuquans(value)) continue;
+                    else MessageBox.Show(string.Format("Incorrect format for {0} serial command", item.Name));
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Couldn't parse serial commands. " + e.Message);
+                    return false;
+                }
+                
+            }
+            return true;
+        }
+        private bool ParseAnalogItems(SequenceParser sqnParser)
+        {
             foreach (AnalogArgItem analogItem in (List<AnalogArgItem>)propertyGrid.DataContext)
             {
                 double analogRawValue;
@@ -413,10 +515,10 @@ namespace MOTMaster2
                     if (sqnParser.CheckFunction(analogItem.Value)) continue;
                 }
                 MessageBox.Show(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name));
-                return;
-            }
-            SequenceData.sequenceDataGrid.IsReadOnly = false;
+                return false;
 
+            }
+            return true;
         }
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
@@ -424,6 +526,14 @@ namespace MOTMaster2
             if (controller.script == null) { MessageBox.Show("No script loaded!"); return; }
             List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
             controller.BuildMOTMasterSequence(steps);
+
+        }
+
+        private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //Save the currently open sequence to a default location
+            List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+            controller.SaveSequenceAsDefault(steps);
 
         }
     }

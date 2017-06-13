@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Dynamic;
+using System.Collections.ObjectModel;
 
 
 namespace MOTMaster2
@@ -34,8 +35,8 @@ namespace MOTMaster2
         {
             var dg = sender as DataGrid;
             //These hide the columns that by default display the dictionaries corresponding to the analog and digital channel types
-            dg.Columns[5].Visibility = Visibility.Collapsed;
             dg.Columns[6].Visibility = Visibility.Collapsed;
+            dg.Columns[7].Visibility = Visibility.Collapsed;
 
             var first = dg.ItemsSource.Cast<object>().FirstOrDefault() as SequenceStep;
             if (first == null) return;
@@ -57,21 +58,26 @@ namespace MOTMaster2
             var dignames = first.DigitalValueTypes.Keys;
             foreach (var name in dignames)
             {
-                DataGridComboBoxColumn col = new DataGridComboBoxColumn { Header = name };
-                var resource = this.FindResource("digitalProvider");
-                
-                BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() { Source = resource });
-                col.SelectedItemBinding = new Binding("DigitalValueTypes[" + name + "]");
+                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name };
+
+
+                col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value")};
+                //col.Binding = new Binding("DigitalValueTypes[" + name + "]");
                 dg.Columns.Add(col);
             }
         }
 
+        //If the properties of the SequenceData are changed, this will be called
         private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             var dg = sender as DataGrid;
-            var first = dg.ItemsSource as List<SequenceStep>;
+            List<SequenceStep> first = new List<SequenceStep>(dg.ItemsSource as ObservableCollection<SequenceStep>);
             SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
-            model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
+            if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
+            //TODO: Add a flag so that the sequence data is only updated when set to true and a verification of this data
+            if (Controller.sequenceData != null) Controller.sequenceData.Steps = first;
+            
+            
         }
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
@@ -97,11 +103,33 @@ namespace MOTMaster2
             }
         }
         public static readonly RoutedEvent ChangedAnalogChannelCellEvent = EventManager.RegisterRoutedEvent("ChangedAnalogChannelCellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ComboBox));
+
+        public static readonly RoutedEvent ChangedRS232CellEvent = EventManager.RegisterRoutedEvent("ChangedRS232CellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CheckBox));
         
         public event RoutedEventHandler ChangedAnalogCell
         {
             add { AddHandler(ChangedAnalogChannelCellEvent, value); }
             remove { RemoveHandler(ChangedAnalogChannelCellEvent, value); }
         }
+        public event RoutedEventHandler ChangedRS232Event
+        {
+            add { AddHandler(ChangedRS232CellEvent, value); }
+            remove { RemoveHandler(ChangedRS232CellEvent, value); }
+        }
+
+        private void sequenceDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            var dg = sender as DataGrid;
+            if ((string)dg.CurrentCell.Column.Header == "RS232Commands")
+            {
+                SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
+                model.RS232Enabled = !model.RS232Enabled;
+                RoutedEventArgs rs232Args = new RoutedEventArgs(SequenceDataGrid.ChangedRS232CellEvent);
+                RaiseEvent(rs232Args);
+            }
+            else
+            { return; }
+        }
+
     }
 }

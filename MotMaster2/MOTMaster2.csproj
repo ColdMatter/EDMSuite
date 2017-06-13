@@ -120,7 +120,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BindableDynamicDictionary.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="dotMath\EqCompiler.cs" />
     <Compile Include="dotMath\FunctionLib.cs" />
@@ -134,7 +133,9 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
-    <Compile Include="SequenceData\SeqeunceBuilder.cs" />
+    <Compile Include="SequenceData\Parameter.cs" />
+    <Compile Include="SequenceData\SequenceBuilder.cs" />
+    <Compile Include="SequenceData\Sequence.cs" />
     <Compile Include="SequenceData\SequenceParser.cs" />
     <Compile Include="SequenceData\SequenceStep.cs" />
     <Compile Include="SequenceDataGrid.xaml.cs">
