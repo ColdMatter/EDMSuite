@@ -1,40 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Lifetime;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Windows;
-using System.Text;
-using System.Diagnostics;
-using System.Reflection;
-using Microsoft.CSharp;
-using System.Linq;
-
-using DAQ;
+﻿using DAQ;
+using DAQ.Analog;
 using DAQ.Environment;
 using DAQ.HAL;
-using DAQ.Analog;
-using Data;
-using Data.Scans;
-
-
+using Microsoft.CSharp;
+using MOTMaster2.SequenceData;
+//using NationalInstruments.UI.WindowsForms;
+using Newtonsoft.Json;
+using System;
 //using IMAQ;
 
-using System.Runtime.InteropServices;
-using System.CodeDom;
 using System.CodeDom.Compiler;
-
-using NationalInstruments;
-using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-//using NationalInstruments.UI.WindowsForms;
-using System.Runtime.Serialization.Formatters.Binary;
-using Newtonsoft.Json;
-using MOTMaster2.SnippetLibrary;
-using MOTMaster2.SequenceData;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Windows;
 
 namespace MOTMaster2
 {

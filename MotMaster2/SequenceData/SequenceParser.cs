@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using dotMath;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using dotMath;
 
 namespace MOTMaster2.SequenceData
 {
@@ -31,27 +28,57 @@ namespace MOTMaster2.SequenceData
             return true;
         }
 
-        //TODO: Make the parser work for strings which represent Script parameter names
+        public static double ParseOrGetParameter(string value)
+        {
+            double number = 0.0;
+            bool result = Double.TryParse(value, out number);
+            if (result) return number;
+            else return (double)Controller.sequenceData.Parameters.Where(t => t.Name == value).Select(t => t.Value).First();
+        }
+        
         internal bool CheckMuquans(string command)
         {
             if (command == "") return true;
             string[] values;
-            if (!command.Contains(',')) values = command.Split(' ');
+            if (!command.Contains(',')) values = command.Split(';');
             else values = command.Split(',');
             if (values[0] == "Set")
             {
-                double result;
                 if (values.Length != 2) throw new Exception("Incorrect number of arguments for Set");
-                else if (!Double.TryParse(values[1], out result)) throw new Exception("Set value is not a number");
-                else return true;
+                else
+                {
+                    try
+                    {
+                        ParseOrGetParameter(values[1]);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Set value is not a number");
+                    }
+                }
+                    return true;
             }
             else if (values[0] == "Sweep")
             {
-                double result;
                 if (values.Length != 3) throw new Exception("Incorrect number of arguments for Sweep");
-                else if (!Double.TryParse(values[1], out result)) throw new Exception("Sweep value is not a number");
-                else if (!Double.TryParse(values[2], out result)) throw new Exception("Sweep time is not a number");
-                else return true;
+                else {
+                    try
+                    { 
+                        ParseOrGetParameter(values[1]);
+                    } 
+                    catch(Exception e)
+                    { throw new Exception("Sweep value is not a number");
+                    }
+                    try
+                    { 
+                        ParseOrGetParameter(values[2]);
+                    } 
+                    catch(Exception e)
+                    { 
+                        throw new Exception("Sweep value is not a number");
+                    }
+                    return true;
+                }
             }
             else
             {

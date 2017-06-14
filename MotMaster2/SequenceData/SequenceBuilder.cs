@@ -62,7 +62,7 @@ namespace MOTMaster2.SequenceData
                 //TODO: Include a method for delaying a digital edge
                 int digitalStartTime = ConvertToSampleTime(currentTime,digitalClock);
 
-                //TODO: Refactor some of this so startTimes, values etc can depend on parameter names
+                
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
                   AddAnalogChannelStep(timeMultiplier, analogClock, step, analogChannel);
@@ -82,9 +82,9 @@ namespace MOTMaster2.SequenceData
                         
                         if (serialCommand.Name == "Slave") laserID = "slave0";
                         else if (serialCommand.Name == "AOM") laserID = "mphi";
-                        string[] valueArr = serialCommand.Value.Split(' ');
-                        if (valueArr[0] == "Set") muPB.SetFrequency(laserID, Double.Parse(valueArr[1]));
-                        else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, Double.Parse(valueArr[1]), Double.Parse(valueArr[2]));
+                        string[] valueArr = serialCommand.Value.Split(';');
+                        if (valueArr[0] == "Set") muPB.SetFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]));
+                        else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]), SequenceParser.ParseOrGetParameter(valueArr[2]));
 
                         hsPB.Pulse(digitalStartTime, serialPreTrigger+serialWait, 200, "serialPreTrigger");
                         hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");

@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DAQ.Environment;
-using DAQ.Pattern;
-using DAQ.Analog;
-using MOTMaster2;
 using NavigatorHardwareControl;
-using System.Collections.ObjectModel;
-using dotMath;
 using System.ComponentModel;
 using Newtonsoft.Json;
 
@@ -239,29 +233,22 @@ namespace MOTMaster2.SequenceData
           
         }
 
-        public double ParseOrGetParameter(string value)
-        {
-            double number = 0.0;
-            bool result = Double.TryParse(value,out number);
-            if (result) return number;
-            else return (double)Controller.sequenceData.Parameters.Where(t=>t.Name==value).Select(t=>t.Value).First();
-        }
         public double GetStartTime()
         {
-            return ParseOrGetParameter(_selectedItem[0].Value);
+            return SequenceParser.ParseOrGetParameter(_selectedItem[0].Value);
         }
 
         public double GetDuration()
         {
             if (_selectedItem == null) return 0.0;
             if (_selectedItem == Value) throw new Exception("Channel arguments do not have a Duration");
-            return ParseOrGetParameter(_selectedItem[1].Value);
+            return SequenceParser.ParseOrGetParameter(_selectedItem[1].Value);
         }
 
         public double GetValue()
         {
-            if (_selectedItem.Count == 2) return ParseOrGetParameter(_selectedItem[1].Value);
-            else return ParseOrGetParameter(_selectedItem[2].Value);
+            if (_selectedItem.Count == 2) return SequenceParser.ParseOrGetParameter(_selectedItem[1].Value);
+            else return SequenceParser.ParseOrGetParameter(_selectedItem[2].Value);
         }
 
         public string GetFunction()
@@ -273,7 +260,7 @@ namespace MOTMaster2.SequenceData
         public double GetFinalValue()
         {
             if (_selectedItem != Pulse) throw new Exception("Channel arguments do not have a final value.");
-            else return ParseOrGetParameter(_selectedItem[3].Value);
+            else return SequenceParser.ParseOrGetParameter(_selectedItem[3].Value);
         }
 
         public void SetArgType(AnalogChannelSelector channelType)

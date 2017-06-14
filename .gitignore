@@ -1,11 +1,23 @@
-<<<<<<< HEAD
+
 bin
+
 obj
+
 *.suo
-*.csproj.user
+*.csproj
+*.user
+
 *.licx
+
 *.lnk
+
 *.csv
+
 iamjack.sh
+
 iamjoe.sh
+
 MotMaster2/Data/*
+packages/*
+
+*.tmp_proj
