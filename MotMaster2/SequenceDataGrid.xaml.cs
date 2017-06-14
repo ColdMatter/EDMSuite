@@ -12,14 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-<<<<<<< HEAD
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
-=======
-using MOTMaster2.Sequence;
 using System.Dynamic;
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
+
 
 
 namespace MOTMaster2
@@ -32,10 +29,7 @@ namespace MOTMaster2
         public SequenceDataGrid()
         {
             InitializeComponent();
-<<<<<<< HEAD
-=======
 
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
             sequenceDataGrid.DataContext = new SequenceStepViewModel();
             
         }
@@ -44,7 +38,6 @@ namespace MOTMaster2
         {
             var dg = sender as DataGrid;
             //These hide the columns that by default display the dictionaries corresponding to the analog and digital channel types
-<<<<<<< HEAD
             dg.Columns[6].Visibility = Visibility.Collapsed;
             dg.Columns[7].Visibility = Visibility.Collapsed;
 
@@ -73,34 +66,10 @@ namespace MOTMaster2
 
                 col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value")};
                 //col.Binding = new Binding("DigitalValueTypes[" + name + "]");
-=======
-            dg.Columns[5].Visibility = Visibility.Collapsed;
-            dg.Columns[6].Visibility = Visibility.Collapsed;
-            var first = dg.ItemsSource.Cast<object>().FirstOrDefault() as SequenceStep;
-            if (first == null) return;
-            var names = first.analogValueTypes.Keys;
-            foreach (var name in names)
-            {
-                DataGridComboBoxColumn col = new DataGridComboBoxColumn { Header = name };
-                var resource = this.FindResource("analogProvider");
-                BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() {Source = resource });
-                col.SelectedItemBinding = new Binding("analogValueTypes[" + name + "]");
-                dg.Columns.Add(col);
-       
-            }
-            var dignames = first.digitalValueTypes.Keys;
-            foreach (var name in dignames)
-            {
-                DataGridComboBoxColumn col = new DataGridComboBoxColumn { Header = name };
-                var resource = this.FindResource("digitalProvider");
-                BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() { Source = resource });
-                col.SelectedItemBinding = new Binding("digitalValueTypes[" + name + "]");
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
                 dg.Columns.Add(col);
             }
         }
 
-<<<<<<< HEAD
         //If the properties of the SequenceData are changed, this will be called
         private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
@@ -110,20 +79,10 @@ namespace MOTMaster2
             if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
             //TODO: Add a flag so that the sequence data is only updated when set to true and a verification of this data
             if (Controller.sequenceData != null) Controller.sequenceData.Steps = first;
-            
-            
-=======
-        private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
-        {
-            var dg = sender as DataGrid;
-            var first = dg.ItemsSource.Cast<object>() as List<SequenceStep>;
-            Console.WriteLine("debug");
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
         }
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             
         }
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
@@ -171,11 +130,7 @@ namespace MOTMaster2
             }
             else
             { return; }
-        }
-
-=======
-            Console.WriteLine("2");
-        }
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
-    }
+        }   
+    }    
 }
+

@@ -9,16 +9,8 @@
         <Menu>
             <Menu Height="20" Width="749">
                 <MenuItem Header="File" Margin="0">
-<<<<<<< HEAD
                     <MenuItem Header="Open Sequence..." Click="LoadSequence_Click"/>
-                    <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click"/>
-=======
-                    <MenuItem Header="Open Parameters..." Click="LoadParameters_Click"/>
-                    <MenuItem Header="Save Parameters As..." Click="SaveParameters_Click"/>
-                    <MenuItem Header="Open Environment" Click="LoadEnvironment_Click"/>
-                    <MenuItem Header="Save Environment" Click="SaveEnvironment_Click"/>
-
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
+                        <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click"/>
                 </MenuItem>
                 <MenuItem Header="Edit">
                     <MenuItem Header="Sequence Parameters" Click="EditParameters_Click"/>
@@ -81,15 +73,10 @@
             </TabItem>
         </TabControl>
         <controls:SequenceDataGrid x:Name="SequenceData" Margin="-270,237,10.286,10.429" Width="450"/>
-<<<<<<< HEAD
+
         <TabControl x:Name="tcLog" HorizontalAlignment="Left" Height="336" Margin="473,232,0,0" VerticalAlignment="Top" Width="286" SelectedIndex="0">
             <TabItem Header="Log">
                 <RichTextBox Name="tbLogger" Background="Black" Foreground="Lime">
-=======
-        <TabControl x:Name="tcLog" HorizontalAlignment="Left" Height="336" Margin="473,232,0,0" VerticalAlignment="Top" Width="286" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">
-            <TabItem Header="Log">
-                <RichTextBox >
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
                     <FlowDocument>
                         <Paragraph>
                             <Run x:Name="tbLog" Text=">Welcome to MOTMaster" Background="Black" Foreground="Lime"/>
@@ -99,9 +86,8 @@
             </TabItem>
             <TabItem Header="Property">
                 <Grid>
-                    <Label x:Name="noPropLabel" Content="Select an analog channel&#xD;&#xA;in a timestep to modify &#xD;&#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
-<<<<<<< HEAD
-                    <Label x:Name="propLabel" FontSize="12">
+                                <Label x:Name="noPropLabel" Content="Select an analog channel&#xD;&#xA;in a timestep to modify &#xD;&#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
+                                <Label x:Name="propLabel" FontSize="12">
                         
                     </Label>
                     <DataGrid  Name="propertyGrid" Visibility="Visible" Margin="0,33,0,180" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
@@ -110,18 +96,14 @@
                             <DataGridTextColumn x:Name="propertyValues" Binding="{Binding Path=Value}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button x:Name="setPropertyBtn" Content="Set" Width="75" Height="20" Click="setProperty_Click" Visibility="Hidden"/>
-=======
-                    <DataGrid  Name="propertyGrid" Visibility="Hidden"/>
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
-                </Grid>
+                                    <Button x:Name="setPropertyBtn" Content="Set" Width="75" Height="20" Click="setProperty_Click" Visibility="Hidden"/>
+                            </Grid>
             </TabItem>
 
 
         </TabControl>
-<<<<<<< HEAD
+
         <Button Name="buildBtn"  Content="Build" Height="20" Width="75" Margin="582,615,102.786,176.929" Click="buildBtn_Click"/>
-=======
->>>>>>> 9ede50e1fcc94d129a95a74c629dae21e1b55041
+
     </Grid>
 </Window>
