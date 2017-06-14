@@ -536,5 +536,14 @@ namespace MOTMaster2
             ParametersWindow paramWindow = new ParametersWindow();
             paramWindow.Show();
         }
+
+        private void CreateAnalogPropertyTable(Sequence.SequenceStep selectedStep, string channelName,Sequence.AnalogChannelSelector analogType )
+        {
+            tcLog.SelectedIndex = 1;
+            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
+            propertyGrid = new DataGrid();
+            propertyGrid.DataContext = selectedStep.analogData[channelName];
+
+        }
     }
 }
