@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -41,7 +41,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -124,9 +124,9 @@
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
-      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
-      <Name>MOTMaster</Name>
+    <ProjectReference Include="..\ShapedPulseMaker\ShapedPulseMaker.csproj">
+      <Project>{f951e985-dfc3-48e7-8d3d-ed4f1cfa4d62}</Project>
+      <Name>ShapedPulseMaker</Name>
     </ProjectReference>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
@@ -136,7 +136,10 @@
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+    </Reference>
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System">
@@ -190,7 +193,10 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ShapedPulseMakerPlugin.cs" />
     <Compile Include="MMPatternPlugin.cs" />
+    <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
+    <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">

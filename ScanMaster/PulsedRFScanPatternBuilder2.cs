@@ -9,7 +9,7 @@ namespace ScanMaster.Acquire.Patterns
 	/// <summary>
 	/// A pattern that switches between rf systems at a given time.
 	/// </summary>
-	public class PulsedRFScanPatternBuilder2 : PatternBuilder32
+	public class PulsedRFScanPatternBuilder2: PatternBuilder32
 	{
 		private const int FLASH_PULSE_LENGTH = 100;
 		private const int Q_PULSE_LENGTH = 100;

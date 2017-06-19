@@ -37,6 +37,66 @@ namespace TransferCavityLock2012
             return new double[] { coefficients[3], coefficients[2], coefficients[1], coefficients[0] }; //to be consistent with old convention.
         }
 
+        //This function speeds up the fitting process by passing the last fitted parameters as a guess, 
+        // and by restricting the fit to only those points near to the peak
+        public static double[] FitLorenzianToData(double[] voltages, double[] signal, double[] parameters, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
+        {
+            
+            double high = getMax(voltages).value;
+            double low = getMin(voltages).value;
+            System.Diagnostics.Debug.WriteLine("   " + low.ToString() + "   " + high.ToString());
+            LorentzianFitter lorentzianFitter = new LorentzianFitter();
+
+            double[][] allxypairs = new double[voltages.Length][];
+
+            int j=0;
+
+            for (int i = 0; i<voltages.Length; i++)
+	            {
+                    allxypairs[i] = new double[2];
+                    allxypairs[i][0] = voltages[i];                 
+                    allxypairs[i][1] = signal[i];
+	            }
+
+            for(int i = 0; i<voltages.Length; i++)
+            {
+                if ((allxypairs[i][0] > (parameters[1] - pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])) && (allxypairs[i][0] < (parameters[1] + pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])))
+                {
+                    j++;
+                }
+            } 
+
+            double[] selectedvoltages = new double[j];
+            double[] selectedsignal = new double[j];
+
+
+            for(int i = 0, k=0; i<voltages.Length; i++)
+            {
+                if ((allxypairs[i][0] > (parameters[1] - pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])) && (allxypairs[i][0] < (parameters[1] + pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])))
+                {
+                    selectedvoltages[k] = allxypairs[i][0];
+                    selectedsignal[k] = allxypairs[i][1];
+                    k++;
+                }
+            }
+            // takes the parameters (in this order, in the double[])
+            // N: background
+            // Q: signal
+            // c: centre
+            // w: width
+
+            dataPoint max = getMax(signal);
+            dataPoint min = getMin(signal);
+            lorentzianFitter.Fit(selectedvoltages, selectedsignal,
+                new double[] { parameters[3], parameters[2], parameters[1], parameters[0] }, 0, 0, maximumNLMFSteps);
+
+            double[] coefficients = lorentzianFitter.Parameters;
+
+            fitFailSafe(coefficients, low, high);
+
+            return new double[] { coefficients[3], coefficients[2], coefficients[1], coefficients[0] }; //to be consistent with old convention.
+        }
+
         private class dataPoint
         {
             public double value;

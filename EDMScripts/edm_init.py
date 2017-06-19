@@ -8,8 +8,8 @@ from System.IO import Path
 # Import the edm control software assemblies into IronPython
 sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\EDM\\"))
 clr.AddReferenceToFile("ScanMaster.exe")
-sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\EDM\\"))
-clr.AddReferenceToFile("EDMBlockHead.exe")
+#sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\EDM\\"))
+#clr.AddReferenceToFile("EDMBlockHead.exe")
 sys.path.append(Path.GetFullPath("..\\EDMHardwareControl\\bin\\EDM\\"))
 clr.AddReferenceToFile("EDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
@@ -37,12 +37,12 @@ class typedproxy(object):
 # create connections to the control programs
 import System
 import ScanMaster
-import EDMBlockHead
+#import EDMBlockHead
 import EDMHardwareControl
 import SirCachealot
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1171/controller.rem'), EDMBlockHead.Controller)
+#bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1171/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
 sc = typedproxy(System.Activator.GetObject(SirCachealot.Controller, 'tcp://localhost:1180/controller.rem'), SirCachealot.Controller)
 

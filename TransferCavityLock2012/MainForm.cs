@@ -45,7 +45,7 @@ namespace TransferCavityLock2012
         {
             string title = sl.Name;
             TabPage newTab = new TabPage(title);
-            LockControlPanel panel = new LockControlPanel(title,sl.LowerVoltageLimit,sl.UpperVoltageLimit);
+            LockControlPanel panel = new LockControlPanel(title,sl.LowerVoltageLimit,sl.UpperVoltageLimit, sl.Gain);
             panel.controller = this.controller;
             slaveLasersTab.TabPages.Add(newTab);
             newTab.Controls.Add(panel);
@@ -187,6 +187,12 @@ namespace TransferCavityLock2012
         {
             return Int32.Parse(NumberOfScanpointsTextBox.Text);
         }
+
+        public void SetMasterGain(double value)
+        {
+            SetTextBox(MasterGainTextBox, Convert.ToString(value));
+        }
+
         #endregion
     
         #region Displaying Data
@@ -223,6 +229,11 @@ namespace TransferCavityLock2012
         public void UpdateElapsedTime(double time)
         {
             SetTextBox(updateRateTextBox, Convert.ToString(time));
+        }
+
+        public double GetElapsedTime()
+        {
+           return Double.Parse(updateRateTextBox.Text);
         }
 
         public void IncrementErrorCount(string name)
@@ -293,6 +304,14 @@ namespace TransferCavityLock2012
             slaveLasers[name].SetLaserSetPoint(value);
         }
 
+        public void SetLaserSD(string name, double value)
+        {
+            slaveLasers[name].SetLaserSD(value);
+        }
+        public double GetLaserSD(string name)
+        {
+            return slaveLasers[name].GetLaserSD();
+        }
         public void DisplayData(string name, double[] cavityData, double[] slaveData)
         {
             slaveLasers[name].DisplayData(cavityData, slaveData);
@@ -358,12 +377,26 @@ namespace TransferCavityLock2012
         private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
 
+            if (masterLockEnableCheck.CheckState == CheckState.Checked)
+            {
+                controller.MasterLaser.ArmLock();
+            }
+            if (masterLockEnableCheck.CheckState == CheckState.Unchecked)
+            {
+                controller.MasterLaser.DisengageLock();
+            }
+
         }
 
 
         private void voltageRampControl_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void loadProfileSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadParametersWithDialog();
         } 
        
     }

@@ -28,12 +28,13 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit)
+        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit, double gain)
         {
             this.name = name;
             this.upperVoltageLimit = upperVoltageLimit;
             this.lowerVoltageLimit = lowerVoltageLimit;
             InitializeComponent();
+            this.GainTextbox.Text = gain.ToString(); 
         }
 
 
@@ -186,7 +187,7 @@ namespace TransferCavityLock2012
         private void VoltageTrackBar_Scroll(object sender, EventArgs e)
         {
             
-            SetLaserVoltage((((double)VoltageTrackBar.Value) / 1000)*(upperVoltageLimit-lowerVoltageLimit));
+            SetLaserVoltage(((((double)VoltageTrackBar.Value) / 1000)*(upperVoltageLimit-lowerVoltageLimit))+lowerVoltageLimit);
         }
 
         #endregion
@@ -220,6 +221,15 @@ namespace TransferCavityLock2012
         {
             SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
         }
+        public void SetLaserSD(double value)
+        {
+            SetTextBox(rmsVoltageDeviationTextBox, Convert.ToString(value));
+        }
+
+        public double GetLaserSD()
+        {
+            return Double.Parse(rmsVoltageDeviationTextBox.Text);
+        }
 
         public void DisplayData(double[] cavityData, double[] slaveData)
         {
@@ -233,12 +243,11 @@ namespace TransferCavityLock2012
 
          public void AppendToErrorGraph(double[] x, double[] y)
         {
-            double cf = Double.Parse(fsrTextBox.Text);
             double[] ylist=y;
             int length = ylist.Length;
             for (int i = 0; i < length; i++)
             {
-                ylist[i] = 1500 * y[i] / cf;
+                ylist[i] = 1500 * y[i] / controller.config.FSRCalibrations[name];
             };
             PlotXYAppend(ErrorScatterGraph, ErrorPlot, x, ylist);
         }
@@ -263,7 +272,6 @@ namespace TransferCavityLock2012
                     GainTextbox.Enabled = true;
                     lockedLED.Value = false;
                     VoltageTrackBar.Enabled = true;
-                    fsrTextBox.Enabled = true;
                     break;
 
                 case SlaveLaser.LaserState.LOCKING:
@@ -271,7 +279,6 @@ namespace TransferCavityLock2012
                     GainTextbox.Enabled = false;
                     lockedLED.Value = false;
                     VoltageTrackBar.Enabled = false;
-                    fsrTextBox.Enabled = false; 
                     break;
 
                 case SlaveLaser.LaserState.LOCKED:
@@ -283,10 +290,7 @@ namespace TransferCavityLock2012
 
         #endregion
 
-        private void fsrTextBox_TextChanged(object sender, EventArgs e)
-        {
-            ClearErrorGraph();
-        }
+
 
         public void AdjustAxesAutoScale(bool state)
         {
