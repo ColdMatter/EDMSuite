@@ -68,7 +68,10 @@ def ScanExpansionTime(values=[50, 650, 150, 750, 550, 350, 250, 450, 800]):
 	script_name = 'MOTBlueMolassesShimSwitch'
 	parameter_name = 'ExpansionTime'
 	return ScanSingleParameter(script_name, parameter_name, values)
-	
+def ScanExpansionTimeShort(values=[50, 650, 150, 750, 550, 350, 250, 450, 800]):
+	script_name = 'MOTBlueMolassesShimSwitchShort'
+	parameter_name = 'ExpansionTime'
+	return ScanSingleParameter(script_name, parameter_name, values)	
 def ScanExpansionTimeHot(values=[50, 260, 180, 140, 300, 220, 100]):
 	script_name = 'MOTRampIntensity'
 	parameter_name = 'ExpansionTime'

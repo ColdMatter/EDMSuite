@@ -46,6 +46,7 @@
             this.iterationsBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
+            this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -215,11 +216,23 @@
             this.runUntilStopCheckBox.UseVisualStyleBackColor = true;
             this.runUntilStopCheckBox.CheckedChanged += new System.EventHandler(this.runUntilStopCheckBox_CheckedChanged);
             // 
+            // triggeredCheckBox
+            // 
+            this.triggeredCheckBox.AutoSize = true;
+            this.triggeredCheckBox.Location = new System.Drawing.Point(12, 132);
+            this.triggeredCheckBox.Name = "triggeredCheckBox";
+            this.triggeredCheckBox.Size = new System.Drawing.Size(67, 17);
+            this.triggeredCheckBox.TabIndex = 19;
+            this.triggeredCheckBox.Text = "triggered";
+            this.triggeredCheckBox.UseVisualStyleBackColor = true;
+            this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
+            this.Controls.Add(this.triggeredCheckBox);
             this.Controls.Add(this.runUntilStopCheckBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.iterationsBox);
@@ -264,6 +277,7 @@
         private System.Windows.Forms.TextBox iterationsBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox runUntilStopCheckBox;
+        private System.Windows.Forms.CheckBox triggeredCheckBox;
     }
 }
 

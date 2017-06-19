@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTSwitchOffTime"] = 8000;
         Parameters["ExpansionTime"] = 800;
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesDuration"] = 200;
+        Parameters["MolassesDuration"] = 100;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -58,21 +58,21 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.37;
+        Parameters["xShimLoadCurrent"] = 0.42;
         Parameters["yShimLoadCurrent"] = 0.0;
         Parameters["zShimLoadCurrent"] = -0.4;
         Parameters["xShimMolassesCurrent"] = 0.0;
         Parameters["yShimMolassesCurrent"] = 0.06;
         Parameters["zShimMolassesCurrent"] = 0.1;
-        Parameters["zShimEddySupressTime"] = 7600;
-        Parameters["zShimFieldSwitchTime"] = 7700;
-        Parameters["shimFieldSwitchTime"] = 7700;
+        Parameters["zShimEddySupressTime"] = 7200;
+        Parameters["zShimFieldSwitchTime"] = 7300;
+        Parameters["shimFieldSwitchTime"] = 7300;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 7.54;
+        Parameters["v0IntensityRampEndValue"] = 7.94;
         Parameters["v0IntensityMolassesValue"] = 7.24;
 
         // v0 Light Frequency
