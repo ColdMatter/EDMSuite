@@ -194,7 +194,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ShapedPulseMakerPlugin.cs" />
-    <Compile Include="MMPatternPlugin.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
