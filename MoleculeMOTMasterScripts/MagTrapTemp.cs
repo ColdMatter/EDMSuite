@@ -25,8 +25,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTSwitchOffTime"] = 6300;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesDuration"] = 200;
-        Parameters["v0F0PumpDuration"] = 1;
-        Parameters["MagTrapDuration"] = 10000;
+        Parameters["v0F0PumpDuration"] = 0;
+        Parameters["MagTrapDuration"] = 5000;
         Parameters["ExpansionTime"] = 50;
 
         // Camera
@@ -63,7 +63,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.21
-        Parameters["MOTCoilsCurrentMagTrapValue"] = 0.75;
+        Parameters["MOTCoilsCurrentMagTrapValue"] = 1.25;
         Parameters["magRampDuration"] = 1;
 
         Parameters["CoilsSwitchOffTime"] = 40000;
@@ -79,7 +79,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartValue"] = 5.0;
         Parameters["v0IntensityRampEndValue"] = 7.95;
         Parameters["v0IntensityMolassesValue"] = 5.0;
-        Parameters["v0IntensityF0PumpValue"] = 5.0;
+        Parameters["v0IntensityF0PumpValue"] = 8.75;
         Parameters["v0IntensityImageValue"] = 5.0;
 
         // v0 Light Frequency
@@ -87,14 +87,14 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyMolassesValue"] = 30.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
         Parameters["v0FrequencyF0PumpValue"] = 0.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
+        // v0 pumping EOM
+        Parameters["v0EOMMOTValue"] = 5.45;
+        Parameters["v0EOMPumpValue"] = 5.45; //3.5
+
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
         Parameters["calibOffset"] = 64.2129;
         Parameters["calibGradient"] = 5.55075;
-
-        // v0 F=1 (dodgy code using an analogue output to control a TTL)
-        Parameters["v0F1AOMStartValue"] = 5.0;
-        Parameters["v0F1AOMOffValue"] = 0.0;
 
 
     }
@@ -110,8 +110,10 @@ public class Patterns : MOTMasterScript
         int imageTime = magTrapEndTime + (int)Parameters["ExpansionTime"];
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
+        p.AddEdge("v00Shutter", 0, true);
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); // pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, magTrapStartTime, imageTime-magTrapStartTime, "v00AOM"); // turn off the MOT light for magnetic trap
+        p.Pulse(patternStartBeforeQ, magTrapStartTime, imageTime - magTrapStartTime, "v00AOM"); // turn off the MOT light for magnetic trap
+        p.Pulse(patternStartBeforeQ, 1, 35000, "bXShutter"); // Close BX shutter during magnetic trap (note it takes at least 30ms to do anything so turning off at 1 is fine)
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
         return p;
@@ -164,9 +166,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", imageTime, (double)Parameters["v0IntensityImageValue"]);
 
         // v0 EOM
-        p.AddAnalogValue("v00EOMAmp", 0, 7.17);
-        //p.AddAnalogValue("v00EOMAmp", v0F0PumpStartTime, 4.0);
-        //p.AddAnalogValue("v00EOMAmp", imageTime, 7.17);
+        p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["v0EOMMOTValue"]);
+        p.AddAnalogValue("v00EOMAmp", v0F0PumpStartTime, (double)Parameters["v0EOMPumpValue"]);
+        p.AddAnalogValue("v00EOMAmp", magTrapStartTime, (double)Parameters["v0EOMMOTValue"]);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyMOTValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
@@ -186,7 +188,6 @@ public class Patterns : MOTMasterScript
             ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyMOTValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]
         );
 
-        p.SwitchAllOffAtEndOfPattern();
         return p;
     }
 

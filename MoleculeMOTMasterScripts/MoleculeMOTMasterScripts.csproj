@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoleculeMOTMasterScripts</RootNamespace>
     <AssemblyName>MoleculeMOTMasterScripts</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,11 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlueMolassesSteps.cs" />
     <Compile Include="DetuningTemperature.cs" />
-    <Compile Include="forEach.cs" />
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
+    <Compile Include="MagTrapTemp.cs" />
+    <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
     <Compile Include="MOTBasicBField.cs" />
@@ -75,6 +74,7 @@
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScatteringRate.cs" />
+    <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

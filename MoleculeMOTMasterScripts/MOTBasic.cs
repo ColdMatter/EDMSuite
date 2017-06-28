@@ -128,7 +128,7 @@ public class Patterns : MOTMasterScript
        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.48);
+        p.AddAnalogValue("v00EOMAmp", 0, 5.45);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
@@ -136,9 +136,6 @@ public class Patterns : MOTMasterScript
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
 
-
-        
-        p.SwitchAllOffAtEndOfPattern();
         return p;
    }
 
