@@ -25,17 +25,19 @@ namespace MOTMaster
             runningZipStream.SetLevel(5);
         }
 
-        public void AppendToZip(String folder, String name)
+        public void AppendToZip(String filePath)
         {
             lock (this)
             {
-                string entryName = ZipEntry.CleanName(name);
-                ZipEntry entry = new ZipEntry(entryName);
-                FileInfo f = new FileInfo(folder + name);
+                string[] bits = (filePath.Split('\\'));
+                string entryName = bits[bits.Length - 1];
+                string cleanedEntryName = ZipEntry.CleanName(entryName);
+                ZipEntry entry = new ZipEntry(cleanedEntryName);
+                FileInfo f = new FileInfo(filePath);
                 entry.Size = f.Length;
                 runningZipStream.PutNextEntry(entry);
                 byte[] buffer = new byte[16384];
-                using (FileStream streamReader = File.OpenRead(folder + name))
+                using (FileStream streamReader = File.OpenRead(filePath))
                 {
                     StreamUtils.Copy(streamReader, runningZipStream, buffer);
                 }

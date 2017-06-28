@@ -103,7 +103,14 @@ namespace TransferCavityLock2012
             {
                 SlaveLasers.Add(s, new SlaveLaser(s));
                 SlaveLasers[s].controller = this;
-                SlaveLasers[s].Gain = config.DefaultGains[s];
+                if (config.DefaultGains.ContainsKey(s))
+                {
+                    SlaveLasers[s].Gain = config.DefaultGains[s];
+                }
+                else
+                {
+                    SlaveLasers[s].Gain = 0;
+                }
             }
         }
 

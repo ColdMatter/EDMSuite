@@ -53,6 +53,15 @@ namespace DAQ.HAL
             tcl1.MasterLaser = "master";
             tcl1.Ramp = "rampfb";
             tcl1.TCPChannel = 1190;
+            tcl1.AddDefaultGain("Master", 1.0);
+            tcl1.AddDefaultGain("v00cooling", 2);
+            tcl1.AddDefaultGain("v10repump", 0.5);
+            tcl1.AddDefaultGain("eylsa", -2);
+            tcl1.AddFSRCalibration("v00cooling", 3.95); //This is an approximate guess
+            tcl1.AddFSRCalibration("v10repump", 4.15);
+            tcl1.AddFSRCalibration("eylsa", 3.9);
+            tcl1.DefaultScanPoints = 850;
+            tcl1.PointsToConsiderEitherSideOfPeakInFWHMs = 30;
             Info.Add("Hamish", tcl1);
 
             //configure instance 2 of transfer cavity lock
@@ -64,6 +73,13 @@ namespace DAQ.HAL
             tcl2.MasterLaser = "master2";
             tcl2.Ramp = "rampfb2";
             tcl2.TCPChannel = 1191;
+            tcl2.AddDefaultGain("Master", 1.0);
+            tcl2.AddDefaultGain("v21repump", -0.4);
+            tcl2.AddDefaultGain("v32repump", 0.2);
+            tcl2.AddFSRCalibration("v21repump", 3.7); //This is an approximate guess
+            tcl2.AddFSRCalibration("v32repump", 3.7);
+            tcl2.DefaultScanPoints = 900;
+            tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 30;
             Info.Add("Carlos", tcl2);
 
             //MotMaster configuration

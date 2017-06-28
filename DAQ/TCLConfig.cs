@@ -14,7 +14,6 @@ namespace DAQ.TransferCavityLock2012
             configurationName = name;
             slaveVoltageUpperLimit = 5.0;
             slaveVoltageLowerLimit = 0.0;
-            defaultGain = 0.5;
             defaultLaserVoltage = 0.0;
             maxInputVoltage = 10.0;
             defaultScanPoints = 1000;
@@ -64,13 +63,6 @@ namespace DAQ.TransferCavityLock2012
         {
             get { return slaveVoltageLowerLimit; }
             set { slaveVoltageLowerLimit = value; }
-        }
-
-        private double defaultGain;
-        public double DefaultGain
-        {
-            get { return defaultGain; }
-            set { defaultGain = value; }
         }
 
         private double defaultLaserVoltage;

@@ -21,6 +21,7 @@ namespace DAQ.Environment
                 "C:\\Control Programs\\EDMSuite\\MOTMaster\\bin\\Decelerator\\");
             Paths.Add("UntriggeredCameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\SHCCameraAttributes.txt");
             Paths.Add("CameraAttributesPath", "c:\\Data\\Settings\\CameraAttributes\\MOTMasterCameraAttributes.txt");
+            Paths.Add("ExternalFilesPath", "\\\\PH-RAINBOW1\\CameraImages\\");
             Paths.Add("HardwareClassPath", "C:\\Control Programs\\EDMSuite\\DAQ\\DecelerationHardware.cs");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
