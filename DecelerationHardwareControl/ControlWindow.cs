@@ -182,6 +182,49 @@ namespace MoleculeMOTHardwareControl
             controller.SetMOTAOMAmp(amp);
         }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void triggeredCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FrequencyTab_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateWindfreakClick(object sender, EventArgs e)
+        {
+            double freq = (double)freqInput.Value;
+            double amp = (double)ampInput.Value;
+            controller.UpdateWindfreak(freq, amp);
+        }
+
+        private void toggleWindfreakOutput(object sender, ActionEventArgs e)
+        {
+            controller.SetWindfreakOutput(outputSwitch.Value);
+            outputIndicator.Value = outputSwitch.Value;
+        }
+
+        private void changeWindfreakTriggerMode(object sender, EventArgs e)
+        {
+            string test = triggerModeComboBox.SelectedValue + "1";
+        }
+
        
 
         

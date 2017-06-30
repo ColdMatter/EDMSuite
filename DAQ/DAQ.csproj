@@ -351,6 +351,7 @@
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WindfreakSynthesizer.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -87,12 +87,10 @@ namespace DAQ.HAL
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
 
-
-            Instruments.Add("synth", new HP8673BSynth("GPIB0::19::INSTR"));
+            //Instruments
+            //Instruments.Add("windfreak", new WindfreakSynthesizer(""));
             //Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
-
             //Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
-
 
             //VCO lock
             //AddAnalogOutputChannel("VCO_Out", PXIBoard + "/ao12", 0.0, 10.0);

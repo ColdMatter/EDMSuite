@@ -21,11 +21,14 @@ namespace MoleculeMOTHardwareControl
 
         ControlWindow window;
 
+        // Instruments
         HP8673BSynth synth = (HP8673BSynth)Environs.Hardware.Instruments["synth"];
-//        FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
+        //FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
+        WindfreakSynthesizer windfreak = (WindfreakSynthesizer)Environs.Hardware.Instruments["windfreak"];
 
-        private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed
-            ("cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut");
+        private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed(
+            "cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut"
+        );
 
         private static Hashtable calibrations = Environs.Hardware.Calibrations;
 
@@ -47,9 +50,9 @@ namespace MoleculeMOTHardwareControl
         private Dictionary<string, Task> analogTasks = new Dictionary<string, Task>();
 
         private Task motAOMFreqOutputTask = new Task("MOTAOMFrequencyOutput");
-        private AnalogOutputChannel motAOMFreqChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["motAOMFreq"];
+        private AnalogOutputChannel motAOMFreqChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["v00Frequency"];
         private Task motAOMAmpOutputTask = new Task("MOTAOMAmplitudeOutput");
-        private AnalogOutputChannel motAOMAmpChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["motAOMAmp"];
+        private AnalogOutputChannel motAOMAmpChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["v00Intensity"];
 
         public AnalogSingleChannelWriter analogWriter;
 
@@ -68,40 +71,13 @@ namespace MoleculeMOTHardwareControl
         private Task cellTask = new Task();
 
         public string command;
-	
-
 
         public double normsigGain;
-
-        public double SynthOnFrequency
-        {
-            get
-            {
-                return Double.Parse(window.synthOnFreqBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.synthOnFreqBox, value.ToString());
-            }
-        }
-
-        public double SynthOnAmplitude
-        {
-            get
-            {
-                return Double.Parse(window.synthOnAmpBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.synthOnAmpBox, value.ToString());
-            }
-        }
 
         // The keys of the hashtable are the names of the analog output channels
         // The values are all booleans - true means the channel is blocked
         private Hashtable analogOutputsBlocked;
 
-        
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
         // It just overrides the lifetime lease system completely.
@@ -129,15 +105,13 @@ namespace MoleculeMOTHardwareControl
             AddAnalogOutput(motAOMAmpOutputTask, motAOMAmpChannel, "motAOMAmp", -10, 10);
             
 
-            pressureSourceChamber.AddToTask(pressureMonitorTask, -10, 10);
-            pressureRough.AddToTask(roughVacuumTask, -10, 10);
-            voltageReference.AddToTask(voltageReferenceTask, -10, 10);
-            therm30KTemp.AddToTask(thermistor30KPlateTask, -10, 10);
-            shieldTemp.AddToTask(shieldTask, -10, 10);
-            cellTemp.AddToTask(cellTask, -10, 10);
-            InitializeSidebandRead();
-
-           
+            //pressureSourceChamber.AddToTask(pressureMonitorTask, -10, 10);
+            //pressureRough.AddToTask(roughVacuumTask, -10, 10);
+            //voltageReference.AddToTask(voltageReferenceTask, -10, 10);
+            //therm30KTemp.AddToTask(thermistor30KPlateTask, -10, 10);
+            //shieldTemp.AddToTask(shieldTask, -10, 10);
+            //cellTemp.AddToTask(cellTask, -10, 10);
+            //InitializeSidebandRead();
 
             window = new ControlWindow();
             window.controller = this;
@@ -254,6 +228,20 @@ namespace MoleculeMOTHardwareControl
             }
         }
 
+        #region Windfreak Members
+
+        public void UpdateWindfreak(double freq, double amp)
+        {
+            windfreak.UpdateContinuousSettings(freq, amp);
+        }
+
+        public void SetWindfreakOutput(bool outputIsOn)
+        {
+            windfreak.SetOutput(outputIsOn);
+        }
+
+        #endregion
+
         #region TransferCavityLockable Members
 
         public void ConfigureCavityScan(int numberOfSteps, bool autostart)
@@ -314,30 +302,6 @@ namespace MoleculeMOTHardwareControl
         {
             TCLHelper.ReleaseLaser();
         }
-
-        public void EnableSynth(bool enable)
-           {
-            synth.Connect();
-           if (enable)
-           {
-                synth.Frequency = SynthOnFrequency;
-                synth.Amplitude = SynthOnAmplitude;
-                synth.Enabled = true;
-            }
-            else
-             {
-                synth.Enabled = false;
-           }
-            synth.Disconnect();
-        }
-
-        public void UpdateSynthSettings()
-      {
-            synth.Connect();
-            synth.Frequency = SynthOnFrequency;
-            synth.Amplitude = SynthOnAmplitude;
-            synth.Disconnect();
-       }
 
         private double VoltageResistanceConversion(double voltage, double Vref)
         {
