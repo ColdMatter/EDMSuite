@@ -28,8 +28,6 @@ namespace TransferCavityLock2012
         #region Declarations
 
 		public bool fakeTheData = true;
-		public bool useDerivative = false;						// true = use derivative zero crossing, false = use Lorentzian fitting routines
-		public bool slaveUseDerivative = false;					// same for slave(s)
 
         public int default_ScanPoints = 1000;
 
@@ -317,8 +315,8 @@ namespace TransferCavityLock2012
 								// if we are using the derivative to determine the top of the cavity transmission peak
 								if (ui.useDerivativeCheckBox.Checked == true)
 								{
-									fits["masterFits"] = findPeakMaster(scanData);	// not really a fit but imitate that behavior for lock method consistency
-									plotMaster(scanData);
+									fits["masterFits"] = findMasterPeak(scanData);	// not really a fit but imitate the coefficient behavior for lock method consistency
+									plotMaster(scanData);							// plot the data without fit
 								}
 								// otherwise we're doing full Lorentzian fitting
 								else
@@ -328,7 +326,7 @@ namespace TransferCavityLock2012
 								}
 								masterVoltage = calculateNewMasterVoltage(masterVoltage);
                                 setupMasterVoltageOut();
-                                 //write difference to analog output
+                                //write difference to analog output
                                 writeMasterVoltageOut(masterVoltage);
                                 ui.SetVtoOffsetVoltage(masterVoltage);
                                 ui.SetMasterFitTextBox(fits["masterFits"][1]-masterVoltage);
@@ -362,10 +360,16 @@ namespace TransferCavityLock2012
                                     break;
 
                                 case SlaveLaser.LaserState.LOCKING:
-
-                                    fits[slName + "Fits"] = fitSlave(slName, scanData);
-
-                                    plotSlave(slName, scanData, fits[slName + "Fits"]);
+									if (ui.useDerivativeCheckBox.Checked == true) 
+									{
+										fits[slName + "Fits"] = findSlavePeak(slName, scanData);
+										// no plot, slave data has already been plotted
+									}
+									else
+									{
+										fits[slName + "Fits"] = fitSlave(slName, scanData);
+										plotSlave(slName, scanData, fits[slName + "Fits"]);
+									}
 
 
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
@@ -377,9 +381,17 @@ namespace TransferCavityLock2012
 
 
                                 case SlaveLaser.LaserState.LOCKED:
+									if (ui.useDerivativeCheckBox.Checked == true)
+									{
+										fits[slName + "Fits"] = findSlavePeak(slName, scanData);
+										// no plot
+									}
+									else
+									{
+										fits[slName + "Fits"] = fitSlave(slName, scanData);
+										plotSlave(slName, scanData, fits[slName + "Fits"]);
+									}
 
-                                    fits[slName + "Fits"] = fitSlave(slName, scanData);
-                                    plotSlave(slName, scanData, fits[slName + "Fits"]);
 
                                     plotError(slName, new double[] { getErrorCount(slName) }, new double[] { fits[slName + "Fits"][1] - fits["masterFits"][1] - sl.LaserSetPoint });
                                                                        
@@ -426,7 +438,7 @@ namespace TransferCavityLock2012
         {
             return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetMasterData());
         }
-		private double[] findPeakMaster(CavityScanData data)
+		private double[] findMasterPeak(CavityScanData data)
 		{
 			return CavityScanFindPeakHelper.FindPeak(data.GetCavityData(), data.GetMasterData());
 		}
@@ -457,6 +469,10 @@ namespace TransferCavityLock2012
         {
             return CavityScanFitHelper.FitLorenzianToData(data.GetCavityData(), data.GetSlaveData(name));
         }
+		private double[] findSlavePeak(string name, CavityScanData data)
+		{
+			return CavityScanFindPeakHelper.FindPeak(data.GetCavityData(), data.GetSlaveData(name));
+		}
         private void plotSlave(string name, CavityScanData data, double[] slaveFit)
         {
             double[] cavity = data.GetCavityData();

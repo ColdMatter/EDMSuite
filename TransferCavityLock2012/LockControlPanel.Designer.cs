@@ -57,7 +57,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.fsrTextBox = new System.Windows.Forms.TextBox();
 			this.slErrorResetButton = new System.Windows.Forms.Button();
-			this.slaveUseDerivativeCheckBox = new System.Windows.Forms.CheckBox();
 			this.lockParams.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).BeginInit();
@@ -69,7 +68,6 @@
 			// 
 			// lockParams
 			// 
-			this.lockParams.Controls.Add(this.slaveUseDerivativeCheckBox);
 			this.lockParams.Controls.Add(this.lockedLED);
 			this.lockParams.Controls.Add(this.label10);
 			this.lockParams.Controls.Add(this.setPointIncrementBox);
@@ -337,17 +335,6 @@
 			this.slErrorResetButton.UseVisualStyleBackColor = true;
 			this.slErrorResetButton.Click += new System.EventHandler(this.slErrorResetButton_Click);
 			// 
-			// slaveUseDerivativeCheckBox
-			// 
-			this.slaveUseDerivativeCheckBox.AutoSize = true;
-			this.slaveUseDerivativeCheckBox.Location = new System.Drawing.Point(253, 39);
-			this.slaveUseDerivativeCheckBox.Name = "slaveUseDerivativeCheckBox";
-			this.slaveUseDerivativeCheckBox.Size = new System.Drawing.Size(96, 17);
-			this.slaveUseDerivativeCheckBox.TabIndex = 54;
-			this.slaveUseDerivativeCheckBox.Text = "Use Derivative";
-			this.slaveUseDerivativeCheckBox.UseVisualStyleBackColor = true;
-			this.slaveUseDerivativeCheckBox.CheckedChanged += new System.EventHandler(this.slaveUseDerivativeCheckBox_CheckedChanged);
-			// 
 			// LockControlPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -402,6 +389,5 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox fsrTextBox;
 		private System.Windows.Forms.Label label5;
-		public System.Windows.Forms.CheckBox slaveUseDerivativeCheckBox;
     }
 }

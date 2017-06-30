@@ -203,7 +203,10 @@ namespace TransferCavityLock2012
         {
             scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, cavityData, masterData);
         }
-
+		public void DisplayMasterData(double[] cavityData, double[] masterData, double voltage)
+		{
+			scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, cavityData, masterData);
+		}
         public void DisplaySlaveData(string name, double[] cavityData, double[] slaveData, double[] slaveFitData)
         {
             slaveLasers[name].DisplayData(cavityData, slaveData);
@@ -365,17 +368,16 @@ namespace TransferCavityLock2012
         {
 
         }
-/*
-		private void useDerivativeCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			bool boxState = useDerivativeCheckBox.Checked;
-			controller.useDerivative = boxState;
-		}
-*/
+
 		private void useDerivativeCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			bool boxState = useDerivativeCheckBox.Checked;
-			controller.useDerivative = boxState;
+//			bool boxState = useDerivativeCheckBox.Checked;
+//			controller.useDerivative = boxState;
+		}
+
+		private void CavityVoltageReadScatterGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+		{
+
 		} 
        
     }

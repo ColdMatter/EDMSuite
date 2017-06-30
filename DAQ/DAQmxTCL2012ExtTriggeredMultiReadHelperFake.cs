@@ -10,9 +10,7 @@ namespace DAQ.TransferCavityLock2012
 {
 	public class DAQMxTCL2012ExtTriggeredMultiReadHelperFake : TransferCavity2012Lockable
 	{
-		//In this helper, the cavity is scanned externally (not from the computer). The software waits for a trigger pulse to start scanning.
-		//An additional AI read is added to this helper for reading off the cavity voltage.
-		//This helper doesn't deal with locking the laser.
+		// This is a data faker that immitates a scanning Fabry-Perot cavity.
 
 		private string[] analogInputs;
 		private string trigger;
@@ -44,27 +42,6 @@ namespace DAQ.TransferCavityLock2012
 				channels.Add(s, channel);
 			}
 
-/*
-			foreach (KeyValuePair<string, AnalogInputChannel> pair in channels)
-			{
-				pair.Value.AddToTask(readAIsTask, 0, 10);
-			}
-
-			if (autostart == false)
-			{
-				readAIsTask.Timing.ConfigureSampleClock(
-				   "",
-				   sampleRate,
-				   SampleClockActiveEdge.Rising,
-				   SampleQuantityMode.FiniteSamples, numberOfMeasurements);
-
-				readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					trigger,
-					DigitalEdgeStartTriggerEdge.Rising);
-			}
-//			readAIsTask.Control(TaskAction.Verify);
-//			analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
- */ 
 		}
 
 
@@ -89,7 +66,7 @@ namespace DAQ.TransferCavityLock2012
 						case "cavity":							// cavity ramp monitor channel
 							data[channel, n] = n/N;
 							break;
-						default:								// anything else
+						default:								// anything else (slaves)
 							data[channel, n] = Lorentzian(n, N / 3, N / 10);
 							break;
 					}

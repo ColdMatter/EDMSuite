@@ -298,12 +298,6 @@ namespace TransferCavityLock2012
                 plot.CanScaleXAxis = state;
             }
         }
-
-		private void slaveUseDerivativeCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			bool boxState = slaveUseDerivativeCheckBox.Checked;
-			controller.slaveUseDerivative = boxState;
-		}
    
      
     }

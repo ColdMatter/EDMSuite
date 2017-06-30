@@ -75,6 +75,7 @@
 			// 
 			// voltageRampControl
 			// 
+			this.voltageRampControl.Controls.Add(this.useDerivativeCheckBox);
 			this.voltageRampControl.Controls.Add(this.rampLED);
 			this.voltageRampControl.Controls.Add(this.rampStopButton);
 			this.voltageRampControl.Controls.Add(this.rampStartButton);
@@ -189,6 +190,7 @@
             this.xAxis3});
 			this.CavityVoltageReadScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis3});
+			this.CavityVoltageReadScatterGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.CavityVoltageReadScatterGraph_PlotDataChanged);
 			// 
 			// cavityDataPlot
 			// 
@@ -390,11 +392,11 @@
 			// useDerivativeCheckBox
 			// 
 			this.useDerivativeCheckBox.AutoSize = true;
-			this.useDerivativeCheckBox.Location = new System.Drawing.Point(751, 119);
+			this.useDerivativeCheckBox.Location = new System.Drawing.Point(123, 50);
 			this.useDerivativeCheckBox.Name = "useDerivativeCheckBox";
-			this.useDerivativeCheckBox.Size = new System.Drawing.Size(94, 17);
+			this.useDerivativeCheckBox.Size = new System.Drawing.Size(146, 17);
 			this.useDerivativeCheckBox.TabIndex = 57;
-			this.useDerivativeCheckBox.Text = "Use derivative";
+			this.useDerivativeCheckBox.Text = "Use derivative for locking";
 			this.useDerivativeCheckBox.UseVisualStyleBackColor = true;
 			this.useDerivativeCheckBox.CheckedChanged += new System.EventHandler(this.useDerivativeCheckbox_CheckedChanged);
 			// 
@@ -403,7 +405,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(976, 677);
-			this.Controls.Add(this.useDerivativeCheckBox);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.updateRateTextBox);
 			this.Controls.Add(this.axisCheckBox);
