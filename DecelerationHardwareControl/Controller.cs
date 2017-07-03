@@ -115,7 +115,13 @@ namespace MoleculeMOTHardwareControl
 
             window = new ControlWindow();
             window.controller = this;
+            InitialiseWindow(window);
             Application.Run(window);
+        }
+
+        public void InitialiseWindow(ControlWindow window)
+        {
+            window.SetTriggerModes(Enum.GetValues(typeof(WindfreakSynthesizer.TriggerModes)));
         }
 
         // Applications may set this control voltage themselves, but when they do
@@ -230,14 +236,23 @@ namespace MoleculeMOTHardwareControl
 
         #region Windfreak Members
 
-        public void UpdateWindfreak(double freq, double amp)
+        public void UpdateWindfreak()
         {
+            double freq = window.GetWindfreakFrequency();
+            double amp = window.GetWindfreakAmplitude();
             windfreak.UpdateContinuousSettings(freq, amp);
         }
 
         public void SetWindfreakOutput(bool outputIsOn)
         {
             windfreak.SetOutput(outputIsOn);
+        }
+
+        public void ChangeWindfreakTriggerMode(string value)
+        {
+            WindfreakSynthesizer.TriggerModes triggerMode;
+            Enum.TryParse<WindfreakSynthesizer.TriggerModes>(value, out triggerMode);
+            windfreak.UpdateTriggerMode(triggerMode);
         }
 
         #endregion

@@ -23,24 +23,9 @@ namespace DAQ.HAL
         Double minAmp = -75.0;
         Int32 maxSteps = 100;
 
-        // Command List
-        String freqKey = "f";
-        String ampKey = "a";
-        String lookUpKey = "L";
-        String paKey = "r";
-        String pllKey = "E";
-
-
         public WindfreakSynthesizer(String address)
         {
             this.address = address;
-        }
-
-        public enum TriggerTypes
-        {
-            Software = 0,
-            Sweep = 1,
-            Step = 2
         }
 
         public static class CommandTypes
@@ -50,9 +35,41 @@ namespace DAQ.HAL
             public static String Lookup { get { return "L"; } }
             public static String PA { get { return "r"; } }
             public static String PLL { get { return "E"; } }
+            public static String Trigger { get { return "w"; } }
+            public static String Channel { get { return "C"; } }
         }
 
-        public override void Connect()
+        public enum TriggerModes
+        {
+            Continuous = 0,
+            Pulse = 5
+        }
+
+        public void UpdateContinuousSettings(double freq, double amp)
+        {
+            SendCommand(FreqCommand(freq) + AmpCommand(amp));
+        }
+
+        public void UpdateTriggerMode(TriggerModes trigger)
+        {
+            SendCommand(CommandTypes.Trigger + trigger);
+        }
+
+        public void SetOutput(bool state)
+        {
+            string stateString = Convert.ToInt32(state).ToString();
+            SendCommand(CommandTypes.PLL + stateString + CommandTypes.PA + stateString);
+        }
+
+        public void SetChannel(bool channel)
+        {
+            string channelString = Convert.ToInt32(channel).ToString();
+            SendCommand(CommandTypes.Channel + channelString);
+        }
+
+        #region Helper methods
+
+        protected override void Connect()
         {
             serial = new SerialSession(address);
             serial.BaudRate = 115200;
@@ -63,7 +80,7 @@ namespace DAQ.HAL
             serial.FlowControl = FlowControlTypes.None;
         }
 
-        public override void Disconnect()
+        protected override void Disconnect()
         {
             serial.Dispose();
         }
@@ -77,19 +94,6 @@ namespace DAQ.HAL
         {
             return serial.ReadString();
         }
-
-        public void UpdateContinuousSettings(double freq, double amp)
-        {
-            SendCommand(FreqCommand(freq) + AmpCommand(amp));
-        }
-
-        public void SetOutput(bool state)
-        {
-            string stateString = Convert.ToInt32(state).ToString();
-            SendCommand(pllKey + state + paKey + state);
-        }
-
-        #region Helper methods
 
         protected void SendCommand(string command)
         {
@@ -122,82 +126,13 @@ namespace DAQ.HAL
         protected string FreqCommand(double freq)
         {
             ValidateFrequency(freq);
-            return freqKey + freq.ToString("F7"); // Round to 7 decimal places
+            return CommandTypes.Frequency + freq.ToString("F7"); // Round to 7 decimal places
         }
 
         protected string AmpCommand(double amp)
         {
             ValidateAmplitude(amp);
-            return ampKey + amp.ToString("F2"); // Round to 2 decimal places
-        }
-
-        protected double GreatestCommonDivisor(double a, double b)
-        {
-            while (a !=0 && b!= 0)
-            {
-                if (a > b)
-                    a %= b;
-                else
-                    b %= a;
-            }
-            if (a == 0)
-                return b;
-            else
-                return a;
-        }
-
-        protected double GreatestCommonDivisor(double[] nums)
-        {
-            return nums.Aggregate(GreatestCommonDivisor);
-        }
-
-        protected string BuildPatternStep(int step, double freq, double amp)
-        {
-            ValidateFrequency(freq);
-            ValidateAmplitude(amp);
-            string stepString = step.ToString();
-            return lookUpKey + stepString + FreqCommand(freq) + lookUpKey + stepString + AmpCommand(amp);
-        }
-
-        protected string createPatternFromEventSequence(double[,] eventSequence)
-        {
-            int numEvents = eventSequence.GetLength(0);
-            double patternLength = eventSequence[numEvents - 1, 0];
-
-            double[] eventTimes = new double[numEvents];
-            for (int i = 0; i < numEvents; i++)
-            {
-                eventTimes[i] = eventSequence[i, 1];
-            }
-            double stepSize = GreatestCommonDivisor(eventTimes);
-            int numSteps = (int)(patternLength / stepSize) + 1;
-
-            if (numSteps > maxSteps)
-            {
-                throw new System.ArgumentException("Events list cannot be converted to 100 step pattern.", "events");
-            }
-            if (eventTimes.Distinct().Count() != eventTimes.Count())
-            {
-                throw new System.ArgumentException("Events list has multiple entries for same time.", "events");
-            }
-
-            StringBuilder pattern = new StringBuilder();
-            double freq = minFreq;
-            double amp = minAmp;
-            int eventNo = 0;
-            for (int i = 0; i < numSteps; i++)
-            {
-                double time = i * stepSize;
-                if (eventSequence[eventNo,0] == time)
-                {
-                    freq = eventSequence[eventNo, 1];
-                    amp = eventSequence[eventNo, 2];
-                    eventNo += 1;
-                }
-                pattern.Append(BuildPatternStep(i, freq, amp));
-            }
-
-            return "t" + stepSize.ToString() + "Ld" + pattern.ToString();
+            return CommandTypes.Amplitude + amp.ToString("F2"); // Round to 2 decimal places
         }
 
         #endregion

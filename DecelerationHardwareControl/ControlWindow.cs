@@ -22,6 +22,46 @@ namespace MoleculeMOTHardwareControl
             InitializeComponent();
         }
 
+        #region Windfreak Tab
+
+        public void SetWindfreakTriggerModes(Array values)
+        {
+            windfreakTriggerModeComboBox.DataSource = values;
+        }
+
+        public double GetWindfreakFrequency()
+        {
+            return (double)windfreakFreqInput.Value;
+        }
+
+        public double GetWindfreakAmplitude()
+        {
+            return (double)windfreakAmpInput.Value;
+        }
+
+        private void UpdateWindfreak(object sender, EventArgs e)
+        {
+            controller.UpdateWindfreak();
+        }
+
+        private void ToggleWindfreakOutput(object sender, ActionEventArgs e)
+        {
+            controller.SetWindfreakOutput(windfreakOutputSwitch.Value);
+            windfreakOutputIndicator.Value = windfreakOutputSwitch.Value;
+        }
+
+        private void windfreakTriggerModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string value = windfreakTriggerModeComboBox.SelectedValue.ToString();
+            controller.ChangeWindfreakTriggerMode(value);
+        }
+
+        private void ToggleWindfreakChannel(object sender, ActionCancelEventArgs e)
+        {
+            controller.SetWindfreakChannel(!windfreakChannelSwitch.Value);
+        }
+
+        #endregion
 
         public void SetCheckBox(CheckBox box, bool state)
         {
@@ -51,16 +91,6 @@ namespace MoleculeMOTHardwareControl
         private void SetWarningHelper(Led led, bool state)
         {
             led.Value = state;
-        }
-
-        private void synthOnCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.EnableSynth(synthOnCheck.Checked);
-        }
-
-        private void synthSettingsUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.UpdateSynthSettings();
         }
 
         private void GetData_Click(object sender, EventArgs e)
@@ -207,24 +237,26 @@ namespace MoleculeMOTHardwareControl
 
         }
 
-        private void updateWindfreakClick(object sender, EventArgs e)
-        {
-            double freq = (double)freqInput.Value;
-            double amp = (double)ampInput.Value;
-            controller.UpdateWindfreak(freq, amp);
-        }
+        
 
-        private void toggleWindfreakOutput(object sender, ActionEventArgs e)
+        private void ChangeWindfreakTriggerMode(object sender, EventArgs e)
         {
-            controller.SetWindfreakOutput(outputSwitch.Value);
-            outputIndicator.Value = outputSwitch.Value;
+            
         }
 
         private void changeWindfreakTriggerMode(object sender, EventArgs e)
         {
-            string test = triggerModeComboBox.SelectedValue + "1";
+
         }
 
+        
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
        
 
         
