@@ -66,6 +66,7 @@ namespace MOTMaster
 
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
+        public bool triggered = false;
 
 
         ControllerWindow controllerWindow;
@@ -131,8 +132,15 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            
-            pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            if (triggered == true)
+            {
+                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+            }
+            else
+            {
+                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            }
+
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 

@@ -27,7 +27,7 @@ public class Patterns : MOTMasterScript
         Parameters["Frame0TriggerDuration"] = 10;
         
         //PMT
-        Parameters["PMTTrigger"] = 8000;
+        Parameters["PMTTrigger"] = 4000;
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
@@ -45,40 +45,42 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.3;
-
-        // Slowing field
-        Parameters["slowingCoilsValue"] = 1.05;
-        Parameters["slowingCoilsOffTime"] = 1500;
         
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentValue"] = 0.65;
+        Parameters["MOTCoilsRampActive"] = false;
+        Parameters["MOTCoilsCurrentRampStartTime"] = 1500;
+        Parameters["MOTCoilsCurrentRampDuration"] = 1000;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.65;
+        Parameters["MOTCoilsCurrentRampEndValue"] = 1.2;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0; //1.7
+        Parameters["xShimLoadCurrent"] = 0.37;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.16;
+        Parameters["zShimLoadCurrent"] = -0.4;
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
         Parameters["MOTAOMDuration"] = 500;
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 5000;
-        Parameters["v0IntensityRampDuration"] = 2000;
+        Parameters["v0IntensityRampStartTime"] = 4000;
+        Parameters["v0IntensityRampDuration"] = 200;
         Parameters["v0IntensityRampStartValue"] = 5.0;
         Parameters["v0IntensityRampEndValue"] = 5.0;
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 9.0;
+        Parameters["v0FrequencyStartValue"] = -10.0;//MHz
 
         // triggering delay (10V = 1 second)
        // Parameters["triggerDelay"] = 5.0;
 
-        // v0 F=1 (dodgy code using an analogue output to control a TTL)
-        Parameters["v0F1AOMStartValue"] = 5.0;
-        Parameters["v0F1AOMOffValue"] = 0.0;
+        // v2 (dodgy code using an analogue output to control a TTL)
+        Parameters["v2SwitchOffTime"] = 5500;
+        Parameters["v2SwitchOnTime"] = 10000;
+        Parameters["v2AOMStartValue"] = 5.0;
+        Parameters["v2AOMOffValue"] = 0.0;
        
         
     }
@@ -89,7 +91,7 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-        p.AddEdge("v00Shutter", 0, true);
+      
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
           
@@ -104,19 +106,18 @@ public class Patterns : MOTMasterScript
 
         // Add Analog Channels
         
-        p.AddChannel("v00Intensity");
-        p.AddChannel("v00Frequency");
+        p.AddChannel("v0IntensityRamp");
+        p.AddChannel("v0FrequencyRamp");
         p.AddChannel("xShimCoilCurrent");
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
-        p.AddChannel("v00EOMAmp");
+        //p.AddChannel("triggerDelay");
+        p.AddChannel("motAOMAmp");
 
-        // Slowing field
-        p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
-        p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
 
         // B Field
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
+        // For the delta electronica box (bottom MOT coil) - top coil is in digital section
+        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
 
         // Shim Fields
@@ -127,19 +128,34 @@ public class Patterns : MOTMasterScript
         // trigger delay
        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
-        // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.48);
-
+      
         // v0 Intensity Ramp
-        p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
-        
+        p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
+        p.AddLinearRamp("v0IntensityRamp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
+        p.AddAnalogValue("v0IntensityRamp", 10000, (double)Parameters["v0IntensityRampStartValue"]);
+
+        //v0aomCalibrationValues
+        Parameters["lockAomFrequency"] = 114.1;
+        Parameters["calibOffset"] = 64.2129;
+        Parameters["calibGradient"] = 5.55075;
+
         // v0 Frequency Ramp
-        p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
+        p.AddAnalogValue("v0FrequencyRamp", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
 
-
+        // v2 Frequency (dodgy code using an unused analogue output to control a TTL switch)
+        p.AddAnalogValue("motAOMAmp", 0, (double)Parameters["v2AOMStartValue"]);
+        p.AddAnalogValue("motAOMAmp", (int)Parameters["v2SwitchOffTime"], (double)Parameters["v2AOMOffValue"]);
+        p.AddAnalogValue("motAOMAmp", (int)Parameters["v2SwitchOnTime"], (double)Parameters["v2AOMStartValue"]);
         
         p.SwitchAllOffAtEndOfPattern();
         return p;
    }
 
 }
+
+
+     
+
+
+
+ 

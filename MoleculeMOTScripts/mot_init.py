@@ -65,7 +65,7 @@ Available scripts:''')
 # script shortcuts
 import nt
 import os
-pp = Path.GetFullPath("..\\IronPythonMOT")
+pp = Path.GetFullPath("..\\MoleculeMOTScripts")
 files = nt.listdir(pp)
 scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "mot_init.py" and e != "winforms.py"]
 for i in range(len(scriptsToLoad)):

@@ -7,9 +7,6 @@ using System.Collections.Generic;
 using DAQ.Pattern;
 using DAQ.Analog;
 
-// This script is supposed to be the basic script for loading a molecule MOT.
-// Note that times are all in units of the clock periods of the two pattern generator boards (at present, both are 10us).
-// All times are relative to the Q switch, though note that this is not the first event in the pattern.
 public class Patterns : MOTMasterScript
 {
     public Patterns()
@@ -21,11 +18,6 @@ public class Patterns : MOTMasterScript
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
-
-        // Camera
-        Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["MOTSwitchOffTime"] = 8000;
-        Parameters["ExpansionTime"] = 200;
 
         //PMT
         Parameters["PMTTrigger"] = 4000;
@@ -54,7 +46,7 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentTopValue"] = 0.65;
+        Parameters["MOTCoilsCurrentTopValue"] = 1.15 * 0.65;
         Parameters["MOTCoilsCurrentBottomValue"] = 0.65;
 
         // Shim fields
@@ -69,11 +61,20 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 7.95;
-        Parameters["v0IntensityImageValue"] = 5.0;
+        Parameters["v0IntensityRampEndValue"] = 5.0;
 
+        // v0 Light Frequency
+        Parameters["v0FrequencyRampStartTime"] = 10000;
+        Parameters["v0FrequencyRampDuration"] = 2000;
         Parameters["v0FrequencyRampStartValue"] = 9.0;
+        Parameters["v0FrequencyRampEndValue"] = 9.0;
+        Parameters["v0FrequencyStartValue"] = 0.0;
+        Parameters["v0FrequencyNewValue"] = 30.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
+        //v0aomCalibrationValues
+        Parameters["lockAomFrequency"] = 114.1;
+        Parameters["calibOffset"] = 64.2129;
+        Parameters["calibGradient"] = 5.55075;
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
 
@@ -85,10 +86,10 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["ExpansionTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["ExpansionTime"], "motAOM");
+
+
 
         return p;
     }
@@ -99,37 +100,31 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
-        // Add Analog Channels
-
-        p.AddChannel("v0IntensityRamp");
         p.AddChannel("v0FrequencyRamp");
-        p.AddChannel("xShimCoilCurrent");
-        p.AddChannel("yShimCoilCurrent");
 
-        // Slowing field
-        p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
-        p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
+        p.AddAnalogValue(
+            "v0FrequencyRamp",
+            0,
+            0
+        );
 
-        // B Field
-        p.AddAnalogValue("MOTCoilsCurrentTop", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentTopValue"]);
-        p.AddAnalogValue("MOTCoilsCurrentTop", (int)Parameters["MOTSwitchOffTime"], 0.0);
-        p.AddAnalogValue("MOTCoilsCurrentBottom", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentBottomValue"]);
-        p.AddAnalogValue("MOTCoilsCurrentBottom", (int)Parameters["MOTSwitchOffTime"], 0.0);
+        int timeStep = 1000;
+        int cumalativeTime = 10000;
+        while (cumalativeTime < 40000)
+        {
+            p.AddAnalogValue(
+                "v0FrequencyRamp",
+                cumalativeTime + timeStep,
+                7.17
+            );
+            p.AddAnalogValue(
+                "v0FrequencyRamp",
+                cumalativeTime + 3 * timeStep,
+                0
+            );
+            cumalativeTime += (4 * timeStep);
+        }
 
-        // Shim Fields
-        p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
-
-        // trigger delay
-        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
-
-        // v0 Intensity Ramp
-        p.AddAnalogValue("v0IntensityRamp", 0, (double)Parameters["v0IntensityRampStartValue"]);
-        p.AddLinearRamp("v0IntensityRamp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
-        p.AddAnalogValue("v0IntensityRamp", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["v0IntensityImageValue"]);
-
-        // v0 Frequency Ramp
-        p.AddAnalogValue("v0FrequencyRamp", 0, (double)Parameters["v0FrequencyRampStartValue"]);
 
         p.SwitchAllOffAtEndOfPattern();
         return p;

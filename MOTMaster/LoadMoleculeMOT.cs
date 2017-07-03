@@ -40,8 +40,8 @@ namespace MOTMaster.SnippetLibrary
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             p.AddChannel("slowingChirp");
+            p.AddChannel("slowingCoilsCurrent");
             p.AddChannel("MOTCoilsCurrent");
-            p.AddChannel("MOTBOPCoilsCurrent");
 
             // Slowing Chirp
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);
