@@ -284,7 +284,7 @@ namespace EDMBlockHead.GUI
             // yAxis1
             // 
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis1.Range = new NationalInstruments.UI.Range(0D, 1.5D);
+            this.yAxis1.Range = new NationalInstruments.UI.Range(0D, 2D);
             // 
             // progressTank
             // 
@@ -332,7 +332,7 @@ namespace EDMBlockHead.GUI
             // yAxis2
             // 
             this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 3D);
+            this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 2D);
             // 
             // tofGraph3
             // 

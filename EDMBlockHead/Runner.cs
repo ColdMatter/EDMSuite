@@ -18,7 +18,7 @@ namespace EDMBlockHead
 			Controller controller = Controller.GetController();
 			
 			// publish the controller to the remoting system
-			TcpChannel channel = new TcpChannel(1171);
+			TcpChannel channel = new TcpChannel(1181);
 			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 

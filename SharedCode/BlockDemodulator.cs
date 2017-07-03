@@ -58,10 +58,10 @@ namespace Analysis.EDM
             //        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
 
             //}
-            // ** normalise the top detector **
+            // ** calculate the asymmtry **
             gatedDetectorData.Add(
-                gatedDetectorData[db.DetectorIndices["top"]] / gatedDetectorData[db.DetectorIndices["norm"]]);
-            db.DetectorIndices.Add("topNormed", db.DetectorIndices.Count);
+                (gatedDetectorData[db.DetectorIndices["topProbe"]] - gatedDetectorData[db.DetectorIndices["bottomProbe"]]) / (gatedDetectorData[db.DetectorIndices["topProbe"]] + gatedDetectorData[db.DetectorIndices["bottomProbe"]]));
+            db.DetectorIndices.Add("asymmetry", db.DetectorIndices.Count);
 
             // *** extract the point detector data ***
             List<PointDetectorData> pointDetectorData = new List<PointDetectorData>();
@@ -82,8 +82,7 @@ namespace Analysis.EDM
                 db.DetectorIndices.Add(config.PointDetectorChannels[i], i + gatedDetectorData.Count);
             }
 
-            // calculate the norm FFT
-            db.NormFourier = DetectorFT.MakeFT(gatedDetectorData[db.DetectorIndices["norm"]], kFourierAverage);
+           
 
             // *** demodulate channels ***
             // ** build the list of modulations **
@@ -198,7 +197,7 @@ namespace Analysis.EDM
             // we start with the standard demodulated block
             DemodulatedBlock dblock = DemodulateBlock(b, config);
             // First do everything for the un-normalised top detector
-            int tdi = dblock.DetectorIndices["top"];
+            int tdi = dblock.DetectorIndices["asymmetry"];
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btdt = new BlockTOFDemodulator();
@@ -206,7 +205,7 @@ namespace Analysis.EDM
             
             // now repeat having normed the block
             // normalise the PMT signal
-            b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
+            //b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
             int tndi = dblock.DetectorIndices["topNormed"];
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector

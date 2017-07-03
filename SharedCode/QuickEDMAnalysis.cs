@@ -15,23 +15,33 @@ namespace Analysis.EDM
         private static double bohrMagneton = 9.274 * Math.Pow(10, -24);
         private static double saturatedEffectiveField = 26 * Math.Pow(10, 9);
         
-        // analysis results
+        // analysis results for asymmetry
         public double[] SIGValAndErr;
         public double[] BValAndErr;
         public double[] DBValAndErr;
         public double[] EValAndErr;
         public double[] EBValAndErr;
+        public double[] BDBValAndErr;
         public double RawEDM;
         public double RawEDMErr;
 
-        public double[] SIGValAndErrNormed;
-        public double[] BValAndErrNormed;
-        public double[] DBValAndErrNormed;
-        public double[] BDBValAndErrNormed;
-        public double[] EValAndErrNormed;
-        public double[] EBValAndErrNormed;
-        public double RawEDMNormed;
-        public double RawEDMErrNormed;
+        // analysis results top probe 
+        public double[] SIGValAndErrtp;
+        public double[] BValAndErrtp;
+        public double[] DBValAndErrtp;
+        public double[] EValAndErrtp;
+        public double[] EBValAndErrtp;
+        public double RawEDMtp;
+        public double RawEDMErrtp;
+
+        // analysis results bottom probe 
+        public double[] SIGValAndErrbp;
+        public double[] BValAndErrbp;
+        public double[] DBValAndErrbp;
+        public double[] EValAndErrbp;
+        public double[] EBValAndErrbp;
+        public double RawEDMbp;
+        public double RawEDMErrbp;
 
         public double[] NorthCurrentValAndError;
         public double[] SouthCurrentValAndError;
@@ -40,27 +50,19 @@ namespace Analysis.EDM
 
         public double[] MagValandErr;
 
-        public double[] LFValandErr;
-        public double[] LF1DBDB;
-        public double[] LF2DBDB;
+        public double[] rf1FreqAndErrtp;
+        public double[] rf2FreqAndErrtp;
+        public double[] rf1FreqAndErrbp;
+        public double[] rf2FreqAndErrbp;
+        public double[] rf1AmpAndErrtp;
+        public double[] rf2AmpAndErrtp;
+        public double[] rf1AmpAndErrbp;
+        public double[] rf2AmpAndErrbp;
 
-        public double[] rf1FreqAndErr;
-        public double[] rf2FreqAndErr;
-        public double[] rf1AmpAndErr;
-        public double[] rf2AmpAndErr;
-        public double[] rf1FreqAndErrNormed;
-        public double[] rf2FreqAndErrNormed;
-        public double[] rf1AmpAndErrNormed;
-        public double[] rf2AmpAndErrNormed;
         public double[] RF1FDBDB;
         public double[] RF2FDBDB;
         public double[] RF1ADBDB;
         public double[] RF2ADBDB;
-
-        public double[] probePD;
-        public double[] pumpPD;
-
-        public double[] rfCurrent;
 
         public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
         {
@@ -74,32 +76,47 @@ namespace Analysis.EDM
             double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
                         (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
 
-            //Get relevant channel values and errors
-            analysis.SIGValAndErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "top");
-            analysis.BValAndErr = dblock.GetChannelValueAndError(new string[] { "B" }, "top");
-            analysis.DBValAndErr = dblock.GetChannelValueAndError(new string[] { "DB" }, "top");
-            analysis.EValAndErr = dblock.GetChannelValueAndError(new string[] { "E" }, "top");
-            analysis.EBValAndErr = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "top");
+            //Get relevant channel values and errors for top probe
+            analysis.SIGValAndErrtp = dblock.GetChannelValueAndError(new string[] { "SIG" }, "topProbe");
+            analysis.BValAndErrtp = dblock.GetChannelValueAndError(new string[] { "B" }, "topProbe");
+            analysis.DBValAndErrtp = dblock.GetChannelValueAndError(new string[] { "DB" }, "topProbe");
+            analysis.EValAndErrtp = dblock.GetChannelValueAndError(new string[] { "E" }, "topProbe");
+            analysis.EBValAndErrtp = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "topProbe");
 
             //edm error calculation
+            analysis.RawEDMtp = edmFactor * (analysis.EBValAndErrtp[0] / analysis.DBValAndErrtp[0]);
+            analysis.RawEDMErrtp = Math.Abs(analysis.RawEDMtp)
+                * Math.Sqrt(Math.Pow(analysis.EBValAndErrtp[1] / analysis.EBValAndErrtp[0], 2)
+                               + Math.Pow(analysis.DBValAndErrtp[1] / analysis.DBValAndErrtp[0], 2));
+
+            //Get relevant channel values and errors for bottom probe
+            analysis.SIGValAndErrbp = dblock.GetChannelValueAndError(new string[] { "SIG" }, "bottomProbe");
+            analysis.BValAndErrbp = dblock.GetChannelValueAndError(new string[] { "B" }, "bottomProbe");
+            analysis.DBValAndErrbp = dblock.GetChannelValueAndError(new string[] { "DB" }, "bottomProbe");
+            analysis.EValAndErrbp = dblock.GetChannelValueAndError(new string[] { "E" }, "bottomProbe");
+            analysis.EBValAndErrbp = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "bottomProbe");
+
+            //edm error calculation for bottom probe
+            analysis.RawEDMbp = edmFactor * (analysis.EBValAndErrbp[0] / analysis.DBValAndErrbp[0]);
+            analysis.RawEDMErrbp = Math.Abs(analysis.RawEDMbp)
+                * Math.Sqrt(Math.Pow(analysis.EBValAndErrbp[1] / analysis.EBValAndErrbp[0], 2)
+                               + Math.Pow(analysis.DBValAndErrbp[1] / analysis.DBValAndErrbp[0], 2));
+
+            //Get relevant channel values and errors for asymmetry
+            analysis.SIGValAndErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "asymmetry");
+            analysis.BValAndErr = dblock.GetChannelValueAndError(new string[] { "B" }, "asymmetry");
+            analysis.DBValAndErr = dblock.GetChannelValueAndError(new string[] { "DB" }, "asymmetry");
+            analysis.EValAndErr = dblock.GetChannelValueAndError(new string[] { "E" }, "asymmetry");
+            analysis.EBValAndErr = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "asymmetry");
+            analysis.BDBValAndErr = dblock.GetChannelValueAndError(new string[] { "B", "DB" }, "asymmetry");
+
+            //edm error calculation for asymmetry
             analysis.RawEDM = edmFactor * (analysis.EBValAndErr[0] / analysis.DBValAndErr[0]);
             analysis.RawEDMErr = Math.Abs(analysis.RawEDM)
                 * Math.Sqrt(Math.Pow(analysis.EBValAndErr[1] / analysis.EBValAndErr[0], 2)
                                + Math.Pow(analysis.DBValAndErr[1] / analysis.DBValAndErr[0], 2));
+            
 
-            //same again for normed data.
-            analysis.SIGValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "SIG" }, "topNormed");
-            analysis.BValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "B" }, "topNormed");
-            analysis.DBValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "DB" }, "topNormed");
-            analysis.BDBValAndErrNormed = dblock.GetSpecialChannelValueAndError( "BDB", "topNormed" );
-            analysis.EValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "E" }, "topNormed");
-            analysis.EBValAndErrNormed = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "topNormed");
-
-            //normed edm error
-            analysis.RawEDMNormed = edmFactor * (analysis.EBValAndErrNormed[0] / analysis.DBValAndErrNormed[0]);
-            analysis.RawEDMErrNormed = Math.Abs(analysis.RawEDMNormed)
-                * Math.Sqrt(Math.Pow(analysis.EBValAndErrNormed[1] / analysis.EBValAndErrNormed[0], 2)
-                                     + Math.Pow(analysis.DBValAndErrNormed[1] / analysis.DBValAndErrNormed[0], 2));
 
             //leakage currents
             analysis.NorthCurrentValAndError = 
@@ -113,35 +130,24 @@ namespace Analysis.EDM
 
             //magnetometer (I know it is not signed right but I just want the noise so any waveform will do)
             analysis.MagValandErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "magnetometer");
-
-            //laser freq
-            analysis.LFValandErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "top");
-            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError( "LF1DBDB", "topNormed" ); 
-            analysis.LF2DBDB = dblock.GetSpecialChannelValueAndError( "LF2DBDB", "top" );
            
             //rf freq
-            analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "top");
-            analysis.rf2FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "top");
-            analysis.rf1FreqAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "topNormed");
-            analysis.rf2FreqAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "topNormed");
-            analysis.RF1FDBDB = dblock.GetSpecialChannelValueAndError( "RF1FDBDB", "topNormed" );
-            analysis.RF2FDBDB = dblock.GetSpecialChannelValueAndError( "RF2FDBDB", "topNormed" );
+            analysis.rf1FreqAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "topProbe");
+            analysis.rf2FreqAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "topProbe");
+            analysis.rf1FreqAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "bottomProbe");
+            analysis.rf2FreqAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "bottompProbe");
+            analysis.RF1FDBDB = dblock.GetChannelValueAndError( new string[] { "RF1F", "DB" }, "asymmetry" );
+            analysis.RF2FDBDB = dblock.GetChannelValueAndError(new string[] { "RF2F", "DB" }, "asymmetry");
 
             //rf amp
-            analysis.rf1AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "top");
-            analysis.rf2AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "top");
-            analysis.rf1AmpAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "topNormed");
-            analysis.rf2AmpAndErrNormed = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "topNormed");
-            analysis.RF1ADBDB = dblock.GetSpecialChannelValueAndError( "RF1ADBDB", "topNormed" );
-            analysis.RF2ADBDB = dblock.GetSpecialChannelValueAndError( "RF2ADBDB", "topNormed" );
+            analysis.rf1AmpAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "topProbe");
+            analysis.rf2AmpAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "topProbe");
+            analysis.rf1AmpAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "bottomProbe");
+            analysis.rf2AmpAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "bottomProbe");
+            analysis.RF1ADBDB = dblock.GetChannelValueAndError( new string[] { "RF1A", "DB" }, "asymmetry" );
+            analysis.RF2ADBDB = dblock.GetChannelValueAndError(new string[] { "RF2A", "DB" }, "asymmetry");
 
-            //photodiodes
-            analysis.probePD = dblock.GetChannelValueAndError(new string[] { "SIG" }, "ProbePD");
-            analysis.pumpPD = dblock.GetChannelValueAndError(new string[] {"SIG"}, "PumpPD");            
-
-            //rfAmmeter
-            analysis.rfCurrent = dblock.GetChannelValueAndError(new string[] { "SIG" }, "rfCurrent");
-
+            
             return analysis;
         }
 
@@ -161,7 +167,8 @@ namespace Analysis.EDM
 
         private static double cField(double ePlus, double eMinus)//voltage in volts returns kV/cm
         {
-            double efield = (ePlus - eMinus) / plateSpacing;
+            //double efield = (ePlus - eMinus) / plateSpacing;
+            double efield = (4) / plateSpacing;
             return efield / 1000;
         }
         

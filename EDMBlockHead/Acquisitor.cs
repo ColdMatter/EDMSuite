@@ -51,7 +51,7 @@ namespace EDMBlockHead.Acquire
 			this.config = config;
 			acquireThread = new Thread(new ThreadStart(this.Acquire));
 			acquireThread.Name = "BlockHead Acquisitor";
-			acquireThread.Priority = ThreadPriority.Normal;
+			acquireThread.Priority = ThreadPriority.Highest;
 			backendState = AcquisitorState.running;
 			acquireThread.Start();
 		}
@@ -187,8 +187,8 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("MiniFlux1", spd[2]);
                     p.SinglePointData.Add("MiniFlux2", spd[3]);
                     p.SinglePointData.Add("MiniFlux3", spd[4]);
-                    p.SinglePointData.Add("CplusV", spd[5]);
-                    p.SinglePointData.Add("CminusV", spd[6]);
+                    // p.SinglePointData.Add("CplusV", spd[5]);
+                    //p.SinglePointData.Add("CminusV", spd[6]);
 
                     //hardwareController.UpdateVMonitor();
                     //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
@@ -337,20 +337,25 @@ namespace EDMBlockHead.Acquire
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 
+            HardwareControllerSwitchChannel mwChan = new HardwareControllerSwitchChannel();
+            mwChan.Channel = "mwChan";
+            mwChan.Modulation = config.GetModulationByName("MW");
+            switchedChannels.Add(mwChan);
+
             //AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
             //lf1Channel.Channel = "flPZT";
             //lf1Channel.Modulation = config.GetModulationByName("LF1");
             //switchedChannels.Add(lf1Channel);
 
-            HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
-            lf1Channel.Channel = "probeAOM";
-            lf1Channel.Modulation = config.GetModulationByName("LF1");
-            switchedChannels.Add(lf1Channel);
+            //HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
+            //lf1Channel.Channel = "probeAOM";
+            //lf1Channel.Modulation = config.GetModulationByName("LF1");
+            //switchedChannels.Add(lf1Channel);
 
-            HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
-            lf2Channel.Channel = "pumpAOM";
-            lf2Channel.Modulation = config.GetModulationByName("LF2");
-            switchedChannels.Add(lf2Channel);
+            //HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
+            //lf2Channel.Channel = "pumpAOM";
+            //lf2Channel.Modulation = config.GetModulationByName("LF2");
+            //switchedChannels.Add(lf2Channel);
 
             //AnalogSwitchedChannel lf3Channel = new HardwareControllerSwitchChannel();
             //lf3Channel.Channel = "LF3";
@@ -369,7 +374,7 @@ namespace EDMBlockHead.Acquire
             inputs = new ScannedAnalogInputCollection();
             inputs.RawSampleRate = 100000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            inputs.GateLength = 220;
+            inputs.GateLength = 280;
             //inputs.GateLength = 1000;
             // NOTE: this long version is for null runs, don't set it so long that the shots overlap!
             // Comment the following line out if you're not null running.
@@ -377,15 +382,15 @@ namespace EDMBlockHead.Acquire
 
 
             // this code should be used for normal running
-            ScannedAnalogInput pmt = new ScannedAnalogInput();
-            pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["top"];
-            pmt.ReductionMode = DataReductionMode.Chop;
-            pmt.ChopStart = 140;
-            pmt.ChopLength = 80;
-            pmt.LowLimit = 0;
-            pmt.HighLimit = 10;
-            pmt.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
-            inputs.Channels.Add(pmt);
+            ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
+            bottomProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bottomProbe"];
+            bottomProbe.ReductionMode = DataReductionMode.Chop;
+            bottomProbe.ChopStart = 140;
+            bottomProbe.ChopLength = 80;
+            bottomProbe.LowLimit = 0;
+            bottomProbe.HighLimit = 10;
+            bottomProbe.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
+            inputs.Channels.Add(bottomProbe);
 
             //			// this code can be enabled for faster null runs
             //			ScannedAnalogInput pmt = new ScannedAnalogInput();
@@ -397,15 +402,15 @@ namespace EDMBlockHead.Acquire
             //			pmt.Calibration = 0.14;
             //			inputs.Channels.Add(pmt);
 
-            ScannedAnalogInput normPMT = new ScannedAnalogInput();
-            normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
-            normPMT.ReductionMode = DataReductionMode.Chop;
-            normPMT.ChopStart = 0;
-            normPMT.ChopLength = 40;
-            normPMT.LowLimit = 0;
-            normPMT.HighLimit = 10;
-            normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
-            inputs.Channels.Add(normPMT);
+            ScannedAnalogInput topProbe = new ScannedAnalogInput();
+            topProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["topProbe"];
+            topProbe.ReductionMode = DataReductionMode.Chop;
+            topProbe.ChopStart = 140;
+            topProbe.ChopLength = 80;
+            topProbe.LowLimit = 0;
+            topProbe.HighLimit = 10;
+            topProbe.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
+            inputs.Channels.Add(topProbe);
 
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;
@@ -541,9 +546,9 @@ namespace EDMBlockHead.Acquire
             //AddChannelToSinglePointTask("ground");
             AddChannelToSinglePointTask("miniFlux3");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("cPlusMonitor");
+            //AddChannelToSinglePointTask("cPlusMonitor");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("cMinusMonitor");
+            //AddChannelToSinglePointTask("cMinusMonitor");
             //AddChannelToSinglePointTask("northLeakage");
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");

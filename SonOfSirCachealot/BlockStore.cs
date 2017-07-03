@@ -54,7 +54,7 @@ namespace SonOfSirCachealot
                     // at the moment the block data is normalized by dividing each "top" TOF through
                     // by the integral of the corresponding "norm" TOF over the gate in the function below.
                     // TODO: this could be improved!
-                    b.Normalise(DemodulationConfig.GetStandardDemodulationConfig(normConfig, b).GatedDetectorExtractSpecs["norm"]);
+                    //b.Normalise(DemodulationConfig.GetStandardDemodulationConfig(normConfig, b).GatedDetectorExtractSpecs["norm"]);
                     // add some of the single point data to the Shot TOFs so that it gets analysed
                     string[] spvsToTOFulise = new string[] { "NorthCurrent", "SouthCurrent", "MiniFlux1",
                         "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD"};

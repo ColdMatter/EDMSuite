@@ -83,7 +83,7 @@ namespace DAQ.HAL
             // YAG laser
             yag = new BrilliantLaser("ASRL21::INSTR");
 
-            // add the GPIB/RS232 instruments
+            // add the GPIB/RS232/USB instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
             Instruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
@@ -96,6 +96,7 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter2", new SerialAgilent53131A("ASRL17::INSTR"));
             Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL8::INSTR"));
             Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL11::INSTR"));
+            Instruments.Add("anapico", new AnapicoSynth("USB0::1003::45055::321-028100000-0168::0::INSTR"));
 
 
             // map the digital channels
@@ -109,14 +110,14 @@ namespace DAQ.HAL
             // see ModulatedAnalogShotGatherer.cs
             // for details.
             AddDigitalOutputChannel("rfSwitch", pgBoard, 0, 4);
-            AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
             AddDigitalOutputChannel("fmSelect", pgBoard, 1, 0);      // This line selects which fm voltage is
             // sent to the synth.
             AddDigitalOutputChannel("attenuatorSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
             // sent to the voltage-controlled attenuator.
             AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
+            //AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
             // will switch if it's switch scanning.
+            AddDigitalOutputChannel("ttlSwitch", pgBoard, 3, 5);	// This is the output that the pg
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
             
             //RF Counter Control (single pole 4 throw)
@@ -125,32 +126,36 @@ namespace DAQ.HAL
             
             // new rf amp blanking
             AddDigitalOutputChannel("rfAmpBlanking", pgBoard, 1, 5);
-
-            // these channel are usually software switched - they should not be in
-            // the lower half of the pattern generator
-            AddDigitalOutputChannel("b", pgBoard, 2, 0);
-            AddDigitalOutputChannel("notB", pgBoard, 2, 1);
-            AddDigitalOutputChannel("db", pgBoard, 2, 2);
-            AddDigitalOutputChannel("notDB", pgBoard, 2, 3);
-            //			AddDigitalOutputChannel("notEOnOff", pgBoard, 2, 4);  // this line seems to be broken on our pg board
-            // 			AddDigitalOutputChannel("eOnOff", pgBoard, 2, 5);  // this and the above are not used now we have analog E control
-            
-            AddDigitalOutputChannel("ePol", pgBoard, 2, 6);
-            AddDigitalOutputChannel("notEPol", pgBoard, 2, 7);
-            AddDigitalOutputChannel("eBleed", pgBoard, 3, 0);
-            AddDigitalOutputChannel("eSwitching", aoBoard, 0, 3);
-            AddDigitalOutputChannel("piFlipEnable", pgBoard, 3, 1);
-            AddDigitalOutputChannel("notPIFlipEnable", pgBoard, 3, 5);
             AddDigitalOutputChannel("mwEnable", pgBoard, 3, 3);
             AddDigitalOutputChannel("mwSelectPumpChannel", pgBoard, 3, 6);
             AddDigitalOutputChannel("mwSelectTopProbeChannel", pgBoard, 3, 2);
             AddDigitalOutputChannel("mwSelectBottomProbeChannel", pgBoard, 2, 4);
+            AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
             
+            
+
+            // these channel are usually software switched - they are on the AO board
+            AddDigitalOutputChannel("b", aoBoard, 0, 0);
+            AddDigitalOutputChannel("notB", aoBoard, 0, 1);
+
+            AddDigitalOutputChannel("db", aoBoard, 0, 2);
+            AddDigitalOutputChannel("notDB", aoBoard, 0, 3);
+            AddDigitalOutputChannel("piFlipEnable", aoBoard, 0, 4);
+            AddDigitalOutputChannel("notPIFlipEnable", aoBoard, 0, 5); //doesn't seem to be connected to anything
+            AddDigitalOutputChannel("mwSwitching", aoBoard, 0, 6);
+
+            // these digitial outputs are switched slowly during the pattern
+            AddDigitalOutputChannel("ePol", usbDAQ4, 0, 4);
+            AddDigitalOutputChannel("notEPol", usbDAQ4, 0, 5);
+            AddDigitalOutputChannel("eBleed", usbDAQ4, 0, 6);
+            AddDigitalOutputChannel("eSwitching", usbDAQ4, 0, 7);
+
+
             // these digitial outputs are are not switched during the pattern
-            AddDigitalOutputChannel("argonShutter", aoBoard, 0, 0);
-            AddDigitalOutputChannel("patternTTL", aoBoard, 0, 7);
-            AddDigitalOutputChannel("rfPowerAndFreqSelectSwitch", aoBoard, 0, 1);
-            AddDigitalOutputChannel("targetStepper", aoBoard, 0, 2); ;
+            AddDigitalOutputChannel("argonShutter", usbDAQ4, 0, 0);
+            AddDigitalOutputChannel("patternTTL", usbDAQ4, 0, 2);
+            AddDigitalOutputChannel("rfPowerAndFreqSelectSwitch", usbDAQ4, 0, 3);
+            AddDigitalOutputChannel("targetStepper", usbDAQ4, 0, 1); ;
 
 
             // map the analog channels
@@ -187,7 +192,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
-            AddAnalogOutputChannel("b", aoBoard + "/ao2");
+            AddAnalogOutputChannel("bScan", aoBoard + "/ao2");
 
 
             // rf rack control

@@ -165,7 +165,6 @@ namespace TransferCavityLock2012
             TCLState = Controller.ControllerState.RUNNING;
             Thread.Sleep(2000);
             Thread mainThread = new Thread(new ThreadStart(mainLoop));
-            mainThread.Priority = ThreadPriority.Highest; 
             ui.UpdateUIState(TCLState);
             
             mainThread.Start();

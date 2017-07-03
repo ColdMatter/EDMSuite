@@ -32,7 +32,7 @@ namespace Analysis.EDM
         private static Dictionary<string, DemodulationConfigBuilder> standardConfigs =
             new Dictionary<string, DemodulationConfigBuilder>();
 
-        private static double kDetectorDistanceRatio = 3.842;
+        private static double kDetectorDistanceRatio = 1.144;
 
         public static DemodulationConfig GetStandardDemodulationConfig(string name, Block b)
         {
@@ -53,9 +53,9 @@ namespace Analysis.EDM
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "wide";
                 dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.Name = "top";
+                dg0.Name = "bottomProbe";
                 dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "norm";
+                dg1.Name = "topProbe";
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "magnetometer";
                 dg2.Integrate = false;
@@ -267,16 +267,16 @@ namespace Analysis.EDM
                 dc.AnalysisTag = name;
                 dg0 = new GatedDetectorExtractSpec();
                 dg0.Index = 0;
-                dg0.Name = "top";
+                dg0.Name = "bottomProbe";
                 dg0.BackgroundSubtract = false;
                 dg0.GateLow = (int)(centre - width);
                 dg0.GateHigh = (int)(centre + width);
                 dg1 = new GatedDetectorExtractSpec();
                 dg1.Index = 1;
-                dg1.Name = "norm";
+                dg1.Name = "topProbe";
                 dg1.BackgroundSubtract = false;
-                dg1.GateLow = (int)((centre - width) / kDetectorDistanceRatio);
-                dg1.GateHigh = (int)((centre + width) / kDetectorDistanceRatio);
+                dg1.GateLow = (int)((centre - width) * kDetectorDistanceRatio);
+                dg1.GateHigh = (int)((centre + width) * kDetectorDistanceRatio);
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "magnetometer";
                 dg2.Integrate = false;
