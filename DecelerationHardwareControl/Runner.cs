@@ -16,7 +16,7 @@ namespace MoleculeMOTHardwareControl
         static void Main()
         {
             // instantiate the controller
-            Controller controller = new Controller();
+            MainController controller = new MainController();
 
             // publish the controller to the remoting system
             TcpChannel channel = new TcpChannel(1172);

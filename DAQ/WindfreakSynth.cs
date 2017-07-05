@@ -154,7 +154,7 @@ namespace DAQ.HAL
         public void SetTriggerMode(TriggerMode trigger)
         {
             Write(CommandTypes.Trigger + trigger.ToString("d"));
-            // For some reason, it is necessary to make sure the output is on (or off for pulsed operation) after changing teh trigger mode
+            // For some reason, it is necessary to make sure the output is on (or off for pulsed operation) after changing the trigger mode
             if (trigger == TriggerMode.Pulse)
             {
                 ChannelA.ResetOutput(false);
