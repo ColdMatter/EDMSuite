@@ -113,6 +113,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|AnyCPU'">
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
@@ -351,7 +353,7 @@
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WindfreakSynthesizer.cs" />
+    <Compile Include="WindfreakSynth.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -367,6 +369,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Wolfram.NETLink.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

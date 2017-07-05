@@ -16,7 +16,8 @@ namespace MoleculeMOTHardwareControl
     {
         
         public Controller controller;
-        
+        private Int32 newMessages;
+
         public ControlWindow()
         {
             InitializeComponent();
@@ -24,7 +25,7 @@ namespace MoleculeMOTHardwareControl
 
         #region Windfreak Tab
 
-        public void SetWindfreakTriggerModes(Array values)
+        public void UpdateWindfreakTriggerModes(Array values)
         {
             windfreakTriggerModeComboBox.DataSource = values;
         }
@@ -34,34 +35,112 @@ namespace MoleculeMOTHardwareControl
             return (double)windfreakFreqInput.Value;
         }
 
+        public void UpdateWindfreakFrequency(double freq)
+        {
+            windfreakFreqInput.Value = (decimal)freq;
+        }
+
         public double GetWindfreakAmplitude()
         {
             return (double)windfreakAmpInput.Value;
         }
 
-        private void UpdateWindfreak(object sender, EventArgs e)
+        public void UpdateWindfreakAmplitude(double amp)
         {
-            controller.UpdateWindfreak();
+            windfreakAmpInput.Value = (decimal)amp;
         }
 
-        private void ToggleWindfreakOutput(object sender, ActionEventArgs e)
+        private void SetWindfreakFreqAmp(object sender, EventArgs e)
         {
-            controller.SetWindfreakOutput(windfreakOutputSwitch.Value);
-            windfreakOutputIndicator.Value = windfreakOutputSwitch.Value;
+            controller.SetWindfreakFreqAmp();
+        }
+
+        private void SetWindfreakOutput(object sender, ActionEventArgs e)
+        {
+            if (windfreakOutputSwitch.Focused)
+            {
+                controller.SetWindfreakOutput(windfreakOutputSwitch.Value);
+                windfreakOutputIndicator.Value = windfreakOutputSwitch.Value;
+            }
+        }
+
+        public void UpdateWindfreakOutput(bool state)
+        {
+            windfreakOutputSwitch.Value = state;
+            windfreakOutputIndicator.Value = state;
         }
 
         private void windfreakTriggerModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string value = windfreakTriggerModeComboBox.SelectedValue.ToString();
-            controller.ChangeWindfreakTriggerMode(value);
+            if (windfreakTriggerModeComboBox.Focused)
+            {
+                string value = windfreakTriggerModeComboBox.SelectedValue.ToString();
+                controller.SetWindfreakTriggerMode(value);
+            }
         }
 
-        private void ToggleWindfreakChannel(object sender, ActionCancelEventArgs e)
+        private void ToggleWindfreakChannel(object sender, ActionEventArgs e)
         {
-            controller.SetWindfreakChannel(!windfreakChannelSwitch.Value);
+            controller.SyncWindfreakChannel();
+        }
+
+        public bool GetWindfreakChannel()
+        {
+            return !windfreakChannelSwitch.Value;
+        }
+
+        private void ReadSettingsFromWindfreak(object sender, EventArgs e)
+        {
+            controller.ReadSettingsFromWindfreak();
         }
 
         #endregion
+
+
+        #region Message Box Methods
+
+        private void AppendToMessageBox(string message, Color? color = null)
+        {
+            messageBox.SelectionStart = messageBox.TextLength;
+            messageBox.SelectionLength = 0;
+            messageBox.SelectionColor = color.GetValueOrDefault(Color.Black);
+            messageBox.AppendText(message);
+            messageBox.SelectionColor = messageBox.ForeColor;
+        }
+
+        public void AddErrorMessage(string message)
+        {
+            AppendToMessageBox("[" + DateTime.Now.ToShortTimeString() + "]");
+            AppendToMessageBox(" ");
+            AppendToMessageBox(message, Color.Red);
+            AppendToMessageBox(Environment.NewLine);
+            messageBox.ScrollToCaret();
+
+            if (splitPanel.Panel2Collapsed)
+            {
+                newMessages += 1;
+                messageNumber.Text = newMessages.ToString();
+                messageNumber.BackColor = Color.Red;
+                messageNumberPanel.BackColor = Color.Red;
+            }
+        }
+
+        private void ToggleMessageBox(object sender, EventArgs e)
+        {
+            splitPanel.Panel2Collapsed = !splitPanel.Panel2Collapsed;
+            messageBoxCollapseExpandButton.Text = splitPanel.Panel2Collapsed ? "+" : "-";
+            if (!splitPanel.Panel2Collapsed)
+            {
+                newMessages = 0;
+                messageNumber.Text = newMessages.ToString();
+                messageNumber.BackColor = Color.Black;
+                messageNumberPanel.BackColor = Color.Black;
+            }
+        }
+
+        #endregion
+
+        #region Mess
 
         public void SetCheckBox(CheckBox box, bool state)
         {
@@ -212,57 +291,32 @@ namespace MoleculeMOTHardwareControl
             controller.SetMOTAOMAmp(amp);
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+
+
+
+
+        #endregion Mess
+
+        private void SetWindfreakOutput()
         {
-
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void triggeredCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FrequencyTab_Click(object sender, EventArgs e)
-        {
-
-        }
-
         
-
-        private void ChangeWindfreakTriggerMode(object sender, EventArgs e)
-        {
-            
         }
 
-        private void changeWindfreakTriggerMode(object sender, EventArgs e)
+        private void ToggleWindfreakChannel()
         {
 
         }
 
-        
-
-        private void label1_Click(object sender, EventArgs e)
+        private void ReadSettingsFromWindfreak()
         {
 
         }
 
-        
-       
 
-        
 
-        
-        
-       
+
+
+
+
     }
 }

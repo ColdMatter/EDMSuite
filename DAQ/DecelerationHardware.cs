@@ -88,7 +88,7 @@ namespace DAQ.HAL
             Info.Add("MotMasterConfiguration", mmConfig);
 
             //Instruments
-            //Instruments.Add("windfreak", new WindfreakSynthesizer(""));
+            Instruments.Add("windfreak", new WindfreakSynth("ASRL20::INSTR"));
             //Instruments.Add("counter", new HP5350BCounter("GPIB0::14::INSTR"));
             //Instruments.Add("flowmeter", new FlowMeter("ASRL1::INSTR"));
 
@@ -160,7 +160,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v00Shutter", pgBoard, 2,2);
             //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
             AddDigitalOutputChannel("v00AOM", pgBoard, 1, 1); //Pin 17
-            AddDigitalOutputChannel("shimCoilSwitch", pgBoard, 1, 2); //Pin 51
+            AddDigitalOutputChannel("microwaveIO", pgBoard, 1, 2); //Pin 51
             AddDigitalOutputChannel("bXShutter", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
             AddDigitalOutputChannel("AnalogPatternTrigger", pgBoard, 3, 3); //Pin 31

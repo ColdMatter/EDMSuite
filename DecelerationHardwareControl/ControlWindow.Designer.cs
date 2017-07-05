@@ -31,7 +31,7 @@ namespace MoleculeMOTHardwareControl
             this.label3 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.windfreakTab = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.triggerModeBox = new System.Windows.Forms.GroupBox();
@@ -114,7 +114,15 @@ namespace MoleculeMOTHardwareControl
             this.aom1FreqBox = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPage1.SuspendLayout();
+            this.splitPanel = new System.Windows.Forms.SplitContainer();
+            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.messageBoxCollapseExpandButton = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.messageNumberPanel = new System.Windows.Forms.Panel();
+            this.messageNumber = new System.Windows.Forms.TextBox();
+            this.messageBox = new System.Windows.Forms.RichTextBox();
+            this.windfreakTab.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.triggerModeBox.SuspendLayout();
@@ -149,6 +157,13 @@ namespace MoleculeMOTHardwareControl
             this.FrequencyTab.SuspendLayout();
             this.aom1Box.SuspendLayout();
             this.tabControl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel)).BeginInit();
+            this.splitPanel.Panel1.SuspendLayout();
+            this.splitPanel.Panel2.SuspendLayout();
+            this.splitPanel.SuspendLayout();
+            this.tableLayoutPanel8.SuspendLayout();
+            this.tableLayoutPanel9.SuspendLayout();
+            this.messageNumberPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // label3
@@ -169,16 +184,17 @@ namespace MoleculeMOTHardwareControl
             // 
             this.printDialog1.UseEXDialog = true;
             // 
-            // tabPage1
+            // windfreakTab
             // 
-            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(680, 855);
-            this.tabPage1.TabIndex = 7;
-            this.tabPage1.Text = "Windfreak Synthesizer";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.windfreakTab.AutoScroll = true;
+            this.windfreakTab.Controls.Add(this.tableLayoutPanel1);
+            this.windfreakTab.Location = new System.Drawing.Point(4, 22);
+            this.windfreakTab.Name = "windfreakTab";
+            this.windfreakTab.Padding = new System.Windows.Forms.Padding(3);
+            this.windfreakTab.Size = new System.Drawing.Size(681, 810);
+            this.windfreakTab.TabIndex = 7;
+            this.windfreakTab.Text = "Windfreak Synthesizer";
+            this.windfreakTab.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -192,7 +208,7 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 74.44052F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(674, 849);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(675, 804);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -212,18 +228,17 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(174, 843);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(175, 798);
             this.tableLayoutPanel2.TabIndex = 1;
-            this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
             // triggerModeBox
             // 
             this.triggerModeBox.Controls.Add(this.panel3);
             this.triggerModeBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.triggerModeBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.triggerModeBox.Location = new System.Drawing.Point(3, 465);
+            this.triggerModeBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.triggerModeBox.Location = new System.Drawing.Point(3, 440);
             this.triggerModeBox.Name = "triggerModeBox";
-            this.triggerModeBox.Size = new System.Drawing.Size(168, 162);
+            this.triggerModeBox.Size = new System.Drawing.Size(169, 153);
             this.triggerModeBox.TabIndex = 3;
             this.triggerModeBox.TabStop = false;
             this.triggerModeBox.Text = "Trigger Mode";
@@ -232,10 +247,10 @@ namespace MoleculeMOTHardwareControl
             // 
             this.panel3.Controls.Add(this.windfreakTriggerModeComboBox);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 22);
+            this.panel3.Location = new System.Drawing.Point(3, 16);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(10, 30, 10, 50);
-            this.panel3.Size = new System.Drawing.Size(162, 137);
+            this.panel3.Size = new System.Drawing.Size(163, 134);
             this.panel3.TabIndex = 0;
             // 
             // windfreakTriggerModeComboBox
@@ -248,7 +263,7 @@ namespace MoleculeMOTHardwareControl
             "Digital"});
             this.windfreakTriggerModeComboBox.Location = new System.Drawing.Point(10, 30);
             this.windfreakTriggerModeComboBox.Name = "windfreakTriggerModeComboBox";
-            this.windfreakTriggerModeComboBox.Size = new System.Drawing.Size(142, 28);
+            this.windfreakTriggerModeComboBox.Size = new System.Drawing.Size(143, 28);
             this.windfreakTriggerModeComboBox.TabIndex = 0;
             this.windfreakTriggerModeComboBox.SelectedIndexChanged += new System.EventHandler(this.windfreakTriggerModeComboBox_SelectedIndexChanged);
             // 
@@ -256,11 +271,11 @@ namespace MoleculeMOTHardwareControl
             // 
             this.comErrorBox.Controls.Add(this.panel4);
             this.comErrorBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comErrorBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comErrorBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comErrorBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.comErrorBox.Location = new System.Drawing.Point(3, 3);
             this.comErrorBox.Name = "comErrorBox";
-            this.comErrorBox.Size = new System.Drawing.Size(168, 120);
+            this.comErrorBox.Size = new System.Drawing.Size(169, 113);
             this.comErrorBox.TabIndex = 4;
             this.comErrorBox.TabStop = false;
             this.comErrorBox.Text = "Connection Error";
@@ -269,9 +284,9 @@ namespace MoleculeMOTHardwareControl
             // 
             this.panel4.Controls.Add(this.connectionErrorIndicator);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(3, 22);
+            this.panel4.Location = new System.Drawing.Point(3, 16);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(162, 95);
+            this.panel4.Size = new System.Drawing.Size(163, 94);
             this.panel4.TabIndex = 1;
             // 
             // connectionErrorIndicator
@@ -288,21 +303,22 @@ namespace MoleculeMOTHardwareControl
             // windfreakReadSettingsButton
             // 
             this.windfreakReadSettingsButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.windfreakReadSettingsButton.Location = new System.Drawing.Point(39, 356);
+            this.windfreakReadSettingsButton.Location = new System.Drawing.Point(40, 336);
             this.windfreakReadSettingsButton.Name = "windfreakReadSettingsButton";
             this.windfreakReadSettingsButton.Size = new System.Drawing.Size(95, 43);
             this.windfreakReadSettingsButton.TabIndex = 4;
             this.windfreakReadSettingsButton.Text = "Read settings from device";
             this.windfreakReadSettingsButton.UseVisualStyleBackColor = true;
+            this.windfreakReadSettingsButton.Click += new System.EventHandler(this.ReadSettingsFromWindfreak);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.tableLayoutPanel6);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(3, 129);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(3, 122);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(168, 162);
+            this.groupBox2.Size = new System.Drawing.Size(169, 153);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Channel";
@@ -315,11 +331,11 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel6.Controls.Add(this.tableLayoutPanel7, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.windfreakChannelSwitch, 0, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 22);
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(162, 137);
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(163, 134);
             this.tableLayoutPanel6.TabIndex = 0;
             // 
             // tableLayoutPanel7
@@ -334,16 +350,16 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel7.RowCount = 2;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(75, 131);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(76, 128);
             this.tableLayoutPanel7.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(27, 88);
+            this.label2.Location = new System.Drawing.Point(31, 89);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 20);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "B";
             // 
@@ -351,23 +367,22 @@ namespace MoleculeMOTHardwareControl
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(27, 22);
+            this.label1.Location = new System.Drawing.Point(31, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 20);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "A";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // windfreakChannelSwitch
             // 
             this.windfreakChannelSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.windfreakChannelSwitch.Location = new System.Drawing.Point(8, 20);
+            this.windfreakChannelSwitch.Location = new System.Drawing.Point(8, 19);
             this.windfreakChannelSwitch.Name = "windfreakChannelSwitch";
             this.windfreakChannelSwitch.Size = new System.Drawing.Size(64, 96);
             this.windfreakChannelSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.windfreakChannelSwitch.TabIndex = 2;
             this.windfreakChannelSwitch.Value = true;
-            this.windfreakChannelSwitch.StateChanging += new NationalInstruments.UI.ActionCancelEventHandler(this.ToggleWindfreakChannel);
+            this.windfreakChannelSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.ToggleWindfreakChannel);
             // 
             // tableLayoutPanel3
             // 
@@ -385,17 +400,17 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 27.77778F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.99644F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.48755F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(488, 843);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(488, 798);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
             // freqControl
             // 
             this.freqControl.Controls.Add(this.panel1);
             this.freqControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.freqControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.freqControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.freqControl.Location = new System.Drawing.Point(3, 3);
             this.freqControl.Name = "freqControl";
-            this.freqControl.Size = new System.Drawing.Size(482, 228);
+            this.freqControl.Size = new System.Drawing.Size(482, 215);
             this.freqControl.TabIndex = 0;
             this.freqControl.TabStop = false;
             this.freqControl.Text = "Frequency (MHz)";
@@ -404,10 +419,10 @@ namespace MoleculeMOTHardwareControl
             // 
             this.panel1.Controls.Add(this.windfreakFreqInput);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 22);
+            this.panel1.Location = new System.Drawing.Point(3, 16);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(10, 60, 10, 100);
-            this.panel1.Size = new System.Drawing.Size(476, 203);
+            this.panel1.Size = new System.Drawing.Size(476, 196);
             this.panel1.TabIndex = 0;
             // 
             // windfreakFreqInput
@@ -439,9 +454,10 @@ namespace MoleculeMOTHardwareControl
             // 
             this.ampControl.Controls.Add(this.panel2);
             this.ampControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ampControl.Location = new System.Drawing.Point(3, 237);
+            this.ampControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ampControl.Location = new System.Drawing.Point(3, 224);
             this.ampControl.Name = "ampControl";
-            this.ampControl.Size = new System.Drawing.Size(482, 228);
+            this.ampControl.Size = new System.Drawing.Size(482, 215);
             this.ampControl.TabIndex = 1;
             this.ampControl.TabStop = false;
             this.ampControl.Text = "Amplitude (dBm)";
@@ -450,10 +466,10 @@ namespace MoleculeMOTHardwareControl
             // 
             this.panel2.Controls.Add(this.windfreakAmpInput);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 22);
+            this.panel2.Location = new System.Drawing.Point(3, 16);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(10, 60, 10, 50);
-            this.panel2.Size = new System.Drawing.Size(476, 203);
+            this.panel2.Size = new System.Drawing.Size(476, 196);
             this.panel2.TabIndex = 0;
             // 
             // windfreakAmpInput
@@ -485,21 +501,21 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel4.Controls.Add(this.groupBox1, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.windfreakUpdateButton, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 471);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 445);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(482, 170);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(482, 161);
             this.tableLayoutPanel4.TabIndex = 2;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel5);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(244, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(235, 164);
+            this.groupBox1.Size = new System.Drawing.Size(235, 155);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output I/O";
@@ -512,19 +528,19 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel5.Controls.Add(this.windfreakOutputIndicator, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.windfreakOutputSwitch, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 22);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(229, 139);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(229, 136);
             this.tableLayoutPanel5.TabIndex = 0;
             // 
             // windfreakOutputIndicator
             // 
-            this.windfreakOutputIndicator.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.windfreakOutputIndicator.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.windfreakOutputIndicator.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.windfreakOutputIndicator.Location = new System.Drawing.Point(144, 42);
-            this.windfreakOutputIndicator.Margin = new System.Windows.Forms.Padding(30, 42, 30, 42);
+            this.windfreakOutputIndicator.Location = new System.Drawing.Point(144, 40);
+            this.windfreakOutputIndicator.Margin = new System.Windows.Forms.Padding(0);
             this.windfreakOutputIndicator.Name = "windfreakOutputIndicator";
             this.windfreakOutputIndicator.Size = new System.Drawing.Size(55, 55);
             this.windfreakOutputIndicator.TabIndex = 1;
@@ -532,27 +548,28 @@ namespace MoleculeMOTHardwareControl
             // windfreakOutputSwitch
             // 
             this.windfreakOutputSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.windfreakOutputSwitch.Location = new System.Drawing.Point(25, 21);
+            this.windfreakOutputSwitch.Location = new System.Drawing.Point(25, 20);
             this.windfreakOutputSwitch.Name = "windfreakOutputSwitch";
             this.windfreakOutputSwitch.Size = new System.Drawing.Size(64, 96);
             this.windfreakOutputSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.windfreakOutputSwitch.TabIndex = 2;
-            this.windfreakOutputSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.ToggleWindfreakOutput);
+            this.windfreakOutputSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.SetWindfreakOutput);
             // 
             // windfreakUpdateButton
             // 
             this.windfreakUpdateButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.windfreakUpdateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.windfreakUpdateButton.Location = new System.Drawing.Point(83, 73);
+            this.windfreakUpdateButton.Location = new System.Drawing.Point(83, 69);
             this.windfreakUpdateButton.Name = "windfreakUpdateButton";
             this.windfreakUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.windfreakUpdateButton.TabIndex = 6;
             this.windfreakUpdateButton.Text = "Update";
             this.windfreakUpdateButton.UseVisualStyleBackColor = true;
-            this.windfreakUpdateButton.Click += new System.EventHandler(this.UpdateWindfreak);
+            this.windfreakUpdateButton.Click += new System.EventHandler(this.SetWindfreakFreqAmp);
             // 
             // sideBandTab
             // 
+            this.sideBandTab.AutoScroll = true;
             this.sideBandTab.Controls.Add(this.scatterGraph6);
             this.sideBandTab.Controls.Add(this.scatterGraph5);
             this.sideBandTab.Controls.Add(this.scatterGraph4);
@@ -564,7 +581,7 @@ namespace MoleculeMOTHardwareControl
             this.sideBandTab.Location = new System.Drawing.Point(4, 22);
             this.sideBandTab.Name = "sideBandTab";
             this.sideBandTab.Padding = new System.Windows.Forms.Padding(3);
-            this.sideBandTab.Size = new System.Drawing.Size(680, 855);
+            this.sideBandTab.Size = new System.Drawing.Size(681, 810);
             this.sideBandTab.TabIndex = 6;
             this.sideBandTab.Text = "Sidebands";
             this.sideBandTab.UseVisualStyleBackColor = true;
@@ -814,7 +831,7 @@ namespace MoleculeMOTHardwareControl
             this.MonitoringTab.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.MonitoringTab.Location = new System.Drawing.Point(4, 22);
             this.MonitoringTab.Name = "MonitoringTab";
-            this.MonitoringTab.Size = new System.Drawing.Size(680, 855);
+            this.MonitoringTab.Size = new System.Drawing.Size(681, 810);
             this.MonitoringTab.TabIndex = 4;
             this.MonitoringTab.Text = "Monitor";
             this.MonitoringTab.UseVisualStyleBackColor = true;
@@ -972,11 +989,10 @@ namespace MoleculeMOTHardwareControl
             this.FrequencyTab.Location = new System.Drawing.Point(4, 22);
             this.FrequencyTab.Name = "FrequencyTab";
             this.FrequencyTab.Padding = new System.Windows.Forms.Padding(3);
-            this.FrequencyTab.Size = new System.Drawing.Size(680, 855);
+            this.FrequencyTab.Size = new System.Drawing.Size(681, 810);
             this.FrequencyTab.TabIndex = 3;
             this.FrequencyTab.Text = "Frequencies";
             this.FrequencyTab.UseVisualStyleBackColor = true;
-            this.FrequencyTab.Click += new System.EventHandler(this.FrequencyTab_Click);
             // 
             // aom1Box
             // 
@@ -1057,24 +1073,131 @@ namespace MoleculeMOTHardwareControl
             this.tabControl.Controls.Add(this.FrequencyTab);
             this.tabControl.Controls.Add(this.MonitoringTab);
             this.tabControl.Controls.Add(this.sideBandTab);
-            this.tabControl.Controls.Add(this.tabPage1);
-            this.tabControl.Location = new System.Drawing.Point(1, 3);
+            this.tabControl.Controls.Add(this.windfreakTab);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(688, 881);
+            this.tabControl.Size = new System.Drawing.Size(689, 836);
             this.tabControl.TabIndex = 0;
+            // 
+            // splitPanel
+            // 
+            this.splitPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitPanel.Location = new System.Drawing.Point(0, 0);
+            this.splitPanel.Name = "splitPanel";
+            this.splitPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitPanel.Panel1
+            // 
+            this.splitPanel.Panel1.Controls.Add(this.tableLayoutPanel8);
+            // 
+            // splitPanel.Panel2
+            // 
+            this.splitPanel.Panel2.Controls.Add(this.messageBox);
+            this.splitPanel.Panel2Collapsed = true;
+            this.splitPanel.Size = new System.Drawing.Size(695, 882);
+            this.splitPanel.SplitterDistance = 724;
+            this.splitPanel.TabIndex = 1;
+            // 
+            // tableLayoutPanel8
+            // 
+            this.tableLayoutPanel8.ColumnCount = 1;
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel8.Controls.Add(this.tabControl, 0, 0);
+            this.tableLayoutPanel8.Controls.Add(this.tableLayoutPanel9, 0, 1);
+            this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel8.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
+            this.tableLayoutPanel8.RowCount = 2;
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(695, 882);
+            this.tableLayoutPanel8.TabIndex = 1;
+            // 
+            // tableLayoutPanel9
+            // 
+            this.tableLayoutPanel9.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.tableLayoutPanel9.ColumnCount = 3;
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.848485F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.15151F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel9.Controls.Add(this.messageBoxCollapseExpandButton, 2, 0);
+            this.tableLayoutPanel9.Controls.Add(this.label8, 1, 0);
+            this.tableLayoutPanel9.Controls.Add(this.messageNumberPanel, 0, 0);
+            this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 845);
+            this.tableLayoutPanel9.Name = "tableLayoutPanel9";
+            this.tableLayoutPanel9.RowCount = 1;
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(689, 34);
+            this.tableLayoutPanel9.TabIndex = 1;
+            // 
+            // messageBoxCollapseExpandButton
+            // 
+            this.messageBoxCollapseExpandButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.messageBoxCollapseExpandButton.BackColor = System.Drawing.Color.Transparent;
+            this.messageBoxCollapseExpandButton.Location = new System.Drawing.Point(659, 5);
+            this.messageBoxCollapseExpandButton.Name = "messageBoxCollapseExpandButton";
+            this.messageBoxCollapseExpandButton.Size = new System.Drawing.Size(23, 23);
+            this.messageBoxCollapseExpandButton.TabIndex = 0;
+            this.messageBoxCollapseExpandButton.Text = "+";
+            this.messageBoxCollapseExpandButton.UseVisualStyleBackColor = false;
+            this.messageBoxCollapseExpandButton.Click += new System.EventHandler(this.ToggleMessageBox);
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(41, 10);
+            this.label8.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 13);
+            this.label8.TabIndex = 2;
+            this.label8.Text = "Messages";
+            // 
+            // messageNumberPanel
+            // 
+            this.messageNumberPanel.BackColor = System.Drawing.Color.Black;
+            this.messageNumberPanel.Controls.Add(this.messageNumber);
+            this.messageNumberPanel.Location = new System.Drawing.Point(3, 3);
+            this.messageNumberPanel.Name = "messageNumberPanel";
+            this.messageNumberPanel.Size = new System.Drawing.Size(25, 28);
+            this.messageNumberPanel.TabIndex = 3;
+            // 
+            // messageNumber
+            // 
+            this.messageNumber.BackColor = System.Drawing.SystemColors.InfoText;
+            this.messageNumber.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.messageNumber.ForeColor = System.Drawing.Color.White;
+            this.messageNumber.Location = new System.Drawing.Point(3, 7);
+            this.messageNumber.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
+            this.messageNumber.Name = "messageNumber";
+            this.messageNumber.Size = new System.Drawing.Size(20, 13);
+            this.messageNumber.TabIndex = 3;
+            this.messageNumber.Text = "0";
+            this.messageNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // messageBox
+            // 
+            this.messageBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.messageBox.Location = new System.Drawing.Point(0, 0);
+            this.messageBox.Name = "messageBox";
+            this.messageBox.Size = new System.Drawing.Size(150, 46);
+            this.messageBox.TabIndex = 0;
+            this.messageBox.Text = "";
             // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(695, 882);
-            this.Controls.Add(this.tabControl);
+            this.Controls.Add(this.splitPanel);
             this.MaximizeBox = false;
             this.Name = "ControlWindow";
             this.Text = "Molecule MOT Hardware Controller";
-            this.tabPage1.ResumeLayout(false);
+            this.windfreakTab.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.triggerModeBox.ResumeLayout(false);
@@ -1112,6 +1235,15 @@ namespace MoleculeMOTHardwareControl
             this.aom1Box.ResumeLayout(false);
             this.aom1Box.PerformLayout();
             this.tabControl.ResumeLayout(false);
+            this.splitPanel.Panel1.ResumeLayout(false);
+            this.splitPanel.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel)).EndInit();
+            this.splitPanel.ResumeLayout(false);
+            this.tableLayoutPanel8.ResumeLayout(false);
+            this.tableLayoutPanel9.ResumeLayout(false);
+            this.tableLayoutPanel9.PerformLayout();
+            this.messageNumberPanel.ResumeLayout(false);
+            this.messageNumberPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1121,7 +1253,7 @@ namespace MoleculeMOTHardwareControl
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PrintDialog printDialog1;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage windfreakTab;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.GroupBox freqControl;
@@ -1204,6 +1336,14 @@ namespace MoleculeMOTHardwareControl
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private NationalInstruments.UI.WindowsForms.Switch windfreakOutputSwitch;
         private System.Windows.Forms.Button windfreakUpdateButton;
+        private System.Windows.Forms.SplitContainer splitPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
+        private System.Windows.Forms.Button messageBoxCollapseExpandButton;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Panel messageNumberPanel;
+        private System.Windows.Forms.TextBox messageNumber;
+        private System.Windows.Forms.RichTextBox messageBox;
 
     }
 }

@@ -24,7 +24,7 @@ namespace MoleculeMOTHardwareControl
         // Instruments
         HP8673BSynth synth = (HP8673BSynth)Environs.Hardware.Instruments["synth"];
         //FlowMeter flowMeter = (FlowMeter)Environs.Hardware.Instruments["flowmeter"];
-        WindfreakSynthesizer windfreak = (WindfreakSynthesizer)Environs.Hardware.Instruments["windfreak"];
+        WindfreakSynth windfreak = (WindfreakSynth)Environs.Hardware.Instruments["windfreak"];
 
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed(
             "cavity", "analogTrigger3", "laser", "p2", "p1", "analogTrigger2", "cavityTriggerOut"
@@ -115,13 +115,13 @@ namespace MoleculeMOTHardwareControl
 
             window = new ControlWindow();
             window.controller = this;
-            InitialiseWindow(window);
+            InitialiseWindowValues(window);
             Application.Run(window);
         }
 
-        public void InitialiseWindow(ControlWindow window)
+        public void InitialiseWindowValues(ControlWindow window)
         {
-            window.SetTriggerModes(Enum.GetValues(typeof(WindfreakSynthesizer.TriggerModes)));
+            window.UpdateWindfreakTriggerModes(Enum.GetValues(typeof(WindfreakSynth.TriggerMode)));
         }
 
         // Applications may set this control voltage themselves, but when they do
@@ -236,23 +236,62 @@ namespace MoleculeMOTHardwareControl
 
         #region Windfreak Members
 
-        public void UpdateWindfreak()
+        public void SetWindfreakFreqAmp()
         {
             double freq = window.GetWindfreakFrequency();
             double amp = window.GetWindfreakAmplitude();
-            windfreak.UpdateContinuousSettings(freq, amp);
+            bool channelBool = window.GetWindfreakChannel();
+            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
+            channel.SetFrequency(freq);
+            channel.SetAmplitude(amp);
         }
 
         public void SetWindfreakOutput(bool outputIsOn)
         {
-            windfreak.SetOutput(outputIsOn);
+            bool channelBool = window.GetWindfreakChannel();
+            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
+            channel.SetRF(outputIsOn);
         }
 
-        public void ChangeWindfreakTriggerMode(string value)
+        public void SetWindfreakTriggerMode(string value)
         {
-            WindfreakSynthesizer.TriggerModes triggerMode;
-            Enum.TryParse<WindfreakSynthesizer.TriggerModes>(value, out triggerMode);
-            windfreak.UpdateTriggerMode(triggerMode);
+            WindfreakSynth.TriggerMode triggerMode;
+            Enum.TryParse<WindfreakSynth.TriggerMode>(value, out triggerMode);
+            windfreak.SetTriggerMode(triggerMode);
+        }
+
+        public void SyncWindfreakFrequency()
+        {
+            bool channelBool = window.GetWindfreakChannel();
+            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
+            window.UpdateWindfreakFrequency(channel.GetFrequency());
+        }
+
+        public void SyncWindfreakAmplitude()
+        {
+            bool channelBool = window.GetWindfreakChannel();
+            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
+            window.UpdateWindfreakAmplitude(channel.GetAmplitude());
+        }
+
+        public void SyncWindfreakOutput()
+        {
+            bool channelBool = window.GetWindfreakChannel();
+            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
+            window.UpdateWindfreakOutput(channel.RFOn());
+        }
+
+        public void SyncWindfreakChannel()
+        {
+            SyncWindfreakFrequency();
+            SyncWindfreakAmplitude();
+            SyncWindfreakOutput();
+        }
+
+        public void ReadSettingsFromWindfreak()
+        {
+            windfreak.ReadSettingsFromDevice();
+            SyncWindfreakChannel();
         }
 
         #endregion
@@ -427,12 +466,6 @@ namespace MoleculeMOTHardwareControl
 
                 Thread.Sleep(waitBetweenReads);
             }
-        }
-
-        
-        public string GetCommand()
-        {
-            return window.CommandBox.Text;
         }
 
         //public void ReadFlowMeter()
