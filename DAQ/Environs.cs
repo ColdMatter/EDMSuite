@@ -63,14 +63,14 @@ namespace DAQ.Environment
                     break;
 
                 case "CRASH1":
-					Hardware = new DecelerationHardware();
+					Hardware = new MoleculeMOTHardware();
 					FileSystem = new CrashFileSystem();
 					Debug = false;
                     //ExperimentType = "decelerator";
 					break;
 
 				case "SCHNAPS":
-					Hardware = new DecelerationHardware();
+					Hardware = new MoleculeMOTHardware();
 					FileSystem = new SchnapsFileSystem();
 					//ExperimentType = "decelerator";
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
@@ -78,7 +78,7 @@ namespace DAQ.Environment
                     break;
 
                 case "SUNSHINE":
-                    Hardware = new DecelerationHardware();
+                    Hardware = new MoleculeMOTHardware();
                     FileSystem = new SunshineFileSystem();
                     //ExperimentType = "decelerator";
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");

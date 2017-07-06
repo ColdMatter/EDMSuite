@@ -255,7 +255,7 @@
     <Compile Include="DataFaker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DecelerationHardware.cs">
+    <Compile Include="MoleculeMOTHardware.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DigitalInputChannel.cs">

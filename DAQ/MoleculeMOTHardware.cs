@@ -16,10 +16,10 @@ namespace DAQ.HAL
 	/// This is the specific hardware that the deceleration experiment has. This class conforms
 	/// to the Hardware interface.
 	/// </summary>
-	public class DecelerationHardware : DAQ.HAL.Hardware
+	public class MoleculeMOTHardware : DAQ.HAL.Hardware
 	{
 
-		public DecelerationHardware()
+		public MoleculeMOTHardware()
 		{
 
 			// YAG laser

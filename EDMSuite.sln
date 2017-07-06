@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMHardwareControl", "EDMHardwareControl\EDMHardwareControl.csproj", "{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoleculeMOTHardwareControl", "DecelerationHardwareControl\MoleculeMOTHardwareControl.csproj", "{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoleculeMOTHardwareControl", "MoleculeMOTHardwareControl\MoleculeMOTHardwareControl.csproj", "{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecelerationLaserLock", "DecelerationLaserLock\DecelerationLaserLock.csproj", "{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}"
 EndProject
