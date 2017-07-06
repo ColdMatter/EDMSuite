@@ -44,7 +44,7 @@ namespace DecelerationLaserLock
                 
         private ScanMaster.Controller scanMaster;
         private DAQ.Analyze.GaussianFitter fitter;
-        private MoleculeMOTHardwareControl.MainController hardwareControl;
+        private MoleculeMOTHardwareControl.Controller hardwareControl;
         
         private MainForm ui;
 
@@ -94,7 +94,7 @@ namespace DecelerationLaserLock
             RemotingHelper.ConnectMoleculeMOTHardwareControl();
 
             scanMaster = new ScanMaster.Controller();
-            hardwareControl = new MoleculeMOTHardwareControl.MainController();
+            hardwareControl = new MoleculeMOTHardwareControl.Controller();
             fitter = new DAQ.Analyze.GaussianFitter();
 
            

@@ -10,65 +10,83 @@ namespace MoleculeMOTHardwareControl.Controls
     public class WindfreakTabController : GenericController
     {
         protected WindfreakSynth windfreak;
+        private WindfreakTabView castView; // Convenience to avoid lots of casting in methods 
         
         protected override GenericView CreateControl()
         {
-            return new WindfreakTabView();
+            castView = new WindfreakTabView();
+            castView.InitializeTriggerModes(Enum.GetValues(typeof(WindfreakSynth.TriggerTypes)));
+            return castView;
         }
 
         public WindfreakTabController(WindfreakSynth device) : base()
         {
             windfreak = device;
+            ReadSettings();
         }
 
-        public void SetFreqAmp()
+        public override Dictionary<string, object> Report()
         {
-            WindfreakTabView castView = (WindfreakTabView)view;
-            double freq = castView.GetFrequency();
-            double amp = castView.GetAmplitude();
-            bool channelBool = castView.GetChannel();
-            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
-            channel.SetFrequency(freq);
-            channel.SetAmplitude(amp);
+            Dictionary<string, object> report = new Dictionary<string, object>();
+            report.Add("TriggerMode", windfreak.TriggerMode);
+            report.Add("Channel A Frequency (MHz)", windfreak.ChannelA.Frequency);
+            report.Add("Channel A Amplitude (dBm)", windfreak.ChannelA.Amplitude);
+            report.Add("Channel A RFOn", windfreak.ChannelA.RFOn);
+            report.Add("Channel B Frequency (MHz)", windfreak.ChannelB.Frequency);
+            report.Add("Channel B Amplitude (dBm)", windfreak.ChannelB.Amplitude);
+            report.Add("Channel B RFOn", windfreak.ChannelB.RFOn);
+            return report;
         }
 
-        public void SetOutput(bool outputIsOn)
+        public void SetFrequency(double freq, bool channel)
         {
-            WindfreakTabView castView = (WindfreakTabView)view;
-            bool channelBool = castView.GetChannel();
-            WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
-            channel.SetRF(outputIsOn);
+            windfreak.Channel(channel).Frequency = freq;
+            SyncFrequency();
+        }
+
+        public void SetAmplitude(double amp, bool channel)
+        {
+            windfreak.Channel(channel).Amplitude = amp;
+            SyncAmplitude();
+        }
+
+        public void SetOutput(bool state, bool channel)
+        {
+            windfreak.Channel(channel).RFOn = state;
+            SyncOutput();
         }
 
         public void SetTriggerMode(string value)
         {
-            WindfreakSynth.TriggerMode triggerMode;
-            Enum.TryParse<WindfreakSynth.TriggerMode>(value, out triggerMode);
-            windfreak.SetTriggerMode(triggerMode);
+            WindfreakSynth.TriggerTypes triggerMode;
+            Enum.TryParse<WindfreakSynth.TriggerTypes>(value, out triggerMode);
+            windfreak.TriggerMode = triggerMode;
         }
 
         public void SyncFrequency()
         {
-            WindfreakTabView castView = (WindfreakTabView)view;
             bool channelBool = castView.GetChannel();
             WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
-            castView.UpdateFrequency(channel.GetFrequency());
+            castView.UpdateFrequency(channel.Frequency);
         }
 
         public void SyncAmplitude()
         {
-            WindfreakTabView castView = (WindfreakTabView)view;
             bool channelBool = castView.GetChannel();
             WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
-            castView.UpdateAmplitude(channel.GetAmplitude());
+            castView.UpdateAmplitude(channel.Amplitude);
         }
 
         public void SyncOutput()
         {
-            WindfreakTabView castView = (WindfreakTabView)view;
             bool channelBool = castView.GetChannel();
             WindfreakSynth.WindfreakChannel channel = windfreak.Channel(channelBool);
-            castView.UpdateOutput(channel.RFOn());
+            castView.UpdateOutput(channel.RFOn);
+        }
+
+        public void SyncTriggerMode()
+        {
+            castView.UpdateTriggerMode(windfreak.TriggerMode);
         }
 
         public void SyncChannel()
@@ -82,6 +100,7 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             windfreak.ReadSettingsFromDevice();
             SyncChannel();
+            SyncTriggerMode();
         }
     }
 }

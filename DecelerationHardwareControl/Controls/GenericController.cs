@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
-    public abstract class GenericController
+    public abstract class GenericController : MarshalByRefObject
     {
         public GenericView view;
 
@@ -17,5 +17,10 @@ namespace MoleculeMOTHardwareControl.Controls
         }
 
         abstract protected GenericView CreateControl(); // Derived classes must implement this method to create the controls
+
+        public virtual Dictionary<string, object> Report()
+        {
+            return null;
+        }
     }
 }

@@ -83,7 +83,7 @@ namespace DAQ.HAL
             Info.Add("Carlos", tcl2);
 
             //MotMaster configuration
-            MMConfig mmConfig = new MMConfig(false, false, false, false);
+            MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
 

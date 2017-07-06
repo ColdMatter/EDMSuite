@@ -16,7 +16,7 @@ namespace MoleculeMOTHardwareControl
     public partial class ControlWindow : Form
     {
         
-        public MainController controller;
+        public Controller controller;
 
         public ControlWindow()
         {

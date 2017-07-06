@@ -109,7 +109,7 @@
     <Compile Include="Controls\SidebandsMonitorTabView.Designer.cs">
       <DependentUpon>SidebandsMonitorTabView.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainController.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
     </Compile>

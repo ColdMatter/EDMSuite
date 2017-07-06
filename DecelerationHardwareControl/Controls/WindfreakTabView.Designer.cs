@@ -143,9 +143,6 @@
             this.triggerModeComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.triggerModeComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.triggerModeComboBox.FormattingEnabled = true;
-            this.triggerModeComboBox.Items.AddRange(new object[] {
-            "Continuous",
-            "Digital"});
             this.triggerModeComboBox.Location = new System.Drawing.Point(10, 30);
             this.triggerModeComboBox.Name = "triggerModeComboBox";
             this.triggerModeComboBox.Size = new System.Drawing.Size(144, 28);

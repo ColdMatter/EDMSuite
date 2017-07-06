@@ -63,6 +63,16 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 		print row_format.format(i, str(int(round(iter_end-iter_start))) + ' s', *combination)
 	end = time.time()
 	print 'Finished, total time was {} s.'.format(int(round(end-start)))
+	
+def ScanMicrowaveFrequency(script_name, values):
+	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		start = time.time()
+		hc.tabs["Windfreak Synthesizer"].SetFrequency(value, False)
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} seconds'.format(value, int(round(end-start)))
+	print 'Finished'
 
 def ScanExpansionTime(values=[50, 650, 150, 750, 550, 350, 250, 450, 800]):
 	script_name = 'MOTBlueMolassesShimSwitch'

@@ -22,10 +22,10 @@ namespace DAQ.HAL
             public static String RFPower { get { return "h"; } }
         }
 
-        public enum TriggerMode
+        public enum TriggerTypes
         {
             Continuous = 0,
-            Pulse = 5
+            Pulse = 4
         }
 
         public class WindfreakChannel
@@ -86,38 +86,35 @@ namespace DAQ.HAL
                 return CommandTypes.Amplitude + amp.ToString("F2"); // Round to 2 decimal places
             }
 
-            public void SetFrequency(double freq)
+            public double Frequency
             {
-                Write(FreqCommand(freq));
-                frequency = freq;
+                get { return frequency; }
+                set
+                {
+                    Write(FreqCommand(value));
+                    frequency = value;
+                }
             }
 
-            public double GetFrequency()
+            public double Amplitude
             {
-                return frequency;
+                get { return amplitude; }
+                set
+                {
+                    Write(AmpCommand(value));
+                    amplitude = value;
+                }
             }
 
-            public void SetAmplitude(double amp)
+            public bool RFOn
             {
-                Write(AmpCommand(amp));
-                amplitude = amp;
-            }
-
-            public double GetAmplitude()
-            {
-                return amplitude;
-            }
-
-            public void SetRF(bool state)
-            {
-                string stateString = Convert.ToInt32(state).ToString();
-                Write(CommandTypes.PLL + stateString + CommandTypes.PA + stateString);
-                rfOn = state;
-            }
-
-            public bool RFOn()
-            {
-                return rfOn;
+                get { return rfOn; }
+                set
+                {
+                    string stateString = Convert.ToInt32(value).ToString();
+                    Write(CommandTypes.PLL + stateString + CommandTypes.PA + stateString);
+                    rfOn = value;
+                }
             }
 
             public void ResetOutput(bool output)
@@ -138,8 +135,6 @@ namespace DAQ.HAL
 
         protected new int BaudRate = 115200; // Device can accept higher data transfer rate than default for class of 9600
         
-        protected TriggerMode triggerMode;
-
         public WindfreakSynth(string address) : base(address)
         {
             ChannelA = new WindfreakChannel(this, false);
@@ -151,26 +146,21 @@ namespace DAQ.HAL
             return channel ? ChannelB : ChannelA;
         }
 
-        public void SetTriggerMode(TriggerMode trigger)
+        protected TriggerTypes triggerMode;
+        public TriggerTypes TriggerMode
         {
-            Write(CommandTypes.Trigger + trigger.ToString("d"));
-            // For some reason, it is necessary to make sure the output is on (or off for pulsed operation) after changing the trigger mode
-            if (trigger == TriggerMode.Pulse)
+            get { return triggerMode; }
+            set
             {
-                ChannelA.ResetOutput(false);
-                ChannelB.ResetOutput(false);
+                Write(CommandTypes.Trigger + value.ToString("d"));
+                // For some reason, it is necessary to make sure the output is on after changing the trigger mode to continuous
+                if (value == TriggerTypes.Continuous)
+                {
+                    ChannelA.ResetOutput(true);
+                    ChannelB.ResetOutput(true);
+                }
+                triggerMode = value;
             }
-            else
-            {
-                ChannelA.ResetOutput(true);
-                ChannelB.ResetOutput(true);
-            }
-            triggerMode = trigger;
-        }
-
-        public TriggerMode GetTriggerMode()
-        {
-            return triggerMode;
         }
 
         protected new string Query(string command)
@@ -198,9 +188,10 @@ namespace DAQ.HAL
                 string response = Read();
                 responses[i] = response.Substring(0, response.Length - 1);
             }
+            Disconnect();
 
             bool[] channels = new bool[2] {false, true};
-            triggerMode = (TriggerMode)Convert.ToInt32(responses[0]);
+            triggerMode = (TriggerTypes)Convert.ToInt32(responses[0]);
             ChannelA.SyncSettings(responses.Skip(1).Take(3).ToArray());
             ChannelB.SyncSettings(responses.Skip(4).Take(3).ToArray());
         }

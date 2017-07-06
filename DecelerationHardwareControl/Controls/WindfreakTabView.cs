@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DAQ.HAL;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -34,6 +35,16 @@ namespace MoleculeMOTHardwareControl.Controls
             outputSwitch.Value = state;
             outputIndicator.Value = state;
         } 
+
+        public void UpdateTriggerMode(WindfreakSynth.TriggerTypes trigger)
+        {
+            triggerModeComboBox.SelectedItem = trigger;
+        }
+
+        public void InitializeTriggerModes(Array triggers)
+        {
+            triggerModeComboBox.DataSource = triggers;
+        }
 
         #endregion
 
@@ -74,7 +85,11 @@ namespace MoleculeMOTHardwareControl.Controls
         private void SetFrequencyAmplitude(object sender, EventArgs e)
         {
             WindfreakTabController castController = (WindfreakTabController)controller;
-            castController.SetFreqAmp();
+            double freq = GetFrequency();
+            double amp = GetAmplitude();
+            bool channel = GetChannel();
+            castController.SetFrequency(freq, channel);
+            castController.SetAmplitude(amp, channel);
         }
 
         private void ReadSettings(object sender, EventArgs e)
@@ -89,7 +104,8 @@ namespace MoleculeMOTHardwareControl.Controls
             {
                 WindfreakTabController castController = (WindfreakTabController)controller;
                 bool state = GetOutput();
-                castController.SetOutput(state);
+                bool channel = GetChannel();
+                castController.SetOutput(state, channel);
                 outputIndicator.Value = state;
             }
         }
@@ -99,7 +115,7 @@ namespace MoleculeMOTHardwareControl.Controls
             if (triggerModeComboBox.Focused) // Only do it if its a UI event
             {
                 WindfreakTabController castController = (WindfreakTabController)controller;
-                string value = triggerModeComboBox.SelectedValue.ToString();
+                string value = triggerModeComboBox.SelectedItem.ToString();
                 castController.SetTriggerMode(value);
             }
         }
