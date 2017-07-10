@@ -21,3 +21,4 @@ MotMaster2/Data/*
 packages/*
 
 *.tmp_proj
+.vscode/*
