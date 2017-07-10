@@ -17,6 +17,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using DataStructures;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster2
 {
@@ -80,6 +82,8 @@ namespace MOTMaster2
 
         SequenceBuilder builder;
 
+        DataStructures.SequenceData ciceroSequence;
+        DataStructures.SettingsData ciceroSettings;
         #endregion
 
         #region Initialisation
@@ -807,6 +811,28 @@ namespace MOTMaster2
         }
         #endregion
 
-        
+
+
+        internal void LoadCiceroSequenceFromPath(string filename)
+        {
+            ciceroSequence = (DataStructures.SequenceData)DataStructures.Common.loadBinaryObjectFromFile(filename);
+          
+        }
+
+        internal void LoadCiceroSettingsFromPath(string filename)
+        {
+            ciceroSettings = (DataStructures.SettingsData)DataStructures.Common.loadBinaryObjectFromFile(filename);
+        }
+
+        internal void ConvertCiceroSequence()
+        {
+
+            CiceroConverter ciceroConverter = new CiceroConverter();
+
+            ciceroConverter.SetSettingsData(ciceroSettings);
+            ciceroConverter.InitMMSequence(sequenceData);
+
+            if (ciceroConverter.CheckValidHardwareChannels() && ciceroConverter.CanConvertFrom(ciceroSequence.GetType())) sequenceData = (Sequence)ciceroConverter.ConvertFrom(ciceroSequence);
+        }
     }
 }

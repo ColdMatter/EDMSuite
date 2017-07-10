@@ -371,6 +371,46 @@ namespace MOTMaster2
                 }
          
         }
+        private void LoadCicero_Click(object sender, RoutedEventArgs e)
+        {
+            
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.Title = "Select Cicero Settings File";
+            dlg.FileName = ""; // Default file name
+            dlg.DefaultExt = ".set"; // Default file extension
+            dlg.Filter = "Cicero Settings (.set,.json)|*.json,*.set"; // Filter files by extension
+
+            // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                string filename = dlg.FileName;
+                controller.LoadCiceroSettingsFromPath(filename);
+
+                dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.Title = "Select Cicero Sequence File";
+                dlg.FileName = ""; // Default file name
+                dlg.DefaultExt = ".seq"; // Default file extension
+                dlg.Filter = "Cicero Sequence (.set,.json)|*.json,*.set"; // Filter files by extension
+
+                // Show open file dialog box
+                result = dlg.ShowDialog();
+
+                // Process open file dialog box results
+                if (result == true)
+                {
+                    filename = dlg.FileName;
+                    controller.LoadCiceroSequenceFromPath(filename);
+
+                    controller.ConvertCiceroSequence();
+                    
+                }
+            }
+
+
+        }
         private void SaveEnvironment_Click(object sender, RoutedEventArgs e)
         {
             controller.SaveEnvironment();

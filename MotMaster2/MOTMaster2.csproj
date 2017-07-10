@@ -59,6 +59,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataStructures, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Cicero-Word-Generator\DataStructures\bin\x64\Release\DataStructures.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Software\EDMSuite\MOTMaster\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -138,6 +142,7 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
+    <Compile Include="SequenceData\CiceroConverter.cs" />
     <Compile Include="SequenceData\Parameter.cs" />
     <Compile Include="SequenceData\SequenceBuilder.cs" />
     <Compile Include="SequenceData\Sequence.cs" />

@@ -7,6 +7,7 @@
              xmlns:ms="clr-namespace:System;assembly=mscorlib" 
              xmlns:controls="clr-namespace:MOTMaster2"
              xmlns:local="clr-namespace:MOTMaster2.SequenceData"
+
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ObjectDataProvider x:Key="analogProvider" MethodName="GetValues" ObjectType="{x:Type ms:Enum}">
@@ -50,5 +51,4 @@
         </DataGrid>
         
     </Grid>
-    
 </UserControl>

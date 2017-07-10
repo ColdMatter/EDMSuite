@@ -126,15 +126,19 @@ namespace MOTMaster2.SequenceData
             else if (usedAnalogChannels.Contains(name)) usedAnalogChannels.Remove(name);
 
             //Sets the argument type for use elsewhere
-            analogArgs.SetArgType(type);
+            analogArgs.SetArgType(type,analogArgs.GetArgItems());
             return analogArgs.GetArgItems();
         }
-        public void SetAnalogDataItem(string name, AnalogChannelSelector type, object data)
+
+        //Modifies the data of a selected analog channel
+        public void SetAnalogDataItem(string name, AnalogChannelSelector type, List<AnalogArgItem> data)
         {
             if (type != AnalogChannelSelector.Continue)
             {
                 AnalogValueArgs analogArgs = analogData[name];
-                analogArgs.SetArgumentData(data);
+                analogArgs.SetArgType(type,data);
+                
+              
             }
         }
         public bool GetDigitalData(string name)
@@ -263,22 +267,27 @@ namespace MOTMaster2.SequenceData
             else return SequenceParser.ParseOrGetParameter(_selectedItem[3].Value);
         }
 
-        public void SetArgType(AnalogChannelSelector channelType)
+        //Sets the argument type of the selected analog channel, as well as the data for that type. This should prevent issues with different types being assigned by value or reference 
+        public void SetArgType(AnalogChannelSelector channelType, List<AnalogArgItem> data)
         {
             switch (channelType)
             {
                 case AnalogChannelSelector.Continue:
                     break;
                 case AnalogChannelSelector.SingleValue:
+                    Value = data;
                     _selectedItem = Value;
                     break;
                 case AnalogChannelSelector.LinearRamp:
+                    LinearRamp = data;
                     _selectedItem = LinearRamp;
                     break;
                 case AnalogChannelSelector.Pulse:
+                    Pulse = data;
                     _selectedItem = Pulse;
                     break;
                 case AnalogChannelSelector.Function:
+                    Function = data;
                     _selectedItem = Function;
                     break;
                 default:

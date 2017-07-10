@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
@@ -22,7 +23,9 @@ using System.Diagnostics;
 namespace MOTMaster2
 {
     class SequenceStepViewModel : INotifyPropertyChanged
+
     {
+
         public ObservableCollection<SequenceStep> SequenceSteps { get; set; }
 
         private SequenceStep _selectedStep;
@@ -142,7 +145,7 @@ namespace MOTMaster2
             if (arguments.GetType() == typeof(List<AnalogArgItem>))
             {
                 List<AnalogArgItem> items = arguments as List<AnalogArgItem>;
-                _selectedStep.SetAnalogDataItem(_selectedAnalogChannel.Key, _selectedAnalogChannel.Value, arguments);
+                _selectedStep.SetAnalogDataItem(_selectedAnalogChannel.Key, _selectedAnalogChannel.Value, items);
 
             }
             else if (arguments.GetType() == typeof(List<SerialItem>))

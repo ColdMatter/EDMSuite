@@ -15,8 +15,6 @@ using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
-using System.Dynamic;
-
 
 
 namespace MOTMaster2
@@ -29,7 +27,6 @@ namespace MOTMaster2
         public SequenceDataGrid()
         {
             InitializeComponent();
-
             sequenceDataGrid.DataContext = new SequenceStepViewModel();
             
         }
@@ -130,7 +127,10 @@ namespace MOTMaster2
             }
             else
             { return; }
-        }   
-    }    
+
+        }
+
+    }
+
 }
 

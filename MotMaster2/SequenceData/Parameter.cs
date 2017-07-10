@@ -36,6 +36,24 @@ namespace MOTMaster2.SequenceData
             return newParam;
 
         }
+
+        //Equality is only defined if two parameters have the same name. This is to make it easier for overriding them when loading a new sequence
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == typeof(Parameter))
+            {
+                Parameter param = obj as Parameter;
+                if (param.Name == this.Name)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return base.Equals(obj);
+        }
     }
 
 }
