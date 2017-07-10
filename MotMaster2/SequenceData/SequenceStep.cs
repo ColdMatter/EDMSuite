@@ -93,7 +93,8 @@ namespace MOTMaster2.SequenceData
 
         public List<string> GetUsedAnalogChannels()
         {
-            return usedAnalogChannels;
+             return AnalogValueTypes.Where(t=>(t.Value != AnalogChannelSelector.Continue)).Select(t=>t.Key).ToList();
+           
         }
 
         public List<string> GetUsedDigitalChannels(SequenceStep previousStep)
@@ -140,11 +141,15 @@ namespace MOTMaster2.SequenceData
                 
               
             }
+            AnalogValueTypes[name] = type;
+            
         }
         public bool GetDigitalData(string name)
         {
             return digitalData[name];
         }
+
+        # region AnalogValue Access Methods - Could be refactored
         public double GetAnalogStartTime(string name)
         {
             AnalogValueArgs analogArgs = analogData[name];
@@ -173,7 +178,19 @@ namespace MOTMaster2.SequenceData
             AnalogValueArgs analogArgs = analogData[name];
             return analogArgs.GetFunction();
         }
-    
+
+        public List<double[]> GetXYPairs(string name)
+        {
+            AnalogValueArgs analogArgs = analogData[name];
+            return analogArgs.GetXYPairs();
+        }
+
+        public string GetInterpolationType(string name)
+        {
+            AnalogValueArgs analogArgs = analogData[name];
+            return analogArgs.GetInterpolationType();
+        }
+        #endregion
         public event PropertyChangedEventHandler PropertyChanged;
 
         internal List<SerialItem> GetSerialData()
@@ -197,7 +214,8 @@ namespace MOTMaster2.SequenceData
         SingleValue,
         LinearRamp,
         Pulse,
-        Function
+        Function,
+        XYPairs
     }
     //Enumerates the state of each digital channel. For now, this is either on/off, but we may want to add the option of including pulses within a single step   
     [Serializable,JsonObject]
@@ -215,10 +233,16 @@ namespace MOTMaster2.SequenceData
     [Serializable,JsonObject]
     public class AnalogValueArgs
     {
+        [JsonIgnore]
         public List<AnalogArgItem> Value {get; set;}
+        [JsonIgnore]
         public List<AnalogArgItem> LinearRamp { get; set; }
+        [JsonIgnore]
         public List<AnalogArgItem> Pulse { get; set; }
+        [JsonIgnore]
         public List<AnalogArgItem> Function { get; set; }
+        [JsonIgnore]
+        public List<AnalogArgItem> XYPairs { get; set; }
         [JsonProperty]
         private List<AnalogArgItem> _selectedItem;
 
@@ -228,8 +252,10 @@ namespace MOTMaster2.SequenceData
             LinearRamp = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Final Value", "") };
             Pulse = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Value", ""), new AnalogArgItem("Final Value","") };
             Function = new List<AnalogArgItem> {new AnalogArgItem("Start Time",""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", "") };
+            XYPairs = new List<AnalogArgItem> { new AnalogArgItem("X Values", ""), new AnalogArgItem("Y Values", ""), new AnalogArgItem("Interpolation Type", "") };
         }
 
+        //TODO: Make this assign _selectedItem to the correct property. The others should take on their default values
         [JsonConstructor]
         [Obsolete("Call the default constructor. This is only for JSONserializer", true)]
         public AnalogValueArgs(bool Do_Not_Call)
@@ -239,7 +265,9 @@ namespace MOTMaster2.SequenceData
 
         public double GetStartTime()
         {
-            return SequenceParser.ParseOrGetParameter(_selectedItem[0].Value);
+            if (_selectedItem[0].Name != "X Values") return SequenceParser.ParseOrGetParameter(_selectedItem[0].Value);
+            else return SequenceParser.ParseOrGetParameter(_selectedItem[0].Value.Split(',')[0]);
+            
         }
 
         public double GetDuration()
@@ -257,7 +285,7 @@ namespace MOTMaster2.SequenceData
 
         public string GetFunction()
         {
-            if (_selectedItem != Function) throw new Exception("Channel arguments do not have a function string");
+            if (_selectedItem[2].Name != "Function") throw new Exception("Channel arguments do not have a function string");
             return _selectedItem[2].Value;
         }
 
@@ -266,7 +294,30 @@ namespace MOTMaster2.SequenceData
             if (_selectedItem != Pulse) throw new Exception("Channel arguments do not have a final value.");
             else return SequenceParser.ParseOrGetParameter(_selectedItem[3].Value);
         }
-
+        public List<double[]> GetXYPairs()
+        {
+            if (_selectedItem[0].Name == "X Values")
+            {
+                string[] xstr = _selectedItem[0].Value.Split(',');
+                string[] ystr = _selectedItem[1].Value.Split(',');
+                if (xstr.Length != ystr.Length) throw new Exception("Length mismatch for XY pairs");
+                double[] xvals = new double[xstr.Length];
+                double[] yvals = new double[ystr.Length];
+                for (int i = 0; i<xvals.Length; i++)
+                {
+                    xvals[i] = Double.Parse(xstr[i]);
+                    yvals[i] = Double.Parse(ystr[i]);
+                }
+                return new List<double[]>(){xvals,yvals};
+            }
+            else throw new Exception("Channel arguments not an XY list");
+        }
+        public string GetInterpolationType()
+        {
+            if (_selectedItem[0].Name == "X Values")
+                return _selectedItem[2].Value;
+            else throw new Exception("Channel arguments not an XY list");
+        }
         //Sets the argument type of the selected analog channel, as well as the data for that type. This should prevent issues with different types being assigned by value or reference 
         public void SetArgType(AnalogChannelSelector channelType, List<AnalogArgItem> data)
         {
@@ -289,6 +340,10 @@ namespace MOTMaster2.SequenceData
                 case AnalogChannelSelector.Function:
                     Function = data;
                     _selectedItem = Function;
+                    break;
+                case AnalogChannelSelector.XYPairs:
+                    XYPairs = data;
+                    _selectedItem = XYPairs;
                     break;
                 default:
                     break;

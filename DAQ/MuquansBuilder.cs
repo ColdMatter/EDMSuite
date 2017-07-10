@@ -10,6 +10,7 @@ namespace DAQ.Pattern
     /// <summary>
     /// A wrapper class to define a sequence of commands for the Muquans laser. This specifies the laser to control as well as the type of the command - e.g. frequency ramp, change freq/phase
     /// </summary>
+    [Serializable]
     public class MuquansBuilder
     {
         public List<MuquansCommand> commands;

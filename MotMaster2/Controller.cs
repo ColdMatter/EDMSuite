@@ -562,7 +562,14 @@ namespace MOTMaster2
         public void BuildMOTMasterSequence(List<SequenceStep> steps)
         {
             builder = new SequenceBuilder(sequenceData);
-            builder.BuildSequence();
+
+                builder.BuildSequence();
+
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show("Error in building sequence: " + e.Message + "\n"+e.StackTrace);
+            //    return;
+            //}
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
             if (sequenceData == null)
             {
@@ -570,7 +577,7 @@ namespace MOTMaster2
                 sequenceData.Steps = steps;
                 sequenceData.CreateParameterList(script.Parameters);
             }
-
+            if (config.Debug) MessageBox.Show("Successfully Built Sequence.");
         }
         #endregion
 
@@ -800,13 +807,13 @@ namespace MOTMaster2
                 sequenceData.CreateParameterList(script.Parameters);
                 sequenceData.Steps = steps;
             }
-            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented);
+            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             File.WriteAllText(path, sequenceJson);
         }
 
         public void SaveSequenceToPath(string path)
         {
-            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented);
+            string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             File.WriteAllText(path, sequenceJson);
         }
         #endregion

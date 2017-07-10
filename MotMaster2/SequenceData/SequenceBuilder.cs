@@ -4,6 +4,7 @@ using System.Linq;
 using DAQ.Environment;
 using DAQ.Analog;
 using DAQ.Pattern;
+using DataStructures;
 using dotMath;
 
 namespace MOTMaster2.SequenceData
@@ -77,6 +78,7 @@ namespace MOTMaster2.SequenceData
                 if (step.RS232Commands)
                 {
                     string laserID = "";
+                    //TODO: Fix the sequence parser to make it work with more generic serial commands
                     foreach (SerialItem serialCommand in step.GetSerialData())
                     {
                         
@@ -85,10 +87,10 @@ namespace MOTMaster2.SequenceData
                         string[] valueArr = serialCommand.Value.Split(';');
                         if (valueArr[0] == "Set") muPB.SetFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]));
                         else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]), SequenceParser.ParseOrGetParameter(valueArr[2]));
-
-                        hsPB.Pulse(digitalStartTime, serialPreTrigger+serialWait, 200, "serialPreTrigger");
-                        hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                        hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                        //TODO: Fix TimeOrder issues with the serial triggers
+                        //hsPB.Pulse(digitalStartTime, serialPreTrigger+serialWait, 200, "serialPreTrigger");
+                        //hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                        //hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                     }
                 }
 
@@ -138,7 +140,7 @@ namespace MOTMaster2.SequenceData
                             double startTime = step.GetAnalogStartTime(analogChannel);
                             int analogStartTime = ConvertToSampleTime(currentTime+startTime,analogClock);
                             double value = 0.0;
-                            if (channelType != AnalogChannelSelector.Function) value = step.GetAnalogValue(analogChannel);
+                            if (channelType != AnalogChannelSelector.Function && channelType != AnalogChannelSelector.XYPairs) value = step.GetAnalogValue(analogChannel);
                             int duration;
                             switch (channelType)
                             {
@@ -160,6 +162,31 @@ namespace MOTMaster2.SequenceData
                                     string analogFunction = step.GetFunction(analogChannel);
                                     duration = ConvertToSampleTime(step.GetAnalogDuration(analogChannel)*timeMultiplier,analogClock);
                                     CompileAnalogFunction(analogChannel, analogFunction, startTime, analogStartTime,analogClock,duration);
+                                    break;
+                                case AnalogChannelSelector.XYPairs:
+                                    List<double[]> xypairs = step.GetXYPairs(analogChannel);
+                                    string interpolationType = step.GetInterpolationType(analogChannel);
+                                    double[] xvals = xypairs[0];
+                                    double[] yvals = xypairs[1];
+                                    if (interpolationType == "Step")
+                                    {
+                                        for (int i = 0; i < xvals.Length; i++)
+                                        {
+                                            int valTime = analogStartTime + ConvertToSampleTime(xvals[i] * timeMultiplier, analogClock);
+                                            analogPB.AddAnalogValue(analogChannel, valTime, yvals[i]);
+                                        }
+                                    }
+                                    else if (interpolationType == "Piecewise Linear")
+                                    {
+                                        int nClockCycles;
+                                        for (int i = 0; i < xvals.Length-1; i++)
+                                        {
+                                            nClockCycles = ConvertToSampleTime((xvals[i + 1] - xvals[i]) * timeMultiplier, analogClock);
+                                            analogPB.AddLinearRamp(analogChannel, analogStartTime, nClockCycles, yvals[i]);
+                                            analogStartTime += nClockCycles;
+                                        }
+                                    }
+                                    else throw new Exception("Specified Interpolation type unsupported. Redefine it as an equation.");
                                     break;
                             }
 }

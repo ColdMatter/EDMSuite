@@ -77,7 +77,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
-            AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
+            AddDigitalOutputChannel("Analog Trigger", hsdioBoard, 0, 14);
+            AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 
             //map the analog output channels
