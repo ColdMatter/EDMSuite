@@ -117,6 +117,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
+    <OutputPath>bin\EDM TCL\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
@@ -189,6 +192,8 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TCLEDMFileSystem.cs" />
+    <Compile Include="TCLEDMHardware.cs" />
     <Compile Include="USBInstrument.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="AnapicoSynth.cs" />

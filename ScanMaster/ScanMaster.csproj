@@ -123,6 +123,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
+    <OutputPath>bin\EDM TCL\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShapedPulseMaker\ShapedPulseMaker.csproj">
       <Project>{f951e985-dfc3-48e7-8d3d-ed4f1cfa4d62}</Project>
