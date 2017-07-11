@@ -110,7 +110,6 @@ namespace EDMHardwareControl
         Task miniFlux3MonitorInputTask;
         Task groundedInputTask;
         Task piMonitorTask;
-        Task MenloPZTOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
@@ -197,7 +196,6 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
-            MenloPZTOutputTask = CreateAnalogOutputTask("MenloPZT");
             //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");

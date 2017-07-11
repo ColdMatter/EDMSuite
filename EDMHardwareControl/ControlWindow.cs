@@ -535,6 +535,7 @@ namespace EDMHardwareControl
         public TextBox bottomProbeMWDwellOnTextBox;
         public TextBox pumpMWDwellOffTextBox;
         public TextBox pumpMWDwellOnTextBox;
+        private Label label120;
 
  
 
@@ -1081,6 +1082,7 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.label120 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -4203,7 +4205,7 @@ namespace EDMHardwareControl
             // 
             // label93
             // 
-            this.label93.Location = new System.Drawing.Point(281, 141);
+            this.label93.Location = new System.Drawing.Point(281, 144);
             this.label93.Name = "label93";
             this.label93.Size = new System.Drawing.Size(64, 17);
             this.label93.TabIndex = 69;
@@ -4211,6 +4213,7 @@ namespace EDMHardwareControl
             // 
             // anapicofreqcontrol
             // 
+            this.anapicofreqcontrol.Controls.Add(this.label120);
             this.anapicofreqcontrol.Controls.Add(this.label118);
             this.anapicofreqcontrol.Controls.Add(this.topProbeMWf1Indicator);
             this.anapicofreqcontrol.Controls.Add(this.label119);
@@ -4393,11 +4396,11 @@ namespace EDMHardwareControl
             // 
             this.microwaveStateCheckBox.Checked = true;
             this.microwaveStateCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.microwaveStateCheckBox.Location = new System.Drawing.Point(19, 99);
+            this.microwaveStateCheckBox.Location = new System.Drawing.Point(19, 89);
             this.microwaveStateCheckBox.Name = "microwaveStateCheckBox";
             this.microwaveStateCheckBox.Size = new System.Drawing.Size(293, 24);
             this.microwaveStateCheckBox.TabIndex = 74;
-            this.microwaveStateCheckBox.Text = "True? (If checked, f0 in bottom probe, f1 in top probe)";
+            this.microwaveStateCheckBox.Text = "Switch state ";
             this.microwaveStateCheckBox.CheckedChanged += new System.EventHandler(this.microwaveStateCheckBox_CheckedChanged);
             // 
             // topProbeMWDwellOffTextBox
@@ -4450,7 +4453,7 @@ namespace EDMHardwareControl
             // 
             // label92
             // 
-            this.label92.Location = new System.Drawing.Point(206, 129);
+            this.label92.Location = new System.Drawing.Point(206, 132);
             this.label92.Name = "label92";
             this.label92.Size = new System.Drawing.Size(64, 17);
             this.label92.TabIndex = 57;
@@ -4502,7 +4505,7 @@ namespace EDMHardwareControl
             // 
             // listSweepEnabledCheckBox
             // 
-            this.listSweepEnabledCheckBox.Location = new System.Drawing.Point(19, 73);
+            this.listSweepEnabledCheckBox.Location = new System.Drawing.Point(19, 63);
             this.listSweepEnabledCheckBox.Name = "listSweepEnabledCheckBox";
             this.listSweepEnabledCheckBox.Size = new System.Drawing.Size(130, 24);
             this.listSweepEnabledCheckBox.TabIndex = 60;
@@ -4511,7 +4514,7 @@ namespace EDMHardwareControl
             // 
             // anapicoCwFreqUpdate
             // 
-            this.anapicoCwFreqUpdate.Location = new System.Drawing.Point(205, 45);
+            this.anapicoCwFreqUpdate.Location = new System.Drawing.Point(205, 40);
             this.anapicoCwFreqUpdate.Name = "anapicoCwFreqUpdate";
             this.anapicoCwFreqUpdate.Size = new System.Drawing.Size(75, 23);
             this.anapicoCwFreqUpdate.TabIndex = 59;
@@ -4529,7 +4532,7 @@ namespace EDMHardwareControl
             // 
             // anapicoCwFreqBox
             // 
-            this.anapicoCwFreqBox.Location = new System.Drawing.Point(121, 48);
+            this.anapicoCwFreqBox.Location = new System.Drawing.Point(121, 41);
             this.anapicoCwFreqBox.Name = "anapicoCwFreqBox";
             this.anapicoCwFreqBox.Size = new System.Drawing.Size(78, 20);
             this.anapicoCwFreqBox.TabIndex = 55;
@@ -4538,7 +4541,7 @@ namespace EDMHardwareControl
             // 
             // cwfreqlabel
             // 
-            this.cwfreqlabel.Location = new System.Drawing.Point(16, 51);
+            this.cwfreqlabel.Location = new System.Drawing.Point(16, 43);
             this.cwfreqlabel.Name = "cwfreqlabel";
             this.cwfreqlabel.Size = new System.Drawing.Size(107, 23);
             this.cwfreqlabel.TabIndex = 54;
@@ -6256,6 +6259,14 @@ namespace EDMHardwareControl
             this.radioButton6.TabIndex = 32;
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
+            // 
+            // label120
+            // 
+            this.label120.Location = new System.Drawing.Point(31, 110);
+            this.label120.Name = "label120";
+            this.label120.Size = new System.Drawing.Size(320, 23);
+            this.label120.TabIndex = 73;
+            this.label120.Text = " (1 is checked, correponding to f0 in bottom probe, f1 in top probe)";
             // 
             // ControlWindow
             // 
