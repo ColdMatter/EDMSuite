@@ -107,6 +107,13 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
+                case "GREMLIN":
+                    Hardware = new TCLEDMHardware();
+                    FileSystem = new TCLEDMFileSystem();
+                    Debug = false;
+                    //ExperimentType = "edm";
+                    break;
+
                 case "PH-CJH211":
                     Hardware = new EDMTestCrateHardware();
                     FileSystem = new PixieFileSystem();
