@@ -32,6 +32,7 @@ namespace ScanMaster.Acquire.Plugins
         {
             // connect the TCL controller over remoting network connection
             string tcpChannel = ((TCLConfig)Environs.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
+
             tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://localhost:" + tcpChannel + "/controller.rem"));
             
             scanParameter = 0;
