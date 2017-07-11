@@ -152,7 +152,6 @@
       <DependentUpon>SequenceDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="SequenceStepViewModel.cs" />
-    <Compile Include="Test.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

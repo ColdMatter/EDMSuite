@@ -60,7 +60,7 @@ namespace MOTMaster2.SequenceData
                 else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
 
-                //TODO: Include a method for delaying a digital edge
+                //TODO Include a method for delaying a digital edge
                 int digitalStartTime = ConvertToSampleTime(currentTime,digitalClock);
 
                 
@@ -78,7 +78,7 @@ namespace MOTMaster2.SequenceData
                 if (step.RS232Commands)
                 {
                     string laserID = "";
-                    //TODO: Fix the sequence parser to make it work with more generic serial commands
+                    //TODO Fix the sequence parser to make it work with more generic serial commands
                     foreach (SerialItem serialCommand in step.GetSerialData())
                     {
                         
@@ -87,10 +87,10 @@ namespace MOTMaster2.SequenceData
                         string[] valueArr = serialCommand.Value.Split(';');
                         if (valueArr[0] == "Set") muPB.SetFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]));
                         else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]), SequenceParser.ParseOrGetParameter(valueArr[2]));
-                        //TODO: Fix TimeOrder issues with the serial triggers
-                        //hsPB.Pulse(digitalStartTime, serialPreTrigger+serialWait, 200, "serialPreTrigger");
-                        //hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                        //hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                        //TODO Fix TimeOrder issues with the serial triggers
+                        hsPB.Pulse(digitalStartTime, -(serialPreTrigger+serialWait), 200, "serialPreTrigger");
+                        hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                        hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                     }
                 }
 
