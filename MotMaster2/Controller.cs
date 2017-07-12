@@ -55,7 +55,7 @@ namespace MOTMaster2
 
         private Thread runThread;
 
-        public enum RunningState { stopped, running};
+        public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
 
         public List<string> analogChannels;
@@ -98,29 +98,29 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
-                if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
-                else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
-                apg = new DAQMxAnalogPatternGenerator();
-                PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
-                aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-                analogChannels =
-                digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
+            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+            else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
+            apg = new DAQMxAnalogPatternGenerator();
+            PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
+            aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
+            analogChannels =
+            digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
-                if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
-                    "tcp://localhost:1172/controller.rem");
+            if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+                "tcp://localhost:1172/controller.rem");
 
-                if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
-                    "tcp://localhost:1172/controller.rem");
+            if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
+                "tcp://localhost:1172/controller.rem");
 
-                if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                    "tcp://localhost:1172/controller.rem");
+            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+                "tcp://localhost:1172/controller.rem");
 
-                if (config.UseMuquans) muquans = new MuquansController();
+            if (config.UseMuquans) muquans = new MuquansController();
 
-                ioHelper = new MMDataIOHelper(motMasterDataPath,
-                        (string)Environs.Hardware.GetInfo("Element"));
+            ioHelper = new MMDataIOHelper(motMasterDataPath,
+                    (string)Environs.Hardware.GetInfo("Element"));
 
-                ScriptLookupAndDisplay();
+            ScriptLookupAndDisplay();
         }
 
         #endregion
@@ -226,7 +226,7 @@ namespace MOTMaster2
         /// 
 
         /// </summary>
-      
+
         private bool saveEnable = true;
 
 
@@ -276,7 +276,7 @@ namespace MOTMaster2
             status = RunningState.running;
             runThread.Start();
             Console.WriteLine("Thread Starting");
-            
+
         }
         public void WaitForRunToFinish()
         {
@@ -299,7 +299,7 @@ namespace MOTMaster2
 
         public void Run(Dictionary<String, Object> dict)
         {
-            Run(dict, 1,0);
+            Run(dict, 1, 0);
         }
 
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
@@ -318,7 +318,7 @@ namespace MOTMaster2
 
                     if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-                    
+
                     buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
                     if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
@@ -327,55 +327,55 @@ namespace MOTMaster2
 
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
-                        if(!config.Debug) runPattern(sequence);
-                        if (i==0)
+                        if (!config.Debug) runPattern(sequence);
+                        if (i == 0)
                         {
                             if (Environs.FileSystem.Paths.Contains("DataPath"))
                             {
                                 Console.WriteLine("yes");
                             }
-                            string filepath =  (string)(Environs.FileSystem.Paths["DataPath"]);
+                            string filepath = (string)(Environs.FileSystem.Paths["DataPath"]);
                             ioHelper.SaveRawSequence(filepath, i, sequence);
                         }
                     }
                     if (!config.Debug) clearDigitalPattern(sequence);
 
                     watch.Stop();
-                //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
+                    //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
 
                         if (config.CameraUsed)
                         {
 
-                        waitUntilCameraAquisitionIsDone();
+                            waitUntilCameraAquisitionIsDone();
 
-                        try
-                        {
-                            checkDataArrived();
-                        }
-                        catch (DataNotArrivedFromHardwareControllerException)
-                        {
-                            return;
-                        }
+                            try
+                            {
+                                checkDataArrived();
+                            }
+                            catch (DataNotArrivedFromHardwareControllerException)
+                            {
+                                return;
+                            }
 
-                            Dictionary<String, Object> report = new Dictionary<string,object>();
+                            Dictionary<String, Object> report = new Dictionary<string, object>();
                             if (config.ReporterUsed)
                             {
                                 report = GetExperimentReport();
                             }
 
-                            save(script, scriptPath, imageData, report,batchNumber);
+                            save(script, scriptPath, imageData, report, batchNumber);
                         }
                         else
                         {
-                            Dictionary<String, Object> report = new Dictionary<string,object>();
+                            Dictionary<String, Object> report = new Dictionary<string, object>();
                             if (config.ReporterUsed)
                             {
                                 report = GetExperimentReport();
                             }
 
-                            save(script, scriptPath, report,batchNumber);
+                            save(script, scriptPath, report, batchNumber);
 
                         }
 
@@ -383,7 +383,7 @@ namespace MOTMaster2
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-        
+
 
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -397,10 +397,10 @@ namespace MOTMaster2
             }
 
             status = RunningState.stopped;
-            
+
 
         }
-        
+
         #endregion
 
         #region private stuff
@@ -416,29 +416,29 @@ namespace MOTMaster2
         }
 
         //TODO Change the way everything is saved
-        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report, double[,] aiData,int batchNumber)
-        {
-            ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,  
-                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
-        }
-        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report, double[,] aiData,int batchNumber)
+        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report, double[,] aiData, int batchNumber)
         {
             ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,
                 script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
         }
-        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report,int batchNumber)
+        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report, double[,] aiData, int batchNumber)
+        {
+            ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,
+                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
+        }
+        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report, int batchNumber)
         {
             ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,
                 script.Parameters, report, config.ExternalFilePattern);
         }
-        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report,int batchNumber)
+        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report, int batchNumber)
         {
             ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,
-                script.Parameters, report, cameraAttributesPath, imageData ,config.ExternalFilePattern);
+                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
-            
+
             initializeHardware(sequence);
             try
             {
@@ -457,15 +457,15 @@ namespace MOTMaster2
             CompilerResults results = compileFromFile(pathToPattern);
             if (results != null)
             {
-                
-                    script = loadScriptFromDLL(results);
-                    if (dict != null)
-                    {
-                        script.EditDictionary(dict);
 
-                    }
-                    return script;
-               
+                script = loadScriptFromDLL(results);
+                if (dict != null)
+                {
+                    script.EditDictionary(dict);
+
+                }
+                return script;
+
             }
             return null;
         }
@@ -476,7 +476,7 @@ namespace MOTMaster2
             sequence.AnalogPattern.BuildPattern();
             if (config.UseMuquans) muquans.BuildCommands(sequence.MuquansPattern.commands);
         }
-       
+
         #endregion
 
         #region Compiler & Loading DLLs
@@ -498,7 +498,7 @@ namespace MOTMaster2
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
             options.ReferencedAssemblies.Add("System.Core.dll");
-   
+
 
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
@@ -511,7 +511,7 @@ namespace MOTMaster2
             try
             {
                 results = codeProvider.CompileAssemblyFromFile(options, scriptPath);
-                if (results.Errors.Count >0)
+                if (results.Errors.Count > 0)
                 {
                     MessageBox.Show("Error in MOTMaster Script Compilation");
                 }
@@ -541,17 +541,17 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message+e.InnerException.Message,"Error in loading script DLL");
+                MessageBox.Show(e.Message + e.InnerException.Message, "Error in loading script DLL");
                 return null;
             }
-           
+
             return (MOTMasterScript)loadedInstance;
         }
 
         private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
-            MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard,config.UseMuquans);
-            
+            MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard, config.UseMuquans);
+
             return sequence;
         }
 
@@ -591,7 +591,7 @@ namespace MOTMaster2
             LLEThread.Start();
 
         }
-        
+
         bool imagesRecieved = false;
         /*private byte[,] imageData;
         private void grabImage()
@@ -755,16 +755,18 @@ namespace MOTMaster2
             LoadEnvironment(fileJson, hardwareJson, configJson);
         }
 
-        public void LoadEnvironment(string fileJson, string hardwareJson,string configJson)
+        public void LoadEnvironment(string fileJson, string hardwareJson, string configJson)
         {
             DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
             DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
             config = JsonConvert.DeserializeObject<MMConfig>(configJson);
+            // Just for testing purposes!!!
+            config.UseMuquans = false;
         }
         public void SaveEnvironment()
         {
-            string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem,Formatting.Indented);
-            string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware,Formatting.Indented);
+            string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem, Formatting.Indented);
+            string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             string configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText("filesystem.json", fileJson);
             File.WriteAllText("hardware.json", hardwareJson);
@@ -781,7 +783,7 @@ namespace MOTMaster2
             string sequenceJson = File.ReadAllText(path);
             sequenceData = JsonConvert.DeserializeObject<Sequence>(sequenceJson);
             //script.Parameters = sequenceData.CreateParameterDictionary();
-           
+
         }
         public void SaveSequenceAsDefault(List<SequenceStep> steps)
         {
@@ -790,6 +792,7 @@ namespace MOTMaster2
 
         public void SaveSequenceToPath(string path, List<SequenceStep> steps)
         {
+            if (script == null) return;
             if (sequenceData == null)
             {
                 sequenceData = new Sequence();
@@ -807,6 +810,10 @@ namespace MOTMaster2
         }
         #endregion
 
-        
+
+        internal void LoadCiceroSequenceFromPath(string filename)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
