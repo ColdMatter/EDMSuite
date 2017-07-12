@@ -21,7 +21,7 @@ namespace DAQ.HAL
             config.HSDIOCard = true;
             config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
-            config.UseMuquans = true;
+            config.UseMuquans = false;
             Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
