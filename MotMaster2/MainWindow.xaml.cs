@@ -358,8 +358,8 @@ namespace MOTMaster2
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.FileName = ""; // Default file name
-            dlg.DefaultExt = ".json"; // Default file extension
-            dlg.Filter = "Sequence (.json)|*.json,*.txt"; // Filter files by extension
+            dlg.DefaultExt = ".sm2"; // Default file extension
+            dlg.Filter = "Sequence (.sm2)|*.sm2,*.txt"; // Filter files by extension
 
             // Show open file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -404,7 +404,7 @@ namespace MOTMaster2
         }
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Latest MOTMaster Version");
+            MessageBox.Show("MOTMaster v1.2\n by Jimmy Stammer and Teodor Krastev\n for Imperial College, London, UK");
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)

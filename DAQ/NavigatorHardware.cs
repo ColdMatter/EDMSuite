@@ -42,8 +42,6 @@ namespace DAQ.HAL
             aiBoards.Add(multiBoard);
             doBoards.Add(hsdioBoard);
 
-           
-
             //A list of trigger lines for each card
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
             Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
@@ -120,8 +118,6 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
             AddCounterChannel("Counter", multiBoard + "/ctr0");
-
-
             
         }
     }
