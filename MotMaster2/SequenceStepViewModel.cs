@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
@@ -23,9 +23,7 @@ using System.Diagnostics;
 namespace MOTMaster2
 {
     class SequenceStepViewModel : INotifyPropertyChanged
-
     {
-
         public ObservableCollection<SequenceStep> SequenceSteps { get; set; }
 
         private SequenceStep _selectedStep;
@@ -156,6 +154,5 @@ namespace MOTMaster2
             else throw new Exception("Incorrect argument passed to UpdateChannelValues");
         }
     }
-
 
 }

@@ -10,8 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MOTMaster2.SequenceData;
-
 
 namespace MOTMaster2
 {
@@ -57,18 +55,21 @@ namespace MOTMaster2
                 return pa;               
             }
         }
-        //TODO fun one cycle with defined parameters
-        private bool SingleShot() // true if OK
+        
+        private bool SingleShot(Dictionary<string,object> paramDict) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-            controller.RunStart();
- 
-                
+            controller.RunStart(paramDict);
+         
             return true;
+        }
+        private bool SingleShot() // true if OK
+        {
+            return SingleShot(null);
         }
 
         private static string
@@ -121,8 +122,8 @@ namespace MOTMaster2
         {
             if (btnRun.Content.Equals("Run"))
             {
-                Interferometer.Patterns p = new Interferometer.Patterns();
-                p.GetHSDIOPattern();
+                //Interferometer.Patterns p = new Interferometer.Patterns();
+                //p.GetHSDIOPattern();
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
@@ -168,6 +169,8 @@ namespace MOTMaster2
                 string parameter = cbParamsScan.Text;
                 Parameter param = Controller.sequenceData.Parameters.Where(t=>t.Name==parameter).First();
                 object defaultValue = param.Value;
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict[parameter] = defaultValue;
                 int scanLength;
                 object[] scanArray;
                 if (defaultValue is int)
@@ -211,8 +214,8 @@ namespace MOTMaster2
                  }
                 foreach (object scanParam in scanArray)
                 {
-                    param.Value = scanParam;
-                    SingleShot();
+                    paramDict[parameter] = scanParam;
+                    SingleShot(paramDict);
                     tbCurValue.Content = scanParam.ToString();
                     DoEvents();
                     if (!ScanFlag) break;
@@ -525,7 +528,7 @@ namespace MOTMaster2
                 string value = item.Value;
                 try
                 {
-                    if (sqnParser.CheckMuquans(value)) continue;
+                    if (SequenceParser.CheckMuquans(value)) continue;
                     else MessageBox.Show(string.Format("Incorrect format for {0} serial command", item.Name));
                 }
                 catch (Exception e)

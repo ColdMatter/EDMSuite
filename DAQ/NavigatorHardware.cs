@@ -22,6 +22,7 @@ namespace DAQ.HAL
             config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
+            config.UseMMScripts = false;
             Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
@@ -77,7 +78,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
-            AddDigitalOutputChannel("Analog Trigger", hsdioBoard, 0, 14);
+            AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
             AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 

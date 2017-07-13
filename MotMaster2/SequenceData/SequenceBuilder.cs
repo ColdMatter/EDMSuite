@@ -18,6 +18,7 @@ namespace MOTMaster2.SequenceData
         private HSDIOPatternBuilder hsPB;
         private MuquansBuilder muPB;
         private double currentTime;
+        
 
         public SequenceBuilder(List<SequenceStep> steps, Dictionary<string,object> prms)
         {
@@ -43,7 +44,10 @@ namespace MOTMaster2.SequenceData
         //Builds a MOTMasterSequence using a list of SequenceSteps
         public void BuildSequence()
         {
+            //List of digital channels which are reserved for trigger pulses. These are excluded when adding the edges for digital channels
+            List<string> digitalChannelExcludeList = new List<string>(){"serialPreTrigger","slaveDDSTrig","aomDDSTrig"};
             CreatePatternBuilders();
+            
             foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
             double timeMultiplier = 1.0;
             int analogClock = (int)Parameters["AnalogClockFrequency"];
@@ -69,30 +73,44 @@ namespace MOTMaster2.SequenceData
                   AddAnalogChannelStep(timeMultiplier, analogClock, step, analogChannel);
 
                 }
-                //Adds the edges for each digital channel
-                foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
-                {
-                    AddDigitalChannelStep(step, digitalStartTime, digitalChannel);
-                }
-                //Adds the Muquans string commands as well as the required serial pulses
+                //Adds the Muquans string commands as well as the required serial pulses before digital pulses to prevent time order exceptions
                 if (step.RS232Commands)
                 {
                     string laserID = "";
                     //TODO Fix the sequence parser to make it work with more generic serial commands
                     foreach (SerialItem serialCommand in step.GetSerialData())
                     {
-                        
+
                         if (serialCommand.Name == "Slave") laserID = "slave0";
                         else if (serialCommand.Name == "AOM") laserID = "mphi";
-                        string[] valueArr = serialCommand.Value.Split(';');
+                        string[] valueArr = serialCommand.Value.Split(' ');
                         if (valueArr[0] == "Set") muPB.SetFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]));
                         else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]), SequenceParser.ParseOrGetParameter(valueArr[2]));
-                        //TODO Fix TimeOrder issues with the serial triggers
-                        hsPB.Pulse(digitalStartTime, -(serialPreTrigger+serialWait), 200, "serialPreTrigger");
-                        hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                        hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                        else
+                        {
+                            for (int i = 0; i < valueArr.Length; i++)
+                            {
+                                if (Parameters.ContainsKey(valueArr[i])) valueArr[i] = Parameters[valueArr[i]].ToString();
+                            }
+                            string command = string.Join(" ", valueArr);
+                            if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
+                            else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
+                            else { Console.WriteLine("Unknown serial instrument. Ignoring command for now. This will be updated soon"); }
+                        }
                     }
+                    //Serial Commands share 1 trigger
+                    Console.WriteLine(string.Format("Adding Serial for step {0} relative time {1} ms", step.Name, step.Duration));
+                    hsPB.Pulse(digitalStartTime, -(serialPreTrigger + serialWait), 200, "serialPreTrigger");
+                    hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                    hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                 }
+                //Adds the edges for each digital channel
+                foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
+                {
+                    if (digitalChannelExcludeList.Contains(digitalChannel)) continue;
+                    AddDigitalChannelStep(step, digitalStartTime, digitalChannel);
+                }
+                
 
                 
                 //Adds the time of the sequence step to the total running time

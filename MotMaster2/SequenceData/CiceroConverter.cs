@@ -201,10 +201,13 @@ namespace MOTMaster2.SequenceData
 
             foreach (KeyValuePair<int,DigitalDataPoint> ddata in ciceroStep.DigitalData)
             {
-                LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
-                DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
-                if (ddata.Value.ManualValue) digitalSelector.Value = true;
-                mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
+                if (ciceroSettings.logicalChannelManager.Digitals.ContainsKey(ddata.Key))
+                {
+                    LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
+                    DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
+                    if (ddata.Value.ManualValue) digitalSelector.Value = true;
+                    mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
+                }
             }
 
         }

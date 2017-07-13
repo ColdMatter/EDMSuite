@@ -7,6 +7,7 @@ using DAQ.HAL;
 
 namespace DAQ.Pattern
 {
+    //TODO Change this to a more general serial command builder
     /// <summary>
     /// A wrapper class to define a sequence of commands for the Muquans laser. This specifies the laser to control as well as the type of the command - e.g. frequency ramp, change freq/phase
     /// </summary>
@@ -49,5 +50,10 @@ namespace DAQ.Pattern
 
         }
 
+        public void AddCommand(string id, string message)
+        {
+            if (id == "slave0" || id == "mphi") { commands.Add(new MuquansCommand(id, message)); AddToCount(id); }
+            else throw new ArgumentException();
+        }
     }
 }

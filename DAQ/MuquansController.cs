@@ -191,6 +191,13 @@ namespace DAQ.HAL
         {
             foreach (MuquansCommand command in commands)
             {
+                if (command.rawMessage != null)
+                {
+                    if (command.laser == "mphi") aomCommands.Add(command.rawMessage);
+                    else if (command.laser == "slave0") slaveCommands.Add(command.rawMessage);
+                    else throw new ArgumentException();
+                    continue;
+                }
                 if (command.instruction == Instruction.set)
                 {
                     if (command.laser == "mphi")
@@ -248,6 +255,7 @@ namespace DAQ.HAL
             public double frequency;
             public double sweeptime;
             public Instruction instruction;
+            public string rawMessage;
      
             public MuquansCommand(string laser,double frequency, Instruction type, double time)
                 {
@@ -255,6 +263,7 @@ namespace DAQ.HAL
                     this.frequency = frequency;
                     this.sweeptime = time;
                     this.instruction = type;
+                    this.rawMessage = null;
                    
                 }
            public MuquansCommand(string laser,double frequency, Instruction type)
@@ -263,7 +272,16 @@ namespace DAQ.HAL
                 this.frequency = frequency;
                 this.sweeptime = 0.0;
                 this.instruction = type;
+                this.rawMessage = null;
             }
+         public MuquansCommand(string laser,string rawMessage)
+           {
+               this.laser = laser;
+               this.frequency = 0.0;
+               this.sweeptime = 0.0;
+               this.instruction = Instruction.set;
+               this.rawMessage = rawMessage;
+           }
         }
    
 }

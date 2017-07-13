@@ -16,7 +16,6 @@ using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
 
-
 namespace MOTMaster2
 {
     /// <summary>
@@ -127,10 +126,8 @@ namespace MOTMaster2
             }
             else
             { return; }
-
         }
 
     }
-
 }
 

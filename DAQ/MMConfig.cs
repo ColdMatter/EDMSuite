@@ -25,6 +25,7 @@ namespace DAQ
             hsdioCard = false;
             useAI = false;
             useMuquans = false;
+            useMMScripts = true;
         }
 
         private bool debug;
@@ -92,11 +93,21 @@ namespace DAQ
             set { useAI = value; }
         }
 
+        //Used to flag the use of triggered serial commands
         private bool useMuquans;
         public bool UseMuquans
         {
             get { return useMuquans; }
             set { useMuquans = value; }
         }
+
+        //Used to flag the use of motmaster scripts or the UI to generate a sequence
+        private bool useMMScripts;
+        public bool UseMMScripts
+        {
+            get { return useMMScripts; }
+            set { useMMScripts = value; }
+        }
+
     }
 }

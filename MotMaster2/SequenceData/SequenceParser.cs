@@ -36,13 +36,14 @@ namespace MOTMaster2.SequenceData
             else return (double)Controller.sequenceData.Parameters.Where(t => t.Name == value).Select(t => t.Value).First();
         }
         
-        internal bool CheckMuquans(string command)
+        //TODO tidy up this to check based on the raw string
+        public static bool CheckMuquans(string command)
         {
             if (command == "") return true;
             string[] values;
-            if (!command.Contains(',')) values = command.Split(';');
-            else values = command.Split(',');
-            if (values[0] == "Set")
+            if (!command.Contains(',')) values = command.Split(' ');
+            else values = command.Split(' ');
+            if (values[0] == "set")
             {
                 if (values.Length != 2) throw new Exception("Incorrect number of arguments for Set");
                 else
