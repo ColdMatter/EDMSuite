@@ -324,8 +324,7 @@ namespace MOTMaster2
             }
             else
             {
-                if (sequence == null || dict != null) sequence = getSequenceFromSequenceData(dict);
-                
+                sequence = getSequenceFromSequenceData(dict);
             }
 
             if (sequence != null)
@@ -360,7 +359,7 @@ namespace MOTMaster2
                             ioHelper.SaveRawSequence(filepath, i, sequence);
                         }
                     }
-                    if (!config.Debug) clearDigitalPattern(sequence);
+                    if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
                     watch.Stop();
                     //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
@@ -466,9 +465,10 @@ namespace MOTMaster2
             {
                 run(sequence);
             }
-            catch
+            catch (Exception e)
             {
                 MessageBox.Show("Error when running sequence. Continuing and releasing hardware...");
+                Console.WriteLine(e.Message + "\n" + e.StackTrace);
             }
             releaseHardware();
         }

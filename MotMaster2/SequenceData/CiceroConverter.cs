@@ -170,6 +170,7 @@ namespace MOTMaster2.SequenceData
                LogicalChannel analog = ciceroSettings.logicalChannelManager.Analogs[id];
                if (analog.HardwareChannel.physicalChannelName() == "Unassigned") continue;
                AnalogGroupChannelData chan = ciceroChannelData[id];
+               if (!chan.ChannelEnabled) continue;
                if (chan.waveform.YValues.Count == 1)
                {
                    List<AnalogArgItem> value = new List<AnalogArgItem>{new AnalogArgItem("Start Time","0"),new AnalogArgItem("Value",chan.waveform.YValues[0].ParameterValue.ToString())};
