@@ -372,23 +372,7 @@ namespace MOTMaster2
             }
 
         }
-        private void LoadCicero_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = ""; // Default file name
-            dlg.DefaultExt = ".seq"; // Default file extension
-            dlg.Filter = "Cicero Sequence (.seq,.json)|*.json,*.seq"; // Filter files by extension
-
-            // Show open file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process open file dialog box results
-            if (result == true)
-            {
-                string filename = dlg.FileName;
-                controller.LoadCiceroSequenceFromPath(filename);
-            }
-        }
+  
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
         {
             

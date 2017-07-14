@@ -815,7 +815,6 @@ namespace MOTMaster2
         #endregion
 
 
-<<<<<<< HEAD
 
         internal void LoadCiceroSequenceFromPath(string filename)
         {
@@ -837,11 +836,6 @@ namespace MOTMaster2
             ciceroConverter.InitMMSequence(sequenceData);
 
             if (ciceroConverter.CheckValidHardwareChannels() && ciceroConverter.CanConvertFrom(ciceroSequence.GetType())) sequenceData = (Sequence)ciceroConverter.ConvertFrom(ciceroSequence);
-=======
-        internal void LoadCiceroSequenceFromPath(string filename)
-        {
-            throw new NotImplementedException();
->>>>>>> f09a7325d9840c8f3a605e37143f2f8a47e16479
         }
     }
 }
