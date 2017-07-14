@@ -132,10 +132,6 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
-      <Project>{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}</Project>
-      <Name>MOTMaster</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

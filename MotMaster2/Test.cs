@@ -8,5 +8,6 @@ namespace MOTMaster2
 {
     class Test
     {
+        // some text
     }
 }

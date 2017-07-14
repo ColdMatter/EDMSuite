@@ -26,12 +26,12 @@ namespace MOTMaster2
         {
             InitializeComponent();
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem);
-            string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware);
+            hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             LoadJsonToTreeView(hardwareTreeView, hardwareJson);
             LoadJsonToTreeView(filesystemTreeView, fileJson);
-
         }
 
+        string hardwareJson = "";
         void LoadJsonToTreeView(TreeView treeView, string json)
         {
             var token = JToken.Parse(json);
@@ -49,9 +49,57 @@ namespace MOTMaster2
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            if (btnModify.Content.Equals("Verify"))
+                if (!CheckHardwareJson()) return;
 
+            Close();
         }
-       
+
+        private void tabCtrl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((tabCtrl.SelectedIndex == 0) || (tabCtrl.SelectedIndex == 2)) btnModify.Visibility = System.Windows.Visibility.Visible;
+            else btnModify.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private bool CheckHardwareJson()
+        {
+            rtbModify.SelectAll();
+            try
+            {//json consistency
+                JContainer.Parse(rtbModify.Selection.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + " (try again)");
+                return false;
+            }
+            return true;
+        }
+
+        private void btnModify_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnModify.Content.Equals("Modify"))
+            {
+                btnModify.Content = "Verify";
+                tiHardware.Visibility = System.Windows.Visibility.Hidden;
+                tiFileSystem.Visibility = System.Windows.Visibility.Hidden;
+                tiModify.Visibility = System.Windows.Visibility.Visible;
+
+                tabCtrl.SelectedIndex = 2;
+                rtbModify.Document.Blocks.Clear();
+                rtbModify.AppendText(hardwareJson);
+            }
+            else
+            {
+                if (!CheckHardwareJson()) return;
+                btnModify.Content = "Modify";
+                tabCtrl.SelectedIndex = 0;
+                tiModify.Visibility = System.Windows.Visibility.Hidden;
+                tiHardware.Visibility = System.Windows.Visibility.Visible;
+                tiFileSystem.Visibility = System.Windows.Visibility.Visible;
+            }
+        }
+
     }
     public sealed class MethodToValueConverter : IValueConverter
     {

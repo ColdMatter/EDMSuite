@@ -95,12 +95,30 @@ namespace MOTMaster2
                     //Only raises an event if the analog channel is being changed to something other than continue
                     SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                     model.SelectedAnalogChannel = new KeyValuePair<string, AnalogChannelSelector>(channelName, c);
-                    RoutedEventArgs analogArgs = new RoutedEventArgs(SequenceDataGrid.ChangedAnalogChannelCellEvent);
-                    RaiseEvent(analogArgs);
+                    OnChangedAnalogChannelCell(sender,e);
                 }
             }
         }
-        public static readonly RoutedEvent ChangedAnalogChannelCellEvent = EventManager.RegisterRoutedEvent("ChangedAnalogChannelCellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ComboBox));
+
+        public delegate void ChangedAnalogChannelCellHandler(object sender, SelectionChangedEventArgs e);
+        public event ChangedAnalogChannelCellHandler ChangedAnalogChannelCell;
+
+        protected void OnChangedAnalogChannelCell(object sender, SelectionChangedEventArgs e)
+        {
+            if (ChangedAnalogChannelCell != null) ChangedAnalogChannelCell(sender, e);
+        }
+
+        public delegate void ChangedRS232CellHandler(object sender, DataGridBeginningEditEventArgs e);
+        public event ChangedRS232CellHandler ChangedRS232Cell;
+
+        protected void OnChangedRS232Cell(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (ChangedRS232Cell != null) ChangedRS232Cell(sender, e);
+        }
+
+
+
+ /*       public static readonly RoutedEvent ChangedAnalogChannelCellEvent = EventManager.RegisterRoutedEvent("ChangedAnalogChannelCellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ComboBox));
 
         public static readonly RoutedEvent ChangedRS232CellEvent = EventManager.RegisterRoutedEvent("ChangedRS232CellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CheckBox));
         
@@ -113,7 +131,7 @@ namespace MOTMaster2
         {
             add { AddHandler(ChangedRS232CellEvent, value); }
             remove { RemoveHandler(ChangedRS232CellEvent, value); }
-        }
+        }*/
 
         private void sequenceDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
@@ -122,8 +140,7 @@ namespace MOTMaster2
             {
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.RS232Enabled = !model.RS232Enabled;
-                RoutedEventArgs rs232Args = new RoutedEventArgs(SequenceDataGrid.ChangedRS232CellEvent);
-                RaiseEvent(rs232Args);
+                OnChangedRS232Cell(sender, e);
             }
             else
             { return; }
