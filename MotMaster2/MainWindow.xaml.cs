@@ -28,8 +28,8 @@ namespace MOTMaster2
             InitializeComponent();
             InitVisuals();
             //ucScan1.Start += new scanClass.StartHandler(DoStart);
-            //SequenceData.ChangedAnalogChannelCellEvent += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
-            //SequenceData.ChangedRS232CellEvent += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
+            SequenceData.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
+            SequenceData.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
 
             //this.AddHandler(ChangedAnalogChannelCellEvent, new RoutedEventHandler());
             //this.AddHandler(SequenceDataGrid.ChangedRS232CellEvent,new RoutedEventHandler(this.sequenceData_RS232Changed));
