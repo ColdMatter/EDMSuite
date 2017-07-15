@@ -36,11 +36,11 @@ namespace MOTMaster2.SequenceData
         {
             ciceroSettings = settings;
         }
-
         
         public void InitMMSequence(Sequence initSequence)
         {
-            mmSequence = initSequence;
+            if (initSequence != null) mmSequence = initSequence;
+            else mmSequence = new Sequence();
         }
         public bool CheckValidHardwareChannels()
         {
@@ -82,7 +82,6 @@ namespace MOTMaster2.SequenceData
         public override object ConvertFrom(ITypeDescriptorContext context,
            CultureInfo culture, object value)
         {
-
             mmSequence.Steps = new List<SequenceStep>();
            
             if (value is DataStructures.SequenceData)
@@ -101,7 +100,6 @@ namespace MOTMaster2.SequenceData
                     }
                     mmSequence.Parameters.Add(param);
                 }
-
                 foreach (TimeStep step in ciceroSequence.TimeSteps)
                 {
                     SequenceStep mmStep = new SequenceStep();
@@ -111,7 +109,6 @@ namespace MOTMaster2.SequenceData
                     ConvertAnalogChannelData(step, mmStep);
                     ConvertDigitalChannelData(step, mmStep);
                     ConvertSerialChannelData(step, mmStep);
-
                     mmSequence.Steps.Add(mmStep);
                 }
                 return mmSequence;
@@ -120,14 +117,12 @@ namespace MOTMaster2.SequenceData
             {
                 return base.ConvertFrom(context, culture, value);
             }
-
         }
 
         private static void InitialiseSequenceStep(TimeStep step, SequenceStep mmStep)
         {
             mmStep.Name = step.StepName;
             mmStep.Description = step.Description;
-
             mmStep.Duration = step.StepDuration.parameter.ManualValue;
             mmStep.Enabled = step.StepEnabled;
             string timeUnits = step.StepDuration.ParameterString.Split(' ')[1];
@@ -141,9 +136,7 @@ namespace MOTMaster2.SequenceData
             else throw new Exception("Incorrect Cicero TimeStep units");
 
             
-
             mmStep.RS232Commands = (step.rs232Group != null);
-
         }
 
         /// <summary>
@@ -153,69 +146,47 @@ namespace MOTMaster2.SequenceData
         /// <param name="mmStep"></param>
         private static void ConvertAnalogChannelData(TimeStep ciceroStep, SequenceStep mmStep)
         {
-
             if (ciceroStep.AnalogGroup == null)
             {
                 return;
             }
-
             Dictionary<int, AnalogGroupChannelData> ciceroChannelData = ciceroStep.AnalogGroup.ChannelDatas;
-            if (ciceroStep.StepName == "Off")
-            {
-                Console.WriteLine("Break");
-            }
+            
             foreach (int id in ciceroChannelData.Keys)
             {
               
                LogicalChannel analog = ciceroSettings.logicalChannelManager.Analogs[id];
                if (analog.HardwareChannel.physicalChannelName() == "Unassigned") continue;
                AnalogGroupChannelData chan = ciceroChannelData[id];
-               if (!chan.ChannelEnabled) continue;
                if (chan.waveform.YValues.Count == 1)
                {
-                   List<AnalogArgItem> value = new List<AnalogArgItem>{new AnalogArgItem("Start Time","0"),new AnalogArgItem("Value",chan.waveform.YValues[0].ParameterValue.ToString())};
+                   List<AnalogArgItem> value = new List<AnalogArgItem>{new AnalogArgItem("Start Time",""),new AnalogArgItem("Value",chan.waveform.YValues[0].ParameterValue.ToString())};
                    mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.SingleValue,value );
                }
                else if (chan.waveform.EquationString != "")
                {
-                   List<AnalogArgItem> function = new List<AnalogArgItem> { new AnalogArgItem("Start Time", "0"), new AnalogArgItem("Duration", chan.waveform.WaveformDuration.ParameterString.Split(' ')[0]), new AnalogArgItem("Function", chan.waveform.EquationString) };
+                   List<AnalogArgItem> function = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", chan.waveform.EquationString) };
                    mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.Function, function);
                }
-               else if (chan.waveform.YValues.Count > 1)
-               {
-                   string xstr = string.Join(",", chan.waveform.XValues.Select(t => t.ParameterValue.ToString()));
-                   string ystr = string.Join(",", chan.waveform.YValues.Select(t => t.ParameterValue.ToString()));
-                   List<AnalogArgItem> xypairs = new List<AnalogArgItem> { new AnalogArgItem("X Values", xstr), new AnalogArgItem("Y Values", ystr), new AnalogArgItem("Interpolation Type",chan.waveform.interpolationType.ToString())};
-                   mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.XYPairs, xypairs);
-                   
-               }
-               else
-               {
+               else if (chan.waveform.interpolationType == Waveform.InterpolationType.Linear)
                    continue;
-               }
             
             }
         }
 
         private static void ConvertDigitalChannelData(TimeStep ciceroStep, SequenceStep mmStep)
         {
-
             foreach (KeyValuePair<int,DigitalDataPoint> ddata in ciceroStep.DigitalData)
             {
-                if (ciceroSettings.logicalChannelManager.Digitals.ContainsKey(ddata.Key))
-                {
-                    LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
-                    DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
-                    if (ddata.Value.ManualValue) digitalSelector.Value = true;
-                    mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
-                }
+                LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
+                DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
+                if (ddata.Value.ManualValue) digitalSelector.Value = true;
+                mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
             }
-
         }
 
         private static void ConvertSerialChannelData(TimeStep ciceroStep, SequenceStep mmStep)
         {
-
             if (ciceroStep.rs232Group != null)
             {
                 List<SerialItem> serialList = new List<SerialItem>();

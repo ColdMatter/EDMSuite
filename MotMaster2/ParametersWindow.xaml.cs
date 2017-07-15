@@ -25,6 +25,7 @@ namespace MOTMaster2
         private Parameter _selectedParameter;
         public ParametersWindow()
         {
+            //TODO Check that types of newly created parameters are correctly defined. They might just be interpreted as strings!
             InitializeComponent();
             _sequenceParameters = new ObservableCollection<Parameter>();
             Controller.sequenceData.Parameters.ForEach((item) => { _sequenceParameters.Add((Parameter)item.Copy()); });

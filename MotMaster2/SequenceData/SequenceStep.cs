@@ -123,12 +123,10 @@ namespace MOTMaster2.SequenceData
         {
             AnalogValueArgs analogArgs = analogData[name];
             //Adds or removes the channel from a list if it is being modified in this step
-            if (type != AnalogChannelSelector.Continue) usedAnalogChannels.Add(name);
+            if (type != AnalogChannelSelector.Continue && !usedAnalogChannels.Contains(name)) usedAnalogChannels.Add(name);
             else if (usedAnalogChannels.Contains(name)) usedAnalogChannels.Remove(name);
 
-            //Sets the argument type for use elsewhere
-            analogArgs.SetArgType(type,analogArgs.GetArgItems());
-            return analogArgs.GetArgItems();
+            return analogArgs.GetArgType(type);
         }
 
         //Modifies the data of a selected analog channel
@@ -321,27 +319,33 @@ namespace MOTMaster2.SequenceData
         //Sets the argument type of the selected analog channel, as well as the data for that type. This should prevent issues with different types being assigned by value or reference 
         public void SetArgType(AnalogChannelSelector channelType, List<AnalogArgItem> data)
         {
+
             switch (channelType)
             {
                 case AnalogChannelSelector.Continue:
                     break;
                 case AnalogChannelSelector.SingleValue:
+                    if (data == null) data = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Value", "") };
                     Value = data;
                     _selectedItem = Value;
                     break;
                 case AnalogChannelSelector.LinearRamp:
+                    if (data == null) data = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Final Value", "") };
                     LinearRamp = data;
                     _selectedItem = LinearRamp;
                     break;
                 case AnalogChannelSelector.Pulse:
+                    if (data == null) data = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Value", ""), new AnalogArgItem("Final Value", "") };
                     Pulse = data;
                     _selectedItem = Pulse;
                     break;
                 case AnalogChannelSelector.Function:
+                    if (data == null) data = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", "") };
                     Function = data;
                     _selectedItem = Function;
                     break;
                 case AnalogChannelSelector.XYPairs:
+                    if (data == null) data = new List<AnalogArgItem> { new AnalogArgItem("X Values", ""), new AnalogArgItem("Y Values", ""), new AnalogArgItem("Interpolation Type", "") };
                     XYPairs = data;
                     _selectedItem = XYPairs;
                     break;
@@ -350,7 +354,38 @@ namespace MOTMaster2.SequenceData
             }
             return;
         }
-
+        public List<AnalogArgItem> GetArgType(AnalogChannelSelector channelType)
+        {
+            List<AnalogArgItem> data = null;
+            switch (channelType)
+            {
+                case AnalogChannelSelector.Continue:
+                    break;
+                case AnalogChannelSelector.SingleValue:
+                     data = Value;
+                    _selectedItem = Value;
+                    break;
+                case AnalogChannelSelector.LinearRamp:
+                    data=LinearRamp;
+                    _selectedItem = LinearRamp;
+                    break;
+                case AnalogChannelSelector.Pulse:
+                     data=Pulse;
+                    _selectedItem = Pulse;
+                    break;
+                case AnalogChannelSelector.Function:
+                    data=Function;
+                    _selectedItem = Function;
+                    break;
+                case AnalogChannelSelector.XYPairs:
+                    data=XYPairs;
+                    _selectedItem = XYPairs;
+                    break;
+                default:
+                    break;
+            }
+            return data;
+        }
         public void SetArgumentData(object data)
         {
             if (data.GetType() != typeof(List<AnalogArgItem>)) throw new Exception("Incorrect Analog Argument Data Type");

@@ -229,6 +229,11 @@ namespace DAQ.Environment
                     Hardware = new NavigatorHardware();
                     FileSystem = new NavigatorFileSystem();
                     break;
+                case "DESKTOP-U334RMA":
+                    Debug = true;
+                    Hardware = new NavigatorHardware();
+                    FileSystem = new NavigatorFileSystem();
+                    break;
                 default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

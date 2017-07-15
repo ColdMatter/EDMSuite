@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Collections.ObjectModel;
 
 namespace MOTMaster2
 {
@@ -26,8 +27,12 @@ namespace MOTMaster2
             controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
-            this.AddHandler(SequenceDataGrid.ChangedAnalogChannelCellEvent, new RoutedEventHandler(this.sequenceData_AnalogValuesChanged));
-            this.AddHandler(SequenceDataGrid.ChangedRS232CellEvent,new RoutedEventHandler(this.sequenceData_RS232Changed));
+            //ucScan1.Start += new scanClass.StartHandler(DoStart);
+            sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
+            sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
+
+            //this.AddHandler(ChangedAnalogChannelCellEvent, new RoutedEventHandler());
+            //this.AddHandler(SequenceDataGrid.ChangedRS232CellEvent,new RoutedEventHandler(this.sequenceData_RS232Changed));
         }
 
         public static void DoEvents()
@@ -38,21 +43,19 @@ namespace MOTMaster2
 
         public void InitVisuals()
         {
-            
-            btnRefresh_Click(null,null);
+
+            btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
-            
-            
         }
-        
+
         private string[] ParamsArray
         {
             get
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
-                     pa= Controller.sequenceData.Parameters.Where(t=>!t.IsHidden).Select(t=>t.Name).ToArray(); 
-                return pa;               
+                    pa = Controller.sequenceData.Parameters.Where(t => !t.IsHidden).Select(t => t.Name).ToArray();
+                return pa;
             }
         }
         
@@ -63,7 +66,14 @@ namespace MOTMaster2
             {
                 controller.WaitForRunToFinish();
             }
-            controller.RunStart(paramDict);
+            try
+            {
+                controller.RunStart(paramDict);
+            }
+            catch (Exception e)
+            {
+                Log("Failed to Run sequence: " + e.Message + "\n" + e.StackTrace);
+            }
          
             return true;
         }
@@ -75,7 +85,7 @@ namespace MOTMaster2
         private static string
             scriptCsPath = (string)Environs.FileSystem.Paths["scriptListPath"];
         private static string
-            scriptPyPath = (string)Environs.FileSystem.Paths["scriptListPath"]; 
+            scriptPyPath = (string)Environs.FileSystem.Paths["scriptListPath"];
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
@@ -100,6 +110,7 @@ namespace MOTMaster2
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             cbPatternScript.Items.Clear();
+            cbPatternScript.Items.Add("- - -");
 
             string[] css = Directory.GetFiles(scriptCsPath, "*.cs");
             foreach (string cs in css)
@@ -115,15 +126,14 @@ namespace MOTMaster2
 
             cbPatternScript.SelectedIndex = 0;
         }
-        // RUNNING THINGS
+
+        #region Running Scans
 
         private bool ScanFlag = false;
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
             if (btnRun.Content.Equals("Run"))
             {
-                //Interferometer.Patterns p = new Interferometer.Patterns();
-                //p.GetHSDIOPattern();
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
@@ -165,9 +175,9 @@ namespace MOTMaster2
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
-                
+
                 string parameter = cbParamsScan.Text;
-                Parameter param = Controller.sequenceData.Parameters.Where(t=>t.Name==parameter).First();
+                Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
                 object defaultValue = param.Value;
                 Dictionary<string, object> paramDict = new Dictionary<string, object>();
                 paramDict[parameter] = defaultValue;
@@ -178,26 +188,26 @@ namespace MOTMaster2
                     int fromScanI = int.Parse(tbFromScan.Text);
                     int toScanI = int.Parse(tbToScan.Text);
                     int byScanI = int.Parse(tbByScan.Text);
-                    scanLength = (toScanI - fromScanI) /byScanI+1;
+                    scanLength = (toScanI - fromScanI) / byScanI + 1;
                     if (scanLength < 0)
-                        {
-                            MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
-                            return;
-                        }
-                    scanArray = new object[scanLength+1];
-                    for (int i = 0; i<scanLength;i++ )
+                    {
+                        MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                        return;
+                    }
+                    scanArray = new object[scanLength + 1];
+                    for (int i = 0; i < scanLength; i++)
                     {
                         scanArray[i] = fromScanI;
-                        fromScanI+=byScanI;
-                    }   
-                
+                        fromScanI += byScanI;
+                    }
+
                 }
                 else
                 {
                     double fromScanD = double.Parse(tbFromScan.Text);
                     double toScanD = double.Parse(tbToScan.Text);
                     double byScanD = double.Parse(tbByScan.Text);
-                    scanLength = (int)((toScanD - fromScanD) / byScanD)+1;
+                    scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
                     if (scanLength < 0)
                     {
                         MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
@@ -205,13 +215,13 @@ namespace MOTMaster2
                     }
                     scanArray = new object[scanLength];
 
-                    for (int i = 0; i<scanLength;i++ )
+                    for (int i = 0; i < scanLength; i++)
                     {
                         scanArray[i] = fromScanD;
-                        fromScanD+=byScanD;
+                        fromScanD += byScanD;
                     }
-                
-                 }
+
+                }
                 foreach (object scanParam in scanArray)
                 {
                     paramDict[parameter] = scanParam;
@@ -235,20 +245,20 @@ namespace MOTMaster2
                 ScanFlag = false;
             }
         }
-
+        #endregion
         private void cbPatternScript_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //Load the new script
-            if (cbPatternScript.Text != "")
+            if ((!String.IsNullOrEmpty(cbPatternScript.Text)) && (!cbPatternScript.Text.Equals("- - -")))
             {
                 controller.script = controller.prepareScript((string)cbPatternScript.SelectedItem, null);
                 controller.SetScriptPath((string)cbPatternScript.SelectedItem);
             }
             //Change parameters
-            tcMain.SelectedIndex = 0;           
+            tcMain.SelectedIndex = 0;
         }
 
-        private bool paramCheck=false;
+        private bool paramCheck = false;
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(TabControl))
@@ -256,12 +266,12 @@ namespace MOTMaster2
                 if (paramCheck)
                     return;
                 paramCheck = true;
-                if (tcMain.SelectedIndex==1)
+                if (tcMain.SelectedIndex == 1)
                 {
                     cbParamsScan.Items.Clear();
                     foreach (string param in ParamsArray)
                         cbParamsScan.Items.Add(param);
-                   cbParamsScan.SelectedIndex = 0;
+                    cbParamsScan.SelectedIndex = 0;
                 }
                 if (tcMain.SelectedIndex == 2)
                 {
@@ -269,8 +279,8 @@ namespace MOTMaster2
                     foreach (string param in ParamsArray)
                         cbParamsManual.Items.Add(param);
                     cbParamsManual.Text = ParamsArray[0];
-                   cbParamsManual.SelectedIndex = 0;
-               
+                    cbParamsManual.SelectedIndex = 0;
+
                 }
                 paramCheck = false;
             }
@@ -294,10 +304,10 @@ namespace MOTMaster2
                 {
                     string filename = dlg.FileName;
                     string[] text = File.ReadAllLines(filename);
-                    
-                    Dictionary<String,Object> LoadedParameters = new Dictionary<string,object>();
+
+                    Dictionary<String, Object> LoadedParameters = new Dictionary<string, object>();
                     string json = File.ReadAllText(filename);
-                    LoadedParameters = (Dictionary<String,Object>)JsonConvert.DeserializeObject(json,typeof(Dictionary<String,Object>));
+                    LoadedParameters = (Dictionary<String, Object>)JsonConvert.DeserializeObject(json, typeof(Dictionary<String, Object>));
                     if (controller.script != null)
                         foreach (string key in LoadedParameters.Keys)
                             controller.script.Parameters[key] = LoadedParameters[key];
@@ -324,7 +334,7 @@ namespace MOTMaster2
                 if (result == true)
                 {
                     string filename = dlg.FileName;
-                    string json = JsonConvert.SerializeObject(controller.script.Parameters,Formatting.Indented);
+                    string json = JsonConvert.SerializeObject(controller.script.Parameters, Formatting.Indented);
                     File.WriteAllText(filename, json);
                 }
             }
@@ -338,8 +348,8 @@ namespace MOTMaster2
             { // Configure open file dialog box
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = ""; // Default file name
-                dlg.DefaultExt = ".json"; // Default file extension
-                dlg.Filter = "Sequence (.json)|*.json,*.txt"; // Filter files by extension
+                dlg.DefaultExt = ".sm2"; // Default file extension
+                dlg.Filter = "Sequence (.sm2)|*.sm2,*.txt"; // Filter files by extension
                 //dlg.InitialDirectory = Controller.scriptListPath;
 
                 // Show open file dialog box
@@ -358,22 +368,23 @@ namespace MOTMaster2
         }
         private void LoadSequence_Click(object sender, RoutedEventArgs e)
         {
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.FileName = ""; // Default file name
-                dlg.DefaultExt = ".json"; // Default file extension
-                dlg.Filter = "Sequence (.json)|*.json,*.txt"; // Filter files by extension
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = ""; // Default file name
+            dlg.DefaultExt = ".sm2"; // Default file extension
+            dlg.Filter = "Sequence (.sm2)|*.sm2,*.txt"; // Filter files by extension
 
-                // Show open file dialog box
-                Nullable<bool> result = dlg.ShowDialog();
+            // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
 
-                // Process open file dialog box results
-                if (result == true)
-                {
-                    string filename = dlg.FileName;
-                    controller.LoadSequenceFromPath(filename);
-                }
-         
+            // Process open file dialog box results
+            if (result == true)
+            {
+                string filename = dlg.FileName;
+                controller.LoadSequenceFromPath(filename);
+            }
+
         }
+  
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
         {
             
@@ -408,11 +419,19 @@ namespace MOTMaster2
                     controller.LoadCiceroSequenceFromPath(filename);
 
                     controller.ConvertCiceroSequence();
+                    Log("Loaded Cicero Sequence from " + filename);
+                    UpdateSequenceControl();
                     
                 }
             }
 
 
+        }
+
+        private void UpdateSequenceControl()
+        {
+            //Simplest way is to recreate the ViewModel. This should be called when a new sequence is loaded.
+            sequenceControl.UpdateSequenceData();
         }
         private void SaveEnvironment_Click(object sender, RoutedEventArgs e)
         {
@@ -429,7 +448,7 @@ namespace MOTMaster2
         }
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Latest MOTMaster Version");
+            MessageBox.Show("MOTMaster v1.2\n by Jimmy Stammers and Teodor Krastev\n for Imperial College, London, UK");
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
@@ -454,17 +473,17 @@ namespace MOTMaster2
 
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                tbCurValue.Content = Controller.sequenceData.Parameters.Where(t=>t.Name==cbParamsScan.SelectedItem.ToString()).Select(t=>t.Value).First().ToString();
+            if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
+                tbCurValue.Content = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsScan.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
         }
 
         //Creates a table of values for the selected analog parameters
-        private void CreateAnalogPropertyTable(SequenceStep selectedStep, string channelName,AnalogChannelSelector analogType )
+        private void CreateAnalogPropertyTable(SequenceStep selectedStep, string channelName, AnalogChannelSelector analogType)
         {
-           // SequenceData.sequenceDataGrid.IsReadOnly = true;
+            // SequenceData.sequenceDataGrid.IsReadOnly = true;
             setPropertyBtn.Visibility = System.Windows.Visibility.Visible;
             tcLog.SelectedIndex = 1;
-            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible;  }
+            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
             propLabel.Content = string.Format("{0}: {1} with {2}", selectedStep.Name, channelName, analogType.ToString());
             List<AnalogArgItem> data = selectedStep.GetAnalogData(channelName, analogType);
             propertyGrid.DataContext = data;
@@ -485,16 +504,16 @@ namespace MOTMaster2
             propertyGrid.ToolTip = tool;
         }
 
-        private void sequenceData_AnalogValuesChanged(object sender, RoutedEventArgs e)
+        private void sequenceData_AnalogValuesChanged(object sender, SelectionChangedEventArgs e)
         {
-            SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+            SequenceStepViewModel model = (SequenceStepViewModel)sequenceControl.sequenceDataGrid.DataContext;
             KeyValuePair<string, AnalogChannelSelector> analogChannel = model.SelectedAnalogChannel;
             SequenceStep step = model.SelectedSequenceStep;
             CreateAnalogPropertyTable(step, analogChannel.Key, analogChannel.Value);
         }
-        private void sequenceData_RS232Changed(object sender, RoutedEventArgs e)
+        private void sequenceData_RS232Changed(object sender, DataGridBeginningEditEventArgs e)
         {
-            SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+            SequenceStepViewModel model = (SequenceStepViewModel)sequenceControl.sequenceDataGrid.DataContext;
             SequenceStep step = model.SelectedSequenceStep;
             CreateSerialPropertyTable(step);
         }
@@ -506,17 +525,17 @@ namespace MOTMaster2
         private void setProperty_Click(object sender, RoutedEventArgs e)
         {
             SequenceParser sqnParser = new SequenceParser();
-            bool verified=false;
+            bool verified = false;
             //Checks the validity of all the values, but does not assign them until the sequence is built
             //TODO: Add a type check to make this work for AnalogItems or SerialItems
-            if (propertyGrid.DataContext.GetType() == typeof(List<AnalogArgItem>)) verified=ParseAnalogItems(sqnParser);
-            else if (propertyGrid.DataContext.GetType() == typeof(List<SerialItem>)) verified=ParseSerialItems(sqnParser);
+            if (propertyGrid.DataContext.GetType() == typeof(List<AnalogArgItem>)) verified = ParseAnalogItems(sqnParser);
+            else if (propertyGrid.DataContext.GetType() == typeof(List<SerialItem>)) verified = ParseSerialItems(sqnParser);
             if (verified)
             {
-                SequenceStepViewModel model = (SequenceStepViewModel)SequenceData.sequenceDataGrid.DataContext;
+                SequenceStepViewModel model = (SequenceStepViewModel)sequenceControl.sequenceDataGrid.DataContext;
                 object newArgs = propertyGrid.ItemsSource;
                 model.UpdateChannelValues(newArgs);
-                SequenceData.sequenceDataGrid.IsReadOnly = false;
+                sequenceControl.sequenceDataGrid.IsReadOnly = false;
             }
 
         }
@@ -536,7 +555,7 @@ namespace MOTMaster2
                     MessageBox.Show("Couldn't parse serial commands. " + e.Message);
                     return false;
                 }
-                
+
             }
             return true;
         }
@@ -546,7 +565,7 @@ namespace MOTMaster2
             {
                 double analogRawValue;
                 if (Double.TryParse(analogItem.Value, out analogRawValue)) continue;
-                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.Select(t=>t.Name).Contains(analogItem.Value)) continue;
+                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.Select(t => t.Name).Contains(analogItem.Value)) continue;
                 //Tries to parse the function string
                 if (analogItem.Name == "Function")
                 {
@@ -561,16 +580,24 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-           // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
-            List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-            controller.BuildMOTMasterSequence(steps);
+            // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
+            List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+            try
+            {
+                controller.BuildMOTMasterSequence(steps);
+                Log("Built sequence!");
+            }
+            catch (Exception c)
+            {
+                Log("Failed to build sequence: " + c.Message);
+            }
 
         }
 
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //Save the currently open sequence to a default location
-            List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+            List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
             controller.SaveSequenceAsDefault(steps);
 
         }
@@ -580,6 +607,5 @@ namespace MOTMaster2
             ParametersWindow paramWindow = new ParametersWindow();
             paramWindow.Show();
         }
-
     }
 }

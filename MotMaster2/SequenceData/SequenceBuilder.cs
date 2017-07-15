@@ -5,6 +5,7 @@ using DAQ.Environment;
 using DAQ.Analog;
 using DAQ.Pattern;
 using DataStructures;
+using DAQ;
 using dotMath;
 
 namespace MOTMaster2.SequenceData
@@ -15,7 +16,7 @@ namespace MOTMaster2.SequenceData
         private MOTMasterSequence sequence;
         private List<SequenceStep> sequenceSteps;
         private AnalogPatternBuilder analogPB;
-        private HSDIOPatternBuilder hsPB;
+        private PatternBuilder32 digitalPB;
         private MuquansBuilder muPB;
         private double currentTime;
         
@@ -25,6 +26,7 @@ namespace MOTMaster2.SequenceData
             sequence = new MOTMasterSequence();
             sequenceSteps = steps;
             Parameters = prms;
+           
         }
 
         public SequenceBuilder(Sequence sequenceData)
@@ -32,14 +34,18 @@ namespace MOTMaster2.SequenceData
             sequence = new MOTMasterSequence();
             sequenceSteps = sequenceData.Steps;
             Parameters = sequenceData.CreateParameterDictionary();
+            foreach (string entry in new List<string>() { "AnalogLength", "HSClockFrequency", "AnalogClockFrequency" })
+            { if (!Parameters.ContainsKey(entry)) throw new Exception(string.Format("Sequence does not contain the required parameter {0}",entry));
+            }
         }
 
         public void CreatePatternBuilders()
         {
-           
+            
             analogPB = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
-            hsPB = new HSDIOPatternBuilder();  
-            muPB = new MuquansBuilder();
+            if (Controller.config.HSDIOCard) digitalPB = new HSDIOPatternBuilder();
+            else digitalPB = new PatternBuilder32();
+            if (Controller.config.UseMuquans) muPB = new MuquansBuilder();
         }
         //Builds a MOTMasterSequence using a list of SequenceSteps
         public void BuildSequence()
@@ -51,7 +57,10 @@ namespace MOTMaster2.SequenceData
             foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
             double timeMultiplier = 1.0;
             int analogClock = (int)Parameters["AnalogClockFrequency"];
-            int digitalClock = (int)Parameters["HSClockFrequency"];
+            int digitalClock;
+            if (Controller.config.HSDIOCard) digitalClock = (int)Parameters["HSClockFrequency"];
+            else digitalClock = (int)Parameters["PGClockFrequency"];
+
             //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
             int serialPreTrigger = ConvertToSampleTime(4, digitalClock);
             int serialWait = ConvertToSampleTime(2, digitalClock);
@@ -99,10 +108,10 @@ namespace MOTMaster2.SequenceData
                         }
                     }
                     //Serial Commands share 1 trigger
-                    Console.WriteLine(string.Format("Adding Serial for step {0} relative time {1} ms", step.Name, step.Duration));
-                    hsPB.Pulse(digitalStartTime, -(serialPreTrigger + serialWait), 200, "serialPreTrigger");
-                    hsPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                    hsPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                    
+                    digitalPB.Pulse(digitalStartTime, -(serialPreTrigger + serialWait), 200, "serialPreTrigger");
+                    digitalPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                    digitalPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                 }
                 //Adds the edges for each digital channel
                 foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
@@ -127,7 +136,7 @@ namespace MOTMaster2.SequenceData
 
         public override HSDIOPatternBuilder GetHSDIOPattern()
         {
-            return hsPB;
+            return (HSDIOPatternBuilder)digitalPB;
         }
 
         public override MuquansBuilder GetMuquansCommands()
@@ -137,7 +146,7 @@ namespace MOTMaster2.SequenceData
 
         public override PatternBuilder32 GetDigitalPattern()
         {
-            throw new NotImplementedException();
+            return digitalPB;
         }
         public override MMAIConfiguration GetAIConfiguration()
         {
@@ -147,7 +156,7 @@ namespace MOTMaster2.SequenceData
 
         private void AddDigitalChannelStep(SequenceStep step, int digitalStartTime, string digitalChannel)
         {
-                            hsPB.AddEdge(digitalChannel, digitalStartTime, step.GetDigitalData(digitalChannel));
+                            digitalPB.AddEdge(digitalChannel, digitalStartTime, step.GetDigitalData(digitalChannel));
         }
 
         private void AddAnalogChannelStep(double timeMultiplier, int analogClock, SequenceStep step, string analogChannel)

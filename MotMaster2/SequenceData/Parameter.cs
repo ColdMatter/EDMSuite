@@ -14,10 +14,12 @@ namespace MOTMaster2.SequenceData
         public string Description { get; set; }
         public bool IsHidden { get; set; }
 
+        
         public Parameter()
         {
+            //TODO Check this doesn't cause problems if the paramter needs to be a double
             Name = "";
-            Value = "";
+            Value = 0;
             Description = "";
             IsHidden = false;
         }

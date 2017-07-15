@@ -5,7 +5,7 @@
         xmlns:json ="clr-namespace:Newtonsoft.Json;assembly=Newtonsoft.Json"
         xmlns:jlinq ="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
         xmlns:w="clr-namespace:MOTMaster2"
-        Title="Options" Height="600" Width="480">
+        Title="Options" Height="650.714" Width="542.857" ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <w:MethodToValueConverter x:Key="MethodToValueConverter"/>
         <HierarchicalDataTemplate DataType="{x:Type jlinq:JArray}" ItemsSource="{Binding Converter={StaticResource MethodToValueConverter}, ConverterParameter='Children'}">
@@ -28,10 +28,14 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <TabControl HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="480">
-            <TabItem Header="Hardware">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250*"/>
+            <RowDefinition Height="46"/>
+        </Grid.RowDefinitions>
+        <TabControl x:Name="tabCtrl" Margin="0,0,0.143,45.286" Grid.Row="0" Grid.RowSpan="2" SelectionChanged="tabCtrl_SelectionChanged">
+            <TabItem x:Name="tiHardware" Header="Hardware" Width="90" Height="24">
                 <Grid Background="#FFE5E5E5">
-                    <TreeView Name="hardwareTreeView" HorizontalAlignment="Left" Height="480" VerticalAlignment="Top" Width="474">
+                    <TreeView Name="hardwareTreeView" Margin="0,0,-0.143,-0.429">
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsExpanded" Value="True" />
@@ -40,9 +44,9 @@
                     </TreeView>
                 </Grid>
             </TabItem>
-            <TabItem Header="File System">
+            <TabItem x:Name="tiFileSystem" Header="File System" Height="24" Margin="-0.286,-1,0,1" HorizontalAlignment="Left" Width="71">
                 <Grid Background="#FFE5E5E5">
-                    <TreeView Name="filesystemTreeView" HorizontalAlignment="Left" Height="480" VerticalAlignment="Top" Width="474">
+                    <TreeView Name="filesystemTreeView" Margin="0,0,-0.143,-0.429">
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsExpanded" Value="True" />
@@ -50,11 +54,25 @@
                         </TreeView.ItemContainerStyle>
                     </TreeView>
                 </Grid>
-                
+
+            </TabItem>
+            <TabItem x:Name="tiModify" Header="Modify" Width="70" Visibility="Hidden">
+                <Grid Margin="0,0,0.857,0">
+                    <RichTextBox x:Name="rtbModify" Margin="0,0,0,0" Block.LineHeight="6" VerticalScrollBarVisibility="Auto">
+                        <FlowDocument>
+                            <Paragraph>
+                                <Run Text=""/>
+                                <InlineUIContainer>
+                                </InlineUIContainer>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+                </Grid>
             </TabItem>
         </TabControl>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="300,520,0,0" VerticalAlignment="Top" Width="75" Click="OKButton_Click"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="100,520,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="OK" HorizontalAlignment="Right" Margin="0,10.429,17.143,10.286" VerticalAlignment="Center" Width="90" Click="OKButton_Click" Grid.Row="1" Height="25" FontWeight="Bold"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,10.429,127.143,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25"/>
+        <Button x:Name="btnModify" Content="Modify" HorizontalAlignment="Left" Margin="10,10.429,0,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25" HorizontalContentAlignment="Center" Click="btnModify_Click"/>
 
     </Grid>
 </Window>

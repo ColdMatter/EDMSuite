@@ -15,7 +15,7 @@ using DAQ.HAL;
 
 using NationalInstruments.DAQmx;
 using NationalInstruments;
-using MOTMaster;
+//using MOTMaster;
 
 namespace NavigatorHardwareControl
 {
@@ -102,7 +102,7 @@ namespace NavigatorHardwareControl
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                    MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
+                    //MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
                     //iohelper.SaveAnalogInputData(savePath + filename, voltages);
   
             }
@@ -245,7 +245,7 @@ namespace NavigatorHardwareControl
                         {
                             Directory.CreateDirectory(savePath);
                         }
-                        MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
+                       // MOTMaster.MMDataIOHelper iohelper = new MOTMaster.MMDataIOHelper(savePath, "Rb");
                        // iohelper.SaveAnalogInputData(savePath + filename, voltages, true);
 
                     }

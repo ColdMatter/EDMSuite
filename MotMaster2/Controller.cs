@@ -49,11 +49,11 @@ namespace MOTMaster2
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
 
-        private static string defaultScriptPath = scriptListPath + "\\defaultScript.json";
+        private static string defaultScriptPath = scriptListPath + "\\defaultScript.sm2";
 
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
 
-        private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
+        public static MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
 
@@ -317,7 +317,7 @@ namespace MOTMaster2
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
         {
             Stopwatch watch = new Stopwatch();
-            if (config.UseMMScripts)
+            if (config.UseMMScripts || sequenceData == null)
             {
                 script = prepareScript(scriptPath, dict);
                 sequence = getSequenceFromScript(script);
@@ -794,6 +794,8 @@ namespace MOTMaster2
             DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
             DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
             config = JsonConvert.DeserializeObject<MMConfig>(configJson);
+            // Just for testing purposes!!!
+            config.UseMuquans = false;
         }
         public void SaveEnvironment()
         {
@@ -824,6 +826,7 @@ namespace MOTMaster2
 
         public void SaveSequenceToPath(string path, List<SequenceStep> steps)
         {
+           
             if (sequenceData == null)
             {
                 sequenceData = new Sequence();
@@ -841,7 +844,7 @@ namespace MOTMaster2
         }
         #endregion
 
-
+        #region Cicero Sequence Loading
 
         internal void LoadCiceroSequenceFromPath(string filename)
         {
@@ -864,5 +867,7 @@ namespace MOTMaster2
 
             if (ciceroConverter.CheckValidHardwareChannels() && ciceroConverter.CanConvertFrom(ciceroSequence.GetType())) sequenceData = (Sequence)ciceroConverter.ConvertFrom(ciceroSequence);
         }
+
+        #endregion
     }
 }
