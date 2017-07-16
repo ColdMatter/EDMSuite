@@ -40,8 +40,8 @@ namespace MOTMaster2.SequenceData
 
             AnalogValueTypes = new ObservableDictionary<string,AnalogChannelSelector>();
             DigitalValueTypes = new ObservableDictionary<string,DigitalChannelSelector>();
-            //serialCommands.Add(new SerialItem("Slave", ""));
-            //serialCommands.Add(new SerialItem("AOM", ""));
+            List<string> analogNames = Environs.Hardware.AnalogOutputChannels.Keys.Cast<string>().ToList();
+            //analogNames.OrderBy(t=>(DAQ.HAL.AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[t])
             foreach (string analog in Environs.Hardware.AnalogOutputChannels.Keys.Cast<string>().ToList())
             {
                 AnalogValueTypes[analog] = new AnalogChannelSelector();
@@ -54,12 +54,12 @@ namespace MOTMaster2.SequenceData
             }
         }
 
-        
+
         [JsonConstructor] // This forces JsonSerializer to call it instead of the default.
         [Obsolete("Call the default constructor. This is only for JSONserializer", true)]
         protected SequenceStep(bool Do_Not_Call)
         {
-          
+           
         }
         //If a property is changed, this will modify the SequenceData object that exists in the Controller
         public static void SequenceStep_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -111,7 +111,7 @@ namespace MOTMaster2.SequenceData
             {
                 foreach (string name in DigitalValueTypes.Keys)
                 {
-                    if (DigitalValueTypes[name] != previousStep.DigitalValueTypes[name]) {
+                    if (DigitalValueTypes[name].Value != previousStep.DigitalValueTypes[name].Value) {
                         usedDigitalChannels.Add(name);
                         digitalData[name] = !previousStep.GetDigitalData(name);
                     }
@@ -144,7 +144,7 @@ namespace MOTMaster2.SequenceData
         }
         public bool GetDigitalData(string name)
         {
-            return digitalData[name];
+            return DigitalValueTypes[name].Value;
         }
 
         # region AnalogValue Access Methods - Could be refactored
@@ -246,19 +246,24 @@ namespace MOTMaster2.SequenceData
 
         public AnalogValueArgs()
         {
-            Value = new List<AnalogArgItem>{new AnalogArgItem("Start Time",""),new AnalogArgItem("Value","")};
+            CreateArgs();
+        }
+
+        public void CreateArgs()
+        {
+            Value = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Value", "") };
             LinearRamp = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Final Value", "") };
-            Pulse = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Value", ""), new AnalogArgItem("Final Value","") };
-            Function = new List<AnalogArgItem> {new AnalogArgItem("Start Time",""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", "") };
+            Pulse = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Value", ""), new AnalogArgItem("Final Value", "") };
+            Function = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", "") };
             XYPairs = new List<AnalogArgItem> { new AnalogArgItem("X Values", ""), new AnalogArgItem("Y Values", ""), new AnalogArgItem("Interpolation Type", "") };
         }
 
-        //TODO: Make this assign _selectedItem to the correct property. The others should take on their default values
+        //TODO make this assign _selecteditem to the correct property. the others should take on their default values
         [JsonConstructor]
-        [Obsolete("Call the default constructor. This is only for JSONserializer", true)]
-        public AnalogValueArgs(bool Do_Not_Call)
+        [Obsolete("call the default constructor. this is only for jsonserializer", true)]
+        public AnalogValueArgs(bool do_not_call)
         {
-          
+
         }
 
         public double GetStartTime()
@@ -356,40 +361,48 @@ namespace MOTMaster2.SequenceData
         }
         public List<AnalogArgItem> GetArgType(AnalogChannelSelector channelType)
         {
-            List<AnalogArgItem> data = null;
+            List<AnalogArgItem> data;
+            //When deserialised, only _selectedItem is not null. This ensures the correct argument type is returned
+            if (Value == null && LinearRamp == null && Pulse == null && Function == null && XYPairs == null)
+            {
+                CreateArgs();
+                SetArgType(channelType);
+
+            }
+
             switch (channelType)
             {
                 case AnalogChannelSelector.Continue:
                     break;
                 case AnalogChannelSelector.SingleValue:
-                     data = Value;
+                    data = Value;
                     _selectedItem = Value;
                     break;
                 case AnalogChannelSelector.LinearRamp:
-                    data=LinearRamp;
+                    data = LinearRamp;
                     _selectedItem = LinearRamp;
                     break;
                 case AnalogChannelSelector.Pulse:
-                     data=Pulse;
+                    data = Pulse;
                     _selectedItem = Pulse;
                     break;
                 case AnalogChannelSelector.Function:
-                    data=Function;
+                    data = Function;
                     _selectedItem = Function;
                     break;
                 case AnalogChannelSelector.XYPairs:
-                    data=XYPairs;
+                    data = XYPairs;
                     _selectedItem = XYPairs;
                     break;
                 default:
                     break;
             }
-            return data;
+            return _selectedItem;
         }
-        public void SetArgumentData(object data)
+        //Use this when deserliasing so the correct argument type gets assigned the _selectedItem argument
+        public void SetArgType(AnalogChannelSelector type)
         {
-            if (data.GetType() != typeof(List<AnalogArgItem>)) throw new Exception("Incorrect Analog Argument Data Type");
-            _selectedItem = (List<AnalogArgItem>)data;
+            SetArgType(type, _selectedItem);
         }
         public List<AnalogArgItem> GetArgItems()
         {
@@ -409,6 +422,13 @@ namespace MOTMaster2.SequenceData
         {
             Name = name;
             Value = value;
+        }
+
+        public bool CompatibleArgs(object obj)
+        {
+            var item = obj as AnalogArgItem;
+            if (this.Name == item.Name) return true;
+            else return false;
         }
     }
     [Serializable]

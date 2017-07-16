@@ -8,6 +8,7 @@ using System.Globalization;
 using DataStructures;
 using DAQ.HAL;
 using DAQ.Environment;
+using dotMath;
 
 namespace MOTMaster2.SequenceData
 {
@@ -158,18 +159,39 @@ namespace MOTMaster2.SequenceData
                LogicalChannel analog = ciceroSettings.logicalChannelManager.Analogs[id];
                if (analog.HardwareChannel.physicalChannelName() == "Unassigned") continue;
                AnalogGroupChannelData chan = ciceroChannelData[id];
+               if (!chan.ChannelEnabled) continue;
+
                if (chan.waveform.YValues.Count == 1)
                {
-                   List<AnalogArgItem> value = new List<AnalogArgItem>{new AnalogArgItem("Start Time",""),new AnalogArgItem("Value",chan.waveform.YValues[0].ParameterValue.ToString())};
-                   mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.SingleValue,value );
+                   if (chan.waveform.YValues[0].myParameter.variable != null)
+                   {
+                       List<AnalogArgItem> function = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", chan.waveform.YValues[0].myParameter.variable.VariableName) };
+                       mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.Function, function);
+                   }
+                   else
+                   {
+                       List<AnalogArgItem> value = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Value", chan.waveform.YValues[0].ParameterValue.ToString()) };
+                       mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.SingleValue, value);
+                   }
                }
                else if (chan.waveform.EquationString != "")
                {
                    List<AnalogArgItem> function = new List<AnalogArgItem> { new AnalogArgItem("Start Time", ""), new AnalogArgItem("Duration", ""), new AnalogArgItem("Function", chan.waveform.EquationString) };
                    mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.Function, function);
                }
-               else if (chan.waveform.interpolationType == Waveform.InterpolationType.Linear)
-                   continue;
+               else if (chan.waveform.YValues.Count > 1)
+                {
+                    int timeMultiplier = Convert.ToInt32(Math.Pow(10,6-3*Convert.ToInt32(mmStep.Timebase)));
+                  string xstr = string.Join(",", chan.waveform.XValues.Select(t => (t.ParameterValue*timeMultiplier).ToString()));
+                  string ystr = string.Join(",", chan.waveform.YValues.Select(t => t.ParameterValue.ToString()));
+                 List<AnalogArgItem> xypairs = new List<AnalogArgItem> { new AnalogArgItem("X Values", xstr), new AnalogArgItem("Y Values", ystr), new AnalogArgItem("Interpolation Type",chan.waveform.interpolationType.ToString())};
+                 mmStep.SetAnalogDataItem(analog.Name, AnalogChannelSelector.XYPairs, xypairs);
+                
+               }
+               else
+               {
+                    continue;
+               }
             
             }
         }
@@ -178,10 +200,17 @@ namespace MOTMaster2.SequenceData
         {
             foreach (KeyValuePair<int,DigitalDataPoint> ddata in ciceroStep.DigitalData)
             {
-                LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
-                DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
-                if (ddata.Value.ManualValue) digitalSelector.Value = true;
-                mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
+                try
+                {
+                    LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
+                    DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
+                    if (ddata.Value.ManualValue) digitalSelector.Value = true;
+                    mmStep.DigitalValueTypes[digital.Name] = digitalSelector;
+                }
+                catch
+                {
+                    Console.WriteLine(String.Format("Digital ID key {0} not found in cicero channels. Perhaps it has been removed accidentally", ddata.Key));
+                }
             }
         }
 

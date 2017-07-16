@@ -43,6 +43,7 @@ namespace DAQ.HAL
             aiBoards.Add(multiBoard);
             doBoards.Add(hsdioBoard);
 
+
             //A list of trigger lines for each card
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
             Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
@@ -81,9 +82,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 
             //map the analog output channels
-            AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", 0, 10);
-            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", 0, 10);
-            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", 0, 10);
+            AddAnalogOutputChannel("motCTRL", aoBoard + "/ao0", -10, 10);
+            AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", -10, 10);
+            AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", -10, 10);
             AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao9", -10, 10);
             //AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao11", -10, 10);
             AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao6", -10, 10);
@@ -92,19 +93,19 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("xbias2DCoil", aoBoard + "/ao3", -10, 10);
             AddAnalogOutputChannel("ybias2DCoil", aoBoard + "/ao4", -10, 10);
             AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);
-            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", 0, 10);
-            AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", 0, 10);
-            AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", 0, 10);
-            AddAnalogOutputChannel("zpaomFreq", aoBoard + "/ao14", 0, 10);
-            AddAnalogOutputChannel("zmaomFreq", aoBoard + "/ao15", 0, 10);
-            AddAnalogOutputChannel("2DaomFreq", aoBoard + "/ao16", 0, 10);
-            AddAnalogOutputChannel("pushaomFreq", aoBoard + "/ao17", 0, 10);
-            AddAnalogOutputChannel("xaomAtten", aoBoard + "/ao18", 0, 10);
-            AddAnalogOutputChannel("yaomAtten", aoBoard + "/ao19", 0, 10);
-            AddAnalogOutputChannel("zpaomAtten", aoBoard + "/ao20", 0, 10);
-            AddAnalogOutputChannel("zmaomAtten", aoBoard + "/ao21", 0, 10);
-            AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", 0, 10);
-            AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", 0, 10);
+            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", -10, 10);
+            AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", -10, 10);
+            AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", -10, 10);
+            AddAnalogOutputChannel("zpaomFreq", aoBoard + "/ao14", -10, 10);
+            AddAnalogOutputChannel("zmaomFreq", aoBoard + "/ao15", -10, 10);
+            AddAnalogOutputChannel("2DaomFreq", aoBoard + "/ao16", -10, 10);
+            AddAnalogOutputChannel("pushaomFreq", aoBoard + "/ao17", -10, 10);
+            AddAnalogOutputChannel("xaomAtten", aoBoard + "/ao18", -10, 10);
+            AddAnalogOutputChannel("yaomAtten", aoBoard + "/ao19", -10, 10);
+            AddAnalogOutputChannel("zpaomAtten", aoBoard + "/ao20", -10, 10);
+            AddAnalogOutputChannel("zmaomAtten", aoBoard + "/ao21", -10, 10);
+            AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", -10, 10);
+            AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", -10, 10);
             AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
