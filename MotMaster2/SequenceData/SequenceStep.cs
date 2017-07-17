@@ -193,6 +193,7 @@ namespace MOTMaster2.SequenceData
 
         internal List<SerialItem> GetSerialData()
         {
+            if (serialCommands.Count == 0) serialCommands.Add(new SerialItem("", ""));
             return serialCommands;
         }
     }

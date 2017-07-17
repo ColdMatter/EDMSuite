@@ -121,6 +121,48 @@ namespace DAQ.HAL
            // SleepOnePattern();
         }
 
+        public void BuildScriptForDebug(uint[] pattern, int[] loopTimes)
+        {
+            //Check lengths are equal
+            if (pattern.Length != loopTimes.Length)
+                throw new Exception("Pattern length not equal to number of loop times");
+            //loop over pattern to write the waveforms to the card and build a script string
+            string script = "script myScript \n";
+            int width;
+            uint[] data;
+            length = pattern.Length;
+            for (int i = 0; i < loopTimes.Length; i++)
+            {
+                if (loopTimes[i] % 4 != 0)
+                {
+                    width = 8;
+                    data = new uint[width];
+                    if (loopTimes[i] % 2 == 0)
+                    {
+                        loopTimes[i] = loopTimes[i] / 2;
+
+                    }
+                    else
+                    {
+                        throw new Exception("Loop time not a multiple of 4 master clock cycles. Change this to avoid digital pattern timing errors.");
+                    }
+                }
+                else
+                {
+                    width = 4;
+                    data = new uint[width];
+                }
+                for (int j = 0; j < width; j++)
+                {
+                    data[j] = pattern[i];
+                }
+                if (loopTimes[i] == 0)
+                    script += "\t generate waveform" + i + "\n";
+                else
+                    script += "\t Repeat " + loopTimes[i] / 4 + "\n \t generate waveform" + i + "\n\t end repeat \n";
+            }
+            script += "end script";
+        }
         private void SleepOnePattern()
 		{
 			int sleepTime = (int)(((double)length * 1000) / clockFrequency);

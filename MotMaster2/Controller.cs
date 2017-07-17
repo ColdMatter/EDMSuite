@@ -349,6 +349,7 @@ namespace MOTMaster2
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
                         if (!config.Debug) runPattern(sequence);
+                        else debugRun(sequence);
                         if (i == 0)
                         {
                             if (Environs.FileSystem.Paths.Contains("DataPath"))
@@ -475,6 +476,11 @@ namespace MOTMaster2
             releaseHardware();
         }
 
+        private void debugRun(MOTMasterSequence sequence)
+        {
+                int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
+                hs.BuildScriptForDebug(sequence.DigitalPattern.Pattern, loopTimes);
+        }
         public MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
         {
             MOTMasterScript script;

@@ -207,7 +207,7 @@ namespace MOTMaster2
                     double fromScanD = double.Parse(tbFromScan.Text);
                     double toScanD = double.Parse(tbToScan.Text);
                     double byScanD = double.Parse(tbByScan.Text);
-                    scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
+                    scanLength = (int)(Math.Abs((toScanD - fromScanD)) / byScanD) + 2;
                     if (scanLength < 0)
                     {
                         MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
@@ -217,6 +217,7 @@ namespace MOTMaster2
 
                     for (int i = 0; i < scanLength; i++)
                     {
+                        
                         scanArray[i] = fromScanD;
                         fromScanD += byScanD;
                     }
@@ -371,7 +372,7 @@ namespace MOTMaster2
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.FileName = ""; // Default file name
             dlg.DefaultExt = ".sm2"; // Default file extension
-            dlg.Filter = "Sequence (.sm2)|*.sm2,*.txt"; // Filter files by extension
+            dlg.Filter = "Sequence (.sm2)|*.sm2"; // Filter files by extension
 
             // Show open file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -392,7 +393,7 @@ namespace MOTMaster2
             dlg.Title = "Select Cicero Settings File";
             dlg.FileName = ""; // Default file name
             dlg.DefaultExt = ".set"; // Default file extension
-            dlg.Filter = "Cicero Settings (.set,.json)|*.json,*.set"; // Filter files by extension
+            dlg.Filter = "Cicero Settings (.set,.json)|*.json;*.set"; // Filter files by extension
 
             // Show open file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -407,7 +408,7 @@ namespace MOTMaster2
                 dlg.Title = "Select Cicero Sequence File";
                 dlg.FileName = ""; // Default file name
                 dlg.DefaultExt = ".seq"; // Default file extension
-                dlg.Filter = "Cicero Sequence (.set,.json)|*.json,*.set"; // Filter files by extension
+                dlg.Filter = "Cicero Sequence (.seq,.json)|*.json;*.seq"; // Filter files by extension
 
                 // Show open file dialog box
                 result = dlg.ShowDialog();
@@ -489,6 +490,7 @@ namespace MOTMaster2
             propertyGrid.DataContext = data;
         }
 
+        //TODO fix this so that it correctly creates a new table if the serial data is null
         //Creates a table of values for the selected analog parameters
         private void CreateSerialPropertyTable(SequenceStep selectedStep)
         {
