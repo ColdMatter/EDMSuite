@@ -590,6 +590,7 @@ namespace MOTMaster2
             catch (Exception c)
             {
                 Log("Failed to build sequence: " + c.Message);
+                Console.WriteLine(c.StackTrace); 
             }
 
         }
