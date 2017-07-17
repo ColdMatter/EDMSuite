@@ -51,7 +51,7 @@ namespace MOTMaster2.SequenceData
         public void BuildSequence()
         {
             //List of digital channels which are reserved for trigger pulses. These are excluded when adding the edges for digital channels
-            List<string> digitalChannelExcludeList = new List<string>(){"serialPreTrigger","slaveDDSTrig","aomDDSTrig"};
+            List<string> digitalChannelExcludeList = new List<string>(){"serialPreTrigger"};
             CreatePatternBuilders();
             
             foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
@@ -62,7 +62,7 @@ namespace MOTMaster2.SequenceData
             else digitalClock = (int)Parameters["PGClockFrequency"];
 
             //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
-            int serialPreTrigger = ConvertToSampleTime(4, digitalClock);
+            int serialPreTrigger = ConvertToSampleTime(5, digitalClock);
             int serialWait = ConvertToSampleTime(2, digitalClock);
             SequenceStep previousStep = null;
             foreach (SequenceStep step in sequenceSteps)
@@ -101,6 +101,7 @@ namespace MOTMaster2.SequenceData
                             {
                                 if (Parameters.ContainsKey(valueArr[i])) valueArr[i] = Parameters[valueArr[i]].ToString();
                             }
+                            
                             string command = string.Join(" ", valueArr);
                             if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
                             else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
@@ -109,9 +110,9 @@ namespace MOTMaster2.SequenceData
                     }
                     //Serial Commands share 1 trigger
                     
-                    digitalPB.Pulse(digitalStartTime, -(serialPreTrigger + serialWait), 200, "serialPreTrigger");
-                    digitalPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                    digitalPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
+                    digitalPB.Pulse(digitalStartTime-(serialPreTrigger + serialWait), 0, 200, "serialPreTrigger");
+                    //digitalPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
+                    //digitalPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                 }
                 //Adds the edges for each digital channel
                 foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
@@ -127,7 +128,16 @@ namespace MOTMaster2.SequenceData
                 previousStep = step;
 
             }
+            //Sets the Analog and Digital pattern lengths
+            int analogLength = ConvertToSampleTime(currentTime, analogClock);
+            int digitalLength = ConvertToSampleTime(currentTime, digitalClock);
+            Parameters["AnalogLength"] = analogLength + 1;
+            Parameters["PatternLength"] = digitalLength + 1;
+
+            
+            
         }
+
 
         public override AnalogPatternBuilder GetAnalogPattern()
         {
@@ -209,7 +219,7 @@ namespace MOTMaster2.SequenceData
                                         for (int i = 0; i < xvals.Length-1; i++)
                                         {
                                             nClockCycles = ConvertToSampleTime((xvals[i + 1] - xvals[i]) * timeMultiplier, analogClock);
-                                            analogPB.AddLinearRamp(analogChannel, analogStartTime, nClockCycles, yvals[i]);
+                                            analogPB.AddLinearRamp(analogChannel, analogStartTime, nClockCycles, yvals[i+1]);
                                             analogStartTime += nClockCycles;
                                         }
                                     }
@@ -245,6 +255,11 @@ namespace MOTMaster2.SequenceData
         /// <param name="duration">Duration of the function output in units of samples</param>
         void CompileAnalogFunction(string analogChannel, string function, double startTime, int analogStartTime, int analogClock, int duration)
         {
+            if (Parameters.Keys.Contains(function))
+            {
+                analogPB.AddAnalogValue(analogChannel,analogStartTime, (double)Parameters[function]);
+                return;
+            }
             EqCompiler compiler = new EqCompiler(function, true);
             compiler.Compile();
             double funcValue;

@@ -8,6 +8,7 @@ using NationalInstruments.DAQmx;
 using System.Threading;
 
 using DAQ.Environment;
+using NationalInstruments.VisaNS;
 
 namespace DAQ.HAL
 {
@@ -20,13 +21,17 @@ namespace DAQ.HAL
         public MuquansRS232(string visaAddress, string id) : base(visaAddress)
         { 
             this.id = id;
-            this.baudrate = 2304000;
-
+            this.baudrate = 230400;
+            
         }
-
+        public override void Connect()
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+        }
         public void Output(string message)
         {
             this.serial.Write(message);
+           // this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
             Console.WriteLine(message);
             
         }
@@ -48,6 +53,7 @@ namespace DAQ.HAL
         private List<string> slaveCommands;
         private List<string> aomCommands;
         private int counts;
+        private Stopwatch stopwatch;
         int serialCounter = 0;
 
        
@@ -58,13 +64,13 @@ namespace DAQ.HAL
             slaveComm = (MuquansRS232)Environs.Hardware.Instruments["muquansSlave"];
             aomComm = (MuquansRS232)Environs.Hardware.Instruments["muquansAOM"];
 
-            slaveDDS = new Process();
-            string path = (string)Environs.FileSystem.Paths["MuquansExePath"];
-            slaveDDS.StartInfo = ConfigureDDS(path, "slaves", 19);
-            slaveDDS.Start();
-            aomDDS = new Process();
-            aomDDS.StartInfo = ConfigureDDS(path, "aom", 21);
-            aomDDS.Start();
+            //slaveDDS = new Process();
+            //string path = (string)Environs.FileSystem.Paths["MuquansExePath"];
+            //slaveDDS.StartInfo = ConfigureDDS(path, "slaves", 19);
+            //slaveDDS.Start();
+            //aomDDS = new Process();
+            //aomDDS.StartInfo = ConfigureDDS(path, "aom", 21);
+            //aomDDS.Start();
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
 
@@ -174,11 +180,13 @@ namespace DAQ.HAL
         
         void counterTask_Sample(object sender, SampleClockEventArgs e)
         {
-            if (serialCounter < slaveCommands.Count)
+            lock (slaveCommands)
+            {
                 slaveComm.Output(slaveCommands[serialCounter]);
-            if (serialCounter < aomCommands.Count)
                 aomComm.Output(aomCommands[serialCounter]);
-            serialCounter++;
+                serialCounter++;
+            }
+            Console.WriteLine("Elapsed time = " + stopwatch.ElapsedMilliseconds);
            
             
         }
@@ -223,15 +231,17 @@ namespace DAQ.HAL
         public void StartOutput()
         {
 
-            
+            stopwatch = new Stopwatch();
             serialCounter = 0;
             slaveComm.Connect();
             aomComm.Connect();
-            //Outputs the first commands then waits 10ms before returning
-            aomComm.Output(aomCommands[serialCounter]);
-            slaveComm.Output(slaveCommands[serialCounter]);
-            serialCounter++;
+            ////Outputs the first commands then waits 10ms before returning
+            //aomComm.Output(aomCommands[serialCounter]);
+            //slaveComm.Output(slaveCommands[serialCounter]);
+            //serialCounter++;
             Thread.Sleep(10);
+            stopwatch.Start();
+            Console.WriteLine("Started Stopwatch");
             counterTask.Start();
             
         }
@@ -243,6 +253,8 @@ namespace DAQ.HAL
             aomComm.Disconnect();
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
+            stopwatch.Stop();
+            Console.WriteLine("Stopped Stopwatch at" + stopwatch.ElapsedMilliseconds);
 
         }
       

@@ -415,6 +415,7 @@ namespace MOTMaster2
             else
             {
                 MessageBox.Show("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
+
             }
 
             status = RunningState.stopped;
@@ -469,6 +470,7 @@ namespace MOTMaster2
             {
                 MessageBox.Show("Error when running sequence. Continuing and releasing hardware...");
                 Console.WriteLine(e.Message + "\n" + e.StackTrace);
+                status = RunningState.stopped;
             }
             releaseHardware();
         }

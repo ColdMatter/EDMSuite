@@ -31,7 +31,7 @@ namespace MOTMaster2.SequenceData
         public static double ParseOrGetParameter(string value)
         {
             double number = 0.0;
-            if (value == "") return number;
+            if (value == "") return 0.0;
             bool result = Double.TryParse(value, out number);
             if (result) return number;
             else return (double)Controller.sequenceData.Parameters.Where(t => t.Name == value).Select(t => t.Value).First();

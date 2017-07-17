@@ -36,6 +36,7 @@ namespace DAQ.HAL
                     serial.DataBits = 8;
                     serial.StopBits = StopBitType.One;
                     serial.ReadTermination = method;
+                    serial.WriteTermination = method;
                 }
                 connected = true;
             }

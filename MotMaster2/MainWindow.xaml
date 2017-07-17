@@ -95,7 +95,7 @@
                     <Grid>
                         <Label x:Name="noPropLabel" Content="Select an analog channel&#xA;in a timestep to modify &#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
                         <Label x:Name="propLabel" FontSize="12"/>
-                        <DataGrid  x:Name="propertyGrid" Visibility="Visible" Margin="0,33,-0.429,313.857" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
+                        <DataGrid  x:Name="propertyGrid" Visibility="Visible" Margin="0,33,-0.429,313.857" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn x:Name="propertyNames" Binding="{Binding Name}" IsReadOnly="True"/>
                                 <DataGridTextColumn x:Name="propertyValues" Binding="{Binding Value}"/>
