@@ -77,6 +77,8 @@ namespace MOTMaster2
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
+        private Gigatronics7100Synth microSynth;
+        public string ExperimentRunTag { get; set; }
         MuquansController muquans = null;
 
         MMDataIOHelper ioHelper;
@@ -120,7 +122,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) muquans = new MuquansController();
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (Gigatronics7100Synth)Environs.Hardware.Instruments["microSynth"]; microSynth.Connect(); } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -138,7 +140,9 @@ namespace MOTMaster2
             Stopwatch watch = new Stopwatch();
             watch.Start();
             if (config.UseMuquans)
+            {
                 muquans.StartOutput();
+            }
             Console.WriteLine(string.Format("Started muquans at {0}ms", watch.ElapsedMilliseconds));
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
             Console.WriteLine(string.Format("Started apg at {0}ms", watch.ElapsedMilliseconds));
@@ -180,7 +184,11 @@ namespace MOTMaster2
             releaseHardware();
         }
 
-
+        //TODO Add this to the experiment-specific AccelSuite
+        private void WriteToMicrowaveSynth(double value)
+        {
+            if (config.UseMuquans && !config.Debug) microSynth.Frequency = value;
+        }
         #endregion
 
         #region Housekeeping on UI
@@ -248,7 +256,7 @@ namespace MOTMaster2
         private int batchNumber = 0;
         public void SetBatchNumber(Int32 number)
         {
-            //batchNumber = number;
+            batchNumber = number;
             //controllerWindow.WriteToSaveBatchTextBox(number);
         }
         private string scriptPath = "";
@@ -310,14 +318,14 @@ namespace MOTMaster2
 
         public void Run(Dictionary<String, Object> dict)
         {
-            Run(dict, 1, 0);
+            Run(dict, 1, batchNumber);
         }
 
         public void Run(object dict)
         {
             try
             {
-                Run((Dictionary<string, object>)dict, 1, 0);
+                Run((Dictionary<string, object>)dict, 1, batchNumber);
             }
             catch (Exception e)
             {
@@ -350,6 +358,10 @@ namespace MOTMaster2
 
                     if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
+                    if (config.UseMuquans)
+                    {
+                        WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
+                    }
                     
                     if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                     else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
@@ -361,13 +373,8 @@ namespace MOTMaster2
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
                         if (!config.Debug) runPattern(sequence);
-                        else debugRun(sequence);
                         if (i == 0)
                         {
-                            if (Environs.FileSystem.Paths.Contains("DataPath"))
-                            {
-                                Console.WriteLine("yes");
-                            }
                             string filepath = (string)(Environs.FileSystem.Paths["DataPath"]);
                             ioHelper.SaveRawSequence(filepath, i, sequence);
                         }
@@ -375,7 +382,6 @@ namespace MOTMaster2
                     if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
                     watch.Stop();
-                    //    MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
 
@@ -398,9 +404,9 @@ namespace MOTMaster2
                             {
                                 report = GetExperimentReport();
                                 //TODO Change save method
-                                save(script, scriptPath, imageData, report, batchNumber);
+                                
                             }
-
+                            save(script, scriptPath, imageData, report, batchNumber);
                         }
                         else
                         {
@@ -409,7 +415,15 @@ namespace MOTMaster2
                             {
                                 report = GetExperimentReport();
                                 //TODO Change save method
+                               
+                            }
+                            if (config.UseMMScripts)
+                            {
                                 save(script, scriptPath, report, batchNumber);
+                            }
+                            else
+                            {
+                                save(builder, motMasterDataPath,report, ExperimentRunTag,batchNumber);
                             }
                         }
 
@@ -436,6 +450,7 @@ namespace MOTMaster2
 
         }
 
+       
         #endregion
 
         #region private stuff
@@ -471,6 +486,12 @@ namespace MOTMaster2
             ioHelper.StoreRun(motMasterDataPath, batchNumber, pathToPattern, hardwareClassPath,
                 script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
         }
+        private void save(SequenceBuilder builder, string saveDirectory, Dictionary<string, object> report,string element,int batchNumber)
+        {
+            ioHelper.StoreRun(builder, saveDirectory, report,element,batchNumber);
+        }
+
+        
         private void runPattern(MOTMasterSequence sequence)
         {
 
@@ -889,5 +910,6 @@ namespace MOTMaster2
         }
 
         #endregion
+
     }
 }

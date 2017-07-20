@@ -148,6 +148,7 @@ namespace MOTMaster2
                 for (int i = 0; i < n; i++)
                 {
                     // single shot
+                    controller.SetBatchNumber(i);
                     SingleShot();
 
                     DoEvents();
@@ -223,9 +224,11 @@ namespace MOTMaster2
                     }
 
                 }
-                foreach (object scanParam in scanArray)
+                for (int i = 0; i<scanLength; i++ )
                 {
+                    object scanParam = scanArray[i];
                     paramDict[parameter] = scanParam;
+                    controller.SetBatchNumber(i);
                     SingleShot(paramDict);
                     tbCurValue.Content = scanParam.ToString();
                     DoEvents();
@@ -610,5 +613,16 @@ namespace MOTMaster2
             ParametersWindow paramWindow = new ParametersWindow();
             paramWindow.Show();
         }
+
+        private void tbExperimentRun_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbExperimentRun.Text != "---") controller.ExperimentRunTag = tbExperimentRun.Text;
+        }
+
+        private void saveCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            controller.SaveToggle(saveCheck.IsChecked.Value);
+        }
+
     }
 }

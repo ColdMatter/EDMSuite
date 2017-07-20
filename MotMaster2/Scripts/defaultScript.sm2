@@ -1995,7 +1995,7 @@
       "Name": "F2->F'2",
       "Description": "",
       "Enabled": true,
-      "Duration": "IterationNum",
+      "Duration": "1",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6747,7 +6747,7 @@
       "IsHidden": false
     },
     {
-      "Name": "testVar",
+      "Name": "MWFreq",
       "Value": 6834.688,
       "Description": "",
       "IsHidden": false

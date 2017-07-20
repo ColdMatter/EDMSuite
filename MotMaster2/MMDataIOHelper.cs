@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using MOTMaster2.SequenceData;
 using Microsoft.Win32;
 namespace MOTMaster2
 {
@@ -290,6 +291,18 @@ namespace MOTMaster2
         {
             SaveRawSequence(filepath, 0, sequence);
 
+        }
+
+        internal void StoreRun(SequenceBuilder motMasterSequence, string saveDirectory, Dictionary<string, object> report,string element, int batchNumber)
+        {
+            string fileTag = getDataID(element, batchNumber);
+            if (!Directory.Exists(saveDirectory)) { Directory.CreateDirectory(saveDirectory);
+            string baseSequence = JsonConvert.SerializeObject(motMasterSequence, Formatting.Indented);
+            string sequencePath = saveDirectory + "\\"+element+"_sequence.sm2";
+            File.WriteAllText(sequencePath, baseSequence);
+            }
+            storeDictionary(saveDirectory +"\\" + fileTag + "_parameters.txt", motMasterSequence.Parameters);
+            if (report != null) storeDictionary(saveDirectory +"\\"+fileTag + "_report.txt", motMasterSequence.Parameters);
         }
     }
 }
