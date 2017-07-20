@@ -5,10 +5,10 @@
         x:Class="MOTMaster2.MainWindow"
         xmlns:controls="clr-namespace:MOTMaster2"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Name="frmMain" 
-        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing">
+        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico">
     <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="120"/>
             <RowDefinition Height="32"/>
@@ -36,6 +36,7 @@
             <Label Content="Save" HorizontalAlignment="Left" Height="26" Margin="250,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
             <CheckBox x:Name="saveCheck" Margin="300,17,0.143,13" Checked="saveCheck_Checked"/>
             <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066" Visibility="Hidden"/>
+            <ProgressBar x:Name="progBar" Height="15" Margin="0" VerticalAlignment="Top" Foreground="#FFC4DDD8" Background="#FFFDFFFF"/>
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
             <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="571,41,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click" Visibility="Hidden"/>
             <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/> 
@@ -45,8 +46,8 @@
                 <TabItem x:Name="tbRepeat" Header="  Repeat  " Width="70" Height="25">
                     <Grid>
                         <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113"/>
-                        <TextBox x:Name="tbIterNumb" HorizontalAlignment="Left" Height="24" Margin="128,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Text="1" />
-                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="233,21,0,0" VerticalAlignment="Top" Width="83" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click"/>
+                        <TextBox x:Name="tbIterNumb" HorizontalAlignment="Left" Height="24" Margin="128,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Text="1" FontSize="13" />
+                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="233,21,0,0" VerticalAlignment="Top" Width="83" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="tbScan" Header="   Scan   " Width="70" Height="25">
@@ -95,17 +96,22 @@
                     </RichTextBox>
                 </TabItem>
                 <TabItem Header="Property" Width="80">
-                    <Grid>
-                        <Label x:Name="noPropLabel" Content="Select an analog channel&#xA;in a timestep to modify &#xA;its properties" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Height="294" Margin="0,10,0,0" UseLayoutRounding="False"/>
-                        <Label x:Name="propLabel" FontSize="12"/>
-                        <DataGrid  x:Name="propertyGrid" Visibility="Visible" Margin="0,33,-0.429,313.857" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
+                    <Grid Margin="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="281*"/>
+                            <RowDefinition Height="44"/>
+                            <RowDefinition Height="245*"/>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="propLabel" Grid.Row="0" FontSize="12" Margin="5,0,0,0" Content="Property setting"/>
+                        <DataGrid  x:Name="propertyGrid" Visibility="Visible" Margin="0" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn x:Name="propertyNames" Binding="{Binding Name}" IsReadOnly="True"/>
                                 <DataGridTextColumn x:Name="propertyValues" Binding="{Binding Value}"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Button x:Name="setPropertyBtn" Content="Set" Click="setProperty_Click" Margin="0,232,10.571,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="89" Height="25" FontWeight="Bold"/>
-                        <Button x:Name="cancelPropertyBtn" Content="Cancel" Margin="0,232,104.571,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="89" Height="25"/>
+                        <Button x:Name="setPropertyBtn" Content="Set" Grid.Row="2" Click="setProperty_Click" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="89" Height="25" FontWeight="Bold"/>
+                        <Button x:Name="cancelPropertyBtn" Content="Cancel" Grid.Row="2" Margin="0,10,104,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="89" Height="25" Click="cancelPropertyBtn_Click" />
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -117,8 +123,29 @@
                             <RowDefinition Height="27"/>
                             <RowDefinition Height="499*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Margin="0,0,0,0" Grid.Row="0">
-                            <Button x:Name="buildBtn"  Content="Build" Height="20" Width="75" Margin="10,1,0,0" Click="buildBtn_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <StackPanel Margin="0,0,0,0" Grid.Row="0" Orientation="Horizontal">
+                            <Button x:Name="btnDown" Height="22" Width="26" Margin="7,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="buildBtn_Click" >
+                                <Button.ContentTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ContentControl Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"/>
+                                            <Path VerticalAlignment="Center" Margin="1,0,0,0" Fill="Black" Data="M 0 0 L 6 6 L 12 0 Z"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+                            <Button x:Name="btnUp" Height="22" Width="26" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                <Button.ContentTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ContentControl Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"/>
+                                            <Path VerticalAlignment="Center" Margin="1,0,0,0" Fill="Black" Data="M 0 6 L 6 0 L 12 6 Z"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+                            <Button x:Name="btnBuild"  Content="Build" Height="20" Width="75" Margin="10,1,0,0" Click="buildBtn_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
                         </StackPanel>
                         <controls:SequenceDataGrid x:Name="sequenceControl" Margin="0,0,0,0" Grid.Row="1"/>
 
@@ -127,14 +154,16 @@
                 <TabItem Header="Measurements" Width="120" Height="25" FontSize="13">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="11*"/>
-                            <RowDefinition Height="210*"/>
-                            <RowDefinition Height="42*"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="44*"/>
+                            <RowDefinition Height="39*"/>
                         </Grid.RowDefinitions>
-               <!--         <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Margin="10,1,3.143,1.286" Grid.Row="0" VerticalAlignment="Stretch"/>
-                        <ni:Graph Margin="0,21,3.143,0.286" Grid.RowSpan="2"/>-->
+                        <ni:GraphInteractionPalette HorizontalAlignment="Left" Margin="10,1,0,0" Grid.Row="0" VerticalAlignment="Top" Width="140"/>
+                        <ni:Graph Margin="0" Interactions="Pan, Zoom" Grid.Row="1"/>
+                        <GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>
                     </Grid>
                 </TabItem>
+
 
 
             </TabControl>

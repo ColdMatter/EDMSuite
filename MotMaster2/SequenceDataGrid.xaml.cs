@@ -83,7 +83,7 @@ namespace MOTMaster2
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            
+            Controller ctrl;
         }
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {

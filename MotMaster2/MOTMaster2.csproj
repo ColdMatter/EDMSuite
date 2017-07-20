@@ -58,6 +58,9 @@
     <DebugSymbols>true</DebugSymbols>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>3axis.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DataStructures, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -68,6 +71,8 @@
       <HintPath>..\..\..\..\Software\EDMSuite\MOTMaster\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Controls.Graphs, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=16.1.45.70, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies (64-bit)\Current\NationalInstruments.DAQmx.dll</HintPath>
@@ -81,6 +86,12 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SharpDX, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.D3DCompiler, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.Direct3D10, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.Direct3D11, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.Direct3D9, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.DXGI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
@@ -191,6 +202,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -262,6 +274,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="3axis.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

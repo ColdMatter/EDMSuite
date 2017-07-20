@@ -11,7 +11,10 @@ namespace DAQ.Environment
             string relativePath = AppDomain.CurrentDomain.BaseDirectory;
             string basePath = Directory.GetParent(Directory.GetParent(System.Windows.Forms.Application.ExecutablePath).Parent.FullName).FullName;
             string configPath = basePath + "\\Config\\";
-            string dataPath = basePath + "\\Data\\";
+            Paths.Add("configPath", configPath);
+
+            string baseDataPath = basePath + "\\Data\\";
+            Paths.Add("baseDataPath", baseDataPath); 
 
             Paths.Add("mathPath", "C:\\Program Files\\Wolfram Research\\Mathematica\\10.4\\mathkernel.exe");
             Paths.Add("scriptListPath", basePath + "\\Scripts");
@@ -24,9 +27,9 @@ namespace DAQ.Environment
             string sYear = DateTime.Today.Year.ToString();
             string sMonth = DateTime.Today.Month.ToString().PadLeft(2, '0');
             string sDay = DateTime.Today.Day.ToString().PadLeft(2, '0');
-            Paths.Add("DataPath", dataPath + sYear + "\\" + sMonth + "\\" + sDay);
-            Paths.Add("settingsPath", user + "\\Settings");
+            Paths.Add("DataPath", baseDataPath + sYear + "\\" + sMonth + "\\" + sDay);
 
+            Paths.Add("settingsPath", user + "\\Settings");
             if (!Directory.Exists((string)Paths["DataPath"]))
             {
                 Directory.CreateDirectory((string)Paths["DataPath"]);
