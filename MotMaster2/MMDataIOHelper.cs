@@ -295,14 +295,14 @@ namespace MOTMaster2
 
         internal void StoreRun(SequenceBuilder motMasterSequence, string saveDirectory, Dictionary<string, object> report,string element, int batchNumber)
         {
-            string fileTag = getDataID(element, batchNumber);
-            if (!Directory.Exists(saveDirectory)) { Directory.CreateDirectory(saveDirectory);
-            string baseSequence = JsonConvert.SerializeObject(motMasterSequence, Formatting.Indented);
-            string sequencePath = saveDirectory + "\\"+element+"_sequence.sm2";
-            File.WriteAllText(sequencePath, baseSequence);
+            string fileTag = batchNumber.ToString();
+            string fullDir = saveDirectory + "\\" + element;
+            if (!Directory.Exists(fullDir)) { Directory.CreateDirectory(fullDir);
             }
-            storeDictionary(saveDirectory +"\\" + fileTag + "_parameters.txt", motMasterSequence.Parameters);
-            if (report != null) storeDictionary(saveDirectory +"\\"+fileTag + "_report.txt", motMasterSequence.Parameters);
+            string sequencePath = saveDirectory + "\\" + element + "\\sequence.sm2";
+            if (!File.Exists(sequencePath)) { string baseSequence = JsonConvert.SerializeObject(motMasterSequence, Formatting.Indented); File.WriteAllText(sequencePath, baseSequence); }
+            storeDictionary(fullDir +"\\" + fileTag + "_parameters.txt", motMasterSequence.Parameters);
+            if (report.Count != 0) storeDictionary(fullDir+"\\"+fileTag + "_report.txt", report);
         }
     }
 }

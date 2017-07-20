@@ -138,8 +138,10 @@ namespace MOTMaster2
             progBar.Maximum = Iters;
             for (int i = 0; i < Iters; i++)
             {
+                
                 // single shot
                 SingleShot();
+                controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
                 if (!ScanFlag) break;
@@ -184,6 +186,8 @@ namespace MOTMaster2
         {
             string parameter = prm;
             Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
+            Dictionary<string, object> scanDict = new Dictionary<string, object>();
+            scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             int scanLength;
             object[] scanArray;
@@ -228,15 +232,18 @@ namespace MOTMaster2
                     fromScanD += byScanD;
                 }
             }
- 
+            int c = 0;
             foreach (object scanParam in scanArray)
             {
+                controller.SetBatchNumber(c);
                 param.Value = scanParam;
+                scanDict[parameter] = scanParam;
                 progBar.Value = (double)scanParam;
-                SingleShot();
+                SingleShot(scanDict);
                 tbCurValue.Content = scanParam.ToString();
                 DoEvents();
                 if (!ScanFlag) break;
+                c++;
             }
             param.Value = defaultValue;
             tbCurValue.Content = defaultValue.ToString();
