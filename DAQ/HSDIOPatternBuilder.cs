@@ -103,6 +103,8 @@ namespace DAQ.Pattern
                 //}
                 pattern[j] = nextInt;
                 loopTimes[j] = (endTime - startTime);
+                
+                
             }
 
         }

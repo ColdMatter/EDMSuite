@@ -19,6 +19,7 @@ namespace MOTMaster2.SequenceData
         private PatternBuilder32 digitalPB;
         private MuquansBuilder muPB;
         private double currentTime;
+        private SequenceStep _sequenceStep;
         
 
         public SequenceBuilder(List<SequenceStep> steps, Dictionary<string,object> prms)
@@ -61,21 +62,31 @@ namespace MOTMaster2.SequenceData
             if (Controller.config.HSDIOCard) digitalClock = (int)Parameters["HSClockFrequency"];
             else digitalClock = (int)Parameters["PGClockFrequency"];
 
+          
+            int digitalSample = 0;
             //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
             int serialPreTrigger = ConvertToSampleTime(5, digitalClock);
             int serialWait = ConvertToSampleTime(2, digitalClock);
             SequenceStep previousStep = null;
             foreach (SequenceStep step in sequenceSteps)
             {
-               
+                _sequenceStep = step;
+                double duration = 0.0;
+                //TODO Is there a better way to reference parameters for the step duration?
+                if (step.Duration is string)
+                {
+                    if (Double.TryParse((string)step.Duration, out duration));
+                    else duration = (double)Parameters[(string)step.Duration];
+                }
+                else duration = (double)step.Duration;
                 if (!step.Enabled) continue;
                 if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
                 else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
 
-                //TODO Include a method for delaying a digital edge
-                int digitalStartTime = ConvertToSampleTime(currentTime,digitalClock);
-
+        
+                
+           
                 
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
@@ -89,28 +100,11 @@ namespace MOTMaster2.SequenceData
                     //TODO Fix the sequence parser to make it work with more generic serial commands
                     foreach (SerialItem serialCommand in step.GetSerialData())
                     {
-
-                        if (serialCommand.Name == "Slave") laserID = "slave0";
-                        else if (serialCommand.Name == "AOM") laserID = "mphi";
-                        string[] valueArr = serialCommand.Value.Split(' ');
-                        if (valueArr[0] == "Set") muPB.SetFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]));
-                        else if (valueArr[0] == "Sweep") muPB.SweepFrequency(laserID, SequenceParser.ParseOrGetParameter(valueArr[1]), SequenceParser.ParseOrGetParameter(valueArr[2]));
-                        else
-                        {
-                            for (int i = 0; i < valueArr.Length; i++)
-                            {
-                                if (Parameters.ContainsKey(valueArr[i])) valueArr[i] = Parameters[valueArr[i]].ToString();
-                            }
-                            
-                            string command = string.Join(" ", valueArr);
-                            if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
-                            else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
-                            else { Console.WriteLine("Unknown serial instrument. Ignoring command for now. This will be updated soon"); }
-                        }
+                       AddSerialCommand(serialCommand);
                     }
                     //Serial Commands share 1 trigger
                     
-                    digitalPB.Pulse(digitalStartTime-(serialPreTrigger + serialWait), 0, 200, "serialPreTrigger");
+                    digitalPB.Pulse(digitalSample-(serialPreTrigger + serialWait), 0, 200, "serialPreTrigger");
                     //digitalPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
                     //digitalPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                 }
@@ -118,13 +112,15 @@ namespace MOTMaster2.SequenceData
                 foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
                 {
                     if (digitalChannelExcludeList.Contains(digitalChannel)) continue;
-                    AddDigitalChannelStep(step, digitalStartTime, digitalChannel);
+                    AddDigitalChannelStep(step, digitalSample, digitalChannel);
                 }
                 
 
                 
                 //Adds the time of the sequence step to the total running time
-                currentTime += step.Duration * timeMultiplier;
+                currentTime += duration * timeMultiplier;
+                digitalSample += ConvertToSampleTime(duration*timeMultiplier,digitalClock);
+                
                 previousStep = step;
 
             }
@@ -134,6 +130,24 @@ namespace MOTMaster2.SequenceData
             Parameters["AnalogLength"] = analogLength + 1;
             Parameters["PatternLength"] = digitalLength + 1;
 
+            
+            
+        }
+
+        private void AddSerialCommand(SerialItem serialCommand)
+        {
+            if (serialCommand.Value.Contains("\\n")) throw new Exception("Serial command contains an escape command. This is not necessary");
+            string[] valueArr = serialCommand.Value.Split(' ');
+           
+                for (int i = 0; i < valueArr.Length; i++)
+                {
+                    if (Parameters.ContainsKey(valueArr[i])) valueArr[i] = Parameters[valueArr[i]].ToString();
+                }
+
+                string command = string.Join(" ", valueArr);
+                if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
+                else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
+                else { Console.WriteLine("Unknown serial instrument. Ignoring command for now. This will be updated soon"); }
             
             
         }
@@ -166,6 +180,7 @@ namespace MOTMaster2.SequenceData
 
         private void AddDigitalChannelStep(SequenceStep step, int digitalStartTime, string digitalChannel)
         {
+            if (digitalStartTime % 2 != 0) { Console.WriteLine(string.Format("Error {0}"),digitalStartTime); }
                             digitalPB.AddEdge(digitalChannel, digitalStartTime, step.GetDigitalData(digitalChannel));
         }
 
@@ -218,8 +233,9 @@ namespace MOTMaster2.SequenceData
                                         int nClockCycles;
                                         for (int i = 0; i < xvals.Length-1; i++)
                                         {
-                                            nClockCycles = ConvertToSampleTime((xvals[i + 1] - xvals[i]) * timeMultiplier, analogClock);
+                                            nClockCycles = ConvertToSampleTime((xvals[i+1] - xvals[i]) * timeMultiplier, analogClock);
                                             analogPB.AddLinearRamp(analogChannel, analogStartTime, nClockCycles, yvals[i+1]);
+                                            if (i == xvals.Length-2) analogPB.AddAnalogValue(analogChannel,analogStartTime,yvals[i+1]);
                                             analogStartTime += nClockCycles;
                                         }
                                     }
@@ -278,6 +294,7 @@ namespace MOTMaster2.SequenceData
             }
             if (timeFunc)
             {
+                if (duration == 0) throw new Exception(string.Format("Duration not set for function {0} in step {1}", analogChannel, _sequenceStep.Name));
                 for (int i = 0; i < duration; i++)
                 {
                     compiler.SetVariable("t", startTime);

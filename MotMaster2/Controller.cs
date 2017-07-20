@@ -135,15 +135,20 @@ namespace MOTMaster2
 
         private void run(MOTMasterSequence sequence)
         {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             if (config.UseMuquans)
                 muquans.StartOutput();
+            Console.WriteLine(string.Format("Started muquans at {0}ms", watch.ElapsedMilliseconds));
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+            Console.WriteLine(string.Format("Started apg at {0}ms", watch.ElapsedMilliseconds));
             if (config.UseAI) aip.StartTask();
             if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
             else
             {
                 int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
                 hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
+                Console.WriteLine(string.Format("Started hs at {0}ms", watch.ElapsedMilliseconds));
             }
 
         }
@@ -310,7 +315,14 @@ namespace MOTMaster2
 
         public void Run(object dict)
         {
-            Run((Dictionary<string,object>)dict, 1, 0);
+            try
+            {
+                Run((Dictionary<string, object>)dict, 1, 0);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error when trying to run:" + e.Message);
+            }
         }
         //TODO Change this to handle Sequences and Scripts built using SequenceData
 

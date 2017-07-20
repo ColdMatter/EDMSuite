@@ -8,8 +8,8 @@
         Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing">
     <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="0"/>
             <RowDefinition Height="120"/>
             <RowDefinition Height="32"/>
             <RowDefinition/>

@@ -68,6 +68,7 @@ namespace DAQ.Analog
         {
             analogOutputTask.Stop();
             analogOutputTask.Dispose();
+   
             
         }
 

@@ -81,7 +81,7 @@ namespace DAQ.HAL
                 if (loopTimes[i] % 4 != 0)
                 {
                     width = 8;
-                    data = new uint[width];
+                    //data = new uint[width];
                     if (loopTimes[i] % 2 == 0)
                     {
                         loopTimes[i] = loopTimes[i] / 2;
@@ -95,8 +95,9 @@ namespace DAQ.HAL
                 else
                 {
                    width = 4;
-                   data = new uint[width];
+                   //data = new uint[width];
                 }
+                data = new uint[width];
                 for (int j = 0; j < width; j++)
                 {
                     data[j] = pattern[i];

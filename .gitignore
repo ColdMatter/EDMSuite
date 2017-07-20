@@ -1,23 +1,35 @@
 
 bin
 
+
 obj
 
+
 *.suo
+
 *.csproj
+
 *.user
+
 
 *.licx
 
+
 *.lnk
+
 
 *.csv
 
+
 iamjack.sh
+
 
 iamjoe.sh
 
+
 MotMaster2/Data/*
+
+MotMaster2/Scripts/defaultScript.sm2
 packages/*
 
 *.tmp_proj

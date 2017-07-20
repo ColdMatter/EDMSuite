@@ -31,7 +31,7 @@ namespace DAQ.HAL
         public void Output(string message)
         {
             this.serial.Write(message);
-           // this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
+            this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
             Console.WriteLine(message);
             
         }
@@ -182,8 +182,8 @@ namespace DAQ.HAL
         {
             lock (slaveCommands)
             {
-                slaveComm.Output(slaveCommands[serialCounter]);
-                aomComm.Output(aomCommands[serialCounter]);
+                if (serialCounter <= slaveCommands.Count)slaveComm.Output(slaveCommands[serialCounter]);
+                if (serialCounter <= aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
                 serialCounter++;
             }
             Console.WriteLine("Elapsed time = " + stopwatch.ElapsedMilliseconds);

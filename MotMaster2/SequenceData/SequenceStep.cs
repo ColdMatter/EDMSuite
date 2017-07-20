@@ -17,7 +17,7 @@ namespace MOTMaster2.SequenceData
         public string Name { get; set; }
         public string Description {get; set;}
         public bool Enabled { get; set; }
-        public double Duration { get; set; }
+        public object Duration { get; set; }
         public TimebaseUnits Timebase { get; set; }
         public bool RS232Commands { get; set; }
         public ObservableDictionary<string, AnalogChannelSelector> AnalogValueTypes {get; set;}
@@ -113,7 +113,7 @@ namespace MOTMaster2.SequenceData
                 {
                     if (DigitalValueTypes[name].Value != previousStep.DigitalValueTypes[name].Value) {
                         usedDigitalChannels.Add(name);
-                        digitalData[name] = !previousStep.GetDigitalData(name);
+                      //  digitalData[name] = !previousStep.GetDigitalData(name);
                     }
                 }
             }
