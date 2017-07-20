@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 
 namespace MOTMaster2
@@ -111,7 +112,27 @@ namespace MOTMaster2
 
             cbPatternScript.SelectedIndex = 0;
         }
-        // RUNNING THINGS
+
+        #region RUNNING THINGS
+
+        private void realRun(int Iters, string Hub = "none", int cmdId = -1) 
+        {
+            if (Iters <= 0)
+            {
+                MessageBox.Show("<Iteration Number> must be of positive value.");
+                return;
+            }
+            progBar.Minimum = 0;
+            progBar.Maximum = Iters;
+            for (int i = 0; i < Iters; i++)
+            {
+                // single shot
+                SingleShot();
+                progBar.Value = i;
+                DoEvents();
+                if (!ScanFlag) break;
+            }
+        }
 
         private bool ScanFlag = false;
         private void btnRun_Click(object sender, RoutedEventArgs e)
@@ -123,22 +144,12 @@ namespace MOTMaster2
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
+
+                int Iters = int.Parse(tbIterNumb.Text);
                 // Start repeat
-                int n = int.Parse(tbIterNumb.Text);
-                if (n <= 0)
-                {
-                    MessageBox.Show("<Iteration Number> must be of positive value.");
-                    return;
-                }
 
-                for (int i = 0; i < n; i++)
-                {
-                    // single shot
-                    SingleShot();
+                realRun(Iters);
 
-                    DoEvents();
-                    if (!ScanFlag) break;
-                }
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -154,6 +165,68 @@ namespace MOTMaster2
             }
         }
 
+        private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
+        {
+            string parameter = prm;
+            Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
+            object defaultValue = param.Value;
+            int scanLength;
+            object[] scanArray;
+            if (defaultValue is int)
+            {
+                int fromScanI = int.Parse(fromScanS);
+                int toScanI = int.Parse(toScanS);
+                int byScanI = int.Parse(byScanS);
+                progBar.Minimum = fromScanI;
+                progBar.Maximum = toScanI;
+                scanLength = (toScanI - fromScanI) / byScanI + 1;
+                if (scanLength < 0)
+                {
+                    MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                    return;
+                }
+                scanArray = new object[scanLength + 1];
+                for (int i = 0; i < scanLength; i++)
+                {
+                    scanArray[i] = fromScanI;
+                    fromScanI += byScanI;
+                }
+            }
+            else
+            {
+                double fromScanD = double.Parse(fromScanS);
+                double toScanD = double.Parse(toScanS);
+                double byScanD = double.Parse(byScanS);
+                progBar.Minimum = fromScanD;
+                progBar.Maximum = toScanD;
+                scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
+                if (scanLength < 0)
+                {
+                    MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                    return;
+                }
+                scanArray = new object[scanLength];
+           
+                for (int i = 0; i < scanLength; i++)
+                {
+                    scanArray[i] = fromScanD;
+                    fromScanD += byScanD;
+                }
+            }
+ 
+            foreach (object scanParam in scanArray)
+            {
+                param.Value = scanParam;
+                progBar.Value = (double)scanParam;
+                SingleShot();
+                tbCurValue.Content = scanParam.ToString();
+                DoEvents();
+                if (!ScanFlag) break;
+            }
+            param.Value = defaultValue;
+            tbCurValue.Content = defaultValue.ToString();
+        }
+
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
             if (btnScan.Content.Equals("Scan"))
@@ -162,60 +235,8 @@ namespace MOTMaster2
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
 
-                string parameter = cbParamsScan.Text;
-                Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
-                object defaultValue = param.Value;
-                int scanLength;
-                object[] scanArray;
-                if (defaultValue is int)
-                {
-                    int fromScanI = int.Parse(tbFromScan.Text);
-                    int toScanI = int.Parse(tbToScan.Text);
-                    int byScanI = int.Parse(tbByScan.Text);
-                    scanLength = (toScanI - fromScanI) / byScanI + 1;
-                    if (scanLength < 0)
-                    {
-                        MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
-                        return;
-                    }
-                    scanArray = new object[scanLength + 1];
-                    for (int i = 0; i < scanLength; i++)
-                    {
-                        scanArray[i] = fromScanI;
-                        fromScanI += byScanI;
-                    }
+                realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
 
-                }
-                else
-                {
-                    double fromScanD = double.Parse(tbFromScan.Text);
-                    double toScanD = double.Parse(tbToScan.Text);
-                    double byScanD = double.Parse(tbByScan.Text);
-                    scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
-                    if (scanLength < 0)
-                    {
-                        MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
-                        return;
-                    }
-                    scanArray = new object[scanLength];
-
-                    for (int i = 0; i < scanLength; i++)
-                    {
-                        scanArray[i] = fromScanD;
-                        fromScanD += byScanD;
-                    }
-
-                }
-                foreach (object scanParam in scanArray)
-                {
-                    param.Value = scanParam;
-                    SingleShot();
-                    tbCurValue.Content = scanParam.ToString();
-                    DoEvents();
-                    if (!ScanFlag) break;
-                }
-                param.Value = defaultValue;
-                tbCurValue.Content = defaultValue.ToString();
                 btnScan.Content = "Scan";
                 btnScan.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -229,6 +250,7 @@ namespace MOTMaster2
                 ScanFlag = false;
             }
         }
+        #endregion
 
         private void cbPatternScript_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -268,7 +290,6 @@ namespace MOTMaster2
                 }
                 paramCheck = false;
             }
-
         }
 
         private void LoadParameters_Click(object sender, RoutedEventArgs e)
@@ -435,7 +456,7 @@ namespace MOTMaster2
             // SequenceData.sequenceDataGrid.IsReadOnly = true;
             setPropertyBtn.Visibility = System.Windows.Visibility.Visible;
             tcLog.SelectedIndex = 1;
-            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
+            //if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
             propLabel.Content = string.Format("{0}: {1} with {2}", selectedStep.Name, channelName, analogType.ToString());
             List<AnalogArgItem> data = selectedStep.GetAnalogData(channelName, analogType);
             propertyGrid.DataContext = data;
@@ -447,7 +468,7 @@ namespace MOTMaster2
             // SequenceData.sequenceDataGrid.IsReadOnly = true;
             setPropertyBtn.Visibility = System.Windows.Visibility.Visible;
             tcLog.SelectedIndex = 1;
-            if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
+            //if (noPropLabel.Visibility == System.Windows.Visibility.Visible) { noPropLabel.Visibility = Visibility.Hidden; propertyGrid.Visibility = System.Windows.Visibility.Visible; }
             propLabel.Content = string.Format("Edit Serial Commands for {0}", selectedStep.Name);
             List<SerialItem> data = selectedStep.GetSerialData();
             propertyGrid.DataContext = data;
@@ -533,9 +554,20 @@ namespace MOTMaster2
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
-            List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-            controller.BuildMOTMasterSequence(steps);
-
+            Button btn = sender as Button;
+            switch (btn.Name)
+            {
+                case ("btnUp"):
+                    break;
+                case ("btnDown"):
+                    break;
+                case ("btnAddRow"):
+                    break;
+                case ("btnBuild"):
+                    List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                    controller.BuildMOTMasterSequence(steps);
+                    break;
+            }
         }
 
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -543,13 +575,51 @@ namespace MOTMaster2
             //Save the currently open sequence to a default location
             List<SequenceStep> steps = SequenceData.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
             controller.SaveSequenceAsDefault(steps);
-
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)
         {
             ParametersWindow paramWindow = new ParametersWindow();
             paramWindow.Show();
+        }
+
+        public class MMexec
+        {
+            public string mmexec { get; set; }
+            public string sender { get; set; }
+            public string cmd { get; set; }
+            public int id { get; set; }
+            public Dictionary<string, object> prms;           
+        }
+
+        public bool Interpreter(string json)
+        {
+            //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
+            MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
+            if (mme.sender.Equals("")) mme.sender = "none";
+            if (mme.id == 0) mme.id = -1;
+            switch (mme.cmd)
+            {
+                case("repeat"):
+                    int Iters = (int)mme.prms["cycles"];
+                    realRun(Iters, mme.sender, mme.id);
+                    break;
+                case("scan"):
+                    realScan((string)mme.prms["param"], (string)mme.prms["from"], (string)mme.prms["to"], (string)mme.prms["by"], mme.sender, mme.id);
+                    break;
+                case ("set"):
+                    break;
+                case ("load"):
+                    break;
+                case ("save"):
+                    break;
+            }
+            return true;
+        }
+
+        private void cancelPropertyBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

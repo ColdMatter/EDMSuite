@@ -17,8 +17,6 @@ using System.Dynamic;
 using System.Collections.ObjectModel;
 using System.Dynamic;
 
-
-
 namespace MOTMaster2
 {
     /// <summary>
@@ -83,7 +81,7 @@ namespace MOTMaster2
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            
+            Controller ctrl;
         }
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {
