@@ -608,10 +608,17 @@ namespace MOTMaster2
                     realScan((string)mme.prms["param"], (string)mme.prms["from"], (string)mme.prms["to"], (string)mme.prms["by"], mme.sender, mme.id);
                     break;
                 case ("set"):
+                    foreach (var prm in mme.prms)
+                    {
+                        if (!Controller.sequenceData.Parameters.Select(t => t.Name).Contains(prm.Key)) continue;
+                        controller.script.Parameters[prm.Key] = prm.Value;
+                    }
                     break;
                 case ("load"):
+                    controller.LoadSequenceFromPath((string)mme.prms["file"]);
                     break;
                 case ("save"):
+                    controller.SaveSequenceToPath((string)mme.prms["file"]);
                     break;
             }
             return true;
