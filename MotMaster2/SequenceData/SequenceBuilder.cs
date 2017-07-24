@@ -79,7 +79,7 @@ namespace MOTMaster2.SequenceData
                     else duration = (double)Parameters[(string)step.Duration];
                 }
                 else duration = (double)step.Duration;
-                if (!step.Enabled) continue;
+                if (!step.Enabled || duration-0.0<1e-15) continue;
                 if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
                 else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
@@ -147,7 +147,7 @@ namespace MOTMaster2.SequenceData
                 string command = string.Join(" ", valueArr);
                 if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
                 else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
-                else { Console.WriteLine("Unknown serial instrument. Ignoring command for now. This will be updated soon"); }
+                
             
             
         }

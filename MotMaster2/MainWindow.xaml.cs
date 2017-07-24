@@ -71,6 +71,7 @@ namespace MOTMaster2
             catch (Exception e)
             {
                 Log("Failed to Run sequence: " + e.Message + "\n" + e.StackTrace);
+                return false;
             }
          
             return true;
@@ -140,7 +141,7 @@ namespace MOTMaster2
             {
                 
                 // single shot
-                SingleShot();
+                ScanFlag=SingleShot();
                 controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
@@ -159,14 +160,7 @@ namespace MOTMaster2
 
                 int Iters = int.Parse(tbIterNumb.Text);
                 // Start repeat
-
-                for (int i = 0; i < Iters; i++)
-                {
-                    // single shot
-                    controller.SetBatchNumber(i);
-                    SingleShot();
-                    realRun(Iters);
-                }
+                realRun(Iters);
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -178,6 +172,7 @@ namespace MOTMaster2
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
+                
                 // End repeat
             }
         }
@@ -239,7 +234,7 @@ namespace MOTMaster2
                 param.Value = scanParam;
                 scanDict[parameter] = scanParam;
                 progBar.Value = (double)scanParam;
-                SingleShot(scanDict);
+                ScanFlag = SingleShot(scanDict);
                 tbCurValue.Content = scanParam.ToString();
                 DoEvents();
                 if (!ScanFlag) break;

@@ -30,10 +30,14 @@ namespace DAQ.HAL
         }
         public void Output(string message)
         {
-            this.serial.Write(message);
-            this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
-            Console.WriteLine(message);
-            
+            try
+            {
+                this.serial.Write(message);
+                this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
+                
+                
+            }
+            catch { throw new Exception("Error writing serial commands"); }
         }
 
        
@@ -182,11 +186,20 @@ namespace DAQ.HAL
         {
             lock (slaveCommands)
             {
-                if (serialCounter <= slaveCommands.Count)slaveComm.Output(slaveCommands[serialCounter]);
-                if (serialCounter <= aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
-                serialCounter++;
+                try
+                {
+                    if (serialCounter <= slaveCommands.Count) slaveComm.Output(slaveCommands[serialCounter]);
+                    if (serialCounter <= aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
+                    serialCounter++;
+                    Console.WriteLine(string.Format("wrote command {0} at {1}",serialCounter-1,stopwatch.ElapsedMilliseconds));
+                }
+                catch
+                {
+                    //TODO Send a message to the mainwindow that the serial communication failed.
+                    MessageBox.Show("Error outputting serial command.");
+                }
             }
-            Console.WriteLine("Elapsed time = " + stopwatch.ElapsedMilliseconds);
+           
            
             
         }
@@ -241,7 +254,7 @@ namespace DAQ.HAL
             //serialCounter++;
             Thread.Sleep(10);
             stopwatch.Start();
-            Console.WriteLine("Started Stopwatch");
+            
             counterTask.Start();
             
         }
@@ -254,7 +267,7 @@ namespace DAQ.HAL
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
             stopwatch.Stop();
-            Console.WriteLine("Stopped Stopwatch at" + stopwatch.ElapsedMilliseconds);
+           
 
         }
       
