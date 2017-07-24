@@ -77,7 +77,7 @@ namespace MOTMaster2
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        private Gigatronics7100Synth microSynth;
+        private WindfreakSynth microSynth;
         public string ExperimentRunTag { get; set; }
         MuquansController muquans = null;
 
@@ -122,7 +122,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (Gigatronics7100Synth)Environs.Hardware.Instruments["microSynth"]; microSynth.Connect(); } }
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microSynth"]; microSynth.Connect(); microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse; } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -187,7 +187,7 @@ namespace MOTMaster2
         //TODO Add this to the experiment-specific AccelSuite
         private void WriteToMicrowaveSynth(double value)
         {
-            if (config.UseMuquans && !config.Debug) microSynth.Frequency = value;
+            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
         #endregion
 
