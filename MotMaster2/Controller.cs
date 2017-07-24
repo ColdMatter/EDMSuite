@@ -110,7 +110,7 @@ namespace MOTMaster2
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            analogChannels =
+            //analogChannels =
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),

@@ -22,6 +22,7 @@ namespace MOTMaster2
     public partial class MainWindow : Window
     {
         public static Controller controller;
+        private RemoteMessenger messenger;
         public MainWindow()
         {
             controller = new Controller();
@@ -164,7 +165,7 @@ namespace MOTMaster2
                 {
                     // single shot
                     controller.SetBatchNumber(i);
-                    SingleShot();
+                    //SingleShot();
                     realRun(Iters);
                 }
                 btnRun.Content = "Run";
@@ -674,8 +675,13 @@ namespace MOTMaster2
                 case ("set"):
                     foreach (var prm in mme.prms)
                     {
-                        if (!Controller.sequenceData.Parameters.Select(t => t.Name).Contains(prm.Key)) continue;
-                        controller.script.Parameters[prm.Key] = prm.Value;
+                        IEnumerable<Parameter> paramList  = Controller.sequenceData.Parameters.Where(t => t.Name == (string)prm.Key);
+                        if (paramList.Count() != 1) continue;
+                        else
+                        {
+                           Parameter p = paramList.First();
+                           p.Value = prm.Value;
+                        }
                     }
                     break;
                 case ("load"):
@@ -691,6 +697,32 @@ namespace MOTMaster2
         private void cancelPropertyBtn_Click(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        private async void btnRemote_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnRemote.Content.Equals("Remote"))
+            {
+                messenger = new RemoteMessenger(this);
+                Log("Awaiting remote requests");
+                btnRemote.Content = "Cancel Remote";
+                btnRemote.Background = Brushes.Red;
+                try
+                {
+                    await messenger.Run();
+                }
+                catch (Exception ex)
+                {
+                    Log("Error with remote command: " + ex.Message);
+                }
+            }
+            else
+            {
+                Log("Closing remote connection");
+                messenger.Close();
+                btnRemote.Content = "Remote";
+                btnRemote.Background = Brushes.LightGreen;
+            }
         }
     }
 }
