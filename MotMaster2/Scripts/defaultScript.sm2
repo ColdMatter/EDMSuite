@@ -57,7 +57,7 @@
       "Name": "Initialization 1",
       "Description": "",
       "Enabled": true,
-      "Duration": 300.0,
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1019,7 +1019,7 @@
       "Name": "B field off",
       "Description": "",
       "Enabled": true,
-      "Duration": 3.0,
+      "Duration": "5",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1653,7 +1653,7 @@
       "Name": "RepumpPulse",
       "Description": "",
       "Enabled": true,
-      "Duration": 10.0,
+      "Duration": "3",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -1699,7 +1699,7 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": true
+          "Value": false
         },
         "slaveDDSTrig": {
           "Value": false
@@ -1857,7 +1857,7 @@
       "Name": "StateSelectPreset",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "7",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1903,7 +1903,7 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": true
+          "Value": false
         },
         "slaveDDSTrig": {
           "Value": true
@@ -1995,7 +1995,7 @@
       "Name": "F2->F'2",
       "Description": "",
       "Enabled": true,
-      "Duration": "1",
+      "Duration": "10",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2173,13 +2173,13 @@
           "Value": false
         },
         "motTTL": {
-          "Value": false
+          "Value": true
         },
         "ramanTTL": {
           "Value": false
         },
         "mphiTTL": {
-          "Value": false
+          "Value": true
         },
         "slaveDDSTrig": {
           "Value": false
@@ -2284,7 +2284,7 @@
       "Name": "Ready 1",
       "Description": "",
       "Enabled": true,
-      "Duration": 10.0,
+      "Duration": "19",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -3052,7 +3052,7 @@
       "serialCommands": [],
       "Name": "Expansion time1",
       "Description": "",
-      "Enabled": false,
+      "Enabled": true,
       "Duration": 500.0,
       "Timebase": 0,
       "RS232Commands": false,
@@ -3191,7 +3191,7 @@
       "Name": "MW1",
       "Description": "",
       "Enabled": true,
-      "Duration": "50",
+      "Duration": "26",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3249,7 +3249,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -3328,8 +3328,8 @@
       "serialCommands": [],
       "Name": "Raman ",
       "Description": "",
-      "Enabled": false,
-      "Duration": 1.0,
+      "Enabled": true,
+      "Duration": "1",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3466,8 +3466,8 @@
       "serialCommands": [],
       "Name": "MW2",
       "Description": "",
-      "Enabled": false,
-      "Duration": 29.5,
+      "Enabled": true,
+      "Duration": "26",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3743,7 +3743,7 @@
       "Name": "2T+1 Dwell",
       "Description": "",
       "Enabled": false,
-      "Duration": 3.0,
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3922,7 +3922,7 @@
       "Name": "Detection B field 1",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "1",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -4332,8 +4332,8 @@
       "Name": "Dwell",
       "Description": "",
       "Enabled": true,
-      "Duration": 250.0,
-      "Timebase": 0,
+      "Duration": "0.25",
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -4470,7 +4470,7 @@
       "Name": "Imaging N2",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "0.25",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -4608,7 +4608,7 @@
       "Name": "Imaging NTot",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "0.25",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -5444,7 +5444,7 @@
       "Name": "bg N2 imaging",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "0.25",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -5582,7 +5582,7 @@
       "Name": "bg Ntot imaging",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "0.25",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6372,37 +6372,19 @@
       "Name": "AnalogLength",
       "Value": 100000,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": true
     },
     {
       "Name": "AnalogClockFrequency",
       "Value": 100000,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": true
     },
     {
       "Name": "HSClockFrequency",
       "Value": 20000000,
       "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "IterationNum",
-      "Value": 0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "IterationCount",
-      "Value": 51.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "RunningCounter",
-      "Value": 102.0,
-      "Description": "",
-      "IsHidden": false
+      "IsHidden": true
     },
     {
       "Name": "mwTime",
@@ -6748,7 +6730,7 @@
     },
     {
       "Name": "MWFreq",
-      "Value": 6834.688,
+      "Value": 6834.6882,
       "Description": "",
       "IsHidden": false
     },
