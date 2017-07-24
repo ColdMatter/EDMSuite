@@ -77,7 +77,7 @@ namespace MOTMaster2
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        private Gigatronics7100Synth microSynth;
+        private WindfreakSynth microSynth;
         public string ExperimentRunTag { get; set; }
         MuquansController muquans = null;
 
@@ -110,7 +110,7 @@ namespace MOTMaster2
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            analogChannels =
+            //analogChannels =
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -122,7 +122,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (Gigatronics7100Synth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); } }
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microSynth"]; microSynth.Connect(); microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse; } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -187,7 +187,7 @@ namespace MOTMaster2
         //TODO Add this to the experiment-specific AccelSuite
         private void WriteToMicrowaveSynth(double value)
         {
-            if (config.UseMuquans && !config.Debug) microSynth.Frequency = value;
+            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
         #endregion
 
@@ -250,7 +250,7 @@ namespace MOTMaster2
 
         public void SaveToggle(System.Boolean value)
         {
-            saveEnable = value;
+            //saveEnable = value;
             //controllerWindow.SetSaveCheckBox(value);
         }
         private int batchNumber = 0;
@@ -280,7 +280,7 @@ namespace MOTMaster2
         {
             if (status == RunningState.running)
             {
-               
+                Console.WriteLine("Thread Running");
                 return true;
             }
             else
@@ -294,12 +294,13 @@ namespace MOTMaster2
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
             runThread.Start(paramDict);
-           
+            Console.WriteLine("Thread Starting");
 
         }
         public void WaitForRunToFinish()
         {
             runThread.Join();
+            Console.WriteLine("Thread Waiting");
         }
 
         public void Run()
@@ -322,9 +323,14 @@ namespace MOTMaster2
 
         public void Run(object dict)
         {
-
+            try
+            {
                 Run((Dictionary<string, object>)dict, 1, batchNumber);
-
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error when trying to run:" + e.Message);
+            }
         }
         //TODO Change this to handle Sequences and Scripts built using SequenceData
 

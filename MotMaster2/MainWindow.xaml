@@ -34,12 +34,13 @@
             <Label Content="Run Name" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
             <TextBox x:Name="tbExperimentRun" HorizontalAlignment="Left" Height="24" Margin="83,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Text="---" LostFocus="tbExperimentRun_LostFocus" />
             <Label Content="Save" HorizontalAlignment="Left" Height="26" Margin="250,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
-            <CheckBox x:Name="saveCheck" Margin="300,17,0.143,13" Checked="saveCheck_Checked"/>
+            <CheckBox x:Name="saveCheck" Margin="300,17,418.143,13" Checked="saveCheck_Checked"/>
             <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066" Visibility="Hidden"/>
             <ProgressBar x:Name="progBar" Height="15" Margin="0" VerticalAlignment="Top" Foreground="#FFC4DDD8" Background="#FFFDFFFF"/>
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
             <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="571,41,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click" Visibility="Hidden"/>
-            <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/> 
+            <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/>
+            <Button x:Name="btnRemote" Content="Remote" HorizontalAlignment="Left" Height="33" Margin="390,14,0,-1" VerticalAlignment="Top" Width="83" FontWeight="Bold" Background="#FF99E699" Click="btnRemote_Click" FontSize="13"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0,5,-0.143,0.714">
             <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="108" Margin="5,0,0,0" VerticalAlignment="Top" Width="717" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">

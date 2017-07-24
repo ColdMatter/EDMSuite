@@ -6388,7 +6388,7 @@
     },
     {
       "Name": "IterationNum",
-      "Value": 0.0,
+      "Value": 0,
       "Description": "",
       "IsHidden": false
     },
@@ -6406,7 +6406,7 @@
     },
     {
       "Name": "mwTime",
-      "Value": 30.0,
+      "Value": 30,
       "Description": "",
       "IsHidden": false
     },
