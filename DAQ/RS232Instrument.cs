@@ -62,6 +62,12 @@ namespace DAQ.HAL
             Disconnect();
         }
 
+        protected void Write(string command, bool keepOpen)
+        {
+            if (!connected) Connect();
+            if (!Environs.Debug) serial.Write(command);
+            if (!keepOpen)Disconnect();
+        }
         protected string Query(string q)
         {
             return serial.Query(q);

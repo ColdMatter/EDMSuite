@@ -3191,8 +3191,8 @@
       "Name": "MW1",
       "Description": "",
       "Enabled": true,
-      "Duration": "26",
-      "Timebase": 0,
+      "Duration": "500",
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,

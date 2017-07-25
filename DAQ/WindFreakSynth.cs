@@ -154,6 +154,7 @@ namespace DAQ.HAL
             set
             {
                 Write(CommandTypes.Trigger + value.ToString("d"));
+                Console.Write(CommandTypes.Trigger + value.ToString("d"));
                 // For some reason, it is necessary to make sure the output is on after changing the trigger mode to continuous
                 if (value == TriggerTypes.Continuous)
                 {
@@ -180,7 +181,7 @@ namespace DAQ.HAL
             string channelQueries = string.Concat(channelCommands.Select(command => command + "?").ToArray());
 
             Connect(SerialTerminationMethod.TerminationCharacter);
-            //Write(deviceQueries + CommandTypes.Channel + "0" + channelQueries + CommandTypes.Channel + "1" + channelQueries, true);
+            Write(deviceQueries + CommandTypes.Channel + "0" + channelQueries + CommandTypes.Channel + "1" + channelQueries, true);
 
             int numberCommands = deviceCommands.Length + 2 * channelCommands.Length;
             string[] responses = new string[numberCommands];

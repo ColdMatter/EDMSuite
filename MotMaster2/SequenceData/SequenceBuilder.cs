@@ -76,7 +76,7 @@ namespace MOTMaster2.SequenceData
                 if (step.Duration is string)
                 {
                     if (Double.TryParse((string)step.Duration, out duration));
-                    else duration = (double)Parameters[(string)step.Duration];
+                    else duration = Convert.ToDouble(Parameters[(string)step.Duration]);
                 }
                 else duration = (double)step.Duration;
                 if (!step.Enabled || duration-0.0<1e-15) continue;

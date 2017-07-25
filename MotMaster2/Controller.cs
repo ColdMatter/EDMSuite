@@ -122,7 +122,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse; } }
+            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -360,7 +360,12 @@ namespace MOTMaster2
 
                     if (config.UseMuquans)
                     {
+                        microSynth.ChannelA.RFOn = true;
+                       
+                       
+                        //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
+                        //microSynth.ReadSettingsFromDevice();
                     }
                     
                     if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
@@ -431,6 +436,7 @@ namespace MOTMaster2
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                    if (config.UseMuquans) microSynth.ChannelA.RFOn = false;
 
 
                 }

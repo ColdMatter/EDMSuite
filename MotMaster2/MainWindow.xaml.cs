@@ -220,9 +220,9 @@ namespace MOTMaster2
                     MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
                     return;
                 }
-                scanArray = new object[scanLength];
+                scanArray = new object[scanLength-1];
            
-                for (int i = 0; i < scanLength; i++)
+                for (int i = 0; i < scanLength-1; i++)
                 {
                     scanArray[i] = fromScanD;
                     fromScanD += byScanD;
@@ -234,7 +234,7 @@ namespace MOTMaster2
                 controller.SetBatchNumber(c);
                 param.Value = scanParam;
                 scanDict[parameter] = scanParam;
-                progBar.Value = (double)scanParam;
+                progBar.Value = (scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam); 
                 ScanFlag = SingleShot(scanDict);
                 tbCurValue.Content = scanParam.ToString();
                 DoEvents();
