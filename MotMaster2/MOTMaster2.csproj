@@ -64,7 +64,7 @@
   <ItemGroup>
     <Reference Include="DataStructures, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Cicero-Word-Generator\DataStructures\bin\x64\Release\DataStructures.dll</HintPath>
+      <HintPath>bin\Nav\DataStructures.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -140,6 +140,7 @@
     <Compile Include="dotMath\EqCompiler.cs" />
     <Compile Include="dotMath\FunctionLib.cs" />
     <Compile Include="dotMath\Parser.cs" />
+    <Compile Include="ErrorManager.cs" />
     <Compile Include="HardwareOptions.xaml.cs">
       <DependentUpon>HardwareOptions.xaml</DependentUpon>
     </Compile>
@@ -147,6 +148,7 @@
       <DependentUpon>ParametersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="RemoteMessaging.cs" />
     <Compile Include="RemoteMessenger.cs" />
     <Compile Include="Scripts\InterferometerFull.cs" />
     <Compile Include="MMDataIOHelper.cs" />

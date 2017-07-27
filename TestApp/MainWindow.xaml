@@ -1,0 +1,24 @@
+﻿<Window x:Class="TestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Test app. for MM&lt;-&gt;AxelHub commun." Height="350" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="37"/>
+            <RowDefinition Height="286*"/>
+        </Grid.RowDefinitions>
+        <StackPanel HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="519" Orientation="Horizontal">
+            <Button x:Name="btnRemote" Content="Connect" Margin="5,5,0,5" Height="26" HorizontalAlignment="Left" Width="75"/>
+            <TextBox x:Name="tbCommand" Height="23" TextWrapping="Wrap" Text="some command" Margin="4,6,0,5.857" Width="351"/>
+            <Button x:Name="btnSend" Content="send" Margin="5,5,0,4.857" Height="25" HorizontalAlignment="Left" Width="75" FontWeight="Bold" Click="btnSend_Click"/>
+        </StackPanel>
+        <RichTextBox x:Name="rtbListen" Margin="0" Grid.Row="1">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="RichTextBox" />
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+    </Grid>
+</Window>

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace MOTMaster2
 {
@@ -42,7 +41,7 @@ namespace MOTMaster2
         public async Task Run()
         {
             listener.Start();
-            Console.WriteLine(string.Format(System.Diagnostics.Process.GetCurrentProcess().ProcessName + "is listening on {0} port {1}", serverName, port));
+            Console.WriteLine(string.Format("Listening on port {0}", port));
             while (true)
             {
                 TcpClient client = await listener.AcceptTcpClientAsync();
@@ -54,8 +53,10 @@ namespace MOTMaster2
 
         private async Task Process(TcpClient tcpClient)
         {
-            string clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString();
-            Console.WriteLine("Received connection request from "+ clientEndPoint);
+            string clientEndPoint =
+            tcpClient.Client.RemoteEndPoint.ToString();
+            Console.WriteLine("Received connection request from "
+              + clientEndPoint);
             try
             {
                 NetworkStream networkStream = tcpClient.GetStream();
@@ -76,7 +77,8 @@ namespace MOTMaster2
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                if (tcpClient.Connected) tcpClient.Close();
+                if (tcpClient.Connected)
+                    tcpClient.Close();
             }
         }
 
@@ -91,19 +93,19 @@ namespace MOTMaster2
         {
             try
             {
-               /* IPAddress ipAddress = null;
-                IPHostEntry ipHostInfo = Dns.GetHostEntry(server);
-                for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
-                {
-                    if (ipHostInfo.AddressList[i].AddressFamily ==
-                      AddressFamily.InterNetwork)
-                    {
-                        ipAddress = ipHostInfo.AddressList[i];
-                        break;
-                    }
-                }
-                if (ipAddress == null)
-                    throw new Exception("No IPv4 address for server"); */
+                /* IPAddress ipAddress = null;
+                 IPHostEntry ipHostInfo = Dns.GetHostEntry(server);
+                 for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
+                 {
+                     if (ipHostInfo.AddressList[i].AddressFamily ==
+                       AddressFamily.InterNetwork)
+                     {
+                         ipAddress = ipHostInfo.AddressList[i];
+                         break;
+                     }
+                 }
+                 if (ipAddress == null)
+                     throw new Exception("No IPv4 address for server"); */
                 TcpClient client = new TcpClient();
                 await client.ConnectAsync(server, port); // Connect ipAddress
                 NetworkStream networkStream = client.GetStream();
@@ -124,7 +126,7 @@ namespace MOTMaster2
         public async void Send(string msg)
         {
             string sResponse = await SendRequest(clientName, port, msg);
-            if (logComm) Console.WriteLine("Sent out: " + msg + "\n");
+            if (logComm) Console.WriteLine("Computed sent out: " + msg + "\n");
             if (!sResponse.Equals("OK")) Console.WriteLine("Error sending a message" + sResponse + "\n");
         }
 
