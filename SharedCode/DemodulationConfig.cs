@@ -108,7 +108,7 @@ namespace Analysis.EDM
 
             // for testing out different centred-gate widths
             for (int i = 1; i < 10; i++)
-                AddFixedSliceConfig("wgate" + i, 2190, i * 20);
+                AddFixedSliceConfig("wgate" + i, 2440, i * 20);
 
             for (int i = 1; i < 14; i++)
                 AddFixedSliceConfig("shiftgate" + i, 1850 + i*50, 65);

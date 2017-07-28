@@ -239,6 +239,11 @@ namespace EDMBlockHead
             config.Settings["E0PlusBoost"] = 0.1;
             config.Settings["bBiasV"] = 0.1;
 
+            config.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
+            config.Settings["minimumSignalToRun"] = 300.0;
+            config.Settings["targetStepperGateStartTime"] = 2340.0;
+            config.Settings["targetStepperGateEndTime"] = 2540.0;
+
 
         }
 
@@ -273,6 +278,19 @@ namespace EDMBlockHead
             }
         }
 
+        public void StartIntelligentTargetStepper()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartTargetStepper(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting intelligent target stepper ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
+
         public void StopAcquisition()
         {
             if (appState == AppState.running)
@@ -301,6 +319,14 @@ namespace EDMBlockHead
         {
             Monitor.Enter(acquisitor.MonitorLockObject);
             StartAcquisition();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
+        public void StartTargetStepperAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartIntelligentTargetStepper();
             Monitor.Wait(acquisitor.MonitorLockObject);
             Monitor.Exit(acquisitor.MonitorLockObject);
         }
@@ -334,6 +360,18 @@ namespace EDMBlockHead
             }
         }
 
+        public Boolean TargetHealthy
+        {
+            set
+            {
+                targetHealthy = value;
+            }
+            get
+            {
+                return targetHealthy;
+            }
+        }
+
         #endregion
 
         #region Local methods
@@ -343,7 +381,7 @@ namespace EDMBlockHead
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
             // "cgate11Fixed" for Ar, "centreFixedKr" for Kr
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate4", b); // was cgate11fixed
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate5", b); // was cgate11fixed
             DBlock = blockDemodulator.DemodulateBlock(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
             liveViewer.AddDBlock(DBlock);
        
@@ -353,7 +391,24 @@ namespace EDMBlockHead
             mainWindow.AppendToTextArea("Acquisition finished");
             SetStatusReady();
         }
-        
+
+        public void IntelligentAcquisitionFinished()
+        {
+            if (TargetHealthy)
+            {
+                mainWindow.AppendToTextArea("Intelligent target stepper found a good spot.");
+            }
+            else
+            {
+                mainWindow.AppendToTextArea("Intelligent target stepper failed to find a good spot.");
+            }
+
+            appState = AppState.stopped;
+            mainWindow.AppendToTextArea("Acquisition finished");
+            SetStatusReady();
+        }
+
+        private bool targetHealthy; 
         double[] northLeakages = new double[UPDATE_EVERY];
         double[] southLeakages = new double[UPDATE_EVERY];
         int leakageIndex = 0;
@@ -435,6 +490,7 @@ namespace EDMBlockHead
                 mainWindow.StatusText = value;
             }
         }
+
 
         public void SaveBlock()
         {

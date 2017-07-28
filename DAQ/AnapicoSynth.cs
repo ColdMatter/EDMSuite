@@ -43,6 +43,7 @@ namespace DAQ.HAL
                 {
                     Write(":SOUR:FREQ:MODE LIST\n"); // Sets frequency to sweep mode.
                     Write(":SOUR:POW:MODE LIST\n"); // Sets power to sweep mode.
+                    Write(":SOUR:LIST:COUN 1\n"); // Set repetitions to 1, not infinite!
                     Write(":INIT:CONT ON"); // Sets trigger mode to Repeat.
                     Write(":TRIG:TYPE NORM\n"); // Sets trigger parameter to execute complete list.
                     Write(":TRIG:SOUR EXT\n"); // Sets trigger source to external.

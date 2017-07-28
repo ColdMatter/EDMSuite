@@ -35,7 +35,7 @@ namespace EDMBlockHead
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateStatusText("EDMErr_A    EDMErr_B    {B}_A    {B}_B    {DB}_A    {DB}_B    {DB}_A/{SIG}_A    {DB}_A/{SIG}_B  " + Environment.NewLine);
+            UpdateStatusText("EDMErr_A\t EDMErr_B\t {B}_A\t\t {B}_B\t\t {DB}_A\t\t {DB}_B\t\t {DB}_A/{SIG}_A\t\t{DB}_A/{SIG}_B  " + Environment.NewLine);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -55,16 +55,16 @@ namespace EDMBlockHead
             //Append LiveViewer text with edm errors, B, DB & DB/SIG
             AppendStatusText(
                 (Math.Pow(10, 26) * analysis.RawEDMErrbp).ToString("G3")
-                + "    " 
+                + "\t" 
                 + (Math.Pow(10, 26) * analysis.RawEDMErrbp).ToString("G3")
-                + "    " 
+                + "\t" 
                 + (analysis.BValAndErrbp[0]).ToString("N2")
-                + "    "
-                + "\t" + (analysis.BValAndErrtp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrbp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrtp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrbp[0] / analysis.SIGValAndErrbp[0]).ToString("N3")
-                + "\t" + (analysis.DBValAndErrtp[0] / analysis.SIGValAndErrtp[0]).ToString("N3")
+                + "\tt"
+                + "\tt" + (analysis.BValAndErrtp[0]).ToString("N2")
+                + "\tt" + (analysis.DBValAndErrbp[0]).ToString("N2")
+                + "\tt" + (analysis.DBValAndErrtp[0]).ToString("N2")
+                + "\tt" + (analysis.DBValAndErrbp[0] / analysis.SIGValAndErrbp[0]).ToString("N3")
+                + "\tt" + (analysis.DBValAndErrtp[0] / analysis.SIGValAndErrtp[0]).ToString("N3")
                 + Environment.NewLine);
 
             // Rollings values of edm error

@@ -57,6 +57,8 @@ namespace EDMBlockHead.GUI
         private WaveformPlot tofPlot4;
         private XAxis xAxis5;
         private YAxis yAxis5;
+        private MenuItem IntelitentTargetStepperMenuItem;
+        private MenuItem stopTargetStepperMenuItem;
 
 		private Controller controller;
 
@@ -131,6 +133,8 @@ namespace EDMBlockHead.GUI
             this.tofPlot4 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.yAxis5 = new NationalInstruments.UI.YAxis();
+            this.IntelitentTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
+            this.stopTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -198,9 +202,11 @@ namespace EDMBlockHead.GUI
             this.acquireMenu.Index = 1;
             this.acquireMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem6,
+            this.IntelitentTargetStepperMenuItem,
             this.startMenuItem,
             this.stopMenuItem,
-            this.menuItem7});
+            this.menuItem7,
+            this.stopTargetStepperMenuItem});
             this.acquireMenu.Text = "Acquire";
             // 
             // menuItem6
@@ -211,19 +217,19 @@ namespace EDMBlockHead.GUI
             // 
             // startMenuItem
             // 
-            this.startMenuItem.Index = 1;
+            this.startMenuItem.Index = 2;
             this.startMenuItem.Text = "Start block";
             this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
             // 
             // stopMenuItem
             // 
-            this.stopMenuItem.Index = 2;
+            this.stopMenuItem.Index = 3;
             this.stopMenuItem.Text = "Stop block";
             this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
             // 
             // menuItem7
             // 
-            this.menuItem7.Index = 3;
+            this.menuItem7.Index = 4;
             this.menuItem7.Text = "Stop pattern";
             this.menuItem7.Click += new System.EventHandler(this.menuItem7_Click);
             // 
@@ -420,6 +426,18 @@ namespace EDMBlockHead.GUI
             this.yAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis5.Range = new NationalInstruments.UI.Range(-1D, 10D);
             // 
+            // IntelitentTargetStepperMenuItem
+            // 
+            this.IntelitentTargetStepperMenuItem.Index = 1;
+            this.IntelitentTargetStepperMenuItem.MdiList = true;
+            this.IntelitentTargetStepperMenuItem.Text = "Start target stepper";
+            this.IntelitentTargetStepperMenuItem.Click += new System.EventHandler(this.IntelitentTargetStepperMenuItem_Click);
+            // 
+            // stopTargetStepperMenuItem
+            // 
+            this.stopTargetStepperMenuItem.Index = 5;
+            this.stopTargetStepperMenuItem.Text = "Stop target stepper";
+            // 
             // MainWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -556,6 +574,12 @@ namespace EDMBlockHead.GUI
 			controller.StartAcquisition();
 		}
 
+        private void IntelitentTargetStepperMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StartIntelligentTargetStepper();
+
+        }
+
 		private void stopMenuItem_Click(object sender, System.EventArgs e)
 		{
 			controller.StopAcquisition();
@@ -603,6 +627,8 @@ namespace EDMBlockHead.GUI
         {
 
         }
+
+
 
     }
 }

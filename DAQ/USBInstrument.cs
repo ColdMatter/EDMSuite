@@ -23,9 +23,10 @@ namespace DAQ.HAL
 
 		public override void Connect()
 		{
+            
 			if (!Environs.Debug) 
 			{
-				session = new UsbSession(address);
+               session = new UsbSession(address);
 
 			}
 		}

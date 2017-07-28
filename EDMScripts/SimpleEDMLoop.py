@@ -44,11 +44,11 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwManualState):
+def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	#hc.UpdateRFPowerMonitor()
+	hc.UpdateRFPowerMonitor()
 	hc.UpdateRFFrequencyMonitor()
 	bh.StartPattern()
 	hc.UpdateBCurrentMonitor()
@@ -73,7 +73,6 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwM
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
 	bc.Settings["rfState"] = rfState
-	bc.Settings["mwState"] = mwManualState
 	bc.Settings["phaseScramblerV"] = scramblerV
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
@@ -111,7 +110,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwM
 	eWave.Name = "E"
 	##lf1Wave = bc.GetModulationByName("LF1").Waveform
 	##lf1Wave.Name = "LF1"
-	ws = WaveformSetGenerator.GenerateWaveforms( System.Array[Waveform]([eWave]), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	mwWave = bc.GetModulationByName("MW").Waveform
+	mwWave.Name = "MW"
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, mwWave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -121,6 +122,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwM
 	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
 	# change the inversions of the static codes E 
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	# Do the same for the microwave channel
+	bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# print the waveform codes
 	# printWaveformCode(bc, "E")
 	# printWaveformCode(bc, "B")
@@ -145,6 +148,12 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwM
 	bc.Settings["eChargeTime"] = hc.ERampUpTime + hc.ERampUpDelay
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
+	# number of times to step the target looking for a good target spot
+	bc.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
+	# minimum signal in the first detector, in Vus
+	bc.Settings["minimumSignalToRun"] = 200.0;
+	bc.Settings["targetStepperGateStartTime"] = 2340.0;
+	bc.Settings["targetStepperGateEndTime"] = 2540.0;
 	return bc
 
 # lock gains
@@ -154,65 +163,64 @@ kSteppingBiasCurrentPerVolt = 2453.06
 kBMaxChange = 0.05
 # volts of rf*a input required per cal's worth of offset
 kRFAVoltsPerCal = 3.2
-kRFAMaxChange = 0.1
+kRFAMaxChange = 0.05
 # volts of rf*f input required per cal's worth of offset
 kRFFVoltsPerCal = 8
-kRFFMaxChange = 0.1
+kRFFMaxChange = 0.05
 
-def updateLocks(bState,mwManualState):
+def updateLocks(bState):
 	bottomProbeChannelValues = bh.DBlock.ChannelValues[0]
 	# note the weird python syntax for a one element list
 	sigValue = bottomProbeChannelValues.GetValue(("SIG",))
-	bValue = bottomProbeChannelValues.GetValue(("B",))
-	dbValue = bottomProbeChannelValues.GetValue(("DB",))
-	rf1aValue = bottomProbeChannelValues.GetValue(("RF1A","DB"))
-	rf2aValue = bottomProbeChannelValues.GetValue(("RF2A","DB"))
-	rf1fValue = bottomProbeChannelValues.GetValue(("RF1F","DB"))
-	rf2fValue = bottomProbeChannelValues.GetValue(("RF2F","DB"))
+	bValue = bottomProbeChannelValues.GetValue(("B","MW"))
+	dbValue = bottomProbeChannelValues.GetValue(("DB","MW"))
+	rf1aValue = bottomProbeChannelValues.GetValue(("RF1A","DB","MW"))
+	rf2aValue = bottomProbeChannelValues.GetValue(("RF2A","DB","MW"))
+	rf1fValue = bottomProbeChannelValues.GetValue(("RF1F","DB","MW"))
+	rf2fValue = bottomProbeChannelValues.GetValue(("RF2F","DB","MW"))
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
-	# B bias lock
-	# the sign of the feedback depends on the b-state and the microwave state 
-	if bState: 
-		feedbackSign1 = 1
-	else: 
-		feedbackSign1 = -1
-        if mwManualState: 
-		feedbackSign2 = 1
-	else: 
-		feedbackSign2 = -1
-        feedbackSign=feedbackSign1*feedbackSign2
-	deltaBias = - (1.0/10.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
-	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
-	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
-	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
-	hc.SetSteppingBBiasVoltage( newBiasVoltage )
-	# RFA  locks
-	deltaRF1A = - (6.0/3.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
-	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
-	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
-	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
-	hc.SetRF1AttCentre( newRF1A )
-	#
-	deltaRF2A = - (6.0/3.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
-	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
-	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
-	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
-	hc.SetRF2AttCentre( newRF2A )
-	# RFF  locks
-	deltaRF1F = - (10.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
-	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
-	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
-	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
-	hc.SetRF1FMCentre( newRF1F )
-	#
-	deltaRF2F = - (10.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
-	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
-	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
-	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
-	hc.SetRF2FMCentre( newRF2F )
+	if dbValue < 4:
+		print "DB value too low, not applying feedback"
+	else:
+		print "feeding back to Bias and rf parameters"
+		# B bias lock
+		# the sign of the feedback depends on the b-state and the microwave state 
+		if bState: 
+			feedbackSign = 1
+		else: 
+			feedbackSign = -1
+		deltaBias = - (1.0/10.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+		deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
+		print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
+		newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
+		hc.SetSteppingBBiasVoltage( newBiasVoltage )
+		# RFA  locks
+		deltaRF1A = - (6.0/3.0) * (rf1aValue / dbValue) * kRFAVoltsPerCal
+		deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
+		print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
+		newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
+		hc.SetRF1AttCentre( newRF1A )
+		#
+		deltaRF2A = - (6.0/3.0) * (rf2aValue / dbValue) * kRFAVoltsPerCal
+		deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
+		print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
+		newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
+		hc.SetRF2AttCentre( newRF2A )
+		# RFF  locks
+		deltaRF1F = - (10.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+		deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
+		print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
+		newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+		hc.SetRF1FMCentre( newRF1F )
+		#
+		deltaRF2F = - (10.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+		deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
+		print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
+		newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+		hc.SetRF2FMCentre( newRF2F )
 	
 
 def updateLocksNL(bState):
@@ -360,14 +368,12 @@ def EDMGo():
 	if cluster == "":
 		cluster = suggestedClusterName
 		print("Using cluster " + suggestedClusterName)
-	mwManualState = prompt("Microwave manual state (true/false)? ") 
 	eState = hc.EManualState
 	print("E-state: " + str(eState))
 	bState = hc.BManualState
 	print("B-state: " + str(bState))
 	rfState = hc.RFManualState
 	print("rf-state: " + str(rfState))
-	print("mw-state: " + str(mwManualState))
 	# this is to make sure the B current monitor is in a sensible state
 	#hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase 
@@ -390,7 +396,7 @@ def EDMGo():
 	hc.EnableGreenSynth( True )
 	print("leakage monitors calibrated")
 
-	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV,mwManualState)
+	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV)
 
 	# loop and take data
 	blockIndex = 0
@@ -411,7 +417,16 @@ def EDMGo():
 		print("Loading temp config.")
 		bh.LoadConfig(tempConfigFile)
 		# take the block and save it
-		print("Running ...")
+		print("Running Target Stepper ...")
+		bh.StartTargetStepperAndWait()
+		print("Target Stepper finished")
+		if bh.TargetHealthy == False:
+			print("Unable to find acceptable spot")
+			print("Stopping Cluster")
+			hc.EnableEField( False )
+			bh.StopPattern()
+			break
+		print("Running Block ...")
 		bh.AcquireAndWait()
 		print("Done.")
 		blockPath = '%(p)s%(c)s_%(i)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex}
@@ -426,12 +441,12 @@ def EDMGo():
 		File.Delete(tempConfigFile)
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
-		updateLocks(bState, mwManualState)
+		updateLocks(bState)
 		# randomise Ramsey phase
 		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 
-		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV, mwManualState)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV)
 		pmtChannelValues = bh.DBlock.ChannelValues[0]
 		magChannelValues = bh.DBlock.ChannelValues[2]
 		mini1ChannelValues = bh.DBlock.ChannelValues[9]
@@ -465,11 +480,11 @@ def EDMGo():
 		print "Average E_{Mag} for the last 10 blocks " + str(runningEmag1Mean)
 
 
-		if (dbValue < 8):
-			print("Dodgy spot target rotation.")
-			for i in range(3):
-				hc.StepTarget(2)
-				System.Threading.Thread.Sleep(500)
+		#if (dbValue < 8):
+		#	print("Dodgy spot target rotation.")
+		#	for i in range(3):
+		#		hc.StepTarget(2)
+		#		System.Threading.Thread.Sleep(500)
 		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 			print("Recalibrating leakage monitors.")
 			# calibrate leakage monitors

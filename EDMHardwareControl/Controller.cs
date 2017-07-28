@@ -1384,6 +1384,18 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool MwListSweepEnabled
+        {
+            get
+            {
+                return window.listSweepEnabledCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.listSweepEnabledCheckBox, value);
+            }
+        }
+
         public bool MwSwitchState
         {
             get
@@ -1902,6 +1914,23 @@ namespace EDMHardwareControl
                     break;
             }
         }
+
+        public void ReSwitch(string channel, bool state)
+        {
+            switch (channel)
+            {
+                case "eChan":
+                    break;
+                case "probeAOM": //probe laser
+                    break;
+                case "pumpAOM": //probe laser
+                    break;
+                case "mwChan":
+                    ReSwitchMwAndWait(state);
+                    break;
+            }
+        }
+
 
         private bool lf1State;
         private double calculateProbeAOMFrequency(bool lf1State)
@@ -3685,6 +3714,7 @@ namespace EDMHardwareControl
 
         public void EnableAnapico(bool enable)
         {
+            UpdateAnapicoRAMList(MwSwitchState);
             anapico.Connect();
             if (enable)
             {
@@ -3710,46 +3740,59 @@ namespace EDMHardwareControl
         // <data> has to be the form <frequency in Hz>;<power in dBm>;<dwell on time>;<dwell off time>\r\n<next frequency in Hz>...
         public void UpdateAnapicoRAMList(bool trueState)
         {
-            anapico.Connect();
-            if (trueState)
+            try
             {
-                string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
-                    + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
-                    + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+                bool currentMwListSweepStatus = MwListSweepEnabled;
+                MwListSweepEnabled = false;
+                anapico.Connect();
+                if (trueState)
+                {
+                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
 
-                int numBytes = list.Length;
+                    int numBytes = list.Length;
 
-                int numDigits = numBytes.ToString().Length;
+                    int numDigits = numBytes.ToString().Length;
 
-                string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+                    string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
 
-                AnapicoBottomProbeMWf0Indicator = true;
-                AnapicoBottomProbeMWf1Indicator = false;
-                AnapicoTopProbeMWf0Indicator = false;
-                AnapicoTopProbeMWf1Indicator = true;
+                    AnapicoBottomProbeMWf0Indicator = true;
+                    AnapicoBottomProbeMWf1Indicator = false;
+                    AnapicoTopProbeMWf0Indicator = false;
+                    AnapicoTopProbeMWf1Indicator = true;
 
-                anapico.WriteList(sendList);
+                    anapico.WriteList(sendList);
+                }
+                else
+                {
+                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    int numBytes = list.Length;
+
+                    int numDigits = numBytes.ToString().Length;
+
+                    string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+
+                    AnapicoBottomProbeMWf0Indicator = false;
+                    AnapicoBottomProbeMWf1Indicator = true;
+                    AnapicoTopProbeMWf0Indicator = true;
+                    AnapicoTopProbeMWf1Indicator = false;
+
+                    anapico.WriteList(sendList);
+                }
+                anapico.Disconnect();
+                MwListSweepEnabled = currentMwListSweepStatus;
             }
-            else
+            catch
             {
-                string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
-                    + AnapicoFrequency1.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
-                    + AnapicoFrequency0.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
-
-                int numBytes = list.Length;
-
-                int numDigits = numBytes.ToString().Length;
-
-                string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
-
-                AnapicoBottomProbeMWf0Indicator = false;
-                AnapicoBottomProbeMWf1Indicator = true;
-                AnapicoTopProbeMWf0Indicator = true;
-                AnapicoTopProbeMWf1Indicator = false;
-
-                anapico.WriteList(sendList);
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
             }
-            anapico.Disconnect();
         }
 
         public void EnableAnapicoListSweep(bool enable)
@@ -3829,6 +3872,17 @@ namespace EDMHardwareControl
             switchMwThread.Join();
         }
 
+        public void ReSwitchMwAndWait(bool state)
+        {
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
+                Thread.Sleep((int)(1000));
+                SwitchMwAndWait(state);
+
+        }
+
         public void SwitchMwAndWait()
         {
             SwitchMwAndWait(!MwSwitchState);
@@ -3861,7 +3915,7 @@ namespace EDMHardwareControl
                 SwitchingMw = true;
 
                 MwSwitchState = newMwSwitchState;
-                Thread.Sleep((int)(170)); //Here I put in the 164ms delay time (of the Anapico switching) by hand. 
+                //Thread.Sleep((int)(170)); //Here I put in the 164ms delay time (of the Anapico switching) by hand. 
             }
 
             MwSwitchDone();

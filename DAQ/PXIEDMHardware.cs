@@ -63,6 +63,10 @@ namespace DAQ.HAL
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
 
+            // add the IP address of the computer here if you want to remotely control programs using tcp
+            Info.Add("IPAddress", "AnIPAddress"); 
+
+
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
@@ -204,10 +208,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
 
             // E field control and monitoring
-            //AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("cPlusMonitor", daqBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("cMinusMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("cPlusMonitor", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("cMinusMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao0", 0, 10);
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao1", 0, 10);
