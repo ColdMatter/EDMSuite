@@ -19,6 +19,9 @@ namespace DAQ.HAL
 
         public TCLEDMHardware()
         {
+            // add the IP address of the computer here if you want to remotely control programs using tcp
+            Info.Add("IPAddress", "155.198.206.103"); 
+
             //Add the boards
             Boards.Add("tclBoardPump", "/PXI1Slot5");
             Boards.Add("tclBoardProbe", "/PXI1Slot2");

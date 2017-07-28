@@ -257,6 +257,23 @@ namespace TransferCavityLock2012
             SlaveLasers[laserName].LaserSetPoint = newSetpoint;
         }
 
+        public void SetLaserOutputVoltage(string laserName, double newVoltage)
+        {
+            SlaveLasers[laserName].VoltageToLaser = newVoltage;
+            SlaveLasers[laserName].SetLaserVoltage();
+        }
+
+        public void UnlockLaser(string laserName)
+        {
+            SlaveLasers[laserName].DisengageLock();
+        }
+
+        public void LockLaser(string laserName)
+        {
+            SlaveLasers[laserName].ArmLock();
+        }
+
+
         #endregion
 
         #region SCAN! (MAIN PART OF PROGRAM. If reading through code, start here)
