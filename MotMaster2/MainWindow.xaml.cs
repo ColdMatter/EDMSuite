@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using RemoteMessagingNS;
 
 
 namespace MOTMaster2
@@ -23,6 +24,9 @@ namespace MOTMaster2
     {
         public static Controller controller;
         private RemoteMessenger messenger;
+        ErrorManager errors;
+        RemoteMessaging remoteMsg;
+
         public MainWindow()
         {
 
@@ -31,6 +35,7 @@ namespace MOTMaster2
             controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
+            errors = new ErrorManager(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
  
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
@@ -81,6 +86,7 @@ namespace MOTMaster2
         private bool SingleShot() // true if OK
         {
             return SingleShot(null);
+            
         }
 
         private static string
@@ -545,6 +551,10 @@ namespace MOTMaster2
         private void Log(string text)
         {
             tbLogger.AppendText("> " + text + "\n");
+
+            //tbLogger.Focus();
+            //tbLogger.CaretIndex = tbLogger.Text.Length;
+            tbLogger.ScrollToEnd();
         }
 
         private void setProperty_Click(object sender, RoutedEventArgs e)
@@ -605,6 +615,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
+            errors.warningMsg("some error text", 123); return;
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             Button btn = sender as Button;
             switch (btn.Name)
@@ -638,11 +649,6 @@ namespace MOTMaster2
             if (tbExperimentRun.Text != "---") controller.ExperimentRunTag = tbExperimentRun.Text;
         }
 
-        private void saveCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            controller.SaveToggle(saveCheck.IsChecked.Value);
-        }
-
         public class MMexec
         {
             public string mmexec { get; set; }
@@ -654,6 +660,9 @@ namespace MOTMaster2
 
         public bool Interpreter(string json)
         {
+            MessageBox.Show(json);
+            messenger.Send("<" + json + ">");
+            return true;
             //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
             if (mme.sender.Equals("")) mme.sender = "none";
@@ -694,30 +703,57 @@ namespace MOTMaster2
             
         }
 
+        private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            controller.SaveToggle(cbHub.SelectedIndex == 1);
+            if (btnRemote == null) return;
+            if (cbHub.SelectedIndex > 1)
+            {
+                btnRemote.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                btnRemote.Visibility = System.Windows.Visibility.Hidden;
+            }
+            
+        }
+
         private async void btnRemote_Click(object sender, RoutedEventArgs e)
         {
-            if (btnRemote.Content.Equals("Remote"))
+            if (btnRemote.Content.Equals("Connect"))
             {
-                messenger = new RemoteMessenger(this);
-                Log("Awaiting remote requests");
-                btnRemote.Content = "Cancel Remote";
-                btnRemote.Background = Brushes.Red;
-                try
+                if (cbHub.SelectedIndex == 2)
                 {
-                    await messenger.Run();
+                    remoteMsg = new RemoteMessaging("Axel Hub");
+                    if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
+                    else errors.warningMsg("Connection to Axel-hub failed !");
                 }
-                catch (Exception ex)
+                else
                 {
-                    Log("Error with remote command: " + ex.Message);
+                    messenger = new RemoteMessenger();
+                    messenger.Remote += Interpreter;
+                    Log("Awaiting remote requests");
+                    btnRemote.Content = "Disconnect";
+                    btnRemote.Background = Brushes.LightGreen;
+                    try
+                    {
+                        await messenger.Run();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("Error with remote command: " + ex.Message);
+                    }
                 }
             }
             else
             {
                 Log("Closing remote connection");
-                messenger.Close();
-                btnRemote.Content = "Remote";
-                btnRemote.Background = Brushes.LightGreen;
+                if (remoteMsg != null) remoteMsg = null;
+                if (messenger != null) messenger.Close();
+                btnRemote.Content = "Connect";
+                btnRemote.Background = Brushes.LightBlue;
             }
         }
     }
+    
 }
