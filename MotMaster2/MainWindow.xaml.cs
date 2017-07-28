@@ -25,6 +25,7 @@ namespace MOTMaster2
         private RemoteMessenger messenger;
         public MainWindow()
         {
+
             controller = new Controller();
             controller.StartApplication();
             controller.LoadDefaultSequence();
@@ -214,7 +215,7 @@ namespace MOTMaster2
                 double byScanD = double.Parse(byScanS);
                 progBar.Minimum = fromScanD;
                 progBar.Maximum = toScanD;
-                scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
+                scanLength = (int)((toScanD - fromScanD) / byScanD);
                 if (scanLength < 0)
                 {
                     MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
@@ -234,7 +235,8 @@ namespace MOTMaster2
                 controller.SetBatchNumber(c);
                 param.Value = scanParam;
                 scanDict[parameter] = scanParam;
-                progBar.Value = (scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam); 
+                progBar.Value = (scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam);
+                
                 ScanFlag = SingleShot(scanDict);
                 tbCurValue.Content = scanParam.ToString();
                 DoEvents();

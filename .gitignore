@@ -29,8 +29,12 @@ iamjoe.sh
 
 MotMaster2/Data/*
 
-MotMaster2/Scripts/defaultScript.sm2
+*.sm2
+
+MotMaster2/Scripts/*.sm2
+
 packages/*
 
 *.tmp_proj
+
 .vscode/*

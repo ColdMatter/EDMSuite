@@ -77,7 +77,7 @@ namespace MOTMaster2
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        private WindfreakSynth microSynth;
+        private Gigatronics7100Synth microSynth;
         public string ExperimentRunTag { get; set; }
         MuquansController muquans = null;
 
@@ -122,7 +122,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (Gigatronics7100Synth)Environs.Hardware.Instruments["microwaveSynth"]; if (microSynth != null) microSynth.Connect(); } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -187,7 +187,7 @@ namespace MOTMaster2
         //TODO Add this to the experiment-specific AccelSuite
         private void WriteToMicrowaveSynth(double value)
         {
-            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
+            if (config.UseMuquans && !config.Debug) Console.Write("1"); /*microSynth.ChannelA.Frequency = value;*/microSynth.Frequency = value;
         }
         #endregion
 
@@ -360,7 +360,7 @@ namespace MOTMaster2
 
                     if (config.UseMuquans)
                     {
-                        microSynth.ChannelA.RFOn = true;
+                        //microSynth.ChannelA.RFOn = true;
                        
                        
                         //microSynth.ChannelA.Amplitude = 6.0;
@@ -436,7 +436,7 @@ namespace MOTMaster2
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                    if (config.UseMuquans) microSynth.ChannelA.RFOn = false;
+                    //if (config.UseMuquans) microSynth.ChannelA.RFOn = false;
 
 
                 }

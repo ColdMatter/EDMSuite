@@ -57,7 +57,7 @@
       "Name": "Initialization 1",
       "Description": "",
       "Enabled": true,
-      "Duration": "10",
+      "Duration": "100",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -664,7 +664,7 @@
       "Name": "2DLoading",
       "Description": "",
       "Enabled": true,
-      "Duration": 100.0,
+      "Duration": "100",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1487,7 +1487,12 @@
         "mphiCTRL",
         "motCTRL"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "",
+          "Value": ""
+        }
+      ],
       "Name": "Intensity ramp",
       "Description": "",
       "Enabled": true,
@@ -1853,7 +1858,12 @@
         "ybiasCoil",
         "xbiasCoil"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "",
+          "Value": ""
+        }
+      ],
       "Name": "StateSelectPreset",
       "Description": "",
       "Enabled": true,
@@ -3191,8 +3201,8 @@
       "Name": "MW1",
       "Description": "",
       "Enabled": true,
-      "Duration": "500",
-      "Timebase": 1,
+      "Duration": "55",
+      "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -4188,7 +4198,8 @@
       },
       "usedAnalogChannels": [
         "zbiasCoil",
-        "ybiasCoil"
+        "ybiasCoil",
+        "mphiCTRL"
       ],
       "serialCommands": [],
       "Name": "Detection B field 2",
@@ -5163,7 +5174,9 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "motCTRL"
+      ],
       "serialCommands": [],
       "Name": "DetWait",
       "Description": "",
@@ -6591,24 +6604,6 @@
       "IsHidden": false
     },
     {
-      "Name": "xBiasInt",
-      "Value": 1.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "yBiasInt",
-      "Value": 2.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "zBiasInt",
-      "Value": 3.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
       "Name": "darkPrep",
       "Value": 1.0,
       "Description": "",
@@ -6617,30 +6612,6 @@
     {
       "Name": "repPrep",
       "Value": 0.38,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "longRaman",
-      "Value": 96.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "shortRaman",
-      "Value": 10.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "motPrepTime",
-      "Value": 1.38,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "blowAwayTime",
-      "Value": 1.0,
       "Description": "",
       "IsHidden": false
     },
@@ -6657,56 +6628,8 @@
       "IsHidden": false
     },
     {
-      "Name": "motDetuning",
-      "Value": -15.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "molassesDetuning",
-      "Value": 150.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "prepDetuning",
-      "Value": 226.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "backgroundDDSFreq",
-      "Value": 89.75,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
       "Name": "motCTRLImg",
-      "Value": 0.45,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "mPhiVary",
-      "Value": 10.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "RamanOffsetTime",
-      "Value": 0.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "ExpansionTime2",
-      "Value": 5.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "BlowAwayDDS",
-      "Value": 135.0,
+      "Value": 0.4,
       "Description": "",
       "IsHidden": false
     },
@@ -6735,12 +6658,6 @@
       "IsHidden": false
     },
     {
-      "Name": "M2freq2",
-      "Value": 6.8344,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
       "Name": "zpAimag",
       "Value": 6.5,
       "Description": "",
@@ -6753,20 +6670,8 @@
       "IsHidden": false
     },
     {
-      "Name": "M2Chirp",
-      "Value": 0.0,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
       "Name": "mPhiCTRLImg",
-      "Value": 0.22,
-      "Description": "",
-      "IsHidden": false
-    },
-    {
-      "Name": "testing",
-      "Value": 0.0,
+      "Value": 0.23,
       "Description": "",
       "IsHidden": false
     }
