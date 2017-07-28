@@ -90,7 +90,7 @@ namespace MOTMaster2
             if (log == null) return;
 
             TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
-            rangeOfText1.Text = text;
+            rangeOfText1.Text = text + "\n";
             rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));      
         }
 
@@ -99,9 +99,14 @@ namespace MOTMaster2
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
         }
 
+        private bool IsForcePopup(bool forcePopup)
+        {
+            return forcePopup || ((status == null) && (log == null));
+        }
+
         public async void errorMsg(string errorText, int errorID, bool forcePopup = false) 
         {
-            if (forcePopup)
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(errorText, " Error message ("+errorID.ToString()+")");
             }
@@ -109,14 +114,14 @@ namespace MOTMaster2
             {
                 StatusLine("Error: "+errorText, Brushes.Red.Color);
             }
-            string outText = outText = "(wrn:" + errorID.ToString() + ") " + errorText;  
-            AppendLog(outText + "\n", Brushes.Red.Color);
+            string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;  
+            AppendLog(outText, Brushes.Red.Color);
             await WriteFileAsync(outText);
         }
 
         public async void warningMsg(string warningText, int warningID = -1, bool forcePopup = false)
         {
-            if (forcePopup)
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(warningText, " Warning message (" + warningID.ToString() + ")");
             }
@@ -125,20 +130,21 @@ namespace MOTMaster2
                 StatusLine("Warning: " + warningText, Brushes.Green.Color);
             }
             string outText = warningText;
-            if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;  
+            if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;
             AppendLog(outText, Brushes.Green.Color);
             await WriteFileAsync(outText);
         }
 
         public void simpleMsg(string simpleText, bool forcePopup = false)
         {
-            if (forcePopup)
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(simpleText, " MOTmaster Message");
             }
             else
             {
                 StatusLine("Status: " + simpleText + "\n", dftForeground);
+                btnReset.Visibility = Visibility.Hidden;
             }
             AppendLog(simpleText, dftForeground);           
         }

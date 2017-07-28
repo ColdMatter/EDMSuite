@@ -3,6 +3,7 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows.Interop;
@@ -14,58 +15,74 @@ namespace RemoteMessagingNS
     {
         string partner;
         IntPtr windowHandle;
-        private string _lastMsg = "";
-        public string lastMsg { get { return _lastMsg;  } }
+        private string _lastRcvMsg = "";
+        public string lastRcvMsg { get { return _lastRcvMsg;  } }
+        private string _lastSndMsg = "";
+        public string lastSndMsg { get { return _lastSndMsg; } }
+        public List<string> msgLog;
+
+        public bool Enabled = true;
+
         public RemoteMessaging(string Partner)
         {
             partner = Partner;
             windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
             HwndSource hwndSource = HwndSource.FromHwnd(windowHandle);
             hwndSource.AddHook(new HwndSourceHook(WndProc));
+
+            msgLog = new List<string>();
         }
 
         public delegate bool RemoteHandler(string msg);
         public event RemoteHandler Remote;
-
         protected bool OnRemote(string msg)
         {
             if (Remote != null) return Remote(msg);
             else return false;
         }
 
+        public delegate void ActiveCommHandler(bool msg);
+        public event ActiveCommHandler ActiveComm;
+        protected void OnActiveComm(bool msg)
+        {
+            if (ActiveComm != null) ActiveComm(msg);
+        }
+
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == WM_COPYDATA)
+            if ((msg == WM_COPYDATA) && Enabled)
             {
                 COPYDATASTRUCT cds = (COPYDATASTRUCT)Marshal.PtrToStructure(lParam, (typeof(COPYDATASTRUCT)));
                 if (cds.cbData == Marshal.SizeOf(typeof(MyStruct)))
                 {
                     MyStruct myStruct = (MyStruct)Marshal.PtrToStructure(cds.lpData, typeof(MyStruct));
-                    _lastMsg = myStruct.Message;
                     int msgID = myStruct.Number;
                     if (msgID == 666)
                     {
-                        switch (lastMsg) 
+                        _lastRcvMsg = myStruct.Message;
+                        msgLog.Add("R: " + _lastRcvMsg);
+                        switch (lastRcvMsg) 
                         {
                         case("ping"):
                                 handled = sendCommand("pong");
+                                OnActiveComm(handled);
                                 break;
                         case("pong"):
-                                handled = true;
+                                handled = true;                               
                                 break;
-                        default: handled = OnRemote(lastMsg); // the command systax is OK
+                        default: handled = OnRemote(lastRcvMsg); // the command systax is OK
                                 break;
                         }
                     }
                     else handled = false;
                 }
-                
             }
             return hwnd;
         }
 
         public bool sendCommand(string msg)
         {
+            if (!Enabled) return false;
             // Find the target window handle.
             IntPtr hTargetWnd = NativeMethod.FindWindow(null, partner);
             if (hTargetWnd == IntPtr.Zero)
@@ -103,6 +120,10 @@ namespace RemoteMessagingNS
                     MessageBox.Show(String.Format("SendMessage(WM_COPYDATA) failed w/err 0x{0:X}", result));
                     return false;
                 }
+                else
+                {
+                    _lastSndMsg = msg; msgLog.Add("S: " + _lastSndMsg);
+                }
                 return true;
             }                
             finally
@@ -130,13 +151,14 @@ namespace RemoteMessagingNS
             bool back = sendCommand("ping");
             if (back)
             {
-                for (int i = 0; i<100; i++)
+                for (int i = 0; i<500; i++)
                 {
+                    Thread.Sleep(10);
                     DoEvents();
-                    if (lastMsg.Equals("pong")) break;
+                    if (lastRcvMsg.Equals("pong")) break;
                 }
             }
-            return back && (lastMsg.Equals("pong"));
+            return back && (lastRcvMsg.Equals("pong"));
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]       

@@ -658,10 +658,7 @@ namespace MOTMaster2
 
         public bool Interpreter(string json)
         {
-            MessageBox.Show(json);
-            messenger.Send("<" + json + ">");
-            return true;
-            //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
+             //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
             if (mme.sender.Equals("")) mme.sender = "none";
             if (mme.id == 0) mme.id = -1;
@@ -705,6 +702,8 @@ namespace MOTMaster2
         {
             controller.SaveToggle(cbHub.SelectedIndex == 1);
             if (btnRemote == null) return;
+            if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
+            if (cbHub.SelectedIndex == 3) btnRemote.Content = "Connect";
             if (cbHub.SelectedIndex > 1)
             {
                 btnRemote.Visibility = System.Windows.Visibility.Visible;
@@ -718,39 +717,50 @@ namespace MOTMaster2
 
         private async void btnRemote_Click(object sender, RoutedEventArgs e)
         {
-            if (btnRemote.Content.Equals("Connect"))
             {
                 if (cbHub.SelectedIndex == 2)
                 {
-                    remoteMsg = new RemoteMessaging("Axel Hub");
                     if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
-                    else errors.warningMsg("Connection to Axel-hub failed !");
+                    else errors.errorMsg("Connection to Axel-hub failed !", 666);
                 }
-                else
+                if (cbHub.SelectedIndex == 3) 
                 {
-                    messenger = new RemoteMessenger();
-                    messenger.Remote += Interpreter;
-                    Log("Awaiting remote requests");
-                    btnRemote.Content = "Disconnect";
-                    btnRemote.Background = Brushes.LightGreen;
-                    try
+                    if (btnRemote.Content.Equals("Connect")) 
                     {
-                        await messenger.Run();
+                        messenger = new RemoteMessenger();
+                        messenger.Remote += Interpreter;
+                        Log("Awaiting remote requests");
+                        btnRemote.Content = "Disconnect";
+                        btnRemote.Background = Brushes.LightGreen;
+                        try
+                        {
+                            await messenger.Run();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log("Error with remote command: " + ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Log("Error with remote command: " + ex.Message);
+                        Log("Closing remote connection");
+                        if (messenger != null) messenger.Close();
+                        btnRemote.Content = "Connect";
+                        btnRemote.Background = Brushes.LightBlue;
                     }
                 }
-            }
-            else
-            {
-                Log("Closing remote connection");
-                if (remoteMsg != null) remoteMsg = null;
-                if (messenger != null) messenger.Close();
-                btnRemote.Content = "Connect";
-                btnRemote.Background = Brushes.LightBlue;
-            }
+            } 
+            
+        }
+        private void OnActiveComm(bool active)
+        {
+            if (active) errors.simpleMsg("Connected with Axel Hub");
+            else errors.errorMsg("Commun. problem to Axel Hub", 666);
+        }
+        private void frmMain_SourceInitialized(object sender, EventArgs e)
+        {
+            remoteMsg = new RemoteMessaging("Axel Hub");
+            remoteMsg.ActiveComm += OnActiveComm;
         }
     }
     
