@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using DAQ.Environment;
 using System.Threading;
 using System.Runtime.Remoting;
+using System.Net;
+using System.Net.Sockets;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -61,21 +63,17 @@ namespace ScanMaster.Acquire.Plugins
                 scannedParameter = (String)settings["scannedParameter"];
             }
 
+            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
+
+            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
+            {
+                if (addr.AddressFamily == AddressFamily.InterNetwork)
+                name = addr.ToString();
+            }
+
             EnvironsHelper eHelper = new EnvironsHelper(computer);
 
-
             string tcpChannel = ((TCLConfig)eHelper.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
-
-          
-
-            if (computer == hostName)
-            {
-                name = "localhost";
-            }
-            else
-            {
-                name = eHelper.Hardware.GetInfo("IPAddress").ToString();
-            }
 
             tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://"+ name + ":" + tcpChannel + "/controller.rem"));
 

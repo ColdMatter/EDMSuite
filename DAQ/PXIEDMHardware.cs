@@ -63,10 +63,6 @@ namespace DAQ.HAL
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
 
-            // add the IP address of the computer here if you want to remotely control programs using tcp
-            Info.Add("IPAddress", "AnIPAddress"); 
-
-
             Info.Add("sourceToDetect", 1.3);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
