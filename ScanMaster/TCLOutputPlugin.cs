@@ -86,6 +86,7 @@ namespace ScanMaster.Acquire.Plugins
         public override void ScanStarting()
         {
             initialVoltage = tclController.SlaveLasers[(string)settings["channel"]].VoltageToLaser;
+            initialVoltage = tclController.SlaveLasers[(string)settings["channel"]].VoltageToLaser;
             initialSetPoint = tclController.SlaveLasers[(string)settings["channel"]].LaserSetPoint;
             if (scannedParameter == "voltage")
             {

@@ -273,6 +273,16 @@ namespace TransferCavityLock2012
             SlaveLasers[laserName].ArmLock();
         }
 
+        public double GetLaserSetpoint(string laserName)
+        {
+            return SlaveLasers[laserName].LaserSetPoint;
+        }
+
+        public double GetLaserVoltage(string laserName)
+        {
+            return SlaveLasers[laserName].VoltageToLaser; 
+        }
+
 
         #endregion
 
