@@ -144,11 +144,14 @@ namespace MOTMaster2
             }
             progBar.Minimum = 0;
             progBar.Maximum = Iters;
+            Controller.expData.ClearData();
+            Controller.expData.ExperimentName = controller.ExperimentRunTag;
             for (int i = 0; i < Iters; i++)
             {
                 
                 // single shot
                 ScanFlag=SingleShot();
+
                 controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
@@ -653,7 +656,8 @@ namespace MOTMaster2
             public string sender { get; set; }
             public string cmd { get; set; }
             public int id { get; set; }
-            public Dictionary<string, object> prms;           
+            public Dictionary<string, object> prms = new Dictionary<string,object>();       
+    
         }
 
         public bool Interpreter(string json)

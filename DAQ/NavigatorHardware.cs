@@ -19,7 +19,7 @@ namespace DAQ.HAL
             //add information for MMConfig
             MMConfig config = new MMConfig(false, false, false, Environment.Environs.Debug);
             config.HSDIOCard = true;
-            config.UseAI = false;
+            config.UseAI = true;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
@@ -55,7 +55,8 @@ namespace DAQ.HAL
           
             Info.Add("analogOutBoards", aoBoards);
             Info.Add("analogInBoards", aiBoards);
-            Info.Add("digitalBoards", doBoards); 
+            Info.Add("digitalBoards", doBoards);
+            Info.Add("AIAcquireTrigger", "/pfi0");
             //Add other instruments such as serial channels
             Instruments.Add("muquansSlave", new MuquansRS232("ASRL18::INSTR","slave"));
             Instruments.Add("muquansAOM", new MuquansRS232("ASRL20::INSTR","aom"));

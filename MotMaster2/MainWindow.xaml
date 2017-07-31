@@ -164,9 +164,8 @@
                             <RowDefinition Height="44*"/>
                             <RowDefinition Height="39*"/>
                         </Grid.RowDefinitions>
-                        <ni:GraphInteractionPalette HorizontalAlignment="Left" Margin="10,1,0,0" Grid.Row="0" VerticalAlignment="Top" Width="140"/>
-                        <ni:Graph Margin="0" Interactions="Pan, Zoom" Grid.Row="1"/>
-                        <GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>
+                        <controls:AnalogInputChart Height="Auto" Width="500" Margin="10,-58,10,10.5" Grid.RowSpan="3"/>
+                        <!--<GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>-->
                     </Grid>
                 </TabItem>
 

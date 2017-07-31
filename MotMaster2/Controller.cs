@@ -65,6 +65,7 @@ namespace MOTMaster2
         public MOTMasterScript script;
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
+        public static ExperimentData expData;
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -109,8 +110,8 @@ namespace MOTMaster2
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            //analogChannels =
+            aip = new MMAIWrapper((string)Environs.Hardware.Boards["analogIn"]);
+
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -345,6 +346,11 @@ namespace MOTMaster2
             else
             {
                 sequence = getSequenceFromSequenceData(dict);
+                if (config.UseAI)
+                {
+                    CreateAcquisitionTimeSegments();
+                    MainWindow.MMexec initComm = InitialCommand();
+                }
             }
 
             if (sequence != null)
@@ -358,11 +364,9 @@ namespace MOTMaster2
 
                     if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-                    if (config.UseMuquans)
+                    if (config.UseMuquans && !config.Debug)
                     {
                         microSynth.ChannelA.RFOn = true;
-                       
-                       
                         //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                         //microSynth.ReadSettingsFromDevice();
@@ -436,7 +440,13 @@ namespace MOTMaster2
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                    if (config.UseMuquans) microSynth.ChannelA.RFOn = false;
+                    if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+                    if (config.UseAI)
+                    { if (config.Debug) expData.AddExperimentShot(new ExperimentShot(batchNumber, expData.GenerateFakeData()), builder.Parameters); else expData.AddExperimentShot(new ExperimentShot(batchNumber, aip.GetAnalogData()), builder.Parameters);
+                        double[] rawData = new double[aip.GetAnalogData().GetLength(0)];
+                        for (int i =0; i< rawData.Length; i++) rawData[i] = aip.GetAnalogData()[0,i];
+                        MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
+                    }
 
 
                 }
@@ -450,7 +460,7 @@ namespace MOTMaster2
                 MessageBox.Show("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
 
             }
-
+            
             status = RunningState.stopped;
 
 
@@ -915,6 +925,67 @@ namespace MOTMaster2
             if (ciceroConverter.CheckValidHardwareChannels() && ciceroConverter.CanConvertFrom(ciceroSequence.GetType())) sequenceData = (Sequence)ciceroConverter.ConvertFrom(ciceroSequence);
         }
 
+        #endregion
+
+        #region Saving and Processing Experiment Data
+        public void SaveExperimentData()
+        {
+            expData.SaveData(motMasterDataPath);
+        }
+        //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
+        public void CreateAcquisitionTimeSegments()
+        {
+            if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new Exception("No channel named acquisitionTriger found in Hardware");
+            Dictionary<string, Tuple<int, int>> analogSegments = new Dictionary<string,Tuple<int,int>>();
+            int sampleRate = expData.SampleRate;
+            int sampleStartTime = 0;
+            foreach (SequenceStep step in sequenceData.Steps)
+            {   
+                if (step.GetDigitalData("acquisitionTrigger"))
+                {
+                    double timeMultiplier = 1.0;
+                    if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
+                    else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
+                    else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1.0;
+                    double duration = Convert.ToDouble(step.Duration);
+                    int sampleDuration = Convert.ToInt32(duration*timeMultiplier*sampleRate);
+                    string name = step.Name;
+                    Tuple<int, int> segmentTimes = Tuple.Create<int,int>(sampleStartTime, sampleStartTime + sampleDuration );
+                    analogSegments[name] = segmentTimes;
+                    sampleStartTime += sampleDuration;
+                }
+                
+            }
+            expData.AnalogSegments = analogSegments;
+            expData.NSamples = sampleStartTime;
+        }
+        public MainWindow.MMexec ConvertDataToAxelHub(double[] aiData)
+        {
+            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            axelCommand.sender = "MOTMaster";
+            axelCommand.cmd = "shotData";
+            Dictionary<string,double[]> segData = expData.SegmentShot(aiData);
+            foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
+            axelCommand.prms["runNum"] = batchNumber;
+            return axelCommand;
+        }
+
+        public MainWindow.MMexec InitialCommand(Dictionary<string,object> scanParam)
+        {
+            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            axelCommand.sender = "MOTMaster";
+            axelCommand.cmd = "shotConfig";
+            // TODO add method to calculate interferometer time. Perhaps just a parameter? 
+            //axelCommand.prms["period"] = sequenceData.Steps.;
+            axelCommand.prms["expName"] = (ExperimentRunTag!=null) ? ExperimentRunTag:"None";
+            axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
+            axelCommand.prms["scanParam"] = scanParam;
+            return axelCommand;
+        }
+        public MainWindow.MMexec InitialCommand()
+        {
+            return InitialCommand(null);
+        }
         #endregion
 
     }
