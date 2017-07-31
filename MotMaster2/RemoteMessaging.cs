@@ -151,7 +151,7 @@ namespace RemoteMessagingNS
             bool back = sendCommand("ping");
             if (back)
             {
-                for (int i = 0; i<500; i++)
+                for (int i = 0; i<200; i++)
                 {
                     Thread.Sleep(10);
                     DoEvents();
