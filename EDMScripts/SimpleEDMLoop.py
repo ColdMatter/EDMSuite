@@ -149,9 +149,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot
-	bc.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
+	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000;
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 200.0;
+	bc.Settings["minimumSignalToRun"] = 150.0;
 	bc.Settings["targetStepperGateStartTime"] = 2340.0;
 	bc.Settings["targetStepperGateEndTime"] = 2540.0;
 	return bc

@@ -79,20 +79,19 @@ namespace ScanMaster.Acquire.Plugins
 
             scanParameter = 0;
 
+            initialVoltage = tclController.GetLaserVoltage((string)settings["channel"]);
+            initialSetPoint = tclController.GetLaserSetpoint((string)settings["channel"]);
+            if (scannedParameter == "voltage")
+            {
+                tclController.UnlockLaser((string)settings["channel"]);
+            }
             setV((double)settings["start"], 200, scannedParameter);
         }
         
 
         public override void ScanStarting()
         {
-            initialVoltage = tclController.SlaveLasers[(string)settings["channel"]].VoltageToLaser;
-            initialVoltage = tclController.SlaveLasers[(string)settings["channel"]].VoltageToLaser;
-            initialSetPoint = tclController.SlaveLasers[(string)settings["channel"]].LaserSetPoint;
-            if (scannedParameter == "voltage")
-            {
-                tclController.UnlockLaser((string)settings["channel"]);
-            }
-            
+            //Do Nothing   
         }
 
         public override void ScanFinished()
@@ -103,8 +102,8 @@ namespace ScanMaster.Acquire.Plugins
         public override void AcquisitionFinished()
         {
             setV(initialVoltage, 200, "voltage");
-            tclController.LockLaser((string)settings["channel"]);
             setV(initialSetPoint, 200, "setpoint");
+            tclController.LockLaser((string)settings["channel"]);
         }
 
         [XmlIgnore]
