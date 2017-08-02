@@ -204,6 +204,11 @@ namespace TransferCavityLock2012
             double newSD = Math.Pow(((Math.Pow(oldSD, 2) * 49 + Math.Pow(1500 * (fits[name + "Fits"][1] - fits["masterFits"][1] - SlaveLasers[name].LaserSetPoint) / config.FSRCalibrations[name], 2)) / 50), 0.5);
             ui.SetLaserSD(name, newSD);
         }
+        public void RefreshVoltageOnUI(string name)
+        {
+            ui.SetLaserVoltage(name, SlaveLasers[name].VoltageToLaser);
+        }
+
 
         #endregion
 
@@ -270,7 +275,7 @@ namespace TransferCavityLock2012
 
         public void LockLaser(string laserName)
         {
-            SlaveLasers[laserName].ArmLock();
+            SlaveLasers[laserName].Lock();
         }
 
         public double GetLaserSetpoint(string laserName)
@@ -400,6 +405,7 @@ namespace TransferCavityLock2012
                                 case SlaveLaser.LaserState.FREE:
 
                                     plotSlaveNoFit(slName, scanData);
+                                    RefreshVoltageOnUI(slName);
                                     break;
 
                                 case SlaveLaser.LaserState.LOCKING:
@@ -408,6 +414,7 @@ namespace TransferCavityLock2012
                                     plotSlave(slName, scanData, fits[slName + "Fits"]);
                                     sl.CalculateLaserSetPoint(fits["masterFits"], fits[slName + "Fits"]);
                                     sl.Lock();
+                                    RefreshVoltageOnUI(slName);
                                     RefreshErrorGraph(slName);
                                     count = 0;
                                     break;
