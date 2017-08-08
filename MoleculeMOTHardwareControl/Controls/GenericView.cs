@@ -12,11 +12,12 @@ namespace MoleculeMOTHardwareControl.Controls
 {
     public partial class GenericView : UserControl
     {
-        public GenericController controller;
+        public GenericController controller; 
 
         public GenericView()
         {
             InitializeComponent();
         }
+
     }
 }

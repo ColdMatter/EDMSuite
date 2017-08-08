@@ -110,6 +110,13 @@
       <DependentUpon>SidebandsMonitorTabView.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="Controls\SourceTabController.cs" />
+    <Compile Include="Controls\SourceTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SourceTabView.Designer.cs">
+      <DependentUpon>SourceTabView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +141,9 @@
     </Compile>
     <EmbeddedResource Include="Controls\SidebandsMonitorTabView.resx">
       <DependentUpon>SidebandsMonitorTabView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SourceTabView.resx">
+      <DependentUpon>SourceTabView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlWindow.resx">
       <SubType>Designer</SubType>

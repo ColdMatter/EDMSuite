@@ -43,6 +43,7 @@
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
+    <Compile Include="MicrowaveSpectroscopy.cs" />
     <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />

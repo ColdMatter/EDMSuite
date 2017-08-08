@@ -22,7 +22,7 @@ class typedproxy(object):
 sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\MOTMaster\\bin\\CaF\\"))
 clr.AddReferenceToFile("MOTMaster.exe")
 
-sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\DecelerationHardwareControl\\bin\\CaF\\"))
+sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\MoleculeMOTHardwareControl\\bin\\CaF\\"))
 clr.AddReferenceToFile("MoleculeMOTHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")

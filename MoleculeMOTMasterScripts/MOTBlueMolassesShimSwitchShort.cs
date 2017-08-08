@@ -24,7 +24,7 @@ public class Patterns : MOTMasterScript
         Parameters["FlashPulseDuration"] = 10;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 300;
+        Parameters["ExpansionTime"] = 500;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesDuration"] = 200;
 
@@ -67,7 +67,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.16;
+        Parameters["zShimLoadCurrent"] = 8.5;
         Parameters["shimFieldSwitchTime"] = 6200;
 
         // v0 Light Intensity
