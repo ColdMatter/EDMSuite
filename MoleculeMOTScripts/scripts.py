@@ -1,4 +1,7 @@
-# Import a whole load of stuff
+# make division work like you'd expect
+from __future__ import division
+
+# some generic stuff
 from System.IO import *
 from System.Drawing import *
 from System.Runtime.Remoting import *
@@ -7,12 +10,14 @@ from System.Windows.Forms import *
 from System.Xml.Serialization import *
 from System import *
 from System.Collections.Generic import Dictionary
+import time
+import itertools
+from random import shuffle
 
+# specific EDMSuite stuff
 from DAQ.Environment import *
 from DAQ import *
 from MOTMaster import *
-import time
-import itertools
 
 def run_script():
 	return 0
@@ -64,7 +69,14 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 	end = time.time()
 	print 'Finished, total time was {} s.'.format(int(round(end-start)))
 	
-def ScanMicrowaveFrequency(script_name, values):
+def ScanSingleParameter2(script_name, parameter_name, values):
+	ScanMultipleParameters(script_name, [parameter_name], [values])
+	
+def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range):
+	lowest_freq = centre_freq - freq_range/2
+	spacing = freq_range/(num_steps - 1)
+	values = [lowest_freq + spacing * x for x in range(0, num_steps)]
+	shuffle(values)
 	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
