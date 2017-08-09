@@ -17,6 +17,8 @@ namespace MOTMaster2
         public string ExperimentName {get; set;}
         //Collects time indices for each segment of analog data as a tuple tStart,tEnd
         public Dictionary<string, Tuple<int, int>> AnalogSegments { get; set; }
+
+        public List<string> IgnoredSegments { get; set; }
         //Raw data recorded from each shot
         List<ExperimentShot> shotData = new List<ExperimentShot>();
         //List of sequence parameters for each shot
@@ -25,8 +27,11 @@ namespace MOTMaster2
         public int SampleRate { get; set; }
         //Number of acquired samples
         public int NSamples { get; set; }
+        private Random random = new Random();
+
         public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
         {
+            if (AnalogSegments != null) shot.analogSegments = SegmentShot(shot);
             shotData.Add(shot);
             shotParams.Add(parameters);
         }
@@ -64,8 +69,7 @@ namespace MOTMaster2
         /// <returns></returns>
         public Dictionary<string,double[]> SegmentShot(ExperimentShot shot)
         {
-            double[] rawData = new double[shot.analogInData.Length];
-            for (int i = 0; i < rawData.Length; i++) rawData[i] = shot.analogInData[0, i];
+            double[] rawData = shot.analogInData;
             return SegmentShot(rawData);
         }
 
@@ -74,8 +78,8 @@ namespace MOTMaster2
             Dictionary<string, double[]> segData = new Dictionary<string, double[]>();
             foreach (KeyValuePair<string, Tuple<int, int>> entry in AnalogSegments.OrderBy(t => t.Value.Item1))
             {
-                double[] data = rawData.ToList().GetRange(entry.Value.Item1, entry.Value.Item2).ToArray();
-                segData[entry.Key] = data;
+                double[] data = rawData.ToList().GetRange(entry.Value.Item1, entry.Value.Item2-entry.Value.Item1).ToArray();
+                if(!IgnoredSegments.Contains(entry.Key))segData[entry.Key] = data;
             }
             return segData;
         }
@@ -83,11 +87,13 @@ namespace MOTMaster2
         {
             //Save Parameters to a file
             string paramJson = JsonConvert.SerializeObject(shotParams,Formatting.Indented);
+            
             //Saves raw data if flag set. Otherwise averages each segment and serialises that
             string dataJson = SaveRawData ? JsonConvert.SerializeObject(shotData, Formatting.Indented) : JsonConvert.SerializeObject(AverageEachSegment());
-            File.WriteAllText(filePath + "_" + ExperimentName + "_params.sm3",paramJson);
+            string timestamp = DateTime.Now.ToString("yyMMdd_Hmmss");
+            File.WriteAllText(filePath + "/" + ExperimentName +"_" + timestamp + "_parameters.sm3",paramJson);
             //Maybe save both raw data and averaged?
-            File.WriteAllText(filePath + "_" + ExperimentName + "_data.sm3", dataJson);
+            File.WriteAllText(filePath + "/" + ExperimentName +"_" + timestamp + "_data.sm3", dataJson);
         }
 
         //Useful when starting a new scan
@@ -99,19 +105,19 @@ namespace MOTMaster2
         }
 
         //Generates some fake data that is normally distributed about some mean value
-        public double[,] GenerateFakeData()
+        public double[] GenerateFakeData()
         {
-            double[,] fakeData = new double[1, NSamples];
-            for (int i = 0; i < NSamples; i++) { double g = Gauss(0, 1); fakeData[0, i] = g; Console.WriteLine(g); }
+            double[] fakeData = new double[NSamples];
+            for (int i = 0; i < NSamples; i++) { double g = Gauss(0, 1); fakeData[i] = g;}
             return fakeData;
         }
 
         //Randomly generates normally distributed numbers using the BoxMuller transform
         public double Gauss(double mean, double std)
         {
-            Random r = new Random();
-            double u = 2 * r.NextDouble() - 1;
-            double v = 2 * r.NextDouble() - 1;
+            
+            double u = 2 * random.NextDouble() - 1;
+            double v = 2 * random.NextDouble() - 1;
             double w = u * u + v * v;
             if (w == 0 || w >= 1) return Gauss(mean, std);
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
@@ -123,18 +129,22 @@ namespace MOTMaster2
     /// <summary>
     /// Data from a single experiment shot
     /// </summary>
-    [Serializable]
+    [Serializable,JsonObject]
     public struct ExperimentShot
     {
         //Index of run. Might not be needed if adding each to a list
-        internal int runID;
+        public int runID;
         //Single channel analog input data -- Extend to multi-channel?
-        internal double[,] analogInData;
+        [JsonIgnore]
+        internal double[] analogInData;
 
-        public ExperimentShot(int id, double[,] data)
+        public Dictionary<string, double[]> analogSegments;
+
+        public ExperimentShot(int id, double[] data)
         {
             runID = id;
             analogInData = data;
+            analogSegments = null;
         }
     }
 }

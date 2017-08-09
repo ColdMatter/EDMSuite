@@ -324,17 +324,9 @@ namespace MOTMaster2
 
         public void Run(object dict)
         {
-            try
-            {
                 Run((Dictionary<string, object>)dict, 1, batchNumber);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error when trying to run:" + e.Message);
-            }
         }
-        //TODO Change this to handle Sequences and Scripts built using SequenceData
-
+       
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
         {
             Stopwatch watch = new Stopwatch();
@@ -442,9 +434,10 @@ namespace MOTMaster2
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
                     if (config.UseAI)
-                    { if (config.Debug) expData.AddExperimentShot(new ExperimentShot(batchNumber, expData.GenerateFakeData()), builder.Parameters); else expData.AddExperimentShot(new ExperimentShot(batchNumber, aip.GetAnalogData()), builder.Parameters);
-                        double[] rawData = new double[aip.GetAnalogData().GetLength(0)];
-                        for (int i =0; i< rawData.Length; i++) rawData[i] = aip.GetAnalogData()[0,i];
+                    {
+                        double[] rawData;
+                        if (config.Debug) rawData = expData.GenerateFakeData(); else rawData = aip.GetAnalogDataSingleArray();
+                        expData.AddExperimentShot(new ExperimentShot(batchNumber, rawData), builder.Parameters);
                         MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
                     }
 
@@ -457,7 +450,7 @@ namespace MOTMaster2
             }
             else
             {
-                MessageBox.Show("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
+                throw new ErrorException("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
 
             }
             
@@ -512,16 +505,7 @@ namespace MOTMaster2
         {
 
             initializeHardware(sequence);
-            try
-            {
-                run(sequence);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error when running sequence. Continuing and releasing hardware...");
-                Console.WriteLine(e.Message + "\n" + e.StackTrace);
-                status = RunningState.stopped;
-            }
+            run(sequence);
             releaseHardware();
         }
 
@@ -935,14 +919,18 @@ namespace MOTMaster2
         //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
         public void CreateAcquisitionTimeSegments()
         {
-            if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new Exception("No channel named acquisitionTriger found in Hardware");
+            if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new WarningException("No channel named acquisitionTrigger found in Hardware");
             Dictionary<string, Tuple<int, int>> analogSegments = new Dictionary<string,Tuple<int,int>>();
             int sampleRate = expData.SampleRate;
             int sampleStartTime = 0;
+            List<string> ignoredSegments = new List<string>();
+            ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
+            expData.IgnoredSegments = ignoredSegments;
             foreach (SequenceStep step in sequenceData.Steps)
             {   
                 if (step.GetDigitalData("acquisitionTrigger"))
                 {
+                    if (ignoredSegments.Count == 0) throw new WarningException("All acquired data will be saved.");
                     double timeMultiplier = 1.0;
                     if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
                     else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
