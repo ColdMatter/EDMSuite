@@ -85,6 +85,12 @@ namespace DAQ.Analog
         {
             return AIConfig.AIData;
         }
+        public double[] GetAnalogDataSingleArray()
+        {
+            double[] data = new double[AIConfig.AIData.Length];
+            for (int i = 0; i<data.Length;i++) data[i] = AIConfig.AIData[0,i];
+            return data;
+        }
 
         
     }

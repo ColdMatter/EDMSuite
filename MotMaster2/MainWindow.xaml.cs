@@ -74,9 +74,19 @@ namespace MOTMaster2
             {
                 controller.RunStart(paramDict);
             }
+            catch (WarningException w)
+            {
+                errors.warningMsg(w.Message);
+                return false;
+            }
+            catch (ErrorException er)
+            {
+                errors.errorMsg(er.Message, 11);
+                return false;
+            }
             catch (Exception e)
             {
-                Log("Failed to Run sequence: " + e.Message + "\n" + e.StackTrace);
+                errors.errorMsg(e.Message, 11, true);
                 return false;
             }
          
@@ -139,28 +149,34 @@ namespace MOTMaster2
         {
             if (Iters <= 0)
             {
-                MessageBox.Show("<Iteration Number> must be of positive value.");
+                errors.errorMsg("<Iteration Number> must be of positive value.",2,true);
                 return;
             }
             progBar.Minimum = 0;
             progBar.Maximum = Iters;
+            Controller.expData.ClearData();
+            Controller.expData.ExperimentName = controller.ExperimentRunTag;
             for (int i = 0; i < Iters; i++)
             {
                 
                 // single shot
-                ScanFlag=SingleShot();
+                    ScanFlag = SingleShot();
                 controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
                 if (!ScanFlag) break;
             }
+            controller.SaveExperimentData();
+           
         }
+
 
         private bool ScanFlag = false;
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
             if (btnRun.Content.Equals("Run"))
             {
+                Controller.expData.SaveRawData = true;
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
@@ -171,6 +187,8 @@ namespace MOTMaster2
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
+               
+               
                 return;
             }
 
@@ -189,6 +207,9 @@ namespace MOTMaster2
             string parameter = prm;
             Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
+            Controller.expData.ClearData();
+            Controller.expData.SaveRawData = true;
+            Controller.expData.ExperimentName = controller.ExperimentRunTag;
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             int scanLength;
@@ -203,7 +224,7 @@ namespace MOTMaster2
                 scanLength = (toScanI - fromScanI) / byScanI + 1;
                 if (scanLength < 0)
                 {
-                    MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                    errors.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
                 scanArray = new object[scanLength + 1];
@@ -220,15 +241,15 @@ namespace MOTMaster2
                 double byScanD = double.Parse(byScanS);
                 progBar.Minimum = fromScanD;
                 progBar.Maximum = toScanD;
-                scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
+                scanLength = (int)((toScanD - fromScanD) / byScanD);
                 if (scanLength < 0)
                 {
-                    MessageBox.Show("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.");
+                    errors.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
-                scanArray = new object[scanLength-1];
+                scanArray = new object[scanLength];
            
-                for (int i = 0; i < scanLength-1; i++)
+                for (int i = 0; i < scanLength; i++)
                 {
                     scanArray[i] = fromScanD;
                     fromScanD += byScanD;
@@ -240,7 +261,7 @@ namespace MOTMaster2
                 controller.SetBatchNumber(c);
                 param.Value = scanParam;
                 scanDict[parameter] = scanParam;
-                progBar.Value = (scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam); 
+                progBar.Value = (scanParam!=null && scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam);
                 ScanFlag = SingleShot(scanDict);
                 tbCurValue.Content = scanParam.ToString();
                 DoEvents();
@@ -249,6 +270,7 @@ namespace MOTMaster2
             }
             param.Value = defaultValue;
             tbCurValue.Content = defaultValue.ToString();
+            controller.SaveExperimentData();
         }
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
@@ -340,7 +362,7 @@ namespace MOTMaster2
                         foreach (string key in LoadedParameters.Keys)
                             controller.script.Parameters[key] = LoadedParameters[key];
                     else
-                        MessageBox.Show("You have tried to load parameters without loading a script");
+                        errors.warningMsg("You have tried to load parameters without loading a script");
                 }
             }
         }
@@ -367,7 +389,7 @@ namespace MOTMaster2
                 }
             }
             else
-                MessageBox.Show("You have tried to save parmaters before loading a script");
+                errors.warningMsg("You have tried to save parmaters before loading a script");
 
         }
         private void SaveSequence_Click(object sender, RoutedEventArgs e)
@@ -391,7 +413,7 @@ namespace MOTMaster2
                 }
             }
             else
-                MessageBox.Show("You have tried to save a Sequence before loading a script");
+                errors.warningMsg("You have tried to save a Sequence before loading a script",-1,true);
 
         }
         private void LoadSequence_Click(object sender, RoutedEventArgs e)
@@ -581,11 +603,11 @@ namespace MOTMaster2
                 try
                 {
                     if (SequenceParser.CheckMuquans(value)) continue;
-                    else MessageBox.Show(string.Format("Incorrect format for {0} serial command", item.Name));
+                    else errors.errorMsg(string.Format("Incorrect format for {0} serial command", item.Name),4);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Couldn't parse serial commands. " + e.Message);
+                    errors.errorMsg("Couldn't parse serial commands. " + e.Message,4,false);
                     return false;
                 }
 
@@ -604,7 +626,7 @@ namespace MOTMaster2
                 {
                     if (sqnParser.CheckFunction(analogItem.Value)) continue;
                 }
-                MessageBox.Show(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name));
+                errors.errorMsg(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name),5,true);
                 return false;
 
             }
@@ -653,12 +675,16 @@ namespace MOTMaster2
             public string sender { get; set; }
             public string cmd { get; set; }
             public int id { get; set; }
-            public Dictionary<string, object> prms;           
+            public Dictionary<string, object> prms = new Dictionary<string,object>();       
+    
         }
 
         public bool Interpreter(string json)
         {
-             //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
+           
+            messenger.Send("<" + json + ">");
+            return true;
+            //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
             if (mme.sender.Equals("")) mme.sender = "none";
             if (mme.id == 0) mme.id = -1;
@@ -701,10 +727,7 @@ namespace MOTMaster2
         private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             controller.SaveToggle(cbHub.SelectedIndex == 1);
-            if(remoteMsg != null) remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
             if (btnRemote == null) return;
-            if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
-            if (cbHub.SelectedIndex == 3) btnRemote.Content = "Connect";
             if (cbHub.SelectedIndex > 1)
             {
                 btnRemote.Visibility = System.Windows.Visibility.Visible;
@@ -713,18 +736,20 @@ namespace MOTMaster2
             {
                 btnRemote.Visibility = System.Windows.Visibility.Hidden;
             }
+            
         }
 
         private async void btnRemote_Click(object sender, RoutedEventArgs e)
         {
-            if (cbHub.SelectedIndex == 2)
+            if (btnRemote.Content.Equals("Connect"))
             {
-                if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
-                else errors.errorMsg("Connection to Axel-hub failed !", 666);
-            }
-            if (cbHub.SelectedIndex == 3) 
-            {
-                if (btnRemote.Content.Equals("Connect")) 
+                if (cbHub.SelectedIndex == 2)
+                {
+                    remoteMsg = new RemoteMessaging("Axel Hub");
+                    if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
+                    else errors.warningMsg("Connection to Axel-hub failed !");
+                }
+                else
                 {
                     messenger = new RemoteMessenger();
                     messenger.Remote += Interpreter;
@@ -740,25 +765,15 @@ namespace MOTMaster2
                         Log("Error with remote command: " + ex.Message);
                     }
                 }
-                else
-                {
-                    Log("Closing remote connection");
-                    if (messenger != null) messenger.Close();
-                    btnRemote.Content = "Connect";
-                    btnRemote.Background = Brushes.LightBlue;
-                }
             }
-        }
-        private void OnActiveComm(bool active)
-        {
-            if (active) errors.simpleMsg("Connected to Axel Hub");
-            else errors.errorMsg("Commun. problem with Axel Hub", 666);
-        }
-        private void frmMain_SourceInitialized(object sender, EventArgs e)
-        {
-            remoteMsg = new RemoteMessaging("Axel Hub");
-            remoteMsg.Enabled = false;
-            remoteMsg.ActiveComm += OnActiveComm;
+            else
+            {
+                Log("Closing remote connection");
+                if (remoteMsg != null) remoteMsg = null;
+                if (messenger != null) messenger.Close();
+                btnRemote.Content = "Connect";
+                btnRemote.Background = Brushes.LightBlue;
+            }
         }
     }
     

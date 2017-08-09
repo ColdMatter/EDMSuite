@@ -149,4 +149,8 @@ namespace MOTMaster2
             AppendLog(simpleText, dftForeground);           
         }
     }
+
+    class WarningException : Exception { public WarningException(string p) : base(p) { } }
+
+    class ErrorException : Exception { public ErrorException(string message) : base(message) { }} 
 }

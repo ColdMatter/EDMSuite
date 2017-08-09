@@ -309,8 +309,8 @@ namespace MOTMaster2.SequenceData
                 double[] yvals = new double[ystr.Length];
                 for (int i = 0; i<xvals.Length; i++)
                 {
-                    xvals[i] = Double.Parse(xstr[i]);
-                    yvals[i] = Double.Parse(ystr[i]);
+                    xvals[i] = SequenceParser.ParseOrGetParameter(xstr[i]);
+                    yvals[i] = SequenceParser.ParseOrGetParameter(ystr[i]);
                 }
                 return new List<double[]>(){xvals,yvals};
             }

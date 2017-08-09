@@ -174,7 +174,12 @@ namespace MOTMaster2.SequenceData
         }
         public override MMAIConfiguration GetAIConfiguration()
         {
-            return null;
+            MMAIConfiguration mmaiConfig = new MMAIConfiguration();
+            DAQ.HAL.AnalogInputChannel pdChan = (DAQ.HAL.AnalogInputChannel)Environs.Hardware.AnalogInputChannels["photodiode"];
+            mmaiConfig.AddChannel(pdChan.PhysicalChannel, -3.0, 3.0);
+            mmaiConfig.SampleRate = Controller.expData.SampleRate;
+            mmaiConfig.Samples = Controller.expData.NSamples;
+            return mmaiConfig;
         }
 
 
