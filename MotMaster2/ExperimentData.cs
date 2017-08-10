@@ -29,22 +29,22 @@ namespace MOTMaster2
         public int NSamples { get; set; }
         private Random random = new Random();
 
-        public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
-        {
-            if (AnalogSegments != null) shot.analogSegments = SegmentShot(shot);
-            shotData.Add(shot);
-            shotParams.Add(parameters);
-        }
+        //public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
+        //{
+        //    if (AnalogSegments != null) shot.analogSegments = SegmentShot(shot);
+        //    shotData.Add(shot);
+        //    shotParams.Add(parameters);
+        //}
 
-        List<Dictionary<string,double>> AverageEachSegment()
-        {
-            List<Dictionary<string, double>> segAvgs = new List<Dictionary<string,double>>();
-            foreach (ExperimentShot shot in shotData)
-            {
-                 segAvgs.Add(AverageShotSegments(shot));
-            }
-            return segAvgs;
-        }
+        //List<Dictionary<string,double>> AverageEachSegment()
+        //{
+        //    List<Dictionary<string, double>> segAvgs = new List<Dictionary<string,double>>();
+        //    foreach (ExperimentShot shot in shotData)
+        //    {
+        //         segAvgs.Add(AverageShotSegments(shot));
+        //    }
+        //    return segAvgs;
+        //}
 
         /// <summary>
         /// Gets the average value of the analog input data for each time segment
@@ -83,19 +83,6 @@ namespace MOTMaster2
             }
             return segData;
         }
-        public void SaveData(string filePath)
-        {
-            //Save Parameters to a file
-            string paramJson = JsonConvert.SerializeObject(shotParams,Formatting.Indented);
-            
-            //Saves raw data if flag set. Otherwise averages each segment and serialises that
-            string dataJson = SaveRawData ? JsonConvert.SerializeObject(shotData, Formatting.Indented) : JsonConvert.SerializeObject(AverageEachSegment());
-            string timestamp = DateTime.Now.ToString("yyMMdd_Hmmss");
-            File.WriteAllText(filePath + "/" + ExperimentName +"_" + timestamp + "_parameters.sm3",paramJson);
-            //Maybe save both raw data and averaged?
-            File.WriteAllText(filePath + "/" + ExperimentName +"_" + timestamp + "_data.sm3", dataJson);
-        }
-
         //Useful when starting a new scan
         public void ClearData()
         {
@@ -134,6 +121,7 @@ namespace MOTMaster2
     {
         //Index of run. Might not be needed if adding each to a list
         public int runID;
+
         //Single channel analog input data -- Extend to multi-channel?
         [JsonIgnore]
         internal double[] analogInData;

@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using RemoteMessagingNS;
+using UtilsNS;
 
 
 namespace MOTMaster2
@@ -156,6 +157,7 @@ namespace MOTMaster2
             progBar.Maximum = Iters;
             Controller.expData.ClearData();
             Controller.expData.ExperimentName = controller.ExperimentRunTag;
+            controller.StartLogging();
             for (int i = 0; i < Iters; i++)
             {
                 
@@ -166,7 +168,7 @@ namespace MOTMaster2
                 DoEvents();
                 if (!ScanFlag) break;
             }
-            controller.SaveExperimentData();
+            controller.StopLogging();
            
         }
 
@@ -210,6 +212,7 @@ namespace MOTMaster2
             Controller.expData.ClearData();
             Controller.expData.SaveRawData = true;
             Controller.expData.ExperimentName = controller.ExperimentRunTag;
+            controller.StartLogging();
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             int scanLength;
@@ -270,7 +273,7 @@ namespace MOTMaster2
             }
             param.Value = defaultValue;
             tbCurValue.Content = defaultValue.ToString();
-            controller.SaveExperimentData();
+            controller.StopLogging();
         }
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
@@ -724,10 +727,13 @@ namespace MOTMaster2
             
         }
 
-        private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
+       private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             controller.SaveToggle(cbHub.SelectedIndex == 1);
+            if(remoteMsg != null) remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
             if (btnRemote == null) return;
+            if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
+            if (cbHub.SelectedIndex == 3) btnRemote.Content = "Connect";
             if (cbHub.SelectedIndex > 1)
             {
                 btnRemote.Visibility = System.Windows.Visibility.Visible;
@@ -736,20 +742,18 @@ namespace MOTMaster2
             {
                 btnRemote.Visibility = System.Windows.Visibility.Hidden;
             }
-            
         }
 
         private async void btnRemote_Click(object sender, RoutedEventArgs e)
         {
-            if (btnRemote.Content.Equals("Connect"))
+            if (cbHub.SelectedIndex == 2)
             {
-                if (cbHub.SelectedIndex == 2)
-                {
-                    remoteMsg = new RemoteMessaging("Axel Hub");
-                    if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
-                    else errors.warningMsg("Connection to Axel-hub failed !");
-                }
-                else
+                if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
+                else errors.errorMsg("Connection to Axel-hub failed !", 666);
+            }
+            if (cbHub.SelectedIndex == 3) 
+            {
+                if (btnRemote.Content.Equals("Connect")) 
                 {
                     messenger = new RemoteMessenger();
                     messenger.Remote += Interpreter;
@@ -765,15 +769,25 @@ namespace MOTMaster2
                         Log("Error with remote command: " + ex.Message);
                     }
                 }
+                else
+                {
+                    Log("Closing remote connection");
+                    if (messenger != null) messenger.Close();
+                    btnRemote.Content = "Connect";
+                    btnRemote.Background = Brushes.LightBlue;
+                }
             }
-            else
-            {
-                Log("Closing remote connection");
-                if (remoteMsg != null) remoteMsg = null;
-                if (messenger != null) messenger.Close();
-                btnRemote.Content = "Connect";
-                btnRemote.Background = Brushes.LightBlue;
-            }
+        }
+        private void OnActiveComm(bool active)
+        {
+            if (active) errors.simpleMsg("Connected to Axel Hub");
+            else errors.errorMsg("Commun. problem with Axel Hub", 666);
+        }
+        private void frmMain_SourceInitialized(object sender, EventArgs e)
+        {
+            remoteMsg = new RemoteMessaging("Axel Hub");
+            remoteMsg.Enabled = false;
+            remoteMsg.ActiveComm += OnActiveComm;
         }
     }
     

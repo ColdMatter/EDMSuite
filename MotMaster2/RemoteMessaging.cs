@@ -70,7 +70,7 @@ namespace RemoteMessagingNS
                         case("pong"):
                                 handled = true;                               
                                 break;
-                        default: handled = OnRemote(lastRcvMsg); // the command systax is OK
+                        default:handled = OnRemote(lastRcvMsg); // the command systax is OK
                                 break;
                         }
                     }

@@ -4,7 +4,6 @@ using DAQ.Environment;
 using DAQ.HAL;
 using Microsoft.CSharp;
 using MOTMaster2.SequenceData;
-//using NationalInstruments.UI.WindowsForms;
 using Newtonsoft.Json;
 using System;
 //using IMAQ;
@@ -19,6 +18,7 @@ using System.Threading;
 using System.Windows;
 using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
+using UtilsNS;
 
 namespace MOTMaster2
 {
@@ -66,6 +66,9 @@ namespace MOTMaster2
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
         public static ExperimentData expData;
+        public static AutoFileLogger dataLogger;
+        public static AutoFileLogger paramLogger;
+
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -341,7 +344,10 @@ namespace MOTMaster2
                 if (config.UseAI)
                 {
                     CreateAcquisitionTimeSegments();
-                    MainWindow.MMexec initComm = InitialCommand();
+                    MainWindow.MMexec initComm = InitialCommand(dict);
+                    //TODO Log initComm to parameters file
+                    string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
+                    paramLogger.log("{\"MMExec\":"+initJson+"},");
                 }
             }
 
@@ -437,8 +443,9 @@ namespace MOTMaster2
                     {
                         double[] rawData;
                         if (config.Debug) rawData = expData.GenerateFakeData(); else rawData = aip.GetAnalogDataSingleArray();
-                        expData.AddExperimentShot(new ExperimentShot(batchNumber, rawData), builder.Parameters);
                         MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
+                        string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
+                        dataLogger.log("{\"MMExec\":"+dataJson+"},");
                     }
 
 
@@ -912,9 +919,26 @@ namespace MOTMaster2
         #endregion
 
         #region Saving and Processing Experiment Data
-        public void SaveExperimentData()
+        public void StartLogging()
         {
-            expData.SaveData(motMasterDataPath);
+            string now = DateTime.Now.ToString("yyMMdd_hhmmss");
+            string fileTag = motMasterDataPath + "/" + ExperimentRunTag + "_" + now;
+            dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
+            paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
+            dataLogger.Enabled = true;
+            paramLogger.Enabled = true;
+            dataLogger.log("{\"MMbatch\":[");
+            paramLogger.log("{\"MMbatch\":[");
+        }
+        public void StopLogging()
+        {
+            //Finishes writing the JSONs. Removes the last comma since Mathematica has issues with it
+            dataLogger.DropLastChar();
+            paramLogger.DropLastChar();
+            dataLogger.log("]\n}");
+            paramLogger.log("]\n}");
+            dataLogger.Enabled= false;
+            paramLogger.Enabled = false;
         }
         //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
         public void CreateAcquisitionTimeSegments()
@@ -954,7 +978,8 @@ namespace MOTMaster2
             axelCommand.cmd = "shotData";
             Dictionary<string,double[]> segData = expData.SegmentShot(aiData);
             foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
-            axelCommand.prms["runNum"] = batchNumber;
+            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["groupID"] = expData.ExperimentName;
             return axelCommand;
         }
 
@@ -963,11 +988,12 @@ namespace MOTMaster2
             MainWindow.MMexec axelCommand = new MainWindow.MMexec();
             axelCommand.sender = "MOTMaster";
             axelCommand.cmd = "shotConfig";
-            // TODO add method to calculate interferometer time. Perhaps just a parameter? 
-            //axelCommand.prms["period"] = sequenceData.Steps.;
-            axelCommand.prms["expName"] = (ExperimentRunTag!=null) ? ExperimentRunTag:"None";
+            axelCommand.mmexec = ExperimentRunTag;
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
-            axelCommand.prms["scanParam"] = scanParam;
+            axelCommand.prms["sampleRate"] = expData.SampleRate;
+            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["groupID"] = expData.ExperimentName;
+            if (scanParam != null) axelCommand.prms["scanParam"] = scanParam;
             return axelCommand;
         }
         public MainWindow.MMexec InitialCommand()
