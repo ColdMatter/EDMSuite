@@ -60,7 +60,7 @@ namespace DAQ.HAL
             tcl1.AddDefaultGain("MenloPZT", -0.2);
             tcl1.AddDefaultGain("KeopsysDiodeLaser", 4);
             Info.Add("PumpCavity", tcl1);
-            Info.Add("DefaultCavity", tcl1);
+            //Info.Add("DefaultCavity", tcl1);
 
             // Probe cavity inputs
             AddAnalogInputChannel("ProbeRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
@@ -88,7 +88,7 @@ namespace DAQ.HAL
             tcl2.AddDefaultGain("Master", 0.4);
             tcl2.AddDefaultGain("TopticaSHGPZT", 0.04);
             Info.Add("ProbeCavity", tcl2);
-            //Info.Add("DefaultCavity", tcl2);
+            Info.Add("DefaultCavity", tcl2);
         }
     }
 }
