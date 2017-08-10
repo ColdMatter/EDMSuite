@@ -108,7 +108,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="UtilsLib">
-      <HintPath>..\..\AxelSuite\AxelChart\AxelChart\bin\UtilsLib.dll</HintPath>
+      <HintPath>..\Utils\bin\UtilsLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />

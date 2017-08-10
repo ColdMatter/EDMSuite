@@ -46,7 +46,7 @@ namespace UtilsNS
             //return (MessageBoxReturnStatus)returnValue;
         }
 
-        public static string basePath = Directory.GetParent(System.Windows.Forms.Application.ExecutablePath).Parent.FullName;
+        public static string basePath = Directory.GetParent(Directory.GetParent(Environment.GetCommandLineArgs()[0]).Parent.FullName).Parent.FullName;
         public static string configPath { get { return basePath + "\\Config\\"; } }
         public static string dataPath { get { return basePath + "\\Data\\"; } }        
     }
@@ -90,6 +90,11 @@ namespace UtilsNS
             if (buffer.Count > bufferLimit) Flush();
             return buffer.Count;
         }
+        public void DropLastChar()
+        {
+            string lastItem = buffer[buffer.Count - 1];
+            buffer[buffer.Count - 1] = lastItem.Substring(0, lastItem.Length - 1);
+        }
 
         private void ConsoleLine(string txt)
         {
@@ -98,11 +103,6 @@ namespace UtilsNS
 #endif
         }
 
-        public void DropLastChar()
-        {
-            string lastItem = buffer[buffer.Count - 1];
-            buffer[buffer.Count - 1] = lastItem.Substring(0,lastItem.Length - 1);
-        }
         public Task Flush() // do not forget to flush when exit (OR switch Enabled Off)
         {
             if (buffer.Count == 0) return null;
@@ -194,7 +194,5 @@ namespace UtilsNS
         }
     }
     #endregion
-
-
 
 }

@@ -78,17 +78,17 @@ namespace MOTMaster2
             }
             catch (WarningException w)
             {
-                errors.warningMsg(w.Message);
+                ErrorMgr.warningMsg(w.Message);
                 return false;
             }
             catch (ErrorException er)
             {
-                errors.errorMsg(er.Message, 11);
+                ErrorMgr.errorMsg(er.Message, 11);
                 return false;
             }
             catch (Exception e)
             {
-                errors.errorMsg(e.Message, 11, true);
+                ErrorMgr.errorMsg(e.Message, 11, true);
                 return false;
             }
          
@@ -151,7 +151,7 @@ namespace MOTMaster2
         {
             if (Iters <= 0)
             {
-                errors.errorMsg("<Iteration Number> must be of positive value.",2,true);
+                ErrorMgr.errorMsg("<Iteration Number> must be of positive value.",2,true);
                 return;
             }
             progBar.Minimum = 0;
@@ -228,7 +228,7 @@ namespace MOTMaster2
                 scanLength = (toScanI - fromScanI) / byScanI + 1;
                 if (scanLength < 0)
                 {
-                    errors.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
+                    ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
                 scanArray = new object[scanLength + 1];
@@ -248,7 +248,7 @@ namespace MOTMaster2
                 scanLength = (int)((toScanD - fromScanD) / byScanD);
                 if (scanLength < 0)
                 {
-                    errors.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
+                    ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
                 scanArray = new object[scanLength];
@@ -366,7 +366,7 @@ namespace MOTMaster2
                         foreach (string key in LoadedParameters.Keys)
                             controller.script.Parameters[key] = LoadedParameters[key];
                     else
-                        errors.warningMsg("You have tried to load parameters without loading a script");
+                        ErrorMgr.warningMsg("You have tried to load parameters without loading a script");
                 }
             }
         }
@@ -393,7 +393,7 @@ namespace MOTMaster2
                 }
             }
             else
-                errors.warningMsg("You have tried to save parmaters before loading a script");
+                ErrorMgr.warningMsg("You have tried to save parmaters before loading a script");
 
         }
         private void SaveSequence_Click(object sender, RoutedEventArgs e)
@@ -417,7 +417,7 @@ namespace MOTMaster2
                 }
             }
             else
-                errors.warningMsg("You have tried to save a Sequence before loading a script",-1,true);
+                ErrorMgr.warningMsg("You have tried to save a Sequence before loading a script",-1,true);
 
         }
         private void LoadSequence_Click(object sender, RoutedEventArgs e)
@@ -607,11 +607,11 @@ namespace MOTMaster2
                 try
                 {
                     if (SequenceParser.CheckMuquans(value)) continue;
-                    else errors.errorMsg(string.Format("Incorrect format for {0} serial command", item.Name),4);
+                    else ErrorMgr.errorMsg(string.Format("Incorrect format for {0} serial command", item.Name),4);
                 }
                 catch (Exception e)
                 {
-                    errors.errorMsg("Couldn't parse serial commands. " + e.Message,4,false);
+                    ErrorMgr.errorMsg("Couldn't parse serial commands. " + e.Message,4,false);
                     return false;
                 }
 
@@ -630,7 +630,7 @@ namespace MOTMaster2
                 {
                     if (sqnParser.CheckFunction(analogItem.Value)) continue;
                 }
-                errors.errorMsg(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name),5,true);
+                ErrorMgr.errorMsg(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name),5,true);
                 return false;
 
             }
@@ -639,7 +639,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-            ErrorMgr.warningMsg("some error text", 123); return;
+            ErrorMgr.warningMsg(Utils.dataPath, 123); return;
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             Button btn = sender as Button;
             switch (btn.Name)
