@@ -59,12 +59,12 @@ namespace EDMBlockHead
                 + (Math.Pow(10, 26) * analysis.RawEDMErrbp).ToString("G3")
                 + "\t" 
                 + (analysis.BValAndErrbp[0]).ToString("N2")
-                + "\tt"
-                + "\tt" + (analysis.BValAndErrtp[0]).ToString("N2")
-                + "\tt" + (analysis.DBValAndErrbp[0]).ToString("N2")
-                + "\tt" + (analysis.DBValAndErrtp[0]).ToString("N2")
-                + "\tt" + (analysis.DBValAndErrbp[0] / analysis.SIGValAndErrbp[0]).ToString("N3")
-                + "\tt" + (analysis.DBValAndErrtp[0] / analysis.SIGValAndErrtp[0]).ToString("N3")
+                + "\t"
+                + "\t" + (analysis.BValAndErrtp[0]).ToString("N2")
+                + "\t" + (analysis.DBValAndErrbp[0]).ToString("N2")
+                + "\t" + (analysis.DBValAndErrtp[0]).ToString("N2")
+                + "\t" + (analysis.DBValAndErrbp[0] / analysis.SIGValAndErrbp[0]).ToString("N3")
+                + "\t" + (analysis.DBValAndErrtp[0] / analysis.SIGValAndErrtp[0]).ToString("N3")
                 + Environment.NewLine);
 
             // Rollings values of edm error
@@ -130,7 +130,7 @@ namespace EDMBlockHead
             clusterVarianceNormed = 0;
             UpdateClusterStatusText("errorPerDay: " + 0 + "\terrorPerDayNormed: " + 0
                 + Environment.NewLine + "block count: " + 0);
-            UpdateStatusText("EDMErr\t" + "normedErr\t" + "B\t" + "DB\t" + "DB/SIG" + "\t" + Environment.NewLine);
+            UpdateStatusText("EDMErr_A\t EDMErr_B\t {B}_A\t\t {B}_B\t\t {DB}_A\t\t {DB}_B\t\t {DB}_A/{SIG}_A\t\t{DB}_A/{SIG}_B  " + Environment.NewLine);
             ClearSIGScatter();
             ClearBScatter();
             ClearDBScatter();
