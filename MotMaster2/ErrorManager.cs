@@ -10,23 +10,23 @@ using System.Windows.Media;
 using System.Windows.Documents;
 //using System.IO.StreamWriter;
 
-namespace MOTMaster2
+namespace ErrorManager
 {
-    class ErrorManager
+    public static class ErrorMgr
     {
-        private Label status;
-        Button btnReset, btnYes, btnNo; 
-        Color dftForeground;
-        private string prevText;
+        private static Label status;
+        private static Button btnReset, btnYes, btnNo;
+        private static Color dftForeground;
+        private static string prevText;
        
-        private RichTextBox log;
+        private static RichTextBox log;
 
-        string ErrorPath;
-        public bool AutoSave = true;
+        private static string ErrorPath;
+        public static bool AutoSave = true;
        
-        private System.IO.StreamWriter ErrorFile;
+        private static System.IO.StreamWriter ErrorFile;
 
-        public ErrorManager(ref Label _status, ref RichTextBox _log, string _ErrorPath)
+        public static void Initialize(ref Label _status, ref RichTextBox _log, string _ErrorPath)
         {
             status = _status;
             if (status != null)
@@ -68,14 +68,14 @@ namespace MOTMaster2
             }                   
         }
 
-        private void btnReset_Click(object sender, RoutedEventArgs e)
+        private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
             status.Content = prevText;
             status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
             btnReset.Visibility = Visibility.Hidden; 
         }
 
-        public void StatusLine(string text, Color Foreground)
+        public static void StatusLine(string text, Color Foreground)
         {
             if (status == null) return;
             status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
@@ -85,7 +85,7 @@ namespace MOTMaster2
             status.Content = text;
         }
 
-        public void AppendLog(string text, Color Foreground)
+        public static void AppendLog(string text, Color Foreground)
         {
             if (log == null) return;
 
@@ -94,17 +94,17 @@ namespace MOTMaster2
             rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));      
         }
 
-        private async Task WriteFileAsync(string txt)
+        private async static Task WriteFileAsync(string txt)
         {
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
         }
 
-        private bool IsForcePopup(bool forcePopup)
+        private static bool IsForcePopup(bool forcePopup)
         {
             return forcePopup || ((status == null) && (log == null));
         }
 
-        public async void errorMsg(string errorText, int errorID, bool forcePopup = false) 
+        public async static void errorMsg(string errorText, int errorID, bool forcePopup = false) 
         {
             if (IsForcePopup(forcePopup))
             {
@@ -119,7 +119,7 @@ namespace MOTMaster2
             await WriteFileAsync(outText);
         }
 
-        public async void warningMsg(string warningText, int warningID = -1, bool forcePopup = false)
+        public async static void warningMsg(string warningText, int warningID = -1, bool forcePopup = false)
         {
             if (IsForcePopup(forcePopup))
             {
@@ -135,7 +135,7 @@ namespace MOTMaster2
             await WriteFileAsync(outText);
         }
 
-        public void simpleMsg(string simpleText, bool forcePopup = false)
+        public static void simpleMsg(string simpleText, bool forcePopup = false)
         {
             if (IsForcePopup(forcePopup))
             {

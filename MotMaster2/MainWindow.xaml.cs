@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using RemoteMessagingNS;
+using ErrorManager;
 using UtilsNS;
 
 
@@ -25,7 +26,7 @@ namespace MOTMaster2
     {
         public static Controller controller;
         private RemoteMessenger messenger;
-        ErrorManager errors;
+         
         RemoteMessaging remoteMsg;
 
         public MainWindow()
@@ -35,7 +36,7 @@ namespace MOTMaster2
             controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
-            errors = new ErrorManager(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
+            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
  
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
@@ -638,7 +639,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-            errors.warningMsg("some error text", 123); return;
+            ErrorMgr.warningMsg("some error text", 123); return;
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             Button btn = sender as Button;
             switch (btn.Name)
@@ -687,7 +688,7 @@ namespace MOTMaster2
            
             messenger.Send("<" + json + ">");
             return true;
-            //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
+             //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
             if (mme.sender.Equals("")) mme.sender = "none";
             if (mme.id == 0) mme.id = -1;
@@ -727,7 +728,7 @@ namespace MOTMaster2
             
         }
 
-       private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             controller.SaveToggle(cbHub.SelectedIndex == 1);
             if(remoteMsg != null) remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
@@ -748,8 +749,8 @@ namespace MOTMaster2
         {
             if (cbHub.SelectedIndex == 2)
             {
-                if (remoteMsg.CheckConnection()) errors.simpleMsg("Connected to Axel-hub");
-                else errors.errorMsg("Connection to Axel-hub failed !", 666);
+                if (remoteMsg.CheckConnection()) ErrorMgr.simpleMsg("Connected to Axel-hub");
+                else ErrorMgr.errorMsg("Connection to Axel-hub failed !", 666);
             }
             if (cbHub.SelectedIndex == 3) 
             {
@@ -780,8 +781,8 @@ namespace MOTMaster2
         }
         private void OnActiveComm(bool active)
         {
-            if (active) errors.simpleMsg("Connected to Axel Hub");
-            else errors.errorMsg("Commun. problem with Axel Hub", 666);
+            if (active) ErrorMgr.simpleMsg("Connected to Axel Hub");
+            else ErrorMgr.errorMsg("Commun. problem with Axel Hub", 666);
         }
         private void frmMain_SourceInitialized(object sender, EventArgs e)
         {
