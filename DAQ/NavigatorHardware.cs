@@ -13,11 +13,12 @@ namespace DAQ.HAL
     /// </summary>
     public class NavigatorHardware : DAQ.HAL.Hardware
     {
+        public MMConfig config { get; set; }
         public NavigatorHardware()
         {
           
             //add information for MMConfig
-            MMConfig config = new MMConfig(false, false, false, Environment.Environs.Debug);
+            config = new MMConfig(false, false, false, Environment.Environs.Debug);
             config.HSDIOCard = true;
             config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
@@ -55,12 +56,13 @@ namespace DAQ.HAL
           
             Info.Add("analogOutBoards", aoBoards);
             Info.Add("analogInBoards", aiBoards);
-            Info.Add("digitalBoards", doBoards); 
+            Info.Add("digitalBoards", doBoards);
+            Info.Add("AIAcquireTrigger", "pfi0");
             //Add other instruments such as serial channels
             Instruments.Add("muquansSlave", new MuquansRS232("ASRL18::INSTR","slave"));
             Instruments.Add("muquansAOM", new MuquansRS232("ASRL20::INSTR","aom"));
-            //Instruments.Add("microwaveSynth", new WindfreakSynth("ASRL13::INSTR"));
-            Instruments.Add("microwaveSynth", new Gigatronics7100Synth("GPIB1::19::INSTR"));
+            Instruments.Add("microwaveSynth", new WindfreakSynth("ASRL13::INSTR"));
+            //Instruments.Add("microwaveSynth", new Gigatronics7100Synth("GPIB1::19::INSTR"));
 
             
             //map the digital channels
@@ -112,9 +114,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
-            AddAnalogInputChannel("photodiode", aiBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("accelpos", aiBoard + "/ai1", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("accelmin", aiBoard + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("photodiode", aiBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("fibrePD", aiBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("forwardRamanPD", multiBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("backwardRamanPD", multiBoard + "/ai1", AITerminalConfiguration.Differential);

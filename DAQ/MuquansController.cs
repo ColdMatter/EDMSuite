@@ -37,7 +37,7 @@ namespace DAQ.HAL
                 
                 
             }
-            catch { throw new Exception("Error writing serial commands"); }
+            catch { throw new Exception("Error writing serial command: "+message); }
         }
 
        
@@ -186,18 +186,10 @@ namespace DAQ.HAL
         {
             lock (slaveCommands)
             {
-                try
-                {
                     if (serialCounter <= slaveCommands.Count) slaveComm.Output(slaveCommands[serialCounter]);
                     if (serialCounter <= aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
                     serialCounter++;
                     Console.WriteLine(string.Format("wrote command {0} at {1}",serialCounter-1,stopwatch.ElapsedMilliseconds));
-                }
-                catch
-                {
-                    //TODO Send a message to the mainwindow that the serial communication failed.
-                    MessageBox.Show("Error outputting serial command.");
-                }
             }
            
            

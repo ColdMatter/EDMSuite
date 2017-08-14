@@ -10,23 +10,23 @@ using System.Windows.Media;
 using System.Windows.Documents;
 //using System.IO.StreamWriter;
 
-namespace MOTMaster2
+namespace ErrorManager
 {
-    class ErrorManager
+    public static class ErrorMgr
     {
-        private Label status;
-        Button btnReset, btnYes, btnNo; 
-        Color dftForeground;
-        private string prevText;
+        private static Label status;
+        private static Button btnReset, btnYes, btnNo;
+        private static Color dftForeground;
+        private static string prevText;
        
-        private RichTextBox log;
+        private static RichTextBox log;
 
-        string ErrorPath;
-        public bool AutoSave = true;
+        private static string ErrorPath;
+        public static bool AutoSave = true;
        
-        private System.IO.StreamWriter ErrorFile;
+        private static System.IO.StreamWriter ErrorFile;
 
-        public ErrorManager(ref Label _status, ref RichTextBox _log, string _ErrorPath)
+        public static void Initialize(ref Label _status, ref RichTextBox _log, string _ErrorPath)
         {
             status = _status;
             if (status != null)
@@ -68,14 +68,14 @@ namespace MOTMaster2
             }                   
         }
 
-        private void btnReset_Click(object sender, RoutedEventArgs e)
+        private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
             status.Content = prevText;
             status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
             btnReset.Visibility = Visibility.Hidden; 
         }
 
-        public void StatusLine(string text, Color Foreground)
+        public static void StatusLine(string text, Color Foreground)
         {
             if (status == null) return;
             status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
@@ -85,23 +85,28 @@ namespace MOTMaster2
             status.Content = text;
         }
 
-        public void AppendLog(string text, Color Foreground)
+        public static void AppendLog(string text, Color Foreground)
         {
             if (log == null) return;
 
             TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
-            rangeOfText1.Text = text;
+            rangeOfText1.Text = text + "\n";
             rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));      
         }
 
-        private async Task WriteFileAsync(string txt)
+        private async static Task WriteFileAsync(string txt)
         {
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
         }
 
-        public async void errorMsg(string errorText, int errorID, bool forcePopup = false) 
+        private static bool IsForcePopup(bool forcePopup)
         {
-            if (forcePopup)
+            return forcePopup || ((status == null) && (log == null));
+        }
+
+        public async static void errorMsg(string errorText, int errorID, bool forcePopup = false) 
+        {
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(errorText, " Error message ("+errorID.ToString()+")");
             }
@@ -109,14 +114,14 @@ namespace MOTMaster2
             {
                 StatusLine("Error: "+errorText, Brushes.Red.Color);
             }
-            string outText = outText = "(wrn:" + errorID.ToString() + ") " + errorText;  
-            AppendLog(outText + "\n", Brushes.Red.Color);
+            string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;  
+            AppendLog(outText, Brushes.Red.Color);
             await WriteFileAsync(outText);
         }
 
-        public async void warningMsg(string warningText, int warningID = -1, bool forcePopup = false)
+        public async static void warningMsg(string warningText, int warningID = -1, bool forcePopup = false)
         {
-            if (forcePopup)
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(warningText, " Warning message (" + warningID.ToString() + ")");
             }
@@ -125,22 +130,27 @@ namespace MOTMaster2
                 StatusLine("Warning: " + warningText, Brushes.Green.Color);
             }
             string outText = warningText;
-            if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;  
+            if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;
             AppendLog(outText, Brushes.Green.Color);
             await WriteFileAsync(outText);
         }
 
-        public void simpleMsg(string simpleText, bool forcePopup = false)
+        public static void simpleMsg(string simpleText, bool forcePopup = false)
         {
-            if (forcePopup)
+            if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(simpleText, " MOTmaster Message");
             }
             else
             {
                 StatusLine("Status: " + simpleText + "\n", dftForeground);
+                btnReset.Visibility = Visibility.Hidden;
             }
             AppendLog(simpleText, dftForeground);           
         }
     }
+
+    class WarningException : Exception { public WarningException(string p) : base(p) { } }
+
+    class ErrorException : Exception { public ErrorException(string message) : base(message) { }} 
 }

@@ -66,9 +66,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Nav\DataStructures.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Software\EDMSuite\MOTMaster\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>bin\Nav\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -94,7 +93,9 @@
     <Reference Include="SharpDX.DXGI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -102,6 +103,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UtilsLib">
+      <HintPath>..\Utils\obj\Release\UtilsLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -141,6 +145,7 @@
     <Compile Include="dotMath\FunctionLib.cs" />
     <Compile Include="dotMath\Parser.cs" />
     <Compile Include="ErrorManager.cs" />
+    <Compile Include="ExperimentData.cs" />
     <Compile Include="HardwareOptions.xaml.cs">
       <DependentUpon>HardwareOptions.xaml</DependentUpon>
     </Compile>
@@ -211,29 +216,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\DAQ.Environment.CarmeliteFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.ChromeFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.ClamFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.CrashFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.Environs.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.FileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.GanymedeFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.NavigatorFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.OysterFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.PHCDSLapFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.PHJKiteFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.PhkaraFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.PHRHENDRIC02FileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.PHRHENDRIC0FileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.SchnapsFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.SealClubberFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.SunshineFileSystem.datasource" />
-    <None Include="Properties\DataSources\DAQ.Environment.YBFFileSystem.datasource" />
-    <None Include="Properties\DataSources\MOTMaster2.App.datasource" />
-    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Imaging.datasource" />
-    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Initialize.datasource" />
-    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Load2DMOT.datasource" />
-    <None Include="Properties\DataSources\MOTMaster2.SnippetLibrary.Molasses.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -5,7 +5,10 @@
         x:Class="MOTMaster2.MainWindow"
         xmlns:controls="clr-namespace:MOTMaster2"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Name="frmMain" 
-        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico">
+        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico" SourceInitialized="frmMain_SourceInitialized">
+    <Window.Resources>
+        <controls:Controller x:Key="controller"/>
+    </Window.Resources>
     <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -38,6 +41,8 @@
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
             <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="571,41,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click" Visibility="Hidden"/>
             <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/>
+            <Label Content="Sample Rate" HorizontalAlignment="Left" Height="26" Margin="492,17,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
+            <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="570,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Text="{Binding Source = {StaticResource controller}, Path=ExpData.SampleRate}" />
             <ComboBox x:Name="cbHub" HorizontalAlignment="Left" Margin="314,21,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="1" SelectionChanged="cbHub_SelectionChanged">
                 <ComboBoxItem Content="None"/>
                 <ComboBoxItem Content="Local"/>
@@ -46,6 +51,8 @@
             </ComboBox>
             <Label Content="Hub" HorizontalAlignment="Left" Margin="272,17,0,0" VerticalAlignment="Top" FontSize="13" Height="26"/>
             <Button x:Name="btnRemote" Content="Connect" HorizontalAlignment="Left" Height="25" Margin="439,20,0,0" VerticalAlignment="Top" Width="83" Background="#FFC5D9FA" Click="btnRemote_Click" FontSize="13" Visibility="Hidden"/>
+            <Image HorizontalAlignment="Right" Height="28" Margin="0,17,0.286,0" VerticalAlignment="Top" Width="30" Source="3axis.ico"/>
+            <CheckBox Name="aiEnable" Content="Enable Analog Input" HorizontalAlignment="Left" Margin="492,0,0,0" VerticalAlignment="Top" Checked="aiEnable_Checked"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0,5,-0.143,0.714">
             <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="108" Margin="5,0,0,0" VerticalAlignment="Top" Width="717" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">
@@ -164,9 +171,8 @@
                             <RowDefinition Height="44*"/>
                             <RowDefinition Height="39*"/>
                         </Grid.RowDefinitions>
-                        <ni:GraphInteractionPalette HorizontalAlignment="Left" Margin="10,1,0,0" Grid.Row="0" VerticalAlignment="Top" Width="140"/>
-                        <ni:Graph Margin="0" Interactions="Pan, Zoom" Grid.Row="1"/>
-                        <GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>
+                       
+                        <!--<GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>-->
                     </Grid>
                 </TabItem>
 

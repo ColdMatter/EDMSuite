@@ -4,7 +4,6 @@ using DAQ.Environment;
 using DAQ.HAL;
 using Microsoft.CSharp;
 using MOTMaster2.SequenceData;
-//using NationalInstruments.UI.WindowsForms;
 using Newtonsoft.Json;
 using System;
 //using IMAQ;
@@ -19,6 +18,8 @@ using System.Threading;
 using System.Windows;
 using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
+using UtilsNS;
+using ErrorManager;
 
 namespace MOTMaster2
 {
@@ -65,6 +66,10 @@ namespace MOTMaster2
         public MOTMasterScript script;
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
+        public static ExperimentData ExpData { get; set; }
+        public static AutoFileLogger dataLogger;
+        public static AutoFileLogger paramLogger;
+
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -77,7 +82,7 @@ namespace MOTMaster2
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        private Gigatronics7100Synth microSynth;
+        private WindfreakSynth microSynth;
         public string ExperimentRunTag { get; set; }
         MuquansController muquans = null;
 
@@ -86,7 +91,7 @@ namespace MOTMaster2
         SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
-        DataStructures.SettingsData ciceroSettings;
+        SettingsData ciceroSettings;
         #endregion
 
         #region Initialisation
@@ -109,8 +114,9 @@ namespace MOTMaster2
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            aip = new MMAIWrapper((string)Environs.Hardware.Boards["multiDAQPCI"]);
-            //analogChannels =
+            aip = new MMAIWrapper((string)Environs.Hardware.Boards["analogIn"]);
+
+            if (ExpData == null) ExpData = new ExperimentData();
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -122,7 +128,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (Gigatronics7100Synth)Environs.Hardware.Instruments["microwaveSynth"]; if (microSynth != null) microSynth.Connect(); } }
+            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -162,6 +168,7 @@ namespace MOTMaster2
             else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
             if (config.UseMuquans) muquans.Configure();
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
+            if (config.UseAI) { aip.Configure(sequence.AIConfiguration); }
         }
 
 
@@ -170,7 +177,7 @@ namespace MOTMaster2
             if (!config.HSDIOCard) pg.StopPattern();
             else hs.StopPattern();
             apg.StopPattern();
-            if (config.UseAI) aip.StopPattern();
+            if (config.UseAI) { aip.ReadAnalogDataFromBuffer(); aip.StopPattern(); }
             if (config.UseMuquans) muquans.StopOutput();
         }
 
@@ -187,7 +194,7 @@ namespace MOTMaster2
         //TODO Add this to the experiment-specific AccelSuite
         private void WriteToMicrowaveSynth(double value)
         {
-            if (config.UseMuquans && !config.Debug) Console.Write("1"); /*microSynth.ChannelA.Frequency = value;*/microSynth.Frequency = value;
+            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
         #endregion
 
@@ -323,17 +330,9 @@ namespace MOTMaster2
 
         public void Run(object dict)
         {
-            try
-            {
                 Run((Dictionary<string, object>)dict, 1, batchNumber);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error when trying to run:" + e.Message);
-            }
         }
-        //TODO Change this to handle Sequences and Scripts built using SequenceData
-
+       
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
         {
             Stopwatch watch = new Stopwatch();
@@ -344,6 +343,13 @@ namespace MOTMaster2
             }
             else
             {
+                if (config.UseAI)
+                {
+                    CreateAcquisitionTimeSegments();
+                    MainWindow.MMexec initComm = InitialCommand(dict);
+                    string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
+                    paramLogger.log("{\"MMExec\":"+initJson+"},");
+                }
                 sequence = getSequenceFromSequenceData(dict);
             }
 
@@ -358,11 +364,9 @@ namespace MOTMaster2
 
                     if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-                    if (config.UseMuquans)
+                    if (config.UseMuquans && !config.Debug)
                     {
-                        //microSynth.ChannelA.RFOn = true;
-                       
-                       
+                        microSynth.ChannelA.RFOn = true;
                         //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                         //microSynth.ReadSettingsFromDevice();
@@ -436,7 +440,15 @@ namespace MOTMaster2
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                    //if (config.UseMuquans) microSynth.ChannelA.RFOn = false;
+                    if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+                    if (config.UseAI)
+                    {
+                        double[] rawData;
+                        if (config.Debug) rawData = ExpData.GenerateFakeData(); else { rawData = aip.GetAnalogDataSingleArray(); }
+                        MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
+                        string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
+                        dataLogger.log("{\"MMExec\":"+dataJson+"},");
+                    }
 
 
                 }
@@ -447,10 +459,10 @@ namespace MOTMaster2
             }
             else
             {
-                MessageBox.Show("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
+                throw new ErrorException("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
 
             }
-
+            
             status = RunningState.stopped;
 
 
@@ -502,16 +514,7 @@ namespace MOTMaster2
         {
 
             initializeHardware(sequence);
-            try
-            {
-                run(sequence);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error when running sequence. Continuing and releasing hardware...");
-                Console.WriteLine(e.Message + "\n" + e.StackTrace);
-                status = RunningState.stopped;
-            }
+            run(sequence);
             releaseHardware();
         }
 
@@ -915,6 +918,90 @@ namespace MOTMaster2
             if (ciceroConverter.CheckValidHardwareChannels() && ciceroConverter.CanConvertFrom(ciceroSequence.GetType())) sequenceData = (Sequence)ciceroConverter.ConvertFrom(ciceroSequence);
         }
 
+        #endregion
+
+        #region Saving and Processing Experiment Data
+        public void StartLogging()
+        {
+            string now = DateTime.Now.ToString("yyMMdd_hhmmss");
+            string fileTag = motMasterDataPath + "/" + ExperimentRunTag + "_" + now;
+            dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
+            paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
+            dataLogger.Enabled = true;
+            paramLogger.Enabled = true;
+            dataLogger.log("{\"MMbatch\":[");
+            paramLogger.log("{\"MMbatch\":[");
+        }
+        public void StopLogging()
+        {
+            //Finishes writing the JSONs. Removes the last comma since Mathematica has issues with it
+            dataLogger.DropLastChar();
+            paramLogger.DropLastChar();
+            dataLogger.log("]\n}");
+            paramLogger.log("]\n}");
+            dataLogger.Enabled= false;
+            paramLogger.Enabled = false;
+        }
+        //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
+        public void CreateAcquisitionTimeSegments()
+        {
+            if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new WarningException("No channel named acquisitionTrigger found in Hardware");
+            Dictionary<string, Tuple<int, int>> analogSegments = new Dictionary<string,Tuple<int,int>>();
+            int sampleRate = ExpData.SampleRate;
+            int sampleStartTime = ExpData.PreTrigSamples;
+            List<string> ignoredSegments = new List<string>();
+            ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
+            ExpData.IgnoredSegments = ignoredSegments;
+            foreach (SequenceStep step in sequenceData.Steps)
+            {   
+                if (step.GetDigitalData("acquisitionTrigger"))
+                {
+                    if (ignoredSegments.Count == 0) throw new WarningException("All acquired data will be saved.");
+                    double timeMultiplier = 1.0;
+                    if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
+                    else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
+                    else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1.0;
+                    double duration = Convert.ToDouble(step.Duration);
+                    int sampleDuration = Convert.ToInt32(duration*timeMultiplier*sampleRate);
+                    string name = step.Name;
+                    Tuple<int, int> segmentTimes = Tuple.Create<int,int>(sampleStartTime, sampleStartTime + sampleDuration );
+                    analogSegments[name] = segmentTimes;
+                    sampleStartTime += sampleDuration;
+                }
+                
+            }
+            ExpData.AnalogSegments = analogSegments;
+            ExpData.NSamples = sampleStartTime;
+        }
+        public MainWindow.MMexec ConvertDataToAxelHub(double[] aiData)
+        {
+            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            axelCommand.sender = "MOTMaster";
+            axelCommand.cmd = "shotData";
+            Dictionary<string,double[]> segData = ExpData.SegmentShot(aiData);
+            foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
+            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["groupID"] = ExpData.ExperimentName;
+            return axelCommand;
+        }
+
+        public MainWindow.MMexec InitialCommand(Dictionary<string,object> scanParam)
+        {
+            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            axelCommand.sender = "MOTMaster";
+            axelCommand.cmd = "shotConfig";
+            axelCommand.mmexec = ExperimentRunTag;
+            axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
+            axelCommand.prms["sampleRate"] = ExpData.SampleRate;
+            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["groupID"] = ExpData.ExperimentName;
+            if (scanParam != null) axelCommand.prms["scanParam"] = scanParam;
+            return axelCommand;
+        }
+        public MainWindow.MMexec InitialCommand()
+        {
+            return InitialCommand(null);
+        }
         #endregion
 
     }

@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="MOTMaster2.AnalogInputChart"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:acc="clr-namespace:AxelChartNS;assembly=AxelChart"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" Width="500">
+    <Grid DataContext="{Binding Path=ExpData}">
+        <acc:AxelChartClass Name="analogChart" Width="500"/>
+        <GroupBox Margin="0,510,0,0">
+            <Grid>
+                <TextBox Name="sampleRateTextBox" Height="20" Width="60" Text="{Binding Path=SampleRate}" Margin="54,39,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <TextBox Name="nsampleTextBox" Height="20" Width="60" Text="{Binding Path=NSamples}" Margin="169,39,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Label Content="Sample Rate" HorizontalAlignment="Left" Margin="54,13,0,0" VerticalAlignment="Top"/>
+                <Label Content="Number of Samples" HorizontalAlignment="Left" Margin="159,13,0,0" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

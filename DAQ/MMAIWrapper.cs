@@ -40,6 +40,7 @@ namespace DAQ.Analog
             {
                 AddToAnalogInputTask(AITask, keys, aiConfig.AIChannels[keys].AIRangeLow,aiConfig.AIChannels[keys].AIRangeHigh);
             };
+            AIConfig.AIData = new double[AIConfig.AIChannels.Count, samples];
         //For the timiming - for now just derive the ai sample clock from the PCI card, but this isn't synchronised with the PXI Card, so in future will
         //need to create a counting task on the AICard and count an exported timiming signal from the PXI or something similar.
 
@@ -49,7 +50,11 @@ namespace DAQ.Analog
             AITask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                      (string)Environs.Hardware.GetInfo("AIAcquireTrigger"), DigitalEdgeStartTriggerEdge.Rising);
 
+            
             AITask.Control(TaskAction.Verify);
+            AITask.Control(TaskAction.Commit);
+
+            
         }
 
         #region private methods for creating timed Tasks/channels
@@ -67,11 +72,10 @@ namespace DAQ.Analog
         {
             AITask.Stop();
             AITask.Dispose();
-
         }
         public void StartTask()
         {
-            AITask.Start();
+           AITask.Start();
 
         }
 
@@ -84,6 +88,12 @@ namespace DAQ.Analog
         public double[,] GetAnalogData()
         {
             return AIConfig.AIData;
+        }
+        public double[] GetAnalogDataSingleArray()
+        {
+            double[] data = new double[AIConfig.AIData.Length];
+            for (int i = 0; i < data.Length; i++) data[i] = AIConfig.AIData[0, i];
+            return data;
         }
 
         

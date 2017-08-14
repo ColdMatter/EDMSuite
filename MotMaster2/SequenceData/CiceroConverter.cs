@@ -202,6 +202,7 @@ namespace MOTMaster2.SequenceData
             {
                 try
                 {
+                    if (!ciceroSettings.logicalChannelManager.Digitals.ContainsKey(ddata.Key)) continue;
                     LogicalChannel digital = ciceroSettings.logicalChannelManager.Digitals[ddata.Key];
                     DigitalChannelSelector digitalSelector = new DigitalChannelSelector();
                     if (ddata.Value.ManualValue) digitalSelector.Value = true;
@@ -221,6 +222,7 @@ namespace MOTMaster2.SequenceData
                 List<SerialItem> serialList = new List<SerialItem>();
                 foreach (KeyValuePair<int, RS232GroupChannelData> rs232 in ciceroStep.rs232Group.ChannelDatas)
                 {
+                    if (!rs232.Value.Enabled) continue;
                     LogicalChannel serial = ciceroSettings.logicalChannelManager.RS232s[rs232.Key];
                     string valuestring;
                     if (rs232.Value.RawString != "" || rs232.Value.StringParameterStrings == null) valuestring = rs232.Value.RawString;
