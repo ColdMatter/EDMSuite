@@ -19,7 +19,7 @@ using System.Windows;
 using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
 using UtilsNS;
-
+using ErrorManager;
 namespace MOTMaster2
 {
     /// <summary>
@@ -90,7 +90,7 @@ namespace MOTMaster2
         SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
-        DataStructures.SettingsData ciceroSettings;
+        SettingsData ciceroSettings;
         #endregion
 
         #region Initialisation
@@ -345,7 +345,6 @@ namespace MOTMaster2
                 {
                     CreateAcquisitionTimeSegments();
                     MainWindow.MMexec initComm = InitialCommand(dict);
-                    //TODO Log initComm to parameters file
                     string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
                     paramLogger.log("{\"MMExec\":"+initJson+"},");
                 }

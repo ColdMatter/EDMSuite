@@ -177,6 +177,7 @@
     <Compile Include="AnalogInputChart.xaml.cs">
       <DependentUpon>AnalogInputChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UtilsLib.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
