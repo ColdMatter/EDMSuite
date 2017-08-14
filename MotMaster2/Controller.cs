@@ -20,6 +20,7 @@ using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
 using UtilsNS;
 using ErrorManager;
+
 namespace MOTMaster2
 {
     /// <summary>
