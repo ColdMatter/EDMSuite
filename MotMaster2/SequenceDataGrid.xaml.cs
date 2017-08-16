@@ -74,10 +74,10 @@ namespace MOTMaster2
         private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             var dg = sender as DataGrid;
-            List<SequenceStep> first = new List<SequenceStep>(dg.ItemsSource as ObservableCollection<SequenceStep>);
+            if (dg.CurrentItem.GetType() == null){ return;}
+            List<SequenceStep> first = new List<SequenceStep>((ObservableCollection<SequenceStep>) dg.ItemsSource);
             SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
             if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
-            //TODO: Add a flag so that the sequence data is only updated when set to true and a verification of this data
             if (Controller.sequenceData != null) Controller.sequenceData.Steps = first;
         }
 

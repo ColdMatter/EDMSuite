@@ -26,7 +26,9 @@ namespace MOTMaster2
     {
         public static Controller controller;
         private RemoteMessenger messenger;
+
          
+        //TODO change this so Controller can access it properly
         RemoteMessaging remoteMsg;
 
         public MainWindow()
@@ -40,7 +42,20 @@ namespace MOTMaster2
  
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
-       }
+            controller.MotMasterDataEvent += OnDataCreated;
+        }
+
+        private void OnDataCreated(object sender, DataEventArgs e)
+        {
+            if (sender is Controller )
+            {
+                string data = (string) e.Data;
+                for (int index = 0; index < data.Length; index += 255)
+                {
+                    remoteMsg.sendCommand(data.Substring(index,Math.Min(255,data.Length-index)));
+                }
+            }
+        }
 
         public static void DoEvents()
         {
@@ -97,7 +112,6 @@ namespace MOTMaster2
         private bool SingleShot() // true if OK
         {
             return SingleShot(null);
-            
         }
 
         private static string
@@ -313,7 +327,7 @@ namespace MOTMaster2
             tcMain.SelectedIndex = 0;
         }
 
-        private bool paramCheck = false;
+        private bool paramCheck;
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(TabControl))
@@ -396,6 +410,7 @@ namespace MOTMaster2
                 ErrorMgr.warningMsg("You have tried to save parmaters before loading a script");
 
         }
+
         private void SaveSequence_Click(object sender, RoutedEventArgs e)
         {
             if (Controller.sequenceData != null)
@@ -508,12 +523,12 @@ namespace MOTMaster2
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string parameter = cbParamsManual.Text;
-            Parameter param = Controller.sequenceData.Parameters.Where(t => t.Name == parameter).First();
-            if (param.Value.GetType() == typeof(int))
+            Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            if (param.Value is int)
             {
                 param.Value = int.Parse(tbValue.Text);
             }
-            else if (param.Value.GetType() == typeof(double))
+            else if (param.Value is double)
             {
                 param.Value = double.Parse(tbValue.Text);
             }
@@ -725,13 +740,15 @@ namespace MOTMaster2
 
         private void cancelPropertyBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+          
         }
 
         private void cbHub_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             controller.SaveToggle(cbHub.SelectedIndex == 1);
-            if(remoteMsg != null) remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
+            if(remoteMsg != null) {remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
+                controller.SendDataRemotely = (cbHub.SelectedIndex == 2);
+            }
             if (btnRemote == null) return;
             if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
             if (cbHub.SelectedIndex == 3) btnRemote.Content = "Connect";
@@ -749,7 +766,7 @@ namespace MOTMaster2
         {
             if (cbHub.SelectedIndex == 2)
             {
-                if (remoteMsg.CheckConnection()) ErrorMgr.simpleMsg("Connected to Axel-hub");
+                if (remoteMsg.CheckConnection()) {ErrorMgr.simpleMsg("Connected to Axel-hub");}
                 else ErrorMgr.errorMsg("Connection to Axel-hub failed !", 666);
             }
             if (cbHub.SelectedIndex == 3) 

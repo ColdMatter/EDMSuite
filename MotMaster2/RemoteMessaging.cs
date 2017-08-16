@@ -107,7 +107,6 @@ namespace RemoteMessagingNS
                 COPYDATASTRUCT cds = new COPYDATASTRUCT();
                 cds.cbData = myStructSize;
                 cds.lpData = pMyStruct;
-
                 // Send the COPYDATASTRUCT struct through the WM_COPYDATA message to 
                 // the receiving window. (The application must use SendMessage, 
                 // instead of PostMessage to send WM_COPYDATA because the receiving 
@@ -115,7 +114,7 @@ namespace RemoteMessagingNS
                 NativeMethod.SendMessage(hTargetWnd, WM_COPYDATA, windowHandle, ref cds);
 
                 int result = Marshal.GetLastWin32Error();
-                if (result != 0)
+                if (!(result == 0 || result == 183))
                 {
                     MessageBox.Show(String.Format("SendMessage(WM_COPYDATA) failed w/err 0x{0:X}", result));
                     return false;

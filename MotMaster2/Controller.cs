@@ -69,7 +69,10 @@ namespace MOTMaster2
         public static ExperimentData ExpData { get; set; }
         public static AutoFileLogger dataLogger;
         public static AutoFileLogger paramLogger;
+        public bool SendDataRemotely { get; set; }
 
+        public event DataEventHandler MotMasterDataEvent;
+        public delegate void DataEventHandler(object sender, DataEventArgs d);
 
         DAQMxPatternGenerator pg;
         HSDIOPatternGenerator hs;
@@ -349,6 +352,10 @@ namespace MOTMaster2
                     MainWindow.MMexec initComm = InitialCommand(dict);
                     string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
                     paramLogger.log("{\"MMExec\":"+initJson+"},");
+                    if (SendDataRemotely)
+                    {
+                        MotMasterDataEvent(this,new DataEventArgs(initJson));
+                    }
                 }
                 sequence = getSequenceFromSequenceData(dict);
             }
@@ -448,6 +455,11 @@ namespace MOTMaster2
                         MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
                         string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
                         dataLogger.log("{\"MMExec\":"+dataJson+"},");
+                        if (SendDataRemotely)
+                        {
+                            MotMasterDataEvent(this, new DataEventArgs(dataJson));
+                        }
+                        
                     }
 
 
@@ -989,13 +1001,21 @@ namespace MOTMaster2
         {
             MainWindow.MMexec axelCommand = new MainWindow.MMexec();
             axelCommand.sender = "MOTMaster";
-            axelCommand.cmd = "shotConfig";
+ 
             axelCommand.mmexec = ExperimentRunTag;
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
             axelCommand.prms["runID"] = batchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
-            if (scanParam != null) axelCommand.prms["scanParam"] = scanParam;
+            if (scanParam != null)
+            {
+                axelCommand.prms["scanParam"] = scanParam;
+                axelCommand.cmd = "scan";
+            }
+            else
+            {
+                axelCommand.cmd = "repeat";
+            }
             return axelCommand;
         }
         public MainWindow.MMexec InitialCommand()
@@ -1003,6 +1023,16 @@ namespace MOTMaster2
             return InitialCommand(null);
         }
         #endregion
+        
+    }
 
+    public class DataEventArgs : EventArgs
+    {
+        public object Data { get; set; }
+
+        public DataEventArgs(object data) : base()
+        {
+            Data = data;
+        }
     }
 }

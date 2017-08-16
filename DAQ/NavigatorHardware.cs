@@ -20,7 +20,7 @@ namespace DAQ.HAL
             //add information for MMConfig
             config = new MMConfig(false, false, false, Environment.Environs.Debug);
             config.HSDIOCard = true;
-            config.UseAI = false;
+            config.UseAI = true;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
