@@ -24,6 +24,13 @@ namespace MoleculeMOTHardwareControl
         {
             { "Windfreak Synthesizer", new WindfreakTabController((WindfreakSynth)Environs.Hardware.Instruments["windfreak"]) }
         };
+
+        // Without this method, any remote connections to this object will time out after
+        // 5 minutes of inactivity. It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
         
         public void Start()
         {

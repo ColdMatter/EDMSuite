@@ -20,11 +20,19 @@ namespace DAQ.HAL
             public static String Trigger { get { return "w"; } }
             public static String Channel { get { return "C"; } }
             public static String RFPower { get { return "h"; } }
+            public static String SweepLower { get { return "l"; } }
+            public static String SweepUpper { get { return "u"; } }
+            public static String SweepStepSize { get { return "s"; } }
+            public static String SweepStepTime { get { return "t"; } }
+            public static String SweepDirection { get { return "^"; } }
+            public static String SweepLowAmp { get { return "["; } }
+            public static String SweepHighAmp { get { return "]"; } }
         }
 
         public enum TriggerTypes
         {
             Continuous = 0,
+            Sweep = 1,
             Pulse = 4
         }
 
@@ -34,9 +42,16 @@ namespace DAQ.HAL
             protected double minFreq = 54.0;
             protected double maxAmp = 20.0;
             protected double minAmp = -75.0;
+            protected double minTime = 0.001;
+            protected double maxTime = 100000.0;
 
             protected double frequency;
             protected double amplitude;
+            protected double sweepUpper;
+            protected double sweepLower;
+            protected double sweepStepSize;
+            protected double sweepStepTime;
+            protected bool sweepDirection;
             protected bool channelName;
             protected bool rfOn;
             protected WindfreakSynth windfreak;
@@ -74,16 +89,27 @@ namespace DAQ.HAL
                 ValidateEntry(amp, maxAmp, minAmp, "Amplitude", "dBm");
             }
 
+            protected void ValidateTime(double time)
+            {
+                ValidateEntry(time, maxTime, minTime, "Time", "ms");
+            }
+
             protected string FreqCommand(double freq)
             {
                 ValidateFrequency(freq);
-                return CommandTypes.Frequency + freq.ToString("F7"); // Round to 7 decimal places
+                return freq.ToString("F7"); // Round to 7 decimal places
             }
 
             protected string AmpCommand(double amp)
             {
                 ValidateAmplitude(amp);
-                return CommandTypes.Amplitude + amp.ToString("F2"); // Round to 2 decimal places
+                return amp.ToString("F2"); // Round to 2 decimal places
+            }
+
+            protected string TimeCommand(double time)
+            {
+                ValidateTime(time);
+                return time.ToString("F3"); // Round to 3 decimal places
             }
 
             public double Frequency
@@ -91,7 +117,7 @@ namespace DAQ.HAL
                 get { return frequency; }
                 set
                 {
-                    Write(FreqCommand(value));
+                    Write(CommandTypes.Frequency + FreqCommand(value));
                     frequency = value;
                 }
             }
@@ -101,8 +127,62 @@ namespace DAQ.HAL
                 get { return amplitude; }
                 set
                 {
-                    Write(AmpCommand(value));
+                    Write(
+                        CommandTypes.Amplitude + AmpCommand(value) +
+                        CommandTypes.SweepLowAmp + AmpCommand(value) +
+                        CommandTypes.SweepHighAmp + AmpCommand(value)
+                    );
                     amplitude = value;
+                }
+            }
+
+            public double SweepLower
+            {
+                get { return sweepLower; }
+                set
+                {
+                    Write(CommandTypes.SweepLower + FreqCommand(value));
+                    sweepLower = value;
+                }
+            }
+
+            public double SweepUpper
+            {
+                get { return sweepUpper; }
+                set
+                {
+                    Write(CommandTypes.SweepUpper + FreqCommand(value));
+                    sweepUpper = value;
+                }
+            }
+
+            public double SweepStepSize
+            {
+                get { return sweepStepSize; }
+                set
+                {
+                    Write(CommandTypes.SweepStepSize + value.ToString("F7"));
+                    sweepStepSize = value;
+                }
+            }
+
+            public double SweepStepTime
+            {
+                get { return sweepStepTime; }
+                set
+                {
+                    Write(CommandTypes.SweepStepTime + TimeCommand(value));
+                    sweepStepSize = value;
+                }
+            }
+
+            public bool SweepDirection
+            {
+                get { return sweepDirection; }
+                set
+                {
+                    Write(CommandTypes.SweepDirection + Convert.ToInt32(value).ToString());
+                    sweepDirection = value;
                 }
             }
 
@@ -127,6 +207,11 @@ namespace DAQ.HAL
                 frequency = Convert.ToDouble(settings[0]);
                 amplitude = Convert.ToDouble(settings[1]);
                 rfOn = Convert.ToBoolean(Convert.ToInt32(settings[2]));
+                sweepLower = Convert.ToDouble(settings[3]);
+                sweepUpper = Convert.ToDouble(settings[4]);
+                sweepStepSize = Convert.ToDouble(settings[5]);
+                sweepStepTime = Convert.ToDouble(settings[6]);
+                sweepDirection = Convert.ToBoolean(Convert.ToInt32(settings[7]));
             }
         }
 
@@ -175,7 +260,10 @@ namespace DAQ.HAL
         {
             string[] deviceCommands = new string[] { CommandTypes.Trigger };
             string deviceQueries = string.Concat(deviceCommands.Select(command => command + "?").ToArray());
-            string[] channelCommands = new string[] { CommandTypes.Frequency, CommandTypes.Amplitude, CommandTypes.PLL };
+            string[] channelCommands = new string[] { 
+                CommandTypes.Frequency, CommandTypes.Amplitude, CommandTypes.PLL, CommandTypes.SweepLower, 
+                CommandTypes.SweepUpper, CommandTypes.SweepStepSize, CommandTypes.SweepStepTime, CommandTypes.SweepDirection 
+            };
             string channelQueries = string.Concat(channelCommands.Select(command => command + "?").ToArray());
 
             Connect(SerialTerminationMethod.TerminationCharacter);
@@ -192,8 +280,8 @@ namespace DAQ.HAL
 
             bool[] channels = new bool[2] {false, true};
             triggerMode = (TriggerTypes)Convert.ToInt32(responses[0]);
-            ChannelA.SyncSettings(responses.Skip(1).Take(3).ToArray());
-            ChannelB.SyncSettings(responses.Skip(4).Take(3).ToArray());
+            ChannelA.SyncSettings(responses.Skip(1).Take(channelCommands.Length).ToArray());
+            ChannelB.SyncSettings(responses.Skip(channelCommands.Length + 1).Take(channelCommands.Length).ToArray());
         }
 
     }

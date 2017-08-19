@@ -31,12 +31,14 @@ namespace DAQ.HAL
 			Boards.Add("pg", "/dev1");
             Boards.Add("aoBoard", "/PXI1Slot5");
             Boards.Add("usbDev", "/dev4");
+            Boards.Add("usbDev2", "/dev5");
             //Boards.Add("PXI6", "/PXI1Slot6_4");
             Boards.Add("PXI6", "/PXI1Slot6");
             Boards.Add("PXI4", "/PXI1Slot4");
             Boards.Add("PXI5", "/PXI1Slot5");
             string pgBoard =  (string)Boards["pg"];
             string usbBoard = (string)Boards["usbDev"];
+            string usbBoard2 = (string)Boards["usbDev"];
             string daqBoard = (string)Boards["daq"];
             string PXIBoard = (string)Boards["PXI6"];
             string TCLBoard = (string)Boards["PXI4"];
@@ -154,11 +156,10 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 1, 0);
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
-			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
+			AddDigitalOutputChannel("microwaveSweepTrigger", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
             AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel
             AddDigitalOutputChannel("v00Shutter", pgBoard, 2,2);
-            //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
             AddDigitalOutputChannel("v00AOM", pgBoard, 1, 1); //Pin 17
             AddDigitalOutputChannel("microwaveIO", pgBoard, 1, 2); //Pin 51
             AddDigitalOutputChannel("bXShutter", pgBoard, 1, 3); //Pin 52
@@ -192,7 +193,7 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("xShimCoilCurrent", aoBoard + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", aoBoard + "/ao16");
-            AddAnalogOutputChannel("zShimCoilCurrent", aoBoard + "/ao14");
+            AddAnalogOutputChannel("zShimCoilCurrent", aoBoard + "/ao21");
 
             AddAnalogOutputChannel("slowingCoilsCurrent", aoBoard + "/ao18");
             
@@ -220,6 +221,9 @@ namespace DAQ.HAL
           //  AddAnalogInputChannel("10KThermistor30KPlate", PXIBoard + "/ai3", AITerminalConfiguration.Rse);
           //  AddAnalogInputChannel("30KShield", PXIBoard + "/ai4", AITerminalConfiguration.Rse);
           //  AddAnalogInputChannel("4KCell", PXIBoard + "/ai5", AITerminalConfiguration.Rse);
+
+            // Source monitoring channels
+            AddAnalogInputChannel("sourceTemp", usbBoard2 + "/ai0", AITerminalConfiguration.Rse);
 
             //map the channels to monitor the sidebands in deceleration hardware
             AddAnalogInputChannel("cavityVoltage", usbBoard + "/ai0", AITerminalConfiguration.Rse);

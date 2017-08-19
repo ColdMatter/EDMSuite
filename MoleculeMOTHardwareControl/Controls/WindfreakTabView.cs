@@ -30,6 +30,31 @@ namespace MoleculeMOTHardwareControl.Controls
             ampInput.Value = (decimal)amp;
         }
 
+        public void UpdateSweepUpper(double freq)
+        {
+            upperSweepFreq.Value = (decimal)freq;
+        }
+
+        public void UpdateSweepLower(double freq)
+        {
+            lowerSweepFreq.Value = (decimal)freq;
+        }
+
+        public void UpdateSweepStepSize(double freqStep)
+        {
+            sweepStepSize.Value = (decimal)freqStep;
+        }
+
+        public void UpdateSweepStepTime(double time)
+        {
+            sweepStepTime.Value = (decimal)time;
+        }
+
+        public void UpdateSweepDirection(bool state)
+        {
+            sweepDirectionSwitch.Value = state;
+        }
+
         public void UpdateOutput(bool state)
         {
             outputSwitch.Value = state;
@@ -71,6 +96,31 @@ namespace MoleculeMOTHardwareControl.Controls
             return outputSwitch.Value;
         }
 
+        public double GetSweepUpper()
+        {
+            return (double)upperSweepFreq.Value;
+        }
+
+        public double GetSweepLower()
+        {
+            return (double)lowerSweepFreq.Value;
+        }
+
+        public double GetSweepStepSize()
+        {
+            return (double)sweepStepSize.Value;
+        }
+
+        public double GetSweepStepTime()
+        {
+            return (double)sweepStepTime.Value;
+        }
+
+        public bool GetSweepDirection()
+        {
+            return sweepDirectionSwitch.Value;
+        }
+
         #endregion
 
 
@@ -82,14 +132,22 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.SyncChannel();
         }
 
-        private void SetFrequencyAmplitude(object sender, EventArgs e)
+        private void UpdateSettings(object sender, EventArgs e)
         {
             WindfreakTabController castController = (WindfreakTabController)controller;
             double freq = GetFrequency();
             double amp = GetAmplitude();
+            double sweepUpper = GetSweepUpper();
+            double sweepLower = GetSweepLower();
+            double sweepStepSize = GetSweepStepSize();
+            double sweepStepTime = GetSweepStepTime();
             bool channel = GetChannel();
             castController.SetFrequency(freq, channel);
             castController.SetAmplitude(amp, channel);
+            castController.SetSweepUpper(sweepUpper, channel);
+            castController.SetSweepLower(sweepLower, channel);
+            castController.SetSweepStepSize(sweepStepSize, channel);
+            castController.SetSweepStepTime(sweepStepTime, channel);
         }
 
         private void ReadSettings(object sender, EventArgs e)
@@ -117,6 +175,17 @@ namespace MoleculeMOTHardwareControl.Controls
                 WindfreakTabController castController = (WindfreakTabController)controller;
                 string value = triggerModeComboBox.SelectedItem.ToString();
                 castController.SetTriggerMode(value);
+            }
+        }
+
+        private void SetSweepDirection(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+            if (sweepDirectionSwitch.Focused) // Only do it if its a UI event
+            {
+                WindfreakTabController castController = (WindfreakTabController)controller;
+                bool state = GetSweepDirection();
+                bool channel = GetChannel();
+                castController.SetSweepDirection(state, channel);
             }
         }
     }
