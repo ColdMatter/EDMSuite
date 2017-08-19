@@ -58,7 +58,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0; //1.7
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = 7.0;
+        Parameters["zShimLoadCurrent"] = 0.0; //-6.82
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;

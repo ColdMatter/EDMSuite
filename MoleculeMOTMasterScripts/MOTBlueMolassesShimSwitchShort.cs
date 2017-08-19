@@ -52,7 +52,7 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpEndValue"] = -1.3;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 1.05;
+        Parameters["slowingCoilsValue"] = 1.1;
         Parameters["slowingCoilsOffTime"] = 1500;
 
         // B Field
@@ -67,8 +67,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = 8.5;
-        Parameters["shimFieldSwitchTime"] = 6200;
+        Parameters["zShimLoadCurrent"] = -6.82;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -152,7 +151,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         //F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.5);
+        p.AddAnalogValue("v00EOMAmp", 0, 5.45);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);

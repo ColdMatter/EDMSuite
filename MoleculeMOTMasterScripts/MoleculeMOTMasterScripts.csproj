@@ -43,13 +43,13 @@
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
+    <Compile Include="MicrowavePulseMagneticTrap.cs" />
     <Compile Include="MicrowaveSpectroscopy.cs" />
     <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
     <Compile Include="MOTBasicBField.cs" />
     <Compile Include="MOTBasic.cs" />
-    <Compile Include="MOTBasicExperimental.cs" />
     <Compile Include="MOTBasicExperimental2.cs" />
     <Compile Include="MOTBlueMolasses.cs" />
     <Compile Include="MOTBlueMolassesNumber.cs" />
@@ -74,6 +74,7 @@
     <Compile Include="PMTtest.cs" />
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RAP.cs" />
     <Compile Include="ScatteringRate.cs" />
     <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>

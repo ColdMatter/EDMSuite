@@ -27,9 +27,9 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 100;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 13;
+        Parameters["MicrowavePulseDuration"] = 20;
         Parameters["MOTWaitBeforeImage"] = 3000;
-        Parameters["zShimZeemanSplitValue"] = -7.37;
+        Parameters["xShimZeemanSplitValue"] = 0.0;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -69,9 +69,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 40000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 3.0;
+        Parameters["xShimLoadCurrent"] = 0.0;// 3.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -7.37;
+        Parameters["zShimLoadCurrent"] = 3.32; //-6.82;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -141,6 +141,11 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00EOMAmp");
         p.AddChannel("zShimCoilCurrent");
 
+        //read microwave frequency
+        p.AddAnalogValue("yShimCoilCurrent", 0, 5.0);
+        p.AddAnalogValue("yShimCoilCurrent", v0F0PumpStartTime, 0.0);
+        p.AddAnalogValue("yShimCoilCurrent", imageTime, 5.0);
+
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
@@ -154,10 +159,14 @@ public class Patterns : MOTMasterScript
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
+      //  p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        p.AddAnalogValue("zShimCoilCurrent", v0F0PumpStartTime, (double)Parameters["zShimZeemanSplitValue"]);
-        p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
+        //p.AddLinearRamp("zShimCoilCurrent",v0F0PumpStartTime,50,(double)Parameters["zShimZeemanSplitValue"]);
+        //p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, (double)Parameters["xShimZeemanSplitValue"]);//used to be at v0f0pump time
+        //p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
+
+        //p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, 5.0);
+        //p.AddAnalogValue("xShimCoilCurrent", motRecaptureTime, (double)Parameters["xShimLoadCurrent"]);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
