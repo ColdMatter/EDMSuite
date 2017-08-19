@@ -156,11 +156,10 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("q", pgBoard, 0,2 );
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 1, 0);
 			AddDigitalOutputChannel("detector", pgBoard, 3, 7);
-			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
+			AddDigitalOutputChannel("microwaveSweepTrigger", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
             AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel
             AddDigitalOutputChannel("v00Shutter", pgBoard, 2,2);
-            //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);sour
             AddDigitalOutputChannel("v00AOM", pgBoard, 1, 1); //Pin 17
             AddDigitalOutputChannel("microwaveIO", pgBoard, 1, 2); //Pin 51
             AddDigitalOutputChannel("bXShutter", pgBoard, 1, 3); //Pin 52
