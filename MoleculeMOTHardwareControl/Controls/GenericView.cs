@@ -14,8 +14,9 @@ namespace MoleculeMOTHardwareControl.Controls
     {
         public GenericController controller; 
 
-        public GenericView()
+        public GenericView(GenericController controllerInstance)
         {
+            controller = controllerInstance;
             InitializeComponent();
         }
 

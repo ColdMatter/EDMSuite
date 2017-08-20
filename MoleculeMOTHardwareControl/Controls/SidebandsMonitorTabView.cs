@@ -12,9 +12,9 @@ namespace MoleculeMOTHardwareControl.Controls
 {
     public partial class SideBandsMonitorTabView : MoleculeMOTHardwareControl.Controls.GenericView
     {
-        public new SidebandsMonitorTabController Controller;
+        public SidebandsMonitorTabController Controller;
 
-        public SideBandsMonitorTabView()
+        public SideBandsMonitorTabView(SidebandsMonitorTabController controllerInstance) : base(controllerInstance)
         {
             InitializeComponent();
         }

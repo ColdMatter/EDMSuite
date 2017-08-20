@@ -38,7 +38,7 @@ namespace DAQ.HAL
             Boards.Add("PXI5", "/PXI1Slot5");
             string pgBoard =  (string)Boards["pg"];
             string usbBoard = (string)Boards["usbDev"];
-            string usbBoard2 = (string)Boards["usbDev"];
+            string usbBoard2 = (string)Boards["usbDev2"];
             string daqBoard = (string)Boards["daq"];
             string PXIBoard = (string)Boards["PXI6"];
             string TCLBoard = (string)Boards["PXI4"];
@@ -165,6 +165,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("bXShutter", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
             AddDigitalOutputChannel("AnalogPatternTrigger", pgBoard, 3, 3); //Pin 31
+            AddDigitalOutputChannel("cryoCooler", usbBoard2, 0, 0);
+            AddDigitalOutputChannel("sourceHeater", usbBoard2, 0, 1);
 
 			// map the analog channels
 			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse);

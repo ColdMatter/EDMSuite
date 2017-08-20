@@ -15,8 +15,9 @@ namespace MoleculeMOTHardwareControl.Controls
     {
         protected WindfreakTabController castController;
 
-        public WindfreakTabView() : base()
+        public WindfreakTabView(WindfreakTabController controllerInstance) : base(controllerInstance)
         {
+            InitializeComponent();
             castController = (WindfreakTabController)controller; // saves casting in every method
         }
 

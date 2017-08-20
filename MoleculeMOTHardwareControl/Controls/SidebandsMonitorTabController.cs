@@ -17,7 +17,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected override GenericView CreateControl()
         {
-            return new SideBandsMonitorTabView();
+            return new SideBandsMonitorTabView(this);
         }
 
         private TransferCavityLockable TCLHelper = new DAQMxTCLHelperSWTimed(

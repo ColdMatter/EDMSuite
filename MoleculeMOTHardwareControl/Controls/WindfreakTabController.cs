@@ -14,7 +14,7 @@ namespace MoleculeMOTHardwareControl.Controls
         
         protected override GenericView CreateControl()
         {
-            castView = new WindfreakTabView();
+            castView = new WindfreakTabView(this);
             castView.InitializeTriggerModes(Enum.GetValues(typeof(WindfreakSynth.TriggerTypes)));
             return castView;
         }

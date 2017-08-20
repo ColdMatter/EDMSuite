@@ -16,21 +16,37 @@ namespace MoleculeMOTHardwareControl.Controls
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
         private ControllerState state = ControllerState.STOPPED;
         private AnalogSingleChannelReader sourceTempReader;
+        private DigitalSingleChannelWriter cryoWriter;
+        private DigitalSingleChannelWriter heaterWriter;
         private AnalogSingleChannelReader vRefReader;
         private bool isCycling = false;
+        private bool finishedHeating = true;
         private System.Windows.Forms.Timer readTimer;
+
+        private enum ControllerState
+        {
+            RUNNING, STOPPED
+        };
+
+        protected override GenericView CreateControl()
+        {
+            castView = new SourceTabView(this);
+            return castView;
+        }
+
+        public bool IsCyling
+        {
+            get { return isCycling; }
+            set { this.isCycling = value; }
+        }
 
         public SourceTabController()
         {
             InitReadTimer();
 
-            AnalogInputChannel sourceTempChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["sourceTemperature"];
-            Task sourceTempTask = new Task();
-            sourceTempReader = new AnalogSingleChannelReader(sourceTempTask.Stream);
-
-            //AnalogInputChannel vRefChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["voltageReference"];
-            //Task vRefTask = new Task();
-            //vRefReader = new AnalogSingleChannelReader(vRefTask.Stream);
+            sourceTempReader = CreateAnalogInputReader("sourceTemp");
+            cryoWriter = CreateDigitalOutputWriter("cryoCooler");
+            heaterWriter = CreateDigitalOutputWriter("sourceHeater");
         }
 
         private void InitReadTimer()
@@ -38,23 +54,6 @@ namespace MoleculeMOTHardwareControl.Controls
             readTimer = new System.Windows.Forms.Timer();
             readTimer.Interval = 2000;
             readTimer.Tick += new EventHandler(UpdateTemperature);
-        }
-        
-        protected override GenericView CreateControl()
-        {
-            castView = new SourceTabView();
-            return castView;
-        }
-
-        private enum ControllerState 
-        {
-            RUNNING, STOPPED
-        };
-
-        public bool IsCyling
-        {
-            get { return isCycling; }
-            set { this.isCycling = value; }
         }
 
         protected double ConvertVoltageToResistance(double voltage, double reference)
@@ -83,23 +82,37 @@ namespace MoleculeMOTHardwareControl.Controls
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
         {
             double temp = GetTemperature();
-            DateTime timeStamp = DateTime.Now;
-            double time = Convert.ToDouble(timeStamp);
-            castView.UpdateGraph(time, temp);
-            //if (IsCyling)
-            //{
-            //    double cycleLimit = castView.GetCycleLimit();
-            //    if (temp > cycleLimit)
-            //    {
-            //        SetHeaterState(false);
-            //        SetCryoState(true);
-            //    }
-            //}
+            if (temp < -40)
+            {
+                castView.UpdateCurrentTemperature("<-40");
+            }
+            else
+            {
+                castView.UpdateCurrentTemperature(temp.ToString("F2"));
+            }
+            if (IsCyling)
+            {
+                double cycleLimit = castView.GetCycleLimit();
+                if (!finishedHeating && temp > cycleLimit)
+                {
+                    finishedHeating = true;
+                    SetHeaterState(false);
+                    SetCryoState(true);
+                }
+            }
         }
 
-        public void SetCryoState() { }
+        public void SetCryoState(bool state) 
+        {
+            cryoWriter.WriteSingleSampleSingleLine(true, state);
+            castView.SetCryoState(state);
+        }
 
-        public void SetHeaterState() { }
+        public void SetHeaterState(bool state)
+        {
+            heaterWriter.WriteSingleSampleSingleLine(true, state);
+            castView.SetHeaterState(state);
+        }
 
         public void ToggleReading() 
         {
@@ -107,17 +120,27 @@ namespace MoleculeMOTHardwareControl.Controls
             {
                 readTimer.Start();
                 castView.UpdateReadButton(false);
+                castView.EnableControls(true);
             }
             else
             {
                 readTimer.Stop();
                 castView.UpdateReadButton(true);
+                castView.EnableControls(false);
             }
         }
 
-        public void StartCycling() { }
-
-        public void StopCycling() { }
+        public void ToggleCycling()
+        {
+            isCycling = !isCycling;
+            castView.UpdateCycleButton(!isCycling);
+            if (IsCyling)
+            {
+                SetHeaterState(true);
+                SetCryoState(false);
+                finishedHeating = false;
+            }
+        }
         
     }
 }
