@@ -34,7 +34,7 @@ namespace MOTMaster2.SequenceData
             if (value == "") return 0.0;
             bool result = Double.TryParse(value, out number);
             if (result) return number;
-            else return (double)Controller.sequenceData.Parameters.Where(t => t.Name == value).Select(t => t.Value).First();
+            else return Convert.ToDouble(Controller.sequenceData.Parameters.Where(t => t.Name == value).Select(t => t.Value).First());
         }
         
         //TODO tidy up this to check based on the raw string

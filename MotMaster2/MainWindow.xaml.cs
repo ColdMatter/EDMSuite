@@ -239,13 +239,13 @@ namespace MOTMaster2
                 int byScanI = int.Parse(byScanS);
                 progBar.Minimum = fromScanI;
                 progBar.Maximum = toScanI;
-                scanLength = (toScanI - fromScanI) / byScanI + 1;
+                scanLength = (toScanI - fromScanI) / byScanI;
                 if (scanLength < 0)
                 {
                     ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
-                scanArray = new object[scanLength + 1];
+                scanArray = new object[scanLength];
                 for (int i = 0; i < scanLength; i++)
                 {
                     scanArray[i] = fromScanI;
@@ -702,7 +702,7 @@ namespace MOTMaster2
         {
            
             messenger.Send("<" + json + ">");
-            return true;
+            //return true;
              //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
             if (mme.sender.Equals("")) mme.sender = "none";
@@ -714,7 +714,7 @@ namespace MOTMaster2
                     realRun(Iters, mme.sender, mme.id);
                     break;
                 case("scan"):
-                    realScan((string)mme.prms["param"], (string)mme.prms["from"], (string)mme.prms["to"], (string)mme.prms["by"], mme.sender, mme.id);
+                    realScan((string)mme.prms["param"], mme.prms["from"].ToString(), mme.prms["to"].ToString(), mme.prms["by"].ToString(), mme.sender, mme.id);
                     break;
                 case ("set"):
                     foreach (var prm in mme.prms)

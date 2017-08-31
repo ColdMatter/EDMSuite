@@ -48,16 +48,11 @@
         "motTTL": true
       },
       "usedAnalogChannels": [],
-      "serialCommands": [
-        {
-          "Name": "",
-          "Value": ""
-        }
-      ],
+      "serialCommands": [],
       "Name": "Initialization 1",
       "Description": "",
       "Enabled": true,
-      "Duration": 300.0,
+      "Duration": 50.0,
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -505,10 +500,7 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [
-        "mphiCTRL",
-        "zmaomFreq"
-      ],
+      "usedAnalogChannels": [],
       "serialCommands": [
         {
           "Name": "Slaves_DDS",
@@ -517,10 +509,6 @@
         {
           "Name": "AOM_DDS",
           "Value": "set_freq mphi 105.617e6; ext_update"
-        },
-        {
-          "Name": "M2 PLL Freq",
-          "Value": ""
         }
       ],
       "Name": "Initialization 2",
@@ -602,10 +590,10 @@
           "Value": false
         },
         "2DaomTTL": {
-          "Value": false
+          "Value": true
         },
         "pushaomTTL": {
-          "Value": false
+          "Value": true
         },
         "acquisitionTrigger": {
           "Value": false
@@ -647,14 +635,14 @@
         "shutter": false,
         "Digital Test": false,
         "2DaomTTL": false,
-        "slaveDDSTrig": true,
+        "slaveDDSTrig": false,
         "xaomTTL": false,
         "ramanDDSTrig": false,
         "yaomTTL": false,
         "pushaomTTL": false,
         "zpaomTTL": false,
         "cameraTTL": false,
-        "aomDDSTrig": true,
+        "aomDDSTrig": false,
         "Analog Trigger": false,
         "ramanTTL": false,
         "motTTL": false
@@ -784,12 +772,12 @@
         "acquisitionTrigger": false,
         "shutter": false,
         "Digital Test": false,
-        "2DaomTTL": true,
+        "2DaomTTL": false,
         "slaveDDSTrig": false,
         "xaomTTL": false,
         "ramanDDSTrig": false,
         "yaomTTL": false,
-        "pushaomTTL": true,
+        "pushaomTTL": false,
         "zpaomTTL": false,
         "cameraTTL": false,
         "aomDDSTrig": false,
@@ -806,10 +794,6 @@
         {
           "Name": "AOM_DDS",
           "Value": "sweep_to mphi 70.15e6 1.4e-3; ext_update"
-        },
-        {
-          "Name": "M2 PLL Freq",
-          "Value": ""
         }
       ],
       "Name": "3Dcollection",
@@ -1011,10 +995,7 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [
-        "mot3DCoil",
-        "xbias2DCoil"
-      ],
+      "usedAnalogChannels": [],
       "serialCommands": [],
       "Name": "B field off",
       "Description": "",
@@ -1042,11 +1023,275 @@
         "yaomFreq": 0,
         "pushaomAtten": 0,
         "yaomAtten": 0,
+        "mphiCTRL": 5,
         "mot3DCoil": 5,
         "xbias2DCoil": 1,
         "ybias2DCoil": 1,
-        "horizPiezo": 1,
-        "mphiCTRL": 0
+        "horizPiezo": 1
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": true
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": false
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": false
+        },
+        "yaomTTL": {
+          "Value": false
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": false
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "z2Freq,launchZmFreq"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "2DaomAtten": {},
+        "xaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "xFreq,launchXFreq"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "z2Atten,launchZmAtten"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "z1Atten,launchZpAtten"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "launchXAtt,xAtten"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "zpaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "z1Freq,launchZpFreq"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "yFreq,launchYFreq"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        },
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,1"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "yAtten,launchYAtt"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Piecewise Linear"
+            }
+          ]
+        }
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [
+        "xaomFreq",
+        "zmaomAtten",
+        "zpaomFreq",
+        "yaomFreq",
+        "yaomAtten"
+      ],
+      "serialCommands": [],
+      "Name": "Launch",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 1.0,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "2DaomAtten": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "xaomFreq": 5,
+        "yaomFreq": 5,
+        "zpaomFreq": 5,
+        "zmaomFreq": 5,
+        "xaomAtten": 5,
+        "yaomAtten": 5,
+        "zpaomAtten": 5,
+        "zmaomAtten": 5
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -1128,18 +1373,7 @@
         "xbiasCoil": {},
         "yaomFreq": {},
         "pushaomAtten": {},
-        "mot3DCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
+        "mot3DCoil": {},
         "mphiCTRL": {
           "_selectedItem": [
             {
@@ -1166,27 +1400,24 @@
         "shutter": false,
         "Digital Test": false,
         "2DaomTTL": false,
-        "slaveDDSTrig": true,
+        "slaveDDSTrig": false,
         "xaomTTL": false,
         "ramanDDSTrig": false,
         "yaomTTL": false,
         "pushaomTTL": false,
         "zpaomTTL": false,
         "cameraTTL": false,
-        "aomDDSTrig": true,
+        "aomDDSTrig": false,
         "Analog Trigger": false,
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [
-        "mot3DCoil",
-        "mphiCTRL"
-      ],
+      "usedAnalogChannels": [],
       "serialCommands": [],
       "Name": "Freq ramp",
       "Description": "",
       "Enabled": true,
-      "Duration": 2.0,
+      "Duration": "molassesRampTime",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1211,9 +1442,9 @@
         "xbiasCoil": 0,
         "yaomFreq": 0,
         "pushaomAtten": 0,
+        "mot3DCoil": 0,
         "yaomAtten": 0,
-        "mphiCTRL": 5,
-        "mot3DCoil": 1
+        "mphiCTRL": 5
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -1259,7 +1490,7 @@
           "Value": false
         },
         "zmaomTTL": {
-          "Value": false
+          "Value": true
         },
         "2DaomTTL": {
           "Value": true
@@ -1423,7 +1654,7 @@
             },
             {
               "Name": "Duration",
-              "Value": "1.6"
+              "Value": "molassesIntRampDelay"
             },
             {
               "Name": "Function",
@@ -1484,14 +1715,13 @@
         "motTTL": false
       },
       "usedAnalogChannels": [
-        "mphiCTRL",
         "motCTRL"
       ],
       "serialCommands": [],
       "Name": "Intensity ramp",
       "Description": "",
       "Enabled": true,
-      "Duration": 2.0,
+      "Duration": "molassesIntRampDelay",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1582,18 +1812,7 @@
         "zmaomFreq": {},
         "2DaomAtten": {},
         "xaomFreq": {},
-        "motCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0.9"
-            }
-          ]
-        },
+        "motCTRL": {},
         "xbias2DCoil": {},
         "vertPiezo": {},
         "zmaomAtten": {},
@@ -1644,22 +1863,19 @@
         {
           "Name": "AOM_DDS",
           "Value": "set_freq mphi 98.6e6; ext_update"
-        },
-        {
-          "Name": "M2 PLL Freq",
-          "Value": ""
         }
       ],
       "Name": "RepumpPulse",
       "Description": "",
       "Enabled": true,
-      "Duration": 10.0,
+      "Duration": 9.0,
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
         "2DaomAtten": 0,
         "xaomFreq": 0,
+        "motCTRL": 0,
         "xbias2DCoil": 0,
         "vertPiezo": 0,
         "zmaomAtten": 0,
@@ -1679,8 +1895,7 @@
         "pushaomAtten": 0,
         "mot3DCoil": 0,
         "mphiCTRL": 0,
-        "yaomAtten": 0,
-        "motCTRL": 0
+        "yaomAtten": 0
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -1699,16 +1914,16 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": true
+          "Value": false
         },
         "slaveDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "ramanDDSTrig": {
           "Value": false
         },
         "aomDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "cameraTTL": {
           "Value": false
@@ -1717,16 +1932,16 @@
           "Value": false
         },
         "xaomTTL": {
-          "Value": true
+          "Value": false
         },
         "yaomTTL": {
-          "Value": true
+          "Value": false
         },
         "zpaomTTL": {
-          "Value": true
+          "Value": false
         },
         "zmaomTTL": {
-          "Value": true
+          "Value": false
         },
         "2DaomTTL": {
           "Value": true
@@ -1832,26 +2047,26 @@
       "digitalData": {
         "mphiTTL": false,
         "serialPreTrigger": false,
-        "zmaomTTL": true,
+        "zmaomTTL": false,
         "acquisitionTrigger": false,
         "shutter": false,
         "Digital Test": false,
         "2DaomTTL": false,
-        "slaveDDSTrig": true,
-        "xaomTTL": true,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
         "ramanDDSTrig": false,
-        "yaomTTL": true,
+        "yaomTTL": false,
         "pushaomTTL": false,
-        "zpaomTTL": true,
+        "zpaomTTL": false,
         "cameraTTL": false,
-        "aomDDSTrig": true,
+        "aomDDSTrig": false,
         "Analog Trigger": false,
         "ramanTTL": false,
         "motTTL": false
       },
       "usedAnalogChannels": [
-        "ybiasCoil",
-        "xbiasCoil"
+        "motCTRL",
+        "ybiasCoil"
       ],
       "serialCommands": [],
       "Name": "StateSelectPreset",
@@ -1883,8 +2098,8 @@
         "motCTRL": 1,
         "mphiCTRL": 1,
         "xbiasCoil": 4,
-        "ybiasCoil": 4,
-        "zbiasCoil": 1
+        "zbiasCoil": 1,
+        "ybiasCoil": 0
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -1903,16 +2118,16 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": true
+          "Value": false
         },
         "slaveDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "ramanDDSTrig": {
           "Value": false
         },
         "aomDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "cameraTTL": {
           "Value": false
@@ -1995,7 +2210,7 @@
       "Name": "F2->F'2",
       "Description": "",
       "Enabled": true,
-      "Duration": "1",
+      "Duration": 5.0,
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2036,144 +2251,6 @@
         },
         "motTTL": {
           "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": false
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "F1, mF=0",
-      "Description": "",
-      "Enabled": true,
-      "Duration": "40",
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
         },
         "ramanTTL": {
           "Value": false
@@ -2249,7 +2326,7 @@
       "digitalData": {
         "mphiTTL": false,
         "serialPreTrigger": false,
-        "zmaomTTL": true,
+        "zmaomTTL": false,
         "acquisitionTrigger": false,
         "shutter": false,
         "Digital Test": false,
@@ -2259,7 +2336,145 @@
         "ramanDDSTrig": false,
         "yaomTTL": false,
         "pushaomTTL": false,
-        "zpaomTTL": true,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "F1, mF=0",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 40.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": true
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": false
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": false
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
         "cameraTTL": false,
         "aomDDSTrig": false,
         "Analog Trigger": false,
@@ -2270,15 +2485,11 @@
       "serialCommands": [
         {
           "Name": "Slaves_DDS",
-          "Value": "set_dds ddsq; set_freq slave0 88.9166e6; ext_update"
+          "Value": "set_dds ddsq; set_freq slave0 88.1e6; ext_update"
         },
         {
           "Name": "AOM_DDS",
-          "Value": "set_freq mphi  107.2420e6; ext_update"
-        },
-        {
-          "Name": "M2 PLL Freq",
-          "Value": ""
+          "Value": " "
         }
       ],
       "Name": "Ready 1",
@@ -2333,7 +2544,7 @@
           "Value": false
         },
         "slaveDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "ramanDDSTrig": {
           "Value": false
@@ -2375,18 +2586,7 @@
         "zmaomFreq": {},
         "2DaomAtten": {},
         "xaomFreq": {},
-        "motCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "2"
-            }
-          ]
-        },
+        "motCTRL": {},
         "xbias2DCoil": {},
         "vertPiezo": {},
         "zmaomAtten": {},
@@ -2405,18 +2605,7 @@
         "yaomFreq": {},
         "pushaomAtten": {},
         "mot3DCoil": {},
-        "mphiCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0.3"
-            }
-          ]
-        },
+        "mphiCTRL": {},
         "yaomAtten": {}
       },
       "digitalData": {
@@ -2451,6 +2640,7 @@
         "zmaomFreq": 0,
         "2DaomAtten": 0,
         "xaomFreq": 0,
+        "motCTRL": 0,
         "xbias2DCoil": 0,
         "vertPiezo": 0,
         "zmaomAtten": 0,
@@ -2469,9 +2659,8 @@
         "yaomFreq": 0,
         "pushaomAtten": 0,
         "mot3DCoil": 0,
-        "yaomAtten": 0,
-        "motCTRL": 1,
-        "mphiCTRL": 1
+        "mphiCTRL": 0,
+        "yaomAtten": 0
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -2579,10 +2768,10 @@
       },
       "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "F1 -> F2",
+      "Name": "test",
       "Description": "",
       "Enabled": false,
-      "Duration": 7.0,
+      "Duration": 100.0,
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2686,7 +2875,7 @@
             },
             {
               "Name": "Y Values",
-              "Value": "9,0.5"
+              "Value": "9,3.7"
             },
             {
               "Name": "Interpolation Type",
@@ -2702,7 +2891,7 @@
             },
             {
               "Name": "Value",
-              "Value": "9"
+              "Value": "7.5"
             }
           ]
         },
@@ -2717,16 +2906,16 @@
         "xbiasCoil": {
           "_selectedItem": [
             {
-              "Name": "Start Time",
-              "Value": ""
+              "Name": "X Values",
+              "Value": "0,1"
             },
             {
-              "Name": "Duration",
-              "Value": ""
+              "Name": "Y Values",
+              "Value": "0.78,0.5"
             },
             {
-              "Name": "Function",
-              "Value": "xBias"
+              "Name": "Interpolation Type",
+              "Value": "Step"
             }
           ]
         },
@@ -2757,8 +2946,7 @@
         "motTTL": false
       },
       "usedAnalogChannels": [
-        "xbiasCoil",
-        "ybiasCoil"
+        "xbiasCoil"
       ],
       "serialCommands": [],
       "Name": "BSwitch1",
@@ -2789,9 +2977,9 @@
         "mot3DCoil": 0,
         "mphiCTRL": 0,
         "yaomAtten": 0,
-        "xbiasCoil": 4,
+        "xbiasCoil": 5,
         "ybiasCoil": 1,
-        "zbiasCoil": 0
+        "zbiasCoil": 5
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -2855,12 +3043,7 @@
         "zmaomFreq": {},
         "2DaomAtten": {},
         "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {
+        "motCTRL": {
           "_selectedItem": [
             {
               "Name": "Start Time",
@@ -2868,10 +3051,26 @@
             },
             {
               "Name": "Value",
-              "Value": "0.5"
+              "Value": "1"
             }
           ]
         },
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "2"
+            }
+          ]
+        },
+        "2DaomFreq": {},
+        "zbiasCoil": {},
         "ybiasCoil": {},
         "zpaomAtten": {},
         "analogTest": {},
@@ -2882,11 +3081,33 @@
         "zpaomFreq": {},
         "ramanCTRL": {},
         "xbiasCoil": {},
-        "yaomFreq": {},
+        "yaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "5.2"
+            }
+          ]
+        },
         "pushaomAtten": {},
         "mot3DCoil": {},
         "mphiCTRL": {},
-        "yaomAtten": {}
+        "yaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "5.5"
+            }
+          ]
+        }
       },
       "digitalData": {
         "mphiTTL": false,
@@ -2909,7 +3130,8 @@
         "motTTL": false
       },
       "usedAnalogChannels": [
-        "zbiasCoil"
+        "motCTRL",
+        "yaomFreq"
       ],
       "serialCommands": [],
       "Name": "BSwitch 2",
@@ -2922,148 +3144,8 @@
         "zmaomFreq": 0,
         "2DaomAtten": 0,
         "xaomFreq": 0,
-        "motCTRL": 0,
         "xbias2DCoil": 0,
         "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0,
-        "zbiasCoil": 1
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": false
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Expansion time1",
-      "Description": "",
-      "Enabled": false,
-      "Duration": 500.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
         "2DaomFreq": 0,
         "zbiasCoil": 0,
         "ybiasCoil": 0,
@@ -3076,11 +3158,13 @@
         "zpaomFreq": 0,
         "ramanCTRL": 0,
         "xbiasCoil": 0,
-        "yaomFreq": 0,
         "pushaomAtten": 0,
         "mot3DCoil": 0,
         "mphiCTRL": 0,
-        "yaomAtten": 0
+        "motCTRL": 1,
+        "yaomFreq": 1,
+        "yaomAtten": 1,
+        "zmaomAtten": 1
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -3191,7 +3275,7 @@
       "Name": "MW1",
       "Description": "",
       "Enabled": true,
-      "Duration": "50",
+      "Duration": "mwTime",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3249,7 +3333,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -3326,148 +3410,10 @@
       },
       "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "Raman ",
+      "Name": "Raman",
       "Description": "",
-      "Enabled": false,
-      "Duration": 1.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": false
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "MW2",
-      "Description": "",
-      "Enabled": false,
-      "Duration": 29.5,
+      "Enabled": true,
+      "Duration": 500.0,
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3510,7 +3456,7 @@
           "Value": false
         },
         "ramanTTL": {
-          "Value": false
+          "Value": true
         },
         "mphiTTL": {
           "Value": false
@@ -3602,9 +3548,9 @@
       },
       "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "Clean Blow",
+      "Name": "BlowAway",
       "Description": "",
-      "Enabled": false,
+      "Enabled": true,
       "Duration": 300.0,
       "Timebase": 0,
       "RS232Commands": false,
@@ -3678,6 +3624,291 @@
           "Value": true
         },
         "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": false
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "2T Dwell Before",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 100.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": false
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [
+        {
+          "Name": "Slaves_DDS",
+          "Value": "set_dds ddsq; set_freq slave0 88.9e6; ext_update"
+        },
+        {
+          "Name": "AOM_DDS",
+          "Value": "set_freq mphi  107.975e6; ext_update"
+        }
+      ],
+      "Name": "2T",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 50.0,
+      "Timebase": 1,
+      "RS232Commands": true,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
           "Value": true
         },
         "2DaomTTL": {
@@ -3740,10 +3971,10 @@
       },
       "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "2T+1 Dwell",
-      "Description": "",
-      "Enabled": false,
-      "Duration": 3.0,
+      "Name": "2T Dwell After",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 1.0,
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3840,1012 +4071,14 @@
         "zmaomAtten": {},
         "2DaomFreq": {},
         "zbiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0.5"
-            }
-          ]
-        },
-        "ybiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "9"
-            }
-          ]
-        },
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "xBias"
-            }
-          ]
-        },
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": true,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [
-        "xbiasCoil",
-        "zbiasCoil",
-        "ybiasCoil"
-      ],
-      "serialCommands": [],
-      "Name": "Detection B field 1",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 1.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0,
-        "xbiasCoil": 4,
-        "ybiasCoil": 1,
-        "zbiasCoil": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "motCTRLImg"
-            }
-          ]
-        },
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "zmAimag"
-            }
-          ]
-        },
-        "2DaomFreq": {},
-        "zbiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "9"
-            }
-          ]
-        },
-        "ybiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "yBias"
-            }
-          ]
-        },
-        "zpaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "zpAimag"
-            }
-          ]
-        },
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "xAtten"
-            }
-          ]
-        },
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "xBias"
-            }
-          ]
-        },
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "mPhiCTRLImg"
-            }
-          ]
-        },
-        "yaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "yAtten"
-            }
-          ]
-        }
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": true,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": true,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [
-        "zbiasCoil",
-        "ybiasCoil"
-      ],
-      "serialCommands": [],
-      "Name": "Detection B field 2",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 4.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "2DaomFreq": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "motCTRL": 4,
-        "mphiCTRL": 4,
-        "xbiasCoil": 4,
-        "ybiasCoil": 4,
-        "zbiasCoil": 1,
-        "xaomAtten": 4,
-        "yaomAtten": 4,
-        "zpaomAtten": 4,
-        "zmaomAtten": 4
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": true
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": true
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": true,
-        "acquisitionTrigger": true,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": true,
-        "ramanDDSTrig": true,
-        "yaomTTL": true,
-        "pushaomTTL": false,
-        "zpaomTTL": true,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Dwell",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 250.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": true
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Imaging N2",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 1.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": true,
-        "motTTL": true
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Imaging NTot",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 1.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": true
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": true,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": true,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Dwell",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 250.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {
           "_selectedItem": [
             {
               "Name": "X Values",
-              "Value": "0,3.5"
+              "Value": "0,1"
             },
             {
               "Name": "Y Values",
-              "Value": "2,0.45"
+              "Value": "9,3.7"
             },
             {
               "Name": "Interpolation Type",
@@ -4853,190 +4086,6 @@
             }
           ]
         },
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "BlowAway2",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 4.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0,
-        "motCTRL": 5
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": true
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "motCTRLImg"
-            }
-          ]
-        },
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "zmAimag"
-            }
-          ]
-        },
-        "2DaomFreq": {},
-        "zbiasCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "9"
-            }
-          ]
-        },
         "ybiasCoil": {
           "_selectedItem": [
             {
@@ -5044,237 +4093,35 @@
               "Value": ""
             },
             {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "yBias"
+              "Name": "Value",
+              "Value": "7.5"
             }
           ]
         },
-        "zpaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "zpAimag"
-            }
-          ]
-        },
+        "zpaomAtten": {},
         "analogTest": {},
         "ybias2DCoil": {},
         "pushaomFreq": {},
         "horizPiezo": {},
-        "xaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "xAtten"
-            }
-          ]
-        },
+        "xaomAtten": {},
         "zpaomFreq": {},
         "ramanCTRL": {},
         "xbiasCoil": {
           "_selectedItem": [
             {
-              "Name": "Start Time",
-              "Value": ""
+              "Name": "X Values",
+              "Value": "0,1"
             },
             {
-              "Name": "Duration",
-              "Value": ""
+              "Name": "Y Values",
+              "Value": "0.78,0.5"
             },
             {
-              "Name": "Function",
-              "Value": "xBias"
+              "Name": "Interpolation Type",
+              "Value": "Step"
             }
           ]
         },
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "mPhiCTRLImg"
-            }
-          ]
-        },
-        "yaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Duration",
-              "Value": ""
-            },
-            {
-              "Name": "Function",
-              "Value": "yAtten"
-            }
-          ]
-        }
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": true,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "DetWait",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 1.5,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "2DaomFreq": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "motCTRL": 4,
-        "mphiCTRL": 4,
-        "xbiasCoil": 4,
-        "ybiasCoil": 4,
-        "zbiasCoil": 1,
-        "xaomAtten": 4,
-        "yaomAtten": 4,
-        "zpaomAtten": 4,
-        "zmaomAtten": 4
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
         "yaomFreq": {},
         "pushaomAtten": {},
         "mot3DCoil": {},
@@ -5303,146 +4150,8 @@
       },
       "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "Dwell",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 250.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": false
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": true
-        },
-        "zmaomTTL": {
-          "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "bg N2 imaging",
-      "Description": "",
+      "Name": "Detection B field 1",
+      "Description": "DNS",
       "Enabled": true,
       "Duration": 1.0,
       "Timebase": 1,
@@ -5456,8 +4165,6 @@
         "vertPiezo": 0,
         "zmaomAtten": 0,
         "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
         "zpaomAtten": 0,
         "analogTest": 0,
         "ybias2DCoil": 0,
@@ -5466,288 +4173,14 @@
         "xaomAtten": 0,
         "zpaomFreq": 0,
         "ramanCTRL": 0,
-        "xbiasCoil": 0,
         "yaomFreq": 0,
         "pushaomAtten": 0,
         "mot3DCoil": 0,
         "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": false
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "bg Ntot imaging",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 1.0,
-      "Timebase": 1,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": true
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": false,
-        "serialPreTrigger": false,
-        "zmaomTTL": true,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": true,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Dwell",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 500.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
+        "yaomAtten": 0,
+        "xbiasCoil": 5,
+        "ybiasCoil": 1,
+        "zbiasCoil": 5
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -5794,144 +4227,6 @@
         },
         "zmaomTTL": {
           "Value": true
-        },
-        "2DaomTTL": {
-          "Value": true
-        },
-        "pushaomTTL": {
-          "Value": true
-        },
-        "acquisitionTrigger": {
-          "Value": false
-        }
-      }
-    },
-    {
-      "analogData": {
-        "zmaomFreq": {},
-        "2DaomAtten": {},
-        "xaomFreq": {},
-        "motCTRL": {},
-        "xbias2DCoil": {},
-        "vertPiezo": {},
-        "zmaomAtten": {},
-        "2DaomFreq": {},
-        "zbiasCoil": {},
-        "ybiasCoil": {},
-        "zpaomAtten": {},
-        "analogTest": {},
-        "ybias2DCoil": {},
-        "pushaomFreq": {},
-        "horizPiezo": {},
-        "xaomAtten": {},
-        "zpaomFreq": {},
-        "ramanCTRL": {},
-        "xbiasCoil": {},
-        "yaomFreq": {},
-        "pushaomAtten": {},
-        "mot3DCoil": {},
-        "mphiCTRL": {},
-        "yaomAtten": {}
-      },
-      "digitalData": {
-        "mphiTTL": true,
-        "serialPreTrigger": false,
-        "zmaomTTL": false,
-        "acquisitionTrigger": false,
-        "shutter": false,
-        "Digital Test": false,
-        "2DaomTTL": false,
-        "slaveDDSTrig": false,
-        "xaomTTL": false,
-        "ramanDDSTrig": false,
-        "yaomTTL": false,
-        "pushaomTTL": false,
-        "zpaomTTL": false,
-        "cameraTTL": false,
-        "aomDDSTrig": false,
-        "Analog Trigger": false,
-        "ramanTTL": false,
-        "motTTL": false
-      },
-      "usedAnalogChannels": [],
-      "serialCommands": [],
-      "Name": "Background.",
-      "Description": "",
-      "Enabled": true,
-      "Duration": 500.0,
-      "Timebase": 0,
-      "RS232Commands": false,
-      "AnalogValueTypes": {
-        "zmaomFreq": 0,
-        "2DaomAtten": 0,
-        "xaomFreq": 0,
-        "motCTRL": 0,
-        "xbias2DCoil": 0,
-        "vertPiezo": 0,
-        "zmaomAtten": 0,
-        "2DaomFreq": 0,
-        "zbiasCoil": 0,
-        "ybiasCoil": 0,
-        "zpaomAtten": 0,
-        "analogTest": 0,
-        "ybias2DCoil": 0,
-        "pushaomFreq": 0,
-        "horizPiezo": 0,
-        "xaomAtten": 0,
-        "zpaomFreq": 0,
-        "ramanCTRL": 0,
-        "xbiasCoil": 0,
-        "yaomFreq": 0,
-        "pushaomAtten": 0,
-        "mot3DCoil": 0,
-        "mphiCTRL": 0,
-        "yaomAtten": 0
-      },
-      "DigitalValueTypes": {
-        "serialPreTrigger": {
-          "Value": false
-        },
-        "Digital Test": {
-          "Value": false
-        },
-        "Analog Trigger": {
-          "Value": false
-        },
-        "motTTL": {
-          "Value": true
-        },
-        "ramanTTL": {
-          "Value": false
-        },
-        "mphiTTL": {
-          "Value": true
-        },
-        "slaveDDSTrig": {
-          "Value": false
-        },
-        "ramanDDSTrig": {
-          "Value": true
-        },
-        "aomDDSTrig": {
-          "Value": false
-        },
-        "cameraTTL": {
-          "Value": false
-        },
-        "shutter": {
-          "Value": false
-        },
-        "xaomTTL": {
-          "Value": true
-        },
-        "yaomTTL": {
-          "Value": true
-        },
-        "zpaomTTL": {
-          "Value": false
-        },
-        "zmaomTTL": {
-          "Value": false
         },
         "2DaomTTL": {
           "Value": true
@@ -5953,35 +4248,17 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "2DaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "z2Freq"
             }
           ]
         },
-        "xaomFreq": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
+        "2DaomAtten": {},
+        "xaomFreq": {},
         "motCTRL": {
           "_selectedItem": [
             {
@@ -5989,35 +4266,17 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "xbias2DCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "motCTRLImg"
             }
           ]
         },
-        "vertPiezo": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
+        "xbias2DCoil": {},
+        "vertPiezo": {},
         "zmaomAtten": {
           "_selectedItem": [
             {
@@ -6025,23 +4284,16 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "2DaomFreq": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "zmAimag"
             }
           ]
         },
+        "2DaomFreq": {},
         "zbiasCoil": {
           "_selectedItem": [
             {
@@ -6050,7 +4302,7 @@
             },
             {
               "Name": "Value",
-              "Value": "0"
+              "Value": "9"
             }
           ]
         },
@@ -6061,8 +4313,12 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "yBias"
             }
           ]
         },
@@ -6073,59 +4329,19 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "analogTest": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "zpAimag"
             }
           ]
         },
-        "ybias2DCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "pushaomFreq": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "horizPiezo": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
         "xaomAtten": {
           "_selectedItem": [
             {
@@ -6133,8 +4349,12 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "xAtten"
             }
           ]
         },
@@ -6145,23 +4365,16 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "ramanCTRL": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "z1Freq"
             }
           ]
         },
+        "ramanCTRL": {},
         "xbiasCoil": {
           "_selectedItem": [
             {
@@ -6169,47 +4382,18 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "yaomFreq": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
+              "Name": "Duration",
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Function",
+              "Value": "xBias"
             }
           ]
         },
-        "pushaomAtten": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
-        "mot3DCoil": {
-          "_selectedItem": [
-            {
-              "Name": "Start Time",
-              "Value": ""
-            },
-            {
-              "Name": "Value",
-              "Value": "0"
-            }
-          ]
-        },
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
         "mphiCTRL": {
           "_selectedItem": [
             {
@@ -6217,8 +4401,12 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "mPhiCTRLImg"
             }
           ]
         },
@@ -6229,8 +4417,12 @@
               "Value": ""
             },
             {
-              "Name": "Value",
-              "Value": "0"
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "yAtten"
             }
           ]
         }
@@ -6255,59 +4447,39 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [
-        "2DaomAtten",
-        "zmaomFreq",
-        "xaomFreq",
-        "vertPiezo",
-        "zmaomAtten",
-        "2DaomFreq",
-        "zpaomAtten",
-        "analogTest",
-        "ybias2DCoil",
-        "pushaomFreq",
-        "horizPiezo",
-        "xaomAtten",
-        "zpaomFreq",
-        "ramanCTRL",
-        "yaomFreq",
-        "pushaomAtten",
-        "mot3DCoil",
-        "mphiCTRL",
-        "yaomAtten"
-      ],
+      "usedAnalogChannels": [],
       "serialCommands": [],
-      "Name": "Off",
-      "Description": "",
+      "Name": "Detection B field 2",
+      "Description": "DNS",
       "Enabled": true,
-      "Duration": 400.0,
-      "Timebase": 0,
+      "Duration": 2.0,
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
-        "xbiasCoil": 1,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "2DaomFreq": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "ramanCTRL": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "motCTRL": 4,
+        "mphiCTRL": 4,
+        "xbiasCoil": 4,
+        "ybiasCoil": 4,
         "zbiasCoil": 1,
-        "ybiasCoil": 1,
-        "xbias2DCoil": 1,
-        "motCTRL": 1,
-        "2DaomAtten": 1,
-        "zmaomFreq": 1,
-        "xaomFreq": 1,
-        "vertPiezo": 1,
-        "zmaomAtten": 1,
-        "2DaomFreq": 1,
-        "zpaomAtten": 1,
-        "analogTest": 1,
-        "ybias2DCoil": 1,
-        "pushaomFreq": 1,
-        "horizPiezo": 1,
-        "xaomAtten": 1,
-        "zpaomFreq": 1,
-        "ramanCTRL": 1,
-        "yaomFreq": 1,
-        "pushaomAtten": 1,
-        "mot3DCoil": 1,
-        "mphiCTRL": 1,
-        "yaomAtten": 1
+        "zpaomFreq": 4,
+        "zmaomFreq": 4,
+        "xaomAtten": 4,
+        "yaomAtten": 4,
+        "zpaomAtten": 4,
+        "zmaomAtten": 4
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -6320,7 +4492,7 @@
           "Value": false
         },
         "motTTL": {
-          "Value": true
+          "Value": false
         },
         "ramanTTL": {
           "Value": false
@@ -6329,13 +4501,13 @@
           "Value": false
         },
         "slaveDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "ramanDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "aomDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "cameraTTL": {
           "Value": false
@@ -6365,6 +4537,1904 @@
           "Value": false
         }
       }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [
+        {
+          "Name": "",
+          "Value": ""
+        }
+      ],
+      "Name": "Dwell",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 250.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "N2",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 0.5,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "NTot",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 0.5,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": true
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "Dwell",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 0.5,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "6"
+            }
+          ]
+        },
+        "xaomFreq": {},
+        "motCTRL": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": "0,3.5"
+            },
+            {
+              "Name": "Y Values",
+              "Value": "2,2"
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": "Step"
+            }
+          ]
+        },
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "9"
+            }
+          ]
+        },
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "BlowAway2",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 10.0,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "xaomFreq": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0,
+        "motCTRL": 5,
+        "2DaomFreq": 1,
+        "2DaomAtten": 1
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": true
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "z2Freq"
+            }
+          ]
+        },
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "motCTRLImg"
+            }
+          ]
+        },
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "zmAimag"
+            }
+          ]
+        },
+        "2DaomFreq": {},
+        "zbiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "9"
+            }
+          ]
+        },
+        "ybiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "yBias"
+            }
+          ]
+        },
+        "zpaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "zpAimag"
+            }
+          ]
+        },
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "xAtten"
+            }
+          ]
+        },
+        "zpaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "z1Freq"
+            }
+          ]
+        },
+        "ramanCTRL": {},
+        "xbiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "xBias"
+            }
+          ]
+        },
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "mPhiCTRLImg"
+            }
+          ]
+        },
+        "yaomAtten": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "yAtten"
+            }
+          ]
+        }
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "DetWait",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 2.0,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "2DaomFreq": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "ramanCTRL": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "motCTRL": 4,
+        "mphiCTRL": 4,
+        "xbiasCoil": 4,
+        "ybiasCoil": 4,
+        "zbiasCoil": 1,
+        "zpaomFreq": 4,
+        "zmaomFreq": 4,
+        "xaomAtten": 4,
+        "yaomAtten": 4,
+        "zpaomAtten": 4,
+        "zmaomAtten": 4
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "Dwell",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 250.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "B2",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 0.5,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "BTot",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 0.5,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": true
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "Dwell",
+      "Description": "DNS",
+      "Enabled": true,
+      "Duration": 500.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {},
+        "ybiasCoil": {},
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {},
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [],
+      "serialCommands": [],
+      "Name": "Bg",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 500.0,
+      "Timebase": 0,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "xbiasCoil": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": true
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": true
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": true
+        },
+        "yaomTTL": {
+          "Value": true
+        },
+        "zpaomTTL": {
+          "Value": true
+        },
+        "zmaomTTL": {
+          "Value": true
+        },
+        "2DaomTTL": {
+          "Value": true
+        },
+        "pushaomTTL": {
+          "Value": true
+        },
+        "acquisitionTrigger": {
+          "Value": true
+        }
+      }
+    },
+    {
+      "analogData": {
+        "zmaomFreq": {},
+        "2DaomAtten": {},
+        "xaomFreq": {},
+        "motCTRL": {},
+        "xbias2DCoil": {},
+        "vertPiezo": {},
+        "zmaomAtten": {},
+        "2DaomFreq": {},
+        "zbiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "0"
+            }
+          ]
+        },
+        "ybiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Duration",
+              "Value": ""
+            },
+            {
+              "Name": "Function",
+              "Value": "0"
+            }
+          ]
+        },
+        "zpaomAtten": {},
+        "analogTest": {},
+        "ybias2DCoil": {},
+        "pushaomFreq": {},
+        "horizPiezo": {},
+        "xaomAtten": {},
+        "zpaomFreq": {},
+        "ramanCTRL": {},
+        "xbiasCoil": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "0"
+            }
+          ]
+        },
+        "yaomFreq": {},
+        "pushaomAtten": {},
+        "mot3DCoil": {},
+        "mphiCTRL": {},
+        "yaomAtten": {}
+      },
+      "digitalData": {
+        "mphiTTL": false,
+        "serialPreTrigger": false,
+        "zmaomTTL": false,
+        "acquisitionTrigger": false,
+        "shutter": false,
+        "Digital Test": false,
+        "2DaomTTL": false,
+        "slaveDDSTrig": false,
+        "xaomTTL": false,
+        "ramanDDSTrig": false,
+        "yaomTTL": false,
+        "pushaomTTL": false,
+        "zpaomTTL": false,
+        "cameraTTL": false,
+        "aomDDSTrig": false,
+        "Analog Trigger": false,
+        "ramanTTL": false,
+        "motTTL": false
+      },
+      "usedAnalogChannels": [
+        "ybiasCoil"
+      ],
+      "serialCommands": [],
+      "Name": "Off",
+      "Description": "",
+      "Enabled": true,
+      "Duration": 50.0,
+      "Timebase": 1,
+      "RS232Commands": false,
+      "AnalogValueTypes": {
+        "zmaomFreq": 0,
+        "2DaomAtten": 0,
+        "xaomFreq": 0,
+        "motCTRL": 0,
+        "xbias2DCoil": 0,
+        "vertPiezo": 0,
+        "zmaomAtten": 0,
+        "2DaomFreq": 0,
+        "zpaomAtten": 0,
+        "analogTest": 0,
+        "ybias2DCoil": 0,
+        "pushaomFreq": 0,
+        "horizPiezo": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "ramanCTRL": 0,
+        "yaomFreq": 0,
+        "pushaomAtten": 0,
+        "mot3DCoil": 0,
+        "mphiCTRL": 0,
+        "yaomAtten": 0,
+        "xbiasCoil": 1,
+        "zbiasCoil": 1,
+        "ybiasCoil": 0
+      },
+      "DigitalValueTypes": {
+        "serialPreTrigger": {
+          "Value": false
+        },
+        "Digital Test": {
+          "Value": false
+        },
+        "Analog Trigger": {
+          "Value": false
+        },
+        "motTTL": {
+          "Value": false
+        },
+        "ramanTTL": {
+          "Value": false
+        },
+        "mphiTTL": {
+          "Value": false
+        },
+        "slaveDDSTrig": {
+          "Value": false
+        },
+        "ramanDDSTrig": {
+          "Value": false
+        },
+        "aomDDSTrig": {
+          "Value": false
+        },
+        "cameraTTL": {
+          "Value": false
+        },
+        "shutter": {
+          "Value": false
+        },
+        "xaomTTL": {
+          "Value": false
+        },
+        "yaomTTL": {
+          "Value": false
+        },
+        "zpaomTTL": {
+          "Value": false
+        },
+        "zmaomTTL": {
+          "Value": false
+        },
+        "2DaomTTL": {
+          "Value": false
+        },
+        "pushaomTTL": {
+          "Value": false
+        },
+        "acquisitionTrigger": {
+          "Value": false
+        }
+      }
     }
   ],
   "Parameters": [
@@ -6372,41 +6442,53 @@
       "Name": "AnalogLength",
       "Value": 100000,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": true
     },
     {
       "Name": "AnalogClockFrequency",
       "Value": 100000,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": true
     },
     {
       "Name": "HSClockFrequency",
       "Value": 20000000,
       "Description": "",
+      "IsHidden": true
+    },
+    {
+      "Name": "MWFreq",
+      "Value": 6834.6882,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "testing",
+      "Value": 0.0,
+      "Description": "",
       "IsHidden": false
     },
     {
       "Name": "IterationNum",
-      "Value": 0,
+      "Value": 0.0,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "IterationCount",
-      "Value": 51.0,
+      "Value": 81.0,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "RunningCounter",
-      "Value": 102.0,
+      "Value": 1860.0,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "mwTime",
-      "Value": 30,
+      "Value": 132.0,
       "Description": "",
       "IsHidden": false
     },
@@ -6700,7 +6782,7 @@
     },
     {
       "Name": "motCTRLImg",
-      "Value": 0.45,
+      "Value": 2.0,
       "Description": "",
       "IsHidden": false
     },
@@ -6730,7 +6812,7 @@
     },
     {
       "Name": "M2Freq",
-      "Value": 6.8346,
+      "Value": 6834.69,
       "Description": "",
       "IsHidden": false
     },
@@ -6747,26 +6829,26 @@
       "IsHidden": false
     },
     {
-      "Name": "MWFreq",
-      "Value": 6834.688,
+      "Name": "testVar",
+      "Value": 0.0,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "M2freq2",
-      "Value": 6.8344,
+      "Value": 6.8346,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "zpAimag",
-      "Value": 6.5,
+      "Value": 3.6,
       "Description": "",
       "IsHidden": false
     },
     {
       "Name": "zmAimag",
-      "Value": 5.5,
+      "Value": 4.0,
       "Description": "",
       "IsHidden": false
     },
@@ -6778,13 +6860,61 @@
     },
     {
       "Name": "mPhiCTRLImg",
-      "Value": 0.22,
+      "Value": 0.28,
       "Description": "",
       "IsHidden": false
     },
     {
-      "Name": "testing",
-      "Value": 0.0,
+      "Name": "Iter",
+      "Value": 4.5,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchXFreq",
+      "Value": 6.847,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchYFreq",
+      "Value": 6.914,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchXAtt",
+      "Value": 3.2,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchYAtt",
+      "Value": 5.5,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchZpFreq",
+      "Value": 6.975,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchZmFreq",
+      "Value": 7.025,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchZpAtten",
+      "Value": 4.0,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "launchZmAtten",
+      "Value": 5.5,
       "Description": "",
       "IsHidden": false
     }

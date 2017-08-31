@@ -524,8 +524,15 @@ namespace MOTMaster2
         
         private void runPattern(MOTMasterSequence sequence)
         {
-
-            initializeHardware(sequence);
+            try
+            {
+                initializeHardware(sequence);
+            }
+            catch
+            {
+                new ErrorManager.ErrorException("Could not initialise hardware");
+                return;
+            }
             run(sequence);
             releaseHardware();
         }

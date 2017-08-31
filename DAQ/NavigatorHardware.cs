@@ -18,9 +18,9 @@ namespace DAQ.HAL
         {
           
             //add information for MMConfig
-            config = new MMConfig(false, false, false, Environment.Environs.Debug);
+            config = new MMConfig(false, false, false,Environment.Environs.Debug);
             config.HSDIOCard = true;
-            config.UseAI = true;
+            config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
@@ -91,14 +91,14 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("ramanCTRL", aoBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("mphiCTRL", aoBoard + "/ao2", -10, 10);
             AddAnalogOutputChannel("mot3DCoil", aoBoard + "/ao9", -10, 10);
-            //AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao11", -10, 10);
+            AddAnalogOutputChannel("mot2DCoil", aoBoard + "/ao11", -10, 10);
             AddAnalogOutputChannel("xbiasCoil", aoBoard + "/ao6", -10, 10);
             AddAnalogOutputChannel("ybiasCoil", aoBoard + "/ao7", -10, 10);
             AddAnalogOutputChannel("zbiasCoil", aoBoard + "/ao5", -10, 10);
             AddAnalogOutputChannel("xbias2DCoil", aoBoard + "/ao3", -10, 10);
             AddAnalogOutputChannel("ybias2DCoil", aoBoard + "/ao4", -10, 10);
             AddAnalogOutputChannel("vertPiezo", aoBoard + "/ao10", 0, 10);
-            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao11", -10, 10);
+            AddAnalogOutputChannel("horizPiezo", aoBoard + "/ao24", -10, 10);
             AddAnalogOutputChannel("xaomFreq", aoBoard + "/ao12", -10, 10);
             AddAnalogOutputChannel("yaomFreq", aoBoard + "/ao13", -10, 10);
             AddAnalogOutputChannel("zpaomFreq", aoBoard + "/ao14", -10, 10);
@@ -111,7 +111,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("zmaomAtten", aoBoard + "/ao21", -10, 10);
             AddAnalogOutputChannel("2DaomAtten", aoBoard + "/ao22", -10, 10);
             AddAnalogOutputChannel("pushaomAtten", aoBoard + "/ao23", -10, 10);
-            AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
+           // AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
             AddAnalogInputChannel("photodiode", aiBoard + "/ai1", AITerminalConfiguration.Differential);
