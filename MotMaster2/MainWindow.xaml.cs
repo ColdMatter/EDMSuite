@@ -174,11 +174,10 @@ namespace MOTMaster2
             Controller.ExpData.ClearData();
             Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
+            ScanFlag = SingleShot(true);
             for (int i = 0; i < Iters; i++)
             {
-                
-                // single shot
-                ScanFlag = SingleShot();
+               
                 controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
@@ -202,9 +201,7 @@ namespace MOTMaster2
                 int Iters = int.Parse(tbIterNumb.Text);
                 // Start repeat
                     realRun(Iters);
-                btnRun.Content = "Run";
-                btnRun.Background = Brushes.LightGreen;
-                ScanFlag = false;
+               
                
                
                 return;
@@ -215,6 +212,7 @@ namespace MOTMaster2
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
+                controller.StopRunning();
                 
                 // End repeat
             }
@@ -225,6 +223,7 @@ namespace MOTMaster2
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
                 //Send Remote Message to AxelHub
+                controller.StopRunning();
             }
         }
 

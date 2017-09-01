@@ -173,7 +173,10 @@ namespace MOTMaster2
             else hs.Configure(config.DigitalPatternClockFrequency, loopRun, true, false);
             if (config.UseMuquans) muquans.Configure(loopRun);
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, loopRun);
-            if (config.UseAI) { aip.Configure(sequence.AIConfiguration, loopRun); }
+            if (config.UseAI) { 
+                aip.Configure(sequence.AIConfiguration, loopRun);
+                aip.AnalogDataReceived += OnAnalogDataReceived;
+            }
         }
 
 
@@ -186,6 +189,14 @@ namespace MOTMaster2
             if (config.UseMuquans) muquans.StopOutput();
         }
 
+        private void releaseHardwareLoop()
+        {
+            if (!config.HSDIOCard) pg.StopPattern();
+            else hs.AbortRunning();
+            apg.AbortRunning();
+            if (config.UseAI) aip.AbortRunning();
+            if (config.UseMuquans) muquans.StopOutput();
+        }
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
@@ -441,20 +452,6 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI)
-                    {
-                        var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogDataSingleArray();
-                        MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
-                        string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
-                        dataLogger.log("{\"MMExec\":"+dataJson+"},");
-                        if (SendDataRemotely)
-                        {
-                            if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
-                        }
-                        
-                    }
-
-
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -526,7 +523,7 @@ namespace MOTMaster2
                 return;
             }
             run(sequence);
-            releaseHardware();
+            if (!loopRun) releaseHardware();
         }
 
         private void debugRun(MOTMasterSequence sequence)
@@ -1020,14 +1017,25 @@ namespace MOTMaster2
         }
         #endregion
 
-
+        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        {
+            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogDataSingleArray();
+            MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
+            string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
+            dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            if (SendDataRemotely)
+            {
+                if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
+            }
+        }
         internal void StopRunning()
         {
-            if (IsRunning())
+            if (IsRunning() && !loopRun)
             {
                 WaitForRunToFinish();
             }
-            releaseHardware();
+            releaseHardwareLoop();
+            loopRun = false; //Set this here in case we want to scan after
            status = RunningState.stopped;
         }
     }

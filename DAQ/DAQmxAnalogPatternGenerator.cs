@@ -66,10 +66,16 @@ namespace DAQ.Analog
 
         public void StopPattern()
         {
+
             analogOutputTask.Stop();
             analogOutputTask.Dispose();
-   
+        }
+        public void AbortRunning()
+        {
             
+            analogOutputTask.Stop();
+            analogOutputTask.Dispose();
+            analogOutputTask = null;
         }
 
         #region private methods for creating timed Tasks/channels

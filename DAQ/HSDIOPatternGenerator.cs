@@ -17,7 +17,7 @@ namespace DAQ.HAL
         private string device;
         private double clockFrequency;
         private int length;
-
+        private bool loop;
         public HSDIOPatternGenerator(String device):base(device)
         {
             this.device = device;
@@ -42,15 +42,11 @@ namespace DAQ.HAL
 
             
             hsTask.ConfigureSampleClock(clockSource, clockFrequency);
-            if(!triggered)
-               
-            
+            if (!triggered)
+
+
             /**** Configure regeneration ****/
-            if (loop)
-            {
-                //TODO Pass number of loop cycles as argument?
-                hsTask.ConfigureGenerationRepeat(niHSDIOConstants.Continuous, 1);
-            }
+                this.loop = loop;
             /**** Configure triggering ****/
             if (triggered)
             {
@@ -74,6 +70,8 @@ namespace DAQ.HAL
                 throw new Exception("Pattern length not equal to number of loop times");
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
+            string tabStr = "\t";
+            if (loop) { script += "\t repeat forever \n"; tabStr = "\t\t"; }
             int width;
             uint[] data;
             length = pattern.Length;
@@ -105,10 +103,11 @@ namespace DAQ.HAL
                 }
                 hsTask.WriteNamedWaveformU32("waveform" + i, width, data);
                 if (loopTimes[i] == 0)
-                    script += "\t generate waveform" + i + "\n";
+                    script += tabStr + " generate waveform" + i + "\n";
                 else 
-                    script += "\t Repeat " + loopTimes[i]/4 + "\n \t generate waveform" + i +"\n\t end repeat \n";
+                    script += tabStr+ " Repeat " + loopTimes[i]/4 + "\n "+ tabStr + " generate waveform" + i +"\n" + tabStr + " end repeat \n";
                 }
+            if (loop) script += "\t end repeat \n";
             script += "end script";
             //Writes the script to the card
             hsTask.SetGenerationMode("", niHSDIOConstants.Scripted);
@@ -181,7 +180,12 @@ namespace DAQ.HAL
             }
 
             hsTask.Dispose();
-
+        }
+        public void AbortRunning()
+        {
+            hsTask.Abort();
+            hsTask.reset();
+            hsTask.Dispose();
 
         }
 

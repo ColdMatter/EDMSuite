@@ -17,6 +17,7 @@ namespace DAQ.Analog
     {
         #region ClassAttributes
         private Task AITask;
+        private Task runningTask = null;
         private String device;
         private AnalogMultiChannelReader AIDataReader;
         private int samples;
@@ -51,7 +52,11 @@ namespace DAQ.Analog
             AITask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                      (string)Environs.Hardware.GetInfo("AIAcquireTrigger"), DigitalEdgeStartTriggerEdge.Rising);
 
-            asyncRun = loop;
+            if (loop)
+            {
+                AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
+               
+            }
             AITask.Control(TaskAction.Verify);
             AITask.Control(TaskAction.Commit);
 
@@ -76,12 +81,13 @@ namespace DAQ.Analog
         }
         public void StartTask()
         {
-           AITask.Start();
+            if (asyncRun) { runningTask = AITask; AIDataReader.BeginReadMultiSample(AIConfig.Samples, new AsyncCallback(OnAnalogDataReady), null); }
+            else AITask.Start();
         }
 
         public void ReadAnalogDataFromBuffer()
         {
-            AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
+            if (AIDataReader == null) AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
             AIConfig.AIData = AIDataReader.ReadMultiSample(samples);
         }
 
@@ -96,6 +102,27 @@ namespace DAQ.Analog
             return data;
         }
 
-        
+        private void OnAnalogDataReady(IAsyncResult i)
+        {
+            if (runningTask != null)
+            {
+                AIConfig.AIData = AIDataReader.EndReadMultiSample(i);
+                AIDataReader.BeginReadMultiSample(AIConfig.Samples, new AsyncCallback(OnAnalogDataReady), null);
+                AnalogDataReceived.Invoke(this, null);
+            }
+            else
+            {
+                AIDataReader = null;
+            }
+        }
+
+        public void AbortRunning()
+        {
+            runningTask = null;
+            StopPattern();
+            AITask = null;
+            AIDataReader = null;
+        }
+        public event EventHandler<EventArgs> AnalogDataReceived;
     }
 }
