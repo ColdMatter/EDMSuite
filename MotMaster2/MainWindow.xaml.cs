@@ -80,7 +80,8 @@ namespace MOTMaster2
             }
         }
         
-        private bool SingleShot(Dictionary<string,object> paramDict) // true if OK
+        //TODO Rename to reflect loop runs
+        private bool SingleShot(Dictionary<string,object> paramDict, bool loop = false) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
@@ -89,7 +90,7 @@ namespace MOTMaster2
             }
             try
             {
-                controller.RunStart(paramDict);
+                controller.RunStart(paramDict,loop);
             }
             catch (WarningException w)
             {
@@ -109,9 +110,9 @@ namespace MOTMaster2
          
             return true;
         }
-        private bool SingleShot() // true if OK
+        private bool SingleShot(bool loop = false) // true if OK
         {
-            return SingleShot(null);
+            return SingleShot(null,loop);
         }
 
         private static string
@@ -177,7 +178,7 @@ namespace MOTMaster2
             {
                 
                 // single shot
-                    ScanFlag = SingleShot();
+                ScanFlag = SingleShot();
                 controller.SetBatchNumber(i);
                 progBar.Value = i;
                 DoEvents();
@@ -216,6 +217,14 @@ namespace MOTMaster2
                 ScanFlag = false;
                 
                 // End repeat
+            }
+
+            if (btnRun.Content.Equals("Abort Remote"))
+            {
+                btnRun.Content = "Run";
+                btnRun.Background = Brushes.LightGreen;
+                ScanFlag = false;
+                //Send Remote Message to AxelHub
             }
         }
 
@@ -313,6 +322,14 @@ namespace MOTMaster2
                 btnScan.Background = Brushes.LightGreen;
                 ScanFlag = false;
             }
+
+            if (btnScan.Content.Equals("Abort Remote"))
+            {
+                btnScan.Content = "Run";
+                btnScan.Background = Brushes.LightGreen;
+                ScanFlag = false;
+                //Send Remote Message to AxelHub
+            }
         }
         #endregion
         private void cbPatternScript_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -371,7 +388,6 @@ namespace MOTMaster2
                 if (result == true)
                 {
                     string filename = dlg.FileName;
-                    string[] text = File.ReadAllLines(filename);
 
                     Dictionary<String, Object> LoadedParameters = new Dictionary<string, object>();
                     string json = File.ReadAllText(filename);
@@ -396,15 +412,13 @@ namespace MOTMaster2
                 dlg.Filter = "Parameters (.csv)|*.csv,*.txt"; // Filter files by extension
 
                 // Show open file dialog box
-                Nullable<bool> result = dlg.ShowDialog();
+                bool? result = dlg.ShowDialog();
 
                 // Process open file dialog box results
-                if (result == true)
-                {
-                    string filename = dlg.FileName;
-                    string json = JsonConvert.SerializeObject(controller.script.Parameters, Formatting.Indented);
-                    File.WriteAllText(filename, json);
-                }
+                if (result != true) return;
+                string filename = dlg.FileName;
+                string json = JsonConvert.SerializeObject(controller.script.Parameters, Formatting.Indented);
+                File.WriteAllText(filename, json);
             }
             else
                 ErrorMgr.warningMsg("You have tried to save parmaters before loading a script");
@@ -422,14 +436,12 @@ namespace MOTMaster2
                 //dlg.InitialDirectory = Controller.scriptListPath;
 
                 // Show open file dialog box
-                Nullable<bool> result = dlg.ShowDialog();
+                bool? result = dlg.ShowDialog();
 
                 // Process open file dialog box results
-                if (result == true)
-                {
-                    string filename = dlg.FileName;
-                    controller.SaveSequenceToPath(filename);
-                }
+                if (result != true) return;
+                string filename = dlg.FileName;
+                controller.SaveSequenceToPath(filename);
             }
             else
                 ErrorMgr.warningMsg("You have tried to save a Sequence before loading a script",-1,true);
@@ -443,15 +455,12 @@ namespace MOTMaster2
             dlg.Filter = "Sequence (.sm2)|*.sm2"; // Filter files by extension
 
             // Show open file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Process open file dialog box results
-            if (result == true)
-            {
-                string filename = dlg.FileName;
-                controller.LoadSequenceFromPath(filename);
-            }
-
+            if (result != true) return;
+            string filename = dlg.FileName;
+            controller.LoadSequenceFromPath(filename);
         }
   
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
@@ -464,37 +473,31 @@ namespace MOTMaster2
             dlg.Filter = "Cicero Settings (.set,.json)|*.json;*.set"; // Filter files by extension
 
             // Show open file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Process open file dialog box results
-            if (result == true)
+            if (result != true) return;
+            string filename = dlg.FileName;
+            controller.LoadCiceroSettingsFromPath(filename);
+
+            dlg = new Microsoft.Win32.OpenFileDialog
             {
-                string filename = dlg.FileName;
-                controller.LoadCiceroSettingsFromPath(filename);
+                Title = "Select Cicero Sequence File",
+                FileName = "",
+                DefaultExt = ".seq",
+                Filter = "Cicero Sequence (.seq,.json)|*.json;*.seq"
+            };
+            // Show open file dialog box
+            result = dlg.ShowDialog();
 
-                dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.Title = "Select Cicero Sequence File";
-                dlg.FileName = ""; // Default file name
-                dlg.DefaultExt = ".seq"; // Default file extension
-                dlg.Filter = "Cicero Sequence (.seq,.json)|*.json;*.seq"; // Filter files by extension
+            // Process open file dialog box results
+            if (result != true) return;
+            filename = dlg.FileName;
+            controller.LoadCiceroSequenceFromPath(filename);
 
-                // Show open file dialog box
-                result = dlg.ShowDialog();
-
-                // Process open file dialog box results
-                if (result == true)
-                {
-                    filename = dlg.FileName;
-                    controller.LoadCiceroSequenceFromPath(filename);
-
-                    controller.ConvertCiceroSequence();
-                    Log("Loaded Cicero Sequence from " + filename);
-                    UpdateSequenceControl();
-                    
-                }
-            }
-
-
+            controller.ConvertCiceroSequence();
+            Log("Loaded Cicero Sequence from " + filename);
+            UpdateSequenceControl();
         }
 
         private void UpdateSequenceControl()
@@ -710,22 +713,24 @@ namespace MOTMaster2
             switch (mme.cmd)
             {
                 case("repeat"):
-                    int Iters = (int)mme.prms["cycles"];
-                    realRun(Iters, mme.sender, mme.id);
+                    btnRun.Content = "Abort Remote";
+                    btnRun.Background = Brushes.LightCoral;
+                    tcMain.TabIndex = 0;
+                    int iters = (int)mme.prms["cycles"];
+                    realRun(iters, mme.sender, mme.id);
                     break;
                 case("scan"):
+                    btnScan.Content = "Abort Remote";
+                    btnScan.Background = Brushes.LightCoral;
+                    tcMain.TabIndex = 1;
                     realScan((string)mme.prms["param"], mme.prms["from"].ToString(), mme.prms["to"].ToString(), mme.prms["by"].ToString(), mme.sender, mme.id);
                     break;
                 case ("set"):
                     foreach (var prm in mme.prms)
                     {
-                        IEnumerable<Parameter> paramList  = Controller.sequenceData.Parameters.Where(t => t.Name == (string)prm.Key);
-                        if (paramList.Count() != 1) continue;
-                        else
-                        {
-                           Parameter p = paramList.First();
-                           p.Value = prm.Value;
-                    }
+                        IEnumerable<Parameter> paramList  = Controller.sequenceData.Parameters.Where(t => t.Name == prm.Key);
+                        Parameter p = paramList.First();
+                        p.Value = prm.Value;
                     }
                     break;
                 case ("load"):
@@ -733,6 +738,10 @@ namespace MOTMaster2
                     break;
                 case ("save"):
                     controller.SaveSequenceToPath((string)mme.prms["file"]);
+                    break;
+                case ("abort"):
+                    //Stop running
+                    controller.StopRunning();
                     break;
             }
             return true;

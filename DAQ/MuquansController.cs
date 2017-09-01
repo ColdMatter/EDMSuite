@@ -161,13 +161,12 @@ namespace DAQ.HAL
         /// <summary>
         /// Configures the counter task on a specified counter channel. The sample clock for this task is the PFI channel used to trigger serial communication
         /// </summary>
-        public void Configure()
+        public void Configure(bool loop)
         {
            
             counterTask = new Task();
 
-          
-            CounterChannel counter = (CounterChannel)Environs.Hardware.CounterChannels["Counter"];
+            CounterChannel counter = (CounterChannel) Environs.Hardware.CounterChannels["Counter"];
             counterTask.CIChannels.CreateCountEdgesChannel(counter.PhysicalChannel, counter.Name, CICountEdgesActiveEdge.Rising, 0, CICountEdgesCountDirection.Up);
             counterTask.CIChannels[0].CountEdgesTerminal = (string)Environs.Hardware.Boards["analogOut"] + "/pfi1";
 
@@ -176,8 +175,6 @@ namespace DAQ.HAL
             counterTask.Timing.ConfigureSampleClock((string)Environs.Hardware.Boards["analogOut"] + "/pfi1", 100000, SampleClockActiveEdge.Rising, SampleQuantityMode.HardwareTimedSinglePoint);
 
             counterTask.Control(TaskAction.Verify);
-           
-      
             
         }
 
@@ -186,14 +183,13 @@ namespace DAQ.HAL
         {
             lock (slaveCommands)
             {
-                    if (serialCounter <= slaveCommands.Count) slaveComm.Output(slaveCommands[serialCounter]);
-                    if (serialCounter <= aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
-                    serialCounter++;
-                    Console.WriteLine(string.Format("wrote command {0} at {1}",serialCounter-1,stopwatch.ElapsedMilliseconds));
+                if (serialCounter < slaveCommands.Count) slaveComm.Output(slaveCommands[serialCounter]);
+                if (serialCounter < aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
+                serialCounter++;
+                if (serialCounter == slaveCommands.Count) serialCounter = 0; //Reset to allow for loop mode
+                Console.WriteLine(string.Format("wrote command {0} at {1}", serialCounter - 1,
+                    stopwatch.ElapsedMilliseconds));
             }
-           
-           
-            
         }
 
         /// <summary>
@@ -259,8 +255,6 @@ namespace DAQ.HAL
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
             stopwatch.Stop();
-           
-
         }
       
        

@@ -22,6 +22,7 @@ namespace DAQ.Analog
         private int samples;
         private int nChannels;
         public MMAIConfiguration AIConfig;
+        private bool asyncRun;
         #endregion
 
         public MMAIWrapper(String device)
@@ -29,7 +30,7 @@ namespace DAQ.Analog
             this.device = device;
         }
 
-        public void Configure(MMAIConfiguration aiConfig)
+        public void Configure(MMAIConfiguration aiConfig, bool loop = false)
         {
         //For now lets just deal with adding a single analog input channel. Want things like sample rate to be specified in the mot master sequance.
             AIConfig = aiConfig;
@@ -50,7 +51,7 @@ namespace DAQ.Analog
             AITask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                      (string)Environs.Hardware.GetInfo("AIAcquireTrigger"), DigitalEdgeStartTriggerEdge.Rising);
 
-            
+            asyncRun = loop;
             AITask.Control(TaskAction.Verify);
             AITask.Control(TaskAction.Commit);
 
@@ -76,7 +77,6 @@ namespace DAQ.Analog
         public void StartTask()
         {
            AITask.Start();
-
         }
 
         public void ReadAnalogDataFromBuffer()

@@ -80,6 +80,8 @@ namespace MOTMaster2
         DAQMxAnalogPatternGenerator apg;
         MMAIWrapper aip;
 
+        private bool loopRun;
+
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -152,26 +154,26 @@ namespace MOTMaster2
             {
                 muquans.StartOutput();
             }
-            Console.WriteLine(string.Format("Started muquans at {0}ms", watch.ElapsedMilliseconds));
+            Console.WriteLine("Started muquans at {0}ms", watch.ElapsedMilliseconds);
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            Console.WriteLine(string.Format("Started apg at {0}ms", watch.ElapsedMilliseconds));
+            Console.WriteLine("Started apg at {0}ms", watch.ElapsedMilliseconds);
             if (config.UseAI) aip.StartTask();
             if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
             else
             {
                 int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
                 hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
-                Console.WriteLine(string.Format("Started hs at {0}ms", watch.ElapsedMilliseconds));
+                Console.WriteLine("Started hs at {0}ms", watch.ElapsedMilliseconds);
             }
 
         }
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
-            else hs.Configure(config.DigitalPatternClockFrequency, false, true, false);
-            if (config.UseMuquans) muquans.Configure();
-            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
-            if (config.UseAI) { aip.Configure(sequence.AIConfiguration); }
+            if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, loopRun, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            else hs.Configure(config.DigitalPatternClockFrequency, loopRun, true, false);
+            if (config.UseMuquans) muquans.Configure(loopRun);
+            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, loopRun);
+            if (config.UseAI) { aip.Configure(sequence.AIConfiguration, loopRun); }
         }
 
 
@@ -296,10 +298,10 @@ namespace MOTMaster2
             else
                 return false;
         }
-        public void RunStart(Dictionary<string,object> paramDict)
+        public void RunStart(Dictionary<string,object> paramDict, bool loop = false)
         {
             runThread = new Thread(new ParameterizedThreadStart(this.Run));
-            
+            loopRun = loop;
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
@@ -316,14 +318,7 @@ namespace MOTMaster2
         public void Run()
         {
             status = RunningState.running;
-            if (replicaRun)
-            {
-                Run(ioHelper.LoadDictionary(dictionaryPath));
-            }
-            else
-            {
-                Run(null);
-            }
+            Run(replicaRun ? ioHelper.LoadDictionary(dictionaryPath) : null);
         }
 
         public void Run(Dictionary<String, Object> dict)
@@ -333,7 +328,7 @@ namespace MOTMaster2
 
         public void Run(object dict)
         {
-                Run((Dictionary<string, object>)dict, 1, batchNumber);
+            Run((Dictionary<string, object>) dict, 1, batchNumber);
         }
        
         public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
@@ -389,11 +384,9 @@ namespace MOTMaster2
                     for (int i = 0; i < numInterations && status == RunningState.running; i++)
                     {
                         if (!config.Debug) runPattern(sequence);
-                        if (i == 0)
-                        {
-                            string filepath = (string)(Environs.FileSystem.Paths["DataPath"]);
-                            ioHelper.SaveRawSequence(filepath, i, sequence);
-                        }
+                        if (i != 0) continue;
+                        string filepath = (string)(Environs.FileSystem.Paths["DataPath"]);
+                        ioHelper.SaveRawSequence(filepath, i, sequence);
                     }
                     if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
@@ -450,14 +443,13 @@ namespace MOTMaster2
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
                     if (config.UseAI)
                     {
-                        double[] rawData;
-                        if (config.Debug) rawData = ExpData.GenerateFakeData(); else { rawData = aip.GetAnalogDataSingleArray(); }
+                        var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogDataSingleArray();
                         MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
                         string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
                         dataLogger.log("{\"MMExec\":"+dataJson+"},");
                         if (SendDataRemotely)
                         {
-                            MotMasterDataEvent(this, new DataEventArgs(dataJson));
+                            if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
                         }
                         
                     }
@@ -972,22 +964,19 @@ namespace MOTMaster2
             ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
             ExpData.IgnoredSegments = ignoredSegments;
             foreach (SequenceStep step in sequenceData.Steps)
-            {   
-                if (step.GetDigitalData("acquisitionTrigger"))
-                {
-                    if (ignoredSegments.Count == 0) throw new WarningException("All acquired data will be saved.");
-                    double timeMultiplier = 1.0;
-                    if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
-                    else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
-                    else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1.0;
-                    double duration = Convert.ToDouble(step.Duration);
-                    int sampleDuration = Convert.ToInt32(duration*timeMultiplier*sampleRate);
-                    string name = step.Name;
-                    Tuple<int, int> segmentTimes = Tuple.Create<int,int>(sampleStartTime, sampleStartTime + sampleDuration );
-                    analogSegments[name] = segmentTimes;
-                    sampleStartTime += sampleDuration;
-                }
-                
+            {
+                if (!step.GetDigitalData("acquisitionTrigger")) continue;
+                if (ignoredSegments.Count == 0) throw new WarningException("All acquired data will be saved.");
+                double timeMultiplier = 1.0;
+                if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
+                else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
+                else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1.0;
+                double duration = Convert.ToDouble(step.Duration);
+                int sampleDuration = Convert.ToInt32(duration*timeMultiplier*sampleRate);
+                string name = step.Name;
+                Tuple<int, int> segmentTimes = Tuple.Create<int,int>(sampleStartTime, sampleStartTime + sampleDuration );
+                analogSegments[name] = segmentTimes;
+                sampleStartTime += sampleDuration;
             }
             ExpData.AnalogSegments = analogSegments;
             ExpData.NSamples = sampleStartTime;
@@ -1030,7 +1019,17 @@ namespace MOTMaster2
             return InitialCommand(null);
         }
         #endregion
-        
+
+
+        internal void StopRunning()
+        {
+            if (IsRunning())
+            {
+                WaitForRunToFinish();
+            }
+            releaseHardware();
+           status = RunningState.stopped;
+        }
     }
 
     public class DataEventArgs : EventArgs

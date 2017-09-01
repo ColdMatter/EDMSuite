@@ -40,7 +40,7 @@ namespace DAQ.HAL
             if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("HSClockLine");
             else clockSource = "";
 
-            //TODO implement a method to export the sample clock at a lower frequency for other channels
+            
             hsTask.ConfigureSampleClock(clockSource, clockFrequency);
             if(!triggered)
                
@@ -48,6 +48,7 @@ namespace DAQ.HAL
             /**** Configure regeneration ****/
             if (loop)
             {
+                //TODO Pass number of loop cycles as argument?
                 hsTask.ConfigureGenerationRepeat(niHSDIOConstants.Continuous, 1);
             }
             /**** Configure triggering ****/
