@@ -89,6 +89,7 @@ namespace MOTMaster2
 
         private WindfreakSynth microSynth;
         public string ExperimentRunTag { get; set; }
+        public MMscan? ScanParam { get; set; }
         MuquansController muquans = null;
 
         MMDataIOHelper ioHelper;
@@ -355,12 +356,17 @@ namespace MOTMaster2
                 if (config.UseAI)
                 {
                     CreateAcquisitionTimeSegments();
-                    MainWindow.MMexec initComm = InitialCommand(dict);
-                    string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
-                    paramLogger.log("{\"MMExec\":"+initJson+"},");
-                    if (SendDataRemotely)
+                    //TODO Change where this is sent. Di we want to send this before each shot during a scan?
+                    if (batchNumber == 0)
                     {
-                        MotMasterDataEvent(this,new DataEventArgs(initJson));
+                        
+                        MMexec initComm = InitialCommand(ScanParam);
+                        string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
+                        paramLogger.log("{\"MMExec\":" + initJson + "},");
+                        if (SendDataRemotely)
+                        {
+                            MotMasterDataEvent(this, new DataEventArgs(initJson));
+                        }
                     }
                 }
                 sequence = getSequenceFromSequenceData(dict);
@@ -452,6 +458,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+                    if (config.UseAI && !loopRun) OnAnalogDataReceived(this, null);
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -465,6 +472,8 @@ namespace MOTMaster2
             }
             
             status = RunningState.stopped;
+            //Dereferences the MMScan object
+            ScanParam = null;
 
 
         }
@@ -978,9 +987,9 @@ namespace MOTMaster2
             ExpData.AnalogSegments = analogSegments;
             ExpData.NSamples = sampleStartTime;
         }
-        public MainWindow.MMexec ConvertDataToAxelHub(double[] aiData)
+        public MMexec ConvertDataToAxelHub(double[] aiData)
         {
-            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
             axelCommand.cmd = "shotData";
             Dictionary<string,double[]> segData = ExpData.SegmentShot(aiData);
@@ -990,9 +999,9 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        public MainWindow.MMexec InitialCommand(Dictionary<string,object> scanParam)
+        public MMexec InitialCommand(MMscan? scan)
         {
-            MainWindow.MMexec axelCommand = new MainWindow.MMexec();
+            MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
  
             axelCommand.mmexec = ExperimentRunTag;
@@ -1000,9 +1009,11 @@ namespace MOTMaster2
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
             axelCommand.prms["runID"] = batchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
-            if (scanParam != null)
+            if (scan != null)
             {
-                axelCommand.prms["scanParam"] = scanParam;
+                MMscan s2 = (MMscan)scan;
+                s2.ToDictionary(ref axelCommand.prms);
+               // axelCommand.prms["scanParam"] = scanParam;
                 axelCommand.cmd = "scan";
             }
             else
@@ -1011,16 +1022,13 @@ namespace MOTMaster2
             }
             return axelCommand;
         }
-        public MainWindow.MMexec InitialCommand()
-        {
-            return InitialCommand(null);
-        }
+
         #endregion
 
         protected void OnAnalogDataReceived(object sender, EventArgs e)
         {
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogDataSingleArray();
-            MainWindow.MMexec finalData = ConvertDataToAxelHub(rawData);
+            MMexec finalData = ConvertDataToAxelHub(rawData);
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
             dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)

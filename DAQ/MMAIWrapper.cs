@@ -23,7 +23,7 @@ namespace DAQ.Analog
         private int samples;
         private int nChannels;
         public MMAIConfiguration AIConfig;
-        private bool asyncRun;
+        private bool asyncRun = false;
         #endregion
 
         public MMAIWrapper(String device)
@@ -52,11 +52,8 @@ namespace DAQ.Analog
             AITask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                      (string)Environs.Hardware.GetInfo("AIAcquireTrigger"), DigitalEdgeStartTriggerEdge.Rising);
 
-            if (loop)
-            {
-                AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
-               
-            }
+
+            AIDataReader = new AnalogMultiChannelReader(AITask.Stream);  
             AITask.Control(TaskAction.Verify);
             AITask.Control(TaskAction.Commit);
 

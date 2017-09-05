@@ -6241,7 +6241,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -6745,6 +6745,12 @@
     {
       "Name": "zBiasImg",
       "Value": 9,
+      "Description": "",
+      "IsHidden": false
+    },
+    {
+      "Name": "prm",
+      "Value": 0,
       "Description": "",
       "IsHidden": false
     }

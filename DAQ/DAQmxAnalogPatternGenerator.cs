@@ -38,6 +38,7 @@ namespace DAQ.Analog
             {
                 sqm = SampleQuantityMode.ContinuousSamples;
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
+                analogOutputTask.Triggers.StartTrigger.Retriggerable = true;
                 
             }
             else

@@ -56,6 +56,7 @@ namespace DAQ.HAL
             {
                 //This card will trigger the others and uses the trigger line defined in the hardware class
                 hsTask.ExportSignal(niHSDIOConstants.StartTrigger, "", (string)Environs.Hardware.GetInfo("HSTrigger"));
+                //hsTask.ExportSignal(niHSDIOConstants.SampleClock,"",)//
             }
             /*** Write configuration to board ****/
             hsTask.CommitDynamic();

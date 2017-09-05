@@ -127,8 +127,10 @@ namespace MOTMaster2.SequenceData
             //Sets the Analog and Digital pattern lengths
             int analogLength = ConvertToSampleTime(currentTime, analogClock);
             int digitalLength = ConvertToSampleTime(currentTime, digitalClock);
-            Parameters["AnalogLength"] = analogLength + 1;
-            Parameters["PatternLength"] = digitalLength + 1;
+            Parameters["AnalogLength"] = analogLength;
+            Parameters["PatternLength"] = digitalLength;
+            analogPB.PatternLength = analogLength;
+
 
             
             

@@ -3,23 +3,30 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
-namespace RemoteMessagingNS
+namespace MOTMaster2
 {
     class RemoteMessaging
     {
-        string partner;
-        IntPtr windowHandle;
-        private string _lastRcvMsg = "";
-        public string lastRcvMsg { get { return _lastRcvMsg;  } }
-        private string _lastSndMsg = "";
-        public string lastSndMsg { get { return _lastSndMsg; } }
+        public string partner { get; private set; }
+        private IntPtr windowHandle;
+        public string lastRcvMsg { get; private set; }
+        public string lastSndMsg { get; private set; }
         public List<string> msgLog;
+        public System.Windows.Threading.DispatcherTimer dTimer = null;
+        private int _autoCheckPeriod = 10; // sec
+        public int autoCheckPeriod
+        {
+            get { return _autoCheckPeriod; }
+            set { _autoCheckPeriod = value; dTimer.Interval = new TimeSpan(0, 0, _autoCheckPeriod); }
+        }
 
         public bool Enabled = true;
 
@@ -31,21 +38,42 @@ namespace RemoteMessagingNS
             hwndSource.AddHook(new HwndSourceHook(WndProc));
 
             msgLog = new List<string>();
+            lastRcvMsg = ""; lastSndMsg = "";
+
+            dTimer = new System.Windows.Threading.DispatcherTimer();
+            dTimer.Tick += new EventHandler(dTimer_Tick);
+            dTimer.Interval = new TimeSpan(0, 0, autoCheckPeriod);
+            dTimer.Start();
+        }
+        private void ResetTimer()
+        {
+            dTimer.Stop();
+            if (Enabled) dTimer.Start();
+        }
+
+        private void dTimer_Tick(object sender, EventArgs e)
+        {
+            if (!Enabled) return;
+            if (!CheckConnection()) Console.WriteLine("Warning: the partner <" + partner + "> is not responsive!");
+            //else Console.WriteLine("Info: the partner <" + partner + "> is responsive.");
+
+            // Forcing the CommandManager to raise the RequerySuggested event
+            System.Windows.Input.CommandManager.InvalidateRequerySuggested();
         }
 
         public delegate bool RemoteHandler(string msg);
-        public event RemoteHandler Remote;
+        public event RemoteHandler OnReceive;
         protected bool OnRemote(string msg)
         {
-            if (Remote != null) return Remote(msg);
+            if (OnReceive != null) return OnReceive(msg);
             else return false;
         }
 
-        public delegate void ActiveCommHandler(bool msg);
+        public delegate void ActiveCommHandler(bool active);
         public event ActiveCommHandler ActiveComm;
-        protected void OnActiveComm(bool msg)
+        protected void OnActiveComm(bool active)
         {
-            if (ActiveComm != null) ActiveComm(msg);
+            if (ActiveComm != null) ActiveComm(active);
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -59,18 +87,19 @@ namespace RemoteMessagingNS
                     int msgID = myStruct.Number;
                     if (msgID == 666)
                     {
-                        _lastRcvMsg = myStruct.Message;
-                        msgLog.Add("R: " + _lastRcvMsg);
-                        switch (lastRcvMsg) 
+                        lastRcvMsg = myStruct.Message;
+                        msgLog.Add("R: " + lastRcvMsg);
+                        ResetTimer();
+                        switch (lastRcvMsg)
                         {
-                        case("ping"):
+                            case ("ping"):
                                 handled = sendCommand("pong");
                                 OnActiveComm(handled);
                                 break;
-                        case("pong"):
-                                handled = true;                               
+                            case ("pong"):
+                                handled = true;
                                 break;
-                        default:handled = OnRemote(lastRcvMsg); // the command systax is OK
+                            default: handled = OnRemote(lastRcvMsg); // the command systax is OK
                                 break;
                         }
                     }
@@ -87,7 +116,7 @@ namespace RemoteMessagingNS
             IntPtr hTargetWnd = NativeMethod.FindWindow(null, partner);
             if (hTargetWnd == IntPtr.Zero)
             {
-                MessageBox.Show("Unable to find the "+partner +" window");
+                Console.WriteLine("Unable to find the " + partner + " window");
                 return false;
             }
 
@@ -107,6 +136,7 @@ namespace RemoteMessagingNS
                 COPYDATASTRUCT cds = new COPYDATASTRUCT();
                 cds.cbData = myStructSize;
                 cds.lpData = pMyStruct;
+
                 // Send the COPYDATASTRUCT struct through the WM_COPYDATA message to 
                 // the receiving window. (The application must use SendMessage, 
                 // instead of PostMessage to send WM_COPYDATA because the receiving 
@@ -114,17 +144,18 @@ namespace RemoteMessagingNS
                 NativeMethod.SendMessage(hTargetWnd, WM_COPYDATA, windowHandle, ref cds);
 
                 int result = Marshal.GetLastWin32Error();
-                if (!(result == 0 || result == 183 || result == 127))
+                if (result != 0)
                 {
-                    MessageBox.Show(String.Format("SendMessage(WM_COPYDATA) failed w/err 0x{0:X}", result));
+                    Console.WriteLine(String.Format("SendMessage(WM_COPYDATA) failed w/err 0x{0:X}", result));
                     return false;
                 }
                 else
                 {
-                    _lastSndMsg = msg; msgLog.Add("S: " + _lastSndMsg);
+                    lastSndMsg = msg; msgLog.Add("S: " + lastSndMsg);
+                    ResetTimer();
                 }
                 return true;
-            }                
+            }
             finally
             {
                 Marshal.FreeHGlobal(pMyStruct);
@@ -150,22 +181,24 @@ namespace RemoteMessagingNS
             bool back = sendCommand("ping");
             if (back)
             {
-                for (int i = 0; i<200; i++)
+                for (int i = 0; i < 200; i++)
                 {
                     Thread.Sleep(10);
                     DoEvents();
                     if (lastRcvMsg.Equals("pong")) break;
                 }
             }
-            return back && (lastRcvMsg.Equals("pong"));
+            back = back && (lastRcvMsg.Equals("pong"));
+            OnActiveComm(back);
+            return back;
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]       
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct MyStruct
         {
             public int Number;
 
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1048576)]
             public string Message;
         }
 
@@ -224,8 +257,91 @@ namespace RemoteMessagingNS
             [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
             public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
         }
-
         #endregion
+    }
 
+    public class MMexec
+    {
+        Random rnd = new Random();
+        public string mmexec { get; set; }
+        public string sender { get; set; }
+        public string cmd { get; set; }
+        public int id { get; set; }
+        public Dictionary<string, object> prms;
+        public MMexec()
+        {
+            id = rnd.Next(int.MaxValue);
+            prms = new Dictionary<string, object>();
+        }
+        public MMexec(string Caption = "", string Sender = "", string Command = "", int ID = -1)
+        {
+            mmexec = Caption;
+            sender = Sender;
+            cmd = Command;
+            if (ID == -1) id = rnd.Next(int.MaxValue);
+            else id = ID;
+            prms = new Dictionary<string, object>();
+        }
+        public void Clear()
+        {
+            mmexec = "";
+            sender = "";
+            cmd = "";
+            id = -1;
+            prms.Clear();
+        }
+        public MMexec Clone()
+        {
+            MMexec mm = new MMexec();
+            mm.mmexec = mmexec;
+            mm.sender = sender;
+            mm.cmd = cmd;
+            mm.id = id;
+            mm.prms = new Dictionary<string, object>(prms);
+            return mm;
+        }
+
+        public string Abort(string Sender = "")
+        {
+            cmd = "abort";
+            mmexec = "abort!Abort!ABORT!";
+            if (!Sender.Equals("")) sender = Sender;
+            prms.Clear();
+            return JsonConvert.SerializeObject(this);
+        }
+    }
+
+    public struct MMscan
+    {
+        public string groupID;
+        public string sParam;
+        public double sFrom;
+        public double sTo;
+        public double sBy;
+        public void TestInit()
+        {
+            groupID = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+            sParam = "frng";
+            sFrom = 0;
+            sTo = 4 * 3.14;
+            sBy = 0.1;
+        }
+        public void ToDictionary(ref Dictionary<string, object> dict)
+        {
+            if (dict == null) dict = new Dictionary<string, object>();
+            dict["groupID"] = groupID;
+            dict["param"] = sParam;
+            dict["from"] = sFrom;
+            dict["to"] = sTo;
+            dict["by"] = sBy;
+        }
+        public void FromDictionary(Dictionary<string, object> dict)
+        {
+            groupID = (string)dict["groupID"];
+            sParam = (string)dict["param"];
+            sFrom = (double)dict["from"];
+            sTo = (double)dict["to"];
+            sBy = (double)dict["by"];
+        }
     }
 }

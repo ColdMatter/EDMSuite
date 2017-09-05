@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using RemoteMessagingNS;
 using ErrorManager;
 using UtilsNS;
 
@@ -50,10 +49,7 @@ namespace MOTMaster2
             if (sender is Controller )
             {
                 string data = (string) e.Data;
-                for (int index = 0; index < data.Length; index += 255)
-                {
-                    remoteMsg.sendCommand(data.Substring(index,Math.Min(255,data.Length-index)));
-                }
+                remoteMsg.sendCommand(data);
             }
         }
 
@@ -61,6 +57,7 @@ namespace MOTMaster2
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
+            controller.WaitForRunToFinish();
         }
 
         public void InitVisuals()
@@ -230,6 +227,7 @@ namespace MOTMaster2
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
         {
             string parameter = prm;
+            if (Controller.sequenceData.Parameters.Where(t => t.Name == parameter).Count() == 0) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
             Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
             Controller.ExpData.ClearData();
@@ -238,6 +236,10 @@ namespace MOTMaster2
             controller.StartLogging();
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
+            MMscan scanParam = new MMscan();
+            scanParam.sParam = prm;
+            scanParam.groupID = tbExperimentRun.Text;
+
             int scanLength;
             object[] scanArray;
             if (defaultValue is int)
@@ -245,6 +247,9 @@ namespace MOTMaster2
                 int fromScanI = int.Parse(fromScanS);
                 int toScanI = int.Parse(toScanS);
                 int byScanI = int.Parse(byScanS);
+                scanParam.sFrom = fromScanI;
+                scanParam.sTo = toScanI;
+                scanParam.sBy = byScanI;
                 progBar.Minimum = fromScanI;
                 progBar.Maximum = toScanI;
                 scanLength = (toScanI - fromScanI) / byScanI;
@@ -265,6 +270,9 @@ namespace MOTMaster2
                 double fromScanD = double.Parse(fromScanS);
                 double toScanD = double.Parse(toScanS);
                 double byScanD = double.Parse(byScanS);
+                scanParam.sFrom = fromScanD;
+                scanParam.sTo = toScanD;
+                scanParam.sBy = byScanD;
                 progBar.Minimum = fromScanD;
                 progBar.Maximum = toScanD;
                 scanLength = (int)((toScanD - fromScanD) / byScanD);
@@ -282,14 +290,15 @@ namespace MOTMaster2
                 }
             }
             int c = 0;
-            foreach (object scanParam in scanArray)
+            controller.ScanParam = scanParam;
+            foreach (object scanItem in scanArray)
             {
                 controller.SetBatchNumber(c);
-                param.Value = scanParam;
-                scanDict[parameter] = scanParam;
-                progBar.Value = (scanParam!=null && scanParam is double) ? (double)scanParam : Convert.ToDouble((int)scanParam);
+                param.Value = scanItem;
+                scanDict[parameter] = scanItem;
+                progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
                 ScanFlag = SingleShot(scanDict);
-                tbCurValue.Content = scanParam.ToString();
+                tbCurValue.Content = scanItem.ToString();
                 DoEvents();
                 if (!ScanFlag) break;
                 c++;
@@ -690,20 +699,20 @@ namespace MOTMaster2
             if (tbExperimentRun.Text != "---") controller.ExperimentRunTag = tbExperimentRun.Text;
         }
 
-        public class MMexec
-        {
-            public string mmexec { get; set; }
-            public string sender { get; set; }
-            public string cmd { get; set; }
-            public int id { get; set; }
-            public Dictionary<string, object> prms = new Dictionary<string,object>();       
+        //public class MMexec
+        //{
+        //    public string mmexec { get; set; }
+        //    public string sender { get; set; }
+        //    public string cmd { get; set; }
+        //    public int id { get; set; }
+        //    public Dictionary<string, object> prms = new Dictionary<string,object>();       
     
-        }
+        //}
 
         public bool Interpreter(string json)
         {
            
-            messenger.Send("<" + json + ">");
+            if (messenger != null ) messenger.Send("<" + json + ">");
             //return true;
              //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
@@ -814,6 +823,7 @@ namespace MOTMaster2
             remoteMsg = new RemoteMessaging("Axel Hub");
             remoteMsg.Enabled = false;
             remoteMsg.ActiveComm += OnActiveComm;
+            remoteMsg.OnReceive += Interpreter;
         }
 
         private void aiEnable_Checked(object sender, RoutedEventArgs e)
