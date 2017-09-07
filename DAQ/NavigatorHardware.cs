@@ -49,6 +49,7 @@ namespace DAQ.HAL
             Info.Add("sampleClockLine", (string)Boards["hsDigital"] + "/PXI_Trig0");
             Info.Add("analogInTrigger0", (string)Boards["multiDAQ"] + "/PXI_Trig1");
             Info.Add("AOPatternTrigger", (string)Boards["analogOut"] + "/PXI_Trig1");
+            //Info.Add("analogInClock", (string)Boards["analogOut"] + "/ao/SampleClock");
             Info.Add("analogInTrigger1", (string)Boards["multiDAQ"] + "/PXI_Trig2");
             Info.Add("HSTrigger", "PXI_Trig1");
           

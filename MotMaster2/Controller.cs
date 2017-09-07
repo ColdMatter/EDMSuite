@@ -80,6 +80,8 @@ namespace MOTMaster2
         DAQMxAnalogPatternGenerator apg;
         MMAIWrapper aip;
 
+        private static int aiSampleRate = 200000;
+        private static double riseTime = 0.0001;
         private bool loopRun;
 
 
@@ -122,7 +124,7 @@ namespace MOTMaster2
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["analogIn"]);
 
-            if (ExpData == null) ExpData = new ExperimentData();
+            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -168,6 +170,22 @@ namespace MOTMaster2
             }
 
         }
+        private void continueLoop()
+        {
+           
+            //Just need to restart the cards
+            apg.StartPattern();
+            if (config.UseAI) aip.StartTask();
+            if (config.HSDIOCard)
+            {
+                hs.StartPattern();
+            }
+            else
+            {
+                throw new NotImplementedException("DAQmx digital cards not currently supported");
+            }
+        }
+
         private void initializeHardware(MOTMasterSequence sequence)
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, loopRun, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
@@ -186,18 +204,25 @@ namespace MOTMaster2
             if (!config.HSDIOCard) pg.StopPattern();
             else hs.StopPattern();
             apg.StopPattern();
-            if (config.UseAI) { aip.ReadAnalogDataFromBuffer(); aip.StopPattern(); }
+            if (config.UseAI) { /*aip.ReadAnalogDataFromBuffer();*/ aip.StopPattern(); }
             if (config.UseMuquans) muquans.StopOutput();
         }
 
-        private void releaseHardwareLoop()
+        private void pauseHardware()
         {
-            if (!config.HSDIOCard) pg.StopPattern();
-            else hs.AbortRunning();
-            apg.AbortRunning();
-            if (config.UseAI) aip.AbortRunning();
-            if (config.UseMuquans) muquans.StopOutput();
+            apg.PauseLoop();
+            if (config.UseAI) aip.PauseLoop();
+            if (config.HSDIOCard) hs.PauseLoop();
+            else throw new NotImplementedException("DAQmx digital cards not currently supported");
         }
+        //private void releaseHardwareLoop()
+        //{
+        //    if (!config.HSDIOCard) pg.StopPattern();
+        //    else hs.AbortRunning();
+        //    apg.AbortRunning();
+        //    if (config.UseAI) aip.AbortRunning();
+        //    if (config.UseMuquans) muquans.StopOutput();
+        //}
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {
             sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
@@ -323,7 +348,7 @@ namespace MOTMaster2
         }
         public void WaitForRunToFinish()
         {
-            runThread.Join();
+            if (runThread != null) runThread.Join();
             Console.WriteLine("Thread Waiting");
         }
 
@@ -353,13 +378,23 @@ namespace MOTMaster2
             }
             else
             {
+                
                 if (config.UseAI)
                 {
                     CreateAcquisitionTimeSegments();
+                   
+                }
+                 sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (batchNumber == 0)
                     {
-                        
+                        //Only intialise and build once
+                        if (loopRun)
+                        {
+                            initializeHardware(sequence);
+                            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
+                        }
                         MMexec initComm = InitialCommand(ScanParam);
                         string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
                         paramLogger.log("{\"MMExec\":" + initJson + "},");
@@ -369,8 +404,7 @@ namespace MOTMaster2
                         }
                     }
                 }
-                sequence = getSequenceFromSequenceData(dict);
-            }
+            
 
             if (sequence != null)
             {
@@ -390,22 +424,20 @@ namespace MOTMaster2
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                         //microSynth.ReadSettingsFromDevice();
                     }
-                    
-                    if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-                    else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
-
+                    if (!loopRun)
+                    {
+                        if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                        else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
+                    }
                     if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
                     watch.Start();
-
-                    for (int i = 0; i < numInterations && status == RunningState.running; i++)
+                    if (!config.Debug)
                     {
-                        if (!config.Debug) runPattern(sequence);
-                        if (i != 0) continue;
-                        string filepath = (string)(Environs.FileSystem.Paths["DataPath"]);
-                        ioHelper.SaveRawSequence(filepath, i, sequence);
+                        if (batchNumber == 0 || !loopRun) runPattern(sequence);
+                        else continueLoop();
                     }
-                    if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
+                    //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
                     watch.Stop();
                     if (saveEnable)
@@ -458,7 +490,8 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI && !loopRun) OnAnalogDataReceived(this, null);
+                    if (config.UseAI) OnAnalogDataReceived(this, null);
+                    if (loopRun) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -522,17 +555,21 @@ namespace MOTMaster2
         
         private void runPattern(MOTMasterSequence sequence)
         {
-            try
+            if (!loopRun)
             {
-                initializeHardware(sequence);
-            }
-            catch
-            {
-                new ErrorManager.ErrorException("Could not initialise hardware");
-                return;
+                try
+                {
+                    initializeHardware(sequence);
+                }
+                catch (Exception e)
+                {
+                    throw new ErrorManager.ErrorException("Could not initialise hardware:" + e.Message);
+                    return;
+                }
             }
             run(sequence);
             if (!loopRun) releaseHardware();
+            else pauseHardware();
         }
 
         private void debugRun(MOTMasterSequence sequence)
@@ -1038,13 +1075,13 @@ namespace MOTMaster2
         }
         internal void StopRunning()
         {
-            if (IsRunning() && !loopRun)
+            while (IsRunning() && !loopRun)
             {
                 WaitForRunToFinish();
             }
-            releaseHardwareLoop();
+            releaseHardware();
             loopRun = false; //Set this here in case we want to scan after
-           status = RunningState.stopped;
+            status = RunningState.stopped;
         }
     }
 

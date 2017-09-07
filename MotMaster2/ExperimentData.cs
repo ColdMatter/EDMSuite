@@ -30,6 +30,8 @@ namespace MOTMaster2
         public int NSamples { get; set; }
         private Random random = new Random();
 
+        //Rise time in seconds to be excluded from data
+        public double RiseTime { get; set; }
         //public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
         //{
         //    if (AnalogSegments != null) shot.analogSegments = SegmentShot(shot);
@@ -76,10 +78,11 @@ namespace MOTMaster2
 
         public Dictionary<string, double[]> SegmentShot(double[] rawData)
         {
+            int riseSamples = (int)(RiseTime * SampleRate);
             Dictionary<string, double[]> segData = new Dictionary<string, double[]>();
             foreach (KeyValuePair<string, Tuple<int, int>> entry in AnalogSegments.OrderBy(t => t.Value.Item1))
             {
-                double[] data = rawData.ToList().GetRange(entry.Value.Item1, entry.Value.Item2-entry.Value.Item1).ToArray();
+                double[] data = rawData.ToList().GetRange(entry.Value.Item1+riseSamples, entry.Value.Item2-entry.Value.Item1-1*riseSamples).ToArray();
                 if(!IgnoredSegments.Contains(entry.Key))segData[entry.Key] = data;
             }
             return segData;

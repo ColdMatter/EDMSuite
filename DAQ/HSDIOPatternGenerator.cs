@@ -42,9 +42,10 @@ namespace DAQ.HAL
 
             
             hsTask.ConfigureSampleClock(clockSource, clockFrequency);
+            if (loop)
+            { hsTask.ConfigureRefClock(niHSDIOConstants.PxiClkStr, 100000000); }
+
             if (!triggered)
-
-
             /**** Configure regeneration ****/
                 this.loop = loop;
             /**** Configure triggering ****/
@@ -72,7 +73,7 @@ namespace DAQ.HAL
             //loop over pattern to write the waveforms to the card and build a script string
             string script = "script myScript \n";
             string tabStr = "\t";
-            if (loop) { script += "\t repeat forever \n"; tabStr = "\t\t"; }
+            //if (loop) { script += "\t repeat forever \n"; tabStr = "\t\t"; }
             int width;
             uint[] data;
             length = pattern.Length;
@@ -108,7 +109,7 @@ namespace DAQ.HAL
                 else 
                     script += tabStr+ " Repeat " + loopTimes[i]/4 + "\n "+ tabStr + " generate waveform" + i +"\n" + tabStr + " end repeat \n";
                 }
-            if (loop) script += "\t end repeat \n";
+            //if (loop) script += "\t end repeat \n";
             script += "end script";
             //Writes the script to the card
             hsTask.SetGenerationMode("", niHSDIOConstants.Scripted);
@@ -173,13 +174,7 @@ namespace DAQ.HAL
         public void StopPattern()
         {
             //This is a pretty bad way of waiting until the sequence has finished before trying to delete the waveforms
-            
-            int done = hsTask.WaitUntilDone(10000);
-            while (done!=0)
-            {
-                done = hsTask.WaitUntilDone(10000);
-            }
-
+            WaitUntilDone();
             hsTask.Dispose();
         }
         public void AbortRunning()
@@ -190,5 +185,24 @@ namespace DAQ.HAL
 
         }
 
+        public void StartPattern()
+        {
+            hsTask.Initiate();
+        }
+
+        public void WaitUntilDone()
+        {
+            int done = hsTask.WaitUntilDone(10000);
+            while (done != 0)
+            {
+                done = hsTask.WaitUntilDone(10000);
+            }
+
+        }
+
+        public void PauseLoop()
+        {
+            WaitUntilDone();
+        }
     }
 }

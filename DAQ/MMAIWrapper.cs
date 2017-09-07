@@ -79,7 +79,7 @@ namespace DAQ.Analog
         public void StartTask()
         {
             if (asyncRun) { runningTask = AITask; AIDataReader.BeginReadMultiSample(AIConfig.Samples, new AsyncCallback(OnAnalogDataReady), null); }
-            else AITask.Start();
+            else { /*AITask.Stop();*/ AITask.Start(); }
         }
 
         public void ReadAnalogDataFromBuffer()
@@ -121,5 +121,10 @@ namespace DAQ.Analog
             AIDataReader = null;
         }
         public event EventHandler<EventArgs> AnalogDataReceived;
+
+        public void PauseLoop()
+        {
+            AITask.Stop();
+        }
     }
 }

@@ -60,14 +60,26 @@ namespace MOTMaster2
                 
        
             }
-            var dignames = first.DigitalValueTypes.Keys;
+        /*    var dignames = first.DigitalValueTypes.Keys;
             foreach (var name in dignames)
             {
                 DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name };
                 col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value")};
-                //col.Binding = new Binding("DigitalValueTypes[" + name + "]");
+                dg.Columns.Add(col);
+            }*/
+            var dignames = first.DigitalValueTypes.Keys;
+            Style digitalStyle = new Style(typeof(CheckBox));
+            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+
+            foreach (var name in dignames)
+            {
+                //var resource = this.FindResource("digitalProvider");
+                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name, EditingElementStyle = digitalStyle };
+                col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value") };
                 dg.Columns.Add(col);
             }
+            dg.FrozenColumnCount = 5;
         }
 
         //If the properties of the SequenceData are changed, this will be called
@@ -101,6 +113,11 @@ namespace MOTMaster2
                     OnChangedAnalogChannelCell(sender,e);
                 }
             }
+        }
+        private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
+        {
+            //Console.WriteLine("654654");            
+            Console.WriteLine(sender.ToString());
         }
 
         public delegate void ChangedAnalogChannelCellHandler(object sender, SelectionChangedEventArgs e);

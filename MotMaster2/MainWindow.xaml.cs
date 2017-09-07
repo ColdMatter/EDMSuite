@@ -81,6 +81,7 @@ namespace MOTMaster2
         private bool SingleShot(Dictionary<string,object> paramDict, bool loop = false) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
+           
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
@@ -171,11 +172,11 @@ namespace MOTMaster2
             Controller.ExpData.ClearData();
             Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
-            ScanFlag = SingleShot(true);
+
             for (int i = 0; i < Iters; i++)
             {
-               
                 controller.SetBatchNumber(i);
+                ScanFlag = SingleShot(true);
                 progBar.Value = i;
                 DoEvents();
                 if (!ScanFlag) break;
@@ -728,6 +729,8 @@ namespace MOTMaster2
                     realRun(iters, mme.sender, mme.id);
                     break;
                 case("scan"):
+                    
+                    
                     btnScan.Content = "Abort Remote";
                     btnScan.Background = Brushes.LightCoral;
                     tcMain.TabIndex = 1;
@@ -749,7 +752,8 @@ namespace MOTMaster2
                     break;
                 case ("abort"):
                     //Stop running
-                    controller.StopRunning();
+                    if (btnRun.Content == "Abort Remote") btnRun_Click(this, null);
+                    else if (btnScan.Content == "Abort Remote") btnScan_Click(this, null);
                     break;
             }
             return true;

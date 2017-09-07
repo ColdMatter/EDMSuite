@@ -18,7 +18,7 @@ namespace DAQ.Analog
     public class DAQMxAnalogPatternGenerator
     {
         Task analogOutputTask;
-
+        AnalogMultiChannelWriter writer;
         public void Configure(AnalogPatternBuilder aPattern, int clockRate)
         {
             Configure(aPattern, clockRate, false);
@@ -36,9 +36,9 @@ namespace DAQ.Analog
             SampleQuantityMode sqm;
             if(loop)
             {
-                sqm = SampleQuantityMode.ContinuousSamples;
+                sqm = SampleQuantityMode.FiniteSamples;
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-                analogOutputTask.Triggers.StartTrigger.Retriggerable = true;
+                //analogOutputTask.Triggers.SynchronizationType = TriggerSynchronizationType.Slave;
                 
             }
             else
@@ -60,25 +60,31 @@ namespace DAQ.Analog
 
         public void OutputPatternAndWait(double[,] pattern)
         {
-            AnalogMultiChannelWriter writer = new AnalogMultiChannelWriter(analogOutputTask.Stream);
-            writer.WriteMultiSample(false, pattern);
+            if (writer == null)
+            {
+                writer = new AnalogMultiChannelWriter(analogOutputTask.Stream);
+                writer.WriteMultiSample(false, pattern);
+            }
             analogOutputTask.Start();
         }
 
         public void StopPattern()
         {
-
             analogOutputTask.Stop();
             analogOutputTask.Dispose();
+            writer = null;
         }
-        public void AbortRunning()
+        public void PauseLoop()
         {
-            
             analogOutputTask.Stop();
-            analogOutputTask.Dispose();
-            analogOutputTask = null;
         }
-
+        public void StartPattern()
+        {
+            if (writer == null) throw new Exception("No pattern written to card");
+            //analogOutputTask.WaitUntilDone();
+            //analogOutputTask.Stop();
+            analogOutputTask.Start();
+        }
         #region private methods for creating timed Tasks/channels
 
         private void AddToAnalogOutputTask(Task task, string channel)
@@ -87,6 +93,8 @@ namespace DAQ.Analog
             c.AddToTask(task, c.RangeLow, c.RangeHigh); 
         }
         #endregion
+
+
 
     }
 }

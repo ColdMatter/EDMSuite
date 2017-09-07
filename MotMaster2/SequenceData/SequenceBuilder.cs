@@ -57,9 +57,9 @@ namespace MOTMaster2.SequenceData
             
             foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
             double timeMultiplier = 1.0;
-            int analogClock = (int)Parameters["AnalogClockFrequency"];
+            int analogClock = Controller.config.AnalogPatternClockFrequency;
             int digitalClock;
-            if (Controller.config.HSDIOCard) digitalClock = (int)Parameters["HSClockFrequency"];
+            if (Controller.config.HSDIOCard) digitalClock = Controller.config.DigitalPatternClockFrequency;
             else digitalClock = (int)Parameters["PGClockFrequency"];
 
           

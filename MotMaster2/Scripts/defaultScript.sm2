@@ -2,7 +2,22 @@
   "Steps": [
     {
       "analogData": {
-        "zmaomFreq": {},
+        "zmaomFreq": {
+          "_selectedItem": [
+            {
+              "Name": "X Values",
+              "Value": ""
+            },
+            {
+              "Name": "Y Values",
+              "Value": ""
+            },
+            {
+              "Name": "Interpolation Type",
+              "Value": ""
+            }
+          ]
+        },
         "2DaomAtten": {},
         "xaomFreq": {},
         "motCTRL": {},
@@ -47,7 +62,9 @@
         "ramanTTL": false,
         "motTTL": true
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "zmaomFreq"
+      ],
       "serialCommands": [],
       "Name": "Initialization 1",
       "Description": "",
@@ -503,7 +520,9 @@
       "usedAnalogChannels": [
         "zbiasCoil",
         "ybiasCoil",
-        "xbiasCoil"
+        "xbiasCoil",
+        "xbias2DCoil",
+        "zmaomFreq"
       ],
       "serialCommands": [
         {
@@ -999,7 +1018,9 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "mphiCTRL"
+      ],
       "serialCommands": [],
       "Name": "B field off",
       "Description": "",
@@ -1260,9 +1281,8 @@
       "usedAnalogChannels": [
         "xaomFreq",
         "zmaomAtten",
-        "zpaomFreq",
         "yaomFreq",
-        "yaomAtten"
+        "zpaomFreq"
       ],
       "serialCommands": [],
       "Name": "Launch",
@@ -1416,7 +1436,9 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "mphiCTRL"
+      ],
       "serialCommands": [],
       "Name": "Freq ramp",
       "Description": "",
@@ -1718,9 +1740,7 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [
-        "motCTRL"
-      ],
+      "usedAnalogChannels": [],
       "serialCommands": [],
       "Name": "Intensity ramp",
       "Description": "",
@@ -2943,8 +2963,7 @@
       },
       "usedAnalogChannels": [
         "xbiasCoil",
-        "ybiasCoil",
-        "zbiasCoil"
+        "ybiasCoil"
       ],
       "serialCommands": [],
       "Name": "BSwitch1",
@@ -4719,7 +4738,7 @@
       "Name": "N2",
       "Description": "",
       "Enabled": true,
-      "Duration": 0.5,
+      "Duration": "0.5",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -4857,7 +4876,7 @@
       "Name": "NTot",
       "Description": "",
       "Enabled": true,
-      "Duration": 0.5,
+      "Duration": "0.5",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -5035,13 +5054,13 @@
           "Value": false
         },
         "motTTL": {
-          "Value": false
+          "Value": true
         },
         "ramanTTL": {
           "Value": false
         },
         "mphiTTL": {
-          "Value": false
+          "Value": true
         },
         "slaveDDSTrig": {
           "Value": false
@@ -6749,7 +6768,7 @@
       "IsHidden": false
     },
     {
-      "Name": "prm",
+      "Name": "fringePhase",
       "Value": 0,
       "Description": "",
       "IsHidden": false
