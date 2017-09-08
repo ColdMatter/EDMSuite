@@ -76,7 +76,9 @@ namespace DAQ.Analog
         }
         public void PauseLoop()
         {
+            analogOutputTask.WaitUntilDone();
             analogOutputTask.Stop();
+            
         }
         public void StartPattern()
         {

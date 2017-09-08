@@ -15,6 +15,8 @@ namespace MOTMaster2.SequenceData
         public object Value { get; set; }
         public string Description { get; set; }
         public bool IsHidden { get; set; }
+        //Flags if the variable is used to modify a sequence
+        public bool SequenceVariable { get; set; }
 
         
         public Parameter()
@@ -25,18 +27,18 @@ namespace MOTMaster2.SequenceData
             Description = "";
             IsHidden = false;
         }
-        public Parameter(string name, string description, object value)
+        public Parameter(string name, string description, object value,bool isHidden = false, bool sequenceVar = true)
         {
             Name = name;
             Value = value;
             Description = description;
-            IsHidden = false;
+            IsHidden = isHidden;
+            SequenceVariable = sequenceVar;
         }
 
         public Parameter Copy()
         {
-            Parameter newParam = new Parameter(this.Name,this.Description,this.Value);
-            newParam.IsHidden = this.IsHidden;
+            Parameter newParam = new Parameter(this.Name,this.Description,this.Value,this.IsHidden,this.SequenceVariable);
             return newParam;
 
         }

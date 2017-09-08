@@ -192,10 +192,21 @@ namespace DAQ.HAL
 
         public void WaitUntilDone()
         {
-            int done = hsTask.WaitUntilDone(10000);
-            while (done != 0)
+            bool done;
+            int dTime;
+            try
             {
-                done = hsTask.WaitUntilDone(10000);
+                hsTask.IsDone(out done);
+            }
+            catch
+            {
+                return;
+            }
+            if (!done) dTime = hsTask.WaitUntilDone(10000);
+            else return;
+            while (dTime != 0)
+            {
+                dTime = hsTask.WaitUntilDone(10000);
             }
 
         }

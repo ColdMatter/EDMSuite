@@ -20,6 +20,7 @@ namespace MOTMaster2.SequenceData
         private MuquansBuilder muPB;
         private double currentTime;
         private SequenceStep _sequenceStep;
+        private bool staticSequence;
         
 
         public SequenceBuilder(List<SequenceStep> steps, Dictionary<string,object> prms)
@@ -149,9 +150,6 @@ namespace MOTMaster2.SequenceData
                 string command = string.Join(" ", valueArr);
                 if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
                 else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
-                
-            
-            
         }
 
 

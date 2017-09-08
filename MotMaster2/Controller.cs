@@ -82,7 +82,7 @@ namespace MOTMaster2
 
         private static int aiSampleRate = 200000;
         private static double riseTime = 0.0001;
-        private bool loopRun;
+        public static bool StaticSequence { get; set; }
 
 
         CameraControllable camera = null;
@@ -188,12 +188,12 @@ namespace MOTMaster2
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, loopRun, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
-            else hs.Configure(config.DigitalPatternClockFrequency, loopRun, true, false);
-            if (config.UseMuquans) muquans.Configure(loopRun);
-            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, loopRun);
+            if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            else hs.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, false);
+            if (config.UseMuquans) muquans.Configure(StaticSequence);
+            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, StaticSequence);
             if (config.UseAI) { 
-                aip.Configure(sequence.AIConfiguration, loopRun);
+                aip.Configure(sequence.AIConfiguration, StaticSequence);
                 aip.AnalogDataReceived += OnAnalogDataReceived;
             }
         }
@@ -204,7 +204,7 @@ namespace MOTMaster2
             if (!config.HSDIOCard) pg.StopPattern();
             else hs.StopPattern();
             apg.StopPattern();
-            if (config.UseAI) { /*aip.ReadAnalogDataFromBuffer();*/ aip.StopPattern(); }
+            if (config.UseAI) { aip.StopPattern(); }
             if (config.UseMuquans) muquans.StopOutput();
         }
 
@@ -338,7 +338,7 @@ namespace MOTMaster2
         public void RunStart(Dictionary<string,object> paramDict, bool loop = false)
         {
             runThread = new Thread(new ParameterizedThreadStart(this.Run));
-            loopRun = loop;
+           // StaticSequence = loop;
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
@@ -384,13 +384,14 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                 sequence = getSequenceFromSequenceData(dict);
+                 if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (batchNumber == 0)
                     {
                         //Only intialise and build once
-                        if (loopRun)
+                        if (StaticSequence)
                         {
+                            sequence = getSequenceFromSequenceData(dict);
                             initializeHardware(sequence);
                             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
@@ -422,9 +423,10 @@ namespace MOTMaster2
                         microSynth.ChannelA.RFOn = true;
                         //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
+                   
                         //microSynth.ReadSettingsFromDevice();
                     }
-                    if (!loopRun)
+                    if (!StaticSequence)
                     {
                         if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                         else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
@@ -434,7 +436,7 @@ namespace MOTMaster2
                     watch.Start();
                     if (!config.Debug)
                     {
-                        if (batchNumber == 0 || !loopRun) runPattern(sequence);
+                        if (batchNumber == 0 || !StaticSequence) runPattern(sequence);
                         else continueLoop();
                     }
                     //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
@@ -491,7 +493,7 @@ namespace MOTMaster2
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
                     if (config.UseAI) OnAnalogDataReceived(this, null);
-                    if (loopRun) pauseHardware();
+                    if (StaticSequence) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -555,7 +557,7 @@ namespace MOTMaster2
         
         private void runPattern(MOTMasterSequence sequence)
         {
-            if (!loopRun)
+            if (!StaticSequence)
             {
                 try
                 {
@@ -568,8 +570,8 @@ namespace MOTMaster2
                 }
             }
             run(sequence);
-            if (!loopRun) releaseHardware();
-            else pauseHardware();
+            if (!StaticSequence) { aip.ReadAnalogDataFromBuffer(); releaseHardware(); }
+            //else pauseHardware();
         }
 
         private void debugRun(MOTMasterSequence sequence)
@@ -1075,12 +1077,12 @@ namespace MOTMaster2
         }
         internal void StopRunning()
         {
-            while (IsRunning() && !loopRun)
+            while (IsRunning() && !StaticSequence)
             {
                 WaitForRunToFinish();
             }
             releaseHardware();
-            loopRun = false; //Set this here in case we want to scan after
+            StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
         }
     }

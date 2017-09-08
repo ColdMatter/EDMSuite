@@ -69,7 +69,7 @@
       "Name": "Initialization 1",
       "Description": "",
       "Enabled": true,
-      "Duration": 50.0,
+      "Duration": "8",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -537,7 +537,7 @@
       "Name": "Initialization 2",
       "Description": "",
       "Enabled": true,
-      "Duration": 20.0,
+      "Duration": "0.1",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -6354,7 +6354,7 @@
       "serialCommands": [],
       "Name": "Off",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 50.0,
       "Timebase": 1,
       "RS232Commands": false,
@@ -6447,331 +6447,386 @@
       "Name": "AnalogLength",
       "Value": 100000,
       "Description": "",
-      "IsHidden": true
+      "IsHidden": true,
+      "SequenceVariable": true
     },
     {
       "Name": "AnalogClockFrequency",
       "Value": 100000,
       "Description": "",
-      "IsHidden": true
+      "IsHidden": true,
+      "SequenceVariable": true
     },
     {
       "Name": "HSClockFrequency",
       "Value": 20000000,
       "Description": "",
-      "IsHidden": true
+      "IsHidden": true,
+      "SequenceVariable": true
     },
     {
       "Name": "MWFreq",
       "Value": 6834.689,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": false
     },
     {
       "Name": "mwTime",
       "Value": 148,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "motCTRL",
       "Value": 2.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "mphiCTRL",
       "Value": 0.22,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "molassesRampTime",
       "Value": 1.4,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xBiasMot",
       "Value": 0.78,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yBiasMot",
       "Value": -0.25,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zBiasMot",
       "Value": -0.38,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xFreq",
       "Value": 6.828,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yFreq",
       "Value": 6.927,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "z1Freq",
       "Value": 6.931,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "z2Freq",
       "Value": 7.076,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xAtten",
       "Value": 3.8,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yAtten",
       "Value": 5.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "z1Atten",
       "Value": 4.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "z2Atten",
       "Value": 5.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "3DCoil",
       "Value": 2.8,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "2DCoil",
       "Value": 9.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "2DFreq",
       "Value": 7.35,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "2DAtten",
       "Value": 5.7,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "PushFreq",
       "Value": 7.41,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "PushAtten",
       "Value": 5.7,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "molassesIntRampDelay",
       "Value": 1.6,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "motPrepTime",
       "Value": 1.38,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "blowAwayTime",
       "Value": 1.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "x2DBias",
       "Value": 1.7,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "y2DBias",
       "Value": -1.55,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "motCTRLImg",
       "Value": 2.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "M2Freq",
       "Value": 6834.69,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zpAimag",
       "Value": 3.6,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zmAimag",
       "Value": 4.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "M2Chirp",
       "Value": 0.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "mPhiCTRLImg",
       "Value": 0.28,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "Iter",
       "Value": 4.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchXFreq",
       "Value": 6.847,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchYFreq",
       "Value": 6.914,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchXAtt",
       "Value": 3.2,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchYAtt",
       "Value": 5.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchZpFreq",
       "Value": 6.975,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchZmFreq",
       "Value": 7.025,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchZpAtten",
       "Value": 4.0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "launchZmAtten",
       "Value": 5.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xBiasState",
       "Value": 0.8,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yBiasState",
       "Value": -0.6,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zBiasState",
       "Value": 9,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xBiasInt",
       "Value": -3.55,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yBiasInt",
       "Value": 7.5,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zBiasInt",
       "Value": 0.1,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "xBiasImg",
       "Value": 0.88,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "yBiasImg",
       "Value": -0.6,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "zBiasImg",
       "Value": 9,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": true
     },
     {
       "Name": "fringePhase",
       "Value": 0,
       "Description": "",
-      "IsHidden": false
+      "IsHidden": false,
+      "SequenceVariable": false
     }
   ]
 }

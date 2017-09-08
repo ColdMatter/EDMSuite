@@ -230,6 +230,8 @@ namespace MOTMaster2
             string parameter = prm;
             if (Controller.sequenceData.Parameters.Where(t => t.Name == parameter).Count() == 0) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
             Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            //Sets the sequence to static if we know the scan parameter does not modify the sequence
+            Controller.StaticSequence = !param.SequenceVariable;
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
             Controller.ExpData.ClearData();
             Controller.ExpData.SaveRawData = true;
@@ -307,6 +309,7 @@ namespace MOTMaster2
             param.Value = defaultValue;
             tbCurValue.Content = defaultValue.ToString();
             controller.StopLogging();
+            controller.StopRunning();
         }
 
         private void btnScan_Click(object sender, RoutedEventArgs e)

@@ -36,6 +36,7 @@ namespace DAQ.Analog
         //For now lets just deal with adding a single analog input channel. Want things like sample rate to be specified in the mot master sequance.
             AIConfig = aiConfig;
             samples = aiConfig.Samples;
+           // asyncRun = loop;
             AITask = new Task(this.device.Substring(1) + "AITask");
             
             foreach (string keys in aiConfig.AIChannels.Keys)
@@ -94,6 +95,7 @@ namespace DAQ.Analog
         }
         public double[] GetAnalogDataSingleArray()
         {
+
             double[] data = new double[AIConfig.AIData.Length];
             for (int i = 0; i < data.Length; i++) data[i] = AIConfig.AIData[0, i];
             return data;
@@ -124,6 +126,8 @@ namespace DAQ.Analog
 
         public void PauseLoop()
         {
+            AITask.WaitUntilDone();
+            ReadAnalogDataFromBuffer();
             AITask.Stop();
         }
     }
