@@ -18,13 +18,12 @@ namespace ErrorManager
         private static Button btnReset, btnYes, btnNo;
         private static Color dftForeground;
         private static string prevText;
-
+       
         private static RichTextBox log;
 
         private static string ErrorPath;
         public static bool AutoSave = true;
-        public static bool Verbatim = false;
-
+       
         private static System.IO.StreamWriter ErrorFile;
 
         public static void Initialize(ref Label _status, ref RichTextBox _log, string _ErrorPath)
@@ -32,8 +31,8 @@ namespace ErrorManager
             status = _status;
             if (status != null)
             {
-                dftForeground = ((System.Windows.Media.SolidColorBrush)(status.Foreground)).Color;
-
+                dftForeground = ((System.Windows.Media.SolidColorBrush)(status.Foreground)).Color;  
+         
                 btnReset = new Button();
                 btnReset.Content = "X";
                 btnReset.Width = 25;
@@ -58,7 +57,7 @@ namespace ErrorManager
                 (status.Parent as StackPanel).Children.Add(btnNo);
                 btnNo.Visibility = Visibility.Hidden;
             }
-            log = _log;
+            log = _log;           
             ErrorPath = _ErrorPath;
             if (!ErrorPath.EndsWith("\\")) ErrorPath += "\\";
             AutoSave = AutoSave && Directory.Exists(ErrorPath);
@@ -66,14 +65,14 @@ namespace ErrorManager
             {
                 ErrorFile = new System.IO.StreamWriter(ErrorPath + "error.log");
                 ErrorFile.AutoFlush = true;
-            }
+            }                   
         }
 
         private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
             status.Content = prevText;
             status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
-            btnReset.Visibility = Visibility.Hidden;
+            btnReset.Visibility = Visibility.Hidden; 
         }
 
         public static void StatusLine(string text, Color Foreground)
@@ -81,7 +80,7 @@ namespace ErrorManager
             if (status == null) return;
             status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
 
-            btnReset.Visibility = Visibility.Visible;
+            btnReset.Visibility = Visibility.Visible; 
             prevText = status.Content.ToString();
             status.Content = text;
         }
@@ -89,12 +88,10 @@ namespace ErrorManager
         public static void AppendLog(string text, Color Foreground)
         {
             if (log == null) return;
-            string printOut = text;
-            if (!Verbatim) printOut = text.Substring(0, 80) + "...";
+
             TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
-            rangeOfText1.Text = printOut + "\n";
-            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));
-            log.ScrollToEnd();
+            rangeOfText1.Text = text + "\n";
+            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));      
         }
 
         private async static Task WriteFileAsync(string txt)
@@ -107,17 +104,17 @@ namespace ErrorManager
             return forcePopup || ((status == null) && (log == null));
         }
 
-        public async static void errorMsg(string errorText, int errorID, bool forcePopup = false)
+        public async static void errorMsg(string errorText, int errorID, bool forcePopup = false) 
         {
             if (IsForcePopup(forcePopup))
             {
-                MessageBox.Show(errorText, " Error message (" + errorID.ToString() + ")");
+                MessageBox.Show(errorText, " Error message ("+errorID.ToString()+")");
             }
             else
             {
-                StatusLine("Error: " + errorText, Brushes.Red.Color);
+                StatusLine("Error: "+errorText, Brushes.Red.Color);
             }
-            string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;
+            string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;  
             AppendLog(outText, Brushes.Red.Color);
             await WriteFileAsync(outText);
         }
@@ -149,11 +146,11 @@ namespace ErrorManager
                 StatusLine("Status: " + simpleText + "\n", dftForeground);
                 btnReset.Visibility = Visibility.Hidden;
             }
-            AppendLog(simpleText, dftForeground);
+            AppendLog(simpleText, dftForeground);           
         }
     }
 
     class WarningException : Exception { public WarningException(string p) : base(p) { } }
 
-    class ErrorException : Exception { public ErrorException(string message) : base(message) { } }
+    class ErrorException : Exception { public ErrorException(string message) : base(message) { }} 
 }
