@@ -29,7 +29,7 @@ namespace MOTMaster2
         //Number of acquired samples
         public int NSamples { get; set; }
         private Random random = new Random();
-
+        public string InterferometerStepName { get; set; }
         //Rise time in seconds to be excluded from data
         public double RiseTime { get; set; }
         //public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
@@ -76,14 +76,21 @@ namespace MOTMaster2
             return SegmentShot(rawData);
         }
 
-        public Dictionary<string, double[]> SegmentShot(double[] rawData)
+        public Dictionary<string, double[]> SegmentShot(double[][] rawData)
         {
             int riseSamples = (int)(RiseTime * SampleRate);
             Dictionary<string, double[]> segData = new Dictionary<string, double[]>();
             foreach (KeyValuePair<string, Tuple<int, int>> entry in AnalogSegments.OrderBy(t => t.Value.Item1))
             {
-                double[] data = rawData.ToList().GetRange(entry.Value.Item1+riseSamples, entry.Value.Item2-entry.Value.Item1-1*riseSamples).ToArray();
-                if(!IgnoredSegments.Contains(entry.Key))segData[entry.Key] = data;
+                if (!IgnoredSegments.Contains(entry.Key))
+                {
+                    double[] data = rawData[0].ToList().GetRange(entry.Value.Item1 + riseSamples, entry.Value.Item2 - entry.Value.Item1 - 1 * riseSamples).ToArray();
+                    segData[entry.Key] = data;
+                }
+                else if (entry.Key == InterferometerStepName)
+                {
+                    double[] accelData = rawData[1].ToList().GetRange(entry.Value.Item1, entry.Value.Item2).ToArray();
+                }
             }
             return segData;
         }

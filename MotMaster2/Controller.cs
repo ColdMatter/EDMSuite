@@ -1026,7 +1026,7 @@ namespace MOTMaster2
             ExpData.AnalogSegments = analogSegments;
             ExpData.NSamples = sampleStartTime;
         }
-        public MMexec ConvertDataToAxelHub(double[] aiData)
+        public MMexec ConvertDataToAxelHub(double[,] aiData)
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
@@ -1066,7 +1066,7 @@ namespace MOTMaster2
 
         protected void OnAnalogDataReceived(object sender, EventArgs e)
         {
-            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogDataSingleArray();
+            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
             dataLogger.log("{\"MMExec\":" + dataJson + "},");
