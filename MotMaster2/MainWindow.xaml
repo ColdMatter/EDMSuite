@@ -100,13 +100,27 @@
             </Grid.ColumnDefinitions>
             <TabControl x:Name="tcLog" Grid.Column="1" Margin="0,0,0,0" SelectedIndex="0">
                 <TabItem Header="Log" Width="56">
-                    <RichTextBox x:Name="tbLogger" VerticalScrollBarVisibility="Auto" Margin="1,0,0,0">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run x:Name="tbLog" Text="&gt; Welcome to MOTMaster "/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </RichTextBox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27"/>
+                            <RowDefinition Height="499*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,0,0" Grid.Row="0" Orientation="Horizontal">
+                            <CheckBox x:Name="chkLog" Content="Log" VerticalAlignment="Center" Margin="8,0,0,0" IsChecked="True"/>
+                            <CheckBox x:Name="chkVerbatim" Content="Verbatim" VerticalAlignment="Center" Margin="8,0,0,0" Checked="chkVerbatim_Checked" Unchecked="chkVerbatim_Checked"/>
+                            <Button x:Name="btnClear" Content="Clear" Width="54" Margin="8,3,0,3" Click="btnClear_Click"/>
+                        </StackPanel>
+                        <RichTextBox x:Name="tbLogger" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="1,0,0,0">
+                            <FlowDocument>
+                                <Paragraph>
+                                    <Run x:Name="tbLog" Text="&gt; Welcome to MOTMaster "/>
+                                    <InlineUIContainer>
+                                        <StackPanel Height="100" Width="100"/>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Property" Width="80">
                     <Grid Margin="0">
