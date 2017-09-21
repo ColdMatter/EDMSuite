@@ -1008,6 +1008,7 @@ namespace MOTMaster2
             List<string> ignoredSegments = new List<string>();
             ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
             ExpData.IgnoredSegments = ignoredSegments;
+            ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
             foreach (SequenceStep step in sequenceData.Steps)
             {
                 if (!step.GetDigitalData("acquisitionTrigger")) continue;

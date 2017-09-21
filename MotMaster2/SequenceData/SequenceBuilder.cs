@@ -175,6 +175,7 @@ namespace MOTMaster2.SequenceData
         public override MMAIConfiguration GetAIConfiguration()
         {
             MMAIConfiguration mmaiConfig = new MMAIConfiguration();
+            mmaiConfig.AddChannel("accelerometer", -3.0, 3.0);
             mmaiConfig.AddChannel("photodiode", -3.0, 3.0);
             mmaiConfig.SampleRate = Controller.ExpData.SampleRate;
             mmaiConfig.Samples = Controller.ExpData.NSamples;

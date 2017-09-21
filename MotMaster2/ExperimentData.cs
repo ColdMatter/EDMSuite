@@ -24,7 +24,7 @@ namespace MOTMaster2
         //List of sequence parameters for each shot
         List<Dictionary<string, object>> shotParams = new List<Dictionary<string, object>>();
         //Sampling rate for data
-        private int sampleRate = 100000;
+        private int sampleRate = 200000;
         public int SampleRate { get { return sampleRate; } set { sampleRate = value; } }
         //Number of acquired samples
         public int NSamples { get; set; }
@@ -32,67 +32,76 @@ namespace MOTMaster2
         public string InterferometerStepName { get; set; }
         //Rise time in seconds to be excluded from data
         public double RiseTime { get; set; }
-        //public void AddExperimentShot(ExperimentShot shot,Dictionary<string,object> parameters)
-        //{
-        //    if (AnalogSegments != null) shot.analogSegments = SegmentShot(shot);
-        //    shotData.Add(shot);
-        //    shotParams.Add(parameters);
-        //}
 
-        //List<Dictionary<string,double>> AverageEachSegment()
-        //{
-        //    List<Dictionary<string, double>> segAvgs = new List<Dictionary<string,double>>();
-        //    foreach (ExperimentShot shot in shotData)
-        //    {
-        //         segAvgs.Add(AverageShotSegments(shot));
-        //    }
-        //    return segAvgs;
-        //}
+        private int preTrigSamples = 64;
+        public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
-        /// <summary>
-        /// Gets the average value of the analog input data for each time segment
-        /// </summary>
-        /// <param name="shot"></param>
-        /// <returns></returns>
-        private Dictionary<string,double> AverageShotSegments(ExperimentShot shot)
+        public InterferometerParams InterferometerPulses { get; set; }
+        public static double[] TransferFunc { get; set; }
+
+
+        public ExperimentData()
         {
-            Dictionary<string, double> segmentAvg = new Dictionary<string, double>();
-            Dictionary<string, double[]> segData = SegmentShot(shot);
-            foreach (KeyValuePair<string,double[]> entry in segData)
-            {
-                segmentAvg[entry.Key] = entry.Value.Average();
-            }
-            return segmentAvg;
+           
         }
 
-        /// <summary>
-        /// Segments a shot using the speicified analog time segments
-        /// </summary>
-        /// <param name="shot"></param>
-        /// <returns></returns>
-        public Dictionary<string,double[]> SegmentShot(ExperimentShot shot)
-        {
-            double[] rawData = shot.analogInData;
-            return SegmentShot(rawData);
-        }
-
-        public Dictionary<string, double[]> SegmentShot(double[][] rawData)
+        public Dictionary<string, double[]> SegmentShot(double[,] rawData)
         {
             int riseSamples = (int)(RiseTime * SampleRate);
+            int imin;
+            int imax;
             Dictionary<string, double[]> segData = new Dictionary<string, double[]>();
             foreach (KeyValuePair<string, Tuple<int, int>> entry in AnalogSegments.OrderBy(t => t.Value.Item1))
             {
                 if (!IgnoredSegments.Contains(entry.Key))
                 {
-                    double[] data = rawData[0].ToList().GetRange(entry.Value.Item1 + riseSamples, entry.Value.Item2 - entry.Value.Item1 - 1 * riseSamples).ToArray();
+                    imin = entry.Value.Item1 + riseSamples;
+                    imax = entry.Value.Item2;
+                    double[] data = new double[imax-imin];
+                    for (int i = imin; i < imax; i++) data[i-imin] = rawData[0,i];
                     segData[entry.Key] = data;
                 }
                 else if (entry.Key == InterferometerStepName)
                 {
-                    double[] accelData = rawData[1].ToList().GetRange(entry.Value.Item1, entry.Value.Item2).ToArray();
+                    imin = entry.Value.Item1;
+                    imax = entry.Value.Item2;
+                    double[] accelData = new double[imax-imin];
+                    for (int i = imin; i < imax; i++) accelData[i - imin] = rawData[1, i];
+                    ConvertAccelerometerVoltage(ref segData, accelData);
                 }
             }
             return segData;
+        }
+
+        /// <summary>
+        /// Converts the accelerometer voltage into acceleration and integrates it using the interferometer response function
+        /// </summary>
+        /// <param name="segData"></param>
+        /// <param name="accelData"></param>
+        private void ConvertAccelerometerVoltage(ref Dictionary<string, double[]> segData, double[] accelData)
+        {
+            double keff = 4 * Math.PI / (780 * 1e-9);
+            double accScale = 1.235976 * 1e-3 * 6 * 1e3 / 9.81;// V/ms^-2
+            int nAccSamps = accelData.Length;
+            double accSum = 0.0;
+            //Uses the simple triangular form of the transfer function and trapezium rule to integrate
+            for (int i = 1; i < nAccSamps / 2; i++) accSum += i* accelData[i];
+            for (int i = nAccSamps / 2 + 1; i < nAccSamps; i++) accSum += (nAccSamps - i) * accelData[i];
+
+            double accPhase = keff * accSum/(accScale * sampleRate * sampleRate); // 1/sampleRate comes from both transfer function and integration
+            
+            double accMean = accelData.Average();
+            double accStd = 0.0;
+            for (int i = 0; i < accelData.Length; i++) accStd += accelData[i]*accelData[i];
+            accStd = accStd/nAccSamps-1;
+            accStd = Math.Sqrt(accStd - accMean*accMean);
+
+            segData["AccPhase"] = new double[] {accPhase};
+            segData["AccMeanV"] = new double[] {accMean};
+            segData["AccMeanA"] = new double[] {accMean/accScale};
+            segData["AccStdV"] = new double[] {accStd};
+            segData["AccStdA"] = new double[] {accStd/accScale};
+          
         }
         //Useful when starting a new scan
         public void ClearData()
@@ -103,10 +112,11 @@ namespace MOTMaster2
         }
 
         //Generates some fake data that is normally distributed about some mean value
-        public double[] GenerateFakeData()
+        public double[,] GenerateFakeData()
         {
-            double[] fakeData = new double[NSamples];
-            for (int i = 0; i < NSamples; i++) { double g = Gauss(0, 1); fakeData[i] = g;}
+            double[,] fakeData = new double[2,NSamples];
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < NSamples; i++) { double g = Gauss(0, 1); fakeData[i,j] = g; }
             return fakeData;
         }
 
@@ -123,9 +133,7 @@ namespace MOTMaster2
             
         }
 
-        private int preTrigSamples = 64;
 
-        public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
     }
 
     /// <summary>
@@ -137,17 +145,42 @@ namespace MOTMaster2
         //Index of run. Might not be needed if adding each to a list
         public int runID;
 
-        //Single channel analog input data -- Extend to multi-channel?
+        
         [JsonIgnore]
-        internal double[] analogInData;
+        internal double[,] analogInData;
 
         public Dictionary<string, double[]> analogSegments;
 
-        public ExperimentShot(int id, double[] data)
+        public ExperimentShot(int id, double[,] data)
         {
             runID = id;
             analogInData = data;
             analogSegments = null;
         }
+    }
+
+    /// <summary>
+    /// Encapsulates data about the parameters for the interferometer pulses
+    /// </summary>
+    [Serializable,JsonObject]
+    public class InterferometerParams
+    {
+        public PulseParams VelPulse { get; set; }
+        public PulseParams Pulse1 { get; set; }
+        public PulseParams Pulse2 { get; set; }
+        public PulseParams Pulse3 { get; set; }
+
+        public double TTime { get; set; }
+        public void GetParametersFromMSquared()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public struct PulseParams
+    {
+        public double power;
+        public double duration;
+        public double phase;
     }
 }

@@ -115,6 +115,7 @@ namespace DAQ.HAL
            // AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
+            AddAnalogInputChannel("accelerometer", aiBoard + "/ai0", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("photodiode", aiBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("fibrePD", aiBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("forwardRamanPD", multiBoard + "/ai0", AITerminalConfiguration.Differential);

@@ -3851,7 +3851,7 @@
         }
       ],
       "Name": "2T",
-      "Description": "DNS",
+      "Description": "DNS Interferometer",
       "Enabled": true,
       "Duration": 50.0,
       "Timebase": 1,
