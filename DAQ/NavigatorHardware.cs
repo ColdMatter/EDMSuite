@@ -125,8 +125,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
-            AddCounterChannel("Counter", multiBoard + "/ctr0");
-            
+            AddCounterChannel("Counter", multiBoard + "/ctr0");          
         }
     }
 }

@@ -314,6 +314,8 @@ namespace MOTMaster2
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
+            var converter = new System.Windows.Media.BrushConverter();
+            var brush = (Brush)converter.ConvertFromString("#FFF9E76B");
             if (btnScan.Content.Equals("Scan"))
             {
                 btnScan.Content = "Cancel";
@@ -323,7 +325,7 @@ namespace MOTMaster2
                 realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
 
                 btnScan.Content = "Scan";
-                btnScan.Background = Brushes.LightGreen;
+                btnScan.Background = brush;
                 ScanFlag = false;
                 return;
             }
@@ -331,14 +333,14 @@ namespace MOTMaster2
             if (btnScan.Content.Equals("Cancel"))
             {
                 btnScan.Content = "Scan";
-                btnScan.Background = Brushes.LightGreen;
+                btnScan.Background = brush;
                 ScanFlag = false;
             }
 
             if (btnScan.Content.Equals("Abort Remote"))
             {
                 btnScan.Content = "Run";
-                btnScan.Background = Brushes.LightGreen;
+                btnScan.Background = brush;
                 ScanFlag = false;
                 //Send Remote Message to AxelHub
             }
@@ -602,12 +604,17 @@ namespace MOTMaster2
             SequenceStep step = model.SelectedSequenceStep;
             CreateSerialPropertyTable(step);
         }
-        private void Log(string text)
+        private void Log(string txt, Color? clr = null)
         {
-            tbLogger.AppendText("> " + text + "\n");
+            if (!chkLog.IsChecked.Value) return;
+            string printOut;
+            if ((chkVerbatim.IsChecked.Value) || (txt.Length < 81)) printOut = txt;
+            else printOut = txt.Substring(0, 80) + "...";
 
-            //tbLogger.Focus();
-            //tbLogger.CaretIndex = tbLogger.Text.Length;
+            Color ForeColor = clr.GetValueOrDefault(Brushes.Black.Color);
+            TextRange rangeOfText1 = new TextRange(tbLogger.Document.ContentEnd, tbLogger.Document.ContentEnd);
+            rangeOfText1.Text = printOut + "\n";
+            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
             tbLogger.ScrollToEnd();
         }
 
@@ -839,6 +846,17 @@ namespace MOTMaster2
             DAQ.HAL.NavigatorHardware hardware = (DAQ.HAL.NavigatorHardware)Environs.Hardware;
             hardware.config.UseAI = aiEnable.IsChecked.Value;
         }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            tbLogger.Document.Blocks.Clear();
+        }
+
+        private void chkVerbatim_Checked(object sender, RoutedEventArgs e)
+        {
+            ErrorMgr.Verbatim = chkVerbatim.IsChecked.Value;
+        }
+
     }
     
 }

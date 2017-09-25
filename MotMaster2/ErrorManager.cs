@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows.Controls;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Documents;
-//using System.IO.StreamWriter;
+using UtilsNS;
 
 namespace ErrorManager
 {
@@ -23,6 +24,7 @@ namespace ErrorManager
 
         private static string ErrorPath;
         public static bool AutoSave = true;
+        public static bool Verbatim = false;
        
         private static System.IO.StreamWriter ErrorFile;
 
@@ -85,13 +87,38 @@ namespace ErrorManager
             status.Content = text;
         }
 
-        public static void AppendLog(string text, Color Foreground)
+        public static void AppendLog(string text, Color? clr = null)
         {
             if (log == null) return;
+            string printOut = text;
+            if ((Verbatim) || (text.Length < 81)) printOut = text;
+            else printOut = text.Substring(0, 80) + "..."; 
+      /*      TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
+            rangeOfText1.Text = printOut + "\r";
+            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));    
+	        log.ScrollToEnd();  */
+            Color ForeColor = clr.GetValueOrDefault(Brushes.Black.Color);
+            Application.Current.Dispatcher.BeginInvoke(
+              DispatcherPriority.Background,
+              new Action(() =>
+              {
+                  TextRange rangeOfText1 = new TextRange(log.Document.ContentStart, log.Document.ContentEnd);
+                  string tx = rangeOfText1.Text;
+                  int len = tx.Length; int maxLen = 10000; // the number of chars kept
+                  if (len > (2 * maxLen)) // when it exceeds twice the maxLen
+                  {
+                      tx = tx.Substring(maxLen);
+                      var paragraph = new Paragraph();
+                      paragraph.Inlines.Add(new Run(tx));
+                      log.Document.Blocks.Clear();
+                      log.Document.Blocks.Add(paragraph);
+                  }
+                  rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
+                  rangeOfText1.Text = Utils.RemoveLineEndings(printOut) + "\r";
+                  rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
+                  log.ScrollToEnd();
+              }));
 
-            TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
-            rangeOfText1.Text = text + "\n";
-            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));      
         }
 
         private async static Task WriteFileAsync(string txt)
