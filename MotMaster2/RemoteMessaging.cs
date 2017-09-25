@@ -21,7 +21,7 @@ namespace MOTMaster2
         public string lastSndMsg { get; private set; }
         public List<string> msgLog;
         public System.Windows.Threading.DispatcherTimer dTimer = null;
-        private int _autoCheckPeriod = 10; // sec
+        private int _autoCheckPeriod = 100; // sec
         public int autoCheckPeriod
         {
             get { return _autoCheckPeriod; }
@@ -161,7 +161,7 @@ namespace MOTMaster2
                 Marshal.FreeHGlobal(pMyStruct);
             }
         }
-
+/*
         public void DoEvents()
         {
             DispatcherFrame frame = new DispatcherFrame();
@@ -174,7 +174,7 @@ namespace MOTMaster2
         {
             ((DispatcherFrame)f).Continue = false;
             return null;
-        }
+        }*/
 
         public bool CheckConnection()
         {
@@ -184,7 +184,7 @@ namespace MOTMaster2
                 for (int i = 0; i < 200; i++)
                 {
                     Thread.Sleep(10);
-                    DoEvents();
+                    //DoEvents();
                     if (lastRcvMsg.Equals("pong")) break;
                 }
             }

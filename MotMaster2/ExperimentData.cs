@@ -36,12 +36,13 @@ namespace MOTMaster2
         private int preTrigSamples = 64;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
-        public InterferometerParams InterferometerPulses { get; set; }
-        public static double[] TransferFunc { get; set; }
+        public InterferometerParams InterferometerPulses = new InterferometerParams(); 
 
+        public static double[] TransferFunc { get; set; }
 
         public ExperimentData()
         {
+           
            
         }
 
@@ -116,7 +117,7 @@ namespace MOTMaster2
         {
             double[,] fakeData = new double[2,NSamples];
             for (int i = 0; i < 2; i++)
-                for (int j = 0; j < NSamples; i++) { double g = Gauss(0, 1); fakeData[i,j] = g; }
+                for (int j = 0; j < NSamples; j++) { double g = Gauss(0, 1); fakeData[i,j] = g; }
             return fakeData;
         }
 
@@ -162,25 +163,37 @@ namespace MOTMaster2
     /// <summary>
     /// Encapsulates data about the parameters for the interferometer pulses
     /// </summary>
-    [Serializable,JsonObject]
+     [Serializable,JsonObject]
     public class InterferometerParams
     {
-        public PulseParams VelPulse { get; set; }
-        public PulseParams Pulse1 { get; set; }
-        public PulseParams Pulse2 { get; set; }
-        public PulseParams Pulse3 { get; set; }
+        public struct PulseParams
+        {
+            private double power;
+            public double Power { get { return power; } set { power = value; } }
+            public double duration;
+            public double Duration { get { return duration; } set { duration = value; } }
+            public double phase;
+            public double Phase { get { return phase; } set { power = phase; } }
+        }
+        public InterferometerParams() 
+        {           
+            Pulse1 = new PulseParams();
+            Pulse2 = new PulseParams();
+            Pulse3 = new PulseParams();
+            VelPulse = new PulseParams();
+        }
+        
+        public PulseParams Pulse1; 
+        public PulseParams Pulse2; 
+        public PulseParams Pulse3; 
+        public PulseParams VelPulse; 
 
-        public double TTime { get; set; }
+        public double TTime; 
+
         public void GetParametersFromMSquared()
         {
             throw new NotImplementedException();
         }
     }
 
-    public struct PulseParams
-    {
-        public double power;
-        public double duration;
-        public double phase;
-    }
 }

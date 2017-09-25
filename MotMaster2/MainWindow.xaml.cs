@@ -857,6 +857,26 @@ namespace MOTMaster2
             ErrorMgr.Verbatim = chkVerbatim.IsChecked.Value;
         }
 
+        private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {          
+            Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Power = nbPower2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Power = nbPower3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Power = nbPowerV.Value;
+
+            Controller.ExpData.InterferometerPulses.Pulse1.Duration = nbDur1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Duration = nbDur2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Duration = nbDur3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Duration = nbDurV.Value;
+
+            Controller.ExpData.InterferometerPulses.Pulse1.Phase = nbPhase1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Phase = nbPhase2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Phase = nbPhase3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Phase = nbPhaseV.Value;
+
+            Controller.ExpData.InterferometerPulses.TTime = nbRamanPllFreq.Value;
+        }
+
     }
     
 }

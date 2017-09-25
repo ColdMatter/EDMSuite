@@ -392,7 +392,7 @@ namespace MOTMaster2
                         if (StaticSequence)
                         {
                             sequence = getSequenceFromSequenceData(dict);
-                            initializeHardware(sequence);
+                            if(!config.Debug) initializeHardware(sequence);
                             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
                         }
@@ -493,7 +493,7 @@ namespace MOTMaster2
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
                     if (config.UseAI) OnAnalogDataReceived(this, null);
-                    if (StaticSequence) pauseHardware();
+                    if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
@@ -1078,11 +1078,14 @@ namespace MOTMaster2
         }
         internal void StopRunning()
         {
-            while (IsRunning() && !StaticSequence)
+            if (!config.Debug)
             {
-                WaitForRunToFinish();
+                while (IsRunning() && !StaticSequence)
+                {
+                    WaitForRunToFinish();
+                }
+                releaseHardware();
             }
-            releaseHardware();
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
         }
