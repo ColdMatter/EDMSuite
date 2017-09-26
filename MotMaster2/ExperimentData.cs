@@ -123,18 +123,36 @@ namespace MOTMaster2
 
         //Randomly generates normally distributed numbers using the BoxMuller transform
         public double Gauss(double mean, double std)
-        {
-            
+        {            
             double u = 2 * random.NextDouble() - 1;
             double v = 2 * random.NextDouble() - 1;
             double w = u * u + v * v;
             if (w == 0 || w >= 1) return Gauss(mean, std);
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
-            return u * c * std + mean;
-            
+            return u * c * std + mean;            
         }
 
-
+        public class MergedData
+        {   
+            public Sequence sequence;
+            public InterferometerParams laser;
+        }
+        public string SerializeSeqAndLaser(ref Sequence seq, ref InterferometerParams laser)
+        {
+            if ((seq == null) && (laser == null)) return "";
+            if (seq == null) return JsonConvert.SerializeObject(laser);
+            if (laser == null) return JsonConvert.SerializeObject(seq);
+            MergedData md = new MergedData();
+            md.sequence = seq;
+            md.laser = laser;
+            return JsonConvert.SerializeObject(md);
+        }
+        public void DeserializeSeqAndLaser(string json, ref Sequence seq, ref InterferometerParams laser)
+        {
+            MergedData md = JsonConvert.DeserializeObject<MergedData>(json);
+            seq = md.sequence;
+            laser = md.laser;
+        }
     }
 
     /// <summary>
@@ -145,8 +163,7 @@ namespace MOTMaster2
     {
         //Index of run. Might not be needed if adding each to a list
         public int runID;
-
-        
+       
         [JsonIgnore]
         internal double[,] analogInData;
 
@@ -160,20 +177,18 @@ namespace MOTMaster2
         }
     }
 
+
     /// <summary>
     /// Encapsulates data about the parameters for the interferometer pulses
     /// </summary>
-     [Serializable,JsonObject]
+    [Serializable,JsonObject]
     public class InterferometerParams
     {
         public struct PulseParams
         {
-            private double power;
-            public double Power { get { return power; } set { power = value; } }
-            public double duration;
-            public double Duration { get { return duration; } set { duration = value; } }
-            public double phase;
-            public double Phase { get { return phase; } set { power = phase; } }
+            public double Power { get; set; }
+            public double Duration { get; set; }
+            public double Phase { get; set; }
         }
         public InterferometerParams() 
         {           
@@ -186,8 +201,11 @@ namespace MOTMaster2
         public PulseParams Pulse1; 
         public PulseParams Pulse2; 
         public PulseParams Pulse3; 
-        public PulseParams VelPulse; 
+        public PulseParams VelPulse;
 
+        public double PLLFreq;
+        public double ChirpRate;
+        public double ChirpDuration;
         public double TTime; 
 
         public void GetParametersFromMSquared()

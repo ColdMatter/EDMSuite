@@ -409,7 +409,6 @@ namespace MOTMaster2
 
             if (sequence != null)
             {
-
                 try
                 {
                     if (config.CameraUsed) prepareCameraControl();
