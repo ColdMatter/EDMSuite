@@ -170,6 +170,12 @@ namespace MOTMaster2
             progBar.Minimum = 0;
             progBar.Maximum = Iters;
             Controller.ExpData.ClearData();
+            controller.ExperimentRunTag = tbExperimentRun.Text;
+            if ((controller.ExperimentRunTag.Equals("---") || String.IsNullOrEmpty(controller.ExperimentRunTag)))
+            {
+                controller.ExperimentRunTag = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = controller.ExperimentRunTag;
+            }
             Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
 
@@ -199,9 +205,6 @@ namespace MOTMaster2
                 int Iters = int.Parse(tbIterNumb.Text);
                 // Start repeat
                     realRun(Iters);
-               
-               
-               
                 return;
             }
 
@@ -235,13 +238,19 @@ namespace MOTMaster2
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
             Controller.ExpData.ClearData();
             Controller.ExpData.SaveRawData = true;
+            controller.ExperimentRunTag = tbExperimentRun.Text;
+            if ((controller.ExperimentRunTag.Equals("---") || String.IsNullOrEmpty(controller.ExperimentRunTag)))
+            {
+                controller.ExperimentRunTag = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = controller.ExperimentRunTag;
+            }
             Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             MMscan scanParam = new MMscan();
             scanParam.sParam = prm;
-            scanParam.groupID = tbExperimentRun.Text;
+            scanParam.groupID = controller.ExperimentRunTag;
 
             int scanLength;
             object[] scanArray;
@@ -255,7 +264,7 @@ namespace MOTMaster2
                 scanParam.sBy = byScanI;
                 progBar.Minimum = fromScanI;
                 progBar.Maximum = toScanI;
-                scanLength = (toScanI - fromScanI) / byScanI;
+                scanLength = (toScanI - fromScanI) / byScanI + 1;
                 if (scanLength < 0)
                 {
                     ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
@@ -278,7 +287,7 @@ namespace MOTMaster2
                 scanParam.sBy = byScanD;
                 progBar.Minimum = fromScanD;
                 progBar.Maximum = toScanD;
-                scanLength = (int)((toScanD - fromScanD) / byScanD);
+                scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
                 if (scanLength < 0)
                 {
                     ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
@@ -368,18 +377,22 @@ namespace MOTMaster2
                 paramCheck = true;
                 if (tcMain.SelectedIndex == 1)
                 {
+                    int selIdx = cbParamsScan.SelectedIndex;
+                    if (selIdx == -1) selIdx = 0;
                     cbParamsScan.Items.Clear();
                     foreach (string param in ParamsArray)
                         cbParamsScan.Items.Add(param);
-                    cbParamsScan.SelectedIndex = 0;
+                    cbParamsScan.SelectedIndex = selIdx;
                 }
                 if (tcMain.SelectedIndex == 2)
                 {
+                    int selIdx = cbParamsManual.SelectedIndex;
+                    if (selIdx == -1) selIdx = 0;
                     cbParamsManual.Items.Clear();
                     foreach (string param in ParamsArray)
                         cbParamsManual.Items.Add(param);
-                    cbParamsManual.Text = ParamsArray[0];
-                    cbParamsManual.SelectedIndex = 0;
+                    //cbParamsManual.Text = ParamsArray[0];
+                    cbParamsManual.SelectedIndex = selIdx;
 
                 }
                 paramCheck = false;
@@ -705,20 +718,10 @@ namespace MOTMaster2
             paramWindow.Show();
         }
 
-        private void tbExperimentRun_LostFocus(object sender, RoutedEventArgs e)
+        private void tbExperimentRun_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (tbExperimentRun.Text != "---") controller.ExperimentRunTag = tbExperimentRun.Text;
+            if (!tbExperimentRun.Text.Equals("---")) controller.ExperimentRunTag = tbExperimentRun.Text;
         }
-
-        //public class MMexec
-        //{
-        //    public string mmexec { get; set; }
-        //    public string sender { get; set; }
-        //    public string cmd { get; set; }
-        //    public int id { get; set; }
-        //    public Dictionary<string, object> prms = new Dictionary<string,object>();       
-    
-        //}
 
         public bool Interpreter(string json)
         {
@@ -739,8 +742,6 @@ namespace MOTMaster2
                     realRun(iters, mme.sender, mme.id);
                     break;
                 case("scan"):
-                    
-                    
                     btnScan.Content = "Abort Remote";
                     btnScan.Background = Brushes.LightCoral;
                     tcMain.TabIndex = 1;
@@ -874,12 +875,33 @@ namespace MOTMaster2
             Controller.ExpData.InterferometerPulses.Pulse3.Phase = nbPhase3.Value;
             Controller.ExpData.InterferometerPulses.VelPulse.Phase = nbPhaseV.Value;
 
-            //These are converted into SI units as required by the MSquared Controller
+             //These are converted into SI units as required by the MSquared Controller            
             Controller.ExpData.InterferometerPulses.PLLFreq = nbRamanPllFreq.Value * 1e6;
             Controller.ExpData.InterferometerPulses.ChirpRate = nbRamanChirpRate.Value * 1e6; //Hz s^-1
-            Controller.ExpData.InterferometerPulses.ChirpDuration = nbChirpDuration.Value * 1e-6; //s
+            Controller.ExpData.InterferometerPulses.ChirpDuration = nbRamanChirpDuration.Value * 1e-6; //s
+        }
 
+        private void UpdateLaserPulses()
+        {
+            nbPower1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Power;
+            nbPower2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Power;
+            nbPower3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Power;
+            nbPowerV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Power;
 
+            nbDur1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Duration;
+            nbDur2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Duration;
+            nbDur3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Duration;
+            nbDurV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Duration;
+
+            nbPhase1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Phase;
+            nbPhase2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Phase;
+            nbPhase3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Phase;
+            nbPhaseV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Phase;
+
+            //These are converted from SI units as required by the MSquared Controller 
+            nbRamanPllFreq.Value = Controller.ExpData.InterferometerPulses.PLLFreq / 1e6;
+            nbRamanChirpRate.Value = Controller.ExpData.InterferometerPulses.ChirpRate / 1e6; //Hz s^-1
+            nbRamanChirpDuration.Value = Controller.ExpData.InterferometerPulses.ChirpDuration / 1e-6; //s                     
         }
 
     }

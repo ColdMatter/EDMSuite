@@ -35,9 +35,9 @@
         </Menu>
         <Grid Grid.RowSpan="1" Grid.Row="1" Margin="0,0,-0.143,4">
             <Label Content="Run Name" HorizontalAlignment="Left" Height="26" Margin="10,17,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
-            <TextBox x:Name="tbExperimentRun" HorizontalAlignment="Left" Height="24" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Text="---" LostFocus="tbExperimentRun_LostFocus" />
+            <TextBox x:Name="tbExperimentRun" HorizontalAlignment="Left" Height="24" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="---" TextChanged="tbExperimentRun_TextChanged" />
             <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066" Visibility="Hidden"/>
-            <ProgressBar x:Name="progBar" Height="15" Margin="0" VerticalAlignment="Top" Foreground="#FFC4DDD8" Background="#FFFDFFFF"/>
+            <ProgressBar x:Name="progBar" Height="15" Margin="2,0" VerticalAlignment="Top" Foreground="#FFB1E3D8" Background="#FFFDFFFF"/>
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
             <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="571,41,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click" Visibility="Hidden"/>
             <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/>
@@ -66,16 +66,16 @@
                             <ColumnDefinition Width="43*"/>
                             <ColumnDefinition Width="681*"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="10,25,0,0" VerticalAlignment="Top" Width="234" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="cbParamsScan_SelectionChanged"/>
+                        <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="10,25,0,0" VerticalAlignment="Top" Width="206" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="cbParamsScan_SelectionChanged"/>
                         <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
-                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="316.714,0,0,0" VerticalAlignment="Center" Width="42" Grid.Column="1"/>
-                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="358.714,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="53" Text="0" Grid.Column="1" FontSize="14"/>
-                        <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="416.714,0,0,0" VerticalAlignment="Center" Width="29" Grid.Column="1"/>
+                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="283.714,24,0,24.857" VerticalAlignment="Center" Width="38" Grid.Column="1"/>
+                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="326.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" Grid.Column="1" FontSize="14"/>
+                        <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="404,24,0,24.857" VerticalAlignment="Center" Width="29" Grid.Column="1"/>
                         <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="512.714,0,0,0" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5" Grid.Column="1"/>
                         <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="580,0,0,0" VerticalAlignment="Center" Width="75" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click" Grid.Column="1"/>
-                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="445.714,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="57" Text="100" Grid.Column="1" FontSize="14"/>
+                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="434.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" Grid.Column="1" FontSize="14"/>
                         <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="540.714,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="28" Text="1" Grid.Column="1" FontSize="14"/>
-                        <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="215,0,0,0" VerticalAlignment="Center" Width="91" FontWeight="Bold" Grid.Column="1" FontSize="14" Foreground="#FF27836E"/>
+                        <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="178.714,26,0,25.857" VerticalAlignment="Center" Width="100" FontWeight="Bold" Grid.Column="1" FontSize="14" Foreground="#FF27836E"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="tbManual" Header=" Manual  " HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80">
@@ -84,7 +84,7 @@
                         <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,25,0,0" VerticalAlignment="Top" Width="64"/>
                         <Button Content="Update" HorizontalAlignment="Left" Margin="551,21,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Click="UpdateButton_Click" Background="#FFADE8F1"/>
                         <Label Content="Value:" HorizontalAlignment="Left" Height="26" Margin="383,25,0,0" VerticalAlignment="Top" Width="43"/>
-                        <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="442,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" Text="0" FontSize="14"/>
+                        <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="431,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="92" Text="0" FontSize="14"/>
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -193,41 +193,41 @@
                 <TabItem Header="Laser Pulses" Width="110" Height="25" FontSize="13">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="192"/>
-                            <RowDefinition Height="111*"/>
-                            <RowDefinition Height="247*"/>
+                            <RowDefinition Height="226.857"/>
+                            <RowDefinition Height="130*"/>
+                            <RowDefinition Height="193*"/>
                         </Grid.RowDefinitions>
-                        <ni:NumericTextBoxDouble x:Name="nbPowerV" HorizontalAlignment="Left" Height="23" Margin="105,126,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower3" HorizontalAlignment="Left" Height="23" Margin="105,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower2" HorizontalAlignment="Left" Height="23" Margin="105,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower1" HorizontalAlignment="Left" Height="23" Margin="105,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPowerV" HorizontalAlignment="Left" Height="23" Margin="105,126,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPower3" HorizontalAlignment="Left" Height="23" Margin="105,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPower2" HorizontalAlignment="Left" Height="23" Margin="105,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPower1" HorizontalAlignment="Left" Height="23" Margin="105,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
-                        <ni:NumericTextBoxDouble x:Name="nbDurV" HorizontalAlignment="Left" Height="23" Margin="185,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur3" HorizontalAlignment="Left" Height="23" Margin="185,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur2" HorizontalAlignment="Left" Height="23" Margin="185,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur1" HorizontalAlignment="Left" Height="23" Margin="185,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbDurV" HorizontalAlignment="Left" Height="23" Margin="185,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbDur3" HorizontalAlignment="Left" Height="23" Margin="185,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbDur2" HorizontalAlignment="Left" Height="23" Margin="185,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbDur1" HorizontalAlignment="Left" Height="23" Margin="185,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
-                        <ni:NumericTextBoxDouble x:Name="nbPhaseV" HorizontalAlignment="Left" Height="23" Margin="265,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase3" HorizontalAlignment="Left" Height="23" Margin="265,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase2" HorizontalAlignment="Left" Height="23" Margin="265,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase1" HorizontalAlignment="Left" Height="23" Margin="265,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPhaseV" HorizontalAlignment="Left" Height="23" Margin="265,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPhase3" HorizontalAlignment="Left" Height="23" Margin="265,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPhase2" HorizontalAlignment="Left" Height="23" Margin="265,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbPhase1" HorizontalAlignment="Left" Height="23" Margin="265,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
-                        <Label Content="Duration[us]" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="80"/>
-                        <Label Content="Power[dB]" HorizontalAlignment="Left" Margin="100,9,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="75"/>
-                        <Label Content="Phase[rad]" HorizontalAlignment="Left" Margin="260,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="82"/>
+                        <Label Content="Duration[us]" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" Height="27" Width="80"/>
+                        <Label Content="Power[dB]" HorizontalAlignment="Left" Margin="100,8,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
+                        <Label Content="Phase[rad]" HorizontalAlignment="Left" Margin="260,10,0,0" VerticalAlignment="Top" Height="27" Width="82"/>
 
-                        <Label Content="Pulse 1" HorizontalAlignment="Left" Margin="22,40,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="50"/>
-                        <Label Content="Pulse 2" HorizontalAlignment="Left" Margin="22,68,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="50"/>
-                        <Label Content="Pulse 3" HorizontalAlignment="Left" Margin="22,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="50"/>
-                        <Label Content="Vel.Pulse" HorizontalAlignment="Left" Margin="22,124,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="61"/>
+                        <Label Content="Pulse 1" HorizontalAlignment="Left" Margin="22,40,0,0" VerticalAlignment="Top" Height="27" Width="50"/>
+                        <Label Content="Pulse 2" HorizontalAlignment="Left" Margin="22,68,0,0" VerticalAlignment="Top" Height="27" Width="50"/>
+                        <Label Content="Pulse 3" HorizontalAlignment="Left" Margin="22,96,0,0" VerticalAlignment="Top"  Height="27" Width="50"/>
+                        <Label Content="Vel.Pulse" HorizontalAlignment="Left" Margin="22,124,0,0" VerticalAlignment="Top" Height="27" Width="61"/>
 
-                        <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="72" Grid.RowSpan="2"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanPllFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.Row="0" Grid.RowSpan="2"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.RowSpan="2"/>
-                        <ni:NumericTextBoxDouble x:Name="nbChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.RowSpan="2"/>
-                        <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="75"/>
-                        <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="90"/>
-                        <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="90"/>
+                        <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,182,0,0" VerticalAlignment="Top" Height="27" Width="72"/>
+                        <ni:NumericTextBoxDouble x:Name="nbRamanPllFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,157,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
+                        <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
+                        <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
                     </Grid>
                 </TabItem>
 
