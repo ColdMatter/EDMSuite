@@ -222,6 +222,7 @@
     <Compile Include="ChannelSet.cs" />
     <Compile Include="TOFChannelSetAccumulator.cs" />
     <Compile Include="TOFWithError.cs" />
+    <Compile Include="UtilsLib.cs" />
     <Compile Include="VCODataLog.cs" />
     <Compile Include="WaveformSetGenerator.cs" />
     <Compile Include="DecelerationExperiment.cs" />

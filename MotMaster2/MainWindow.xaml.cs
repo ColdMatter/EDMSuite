@@ -874,7 +874,12 @@ namespace MOTMaster2
             Controller.ExpData.InterferometerPulses.Pulse3.Phase = nbPhase3.Value;
             Controller.ExpData.InterferometerPulses.VelPulse.Phase = nbPhaseV.Value;
 
-            Controller.ExpData.InterferometerPulses.TTime = nbRamanPllFreq.Value;
+            //These are converted into SI units as required by the MSquared Controller
+            Controller.ExpData.InterferometerPulses.PLLFreq = nbRamanPllFreq.Value * 1e6;
+            Controller.ExpData.InterferometerPulses.ChirpRate = nbRamanChirpRate.Value * 1e6; //Hz s^-1
+            Controller.ExpData.InterferometerPulses.ChirpDuration = nbChirpDuration.Value * 1e-6; //s
+
+
         }
 
     }

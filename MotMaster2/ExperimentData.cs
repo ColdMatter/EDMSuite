@@ -173,7 +173,7 @@ namespace MOTMaster2
             public double duration;
             public double Duration { get { return duration; } set { duration = value; } }
             public double phase;
-            public double Phase { get { return phase; } set { power = phase; } }
+            public double Phase { get { return phase; } set {phase = value; } }
         }
         public InterferometerParams() 
         {           
@@ -186,13 +186,43 @@ namespace MOTMaster2
         public PulseParams Pulse1; 
         public PulseParams Pulse2; 
         public PulseParams Pulse3; 
-        public PulseParams VelPulse; 
+        public PulseParams VelPulse;
 
+        public double PLLFreq;
+        public double ChirpRate;
+        public double ChirpDuration;
         public double TTime; 
 
-        public void GetParametersFromMSquared()
+        public void GetMSquaredParameters()
         {
+            Dictionary<string, object> pllDict = Controller.M2PLL.get_status();
+            if (pllDict["aux_lock_status"] != "on") throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently set to " + (string)pllDict["aux_lock_status"]);
+            //The DCS ICEBloc does not implement a method to get the parameters of the current configuration
             throw new NotImplementedException();
+        }
+
+        public void SetMSquaredParameters()
+        {
+            CheckPhaseLock();
+            Controller.M2PLL.configure_lo_profile(true,false,"ecd",PLLFreq,0.0,ChirpRate,ChirpDuration,true);
+            //Checks the phase lock has not come out-of-loop
+            CheckPhaseLock();
+
+            Controller.M2DCS.ConfigurePulse("X", 0, VelPulse.Duration, VelPulse.Power, 1e-6, VelPulse.Phase);
+            Controller.M2DCS.ConfigurePulse("X", 1, Pulse1.Duration, Pulse1.Power, 1e-6, Pulse1.Phase);
+            Controller.M2DCS.ConfigurePulse("X", 2, Pulse2.Duration, Pulse2.Power, 1e-6, Pulse2.Phase);
+            Controller.M2DCS.ConfigurePulse("X", 3, Pulse3.Duration, Pulse3.Power, 1e-6, Pulse3.Phase);
+
+            Controller.M2DCS.UpdateSequenceParameters();
+
+
+        }
+
+        private static void CheckPhaseLock()
+        {
+            DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status ();
+            bool locked = Controller.M2PLL.ecd_lock_status(out lockStatus);
+            if (!locked) throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently "+ lockStatus.ToString());
         }
     }
 

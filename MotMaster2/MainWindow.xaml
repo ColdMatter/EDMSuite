@@ -213,7 +213,7 @@
                         <ni:NumericTextBoxDouble x:Name="nbPhase1" HorizontalAlignment="Left" Height="23" Margin="265,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
 
                         <Label Content="Duration[us]" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="80"/>
-                        <Label Content="Power[mW]" HorizontalAlignment="Left" Margin="100,8,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="75"/>
+                        <Label Content="Power[dB]" HorizontalAlignment="Left" Margin="100,9,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="75"/>
                         <Label Content="Phase[rad]" HorizontalAlignment="Left" Margin="260,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="82"/>
 
                         <Label Content="Pulse 1" HorizontalAlignment="Left" Margin="22,40,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="50"/>
@@ -221,8 +221,13 @@
                         <Label Content="Pulse 3" HorizontalAlignment="Left" Margin="22,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="50"/>
                         <Label Content="Vel.Pulse" HorizontalAlignment="Left" Margin="22,124,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="61"/>
 
-                        <Label Content="Raman PLL Freq." HorizontalAlignment="Left" Margin="0,156,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="102"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanPllFreq" HorizontalAlignment="Left" Height="23" Margin="105,156,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged"/>
+                        <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="72" Grid.RowSpan="2"/>
+                        <ni:NumericTextBoxDouble x:Name="nbRamanPllFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.Row="0" Grid.RowSpan="2"/>
+                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.RowSpan="2"/>
+                        <ni:NumericTextBoxDouble x:Name="nbChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.499,0.41" ValueChanged="nbPower1_ValueChanged" Grid.RowSpan="2"/>
+                        <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="75"/>
+                        <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="90"/>
+                        <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.042" Height="27" Width="90"/>
                     </Grid>
                 </TabItem>
 

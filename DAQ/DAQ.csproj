@@ -290,11 +290,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DCSController.cs" />
+    <Compile Include="ICEBlocDCS.cs" />
     <Compile Include="EDMTestCrateFileSystem.cs" />
     <Compile Include="EDMTestCrateHardware.cs" />
     <Compile Include="HSDIOPatternBuilder.cs" />
     <Compile Include="HSDIOPatternGenerator.cs" />
     <Compile Include="ICEBLOCCommunicator.cs" />
+    <Compile Include="ICEBlocRemote.cs" />
     <Compile Include="MiniCircuitsUSBFreqCtr.cs" />
     <Compile Include="MMAIChannelConfiguration.cs" />
     <Compile Include="MMAIConfiguration.cs" />
@@ -308,6 +310,7 @@
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="niHSDIO.cs" />
     <Compile Include="NovatechSerialPort.cs" />
+    <Compile Include="ICEBlocPLL.cs" />
     <Compile Include="RS232Sequencer.cs" />
     <Compile Include="SerialMotorControllerBCD.cs" />
     <Compile Include="SerialAgilent53131A.cs" />
