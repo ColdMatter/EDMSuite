@@ -15,6 +15,18 @@ namespace MOTMaster2
         public bool SaveRawData { get; set; }
         //Name to identify each experiment
         public string ExperimentName {get; set;}
+        public MMexec grpMME = new MMexec();
+        public enum JumboModes { none, scan, repeat };
+        public JumboModes jumboMode()
+        {
+             JumboModes jm = JumboModes.none;
+            if (grpMME.sender.Equals("Axel-hub"))
+            {
+                if (grpMME.cmd.Equals("scan")) jm = JumboModes.scan;
+                if (grpMME.cmd.Equals("repeat")) jm = JumboModes.repeat;
+            }
+            return jm;
+        }
         //Collects time indices for each segment of analog data as a tuple tStart,tEnd
         public Dictionary<string, Tuple<int, int>> AnalogSegments { get; set; }
 
@@ -35,8 +47,6 @@ namespace MOTMaster2
 
         private int preTrigSamples = 64;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
-
-        public InterferometerParams InterferometerPulses = new InterferometerParams(); 
 
         public static double[] TransferFunc { get; set; }
 
@@ -101,8 +111,7 @@ namespace MOTMaster2
             segData["AccMeanV"] = new double[] {accMean};
             segData["AccMeanA"] = new double[] {accMean/accScale};
             segData["AccStdV"] = new double[] {accStd};
-            segData["AccStdA"] = new double[] {accStd/accScale};
-          
+            segData["AccStdA"] = new double[] {accStd/accScale};          
         }
         //Useful when starting a new scan
         public void ClearData()
@@ -131,28 +140,6 @@ namespace MOTMaster2
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
             return u * c * std + mean;            
         }
-
-        public class MergedData
-        {   
-            public Sequence sequence;
-            public InterferometerParams laser;
-        }
-        public string SerializeSeqAndLaser(ref Sequence seq, ref InterferometerParams laser)
-        {
-            if ((seq == null) && (laser == null)) return "";
-            if (seq == null) return JsonConvert.SerializeObject(laser);
-            if (laser == null) return JsonConvert.SerializeObject(seq);
-            MergedData md = new MergedData();
-            md.sequence = seq;
-            md.laser = laser;
-            return JsonConvert.SerializeObject(md);
-        }
-        public void DeserializeSeqAndLaser(string json, ref Sequence seq, ref InterferometerParams laser)
-        {
-            MergedData md = JsonConvert.DeserializeObject<MergedData>(json);
-            seq = md.sequence;
-            laser = md.laser;
-        }
     }
 
     /// <summary>
@@ -176,42 +163,4 @@ namespace MOTMaster2
             analogSegments = null;
         }
     }
-
-
-    /// <summary>
-    /// Encapsulates data about the parameters for the interferometer pulses
-    /// </summary>
-    [Serializable,JsonObject]
-    public class InterferometerParams
-    {
-        public struct PulseParams
-        {
-            public double Power { get; set; }
-            public double Duration { get; set; }
-            public double Phase { get; set; }
-        }
-        public InterferometerParams() 
-        {           
-            Pulse1 = new PulseParams();
-            Pulse2 = new PulseParams();
-            Pulse3 = new PulseParams();
-            VelPulse = new PulseParams();
-        }
-        
-        public PulseParams Pulse1; 
-        public PulseParams Pulse2; 
-        public PulseParams Pulse3; 
-        public PulseParams VelPulse;
-
-        public double PLLFreq;
-        public double ChirpRate;
-        public double ChirpDuration;
-        public double TTime; 
-
-        public void GetParametersFromMSquared()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 }

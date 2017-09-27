@@ -257,6 +257,9 @@ namespace MOTMaster2
         public Dictionary<string, object> prms;
         public MMexec()
         {
+            mmexec = "";
+            sender = "";
+            cmd = "";
             id = rnd.Next(int.MaxValue);
             prms = new Dictionary<string, object>();
         }
@@ -287,7 +290,6 @@ namespace MOTMaster2
             mm.prms = new Dictionary<string, object>(prms);
             return mm;
         }
-
         public string Abort(string Sender = "")
         {
             cmd = "abort";

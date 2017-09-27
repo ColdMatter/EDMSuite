@@ -92,6 +92,7 @@ namespace MOTMaster2
         private WindfreakSynth microSynth;
         public string ExperimentRunTag { get; set; }
         public MMscan? ScanParam { get; set; }
+        public int numInterations;
         MuquansController muquans = null;
 
         MMDataIOHelper ioHelper;
@@ -344,7 +345,6 @@ namespace MOTMaster2
             status = RunningState.running;
             runThread.Start(paramDict);
             Console.WriteLine("Thread Starting");
-
         }
         public void WaitForRunToFinish()
         {
@@ -360,15 +360,15 @@ namespace MOTMaster2
 
         public void Run(Dictionary<String, Object> dict)
         {
-            Run(dict, 1, batchNumber);
+            Run(dict, batchNumber);
         }
 
         public void Run(object dict)
         {
-            Run((Dictionary<string, object>) dict, 1, batchNumber);
+            Run((Dictionary<string, object>) dict, batchNumber);
         }
        
-        public void Run(Dictionary<String, Object> dict, int numInterations, int batchNumber)
+        public void Run(Dictionary<String, Object> dict, int batchNumber)
         {
             Stopwatch watch = new Stopwatch();
             if (config.UseMMScripts || sequenceData == null)
@@ -384,9 +384,9 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                 if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
+                if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
-                    if (batchNumber == 0)
+                    if ((batchNumber == 0) && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
                     {
                         //Only intialise and build once
                         if (StaticSequence)
@@ -396,16 +396,15 @@ namespace MOTMaster2
                             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
                         }
-                        MMexec initComm = InitialCommand(ScanParam);
-                        string initJson = JsonConvert.SerializeObject(initComm, Formatting.Indented);
+                        ExpData.grpMME = InitialCommand(ScanParam);
+                        string initJson = JsonConvert.SerializeObject(ExpData.grpMME, Formatting.Indented);
                         paramLogger.log("{\"MMExec\":" + initJson + "},");
                         if (SendDataRemotely)
                         {
                             MotMasterDataEvent(this, new DataEventArgs(initJson));
                         }
                     }
-                }
-            
+                }            
 
             if (sequence != null)
             {
@@ -485,8 +484,6 @@ namespace MOTMaster2
                                 save(builder, motMasterDataPath,report, ExperimentRunTag,batchNumber);
                             }
                         }
-
-
                     }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
@@ -503,15 +500,11 @@ namespace MOTMaster2
             {
                 throw new ErrorException("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
 
-            }
-            
+            }            
             status = RunningState.stopped;
             //Dereferences the MMScan object
             ScanParam = null;
-
-
         }
-
        
         #endregion
 
@@ -625,7 +618,6 @@ namespace MOTMaster2
             options.ReferencedAssemblies.Add(motMasterPath);
             options.ReferencedAssemblies.Add(daqPath);
             options.ReferencedAssemblies.Add("System.Core.dll");
-
 
             TempFileCollection tempFiles = new TempFileCollection();
             tempFiles.KeepFiles = true;
@@ -1058,6 +1050,7 @@ namespace MOTMaster2
             else
             {
                 axelCommand.cmd = "repeat";
+                axelCommand.prms["cycles"] = numInterations;
             }
             return axelCommand;
         }
@@ -1068,6 +1061,23 @@ namespace MOTMaster2
         {
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
+            if (ExpData.grpMME.cmd.Equals("repeat") && SendDataRemotely)
+            {
+                if(Convert.ToInt32(ExpData.grpMME.prms["cycles"]) == (Convert.ToInt32(finalData.prms["runID"])+1)) 
+                {
+                    finalData.prms["last"] = 1;
+                } 
+            }
+            if (ExpData.grpMME.cmd.Equals("scan") && SendDataRemotely)
+            {
+                MMscan mms = new MMscan();
+                mms.FromDictionary(ExpData.grpMME.prms);
+                int k = (int)((mms.sTo - mms.sFrom) / mms.sBy) + 1;
+                if (k == (Convert.ToInt32(finalData.prms["runID"]) + 1))
+                {
+                    finalData.prms["last"] = 1;
+                }
+            }
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
             dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)

@@ -25,8 +25,8 @@ namespace MOTMaster2
     {
         public static Controller controller;
         private RemoteMessenger messenger;
-
-         
+        DispatcherTimer dispatcherTimer;
+        
         //TODO change this so Controller can access it properly
         RemoteMessaging remoteMsg;
 
@@ -37,7 +37,10 @@ namespace MOTMaster2
             controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
-            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
+            dispatcherTimer = new DispatcherTimer(DispatcherPriority.Send);
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+                 ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
  
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
@@ -168,7 +171,7 @@ namespace MOTMaster2
                 return;
             }
             progBar.Minimum = 0;
-            progBar.Maximum = Iters;
+            progBar.Maximum = Iters-1;
             Controller.ExpData.ClearData();
             controller.ExperimentRunTag = tbExperimentRun.Text;
             if ((controller.ExperimentRunTag.Equals("---") || String.IsNullOrEmpty(controller.ExperimentRunTag)))
@@ -723,29 +726,54 @@ namespace MOTMaster2
             if (!tbExperimentRun.Text.Equals("---")) controller.ExperimentRunTag = tbExperimentRun.Text;
         }
 
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            dispatcherTimer.Stop();
+            if (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.scan)
+            {
+                MMscan mms = new MMscan();
+                mms.FromDictionary(Controller.ExpData.grpMME.prms);
+                realScan(mms.sParam, mms.sFrom.ToString(), mms.sTo.ToString(), mms.sBy.ToString(), Controller.ExpData.grpMME.sender, Controller.ExpData.grpMME.id);
+            }
+            if (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat)
+            {
+                string jumboGroupID = (string)Controller.ExpData.grpMME.prms["groupID"];
+                int jumboCycles = Convert.ToInt32(Controller.ExpData.grpMME.prms["cycles"]);
+                realRun(jumboCycles, Controller.ExpData.grpMME.sender, Controller.ExpData.grpMME.id);
+            }
+        }
+
         public bool Interpreter(string json)
         {
-           
             if (messenger != null ) messenger.Send("<" + json + ">");
             //return true;
              //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
+        
             if (mme.sender.Equals("")) mme.sender = "none";
             if (mme.id == 0) mme.id = -1;
             switch (mme.cmd)
             {
                 case("repeat"):
+                    Controller.ExpData.grpMME = mme.Clone();
                     btnRun.Content = "Abort Remote";
                     btnRun.Background = Brushes.LightCoral;
-                    tcMain.TabIndex = 0;
-                    int iters = (int)mme.prms["cycles"];
-                    realRun(iters, mme.sender, mme.id);
+                    tcMain.TabIndex = 0; DoEvents();
+                    int cycles = -1; // default to infinity
+                    if (mme.prms.ContainsKey("cycles")) cycles = Convert.ToInt32(mme.prms["cycles"]);
+                    tbIterNumb.Text = cycles.ToString();
+                    dispatcherTimer.Start();
                     break;
-                case("scan"):                                        
+                case("scan"):
+                    Controller.ExpData.grpMME = mme.Clone();               
                     btnScan.Content = "Abort Remote";
                     btnScan.Background = Brushes.LightCoral;
-                    tcMain.TabIndex = 1;
-                    realScan((string)mme.prms["param"], mme.prms["from"].ToString(), mme.prms["to"].ToString(), mme.prms["by"].ToString(), mme.sender, mme.id);
+                    tcMain.TabIndex = 1; DoEvents();
+                    cbParamsScan.Text = (string)mme.prms["param"];
+                    tbFromScan.Text = Convert.ToDouble(mme.prms["from"]).ToString();
+                    tbToScan.Text = Convert.ToDouble(mme.prms["to"]).ToString();
+                    tbByScan.Text = Convert.ToDouble(mme.prms["by"]).ToString();
+                    dispatcherTimer.Start();
                     break;
                 case ("set"):
                     foreach (var prm in mme.prms)
@@ -860,7 +888,7 @@ namespace MOTMaster2
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {          
-            Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
+         /*   Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
             Controller.ExpData.InterferometerPulses.Pulse2.Power = nbPower2.Value;
             Controller.ExpData.InterferometerPulses.Pulse3.Power = nbPower3.Value;
             Controller.ExpData.InterferometerPulses.VelPulse.Power = nbPowerV.Value;
@@ -901,7 +929,7 @@ namespace MOTMaster2
             //These are converted from SI units as required by the MSquared Controller 
             nbRamanPllFreq.Value = Controller.ExpData.InterferometerPulses.PLLFreq / 1e6;
             nbRamanChirpRate.Value = Controller.ExpData.InterferometerPulses.ChirpRate / 1e6; //Hz s^-1
-            nbRamanChirpDuration.Value = Controller.ExpData.InterferometerPulses.ChirpDuration / 1e-6; //s                     
+            nbRamanChirpDuration.Value = Controller.ExpData.InterferometerPulses.ChirpDuration / 1e-6; //s    */                 
         }
 
     }

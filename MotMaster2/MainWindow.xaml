@@ -57,7 +57,7 @@
                     <Grid>
                         <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113"/>
                         <TextBox x:Name="tbIterNumb" HorizontalAlignment="Left" Height="24" Margin="128,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Text="1" FontSize="13" />
-                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="233,21,0,0" VerticalAlignment="Top" Width="83" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
+                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="233,21,0,0" VerticalAlignment="Top" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="tbScan" Header="   Scan   " Width="70" Height="25">
@@ -72,7 +72,7 @@
                         <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="326.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" Grid.Column="1" FontSize="14"/>
                         <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="404,24,0,24.857" VerticalAlignment="Center" Width="29" Grid.Column="1"/>
                         <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="512.714,0,0,0" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5" Grid.Column="1"/>
-                        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="580,0,0,0" VerticalAlignment="Center" Width="75" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click" Grid.Column="1"/>
+                        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="573.714,21,0,20.857" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click" Grid.Column="1"/>
                         <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="434.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" Grid.Column="1" FontSize="14"/>
                         <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="540.714,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="28" Text="1" Grid.Column="1" FontSize="14"/>
                         <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="178.714,26,0,25.857" VerticalAlignment="Center" Width="100" FontWeight="Bold" Grid.Column="1" FontSize="14" Foreground="#FF27836E"/>
@@ -82,7 +82,7 @@
                     <Grid>
                         <ComboBox x:Name="cbParamsManual" HorizontalAlignment="Left" Height="27" Margin="79,24,0,0" VerticalAlignment="Top" Width="287" SelectionChanged="cbParamsManual_SelectionChanged"/>
                         <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,25,0,0" VerticalAlignment="Top" Width="64"/>
-                        <Button Content="Update" HorizontalAlignment="Left" Margin="551,21,0,0" VerticalAlignment="Top" Width="95" Height="33" FontWeight="Bold" Click="UpdateButton_Click" Background="#FFADE8F1"/>
+                        <Button Content="Update" HorizontalAlignment="Left" Margin="551,21,0,0" VerticalAlignment="Top" Width="87" Height="33" FontWeight="Bold" Click="UpdateButton_Click" Background="#FFADE8F1"/>
                         <Label Content="Value:" HorizontalAlignment="Left" Height="26" Margin="383,25,0,0" VerticalAlignment="Top" Width="43"/>
                         <TextBox x:Name="tbValue" HorizontalAlignment="Left" Height="26" Margin="431,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="92" Text="0" FontSize="14"/>
                     </Grid>
