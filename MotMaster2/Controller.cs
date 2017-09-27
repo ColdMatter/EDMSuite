@@ -16,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using DataStructures;
+//using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
 using UtilsNS;
 using ErrorManager;
@@ -139,9 +139,39 @@ namespace MOTMaster2
                 "tcp://localhost:1172/controller.rem");
 
             if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMSquared)
+            {
+                if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
+                else throw new Exception("Cannot find DCS ICE-BLOC");
+                if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
+                else throw new Exception("Cannot find PLL ICE-BLOC")
 
-            if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
-            if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
+                //Adds MSquared parameters if not already found
+                if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
+                {
+                    sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
+                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.0,true,false);
+                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.0,true,false);
+
+                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",0.0,true,false);
+                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",0.0,true,false);
+                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",0.0,true,false);
+                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",0.0,true,false);
+                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",0.0,true,false);
+                    sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
+
+                
+                }
+            }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -175,7 +205,7 @@ namespace MOTMaster2
             }
 
         }
-        private void continueLoop()
+        private void ContinueLoop()
         {
            
             //Just need to restart the cards
@@ -441,7 +471,7 @@ namespace MOTMaster2
                     if (!config.Debug)
                     {
                         if (batchNumber == 0 || !StaticSequence) runPattern(sequence);
-                        else continueLoop();
+                        else ContinueLoop();
                     }
                     //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
@@ -570,7 +600,6 @@ namespace MOTMaster2
                 catch (Exception e)
                 {
                     throw new ErrorManager.ErrorException("Could not initialise hardware:" + e.Message);
-                    return;
                 }
             }
             run(sequence);
@@ -904,8 +933,6 @@ namespace MOTMaster2
             DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
             DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
             config = JsonConvert.DeserializeObject<MMConfig>(configJson);
-            // Just for testing purposes!!!
-            config.UseMuquans = false;
         }
         public void SaveEnvironment()
         {
