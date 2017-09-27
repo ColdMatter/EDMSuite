@@ -84,13 +84,12 @@ namespace MOTMaster2
         private static double riseTime = 0.0001;
         public static bool StaticSequence { get; set; }
 
-
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
         private WindfreakSynth microSynth;
-        public string ExperimentRunTag { get; set; }
+        //public string ExperimentRunTag { get; set; }
         public MMscan? ScanParam { get; set; }
         public int numInterations;
         MuquansController muquans = null;
@@ -486,7 +485,7 @@ namespace MOTMaster2
                             }
                             else
                             {
-                                save(builder, motMasterDataPath,report, ExperimentRunTag,batchNumber);
+                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,batchNumber);
                             }
                         }
                     }
@@ -976,7 +975,7 @@ namespace MOTMaster2
         public void StartLogging()
         {
             string now = DateTime.Now.ToString("yyMMdd_hhmmss");
-            string fileTag = motMasterDataPath + "/" + ExperimentRunTag + "_" + now;
+            string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
             dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
             paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
             dataLogger.Enabled = true;
@@ -1039,8 +1038,8 @@ namespace MOTMaster2
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
- 
-            axelCommand.mmexec = ExperimentRunTag;
+
+            axelCommand.mmexec = "";
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
             axelCommand.prms["runID"] = batchNumber;

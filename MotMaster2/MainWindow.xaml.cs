@@ -173,13 +173,12 @@ namespace MOTMaster2
             progBar.Minimum = 0;
             progBar.Maximum = Iters-1;
             Controller.ExpData.ClearData();
-            controller.ExperimentRunTag = tbExperimentRun.Text;
-            if ((controller.ExperimentRunTag.Equals("---") || String.IsNullOrEmpty(controller.ExperimentRunTag)))
+            Controller.ExpData.ExperimentName = tbExperimentRun.Text;
+            if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
-                controller.ExperimentRunTag = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
-                tbExperimentRun.Text = controller.ExperimentRunTag;
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
 
             for (int i = 0; i < Iters; i++)
@@ -204,7 +203,7 @@ namespace MOTMaster2
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
-
+                
                 int Iters = int.Parse(tbIterNumb.Text);
                 // Start repeat
                 realRun(Iters);
@@ -213,6 +212,7 @@ namespace MOTMaster2
 
             if (btnRun.Content.Equals("Stop"))
             {
+                tbExperimentRun.Text = "---";
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -223,6 +223,7 @@ namespace MOTMaster2
 
             if (btnRun.Content.Equals("Abort Remote"))
             {
+                tbExperimentRun.Text = "---";
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
@@ -241,19 +242,18 @@ namespace MOTMaster2
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
             Controller.ExpData.ClearData();
             Controller.ExpData.SaveRawData = true;
-            controller.ExperimentRunTag = tbExperimentRun.Text;
-            if ((controller.ExperimentRunTag.Equals("---") || String.IsNullOrEmpty(controller.ExperimentRunTag)))
+            Controller.ExpData.ExperimentName = tbExperimentRun.Text;
+            if (Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName))
             {
-                controller.ExperimentRunTag = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
-                tbExperimentRun.Text = controller.ExperimentRunTag;
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            Controller.ExpData.ExperimentName = controller.ExperimentRunTag;
             controller.StartLogging();
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             MMscan scanParam = new MMscan();
             scanParam.sParam = prm;
-            scanParam.groupID = controller.ExperimentRunTag;
+            scanParam.groupID = Controller.ExpData.ExperimentName;
 
             int scanLength;
             object[] scanArray;
@@ -344,6 +344,7 @@ namespace MOTMaster2
 
             if (btnScan.Content.Equals("Cancel"))
             {
+                tbExperimentRun.Text = "---";
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
@@ -351,7 +352,8 @@ namespace MOTMaster2
 
             if (btnScan.Content.Equals("Abort Remote"))
             {
-                btnScan.Content = "Run";
+                tbExperimentRun.Text = "---";
+                btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
                 //Send Remote Message to AxelHub
@@ -452,7 +454,6 @@ namespace MOTMaster2
             }
             else
                 ErrorMgr.warningMsg("You have tried to save parmaters before loading a script");
-
         }
 
         private void SaveSequence_Click(object sender, RoutedEventArgs e)
@@ -649,7 +650,6 @@ namespace MOTMaster2
                 model.UpdateChannelValues(newArgs);
                 sequenceControl.sequenceDataGrid.IsReadOnly = false;
             }
-
         }
 
         private bool ParseSerialItems(SequenceParser sqnParser)
@@ -723,7 +723,7 @@ namespace MOTMaster2
 
         private void tbExperimentRun_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!tbExperimentRun.Text.Equals("---")) controller.ExperimentRunTag = tbExperimentRun.Text;
+            
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
