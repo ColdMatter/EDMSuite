@@ -27,7 +27,10 @@ namespace MOTMaster2
         {
             InitializeComponent();
             _sequenceParameters = new ObservableCollection<Parameter>();
-            Controller.sequenceData.Parameters.ForEach((item) => { if(!item.IsHidden) _sequenceParameters.Add((Parameter)item.Copy());});
+            foreach (Parameter p in Controller.sequenceData.Parameters.Values)
+            {
+                if (!p.IsHidden) _sequenceParameters.Add(p.Copy());
+            }
 
             parameterGrid.ItemsSource = _sequenceParameters;
             parameterGrid.DataContext = this;
@@ -35,7 +38,11 @@ namespace MOTMaster2
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            Controller.sequenceData.Parameters = _sequenceParameters.ToList();
+            //TODO Remove parameters from SequenceData which have been removed from _sequenceParameters
+            foreach (Parameter p in _sequenceParameters)
+            {
+                Controller.sequenceData.Parameters[p.Name] = p;
+            }
             this.Close();
         }
 

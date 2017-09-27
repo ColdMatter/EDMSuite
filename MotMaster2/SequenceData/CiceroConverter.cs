@@ -88,18 +88,18 @@ namespace MOTMaster2.SequenceData
             if (value is DataStructures.SequenceData)
             {
                 ciceroSequence = value as DataStructures.SequenceData;
-                List<string> paramNames = mmSequence.Parameters.Select(t => t.Name).ToList();
+                List<string> paramNames = mmSequence.Parameters.Keys.ToList();
                 foreach (Variable var in ciceroSequence.Variables)
                 {
                     
                     Parameter param = new Parameter(var.VariableName, var.Description, var.VariableValue);
-                    if (mmSequence.Parameters.Contains(param))
+                    if (mmSequence.Parameters.ContainsKey(param.Name))
                     {
                         //Two Parameters are equal if they have the same name, so this reassigns the value of the parameter in question
-                        mmSequence.Parameters.Remove(param);
+                        mmSequence.Parameters.Remove(param.Name);
                         
                     }
-                    mmSequence.Parameters.Add(param);
+                    mmSequence.Parameters[param.Name] = param;
                 }
                 foreach (TimeStep step in ciceroSequence.TimeSteps)
                 {

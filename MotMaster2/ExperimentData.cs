@@ -184,17 +184,17 @@ namespace MOTMaster2
      [Serializable,JsonObject]
     public class InterferometerParams
     {
-        public struct PulseParams :IEnumerable<Parameter>
+        public struct PulseParams 
         {
             public Parameter Power { get; set; }
             public Parameter Duration { get; set; }
             public Parameter Phase { get; set; }
 
-            public PulseParams(string pName,string dName,string phiName)
+            public PulseParams(string pName,string dName,string phiName) :this()
             {
-                Power = new Parameter(pName,"",0.0);
-                Duration = new Parameter(dName,"",0.0);
-                Phase = new Parameter(phiName,"",0.0);
+                this.Power = new Parameter(pName,"",0.0);
+                this.Duration = new Parameter(dName,"",0.0);
+                this.Phase = new Parameter(phiName,"",0.0);
             }
 
         }
@@ -246,11 +246,11 @@ namespace MOTMaster2
         public List<Parameter> GetParamList()
         {
             List<Parameter> pulseParams = new List<Parameter>();
-            foreach (var prop in this.GetProperties())
+
             pulseParams.Add(PLLFreq);
             pulseParams.Add(ChirpRate);
             pulseParams.Add(ChirpDuration);
-            foreach (Parameter p in Pulse1)
+
             return pulseParams;
         }
         private static void CheckPhaseLock()

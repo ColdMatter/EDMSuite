@@ -72,7 +72,7 @@ namespace MOTMaster2
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
-                    pa = Controller.sequenceData.Parameters.Where(t => !t.IsHidden).Select(t => t.Name).ToArray();
+                    pa = Controller.sequenceData.Parameters.Values.Where(t => !t.IsHidden).Select(t => t.Name).ToArray();
                 return pa;
             }
         }
@@ -231,8 +231,8 @@ namespace MOTMaster2
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
         {
             string parameter = prm;
-            if (Controller.sequenceData.Parameters.Where(t => t.Name == parameter).Count() == 0) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
-            Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            if (!Controller.sequenceData.Parameters.ContainsKey(prm)) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
+            Parameter param = Controller.sequenceData.Parameters[prm];
             //Sets the sequence to static if we know the scan parameter does not modify the sequence
             Controller.StaticSequence = !param.SequenceVariable;
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
@@ -553,7 +553,7 @@ namespace MOTMaster2
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string parameter = cbParamsManual.Text;
-            Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            Parameter param = Controller.sequenceData.Parameters[parameter];
             if (param.Value is int)
             {
                 param.Value = int.Parse(tbValue.Text);
@@ -567,13 +567,13 @@ namespace MOTMaster2
         private void cbParamsManual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
-                tbValue.Text = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsManual.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
+                tbValue.Text = Controller.sequenceData.Parameters[cbParamsManual.SelectedItem.ToString()].Value.ToString();
         }
 
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                tbCurValue.Content = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsScan.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
+                tbCurValue.Content = Controller.sequenceData.Parameters[cbParamsManual.SelectedItem.ToString()].Value.ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -674,7 +674,7 @@ namespace MOTMaster2
             {
                 double analogRawValue;
                 if (Double.TryParse(analogItem.Value, out analogRawValue)) continue;
-                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.Select(t => t.Name).Contains(analogItem.Value)) continue;
+                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.ContainsKey(analogItem.Value)) continue;
                 //Tries to parse the function string
                 if (analogItem.Name == "Function")
                 {
@@ -750,9 +750,7 @@ namespace MOTMaster2
                 case ("set"):
                     foreach (var prm in mme.prms)
                     {
-                        IEnumerable<Parameter> paramList  = Controller.sequenceData.Parameters.Where(t => t.Name == prm.Key);
-                        Parameter p = paramList.First();
-                        p.Value = prm.Value;
+                        Controller.sequenceData.Parameters[prm.Key].Value = prm.Value;
                     }
                     break;
                 case ("load"):
@@ -860,48 +858,48 @@ namespace MOTMaster2
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {          
-            Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Power = nbPower2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Power = nbPower3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Power = nbPowerV.Value;
+            Controller.ExpData.InterferometerPulses.Pulse1.Power.Value = nbPower1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Power.Value = nbPower2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Power.Value = nbPower3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Power.Value = nbPowerV.Value;
 
-            Controller.ExpData.InterferometerPulses.Pulse1.Duration = nbDur1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Duration = nbDur2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Duration = nbDur3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Duration = nbDurV.Value;
+            Controller.ExpData.InterferometerPulses.Pulse1.Duration.Value = nbDur1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Duration.Value = nbDur2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Duration.Value = nbDur3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Duration.Value = nbDurV.Value;
 
-            Controller.ExpData.InterferometerPulses.Pulse1.Phase = nbPhase1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Phase = nbPhase2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Phase = nbPhase3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Phase = nbPhaseV.Value;
+            Controller.ExpData.InterferometerPulses.Pulse1.Phase.Value = nbPhase1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse2.Phase.Value = nbPhase2.Value;
+            Controller.ExpData.InterferometerPulses.Pulse3.Phase.Value = nbPhase3.Value;
+            Controller.ExpData.InterferometerPulses.VelPulse.Phase.Value = nbPhaseV.Value;
 
              //These are converted into SI units as required by the MSquared Controller            
-            Controller.ExpData.InterferometerPulses.PLLFreq = nbRamanPllFreq.Value * 1e6;
-            Controller.ExpData.InterferometerPulses.ChirpRate = nbRamanChirpRate.Value * 1e6; //Hz s^-1
-            Controller.ExpData.InterferometerPulses.ChirpDuration = nbRamanChirpDuration.Value * 1e-6; //s
+            Controller.ExpData.InterferometerPulses.PLLFreq.Value = nbRamanPllFreq.Value * 1e6;
+            Controller.ExpData.InterferometerPulses.ChirpRate.Value = nbRamanChirpRate.Value * 1e6; //Hz s^-1
+            Controller.ExpData.InterferometerPulses.ChirpDuration.Value = nbRamanChirpDuration.Value * 1e-6; //s
         }
 
         private void UpdateLaserPulses()
         {
-            nbPower1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Power;
-            nbPower2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Power;
-            nbPower3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Power;
-            nbPowerV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Power;
+            nbPower1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Power.Value;
+            nbPower2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Power.Value;
+            nbPower3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Power.Value;
+            nbPowerV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Power.Value;
 
-            nbDur1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Duration;
-            nbDur2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Duration;
-            nbDur3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Duration;
-            nbDurV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Duration;
+            nbDur1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Duration.Value;
+            nbDur2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Duration.Value;
+            nbDur3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Duration.Value;
+            nbDurV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Duration.Value;
 
-            nbPhase1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Phase;
-            nbPhase2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Phase;
-            nbPhase3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Phase;
-            nbPhaseV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Phase;
+            nbPhase1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Phase.Value;
+            nbPhase2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Phase.Value;
+            nbPhase3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Phase.Value;
+            nbPhaseV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Phase.Value;
 
             //These are converted from SI units as required by the MSquared Controller 
-            nbRamanPllFreq.Value = Controller.ExpData.InterferometerPulses.PLLFreq / 1e6;
-            nbRamanChirpRate.Value = Controller.ExpData.InterferometerPulses.ChirpRate / 1e6; //Hz s^-1
-            nbRamanChirpDuration.Value = Controller.ExpData.InterferometerPulses.ChirpDuration / 1e-6; //s                     
+            nbRamanPllFreq.Value = (double)Controller.ExpData.InterferometerPulses.PLLFreq.Value / 1e6;
+            nbRamanChirpRate.Value = (double)Controller.ExpData.InterferometerPulses.ChirpRate.Value / 1e6; //Hz s^-1
+            nbRamanChirpDuration.Value = (double)Controller.ExpData.InterferometerPulses.ChirpDuration.Value / 1e-6; //s                     
         }
 
     }

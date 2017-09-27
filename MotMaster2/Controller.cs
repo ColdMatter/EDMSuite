@@ -101,7 +101,7 @@ namespace MOTMaster2
         SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
-        SettingsData ciceroSettings;
+        DataStructures.SettingsData ciceroSettings;
         #endregion
 
         #region Initialisation
@@ -144,7 +144,7 @@ namespace MOTMaster2
                 if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
                 else throw new Exception("Cannot find DCS ICE-BLOC");
                 if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
-                else throw new Exception("Cannot find PLL ICE-BLOC")
+                else throw new Exception("Cannot find PLL ICE-BLOC");
 
                 //Adds MSquared parameters if not already found
                 if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
