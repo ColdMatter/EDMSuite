@@ -120,6 +120,7 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
+            LoadDefaultSequence();
             if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
@@ -146,6 +147,7 @@ namespace MOTMaster2
                 if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
                 else throw new Exception("Cannot find PLL ICE-BLOC");
 
+
                 //Adds MSquared parameters if not already found
                 if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
                 {
@@ -170,6 +172,17 @@ namespace MOTMaster2
                     sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
 
                 
+                }
+                try
+                {
+                    M2DCS.Connect();
+                    M2PLL.Connect();
+                    SetMSquaredParameters();
+                }
+                catch
+                {
+                    //Set to popup to avoid Exception called when it can't write to a Log
+                    if(!config.Debug)ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
                 }
             }
 
@@ -273,6 +286,36 @@ namespace MOTMaster2
         {
             if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
+
+
+        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        {
+            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
+            MMexec finalData = ConvertDataToAxelHub(rawData);
+            string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
+            dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            if (SendDataRemotely)
+            {
+                if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
+            }
+        }
+
+
+        internal void StopRunning()
+        {
+            if (!config.Debug)
+            {
+                while (IsRunning() && !StaticSequence)
+                {
+                    WaitForRunToFinish();
+                }
+                releaseHardware();
+            }
+            StaticSequence = false; //Set this here in case we want to scan after
+            status = RunningState.stopped;
+        }
+
+       
         #endregion
 
         #region Housekeeping on UI
@@ -419,7 +462,7 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                 if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence)sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (batchNumber == 0)
                     {
@@ -718,9 +761,10 @@ namespace MOTMaster2
 
         private MOTMasterSequence getSequenceFromSequenceData(Dictionary<string,object> paramDict)
         {
+            
             builder = new SequenceBuilder(sequenceData);
-            if (paramDict!=null)builder.EditDictionary(paramDict);
             builder.BuildSequence();
+            if (paramDict != null) { builder.EditDictionary(paramDict); }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard,config.UseMuquans);
             return sequence;
         }
@@ -1058,6 +1102,7 @@ namespace MOTMaster2
             ExpData.AnalogSegments = analogSegments;
             ExpData.NSamples = sampleStartTime;
         }
+
         public MMexec ConvertDataToAxelHub(double[,] aiData)
         {
             MMexec axelCommand = new MMexec();
@@ -1096,30 +1141,44 @@ namespace MOTMaster2
 
         #endregion
 
-        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        #region MSquared Control - Maybe move elswhere?
+        public void GetMSquaredParameters()
         {
-            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
-            MMexec finalData = ConvertDataToAxelHub(rawData);
-            string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
-            dataLogger.log("{\"MMExec\":" + dataJson + "},");
-            if (SendDataRemotely)
-            {
-                if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
-            }
+            Dictionary<string, object> pllDict =  M2PLL.get_status();
+            if ((string)pllDict["aux_lock_status"] != "on") throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently set to " + (string)pllDict["aux_lock_status"]);
+            //The DCS ICEBloc does not implement a method to get the parameters of the current configuration
+            throw new NotImplementedException();
         }
-        internal void StopRunning()
+
+        public static void SetMSquaredParameters()
         {
-            if (!config.Debug)
+            if (!M2DCS.Connected || !M2PLL.Connected)
             {
-                while (IsRunning() && !StaticSequence)
-                {
-                    WaitForRunToFinish();
-                }
-                releaseHardware();
+                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-Blocs");
+                return;
             }
-            StaticSequence = false; //Set this here in case we want to scan after
-            status = RunningState.stopped;
+            CheckPhaseLock();
+            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            //Checks the phase lock has not come out-of-loop
+            CheckPhaseLock();
+
+            M2DCS.ConfigurePulse("X", 0, (double)sequenceData.Parameters["VelPulseDuration"].Value, (double)sequenceData.Parameters["VelPulsePower"].Value, 1e-6, (double)sequenceData.Parameters["VelPulsePhase"].Value);
+            M2DCS.ConfigurePulse("X", 1, (double)sequenceData.Parameters["Pulse1Duration"].Value, (double)sequenceData.Parameters["Pulse1Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse1Phase"].Value);
+            M2DCS.ConfigurePulse("X", 2, (double)sequenceData.Parameters["Pulse2Duration"].Value, (double)sequenceData.Parameters["Pulse2Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse2Phase"].Value);
+            M2DCS.ConfigurePulse("X", 1, (double)sequenceData.Parameters["Pulse3Duration"].Value, (double)sequenceData.Parameters["Pulse3Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse3Phase"].Value);
+
+            M2DCS.UpdateSequenceParameters();
         }
+
+        private static void CheckPhaseLock()
+        {
+            DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
+            bool locked = M2PLL.ecd_lock_status(out lockStatus);
+            if (!locked) throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently " + lockStatus.ToString());
+        }
+        #endregion
+
+
     }
 
     public class DataEventArgs : EventArgs

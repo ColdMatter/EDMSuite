@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace MOTMaster2.SequenceData
 {
@@ -15,7 +16,7 @@ namespace MOTMaster2.SequenceData
     {
         public List<SequenceStep> Steps { get; set; }
         [JsonConverter(typeof(DictionaryConverter))]
-        public Dictionary<string,Parameter> Parameters { get; set; }
+        public ObservableDictionary<string,Parameter> Parameters { get; set; }
 
         public Dictionary<string,object> CreateParameterDictionary()
         {
@@ -46,8 +47,9 @@ namespace MOTMaster2.SequenceData
         public Sequence()
         {
             Steps = new List<SequenceStep>();
-            Parameters = new Dictionary<string,Parameter>();
+            Parameters = new ObservableDictionary<string,Parameter>();
         }
+
     }
 
     public class DictionaryConverter : JsonConverter
@@ -98,9 +100,6 @@ namespace MOTMaster2.SequenceData
                 reader.Read();
             }
             return dict;
-            
-         //   IEnumerable values = type.GetProperty("Values").GetValue(existingValue, null);
-            throw new NotImplementedException();
         }
     }
 }

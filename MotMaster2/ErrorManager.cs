@@ -151,6 +151,7 @@ namespace ErrorManager
             if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(warningText, " Warning message (" + warningID.ToString() + ")");
+                return;
             }
             else
             {

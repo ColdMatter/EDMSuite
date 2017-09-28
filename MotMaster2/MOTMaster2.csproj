@@ -147,6 +147,7 @@
     <Compile Include="HardwareOptions.xaml.cs">
       <DependentUpon>HardwareOptions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ObservableDictionary.cs" />
     <Compile Include="ParametersWindow.xaml.cs">
       <DependentUpon>ParametersWindow.xaml</DependentUpon>
     </Compile>

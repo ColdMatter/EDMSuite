@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ErrorManager;
 using UtilsNS;
+using System.ComponentModel;
 
 
 namespace MOTMaster2
@@ -34,7 +35,6 @@ namespace MOTMaster2
         {
             controller = new Controller();
             controller.StartApplication();
-            controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
             ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
@@ -42,6 +42,8 @@ namespace MOTMaster2
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
             controller.MotMasterDataEvent += OnDataCreated;
+
+         //   ((INotifyPropertyChanged)Controller.sequenceData.Parameters).PropertyChanged += this.InterferometerParams_Changed;
         }
 
         private void OnDataCreated(object sender, DataEventArgs e)
@@ -64,15 +66,17 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
+            SetInterferometerParams(Controller.sequenceData.Parameters);
         }
 
+     
         private string[] ParamsArray
         {
             get
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
-                    pa = Controller.sequenceData.Parameters.Values.Where(t => !t.IsHidden).Select(t => t.Name).ToArray();
+                    pa = Controller.sequenceData.Parameters.Keys.ToArray();
                 return pa;
             }
         }
@@ -90,7 +94,7 @@ namespace MOTMaster2
             {
                 controller.RunStart(paramDict,loop);
             }
-            catch (WarningException w)
+            catch (ErrorManager.WarningException w)
             {
                 ErrorMgr.warningMsg(w.Message);
                 return false;
@@ -309,6 +313,7 @@ namespace MOTMaster2
                 param.Value = scanItem;
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
+                SetInterferometerParams(scanDict);
                 ScanFlag = SingleShot(scanDict);
                 tbCurValue.Content = scanItem.ToString();
                 DoEvents();
@@ -320,6 +325,8 @@ namespace MOTMaster2
             controller.StopLogging();
             controller.StopRunning();
         }
+
+        
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
@@ -573,7 +580,7 @@ namespace MOTMaster2
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                tbCurValue.Content = Controller.sequenceData.Parameters[cbParamsManual.SelectedItem.ToString()].Value.ToString();
+                tbCurValue.Content = Controller.sequenceData.Parameters[cbParamsScan.SelectedItem.ToString()].Value.ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -857,8 +864,28 @@ namespace MOTMaster2
         }
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
-        {          
-            Controller.ExpData.InterferometerPulses.Pulse1.Power.Value = nbPower1.Value;
+        {
+            Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
+            string laserKey = (string)type.GetProperty("Name").GetValue(sender);
+            double value;
+            switch (laserKey)
+            {
+                case "PLLFreq":
+                    value=e.NewValue * 1e6; //MHz to Hz
+                    break;
+                case "ChirpRate":
+                    value = e.NewValue * 1e6; //MHz/s to Hz/s
+                    break;
+                case "ChirpDuration":
+                    value = e.NewValue * 1e3;//ms to s
+                    break;
+                default:
+                    value = e.NewValue;
+                    break;
+            }
+            Controller.sequenceData.Parameters[laserKey].Value = value;
+            Controller.SetMSquaredParameters();
+            /*Controller.ExpData.InterferometerPulses.Pulse1.Power.Value = nbPower1.Value;
             Controller.ExpData.InterferometerPulses.Pulse2.Power.Value = nbPower2.Value;
             Controller.ExpData.InterferometerPulses.Pulse3.Power.Value = nbPower3.Value;
             Controller.ExpData.InterferometerPulses.VelPulse.Power.Value = nbPowerV.Value;
@@ -877,30 +904,37 @@ namespace MOTMaster2
             Controller.ExpData.InterferometerPulses.PLLFreq.Value = nbRamanPllFreq.Value * 1e6;
             Controller.ExpData.InterferometerPulses.ChirpRate.Value = nbRamanChirpRate.Value * 1e6; //Hz s^-1
             Controller.ExpData.InterferometerPulses.ChirpDuration.Value = nbRamanChirpDuration.Value * 1e-6; //s
+             * */
         }
 
-        private void UpdateLaserPulses()
+        private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            nbPower1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Power.Value;
-            nbPower2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Power.Value;
-            nbPower3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Power.Value;
-            nbPowerV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Power.Value;
-
-            nbDur1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Duration.Value;
-            nbDur2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Duration.Value;
-            nbDur3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Duration.Value;
-            nbDurV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Duration.Value;
-
-            nbPhase1.Value = (double)Controller.ExpData.InterferometerPulses.Pulse1.Phase.Value;
-            nbPhase2.Value = (double)Controller.ExpData.InterferometerPulses.Pulse2.Phase.Value;
-            nbPhase3.Value = (double)Controller.ExpData.InterferometerPulses.Pulse3.Phase.Value;
-            nbPhaseV.Value = (double)Controller.ExpData.InterferometerPulses.VelPulse.Phase.Value;
-
-            //These are converted from SI units as required by the MSquared Controller 
-            nbRamanPllFreq.Value = (double)Controller.ExpData.InterferometerPulses.PLLFreq.Value / 1e6;
-            nbRamanChirpRate.Value = (double)Controller.ExpData.InterferometerPulses.ChirpRate.Value / 1e6; //Hz s^-1
-            nbRamanChirpDuration.Value = (double)Controller.ExpData.InterferometerPulses.ChirpDuration.Value / 1e-6; //s                     
+            string key = scanDict.Keys.ToArray()[0];
+            object control = MSquaredTab.FindName(key);
+            if (control == null) return;
+            else
+            {
+                ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
+                //Only set them if one is changed
+                //TODO fix handling of warnings if ICE-BLocs are not connected
+                Controller.SetMSquaredParameters();
+            }
         }
+
+        private void SetInterferometerParams(ObservableDictionary<string, Parameter> observableDictionary)
+        {
+            foreach (KeyValuePair<string,Parameter> entry in observableDictionary)
+            {
+                if (entry.Value.SequenceVariable) continue;
+                else
+                {
+                    object control = MSquaredTab.FindName(entry.Key);
+                    if (control == null) continue;
+                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value.Value;
+                }
+            }
+        }
+
 
     }
     

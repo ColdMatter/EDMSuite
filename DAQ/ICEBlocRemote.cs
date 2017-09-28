@@ -46,7 +46,7 @@ namespace DAQ.HAL
 
         public bool Connected
         {
-            get { return socket.Connected; }
+            get { return (socket==null)? false : socket.Connected; }
             set
             {
                 if (value)

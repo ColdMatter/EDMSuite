@@ -36,7 +36,6 @@ namespace MOTMaster2
         private int preTrigSamples = 64;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
-        public InterferometerParams InterferometerPulses = new InterferometerParams(); 
 
         public static double[] TransferFunc { get; set; }
 
@@ -132,27 +131,6 @@ namespace MOTMaster2
             return u * c * std + mean;
         }
             
-        public class MergedData
-        {   
-            public Sequence sequence;
-            public InterferometerParams laser;
-        }
-        public string SerializeSeqAndLaser(ref Sequence seq, ref InterferometerParams laser)
-        {
-            if ((seq == null) && (laser == null)) return "";
-            if (seq == null) return JsonConvert.SerializeObject(laser);
-            if (laser == null) return JsonConvert.SerializeObject(seq);
-            MergedData md = new MergedData();
-            md.sequence = seq;
-            md.laser = laser;
-            return JsonConvert.SerializeObject(md);
-        }
-        public void DeserializeSeqAndLaser(string json, ref Sequence seq, ref InterferometerParams laser)
-        {
-            MergedData md = JsonConvert.DeserializeObject<MergedData>(json);
-            seq = md.sequence;
-            laser = md.laser;
-        }
     }
 
     /// <summary>
@@ -174,90 +152,6 @@ namespace MOTMaster2
             runID = id;
             analogInData = data;
             analogSegments = null;
-        }
-    }
-
-
-    /// <summary>
-    /// Encapsulates data about the parameters for the interferometer pulses
-    /// </summary>
-     [Serializable,JsonObject]
-    public class InterferometerParams
-    {
-        public struct PulseParams 
-        {
-            public Parameter Power { get; set; }
-            public Parameter Duration { get; set; }
-            public Parameter Phase { get; set; }
-
-            public PulseParams(string pName,string dName,string phiName) :this()
-            {
-                this.Power = new Parameter(pName,"",0.0);
-                this.Duration = new Parameter(dName,"",0.0);
-                this.Phase = new Parameter(phiName,"",0.0);
-            }
-
-        }
-        public InterferometerParams() 
-        {           
-            Pulse1 = new PulseParams("Pulse1Power","Pulse1Duration","Pulse1Phase");
-            Pulse2 = new PulseParams("Pulse2Power","Pulse2Duration","Pulse2Phase");
-            Pulse3 = new PulseParams("Pulse3Power","Pulse3Duration","Pulse3Phase");
-            VelPulse = new PulseParams("VelPulsePower","VelPulseDuration","VelPulsePhase");
-
-            PLLFreq = new Parameter("PLLFreq","",6834.689);
-            ChirpRate = new Parameter("ChirpRate","",0.0);
-            ChirpDuration = new Parameter("ChirpDuration","",0.0);
-        }
-        
-        public PulseParams Pulse1; 
-        public PulseParams Pulse2; 
-        public PulseParams Pulse3; 
-        public PulseParams VelPulse; 
-
-        public Parameter PLLFreq;
-        public Parameter ChirpRate;
-        public Parameter ChirpDuration;
-        public double TTime; 
-
-        public void GetMSquaredParameters()
-        {
-            Dictionary<string, object> pllDict = Controller.M2PLL.get_status();
-            if ((string)pllDict["aux_lock_status"] != "on") throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently set to " + (string)pllDict["aux_lock_status"]);
-            //The DCS ICEBloc does not implement a method to get the parameters of the current configuration
-            throw new NotImplementedException();
-        }
-
-        public void SetMSquaredParameters()
-        {
-            CheckPhaseLock();
-            Controller.M2PLL.configure_lo_profile(true,false,"ecd",(double)PLLFreq.Value,0.0,(double)ChirpRate.Value,(double)ChirpDuration.Value,true);
-            //Checks the phase lock has not come out-of-loop
-            CheckPhaseLock();
-
-            Controller.M2DCS.ConfigurePulse("X", 0, (double)VelPulse.Duration.Value, (double)VelPulse.Power.Value, 1e-6, (double)VelPulse.Phase.Value);
-            Controller.M2DCS.ConfigurePulse("X", 1, (double)Pulse1.Duration.Value, (double)Pulse1.Power.Value, 1e-6, (double)Pulse1.Phase.Value);
-            Controller.M2DCS.ConfigurePulse("X", 2, (double)Pulse2.Duration.Value, (double)Pulse2.Power.Value, 1e-6, (double)Pulse2.Phase.Value);
-            Controller.M2DCS.ConfigurePulse("X", 3, (double)Pulse3.Duration.Value, (double)Pulse3.Power.Value, 1e-6, (double)Pulse3.Phase.Value);
-
-            Controller.M2DCS.UpdateSequenceParameters();
-        }
-
-        public List<Parameter> GetParamList()
-        {
-            List<Parameter> pulseParams = new List<Parameter>();
-
-            pulseParams.Add(PLLFreq);
-            pulseParams.Add(ChirpRate);
-            pulseParams.Add(ChirpDuration);
-
-            return pulseParams;
-        }
-        private static void CheckPhaseLock()
-        {
-            DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
-            bool locked = Controller.M2PLL.ecd_lock_status(out lockStatus);
-            if (!locked) throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently "+ lockStatus.ToString());
         }
     }
 

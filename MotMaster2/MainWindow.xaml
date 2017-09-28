@@ -190,27 +190,27 @@
                         <!--<GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>-->
                     </Grid>
                 </TabItem>
-                <TabItem Header="Laser Pulses" Width="110" Height="25" FontSize="13">
+                <TabItem x:Name="MSquaredTab" Header="Laser Pulses" Width="110" Height="25" FontSize="13">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="226.857"/>
                             <RowDefinition Height="130*"/>
                             <RowDefinition Height="193*"/>
                         </Grid.RowDefinitions>
-                        <ni:NumericTextBoxDouble x:Name="nbPowerV" HorizontalAlignment="Left" Height="23" Margin="105,126,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower3" HorizontalAlignment="Left" Height="23" Margin="105,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower2" HorizontalAlignment="Left" Height="23" Margin="105,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPower1" HorizontalAlignment="Left" Height="23" Margin="105,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="VelPulsePower" HorizontalAlignment="Left" Height="23" Margin="105,126,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse3Power" HorizontalAlignment="Left" Height="23" Margin="105,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse2Power" HorizontalAlignment="Left" Height="23" Margin="105,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse1Power" HorizontalAlignment="Left" Height="23" Margin="105,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
-                        <ni:NumericTextBoxDouble x:Name="nbDurV" HorizontalAlignment="Left" Height="23" Margin="185,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur3" HorizontalAlignment="Left" Height="23" Margin="185,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur2" HorizontalAlignment="Left" Height="23" Margin="185,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbDur1" HorizontalAlignment="Left" Height="23" Margin="185,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="VelPulseDuration" HorizontalAlignment="Left" Height="23" Margin="185,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse3Duration" HorizontalAlignment="Left" Height="23" Margin="185,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse2Duration" HorizontalAlignment="Left" Height="23" Margin="185,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse1Duration" HorizontalAlignment="Left" Height="23" Margin="185,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
-                        <ni:NumericTextBoxDouble x:Name="nbPhaseV" HorizontalAlignment="Left" Height="23" Margin="265,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase3" HorizontalAlignment="Left" Height="23" Margin="265,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase2" HorizontalAlignment="Left" Height="23" Margin="265,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbPhase1" HorizontalAlignment="Left" Height="23" Margin="265,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="VelPulsePhase" HorizontalAlignment="Left" Height="23" Margin="265,124,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse3Phase" HorizontalAlignment="Left" Height="23" Margin="265,96,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse2Phase" HorizontalAlignment="Left" Height="23" Margin="265,68,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="Pulse1Phase" HorizontalAlignment="Left" Height="23" Margin="265,40,0,0" Grid.Row="0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
 
                         <Label Content="Duration[us]" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" Height="27" Width="80"/>
                         <Label Content="Power[dB]" HorizontalAlignment="Left" Margin="100,8,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
@@ -222,9 +222,9 @@
                         <Label Content="Vel.Pulse" HorizontalAlignment="Left" Margin="22,124,0,0" VerticalAlignment="Top" Height="27" Width="61"/>
 
                         <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,182,0,0" VerticalAlignment="Top" Height="27" Width="72"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanPllFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="nbRamanChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="PLLFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="ChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="ChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
                         <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,157,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
                         <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>

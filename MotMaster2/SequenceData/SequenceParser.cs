@@ -41,51 +41,7 @@ namespace MOTMaster2.SequenceData
         public static bool CheckMuquans(string command)
         {
             return true;
-        //    string[] values;
-        //    if (!command.Contains(',')) values = command.Split(' ');
-        //    else values = command.Split(' ');
-        //    if (values[0] == "set")
-        //    {
-        //        if (values.Length != 2) throw new Exception("Incorrect number of arguments for Set");
-        //        else
-        //        {
-        //            try
-        //            {
-        //                ParseOrGetParameter(values[1]);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                throw new Exception("Set value is not a number");
-        //            }
-        //        }
-        //            return true;
-        //    }
-        //    else if (values[0] == "Sweep")
-        //    {
-        //        if (values.Length != 3) throw new Exception("Incorrect number of arguments for Sweep");
-        //        else {
-        //            try
-        //            { 
-        //                ParseOrGetParameter(values[1]);
-        //            } 
-        //            catch(Exception e)
-        //            { throw new Exception("Sweep value is not a number");
-        //            }
-        //            try
-        //            { 
-        //                ParseOrGetParameter(values[2]);
-        //            } 
-        //            catch(Exception e)
-        //            { 
-        //                throw new Exception("Sweep value is not a number");
-        //            }
-        //            return true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Incorrect command - needs to be Set or Sweep");
-        //    }
+       
         }
            
     }
