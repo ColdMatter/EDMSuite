@@ -20,7 +20,7 @@ namespace DAQ.HAL
             //add information for MMConfig
             config = new MMConfig(false, false, false,Environment.Environs.Debug);
             config.HSDIOCard = true;
-            config.UseAI = true;
+            config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
@@ -63,6 +63,7 @@ namespace DAQ.HAL
             Instruments.Add("muquansSlave", new MuquansRS232("ASRL18::INSTR","slave"));
             Instruments.Add("muquansAOM", new MuquansRS232("ASRL20::INSTR","aom"));
             Instruments.Add("microwaveSynth", new WindfreakSynth("ASRL13::INSTR"));
+            Instruments.Add("m2PLL", new MuquansRS232("ASRL23::INSTR",""));
             //Instruments.Add("microwaveSynth", new Gigatronics7100Synth("GPIB1::19::INSTR"));
 
             
@@ -72,7 +73,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
-            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
+            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
             AddDigitalOutputChannel("shutter", hsdioBoard, 0, 6);
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
@@ -83,7 +84,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
             AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
-            AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
+//            AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("Analog Trigger", hsdioBoard, 0, 16);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 

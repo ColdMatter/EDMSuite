@@ -671,11 +671,16 @@
         "motTTL": false
       },
       "usedAnalogChannels": [],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "",
+          "Value": ""
+        }
+      ],
       "Name": "2DLoading",
       "Description": "",
       "Enabled": true,
-      "Duration": "140",
+      "Duration": "200",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -822,7 +827,7 @@
       "Name": "3Dcollection",
       "Description": "",
       "Enabled": true,
-      "Duration": 60.0,
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -2092,7 +2097,7 @@
       "Name": "StateSelectPreset",
       "Description": "",
       "Enabled": true,
-      "Duration": 1.0,
+      "Duration": "2",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2270,7 +2275,7 @@
           "Value": false
         },
         "motTTL": {
-          "Value": true
+          "Value": false
         },
         "ramanTTL": {
           "Value": false
@@ -2368,7 +2373,7 @@
       "Name": "F1, mF=0",
       "Description": "",
       "Enabled": true,
-      "Duration": "15",
+      "Duration": "500",
       "Timebase": 0,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2408,7 +2413,7 @@
           "Value": false
         },
         "motTTL": {
-          "Value": true
+          "Value": false
         },
         "ramanTTL": {
           "Value": false
@@ -3350,7 +3355,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": true
+          "Value": false
         },
         "shutter": {
           "Value": false
@@ -3430,8 +3435,8 @@
       "Name": "Raman",
       "Description": "",
       "Enabled": true,
-      "Duration": "200",
-      "Timebase": 0,
+      "Duration": "4.2",
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -3473,7 +3478,7 @@
           "Value": false
         },
         "ramanTTL": {
-          "Value": true
+          "Value": false
         },
         "mphiTTL": {
           "Value": false
@@ -3568,8 +3573,8 @@
       "Name": "BlowAway",
       "Description": "",
       "Enabled": true,
-      "Duration": "250",
-      "Timebase": 0,
+      "Duration": "4.5",
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -3853,7 +3858,7 @@
       "Name": "2T",
       "Description": "DNS Interferometer",
       "Enabled": true,
-      "Duration": 50.0,
+      "Duration": "45",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -3935,7 +3940,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": true
+          "Value": false
         }
       }
     },
@@ -4073,7 +4078,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": true
+          "Value": false
         }
       }
     },
@@ -4251,7 +4256,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": true
+          "Value": false
         }
       }
     },
@@ -4539,7 +4544,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": true
+          "Value": false
         }
       }
     },
@@ -5189,7 +5194,7 @@
       "Name": "BlowAway2",
       "Description": "DNS",
       "Enabled": true,
-      "Duration": "11",
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6473,7 +6478,7 @@
     },
     {
       "Name": "mwTime",
-      "Value": 148,
+      "Value": 128,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
@@ -6655,14 +6660,14 @@
     },
     {
       "Name": "motCTRLImg",
-      "Value": 2.0,
+      "Value": 1.2,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
     },
     {
       "Name": "M2Freq",
-      "Value": 6834.69,
+      "Value": 6.83469,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true

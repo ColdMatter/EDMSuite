@@ -32,10 +32,12 @@ namespace DAQ.HAL
         {
             try
             {
+                //TODO check connect and disconnect doesn't cause timing issues
+                Connect();
                 this.serial.Write(message);
                 this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
-                
-                
+                Disconnect();
+           
             }
             catch { throw new Exception("Error writing serial command: "+message); }
         }

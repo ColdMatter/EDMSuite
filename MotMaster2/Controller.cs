@@ -93,6 +93,7 @@ namespace MOTMaster2
         public string ExperimentRunTag { get; set; }
         public MMscan? ScanParam { get; set; }
         MuquansController muquans = null;
+        private MuquansRS232 m2FreqComm;
 
         MMDataIOHelper ioHelper;
 
@@ -137,6 +138,8 @@ namespace MOTMaster2
                 "tcp://localhost:1172/controller.rem");
 
             if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+
+            if (Environs.Hardware.Instruments.ContainsKey("m2PLL")) { m2FreqComm = (MuquansRS232)Environs.Hardware.Instruments["m2PLL"];}
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -385,6 +388,7 @@ namespace MOTMaster2
                    
                 }
                  if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
+                 if (sequence == null) return;
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (batchNumber == 0)
                     {
@@ -392,6 +396,7 @@ namespace MOTMaster2
                         if (StaticSequence)
                         {
                             sequence = getSequenceFromSequenceData(dict);
+                            if (sequence == null) return;
                             initializeHardware(sequence);
                             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
@@ -425,6 +430,17 @@ namespace MOTMaster2
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                    
                         //microSynth.ReadSettingsFromDevice();
+                    }
+                    if (m2FreqComm != null)
+                    {
+                        if (builder.Parameters.ContainsKey("M2Freq"))
+                        {
+                            m2FreqComm.Output(builder.Parameters["M2Freq"].ToString());
+                        }
+                        else 
+                        {
+                            ErrorMgr.warningMsg("Expected M2Freq parameter not found");
+                        }
                     }
                     if (!StaticSequence)
                     {
@@ -570,7 +586,7 @@ namespace MOTMaster2
                 }
             }
             run(sequence);
-            if (!StaticSequence) { aip.ReadAnalogDataFromBuffer(); releaseHardware(); }
+            if (!StaticSequence) { if (config.UseAI) aip.ReadAnalogDataFromBuffer(); releaseHardware(); }
             //else pauseHardware();
         }
 
@@ -687,7 +703,12 @@ namespace MOTMaster2
         {
             builder = new SequenceBuilder(sequenceData);
             if (paramDict!=null)builder.EditDictionary(paramDict);
-            builder.BuildSequence();
+            try { builder.BuildSequence(); }
+            catch (Exception e)
+            {
+                    ErrorMgr.errorMsg("Error building sequence: "+e.Message,100,true);
+                    return null;
+            }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard,config.UseMuquans);
             return sequence;
         }
@@ -1082,7 +1103,12 @@ namespace MOTMaster2
             {
                 WaitForRunToFinish();
             }
-            releaseHardware();
+            try
+            {
+                releaseHardware();
+            }
+            catch { }
+           
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
         }
