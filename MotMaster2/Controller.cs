@@ -152,23 +152,23 @@ namespace MOTMaster2
                 if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
                 {
                     sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
-                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.0,true,false);
-                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.0,true,false);
+                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.5,true,false);
+                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.5,true,false);
 
-                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",0.0,true,false);
-                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",22.0,true,false);
+                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",10,true,false);
                     sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase","",0.0,true,false);
 
-                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",0.0,true,false);
-                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",22,true,false);
+                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",10,true,false);
                     sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase","",0.0,true,false);
 
-                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",0.0,true,false);
-                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",0.0,true,false);
+                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",22.0,true,false);
+                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",10,true,false);
                     sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase","",0.0,true,false);
 
-                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",0.0,true,false);
-                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",0.0,true,false);
+                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",22.0,true,false);
+                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",10,true,false);
                     sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
 
                 
@@ -177,6 +177,9 @@ namespace MOTMaster2
                 {
                     M2DCS.Connect();
                     M2PLL.Connect();
+
+                    M2PLL.StartLink();
+                    M2DCS.StartLink();
                     SetMSquaredParameters();
                 }
                 catch
@@ -1158,7 +1161,7 @@ namespace MOTMaster2
                 return;
             }
             CheckPhaseLock();
-            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
 
@@ -1170,11 +1173,12 @@ namespace MOTMaster2
             M2DCS.UpdateSequenceParameters();
         }
 
-        private static void CheckPhaseLock()
+        private static bool CheckPhaseLock()
         {
             DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
-            bool locked = M2PLL.ecd_lock_status(out lockStatus);
-            if (!locked) throw new DAQ.HAL.PLLException("PLL lock is not engaged - currently " + lockStatus.ToString());
+            bool locked = M2PLL.main_lock_status(out lockStatus);
+            if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
+            return locked;
         }
         #endregion
 

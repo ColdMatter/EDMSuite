@@ -33,12 +33,11 @@ namespace MOTMaster2
 
         public MainWindow()
         {
+            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
             controller = new Controller();
             controller.StartApplication();
             InitializeComponent();
             InitVisuals();
-            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
- 
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
             controller.MotMasterDataEvent += OnDataCreated;
@@ -867,44 +866,8 @@ namespace MOTMaster2
         {
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
-            double value;
-            switch (laserKey)
-            {
-                case "PLLFreq":
-                    value=e.NewValue * 1e6; //MHz to Hz
-                    break;
-                case "ChirpRate":
-                    value = e.NewValue * 1e6; //MHz/s to Hz/s
-                    break;
-                case "ChirpDuration":
-                    value = e.NewValue * 1e3;//ms to s
-                    break;
-                default:
-                    value = e.NewValue;
-                    break;
-            }
-            Controller.sequenceData.Parameters[laserKey].Value = value;
-            Controller.SetMSquaredParameters();
-            /*Controller.ExpData.InterferometerPulses.Pulse1.Power.Value = nbPower1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Power.Value = nbPower2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Power.Value = nbPower3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Power.Value = nbPowerV.Value;
-
-            Controller.ExpData.InterferometerPulses.Pulse1.Duration.Value = nbDur1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Duration.Value = nbDur2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Duration.Value = nbDur3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Duration.Value = nbDurV.Value;
-
-            Controller.ExpData.InterferometerPulses.Pulse1.Phase.Value = nbPhase1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Phase.Value = nbPhase2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Phase.Value = nbPhase3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Phase.Value = nbPhaseV.Value;
-
-             //These are converted into SI units as required by the MSquared Controller            
-            Controller.ExpData.InterferometerPulses.PLLFreq.Value = nbRamanPllFreq.Value * 1e6;
-            Controller.ExpData.InterferometerPulses.ChirpRate.Value = nbRamanChirpRate.Value * 1e6; //Hz s^-1
-            Controller.ExpData.InterferometerPulses.ChirpDuration.Value = nbRamanChirpDuration.Value * 1e-6; //s
-             * */
+        //    Controller.SetMSquaredParameters();
+            
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
@@ -917,7 +880,7 @@ namespace MOTMaster2
                 ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
                 //Only set them if one is changed
                 //TODO fix handling of warnings if ICE-BLocs are not connected
-                Controller.SetMSquaredParameters();
+            //    Controller.SetMSquaredParameters();
             }
         }
 
