@@ -41,8 +41,7 @@ namespace MOTMaster2
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Send);
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-                 ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
- 
+        
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
             controller.MotMasterDataEvent += OnDataCreated;
@@ -597,7 +596,7 @@ namespace MOTMaster2
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                tbCurValue.Content = Controller.sequenceData.Parameters[cbParamsScan.SelectedItem.ToString()].Value.ToString();
+                lbCurValue.Content = Controller.sequenceData.Parameters[cbParamsScan.SelectedItem.ToString()].Value.ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -902,12 +901,11 @@ namespace MOTMaster2
         }
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
-        {          
-            Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Power = nbPower2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Power = nbPower3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Power = nbPowerV.Value;
-
+        {
+            Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
+            string laserKey = (string)type.GetProperty("Name").GetValue(sender);
+            Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
+           
 
         }
 

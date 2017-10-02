@@ -533,7 +533,7 @@ namespace MOTMaster2
                     if (!config.Debug)
                     {
                         if (myBatchNumber == 0 || !StaticSequence) runPattern(sequence);
-                        else continueLoop();
+                        else ContinueLoop();
                     }
                     //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
 
