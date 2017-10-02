@@ -93,10 +93,6 @@ namespace ErrorManager
             string printOut = text;
             if ((Verbatim) || (text.Length < 81)) printOut = text;
             else printOut = text.Substring(0, 80) + "..."; 
-      /*      TextRange rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
-            rangeOfText1.Text = printOut + "\r";
-            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(Foreground));    
-	        log.ScrollToEnd();  */
             Color ForeColor = clr.GetValueOrDefault(Brushes.Black.Color);
             Application.Current.Dispatcher.BeginInvoke(
               DispatcherPriority.Background,

@@ -372,7 +372,7 @@ namespace MOTMaster2
             Run((Dictionary<string, object>) dict, batchNumber);
         }
        
-        public void Run(Dictionary<String, Object> dict, int batchNumber)
+        public void Run(Dictionary<String, Object> dict, int myBatchNumber)
         {
             Stopwatch watch = new Stopwatch();
             if (config.UseMMScripts || sequenceData == null)
@@ -390,7 +390,7 @@ namespace MOTMaster2
                 }
                 if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
-                    if ((batchNumber == 0) && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
+                    if (myBatchNumber == 0)
                     {
                         //Only intialise and build once
                         if (StaticSequence)
@@ -400,12 +400,13 @@ namespace MOTMaster2
                             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
                             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
                         }
-                        ExpData.grpMME = InitialCommand(ScanParam);
-                        string initJson = JsonConvert.SerializeObject(ExpData.grpMME, Formatting.Indented);
+                        MMexec mme = InitialCommand(ScanParam);
+                        string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
                         paramLogger.log("{\"MMExec\":" + initJson + "},");
-                        if (SendDataRemotely)
+                        if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
                         {
                             MotMasterDataEvent(this, new DataEventArgs(initJson));
+                            ExpData.grpMME = mme.Clone();
                         }
                     }
                 }            
@@ -438,7 +439,7 @@ namespace MOTMaster2
                     watch.Start();
                     if (!config.Debug)
                     {
-                        if (batchNumber == 0 || !StaticSequence) runPattern(sequence);
+                        if (myBatchNumber == 0 || !StaticSequence) runPattern(sequence);
                         else continueLoop();
                     }
                     //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
@@ -468,7 +469,7 @@ namespace MOTMaster2
                                 //TODO Change save method
                                 
                             }
-                            save(script, scriptPath, imageData, report, batchNumber);
+                            save(script, scriptPath, imageData, report, myBatchNumber);
                         }
                         else
                         {
@@ -481,11 +482,11 @@ namespace MOTMaster2
                             }
                             if (config.UseMMScripts)
                             {
-                                save(script, scriptPath, report, batchNumber);
+                                save(script, scriptPath, report, myBatchNumber);
                             }
                             else
                             {
-                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,batchNumber);
+                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,myBatchNumber);
                             }
                         }
                     }
@@ -1076,8 +1077,8 @@ namespace MOTMaster2
             {
                 MMscan mms = new MMscan();
                 mms.FromDictionary(ExpData.grpMME.prms);
-                int k = (int)((mms.sTo - mms.sFrom) / mms.sBy) + 1;
-                if (k == (Convert.ToInt32(finalData.prms["runID"]) + 1))
+                int k = (int)((mms.sTo - mms.sFrom) / mms.sBy);
+                if (k == (Convert.ToInt32(finalData.prms["runID"])))
                 {
                     finalData.prms["last"] = 1;
                 }

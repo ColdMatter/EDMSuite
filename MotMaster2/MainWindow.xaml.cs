@@ -165,14 +165,22 @@ namespace MOTMaster2
 
         private void realRun(int Iters, string Hub = "none", int cmdId = -1) 
         {
-            if (Iters <= 0)
+            if ((Iters == 0) || (Iters < -1))
             {
-                ErrorMgr.errorMsg("<Iteration Number> must be of positive value.",2,true);
+                ErrorMgr.errorMsg("Invalid <Iteration Number> value.",2,true);
+                if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
                 return;
             }
             progBar.Minimum = 0;
             progBar.Maximum = Iters-1;
+            int numInterations = Iters;
+            if (Iters == -1) 
+            { 
+                numInterations = Int32.MaxValue;
+                progBar.Maximum = 100;
+            }
             Controller.ExpData.ClearData();
+            controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
@@ -181,16 +189,18 @@ namespace MOTMaster2
             }
             controller.StartLogging();
 
-            for (int i = 0; i < Iters; i++)
+            for (int i = 0; i < numInterations; i++)
             {
                 controller.SetBatchNumber(i);
                 ScanFlag = SingleShot(true);
-                progBar.Value = i;
+                if (Iters == -1) progBar.Value = i % 100;
+                else progBar.Value = i;
+                lbCurNumb.Content = i.ToString();
                 DoEvents();
                 if (!ScanFlag) break;
             }
             controller.StopLogging();
-           
+            if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);          
         }
 
 
@@ -203,8 +213,8 @@ namespace MOTMaster2
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
-                
-                int Iters = int.Parse(tbIterNumb.Text);
+                Controller.ExpData.grpMME.Clear();
+                int Iters = (int)ntbIterNumb.Value;
                 // Start repeat
                 realRun(Iters);
                 return;
@@ -217,7 +227,7 @@ namespace MOTMaster2
                 btnRun.Background = Brushes.LightGreen;
                 ScanFlag = false;
                 controller.StopRunning();
-                
+                lbCurNumb.Content = "";
                 // End repeat
             }
 
@@ -229,6 +239,7 @@ namespace MOTMaster2
                 ScanFlag = false;
                 //Send Remote Message to AxelHub
                 controller.StopRunning();
+                lbCurNumb.Content = "";
             }
         }
 
@@ -257,7 +268,7 @@ namespace MOTMaster2
 
             int scanLength;
             object[] scanArray;
-            if (defaultValue is int)
+            if ((defaultValue is int) && false)
             {
                 int fromScanI = int.Parse(fromScanS);
                 int toScanI = int.Parse(toScanS);
@@ -313,13 +324,14 @@ namespace MOTMaster2
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
                 ScanFlag = SingleShot(scanDict);
-                tbCurValue.Content = scanItem.ToString();
+                lbCurValue.Content = scanItem.ToString();
                 DoEvents();
                 if (!ScanFlag) break;
                 c++;
             }
+            if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
-            tbCurValue.Content = defaultValue.ToString();
+            lbCurValue.Content = defaultValue.ToString();
             controller.StopLogging();
             controller.StopRunning();
         }
@@ -333,6 +345,7 @@ namespace MOTMaster2
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
+                Controller.ExpData.grpMME.Clear();
 
                 realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
 
@@ -495,8 +508,7 @@ namespace MOTMaster2
         }
   
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.Title = "Select Cicero Settings File";
             dlg.FileName = ""; // Default file name
@@ -577,7 +589,7 @@ namespace MOTMaster2
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                tbCurValue.Content = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsScan.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
+                lbCurValue.Content = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsScan.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -721,11 +733,6 @@ namespace MOTMaster2
             paramWindow.Show();
         }
 
-        private void tbExperimentRun_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-        }
-
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             dispatcherTimer.Stop();
@@ -759,9 +766,10 @@ namespace MOTMaster2
                     btnRun.Content = "Abort Remote";
                     btnRun.Background = Brushes.LightCoral;
                     tcMain.TabIndex = 0; DoEvents();
+                    tbExperimentRun.Text = (string)mme.prms["groupID"];
                     int cycles = -1; // default to infinity
                     if (mme.prms.ContainsKey("cycles")) cycles = Convert.ToInt32(mme.prms["cycles"]);
-                    tbIterNumb.Text = cycles.ToString();
+                    ntbIterNumb.Value = cycles;
                     dispatcherTimer.Start();
                     break;
                 case("scan"):
@@ -769,6 +777,7 @@ namespace MOTMaster2
                     btnScan.Content = "Abort Remote";
                     btnScan.Background = Brushes.LightCoral;
                     tcMain.TabIndex = 1; DoEvents();
+                    tbExperimentRun.Text = (string)mme.prms["groupID"];
                     cbParamsScan.Text = (string)mme.prms["param"];
                     tbFromScan.Text = Convert.ToDouble(mme.prms["from"]).ToString();
                     tbToScan.Text = Convert.ToDouble(mme.prms["to"]).ToString();

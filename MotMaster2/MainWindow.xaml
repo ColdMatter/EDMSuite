@@ -35,7 +35,7 @@
         </Menu>
         <Grid Grid.RowSpan="1" Grid.Row="1" Margin="0,0,-0.143,4">
             <Label Content="Run Name" HorizontalAlignment="Left" Height="26" Margin="10,17,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
-            <TextBox x:Name="tbExperimentRun" HorizontalAlignment="Left" Height="24" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="---" TextChanged="tbExperimentRun_TextChanged" />
+            <TextBox x:Name="tbExperimentRun" HorizontalAlignment="Left" Height="24" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Text="---"/>
             <Label Content="Pattern Script" HorizontalAlignment="Left" Height="26" Margin="10,10,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066" Visibility="Hidden"/>
             <ProgressBar x:Name="progBar" Height="15" Margin="2,0" VerticalAlignment="Top" Foreground="#FFB1E3D8" Background="#FFFDFFFF"/>
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
@@ -56,26 +56,23 @@
                 <TabItem x:Name="tbRepeat" Header="  Repeat  " Width="70" Height="25">
                     <Grid>
                         <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113"/>
-                        <TextBox x:Name="tbIterNumb" HorizontalAlignment="Left" Height="24" Margin="128,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Text="1" FontSize="13" />
-                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="233,21,0,0" VerticalAlignment="Top" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
+                        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="321,23,0,0" VerticalAlignment="Top" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
+                        <ni:NumericTextBoxDouble x:Name="ntbIterNumb" HorizontalAlignment="Left" Height="27" Margin="123,27,0,0" VerticalAlignment="Top" Width="88" FontSize="14" Range="-1, Infinity, System.Double" Value="1"/>
+                        <Label x:Name="lbCurNumb" Content="0" HorizontalAlignment="Left" Height="27" Margin="221,25,0,22.857" VerticalAlignment="Center" Width="95" FontWeight="Bold" FontSize="14" Foreground="#FF27836E"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="tbScan" Header="   Scan   " Width="70" Height="25">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="43*"/>
-                            <ColumnDefinition Width="681*"/>
-                        </Grid.ColumnDefinitions>
                         <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="10,25,0,0" VerticalAlignment="Top" Width="206" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="cbParamsScan_SelectionChanged"/>
                         <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
-                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="283.714,24,0,24.857" VerticalAlignment="Center" Width="38" Grid.Column="1"/>
-                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="326.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" Grid.Column="1" FontSize="14"/>
-                        <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="404,24,0,24.857" VerticalAlignment="Center" Width="29" Grid.Column="1"/>
-                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="512.714,0,0,0" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5" Grid.Column="1"/>
-                        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="573.714,21,0,20.857" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click" Grid.Column="1"/>
-                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="434.714,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" Grid.Column="1" FontSize="14"/>
-                        <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="540.714,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="28" Text="1" Grid.Column="1" FontSize="14"/>
-                        <Label x:Name="tbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="178.714,26,0,25.857" VerticalAlignment="Center" Width="100" FontWeight="Bold" Grid.Column="1" FontSize="14" Foreground="#FF27836E"/>
+                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="326,24,0,24.857" VerticalAlignment="Center" Width="38"/>
+                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="369,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" FontSize="14"/>
+                        <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="446,24,0,24.857" VerticalAlignment="Center" Width="29"/>
+                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="555,24,0,24.857" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5"/>
+                        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="618,21,0,21" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click"/>
+                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="477,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" FontSize="14"/>
+                        <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="583,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="28" Text="1" FontSize="14"/>
+                        <Label x:Name="lbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="221,25,0,22.857" VerticalAlignment="Center" Width="100" FontWeight="Bold" FontSize="14" Foreground="#FF27836E"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="tbManual" Header=" Manual  " HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80">
@@ -111,10 +108,8 @@
                         <RichTextBox x:Name="tbLogger" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="1,0,0,0">
                             <FlowDocument>
                                 <Paragraph>
-                                    <Run x:Name="tbLog" Text="&gt; Welcome to MOTMaster "/>
-                                    <InlineUIContainer>
-                                        <StackPanel Height="100" Width="100"/>
-                                    </InlineUIContainer>
+                                    <Run x:Name="tbLog" Text="&gt; Welcome to MOTMaster 
+                                         "/>
                                 </Paragraph>
                             </FlowDocument>
                         </RichTextBox>
