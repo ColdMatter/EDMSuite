@@ -16,7 +16,6 @@ namespace Analysis.EDM
         public Dictionary<string, int> DetectorIndices = new Dictionary<string, int>();
         public List<DetectorChannelValues> ChannelValues = new List<DetectorChannelValues>();
         public Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
-        public DetectorFT NormFourier;
 
         // This is a convenience function that pulls out the mean and error of a channel,
         // specified by a set of switches for a given detector. This isn't the most efficient

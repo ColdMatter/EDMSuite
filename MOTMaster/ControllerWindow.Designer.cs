@@ -45,6 +45,8 @@
             this.stopButton = new System.Windows.Forms.Button();
             this.iterationsBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
+            this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -188,7 +190,7 @@
             // 
             // iterationsBox
             // 
-            this.iterationsBox.Location = new System.Drawing.Point(129, 84);
+            this.iterationsBox.Location = new System.Drawing.Point(186, 81);
             this.iterationsBox.Name = "iterationsBox";
             this.iterationsBox.Size = new System.Drawing.Size(46, 20);
             this.iterationsBox.TabIndex = 16;
@@ -197,17 +199,41 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(45, 88);
+            this.label2.Location = new System.Drawing.Point(127, 84);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 17;
             this.label2.Text = "Iterations:";
+            // 
+            // runUntilStopCheckBox
+            // 
+            this.runUntilStopCheckBox.AutoSize = true;
+            this.runUntilStopCheckBox.Location = new System.Drawing.Point(12, 83);
+            this.runUntilStopCheckBox.Name = "runUntilStopCheckBox";
+            this.runUntilStopCheckBox.Size = new System.Drawing.Size(109, 17);
+            this.runUntilStopCheckBox.TabIndex = 18;
+            this.runUntilStopCheckBox.Text = "Run until stopped";
+            this.runUntilStopCheckBox.UseVisualStyleBackColor = true;
+            this.runUntilStopCheckBox.CheckedChanged += new System.EventHandler(this.runUntilStopCheckBox_CheckedChanged);
+            // 
+            // triggeredCheckBox
+            // 
+            this.triggeredCheckBox.AutoSize = true;
+            this.triggeredCheckBox.Location = new System.Drawing.Point(12, 132);
+            this.triggeredCheckBox.Name = "triggeredCheckBox";
+            this.triggeredCheckBox.Size = new System.Drawing.Size(67, 17);
+            this.triggeredCheckBox.TabIndex = 19;
+            this.triggeredCheckBox.Text = "triggered";
+            this.triggeredCheckBox.UseVisualStyleBackColor = true;
+            this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
+            this.Controls.Add(this.triggeredCheckBox);
+            this.Controls.Add(this.runUntilStopCheckBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.iterationsBox);
             this.Controls.Add(this.stopButton);
@@ -250,6 +276,8 @@
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.TextBox iterationsBox;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox runUntilStopCheckBox;
+        private System.Windows.Forms.CheckBox triggeredCheckBox;
     }
 }
 

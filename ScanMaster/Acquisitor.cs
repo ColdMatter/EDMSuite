@@ -125,6 +125,7 @@ namespace ScanMaster.Acquire
                             config.switchPlugin.State = true; 
                             config.shotGathererPlugin.PreArm();
                         }
+                        
 
                         for (int shotNum = 0; shotNum < (int)(config.outputPlugin.Settings["shotsPerPoint"]); shotNum++)
                         {

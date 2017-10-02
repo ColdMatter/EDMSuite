@@ -20,7 +20,7 @@ namespace DAQ.Analyze
 
         // Fit the data provided. The parameters list should contain an initial
         // guess. On return it will contain the fitted parameters.
-        public void Fit(double[] xdata, double[] ydata, double[] parameters)
+        public void Fit(double[] xdata, double[] ydata, double[] parameters, double epsf, double epsx, int maxits)
         {
             try
             {
@@ -28,9 +28,6 @@ namespace DAQ.Analyze
                 double[,] xDataAlg = new double[xdata.Length, 1];
 
                 for (int i = 0; i < xdata.Length; i++) xDataAlg[i,0] = xdata[i];
-                double epsf = 0;
-                double epsx = 0.000000001;
-                int maxits = 0;
                 int info;
                 alglib.lsfitstate state;
                 alglib.lsfitreport rep;
@@ -63,6 +60,11 @@ namespace DAQ.Analyze
                 Console.WriteLine(e.ToString());
             }
 
+        }
+
+        public void Fit(double[] xdata, double[] ydata, double[] parameters)
+        {
+            Fit(xdata, ydata, parameters, 0, 0.000000001, 0);
         }
 
         private void repairFittedValues(double[] xdata, double[] ydata)

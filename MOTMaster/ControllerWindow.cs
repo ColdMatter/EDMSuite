@@ -76,7 +76,7 @@ namespace MOTMaster
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            controller.RunStart();
+            controller.Run();
         }
 
         private string getScriptPath()
@@ -112,7 +112,17 @@ namespace MOTMaster
         {
             return int.Parse(iterationsBox.Text);
         }
+        public void SetIterations(int number)
+        {
+            setTextBox(iterationsBox, Convert.ToString(number));
+        }
 
+        public bool RunUntilStoppedState
+        {
+            get { return runUntilStopCheckBox.Checked; }
+            set { runUntilStopCheckBox.Checked = value;  }
+           
+        }
 
         private void selectScriptButton_Click(object sender, EventArgs e)
         {
@@ -137,6 +147,18 @@ namespace MOTMaster
         private void stopButton_Click(object sender, EventArgs e)
         {
             controller.status = Controller.RunningState.stopped;
+        }
+
+        private void runUntilStopCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (runUntilStopCheckBox.Checked) iterationsBox.Enabled = false;
+            else iterationsBox.Enabled = true;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (triggeredCheckBox.Checked) controller.triggered = true;
+            else controller.triggered = false;
         }
 
 

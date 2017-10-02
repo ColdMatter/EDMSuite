@@ -51,10 +51,20 @@ namespace EDMBlockHead.Acquire
 			this.config = config;
 			acquireThread = new Thread(new ThreadStart(this.Acquire));
 			acquireThread.Name = "BlockHead Acquisitor";
-			acquireThread.Priority = ThreadPriority.Normal;
+			acquireThread.Priority = ThreadPriority.Highest;
 			backendState = AcquisitorState.running;
 			acquireThread.Start();
 		}
+
+        public void StartTargetStepper(BlockConfig config)
+        {
+            this.config = config;
+            acquireThread = new Thread(new ThreadStart(this.AcquireAndStepTarget));
+            acquireThread.Name = "BlockHead Acquisitor";
+            acquireThread.Priority = ThreadPriority.Highest;
+            backendState = AcquisitorState.running;
+            acquireThread.Start();
+        }
 
 		// calling this method stops acquisition as soon as possible (usually after the current shot)
 		public void Stop() 
@@ -95,7 +105,7 @@ namespace EDMBlockHead.Acquire
 			{
 				// get things going
 				AcquisitionStarting();
-
+                
 				// enter the main loop
 				for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
 				{
@@ -187,8 +197,8 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("MiniFlux1", spd[2]);
                     p.SinglePointData.Add("MiniFlux2", spd[3]);
                     p.SinglePointData.Add("MiniFlux3", spd[4]);
-                    p.SinglePointData.Add("CplusV", spd[5]);
-                    p.SinglePointData.Add("CminusV", spd[6]);
+                    //p.SinglePointData.Add("CplusV", spd[5]);
+                    //p.SinglePointData.Add("CminusV", spd[6]);
 
                     //hardwareController.UpdateVMonitor();
                     //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
@@ -260,6 +270,199 @@ namespace EDMBlockHead.Acquire
 			Monitor.Exit(MonitorLockObject);
 
 		}
+
+        public void AcquireAndStepTarget()
+        {
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
+
+            scanMaster = new ScanMaster.Controller();
+            phaseLock = new EDMPhaseLock.MainForm();
+            hardwareController = new EDMHardwareControl.Controller();
+
+            // map modulations to physical channels
+            MapChannels();
+
+            // map the analog inputs
+            MapAnalogInputs();
+
+            Block b = new Block();
+            b.Config = config;
+            b.SetTimeStamp();
+
+             
+
+            foreach (ScannedAnalogInput channel in inputs.Channels)
+            {
+                b.detectors.Add(channel.Channel.Name);
+            }
+
+            try
+            {
+                // get things going
+                AcquisitionStarting();
+                int point = 0;
+                // enter the main loop
+                for (point = 0; point < (int)config.Settings["maximumNumberOfTimesToStepTarget"]; point++)
+                {
+
+                    // take a point
+                    Shot s;
+                    EDMPoint p;
+                    if (Environs.Debug)
+                    {
+                        // just stuff a made up shot in
+                        //Thread.Sleep(10);
+                        s = DataFaker.GetFakeShot(1900, 50, 10, 3, 3);
+                        ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
+                        p = new EDMPoint();
+                        p.Shot = s;
+                        //Thread.Sleep(20);
+                    }
+                    else
+                    {
+                        // everything should be ready now so start the analog
+                        // input task (it will wait for a trigger)
+                        inputTask.Start();
+
+                        // get the raw data
+                        double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+                        inputTask.Stop();
+
+
+                        // extract the data for each scanned channel and put it in a TOF
+                        s = new Shot();
+                        for (int i = 0; i < inputs.Channels.Count; i++)
+                        {
+                            // extract the raw data
+                            double[] rawData = new double[inputs.GateLength];
+                            for (int q = 0; q < inputs.GateLength; q++) rawData[q] = analogData[i, q];
+
+                            ScannedAnalogInput ipt = (ScannedAnalogInput)inputs.Channels[i];
+                            // reduce the data
+                            double[] data = ipt.Reduce(rawData);
+                            TOF t = new TOF();
+                            t.Calibration = ipt.Calibration;
+                            // the 1000000 is because clock period is in microseconds;
+                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+                            t.GateStartTime = inputs.GateStartTime;
+                            // this is a bit confusing. The chop is measured in points, so the gate
+                            // has to be adjusted by the number of points times the clock period!
+                            if (ipt.ReductionMode == DataReductionMode.Chop)
+                                t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
+                            t.Data = data;
+                            // the 1000000 is because clock period is in microseconds;
+                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+
+                            s.TOFs.Add(t);
+                        }
+
+                        p = new EDMPoint();
+                        p.Shot = s;
+
+                    }
+                    // do the "SinglePointData" (i.e. things that are measured once per point)
+                    // We'll save the leakage monitor until right at the end.
+                    // keep an eye on what the phase lock is doing
+                    p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+                    p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    // scan the analog inputs
+                    double[] spd;
+                    // fake some data if we're in debug mode
+                    if (Environs.Debug)
+                    {
+                        spd = new double[7];
+                        spd[0] = 1;
+                        spd[1] = 2;
+                        spd[2] = 3;
+                        spd[3] = 4;
+                        spd[4] = 5;
+                        spd[5] = 6;
+                        spd[6] = 7;
+                    }
+                    else
+                    {
+                        singlePointInputTask.Start();
+                        spd = singlePointInputReader.ReadSingleSample();
+                        singlePointInputTask.Stop();
+                    }
+                    p.SinglePointData.Add("ProbePD", spd[0]);
+                    p.SinglePointData.Add("PumpPD", spd[1]);
+                    p.SinglePointData.Add("MiniFlux1", spd[2]);
+                    p.SinglePointData.Add("MiniFlux2", spd[3]);
+                    p.SinglePointData.Add("MiniFlux3", spd[4]);
+                    //p.SinglePointData.Add("CplusV", spd[5]);
+                    //p.SinglePointData.Add("CminusV", spd[6]);
+
+                    //hardwareController.UpdateVMonitor();
+                    //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
+                    //hardwareController.UpdateLaserPhotodiodes();
+                    //p.SinglePointData.Add("ProbePD", hardwareController.ProbePDVoltage);
+                    //p.SinglePointData.Add("PumpPD", hardwareController.PumpPDVoltage);
+                    //hardwareController.UpdateMiniFluxgates();
+                    //p.SinglePointData.Add("MiniFlux1", hardwareController.MiniFlux1Voltage);
+                    //p.SinglePointData.Add("MiniFlux2", hardwareController.MiniFlux2Voltage);
+                    //p.SinglePointData.Add("MiniFlux3", hardwareController.MiniFlux3Voltage);
+                    hardwareController.ReadIMonitor();
+                    p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
+                    p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+
+                    b.Points.Add(p);
+
+                    // update the front end
+                    Controller.GetController().GotPoint(point, p);
+
+
+                    // Integrate the first toff and stop the sequence if the signal is sufficiently high
+                    TOF detectorATOF = new TOF(); 
+                    detectorATOF = (TOF)s.TOFs[0];
+                    double sig = detectorATOF.Integrate((double)config.Settings["targetStepperGateStartTime"], (double)config.Settings["targetStepperGateEndTime"]);
+                    if (sig > (double)config.Settings["minimumSignalToRun"])
+                    {
+                        Controller.GetController().TargetHealthy = true; 
+                        Stop();
+                        point = (int)config.Settings["maximumNumberOfTimesToStepTarget"] + 1;
+
+                    }
+                    else
+                    {
+                        Controller.GetController().TargetHealthy = false;
+                        hardwareController.StepTarget(2);
+                    }
+                    //if (CheckIfStopping())
+                    //{
+                        // release hardware
+                    //    AcquisitionStopping();
+                        // signal anybody waiting on the lock that we're done
+                    //    Monitor.Pulse(MonitorLockObject);
+                    //    Monitor.Exit(MonitorLockObject);
+                    //    point = (int)config.Settings["maximumNumberOfTimesToStepTarget"];
+                    //    return;
+                    //}
+                }
+                AcquisitionStopping();
+
+                // hand the new block back to the controller
+                Controller.GetController().IntelligentAcquisitionFinished();
+
+                // signal anybody waiting on the lock that we're done
+                Monitor.Pulse(MonitorLockObject);
+                Monitor.Exit(MonitorLockObject);
+            }
+            catch (Exception e)
+            {
+                // try and stop the experiment gracefully
+                try
+                {
+                    AcquisitionStopping();
+                }
+                catch (Exception) { }				// about the best that can be done at this stage
+                Monitor.Pulse(MonitorLockObject);
+                Monitor.Exit(MonitorLockObject);
+                throw e;
+            }
+
+        }
 
 		private void MapChannels()
 		{
@@ -337,20 +540,25 @@ namespace EDMBlockHead.Acquire
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 
+            HardwareControllerSwitchChannel mwChan = new HardwareControllerSwitchChannel();
+            mwChan.Channel = "mwChan";
+            mwChan.Modulation = config.GetModulationByName("MW");
+            switchedChannels.Add(mwChan);
+
             //AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
             //lf1Channel.Channel = "flPZT";
             //lf1Channel.Modulation = config.GetModulationByName("LF1");
             //switchedChannels.Add(lf1Channel);
 
-            HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
-            lf1Channel.Channel = "probeAOM";
-            lf1Channel.Modulation = config.GetModulationByName("LF1");
-            switchedChannels.Add(lf1Channel);
+            //HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
+            //lf1Channel.Channel = "probeAOM";
+            //lf1Channel.Modulation = config.GetModulationByName("LF1");
+            //switchedChannels.Add(lf1Channel);
 
-            HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
-            lf2Channel.Channel = "pumpAOM";
-            lf2Channel.Modulation = config.GetModulationByName("LF2");
-            switchedChannels.Add(lf2Channel);
+            //HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
+            //lf2Channel.Channel = "pumpAOM";
+            //lf2Channel.Modulation = config.GetModulationByName("LF2");
+            //switchedChannels.Add(lf2Channel);
 
             //AnalogSwitchedChannel lf3Channel = new HardwareControllerSwitchChannel();
             //lf3Channel.Channel = "LF3";
@@ -369,7 +577,7 @@ namespace EDMBlockHead.Acquire
             inputs = new ScannedAnalogInputCollection();
             inputs.RawSampleRate = 100000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            inputs.GateLength = 220;
+            inputs.GateLength = 280;
             //inputs.GateLength = 1000;
             // NOTE: this long version is for null runs, don't set it so long that the shots overlap!
             // Comment the following line out if you're not null running.
@@ -377,15 +585,15 @@ namespace EDMBlockHead.Acquire
 
 
             // this code should be used for normal running
-            ScannedAnalogInput pmt = new ScannedAnalogInput();
-            pmt.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["top"];
-            pmt.ReductionMode = DataReductionMode.Chop;
-            pmt.ChopStart = 140;
-            pmt.ChopLength = 80;
-            pmt.LowLimit = 0;
-            pmt.HighLimit = 10;
-            pmt.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
-            inputs.Channels.Add(pmt);
+            ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
+            bottomProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bottomProbe"];
+            bottomProbe.ReductionMode = DataReductionMode.Chop;
+            bottomProbe.ChopStart = 140;
+            bottomProbe.ChopLength = 80;
+            bottomProbe.LowLimit = 0;
+            bottomProbe.HighLimit = 10;
+            bottomProbe.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
+            inputs.Channels.Add(bottomProbe);
 
             //			// this code can be enabled for faster null runs
             //			ScannedAnalogInput pmt = new ScannedAnalogInput();
@@ -397,15 +605,15 @@ namespace EDMBlockHead.Acquire
             //			pmt.Calibration = 0.14;
             //			inputs.Channels.Add(pmt);
 
-            ScannedAnalogInput normPMT = new ScannedAnalogInput();
-            normPMT.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["norm"];
-            normPMT.ReductionMode = DataReductionMode.Chop;
-            normPMT.ChopStart = 0;
-            normPMT.ChopLength = 40;
-            normPMT.LowLimit = 0;
-            normPMT.HighLimit = 10;
-            normPMT.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
-            inputs.Channels.Add(normPMT);
+            ScannedAnalogInput topProbe = new ScannedAnalogInput();
+            topProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["topProbe"];
+            topProbe.ReductionMode = DataReductionMode.Chop;
+            topProbe.ChopStart = 180;
+            topProbe.ChopLength = 80;
+            topProbe.LowLimit = 0;
+            topProbe.HighLimit = 10;
+            topProbe.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
+            inputs.Channels.Add(topProbe);
 
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;
@@ -541,9 +749,9 @@ namespace EDMBlockHead.Acquire
             //AddChannelToSinglePointTask("ground");
             AddChannelToSinglePointTask("miniFlux3");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("cPlusMonitor");
+            //AddChannelToSinglePointTask("cPlusMonitor");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("cMinusMonitor");
+            //AddChannelToSinglePointTask("cMinusMonitor");
             //AddChannelToSinglePointTask("northLeakage");
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");

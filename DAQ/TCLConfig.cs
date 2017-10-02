@@ -19,6 +19,9 @@ namespace DAQ.TransferCavityLock2012
             maxInputVoltage = 10.0;
             defaultScanPoints = 1000;
             analogSampleRate = 50000;
+            maximumNLMFSteps = 100;
+            pointsToConsiderEitherSideOfPeakInFWHMs = 4;
+            triggerOnRisingEdge = true;
         }
 
         private string configurationName;
@@ -98,6 +101,26 @@ namespace DAQ.TransferCavityLock2012
             set { analogSampleRate = value; }
         }
 
+        private int maximumNLMFSteps; 
+        public int MaximumNLMFSteps
+        {
+            get { return maximumNLMFSteps; }
+            set { maximumNLMFSteps = value; }
+        }
+
+        private double pointsToConsiderEitherSideOfPeakInFWHMs;
+        public double PointsToConsiderEitherSideOfPeakInFWHMs
+        {
+            get { return pointsToConsiderEitherSideOfPeakInFWHMs; }
+            set { pointsToConsiderEitherSideOfPeakInFWHMs = value; }
+        }
+
+        private bool triggerOnRisingEdge;
+        public bool TriggerOnRisingEdge
+        {
+            get { return triggerOnRisingEdge; }
+            set { triggerOnRisingEdge = value; }
+        }
         private string trigger;
         public string Trigger
         {
@@ -121,14 +144,36 @@ namespace DAQ.TransferCavityLock2012
         }
 
 
+        private Dictionary<string, double> fsrCalibrations = new Dictionary<string, double>();
+
+        public Dictionary<string, double> FSRCalibrations
+        {
+            get { return fsrCalibrations; }
+            set { fsrCalibrations = value; }
+        }
+
+        private Dictionary<string, double> defaultGains = new Dictionary<string, double>();
+
+        public Dictionary<string, double> DefaultGains
+        {
+            get { return defaultGains; }
+            set { defaultGains = value; }
+        }
+
         public void AddLaser(string name, string photodiode)
         {
             Lasers.Add(name, photodiode);
         }
 
+        public void AddFSRCalibration(string name, double spacingbetweenPeaksInVolts)
+        {
+            fsrCalibrations.Add(name, spacingbetweenPeaksInVolts);
+        }
 
-
-
+        public void AddDefaultGain(string name, double gain)
+        {
+            defaultGains.Add(name, gain);
+        }       
 
 
 

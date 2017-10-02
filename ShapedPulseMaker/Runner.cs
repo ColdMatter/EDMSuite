@@ -18,18 +18,17 @@ namespace TriggeredShapedPulses
 
             TcpChannel channel = new TcpChannel(1191);
             ChannelServices.RegisterChannel(channel, false);
+            RemotingServices.Marshal(prog, "controller.rem");
 
             Runner.Example(prog);
         }
 
         static void Example(Controller prog)
         {
-            prog.Initialise();
-
             double[][] pulseParams = new double[2][] 
             { 
-            new double[3]{ 1, 0, 0 },
-            new double[3]{ 0, 0.5, 0.5 }
+            new double[5]{ 1, 0, 0, 170e6, 0 },
+            new double[5]{ 0, 0.5, 0.5, 170e6, 0 }
             };
 
             int[][] pulseList = new int[5][] 
@@ -42,6 +41,8 @@ namespace TriggeredShapedPulses
             };
 
             prog.LoadPulses(pulseParams);
+
+            prog.Initialise();
 
             foreach (int[] pulseSeq in pulseList)
             {

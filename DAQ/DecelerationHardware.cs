@@ -82,7 +82,8 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("VCO_Out", PXIBoard + "/ao12", 0.0, 10.0);
 
             // add things to the info
-            Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
+            Info.Add("PGTrigger", Boards["pg"] + "/PFI2");          // trigger from "cryocooler sync" box, delay controlled from "triggerDelay" analog output
+            //Info.Add("PGClockLine", Boards["pg"] + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
             Info.Add("AOPatternTrigger", aoBoard + "/PFI0");
@@ -142,11 +143,11 @@ namespace DAQ.HAL
 			AddDigitalOutputChannel("detectorprime", pgBoard, 3, 6);
 		    AddDigitalOutputChannel("aom", pgBoard, 2, 1);//Same channel as "ttl2" as used by the AomLevelControlPlugin. Now commented out.
             AddDigitalOutputChannel("aom2", pgBoard, 1, 6); // Pin 21 of PG board. Output 31 of front panel
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 2,2);	// This is the output that the pg will switch if it's switch scanning.
+            AddDigitalOutputChannel("v00Shutter", pgBoard, 2,2);
             //AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 2, 2);
-            AddDigitalOutputChannel("motAOM", pgBoard, 1, 1); //Pin 17
-            AddDigitalOutputChannel("motRampTrigger", pgBoard, 1, 2); //Pin 51
-            AddDigitalOutputChannel("bTrigger", pgBoard, 1, 3); //Pin 52
+            AddDigitalOutputChannel("v00AOM", pgBoard, 1, 1); //Pin 17
+            AddDigitalOutputChannel("shimCoilSwitch", pgBoard, 1, 2); //Pin 51
+            AddDigitalOutputChannel("bXShutter", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 4); // Pin 13
             AddDigitalOutputChannel("AnalogPatternTrigger", pgBoard, 3, 3); //Pin 31
 
@@ -169,7 +170,17 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("eylsa", TCLBoard2 + "/ao3");
 
             AddAnalogOutputChannel("slowingChirp", aoBoard + "/ao8");
-            AddAnalogOutputChannel("v0IntensityRamp", aoBoard + "/ao9");
+
+            AddAnalogOutputChannel("v00Intensity", aoBoard + "/ao9");
+            AddAnalogOutputChannel("v00Frequency", aoBoard + "/ao12");
+
+            AddAnalogOutputChannel("MOTCoilsCurrent", aoBoard + "/ao13");
+
+            AddAnalogOutputChannel("xShimCoilCurrent", aoBoard + "/ao17");
+            AddAnalogOutputChannel("yShimCoilCurrent", aoBoard + "/ao16");
+            AddAnalogOutputChannel("zShimCoilCurrent", aoBoard + "/ao14");
+
+            AddAnalogOutputChannel("slowingCoilsCurrent", aoBoard + "/ao18");
             
             //second cavity
 
@@ -189,12 +200,12 @@ namespace DAQ.HAL
             AddCounterChannel("sample clock", daqBoard + "/ctr1");
 
             //map the monitoring source chamber in deceleration hardware
-            AddAnalogInputChannel("RoughVacuum", PXIBoard + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PressureSourceChamber", PXIBoard + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("VoltageReference", PXIBoard + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("10KThermistor30KPlate", PXIBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("30KShield", PXIBoard + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("4KCell", PXIBoard + "/ai5", AITerminalConfiguration.Rse);
+           // AddAnalogInputChannel("RoughVacuum", PXIBoard + "/ai0", AITerminalConfiguration.Rse);
+          //  AddAnalogInputChannel("PressureSourceChamber", PXIBoard + "/ai1", AITerminalConfiguration.Rse);
+          //  AddAnalogInputChannel("VoltageReference", PXIBoard + "/ai2", AITerminalConfiguration.Rse);
+          //  AddAnalogInputChannel("10KThermistor30KPlate", PXIBoard + "/ai3", AITerminalConfiguration.Rse);
+          //  AddAnalogInputChannel("30KShield", PXIBoard + "/ai4", AITerminalConfiguration.Rse);
+          //  AddAnalogInputChannel("4KCell", PXIBoard + "/ai5", AITerminalConfiguration.Rse);
 
             //map the channels to monitor the sidebands in deceleration hardware
             AddAnalogInputChannel("cavityVoltage", usbBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -207,21 +218,21 @@ namespace DAQ.HAL
 
             //analog output channels controlled by the hardware controller and/or MOTMaster
             AddAnalogOutputChannel("motAOMFreq", aoBoard + "/ao10");
-            AddAnalogOutputChannel("motAOMAmp", aoBoard + "/ao11");
+            AddAnalogOutputChannel("v00EOMAmp", aoBoard + "/ao11");
+            AddAnalogOutputChannel("triggerDelay", aoBoard + "/ao15");
 
-            AddCalibration("motAOMFreq", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
-            AddCalibration("motAOMAmp", new LinearCalibration(1, 0, 0, -10, 10)); // needs calibrating
+         //   AddCalibration("freqToVoltage", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
+            //AddCalibration("motAOMAmp", new PolynomialCalibration(new double[] {6.2871, -0.5907, -0.0706, -0.0088, -0.0004}, -12, 4)); // this is a polynomial fit (up to quartic) to measured behaviour
             
 		}
 
         
        public override void ConnectApplications()
         {
-            RemotingHelper.ConnectDecelerationHardwareControl();
+         //   RemotingHelper.ConnectMoleculeMOTHardwareControl();
           // ask the remoting system for access to TCL2012
        //     Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
           //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
-            
         }
 
 	}

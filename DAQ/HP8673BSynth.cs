@@ -2,6 +2,7 @@ using System;
 
 
 using DAQ.Environment;
+using System.Threading;
 
 namespace DAQ.HAL
 {

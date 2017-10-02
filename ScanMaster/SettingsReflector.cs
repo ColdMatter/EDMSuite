@@ -29,27 +29,41 @@ namespace ScanMaster.Acquire.Plugin
 
 			PluginSettings ps = plugin.Settings;
 			object currentValue = ps[fieldName];
-
-			try
-			{
-				object convertedType = Convert.ChangeType(newValue, currentValue.GetType());
-				ps[fieldName] = convertedType;
-				return true;
-			} 
-			catch (System.FormatException)
-			{
-				return false;
-			}
+            if (!this.HasField(plugin, fieldName))
+            {
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    object convertedType = Convert.ChangeType(newValue, currentValue.GetType());
+                    ps[fieldName] = convertedType;
+                    return true;
+                }
+                catch (System.FormatException)
+                {
+                    return false;
+                }
             catch (System.NullReferenceException)
             {
                 return false;
             }
 
+            }
 		}
 
 		public object GetField(AcquisitorPlugin plugin, String fieldName)
 		{
-			return plugin.Settings[fieldName];
+            if (!this.HasField(plugin, fieldName))
+            {
+                return "No such parameter";
+            }
+            else
+            {
+                return plugin.Settings[fieldName]; 
+            }
+			
 		}
 
 		public bool HasField(AcquisitorPlugin plugin, String fieldName)

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoleculeMOTMasterScripts</RootNamespace>
     <AssemblyName>MoleculeMOTMasterScripts</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,8 +30,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
-    <OutputPath>bin\EDMTestCrate\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
+    <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCL|AnyCPU'">
     <OutputPath>bin\TCL\</OutputPath>
@@ -45,8 +46,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlueMolassesSteps.cs" />
+    <Compile Include="DetuningTemperature.cs" />
+    <Compile Include="forEach.cs" />
+    <Compile Include="ImageSlowingBeam.cs" />
+    <Compile Include="MagneticTrapNumber.cs" />
+    <Compile Include="MolassesLoadMagTrapNumber.cs" />
+    <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
+    <Compile Include="MOTBasicBField.cs" />
     <Compile Include="MOTBasic.cs" />
+    <Compile Include="MOTBasicExperimental.cs" />
+    <Compile Include="MOTBasicExperimental2.cs" />
+    <Compile Include="MOTBlueMolasses.cs" />
+    <Compile Include="MOTBlueMolassesNumber.cs" />
+    <Compile Include="MOTBlueMolassesRamp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MOTBlueMolassesRedMolasses.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitchNumber.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitchRamp.cs" />
+    <Compile Include="MOTBlueMolassesShimSwitchShort.cs" />
+    <Compile Include="MOTFreqScan.cs" />
+    <Compile Include="MOTMagTrapLifetime.cs" />
+    <Compile Include="MOTOscillation.cs" />
+    <Compile Include="MOTOscillationExperimental.cs" />
+    <Compile Include="MOTRampBField.cs" />
+    <Compile Include="MOTRampIntensity.cs" />
+    <Compile Include="MOTRampIntensityB.cs" />
+    <Compile Include="MOTRampIntensityNumber.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="PMTtest.cs" />
+    <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScatteringRate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
@@ -57,6 +91,13 @@
       <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
       <Name>MOTMaster</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\MoleculeMOTMasterScripts.dll" />
+    <Content Include="bin\Debug\MoleculeMOTMasterScripts.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

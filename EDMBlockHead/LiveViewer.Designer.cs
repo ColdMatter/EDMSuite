@@ -45,6 +45,7 @@ namespace EDMBlockHead
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.bSigmaHi = new NationalInstruments.UI.ScatterPlot();
             this.bSigmaLo = new NationalInstruments.UI.ScatterPlot();
+            this.bDBNLPlot = new NationalInstruments.UI.ScatterPlot();
             this.resetRunningMeans = new System.Windows.Forms.Button();
             this.dbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.dbPlot = new NationalInstruments.UI.ScatterPlot();
@@ -87,7 +88,31 @@ namespace EDMBlockHead
             this.rf2fScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.rfxadbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.rf1adbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis8 = new NationalInstruments.UI.XAxis();
+            this.yAxis8 = new NationalInstruments.UI.YAxis();
+            this.rf2adbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.rfxfdbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.rf1fdbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis10 = new NationalInstruments.UI.XAxis();
+            this.yAxis10 = new NationalInstruments.UI.YAxis();
+            this.rf2fdbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lfxdbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.lf1dbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis13 = new NationalInstruments.UI.XAxis();
+            this.yAxis13 = new NationalInstruments.UI.YAxis();
+            this.lf2dbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.lf1SigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.lf1SigmaLo = new NationalInstruments.UI.ScatterPlot();
+            this.lf2SigmaHi = new NationalInstruments.UI.ScatterPlot();
+            this.lf2SigmaLo = new NationalInstruments.UI.ScatterPlot();
+            this.photoDiodeScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.pumpPDScatterPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis15 = new NationalInstruments.UI.XAxis();
+            this.yAxis15 = new NationalInstruments.UI.YAxis();
+            this.probePDScatterPlot = new NationalInstruments.UI.ScatterPlot();
             this.rfCurrentGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.rfCurrentPlot = new NationalInstruments.UI.ScatterPlot();
             this.xAxis17 = new NationalInstruments.UI.XAxis();
@@ -99,31 +124,6 @@ namespace EDMBlockHead
             this.sECorrLeakagePlot = new NationalInstruments.UI.ScatterPlot();
             this.yAxis14 = new NationalInstruments.UI.YAxis();
             this.xAxis14 = new NationalInstruments.UI.XAxis();
-            this.bDBNLPlot = new NationalInstruments.UI.ScatterPlot();
-            this.photoDiodeScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.pumpPDScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis15 = new NationalInstruments.UI.XAxis();
-            this.yAxis15 = new NationalInstruments.UI.YAxis();
-            this.probePDScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.rfxfdbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.rf1fdbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis10 = new NationalInstruments.UI.XAxis();
-            this.yAxis10 = new NationalInstruments.UI.YAxis();
-            this.rf2fdbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.lfxdbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.lf1dbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis13 = new NationalInstruments.UI.XAxis();
-            this.yAxis13 = new NationalInstruments.UI.YAxis();
-            this.lf2dbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.lf1SigmaHi = new NationalInstruments.UI.ScatterPlot();
-            this.lf1SigmaLo = new NationalInstruments.UI.ScatterPlot();
-            this.lf2SigmaHi = new NationalInstruments.UI.ScatterPlot();
-            this.lf2SigmaLo = new NationalInstruments.UI.ScatterPlot();
-            this.rfxadbdbScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.rf1adbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis8 = new NationalInstruments.UI.XAxis();
-            this.yAxis8 = new NationalInstruments.UI.YAxis();
-            this.rf2adbdbScatterPlot = new NationalInstruments.UI.ScatterPlot();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).BeginInit();
@@ -136,13 +136,13 @@ namespace EDMBlockHead
             ((System.ComponentModel.ISupportInitialize)(this.rfFreqScatterGraph)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rfxadbdbScatterGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rfxfdbdbScatterGraph)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rfCurrentGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eCorrLeakageScatterGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rfxfdbdbScatterGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rfxadbdbScatterGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // statusText
@@ -153,9 +153,10 @@ namespace EDMBlockHead
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
             this.statusText.ReadOnly = true;
-            this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.statusText.Size = new System.Drawing.Size(345, 736);
+            this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.statusText.Size = new System.Drawing.Size(541, 736);
             this.statusText.TabIndex = 0;
+            this.statusText.WordWrap = false;
             // 
             // label1
             // 
@@ -305,6 +306,15 @@ namespace EDMBlockHead
             this.bSigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.bSigmaLo.XAxis = this.xAxis2;
             this.bSigmaLo.YAxis = this.yAxis2;
+            // 
+            // bDBNLPlot
+            // 
+            this.bDBNLPlot.LineColor = System.Drawing.Color.Red;
+            this.bDBNLPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.bDBNLPlot.PointColor = System.Drawing.Color.Red;
+            this.bDBNLPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
+            this.bDBNLPlot.XAxis = this.xAxis2;
+            this.bDBNLPlot.YAxis = this.yAxis2;
             // 
             // resetRunningMeans
             // 
@@ -699,7 +709,7 @@ namespace EDMBlockHead
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(363, 11);
+            this.tabControl1.Location = new System.Drawing.Point(559, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(546, 779);
@@ -723,6 +733,107 @@ namespace EDMBlockHead
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "1";
             // 
+            // rfxadbdbScatterGraph
+            // 
+            this.rfxadbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.rfxadbdbScatterGraph.Caption = "RFxA.DB / DB";
+            this.rfxadbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.rfxadbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfxadbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.rfxadbdbScatterGraph.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.rfxadbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfxadbdbScatterGraph.Location = new System.Drawing.Point(6, 560);
+            this.rfxadbdbScatterGraph.Name = "rfxadbdbScatterGraph";
+            this.rfxadbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.rfxadbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.rf1adbdbScatterPlot,
+            this.rf2adbdbScatterPlot});
+            this.rfxadbdbScatterGraph.Size = new System.Drawing.Size(259, 179);
+            this.rfxadbdbScatterGraph.TabIndex = 38;
+            this.rfxadbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis8});
+            this.rfxadbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis8});
+            // 
+            // rf1adbdbScatterPlot
+            // 
+            this.rf1adbdbScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
+            this.rf1adbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.rf1adbdbScatterPlot.PointColor = System.Drawing.Color.SlateBlue;
+            this.rf1adbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.rf1adbdbScatterPlot.XAxis = this.xAxis8;
+            this.rf1adbdbScatterPlot.YAxis = this.yAxis8;
+            // 
+            // xAxis8
+            // 
+            this.xAxis8.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis8.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis8.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis8.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis8
+            // 
+            this.yAxis8.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // rf2adbdbScatterPlot
+            // 
+            this.rf2adbdbScatterPlot.LineColor = System.Drawing.Color.ForestGreen;
+            this.rf2adbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.rf2adbdbScatterPlot.PointColor = System.Drawing.Color.ForestGreen;
+            this.rf2adbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.rf2adbdbScatterPlot.XAxis = this.xAxis8;
+            this.rf2adbdbScatterPlot.YAxis = this.yAxis8;
+            // 
+            // rfxfdbdbScatterGraph
+            // 
+            this.rfxfdbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.rfxfdbdbScatterGraph.Caption = "RFxF.DB / DB";
+            this.rfxfdbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.rfxfdbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfxfdbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.rfxfdbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rfxfdbdbScatterGraph.Location = new System.Drawing.Point(271, 560);
+            this.rfxfdbdbScatterGraph.Name = "rfxfdbdbScatterGraph";
+            this.rfxfdbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.rfxfdbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.rf1fdbdbScatterPlot,
+            this.rf2fdbdbScatterPlot});
+            this.rfxfdbdbScatterGraph.Size = new System.Drawing.Size(259, 179);
+            this.rfxfdbdbScatterGraph.TabIndex = 37;
+            this.rfxfdbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis10});
+            this.rfxfdbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis10});
+            // 
+            // rf1fdbdbScatterPlot
+            // 
+            this.rf1fdbdbScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
+            this.rf1fdbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.rf1fdbdbScatterPlot.PointColor = System.Drawing.Color.SlateBlue;
+            this.rf1fdbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.rf1fdbdbScatterPlot.XAxis = this.xAxis10;
+            this.rf1fdbdbScatterPlot.YAxis = this.yAxis10;
+            // 
+            // xAxis10
+            // 
+            this.xAxis10.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis10.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis10.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis10.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis10
+            // 
+            this.yAxis10.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // rf2fdbdbScatterPlot
+            // 
+            this.rf2fdbdbScatterPlot.LineColor = System.Drawing.Color.ForestGreen;
+            this.rf2fdbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.rf2fdbdbScatterPlot.PointColor = System.Drawing.Color.ForestGreen;
+            this.rf2fdbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.rf2fdbdbScatterPlot.XAxis = this.xAxis10;
+            this.rf2fdbdbScatterPlot.YAxis = this.yAxis10;
+            // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
@@ -740,6 +851,143 @@ namespace EDMBlockHead
             this.tabPage2.Size = new System.Drawing.Size(538, 753);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "2";
+            // 
+            // lfxdbdbScatterGraph
+            // 
+            this.lfxdbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.lfxdbdbScatterGraph.Caption = "LFx.DB / DB";
+            this.lfxdbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.lfxdbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lfxdbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.lfxdbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lfxdbdbScatterGraph.Location = new System.Drawing.Point(6, 359);
+            this.lfxdbdbScatterGraph.Name = "lfxdbdbScatterGraph";
+            this.lfxdbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.lfxdbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.lf1dbdbScatterPlot,
+            this.lf2dbdbScatterPlot,
+            this.lf1SigmaHi,
+            this.lf1SigmaLo,
+            this.lf2SigmaHi,
+            this.lf2SigmaLo});
+            this.lfxdbdbScatterGraph.Size = new System.Drawing.Size(259, 170);
+            this.lfxdbdbScatterGraph.TabIndex = 39;
+            this.lfxdbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis13});
+            this.lfxdbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis13});
+            // 
+            // lf1dbdbScatterPlot
+            // 
+            this.lf1dbdbScatterPlot.LineColor = System.Drawing.Color.LawnGreen;
+            this.lf1dbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.lf1dbdbScatterPlot.PointColor = System.Drawing.Color.LawnGreen;
+            this.lf1dbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.lf1dbdbScatterPlot.XAxis = this.xAxis13;
+            this.lf1dbdbScatterPlot.YAxis = this.yAxis13;
+            // 
+            // xAxis13
+            // 
+            this.xAxis13.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis13.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis13.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis13.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis13
+            // 
+            this.yAxis13.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // lf2dbdbScatterPlot
+            // 
+            this.lf2dbdbScatterPlot.LineColor = System.Drawing.Color.Yellow;
+            this.lf2dbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.lf2dbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.lf2dbdbScatterPlot.XAxis = this.xAxis13;
+            this.lf2dbdbScatterPlot.YAxis = this.yAxis13;
+            // 
+            // lf1SigmaHi
+            // 
+            this.lf1SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf1SigmaHi.PointColor = System.Drawing.Color.Lime;
+            this.lf1SigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.lf1SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf1SigmaHi.XAxis = this.xAxis13;
+            this.lf1SigmaHi.YAxis = this.yAxis13;
+            // 
+            // lf1SigmaLo
+            // 
+            this.lf1SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf1SigmaLo.PointColor = System.Drawing.Color.Lime;
+            this.lf1SigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.lf1SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf1SigmaLo.XAxis = this.xAxis13;
+            this.lf1SigmaLo.YAxis = this.yAxis13;
+            // 
+            // lf2SigmaHi
+            // 
+            this.lf2SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf2SigmaHi.PointSize = new System.Drawing.Size(5, 0);
+            this.lf2SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf2SigmaHi.XAxis = this.xAxis13;
+            this.lf2SigmaHi.YAxis = this.yAxis13;
+            // 
+            // lf2SigmaLo
+            // 
+            this.lf2SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.lf2SigmaLo.PointSize = new System.Drawing.Size(5, 0);
+            this.lf2SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
+            this.lf2SigmaLo.XAxis = this.xAxis13;
+            this.lf2SigmaLo.YAxis = this.yAxis13;
+            // 
+            // photoDiodeScatterGraph
+            // 
+            this.photoDiodeScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.photoDiodeScatterGraph.Caption = "Photodiodes";
+            this.photoDiodeScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.photoDiodeScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.photoDiodeScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
+            this.photoDiodeScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.photoDiodeScatterGraph.Location = new System.Drawing.Point(271, 183);
+            this.photoDiodeScatterGraph.Name = "photoDiodeScatterGraph";
+            this.photoDiodeScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
+            this.photoDiodeScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.pumpPDScatterPlot,
+            this.probePDScatterPlot});
+            this.photoDiodeScatterGraph.Size = new System.Drawing.Size(259, 170);
+            this.photoDiodeScatterGraph.TabIndex = 38;
+            this.photoDiodeScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis15});
+            this.photoDiodeScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis15});
+            // 
+            // pumpPDScatterPlot
+            // 
+            this.pumpPDScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
+            this.pumpPDScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.pumpPDScatterPlot.PointColor = System.Drawing.Color.DarkSlateBlue;
+            this.pumpPDScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.pumpPDScatterPlot.XAxis = this.xAxis15;
+            this.pumpPDScatterPlot.YAxis = this.yAxis15;
+            // 
+            // xAxis15
+            // 
+            this.xAxis15.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xAxis15.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
+            this.xAxis15.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
+            this.xAxis15.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // yAxis15
+            // 
+            this.yAxis15.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            // 
+            // probePDScatterPlot
+            // 
+            this.probePDScatterPlot.LineColor = System.Drawing.Color.Green;
+            this.probePDScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.probePDScatterPlot.PointColor = System.Drawing.Color.Green;
+            this.probePDScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.EmptyDiamond;
+            this.probePDScatterPlot.XAxis = this.xAxis15;
+            this.probePDScatterPlot.YAxis = this.yAxis15;
             // 
             // rfCurrentGraph
             // 
@@ -839,259 +1087,12 @@ namespace EDMBlockHead
             this.xAxis14.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
             this.xAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
-            // bDBNLPlot
-            // 
-            this.bDBNLPlot.LineColor = System.Drawing.Color.Red;
-            this.bDBNLPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.bDBNLPlot.PointColor = System.Drawing.Color.Red;
-            this.bDBNLPlot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
-            this.bDBNLPlot.XAxis = this.xAxis2;
-            this.bDBNLPlot.YAxis = this.yAxis2;
-            // 
-            // photoDiodeScatterGraph
-            // 
-            this.photoDiodeScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.photoDiodeScatterGraph.Caption = "Photodiodes";
-            this.photoDiodeScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.photoDiodeScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.photoDiodeScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
-            this.photoDiodeScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.photoDiodeScatterGraph.Location = new System.Drawing.Point(271, 183);
-            this.photoDiodeScatterGraph.Name = "photoDiodeScatterGraph";
-            this.photoDiodeScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.photoDiodeScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.pumpPDScatterPlot,
-            this.probePDScatterPlot});
-            this.photoDiodeScatterGraph.Size = new System.Drawing.Size(259, 170);
-            this.photoDiodeScatterGraph.TabIndex = 38;
-            this.photoDiodeScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis15});
-            this.photoDiodeScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis15});
-            // 
-            // pumpPDScatterPlot
-            // 
-            this.pumpPDScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
-            this.pumpPDScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.pumpPDScatterPlot.PointColor = System.Drawing.Color.DarkSlateBlue;
-            this.pumpPDScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.pumpPDScatterPlot.XAxis = this.xAxis15;
-            this.pumpPDScatterPlot.YAxis = this.yAxis15;
-            // 
-            // xAxis15
-            // 
-            this.xAxis15.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xAxis15.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
-            this.xAxis15.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
-            this.xAxis15.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // yAxis15
-            // 
-            this.yAxis15.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // probePDScatterPlot
-            // 
-            this.probePDScatterPlot.LineColor = System.Drawing.Color.Green;
-            this.probePDScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.probePDScatterPlot.PointColor = System.Drawing.Color.Green;
-            this.probePDScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.EmptyDiamond;
-            this.probePDScatterPlot.XAxis = this.xAxis15;
-            this.probePDScatterPlot.YAxis = this.yAxis15;
-            // 
-            // rfxfdbdbScatterGraph
-            // 
-            this.rfxfdbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.rfxfdbdbScatterGraph.Caption = "RFxF.DB / DB";
-            this.rfxfdbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.rfxfdbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rfxfdbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
-            this.rfxfdbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rfxfdbdbScatterGraph.Location = new System.Drawing.Point(271, 560);
-            this.rfxfdbdbScatterGraph.Name = "rfxfdbdbScatterGraph";
-            this.rfxfdbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.rfxfdbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.rf1fdbdbScatterPlot,
-            this.rf2fdbdbScatterPlot});
-            this.rfxfdbdbScatterGraph.Size = new System.Drawing.Size(259, 179);
-            this.rfxfdbdbScatterGraph.TabIndex = 37;
-            this.rfxfdbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis10});
-            this.rfxfdbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis10});
-            // 
-            // rf1fdbdbScatterPlot
-            // 
-            this.rf1fdbdbScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
-            this.rf1fdbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.rf1fdbdbScatterPlot.PointColor = System.Drawing.Color.SlateBlue;
-            this.rf1fdbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.rf1fdbdbScatterPlot.XAxis = this.xAxis10;
-            this.rf1fdbdbScatterPlot.YAxis = this.yAxis10;
-            // 
-            // xAxis10
-            // 
-            this.xAxis10.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xAxis10.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
-            this.xAxis10.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
-            this.xAxis10.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // yAxis10
-            // 
-            this.yAxis10.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // rf2fdbdbScatterPlot
-            // 
-            this.rf2fdbdbScatterPlot.LineColor = System.Drawing.Color.ForestGreen;
-            this.rf2fdbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.rf2fdbdbScatterPlot.PointColor = System.Drawing.Color.ForestGreen;
-            this.rf2fdbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.rf2fdbdbScatterPlot.XAxis = this.xAxis10;
-            this.rf2fdbdbScatterPlot.YAxis = this.yAxis10;
-            // 
-            // lfxdbdbScatterGraph
-            // 
-            this.lfxdbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.lfxdbdbScatterGraph.Caption = "LFx.DB / DB";
-            this.lfxdbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.lfxdbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lfxdbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
-            this.lfxdbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lfxdbdbScatterGraph.Location = new System.Drawing.Point(6, 359);
-            this.lfxdbdbScatterGraph.Name = "lfxdbdbScatterGraph";
-            this.lfxdbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.lfxdbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.lf1dbdbScatterPlot,
-            this.lf2dbdbScatterPlot,
-            this.lf1SigmaHi,
-            this.lf1SigmaLo,
-            this.lf2SigmaHi,
-            this.lf2SigmaLo});
-            this.lfxdbdbScatterGraph.Size = new System.Drawing.Size(259, 170);
-            this.lfxdbdbScatterGraph.TabIndex = 39;
-            this.lfxdbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis13});
-            this.lfxdbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis13});
-            // 
-            // lf1dbdbScatterPlot
-            // 
-            this.lf1dbdbScatterPlot.LineColor = System.Drawing.Color.LawnGreen;
-            this.lf1dbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.lf1dbdbScatterPlot.PointColor = System.Drawing.Color.LawnGreen;
-            this.lf1dbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.lf1dbdbScatterPlot.XAxis = this.xAxis13;
-            this.lf1dbdbScatterPlot.YAxis = this.yAxis13;
-            // 
-            // xAxis13
-            // 
-            this.xAxis13.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xAxis13.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
-            this.xAxis13.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
-            this.xAxis13.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // yAxis13
-            // 
-            this.yAxis13.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // lf2dbdbScatterPlot
-            // 
-            this.lf2dbdbScatterPlot.LineColor = System.Drawing.Color.Yellow;
-            this.lf2dbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.lf2dbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.lf2dbdbScatterPlot.XAxis = this.xAxis13;
-            this.lf2dbdbScatterPlot.YAxis = this.yAxis13;
-            // 
-            // lf1SigmaHi
-            // 
-            this.lf1SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.lf1SigmaHi.PointColor = System.Drawing.Color.Lime;
-            this.lf1SigmaHi.PointSize = new System.Drawing.Size(5, 0);
-            this.lf1SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.lf1SigmaHi.XAxis = this.xAxis13;
-            this.lf1SigmaHi.YAxis = this.yAxis13;
-            // 
-            // lf1SigmaLo
-            // 
-            this.lf1SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.lf1SigmaLo.PointColor = System.Drawing.Color.Lime;
-            this.lf1SigmaLo.PointSize = new System.Drawing.Size(5, 0);
-            this.lf1SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.lf1SigmaLo.XAxis = this.xAxis13;
-            this.lf1SigmaLo.YAxis = this.yAxis13;
-            // 
-            // lf2SigmaHi
-            // 
-            this.lf2SigmaHi.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.lf2SigmaHi.PointSize = new System.Drawing.Size(5, 0);
-            this.lf2SigmaHi.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.lf2SigmaHi.XAxis = this.xAxis13;
-            this.lf2SigmaHi.YAxis = this.yAxis13;
-            // 
-            // lf2SigmaLo
-            // 
-            this.lf2SigmaLo.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.lf2SigmaLo.PointSize = new System.Drawing.Size(5, 0);
-            this.lf2SigmaLo.PointStyle = NationalInstruments.UI.PointStyle.Plus;
-            this.lf2SigmaLo.XAxis = this.xAxis13;
-            this.lf2SigmaLo.YAxis = this.yAxis13;
-            // 
-            // rfxadbdbScatterGraph
-            // 
-            this.rfxadbdbScatterGraph.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.rfxadbdbScatterGraph.Caption = "RFxA.DB / DB";
-            this.rfxadbdbScatterGraph.CaptionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.rfxadbdbScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rfxadbdbScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
-            this.rfxadbdbScatterGraph.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.rfxadbdbScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rfxadbdbScatterGraph.Location = new System.Drawing.Point(6, 560);
-            this.rfxadbdbScatterGraph.Name = "rfxadbdbScatterGraph";
-            this.rfxadbdbScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
-            this.rfxadbdbScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.rf1adbdbScatterPlot,
-            this.rf2adbdbScatterPlot});
-            this.rfxadbdbScatterGraph.Size = new System.Drawing.Size(259, 179);
-            this.rfxadbdbScatterGraph.TabIndex = 38;
-            this.rfxadbdbScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis8});
-            this.rfxadbdbScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis8});
-            // 
-            // rf1adbdbScatterPlot
-            // 
-            this.rf1adbdbScatterPlot.LineColor = System.Drawing.Color.SlateBlue;
-            this.rf1adbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.rf1adbdbScatterPlot.PointColor = System.Drawing.Color.SlateBlue;
-            this.rf1adbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.rf1adbdbScatterPlot.XAxis = this.xAxis8;
-            this.rf1adbdbScatterPlot.YAxis = this.yAxis8;
-            // 
-            // xAxis8
-            // 
-            this.xAxis8.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xAxis8.CaptionPosition = NationalInstruments.UI.XAxisPosition.Top;
-            this.xAxis8.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
-            this.xAxis8.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // yAxis8
-            // 
-            this.yAxis8.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            // 
-            // rf2adbdbScatterPlot
-            // 
-            this.rf2adbdbScatterPlot.LineColor = System.Drawing.Color.ForestGreen;
-            this.rf2adbdbScatterPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.rf2adbdbScatterPlot.PointColor = System.Drawing.Color.ForestGreen;
-            this.rf2adbdbScatterPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.rf2adbdbScatterPlot.XAxis = this.xAxis8;
-            this.rf2adbdbScatterPlot.YAxis = this.yAxis8;
-            // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(912, 882);
+            this.ClientSize = new System.Drawing.Size(1112, 882);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.resetRunningMeans);
             this.Controls.Add(this.clusterStatusText);
@@ -1115,13 +1116,13 @@ namespace EDMBlockHead
             ((System.ComponentModel.ISupportInitialize)(this.rfFreqScatterGraph)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.rfxadbdbScatterGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rfxfdbdbScatterGraph)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rfCurrentGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eCorrLeakageScatterGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.photoDiodeScatterGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rfxfdbdbScatterGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lfxdbdbScatterGraph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rfxadbdbScatterGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

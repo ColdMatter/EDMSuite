@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using DAQ.Environment;
 using System.Threading;
 using System.Runtime.Remoting;
+using System.Net;
+using System.Net.Sockets;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -18,41 +20,91 @@ namespace ScanMaster.Acquire.Plugins
 
         [NonSerialized]
         private double scanParameter = 0;
+        private string computer;
+        private string name;
+        private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+        private string scannedParameter;
+        private double initialVoltage = 0.0;
+        private double initialSetPoint = 0.0;
         [NonSerialized]
         private TransferCavityLock2012.Controller tclController;
+
 
         protected override void InitialiseSettings()
         {
             settings["channel"] = "laser";
             settings["cavity"] = "Hamish";
             settings["settlingTime"] = 50;
+            settings["computer"] = hostName;
+            settings["scannedParameter"] = "setpoint";
         }
+
 
 
         public override void AcquisitionStarting()
         {
-            // connect the TCL controller over remoting network connection
-            string tcpChannel = ((TCLConfig)Environs.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
-            tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://localhost:" + tcpChannel + "/controller.rem"));
-            
+             //connect the TCL controller over remoting network connection
+
+
+            if (settings["computer"] == null)
+            {
+                computer = hostName;
+            }
+            else
+            {
+                computer = (String)settings["computer"];
+            }
+
+            if (settings["scannedParameter"] == null)
+            {
+                scannedParameter = "setpoint";
+            }
+            else
+            {
+                scannedParameter = (String)settings["scannedParameter"];
+            }
+
+            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
+
+            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
+            {
+                if (addr.AddressFamily == AddressFamily.InterNetwork)
+                name = addr.ToString();
+            }
+
+            EnvironsHelper eHelper = new EnvironsHelper(computer);
+
+            string tcpChannel = ((TCLConfig)eHelper.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
+
+            tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://"+ name + ":" + tcpChannel + "/controller.rem"));
+
             scanParameter = 0;
 
-            setV((double)settings["start"], 200);
+            initialVoltage = tclController.GetLaserVoltage((string)settings["channel"]);
+            initialSetPoint = tclController.GetLaserSetpoint((string)settings["channel"]);
+            if (scannedParameter == "voltage")
+            {
+                tclController.UnlockLaser((string)settings["channel"]);
+            }
+            setV((double)settings["start"], 200, scannedParameter);
         }
+        
 
         public override void ScanStarting()
         {
-            //do nothing
+            //Do Nothing   
         }
 
         public override void ScanFinished()
         {
-            setV((double)settings["start"], 200);
+            setV((double)settings["start"], 200, scannedParameter);
         }
 
         public override void AcquisitionFinished()
         {
-            setV((double)settings["start"], 200);
+            setV(initialVoltage, 200, "voltage");
+            setV(initialSetPoint, 200, "setpoint");
+            tclController.LockLaser((string)settings["channel"]);
         }
 
         [XmlIgnore]
@@ -61,14 +113,24 @@ namespace ScanMaster.Acquire.Plugins
             set
             {
                 scanParameter = value;
-                if (!Environs.Debug) setV(value, (int)settings["settlingTime"]);
+                if (!Environs.Debug) setV(value, (int)settings["settlingTime"], scannedParameter);
+                if (!Environs.Debug) setV(value, 50);
             }
             get { return scanParameter; }
         }
 
-        private void setV(double v, int waitTime)
+        private void setV(double v, int waitTime,string scannedOutput)
         {
-            tclController.SetLaserSetpoint((string)settings["channel"], v);
+            switch (scannedOutput)
+            {
+            case "setpoint":
+                tclController.SetLaserSetpoint((string)settings["channel"], v);
+                break;
+            case "voltage":
+                tclController.SetLaserOutputVoltage((string)settings["channel"], v);
+                tclController.RefreshVoltageOnUI((string)settings["channel"]);
+                break;
+            }
             Thread.Sleep(waitTime);
         }
 

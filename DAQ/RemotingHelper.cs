@@ -34,14 +34,6 @@ namespace DAQ.Remoting
                     );
         }
 
-        public static void ConnectShapedPulseMaker()
-        {
-            RemotingConfiguration.RegisterWellKnownClientType(
-                    Type.GetType("ShapedPulseMaker.Controller, ShapedPulseMaker"),
-                    "tcp://localhost:1173/controller.rem"
-                    );
-        }
-
         public static void ConnectBufferGasHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(
@@ -66,10 +58,10 @@ namespace DAQ.Remoting
                 );
         }
 
-        public static void ConnectDecelerationHardwareControl()
+        public static void ConnectMoleculeMOTHardwareControl()
         {
             RemotingConfiguration.RegisterWellKnownClientType(
-                    Type.GetType("DecelerationHardwareControl.Controller, DecelerationHardwareControl"),
+                    Type.GetType("MoleculeMOTHardwareControl.Controller, MoleculeMOTHardwareControl"),
                     "tcp://localhost:1172/controller.rem"
                     );
         }
@@ -95,8 +87,25 @@ namespace DAQ.Remoting
         {
             RemotingConfiguration.RegisterWellKnownClientType(
                     Type.GetType("MOTMaster.Controller, MOTMaster"),
-                    "tcp://localhost:1181/controller.rem"
+                    "tcp://localhost:1187/controller.rem"
                     );
+        }
+
+        //Here we call TransferCavityLock2012 applications from GREMLIN PC
+        public static void ConnectPumpCavityOnGremlin()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock2012"),
+                "tcp://155.198.206.103:1190/controller.rem"
+                );
+        }
+
+        public static void ConnectProbeCavityOnGremlin()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock2012"),
+                "tcp://155.198.206.103:1191/controller.rem"
+                );
         }
 
     }
