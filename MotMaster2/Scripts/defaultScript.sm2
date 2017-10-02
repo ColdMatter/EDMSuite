@@ -3940,7 +3940,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -4078,7 +4078,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -4256,7 +4256,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -4544,7 +4544,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -6831,6 +6831,111 @@
       "Value": 0,
       "Description": "",
       "IsHidden": false,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "PLLFreq",
+      "Value": 6834.689,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "ChirpRate",
+      "Value": 0.5,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "ChirpDuration",
+      "Value": 0.5,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse1Power",
+      "Value": 22.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse1Duration",
+      "Value": 10.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse1Phase",
+      "Value": 0.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse2Power",
+      "Value": 22.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse2Duration",
+      "Value": 10.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse2Phase",
+      "Value": 0.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse3Power",
+      "Value": 22.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse3Duration",
+      "Value": 10.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "Pulse3Phase",
+      "Value": 0.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "VelPulsePower",
+      "Value": 22.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "VelPulseDuration",
+      "Value": 10.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "VelPulsePhase",
+      "Value": 0.0,
+      "Description": "",
+      "IsHidden": true,
       "SequenceVariable": false
     }
   ]

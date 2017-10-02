@@ -866,7 +866,8 @@ namespace MOTMaster2
         {
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
-        //    Controller.SetMSquaredParameters();
+            Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
+           
             
         }
 
@@ -880,7 +881,7 @@ namespace MOTMaster2
                 ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
                 //Only set them if one is changed
                 //TODO fix handling of warnings if ICE-BLocs are not connected
-            //    Controller.SetMSquaredParameters();
+                Controller.SetMSquaredParameters();
             }
         }
 
@@ -893,9 +894,15 @@ namespace MOTMaster2
                 {
                     object control = MSquaredTab.FindName(entry.Key);
                     if (control == null) continue;
-                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value.Value;
+                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
                 }
             }
+        }
+
+        private void m2updateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Controller.SetMSquaredParameters();
+            Log("Updated MSquared laser parameters");
         }
 
 

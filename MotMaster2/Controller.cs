@@ -1086,7 +1086,14 @@ namespace MOTMaster2
             List<string> ignoredSegments = new List<string>();
             ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
             ExpData.IgnoredSegments = ignoredSegments;
-            ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
+            try
+            {
+                ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
+            }
+            catch
+            {
+                ErrorMgr.errorMsg("No step named Interferometer.",-2);
+            }
             foreach (SequenceStep step in sequenceData.Steps)
             {
                 if (!step.GetDigitalData("acquisitionTrigger")) continue;
@@ -1165,10 +1172,10 @@ namespace MOTMaster2
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
 
-            M2DCS.ConfigurePulse("X", 0, (double)sequenceData.Parameters["VelPulseDuration"].Value, (double)sequenceData.Parameters["VelPulsePower"].Value, 1e-6, (double)sequenceData.Parameters["VelPulsePhase"].Value);
-            M2DCS.ConfigurePulse("X", 1, (double)sequenceData.Parameters["Pulse1Duration"].Value, (double)sequenceData.Parameters["Pulse1Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse1Phase"].Value);
-            M2DCS.ConfigurePulse("X", 2, (double)sequenceData.Parameters["Pulse2Duration"].Value, (double)sequenceData.Parameters["Pulse2Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse2Phase"].Value);
-            M2DCS.ConfigurePulse("X", 1, (double)sequenceData.Parameters["Pulse3Duration"].Value, (double)sequenceData.Parameters["Pulse3Power"].Value, 1e-6, (double)sequenceData.Parameters["Pulse3Phase"].Value);
+            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value);
+            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value);
+            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value);
+            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value);
 
             M2DCS.UpdateSequenceParameters();
         }
