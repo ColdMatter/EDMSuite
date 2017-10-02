@@ -73,6 +73,7 @@
             this.ExposureLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.linkAxesCheck = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scatterGraph1)).BeginInit();
             this.CurrentScanLine.SuspendLayout();
@@ -487,11 +488,23 @@
             this.statusLabel1.Name = "statusLabel1";
             this.statusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
+            // linkAxesCheck
+            // 
+            this.linkAxesCheck.AutoSize = true;
+            this.linkAxesCheck.Location = new System.Drawing.Point(16, 365);
+            this.linkAxesCheck.Name = "linkAxesCheck";
+            this.linkAxesCheck.Size = new System.Drawing.Size(72, 17);
+            this.linkAxesCheck.TabIndex = 9;
+            this.linkAxesCheck.Text = "Link Axes";
+            this.linkAxesCheck.UseVisualStyleBackColor = true;
+            this.linkAxesCheck.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 546);
+            this.Controls.Add(this.linkAxesCheck);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.TimingCont);
             this.Controls.Add(this.SlowAxisCont);
@@ -569,6 +582,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveScanToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel1;
+        private System.Windows.Forms.CheckBox linkAxesCheck;
     }
 }
 

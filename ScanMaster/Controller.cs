@@ -174,7 +174,7 @@ namespace ScanMaster
 			{
 				BinaryFormatter bf = new BinaryFormatter();
 				String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
-				String filePath = settingsPath + "\\ScanMaster\\profilePath.bin";
+                String filePath = settingsPath; // + "\\ScanMaster\\profilePath.bin";
 				FileStream fs = File.Open(filePath, FileMode.Create);
 				bf.Serialize(fs, lastProfileSetPath);
 				fs.Close();

@@ -8,6 +8,7 @@ using DAQ.Environment;
 using DAQ.TransferCavityLock2012;
 using ScanMaster;
 using ScanMaster.Acquire.Plugins;
+using ScanMaster.Acquire;
 using MicrocavityScanner.GUI;
 using Data;
 using Data.Scans;
@@ -16,10 +17,18 @@ using System.Diagnostics; //for stopwatch
 namespace MicrocavityScanner.Acquire
 {
     public delegate void DataEventHandler(object sender, DataEventArgs e);
+    public delegate void ScanFinishedEventHandler(object sender, EventArgs e);
 
     public class Scanitor
     {
+        private AcquisitorConfiguration config;
+        public AcquisitorConfiguration Configuration
+        {
+            set { config = value; }
+            get { return config; }
+        }
         public event DataEventHandler Data;
+        public event ScanFinishedEventHandler ScanFinished;
         public object ScanitorMonitorLock = new Object();
 
         private TransferCavityLock2012.Controller tclController;
@@ -84,14 +93,13 @@ namespace MicrocavityScanner.Acquire
                 Controller.GetController().laserSettings["FastLaser"]);
 
             //move to the start of the scan
-            tclController.SetLaserSetpoint(
-                Controller.GetController().laserSettings["SlowLaser"],
-                Controller.GetController().scanSettings["SlowAxisStart"]);
+            
+            SoftStep(slowLaserValue, "SlowLaser", Controller.GetController().
+                       scanSettings["SlowAxisStart"],666);
             slowLaserValue = tclController.GetLaserSetpoint(
                 Controller.GetController().laserSettings["SlowLaser"]);
-            tclController.SetLaserSetpoint(
-                Controller.GetController().laserSettings["FastLaser"],
-                Controller.GetController().scanSettings["FastAxisStart"]);
+            SoftStep(fastLaserValue, "FastLaser", Controller.GetController().
+                       scanSettings["FastAxisStart"],333);
             fastLaserValue = tclController.GetLaserSetpoint(
                 Controller.GetController().laserSettings["FastLaser"]);
 
@@ -124,19 +132,42 @@ namespace MicrocavityScanner.Acquire
                 slowNumber < Controller.GetController().scanSettings["SlowAxisRes"]; 
                 slowNumber++)
             {
-                //move to new slow axis point
+                //reset fast axis
+                SoftStep(fastLaserValue, "FastLaser", Controller.GetController().
+                        scanSettings["FastAxisStart"],333);
+                fastLaserValue = tclController.GetLaserSetpoint(
+                Controller.GetController().laserSettings["FastLaser"]);
+
+                //move to new slow axis point if axes unlinked
                 double currentslowpoint = Controller.GetController().
-                    scanSettings["SlowAxisStart"] + slowNumber *
-                    (Controller.GetController().scanSettings["SlowAxisEnd"] -
-                    Controller.GetController().scanSettings["SlowAxisStart"]) /
-                    Controller.GetController().scanSettings["SlowAxisRes"];
-               tclController.SetLaserSetpoint(
-                    Controller.GetController().laserSettings["SlowLaser"],
-                    currentslowpoint);
+                        scanSettings["SlowAxisStart"] + slowNumber *
+                        (Controller.GetController().scanSettings["SlowAxisEnd"] -
+                        Controller.GetController().scanSettings["SlowAxisStart"]) /
+                        Controller.GetController().scanSettings["SlowAxisRes"];
+                if (Controller.GetController().LinkAxes)
+                {
+                    SoftStep(slowLaserValue, "SlowLaser", Controller.GetController().
+                            scanSettings["SlowAxisStart"],666);
+                    slowLaserValue = tclController.GetLaserSetpoint(
+                        Controller.GetController().laserSettings["SlowLaser"]);
+                }
+                else
+                {
+                    tclController.SetLaserSetpoint(
+                         Controller.GetController().laserSettings["SlowLaser"],
+                         currentslowpoint);
+                }
 
                 //prep the data for fast scan
                 ScanPoint sp = new ScanPoint();
-                sp.ScanParameter = currentslowpoint;
+                if (Controller.GetController().LinkAxes)
+                {
+                    sp.ScanParameter = 0;
+                }
+                else
+                {
+                    sp.ScanParameter = currentslowpoint;
+                }
 
                 //take analog data for each slow scan
                 directanalogPlugin.ScanStarting();
@@ -166,6 +197,23 @@ namespace MicrocavityScanner.Acquire
                         Controller.GetController().scanSettings["FastAxisRes"];
                     tclController.SetLaserSetpoint(Controller.GetController().
                         laserSettings["FastLaser"],currentfastpoint);
+                    fastLaserValue = tclController.GetLaserSetpoint(
+                        Controller.GetController().laserSettings["FastLaser"]);
+
+                    //move slow axis if axes linked
+                    if (Controller.GetController().LinkAxes)
+                    {
+                        double linkedslowpoint = Controller.GetController().
+                            scanSettings["SlowAxisStart"] + fastNumber *
+                            (Controller.GetController().scanSettings["SlowAxisEnd"] -
+                            Controller.GetController().scanSettings["SlowAxisStart"]) /
+                            Controller.GetController().scanSettings["FastAxisRes"];
+                        tclController.SetLaserSetpoint(
+                             Controller.GetController().laserSettings["SlowLaser"],
+                             linkedslowpoint);
+                        slowLaserValue = tclController.GetLaserSetpoint(
+                        Controller.GetController().laserSettings["SlowLaser"]);
+                    }
 
                     long timerFastMove = timer.ElapsedMilliseconds;
 
@@ -211,17 +259,44 @@ namespace MicrocavityScanner.Acquire
                     // check for exit
                     if (CheckIfStopping())
                     {
+                        //OnScanFinished();
                         directanalogPlugin.AcquisitionFinished();
                         directshotPlugin.AcquisitionFinished();
                         AcquisitionFinishing();
                         return;
                     }
                 }
+                OnScanFinished();
             }
             directanalogPlugin.AcquisitionFinished();
             directshotPlugin.AcquisitionFinished();
 
             AcquisitionFinishing();
+        }
+
+        private void SoftStep(double currentpoint,string laser, double newpoint, int delay)
+        {
+            double minstep = 0.01;
+
+            if (Math.Abs(newpoint - currentpoint) >
+               minstep)
+            {
+                int softloops = (int)Math.Floor(Math.Abs((newpoint - currentpoint) / minstep));
+                for (int i = 0; i < softloops; i++)
+                {
+                    tclController.SetLaserSetpoint(Controller.GetController().
+                        laserSettings[laser], currentpoint + i * (newpoint - currentpoint)/softloops);
+                    Thread.Sleep(delay);
+                }
+                tclController.SetLaserSetpoint(Controller.GetController().
+                        laserSettings[laser], newpoint);
+
+            }
+            else
+            {
+                tclController.SetLaserSetpoint(Controller.GetController().
+                        laserSettings[laser], newpoint);
+            }
         }
 
         private void AcquisitionFinishing()
@@ -267,6 +342,11 @@ namespace MicrocavityScanner.Acquire
         protected virtual void OnData(DataEventArgs e)
         {
             if (Data != null) Data(this, e);
+        }
+
+        protected virtual void OnScanFinished()
+        {
+            if (ScanFinished != null) ScanFinished(this, new EventArgs());
         }
     }
 

@@ -41,6 +41,7 @@ namespace MicrocavityScanner
 
         public Dictionary<string, double> scanSettings = new Dictionary<string, double>();
         public Dictionary<string, string> laserSettings = new Dictionary<string, string>();
+        public bool LinkAxes;
 
         private static Controller controllerInstance;
         public AppState appState = AppState.stopped;
@@ -79,7 +80,7 @@ namespace MicrocavityScanner
             // make an scanitor and connect ourself to its events
             scanitor = new Scanitor();
             scanitor.Data += new DataEventHandler(DataHandler);
-            //acquisitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
+            scanitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
 
             mainForm = new MainForm(this);
             mainForm.Show();
@@ -171,6 +172,84 @@ namespace MicrocavityScanner
             serializer.CloseZip();
             fs.Close();
             //Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
+        }
+
+        // a method for saving the acquisitior settings into the scan
+        //This function in broken because I haven't figure out
+        //how to pull the setting through to scanitor
+        private void WriteScanSettings(Scan scan)
+        {
+            ScanMaster.Acquire.Plugin.PluginSettings st;
+            System.Collections.ICollection keys;
+
+            scan.ScanSettings.Add("out:pluginName", scanitor.Configuration.outputPlugin.GetType().ToString());
+            scan.ScanSettings.Add("switch:pluginName", scanitor.Configuration.switchPlugin.GetType().ToString());
+            scan.ScanSettings.Add("shot:pluginName", scanitor.Configuration.shotGathererPlugin.GetType().ToString());
+            scan.ScanSettings.Add("pg:pluginName", scanitor.Configuration.pgPlugin.GetType().ToString());
+            scan.ScanSettings.Add("yag:pluginName", scanitor.Configuration.yagPlugin.GetType().ToString());
+            scan.ScanSettings.Add("analog:pluginName", scanitor.Configuration.analogPlugin.GetType().ToString());
+
+            // settings from the output plugin
+            st = scanitor.Configuration.outputPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("out:" + key, st[key]);
+
+            // settings from the switch plugin
+            st = scanitor.Configuration.switchPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("switch:" + key, st[key]);
+
+            // settings from the shot gatherer plugin
+            st = scanitor.Configuration.shotGathererPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("shot:" + key, st[key]);
+
+            // settings from the pattern plugin
+            st = scanitor.Configuration.pgPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("pg:" + key, st[key]);
+
+            // settings from the yag plugin
+            st = scanitor.Configuration.yagPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("yag:" + key, st[key]);
+
+            // settings from the analog plugin
+            st = scanitor.Configuration.analogPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("analog:" + key, st[key]);
+        }
+
+        // This function is registered with the scanitor to handle
+        // scan finished events.
+        // Note well that this will be called on the scanitor thread (meaning
+        // no direct GUI manipulation in this function).
+        private void ScanFinishedHandler(object sender, EventArgs e)
+        {
+            lock (this)
+            {
+                // update the datastore
+                dataStore.UpdateTotal();
+
+                // save the acquisitior settings in the scan
+                //This doesn't work yet
+                //WriteScanSettings(DataStore.CurrentScan);
+
+                // serialize the last scan
+                string tempPath = Environment.GetEnvironmentVariable("TEMP") + "\\ScanMasterTemp";
+                if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);
+                serializer.SerializeScanAsBinary(tempPath + "\\scan_" +
+                    dataStore.NumberOfScans.ToString(), dataStore.CurrentScan);
+
+                dataStore.ClearCurrentScan();
+
+                // tell the viewers that the scan is finished
+                //not sure how to work this either
+                //Scanitor.smController.ViewerManager.ScanFinished();
+
+                // hint to the GC that now might be a good time
+                GC.Collect();
+            }
         }
 
         public void GUIUpdate()

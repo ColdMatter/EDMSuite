@@ -240,7 +240,23 @@ namespace TransferCavityLock2012
 
         public void SetLaserSetpoint(string laserName, double newSetpoint)
         {
-            SlaveLasers[laserName].LaserSetPoint = newSetpoint;
+            if (Math.Abs(newSetpoint - SlaveLasers[laserName].LaserSetPoint) > 
+                SlaveLasers[laserName].SetPointIncrementSize)
+            {
+                for (int i = 0; i < Math.Floor(Math.Abs(newSetpoint / 
+                    SlaveLasers[laserName].SetPointIncrementSize)); i++)
+                {
+                    SlaveLasers[laserName].LaserSetPoint =
+                        SlaveLasers[laserName].LaserSetPoint + i *
+                        (newSetpoint - SlaveLasers[laserName].LaserSetPoint);
+                    Thread.Sleep(300);
+                }
+                SlaveLasers[laserName].LaserSetPoint = newSetpoint;
+            }
+            else
+            {
+                SlaveLasers[laserName].LaserSetPoint = newSetpoint;
+            }
         }
 
         public double GetLaserSetpoint(string laserName)

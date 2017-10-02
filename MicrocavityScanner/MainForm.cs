@@ -372,14 +372,14 @@ namespace MicrocavityScanner.GUI
         {
             if (data.Length > 1000)
             {
-                double div = data.Length / 1000;
+                double div = data.Length / 1000.0;
                 int[] positions = new int[1000];
                 double[,] newdata = new double[1000, 1];
-                for (int i = 1; i <= 1000; i++)
+                for (int i = 0; i <= 999; i++)
                 {
-                    positions[i] = (int)Convert.ToInt64(Math.Round(i * div));
+                    positions[i] = (int)Convert.ToInt64(Math.Round((i+1) * div)-1);
                 }
-                for (int i = 1; i<=1000; i++)
+                for (int i = 0; i<=999; i++)
                 {
                     newdata[i, 0] = data[positions[i], 0];
                 }
@@ -502,6 +502,20 @@ namespace MicrocavityScanner.GUI
                     statusLabel1.Text = "";
                     break;
             }   
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                controller.LinkAxes = linkAxesCheck.Checked;
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("There has been an error in applying the settings:" + err.Message,
+                    "Settings Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
