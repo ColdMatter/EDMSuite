@@ -61,7 +61,7 @@ namespace DAQ.HAL
             Dictionary<string, object> rslt = GenericCommand("main_lock_status", new Dictionary<string, object>());
             
             mls = (Lock_Status)Enum.Parse(typeof(Lock_Status), (string)rslt["condition"], true);
-            return ((int)rslt["status"] == 1);
+            return (mls == Lock_Status.on);
         }
 
         // 3.4. Aux Lock
@@ -149,8 +149,8 @@ namespace DAQ.HAL
 
             if (report) AdjustReport(ref rslt);
             if (rslt.Count == 0) return false;
-            if (report) return ((int)rslt["report"] == 1);
-            else return ((int)rslt["status"] == 1);
+            if (report) return ((int)rslt["report"] == 0);
+            else return ((int)rslt["status"] == 0);
         }
 
         // 3.10. Configure AOM

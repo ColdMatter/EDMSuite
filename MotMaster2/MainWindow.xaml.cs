@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ErrorManager;
 using UtilsNS;
+using System.ComponentModel;
 
 
 namespace MOTMaster2
@@ -26,15 +27,15 @@ namespace MOTMaster2
         public static Controller controller;
         private RemoteMessenger messenger;
         DispatcherTimer dispatcherTimer;
-        
+
         //TODO change this so Controller can access it properly
         RemoteMessaging remoteMsg;
 
         public MainWindow()
         {
+            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
             controller = new Controller();
             controller.StartApplication();
-            controller.LoadDefaultSequence();
             InitializeComponent();
             InitVisuals();
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Send);
@@ -45,6 +46,8 @@ namespace MOTMaster2
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
             controller.MotMasterDataEvent += OnDataCreated;
+
+         //   ((INotifyPropertyChanged)Controller.sequenceData.Parameters).PropertyChanged += this.InterferometerParams_Changed;
         }
 
         private void OnDataCreated(object sender, DataEventArgs e)
@@ -67,15 +70,17 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
+            SetInterferometerParams(Controller.sequenceData.Parameters);
         }
 
+     
         private string[] ParamsArray
         {
             get
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
-                    pa = Controller.sequenceData.Parameters.Where(t => !t.IsHidden).Select(t => t.Name).ToArray();
+                    pa = Controller.sequenceData.Parameters.Keys.ToArray();
                 return pa;
             }
         }
@@ -93,7 +98,7 @@ namespace MOTMaster2
             {
                 controller.RunStart(paramDict,loop);
             }
-            catch (WarningException w)
+            catch (ErrorManager.WarningException w)
             {
                 ErrorMgr.warningMsg(w.Message);
                 return false;
@@ -216,7 +221,7 @@ namespace MOTMaster2
                 Controller.ExpData.grpMME.Clear();
                 int Iters = (int)ntbIterNumb.Value;
                 // Start repeat
-                realRun(Iters);
+                    realRun(Iters);
                 return;
             }
 
@@ -246,8 +251,8 @@ namespace MOTMaster2
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
         {
             string parameter = prm;
-            if (Controller.sequenceData.Parameters.Where(t => t.Name == parameter).Count() == 0) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
-            Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            if (!Controller.sequenceData.Parameters.ContainsKey(prm)) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
+            Parameter param = Controller.sequenceData.Parameters[prm];
             //Sets the sequence to static if we know the scan parameter does not modify the sequence
             Controller.StaticSequence = !param.SequenceVariable;
             Dictionary<string, object> scanDict = new Dictionary<string, object>();
@@ -268,7 +273,7 @@ namespace MOTMaster2
 
             int scanLength;
             object[] scanArray;
-            if ((defaultValue is int) && false)
+            if (defaultValue is int)
             {
                 int fromScanI = int.Parse(fromScanS);
                 int toScanI = int.Parse(toScanS);
@@ -323,6 +328,7 @@ namespace MOTMaster2
                 param.Value = scanItem;
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
+                SetInterferometerParams(scanDict);
                 ScanFlag = SingleShot(scanDict);
                 lbCurValue.Content = scanItem.ToString();
                 DoEvents();
@@ -335,6 +341,8 @@ namespace MOTMaster2
             controller.StopLogging();
             controller.StopRunning();
         }
+
+        
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
@@ -508,7 +516,7 @@ namespace MOTMaster2
         }
   
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.Title = "Select Cicero Settings File";
             dlg.FileName = ""; // Default file name
@@ -569,7 +577,7 @@ namespace MOTMaster2
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string parameter = cbParamsManual.Text;
-            Parameter param = Controller.sequenceData.Parameters.First(t => t.Name == parameter);
+            Parameter param = Controller.sequenceData.Parameters[parameter];
             if (param.Value is int)
             {
                 param.Value = int.Parse(tbValue.Text);
@@ -583,13 +591,13 @@ namespace MOTMaster2
         private void cbParamsManual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
-                tbValue.Text = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsManual.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
+                tbValue.Text = Controller.sequenceData.Parameters[cbParamsManual.SelectedItem.ToString()].Value.ToString();
         }
 
         private void cbParamsScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(ComboBox) && cbParamsScan.SelectedItem != null)
-                lbCurValue.Content = Controller.sequenceData.Parameters.Where(t => t.Name == cbParamsScan.SelectedItem.ToString()).Select(t => t.Value).First().ToString();
+                tbCurValue.Content = Controller.sequenceData.Parameters[cbParamsScan.SelectedItem.ToString()].Value.ToString();
         }
 
         //Creates a table of values for the selected analog parameters
@@ -689,7 +697,7 @@ namespace MOTMaster2
             {
                 double analogRawValue;
                 if (Double.TryParse(analogItem.Value, out analogRawValue)) continue;
-                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.Select(t => t.Name).Contains(analogItem.Value)) continue;
+                if (Controller.sequenceData != null && Controller.sequenceData.Parameters.ContainsKey(analogItem.Value)) continue;
                 //Tries to parse the function string
                 if (analogItem.Name == "Function")
                 {
@@ -743,7 +751,7 @@ namespace MOTMaster2
                 realScan(mms.sParam, mms.sFrom.ToString(), mms.sTo.ToString(), mms.sBy.ToString(), Controller.ExpData.grpMME.sender, Controller.ExpData.grpMME.id);
             }
             if (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat)
-            {
+        {
                 string jumboGroupID = (string)Controller.ExpData.grpMME.prms["groupID"];
                 int jumboCycles = Convert.ToInt32(Controller.ExpData.grpMME.prms["cycles"]);
                 realRun(jumboCycles, Controller.ExpData.grpMME.sender, Controller.ExpData.grpMME.id);
@@ -787,9 +795,7 @@ namespace MOTMaster2
                 case ("set"):
                     foreach (var prm in mme.prms)
                     {
-                        IEnumerable<Parameter> paramList  = Controller.sequenceData.Parameters.Where(t => t.Name == prm.Key);
-                        Parameter p = paramList.First();
-                        p.Value = prm.Value;
+                        Controller.sequenceData.Parameters[prm.Key].Value = prm.Value;
                     }
                     break;
                 case ("load"):
@@ -897,49 +903,48 @@ namespace MOTMaster2
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {          
-         /*   Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
+            Controller.ExpData.InterferometerPulses.Pulse1.Power = nbPower1.Value;
             Controller.ExpData.InterferometerPulses.Pulse2.Power = nbPower2.Value;
             Controller.ExpData.InterferometerPulses.Pulse3.Power = nbPower3.Value;
             Controller.ExpData.InterferometerPulses.VelPulse.Power = nbPowerV.Value;
 
-            Controller.ExpData.InterferometerPulses.Pulse1.Duration = nbDur1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Duration = nbDur2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Duration = nbDur3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Duration = nbDurV.Value;
 
-            Controller.ExpData.InterferometerPulses.Pulse1.Phase = nbPhase1.Value;
-            Controller.ExpData.InterferometerPulses.Pulse2.Phase = nbPhase2.Value;
-            Controller.ExpData.InterferometerPulses.Pulse3.Phase = nbPhase3.Value;
-            Controller.ExpData.InterferometerPulses.VelPulse.Phase = nbPhaseV.Value;
-
-             //These are converted into SI units as required by the MSquared Controller            
-            Controller.ExpData.InterferometerPulses.PLLFreq = nbRamanPllFreq.Value * 1e6;
-            Controller.ExpData.InterferometerPulses.ChirpRate = nbRamanChirpRate.Value * 1e6; //Hz s^-1
-            Controller.ExpData.InterferometerPulses.ChirpDuration = nbRamanChirpDuration.Value * 1e-6; //s
         }
 
-        private void UpdateLaserPulses()
+        private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            nbPower1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Power;
-            nbPower2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Power;
-            nbPower3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Power;
-            nbPowerV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Power;
-
-            nbDur1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Duration;
-            nbDur2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Duration;
-            nbDur3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Duration;
-            nbDurV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Duration;
-
-            nbPhase1.Value = Controller.ExpData.InterferometerPulses.Pulse1.Phase;
-            nbPhase2.Value = Controller.ExpData.InterferometerPulses.Pulse2.Phase;
-            nbPhase3.Value = Controller.ExpData.InterferometerPulses.Pulse3.Phase;
-            nbPhaseV.Value = Controller.ExpData.InterferometerPulses.VelPulse.Phase;
-
-            //These are converted from SI units as required by the MSquared Controller 
-            nbRamanPllFreq.Value = Controller.ExpData.InterferometerPulses.PLLFreq / 1e6;
-            nbRamanChirpRate.Value = Controller.ExpData.InterferometerPulses.ChirpRate / 1e6; //Hz s^-1
-            nbRamanChirpDuration.Value = Controller.ExpData.InterferometerPulses.ChirpDuration / 1e-6; //s    */                 
+            string key = scanDict.Keys.ToArray()[0];
+            object control = MSquaredTab.FindName(key);
+            if (control == null) return;
+            else
+            {
+                ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
+                //Only set them if one is changed
+                //TODO fix handling of warnings if ICE-BLocs are not connected
+                Controller.SetMSquaredParameters();
+            }
         }
+
+        private void SetInterferometerParams(ObservableDictionary<string, Parameter> observableDictionary)
+        {
+            foreach (KeyValuePair<string,Parameter> entry in observableDictionary)
+            {
+                if (entry.Value.SequenceVariable) continue;
+                else
+        {
+                    object control = MSquaredTab.FindName(entry.Key);
+                    if (control == null) continue;
+                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
+                }
+            }
+        }
+
+        private void m2updateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Controller.SetMSquaredParameters();
+            Log("Updated MSquared laser parameters");
+        }
+
 
     }
     

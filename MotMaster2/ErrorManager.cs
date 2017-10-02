@@ -120,6 +120,7 @@ namespace ErrorManager
         private async static Task WriteFileAsync(string txt)
         {
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
+            else return;
         }
 
         private static bool IsForcePopup(bool forcePopup)
@@ -147,6 +148,7 @@ namespace ErrorManager
             if (IsForcePopup(forcePopup))
             {
                 MessageBox.Show(warningText, " Warning message (" + warningID.ToString() + ")");
+                return;
             }
             else
             {

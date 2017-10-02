@@ -111,7 +111,7 @@ namespace MOTMaster2
             segData["AccMeanV"] = new double[] {accMean};
             segData["AccMeanA"] = new double[] {accMean/accScale};
             segData["AccStdV"] = new double[] {accStd};
-            segData["AccStdA"] = new double[] {accStd/accScale};          
+            segData["AccStdA"] = new double[] {accStd/accScale};
         }
         //Useful when starting a new scan
         public void ClearData()
@@ -132,15 +132,15 @@ namespace MOTMaster2
 
         //Randomly generates normally distributed numbers using the BoxMuller transform
         public double Gauss(double mean, double std)
-        {            
+        {
             double u = 2 * random.NextDouble() - 1;
             double v = 2 * random.NextDouble() - 1;
             double w = u * u + v * v;
             if (w == 0 || w >= 1) return Gauss(mean, std);
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
-            return u * c * std + mean;            
+            return u * c * std + mean;
         }
-    }
+        }
 
     /// <summary>
     /// Data from a single experiment shot
@@ -150,7 +150,7 @@ namespace MOTMaster2
     {
         //Index of run. Might not be needed if adding each to a list
         public int runID;
-       
+
         [JsonIgnore]
         internal double[,] analogInData;
 

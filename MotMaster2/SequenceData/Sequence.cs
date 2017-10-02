@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace MOTMaster2.SequenceData
 {
@@ -11,12 +15,13 @@ namespace MOTMaster2.SequenceData
     public class Sequence
     {
         public List<SequenceStep> Steps { get; set; }
-        public List<Parameter> Parameters { get; set; }
+        [JsonConverter(typeof(DictionaryConverter))]
+        public ObservableDictionary<string,Parameter> Parameters { get; set; }
 
         public Dictionary<string,object> CreateParameterDictionary()
         {
             Dictionary<string,object> paramDict = new Dictionary<string,object>();
-            foreach (Parameter p in Parameters)
+            foreach (Parameter p in Parameters.Values)
             {
                 //Converts a 64-bit int to 32-bit
                 if (p.Value.GetType() == typeof(Int64)) p.Value = Convert.ToInt32(p.Value);
@@ -36,13 +41,65 @@ namespace MOTMaster2.SequenceData
         public void CreateParameterList(Dictionary<string,object> paramDict)
         {
             foreach (KeyValuePair<string, object> entry in paramDict)
-                Parameters.Add(new Parameter(entry.Key, "", entry.Value));
+                Parameters[entry.Key] = new Parameter(entry.Key, "", entry.Value);
         }
 
         public Sequence()
         {
             Steps = new List<SequenceStep>();
-            Parameters = new List<Parameter>();
+            Parameters = new ObservableDictionary<string,Parameter>();
+        }
+
+    }
+
+    public class DictionaryConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return (typeof(IDictionary).IsAssignableFrom(objectType) || TypeImplementsGenericInterface(objectType, typeof(Dictionary<,>)));
+        }
+
+        private static bool TypeImplementsGenericInterface(Type concreteType, Type interfaceType)
+        {
+            return concreteType.GetInterfaces()
+                   .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceType);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            Type type = value.GetType();
+            IEnumerable keys = (IEnumerable)type.GetProperty("Keys").GetValue(value, null);
+            IEnumerable values = (IEnumerable)type.GetProperty("Values").GetValue(value, null);
+            IEnumerator valueEnumerator = values.GetEnumerator();
+
+            writer.WriteStartArray();
+            foreach (object val in values)
+            {
+                valueEnumerator.MoveNext();
+              //  writer.WriteStartObject();
+                serializer.Serialize(writer, val);
+              //  writer.WriteEndObject();
+            }
+            writer.WriteEndArray();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            Type[] types = existingValue.GetType().GetGenericArguments();
+            Type keyType = types[0];
+            Type valType = types[1];
+            IDictionary dict = (IDictionary)existingValue;
+            object key;
+            object value;
+            reader.Read();
+            while (reader.TokenType != JsonToken.EndArray)
+            {
+                value = serializer.Deserialize(reader,valType);
+                key = valType.GetProperty("Name").GetValue(value);
+                dict.Add(key, value);
+                reader.Read();
+            }
+            return dict;
         }
     }
 }

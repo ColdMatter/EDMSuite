@@ -46,7 +46,7 @@ namespace DAQ.HAL
 
         public bool Connected
         {
-            get { return socket.Connected; }
+            get { return (socket==null)? false : socket.Connected; }
             set
             {
                 if (value)
@@ -129,7 +129,7 @@ namespace DAQ.HAL
             if (logFlag) Console.WriteLine("close connection");
         }
 
-        public bool StartTest()
+        public bool StartLink()
         {
             Dictionary<string, object> prmsOut = new Dictionary<string, object>();
             prmsOut.Add("ip_address", my_ip_address);
@@ -153,10 +153,17 @@ namespace DAQ.HAL
             string msgOut = @"{""message"":{""transmission_id"":[" + transmission_id.ToString();
 
             int[] iArr = new int[1]; double[] dArr = new double[1];
-            Dictionary<string, object> prmsCopy = ConvertToNumericArrays(prms);
-            string strPrms = JsonConvert.SerializeObject(prmsCopy);
-            string msg = msgOut + @"],""op"":""" + command + @""",""parameters"":" + strPrms + "}}";
-
+            string msg;
+            if (prms.Count == 0)
+            {
+                msg = msgOut + @"],""op"":""" + command + @"""}}";
+            }
+            else
+            {
+                Dictionary<string, object> prmsCopy = ConvertToNumericArrays(prms);
+                string strPrms = JsonConvert.SerializeObject(prmsCopy);
+                msg = msgOut + @"],""op"":""" + command + @""",""parameters"":" + strPrms + "}}";
+            }
             // the point of everything is here
             Send(msg);
             string msgIn = Receive();

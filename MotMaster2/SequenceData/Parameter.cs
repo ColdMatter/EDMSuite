@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace MOTMaster2.SequenceData
 {
     //A parameter class which adds more functionality to the parameter dictionary used in a MOTMasterScript
-    public class Parameter:TypeConverter 
+    public class Parameter : TypeConverter,INotifyPropertyChanged 
     {
         public string Name { get; set; }
         public object Value { get; set; }
@@ -18,12 +18,18 @@ namespace MOTMaster2.SequenceData
         //Flags if the variable is used to modify a sequence
         public bool SequenceVariable { get; set; }
 
-        
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add { PropertyChanged += value; }
+            remove { PropertyChanged -= value; }
+        }
+
+        protected virtual event PropertyChangedEventHandler PropertyChanged;
         public Parameter()
         {
             //TODO Check this doesn't cause problems if the paramter needs to be a double
             Name = "";
-            Value = 0;
+            Value = 0.0;
             Description = "";
             IsHidden = false;
         }
@@ -49,7 +55,7 @@ namespace MOTMaster2.SequenceData
             if (obj.GetType() == typeof(Parameter))
             {
                 Parameter param = obj as Parameter;
-                if (param.Name == this.Name)
+                if (param.Name == this.Name && param.Value == this.Value)
                 {
                     return true;
                 }

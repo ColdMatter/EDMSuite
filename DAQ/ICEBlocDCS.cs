@@ -64,7 +64,7 @@ namespace DAQ.HAL
 
         }
 
-        public int UpdateSequenceParameters(bool report = true)
+        public int UpdateSequenceParameters(bool report = false)
         {
             string op = "update_sequence_parameters";
             var prms = _timeBlockDict.ToDictionary(item => item.Key, item => (object) item.Value);
@@ -223,11 +223,11 @@ namespace DAQ.HAL
             string pulseStep;
             if (pulseNo == -1)
             {
-                pulseStep = "State Selection 1";
+                pulseStep = _timeBlockNames["State Selection 1"];
             }
             else if (pulseNo == 0)
             {
-                pulseStep = "State Selection 2";
+                pulseStep = _timeBlockNames["State Selection 2"];
             }
             else
             {
@@ -239,7 +239,7 @@ namespace DAQ.HAL
                 Dictionary<string, object> pulseDict = CreateSubParameterDict(AOMchannel, amplitude);
                 _timeBlockDict[pulseStep].Add(pulseDict.Keys.First(),pulseDict.Values.First());
             }
-            if (length != null && !_timeBlockDict[pulseStep].ContainsKey("length")) _timeBlockDict[pulseStep].Add("length",(int)length);
+            if (length != null && !_timeBlockDict[pulseStep].ContainsKey("length")) _timeBlockDict[pulseStep].Add("length",Convert.ToInt32(length));
             if (multiplier != null && !_timeBlockDict[pulseStep].ContainsKey("multiplier")) _timeBlockDict[pulseStep].Add("multiplier", (double)multiplier);
 
             //Sets the channel on/off as well

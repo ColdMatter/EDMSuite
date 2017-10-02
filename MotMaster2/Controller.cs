@@ -16,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using DataStructures;
+//using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
 using UtilsNS;
 using ErrorManager;
@@ -101,7 +101,7 @@ namespace MOTMaster2
         SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
-        SettingsData ciceroSettings;
+        DataStructures.SettingsData ciceroSettings;
         #endregion
 
         #region Initialisation
@@ -120,6 +120,7 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
+            LoadDefaultSequence();
             if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
@@ -139,9 +140,54 @@ namespace MOTMaster2
                 "tcp://localhost:1172/controller.rem");
 
             if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
-
+            if (config.UseMSquared)
+            {
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
+                else throw new Exception("Cannot find DCS ICE-BLOC");
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
+                else throw new Exception("Cannot find PLL ICE-BLOC");
+
+
+                //Adds MSquared parameters if not already found
+                if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
+                {
+                    sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
+                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.5,true,false);
+                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.5,true,false);
+
+                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",22.0,true,false);
+                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",10,true,false);
+                    sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",22,true,false);
+                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",10,true,false);
+                    sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",22.0,true,false);
+                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",10,true,false);
+                    sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase","",0.0,true,false);
+
+                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",22.0,true,false);
+                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",10,true,false);
+                    sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
+
+                
+                }
+                try
+                {
+                    M2DCS.Connect();
+                    M2PLL.Connect();
+
+                    M2PLL.StartLink();
+                    M2DCS.StartLink();
+                    SetMSquaredParameters();
+                }
+                catch
+                {
+                    //Set to popup to avoid Exception called when it can't write to a Log
+                    if(!config.Debug)ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
+                }
+            }
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -175,7 +221,7 @@ namespace MOTMaster2
             }
 
         }
-        private void continueLoop()
+        private void ContinueLoop()
         {
            
             //Just need to restart the cards
@@ -243,6 +289,53 @@ namespace MOTMaster2
         {
             if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
+
+
+        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        {
+            var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
+            MMexec finalData = ConvertDataToAxelHub(rawData);
+            if (ExpData.grpMME.cmd.Equals("repeat") && SendDataRemotely)
+            {
+                if (Convert.ToInt32(ExpData.grpMME.prms["cycles"]) == (Convert.ToInt32(finalData.prms["runID"]) + 1))
+                {
+                    finalData.prms["last"] = 1;
+                }
+            }
+            if (ExpData.grpMME.cmd.Equals("scan") && SendDataRemotely)
+            {
+                MMscan mms = new MMscan();
+                mms.FromDictionary(ExpData.grpMME.prms);
+                int k = (int)((mms.sTo - mms.sFrom) / mms.sBy);
+                if (k == (Convert.ToInt32(finalData.prms["runID"])))
+                {
+                    finalData.prms["last"] = 1;
+                }
+            }
+            string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
+            dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            if (SendDataRemotely)
+            {
+                if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
+            }
+        }
+
+
+        internal void StopRunning()
+        {
+            if (!config.Debug)
+            {
+                while (IsRunning() && !StaticSequence)
+                {
+                    WaitForRunToFinish();
+                }
+                releaseHardware();
+            }
+            StaticSequence = false; //Set this here in case we want to scan after
+            status = RunningState.stopped;
+        }
+
+       
         #endregion
 
         #region Housekeeping on UI
@@ -388,7 +481,7 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                if (!StaticSequence) sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence)sequence = getSequenceFromSequenceData(dict);
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (myBatchNumber == 0)
                     {
@@ -409,8 +502,8 @@ namespace MOTMaster2
                             ExpData.grpMME = mme.Clone();
                         }
                     }
-                }            
-
+                }
+            
             if (sequence != null)
             {
                 try
@@ -505,12 +598,12 @@ namespace MOTMaster2
             {
                 throw new ErrorException("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
 
-            }            
+            }
             status = RunningState.stopped;
             //Dereferences the MMScan object
             ScanParam = null;
         }
-       
+
         #endregion
 
         #region private stuff
@@ -563,7 +656,6 @@ namespace MOTMaster2
                 catch (Exception e)
                 {
                     throw new ErrorManager.ErrorException("Could not initialise hardware:" + e.Message);
-                    return;
                 }
             }
             run(sequence);
@@ -681,9 +773,10 @@ namespace MOTMaster2
 
         private MOTMasterSequence getSequenceFromSequenceData(Dictionary<string,object> paramDict)
         {
+            
             builder = new SequenceBuilder(sequenceData);
-            if (paramDict!=null)builder.EditDictionary(paramDict);
             builder.BuildSequence();
+            if (paramDict != null) { builder.EditDictionary(paramDict); }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard,config.UseMuquans);
             return sequence;
         }
@@ -896,8 +989,6 @@ namespace MOTMaster2
             DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
             DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
             config = JsonConvert.DeserializeObject<MMConfig>(configJson);
-            // Just for testing purposes!!!
-            config.UseMuquans = false;
         }
         public void SaveEnvironment()
         {
@@ -1004,7 +1095,14 @@ namespace MOTMaster2
             List<string> ignoredSegments = new List<string>();
             ignoredSegments = sequenceData.Steps.Where(t => (t.Description.Contains("DNS") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).ToList();
             ExpData.IgnoredSegments = ignoredSegments;
+            try
+            {
             ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
+            }
+            catch
+            {
+                ErrorMgr.errorMsg("No step named Interferometer.",-2);
+            }
             foreach (SequenceStep step in sequenceData.Steps)
             {
                 if (!step.GetDigitalData("acquisitionTrigger")) continue;
@@ -1023,6 +1121,7 @@ namespace MOTMaster2
             ExpData.AnalogSegments = analogSegments;
             ExpData.NSamples = sampleStartTime;
         }
+
         public MMexec ConvertDataToAxelHub(double[,] aiData)
         {
             MMexec axelCommand = new MMexec();
@@ -1039,7 +1138,7 @@ namespace MOTMaster2
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
-
+ 
             axelCommand.mmexec = "";
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
@@ -1062,27 +1161,11 @@ namespace MOTMaster2
 
         #endregion
 
-        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        #region MSquared Control - Maybe move elswhere?
+        public void GetMSquaredParameters()
         {
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
-            if (ExpData.grpMME.cmd.Equals("repeat") && SendDataRemotely)
-            {
-                if(Convert.ToInt32(ExpData.grpMME.prms["cycles"]) == (Convert.ToInt32(finalData.prms["runID"])+1)) 
-                {
-                    finalData.prms["last"] = 1;
-                } 
-            }
-            if (ExpData.grpMME.cmd.Equals("scan") && SendDataRemotely)
-            {
-                MMscan mms = new MMscan();
-                mms.FromDictionary(ExpData.grpMME.prms);
-                int k = (int)((mms.sTo - mms.sFrom) / mms.sBy);
-                if (k == (Convert.ToInt32(finalData.prms["runID"])))
-                {
-                    finalData.prms["last"] = 1;
-                }
-            }
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
             dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)
@@ -1090,19 +1173,37 @@ namespace MOTMaster2
                 if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
             }
         }
-        internal void StopRunning()
-        {
-            if (!config.Debug)
+
+        public static void SetMSquaredParameters()
             {
-                while (IsRunning() && !StaticSequence)
+            if (!M2DCS.Connected || !M2PLL.Connected)
                 {
-                    WaitForRunToFinish();
+                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-Blocs");
+                return;
                 }
-                releaseHardware();
+            CheckPhaseLock();
+            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            //Checks the phase lock has not come out-of-loop
+            CheckPhaseLock();
+
+            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value);
+            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value);
+            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value);
+            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value);
+
+            M2DCS.UpdateSequenceParameters();
             }
-            StaticSequence = false; //Set this here in case we want to scan after
-            status = RunningState.stopped;
+
+        private static bool CheckPhaseLock()
+        {
+            DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
+            bool locked = M2PLL.main_lock_status(out lockStatus);
+            if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
+            return locked;
         }
+        #endregion
+
+
     }
 
     public class DataEventArgs : EventArgs
