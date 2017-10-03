@@ -6937,6 +6937,20 @@
       "Description": "",
       "IsHidden": true,
       "SequenceVariable": false
+    },
+    {
+      "Name": "IntTime1",
+      "Value": 25.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "IntTime2",
+      "Value": 25.0,
+      "Description": "",
+      "IsHidden": true,
+      "SequenceVariable": false
     }
   ]
 }

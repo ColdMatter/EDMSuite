@@ -275,7 +275,7 @@ namespace MOTMaster2
 
             int scanLength;
             object[] scanArray;
-            if (defaultValue is int && Controller.sequenceData.Parameters.ContainsKey(prm)))
+            if (defaultValue is int && Controller.sequenceData.Parameters.ContainsKey(prm))
             {
                 int fromScanI = int.Parse(fromScanS);
                 int toScanI = int.Parse(toScanS);
@@ -909,7 +909,8 @@ namespace MOTMaster2
         {
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
-            Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
+            Controller.SetParameter(laserKey, type.GetProperty("Value").GetValue(sender));
+        
            
 
         }
@@ -924,7 +925,7 @@ namespace MOTMaster2
                 ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
                 //Only set them if one is changed
                 //TODO fix handling of warnings if ICE-BLocs are not connected
-                Controller.SetMSquaredParameters();
+                Controller.SetMSquaredParameters(Pulse1Enabled.IsChecked.Value,Pulse2Enabled.IsChecked.Value,Pulse3Enabled.IsChecked.Value,VelPulseEnabled.IsChecked.Value,IntTime1.Value,IntTime2.Value);
             }
         }
 
@@ -944,7 +945,7 @@ namespace MOTMaster2
 
         private void m2updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            Controller.SetMSquaredParameters();
+            Controller.SetMSquaredParameters(Pulse1Enabled.IsChecked.Value, Pulse2Enabled.IsChecked.Value, Pulse3Enabled.IsChecked.Value, VelPulseEnabled.IsChecked.Value, IntTime1.Value, IntTime2.Value);
             Log("Updated MSquared laser parameters");
         }
 
