@@ -95,6 +95,7 @@ namespace MOTMaster2
         MuquansController muquans = null;
         public static ICEBlocDCS M2DCS;
         public static ICEBlocPLL M2PLL;
+        public PhaseStrobes phaseStrobes;
 
         MMDataIOHelper ioHelper;
 
@@ -175,6 +176,8 @@ namespace MOTMaster2
                 }
                 try
                 {
+                    phaseStrobes = new PhaseStrobes();
+
                     M2DCS.Connect();
                     M2PLL.Connect();
 

@@ -6828,7 +6828,7 @@
     },
     {
       "Name": "fringePhase",
-      "Value": 0,
+      "Value": 0.0,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": false

@@ -7,6 +7,54 @@ using UtilsNS;
 
 namespace DAQ.HAL
 {
+    public class PhaseStrobes
+    {
+        public bool DoubleStrobe = false;
+        public int Count = 0;
+
+        public delegate void StrobeHandler(bool doubleStrobe, double strobePos, int counter);
+        public event StrobeHandler OnStrobe;
+
+        protected void ProcStrobe(bool doubleStrobe, double strobePos, int counter)
+        {
+            if (OnStrobe != null) OnStrobe(doubleStrobe, strobePos, counter);
+        }
+
+        //two ways to operate: Correction (after init strb1/strb2 in the beginning)
+        // or setting Strobe1/Strobe2
+        public void Correction(double corr, int counter  = -1)
+        {
+            if (counter != -1) Count = counter;            
+            if (DoubleStrobe)
+            {
+                if ((Count % 2) == 0) Strobe1 += corr;
+                else Strobe2 += corr;
+            }
+            else Strobe1 += corr;
+            Count += 1;
+        }
+        private double strobe1;
+        public double Strobe1 // even count in case of double strobe
+        {
+            get { return strobe1; }
+            set 
+            { 
+                strobe1 = value;
+                ProcStrobe(DoubleStrobe, value, Count);
+            }
+        }
+        private double strobe2;
+        public double Strobe2 // even count in case of double strobe
+        {
+            get { return strobe2; }
+            set
+            {
+                strobe2 = value;
+                ProcStrobe(DoubleStrobe, value, Count);
+            }
+        }
+    }
+
     public class ICEBlocDCS : ICEBlocRemote
     {
         string my_ip_address = "192.168.1.100";
