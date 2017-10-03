@@ -33,11 +33,12 @@ namespace MOTMaster2
 
         public MainWindow()
         {
-            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
             controller = new Controller();
             controller.StartApplication();
             InitializeComponent();
             InitVisuals();
+            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
+
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Send);
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
@@ -244,6 +245,8 @@ namespace MOTMaster2
                 //Send Remote Message to AxelHub
                 controller.StopRunning();
                 lbCurNumb.Content = "";
+                MMexec mme = new MMexec("Axel-hub");
+                remoteMsg.sendCommand(mme.Abort("MOTMaster"));
             }
         }
 
@@ -272,7 +275,7 @@ namespace MOTMaster2
 
             int scanLength;
             object[] scanArray;
-            if (defaultValue is int)
+            if (defaultValue is int && Controller.sequenceData.Parameters.ContainsKey(prm)))
             {
                 int fromScanI = int.Parse(fromScanS);
                 int toScanI = int.Parse(toScanS);
@@ -377,6 +380,8 @@ namespace MOTMaster2
                 btnScan.Background = brush;
                 ScanFlag = false;
                 //Send Remote Message to AxelHub
+                MMexec mme = new MMexec("Axel-hub");
+                remoteMsg.sendCommand(mme.Abort("MOTMaster"));
             }
         }
         #endregion
