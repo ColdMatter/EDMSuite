@@ -107,7 +107,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
-  </PropertyGroup>
     </DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
