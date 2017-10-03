@@ -1,0 +1,7 @@
+﻿<Window x:Class="ConfocalMicroscopeControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
+        Title="MainWindow" Height="480" Width="640" >
+    <Grid></Grid>
+</Window>

@@ -59,12 +59,6 @@ namespace DAQ.Environment
             Hardware = eHelper.Hardware;
             FileSystem = eHelper.FileSystem;
             Debug = eHelper.Debug;
-                case "PH-JFG109":
-                    Hardware = new MicrocavityHardware();
-                    FileSystem = new CCMQNFileSystem();
-                    Debug = false;
-                    break;
-
         }
 	}
 }

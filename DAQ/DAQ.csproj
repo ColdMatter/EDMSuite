@@ -202,6 +202,8 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ConfocalFileSystem.cs" />
+    <Compile Include="ConfocalHardware.cs" />
     <Compile Include="DecelerationHardware.cs" />
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
