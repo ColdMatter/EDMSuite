@@ -217,22 +217,25 @@
                         <Label Content="Pulse 3" HorizontalAlignment="Left" Margin="22,96,0,0" VerticalAlignment="Top"  Height="27" Width="50"/>
                         <Label Content="Vel.Pulse" HorizontalAlignment="Left" Margin="22,124,0,0" VerticalAlignment="Top" Height="27" Width="61"/>
 
-                        <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,182,0,0" VerticalAlignment="Top" Height="27" Width="72"/>
-                        <ni:NumericTextBoxDouble x:Name="PLLFreq" HorizontalAlignment="Left" Height="23" Margin="105,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="ChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <ni:NumericTextBoxDouble x:Name="ChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,185,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
-                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,110,166" />
-                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,110,138" />
-                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,110,109" />
-                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,110,82" />
-
-                        <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,157,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
-                        <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
-                        <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,157,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
+                        <Label Content="Raman PLL" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Top" Height="27" Width="72" Grid.Row="1"/>
+                        <ni:NumericTextBoxDouble x:Name="PLLFreq" HorizontalAlignment="Left" Height="23" Margin="105,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
+                        <ni:NumericTextBoxDouble x:Name="ChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
+                        <ni:NumericTextBoxDouble x:Name="ChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
+                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,110,166" IsChecked="True" />
+                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,110,138" IsChecked="True"/>
+                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,110,109" IsChecked="True"/>
+                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,110,82" IsChecked="True" />
+                        <Label Content="Int. Time 1" HorizontalAlignment="Left" Margin="140,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
+                        <Label Content="Int. Time 2" HorizontalAlignment="Left" Margin="220,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
+                        <ni:NumericTextBoxDouble x:Name="IntTime1" HorizontalAlignment="Left" Height="23" Margin="140,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>
+                        <ni:NumericTextBoxDouble x:Name="IntTime2" HorizontalAlignment="Left" Height="23" Margin="220,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>
+                        <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,199,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
+                        <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,199,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
+                        <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,198,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
                         <Button Name="m2updateBtn" Content="Update" Height="26" Width="75" Margin="200,45,200,57" Grid.Row="1" Click="m2updateBtn_Click"/>
                     </Grid>
                 </TabItem>
-                
+
 
 
 

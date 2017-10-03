@@ -295,6 +295,24 @@ namespace DAQ.HAL
             _timeBlockDict[pulseStep].Add(rfDict.Keys.First(),rfDict.Values.First());
         }
 
+        public void ConfigureIntTime(int timeID, double time)
+        {
+            Utils.EnsureRange(timeID, 1, 2);
+            string darkStep = _timeBlockNames["Dark " + timeID];
+
+            if (!_timeBlockDict.ContainsKey(darkStep))
+            {
+                _timeBlockDict[darkStep] = new Dictionary<string, object>();
+               
+            }
+            if (!_timeBlockDict[darkStep].ContainsKey("length"))
+            {
+                _timeBlockDict[darkStep].Add("length", Convert.ToInt32(time));
+                //Assumes this time will always be in ms
+                _timeBlockDict[darkStep].Add("multiplier", 1e-3);
+            }
+            else throw new Exception("Multiple attempts to set Interferometer time at step " + timeID);
+        }
 
 #endregion
     }

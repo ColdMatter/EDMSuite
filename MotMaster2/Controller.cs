@@ -172,7 +172,8 @@ namespace MOTMaster2
                     sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",10,true,false);
                     sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
 
-                
+                    sequenceData.Parameters["IntTime1"] = new Parameter("IntTime1", "", 25.0, true, false);
+                    sequenceData.Parameters["IntTime2"] = new Parameter("IntTime2", "", 25.0, true, false);
                 }
                 try
                 {
@@ -188,7 +189,7 @@ namespace MOTMaster2
                 catch
                 {
                     //Set to popup to avoid Exception called when it can't write to a Log
-                    if(!config.Debug)ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
+                       ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
                 }
             }
 
@@ -1177,7 +1178,7 @@ namespace MOTMaster2
             }
         }
 
-        public static void SetMSquaredParameters()
+        public static void SetMSquaredParameters(bool pulse1Enabled = true, bool pulse2Enabled = true, bool pulse3Enabled = true, bool velPulseEnabled = true, double intTime1 = 25.0, double intTime2 = 25.0)
             {
             if (!M2DCS.Connected || !M2PLL.Connected)
                 {
@@ -1189,10 +1190,12 @@ namespace MOTMaster2
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
 
-            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value);
-            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value);
-            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value);
-            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value);
+            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value,pulse1Enabled);
+            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value,pulse2Enabled);
+            M2DCS.ConfigureIntTime(1, intTime1);
+            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value,pulse3Enabled);
+            M2DCS.ConfigureIntTime(2, intTime2);
+            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value,velPulseEnabled);
 
             M2DCS.UpdateSequenceParameters();
             }
@@ -1207,6 +1210,12 @@ namespace MOTMaster2
         #endregion
 
 
+
+        internal static void SetParameter(string key, object p)
+        {
+            if (sequenceData.Parameters.ContainsKey(key)) sequenceData.Parameters[key].Value = p;
+            else sequenceData.Parameters[key] = new Parameter(key, "", p, true, false);
+        }
     }
 
     public class DataEventArgs : EventArgs
