@@ -185,7 +185,7 @@ namespace MOTMaster2
                 catch
                 {
                     //Set to popup to avoid Exception called when it can't write to a Log
-                    if(!config.Debug)ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
+                       ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
                 }
             }
 
