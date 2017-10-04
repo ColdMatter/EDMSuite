@@ -56,6 +56,7 @@
                 <TabItem x:Name="tbRepeat" Header="  Repeat  " Width="70" Height="25">
                     <Grid>
                         <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113"/>
+                        <Label Content="(-1 for endless)" HorizontalAlignment="Left" Height="24" Margin="10,44,0,0" VerticalAlignment="Top" Width="101"/>
                         <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="321,23,0,0" VerticalAlignment="Top" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
                         <ni:NumericTextBoxDouble x:Name="ntbIterNumb" HorizontalAlignment="Left" Height="27" Margin="123,27,0,0" VerticalAlignment="Top" Width="88" FontSize="14" Range="-1, Infinity, System.Double" Value="1"/>
                         <Label x:Name="lbCurNumb" Content="0" HorizontalAlignment="Left" Height="27" Margin="221,25,0,22.857" VerticalAlignment="Center" Width="95" FontWeight="Bold" FontSize="14" Foreground="#FF27836E"/>

@@ -73,7 +73,6 @@ namespace MOTMaster2
             SetInterferometerParams(Controller.sequenceData.Parameters);
         }
 
-
         private string[] ParamsArray
         {
             get
@@ -660,7 +659,7 @@ namespace MOTMaster2
 
             Color ForeColor = clr.GetValueOrDefault(Brushes.Black.Color);
             TextRange rangeOfText1 = new TextRange(tbLogger.Document.ContentEnd, tbLogger.Document.ContentEnd);
-            rangeOfText1.Text = printOut + "\n";
+            rangeOfText1.Text = printOut + "\r";
             rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
             tbLogger.ScrollToEnd();
         }
@@ -792,7 +791,7 @@ namespace MOTMaster2
                     Controller.ExpData.grpMME = mme.Clone();
                     btnRun.Content = "Abort Remote";
                     btnRun.Background = Brushes.LightCoral;
-                    tcMain.TabIndex = 0; DoEvents();
+                    tcMain.SelectedIndex = 0; DoEvents();
                     tbExperimentRun.Text = (string)mme.prms["groupID"];
                     int cycles = -1; // default to infinity
                     if (mme.prms.ContainsKey("cycles")) cycles = Convert.ToInt32(mme.prms["cycles"]);
@@ -810,7 +809,7 @@ namespace MOTMaster2
                     Controller.ExpData.grpMME = mme.Clone();
                     btnScan.Content = "Abort Remote";
                     btnScan.Background = Brushes.LightCoral;
-                    tcMain.TabIndex = 1; DoEvents();
+                    tcMain.SelectedIndex = 1; DoEvents();
                     tbExperimentRun.Text = (string)mme.prms["groupID"];
                     cbParamsScan.Text = (string)mme.prms["param"];
                     tbFromScan.Text = Convert.ToDouble(mme.prms["from"]).ToString();
