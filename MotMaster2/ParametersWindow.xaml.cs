@@ -25,17 +25,24 @@ namespace MOTMaster2
         private Parameter _selectedParameter;
         public ParametersWindow()
         {
-            //TODO Check that types of newly created parameters are correctly defined. They might just be interpreted as strings!
             InitializeComponent();
             _sequenceParameters = new ObservableCollection<Parameter>();
-            Controller.sequenceData.Parameters.ForEach((item) => { _sequenceParameters.Add((Parameter)item.Copy()); });
+            foreach (Parameter p in Controller.sequenceData.Parameters.Values)
+            {
+                if (!p.IsHidden) _sequenceParameters.Add(p.Copy());
+            }
+
             parameterGrid.ItemsSource = _sequenceParameters;
             parameterGrid.DataContext = this;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            Controller.sequenceData.Parameters = _sequenceParameters.ToList();
+            //TODO Remove parameters from SequenceData which have been removed from _sequenceParameters
+            foreach (Parameter p in _sequenceParameters)
+            {
+                Controller.sequenceData.Parameters[p.Name] = p;
+            }
             this.Close();
         }
 

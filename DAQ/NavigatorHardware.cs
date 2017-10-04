@@ -24,6 +24,7 @@ namespace DAQ.HAL
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
+            config.UseMSquared = false;
             Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
@@ -63,7 +64,9 @@ namespace DAQ.HAL
             Instruments.Add("muquansSlave", new MuquansRS232("ASRL18::INSTR","slave"));
             Instruments.Add("muquansAOM", new MuquansRS232("ASRL20::INSTR","aom"));
             Instruments.Add("microwaveSynth", new WindfreakSynth("ASRL13::INSTR"));
-            Instruments.Add("m2PLL", new MuquansRS232("ASRL23::INSTR",""));
+
+            Instruments.Add("MSquaredDCS", new ICEBlocDCS());
+            Instruments.Add("MSquaredPLL", new ICEBlocPLL());
             //Instruments.Add("microwaveSynth", new Gigatronics7100Synth("GPIB1::19::INSTR"));
 
             
@@ -127,7 +130,6 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
             AddCounterChannel("Counter", multiBoard + "/ctr0");
-            
         }
     }
 }

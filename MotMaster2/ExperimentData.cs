@@ -15,6 +15,18 @@ namespace MOTMaster2
         public bool SaveRawData { get; set; }
         //Name to identify each experiment
         public string ExperimentName {get; set;}
+        public MMexec grpMME = new MMexec();
+        public enum JumboModes { none, scan, repeat };
+        public JumboModes jumboMode()
+        {
+             JumboModes jm = JumboModes.none;
+            if (grpMME.sender.Equals("Axel-hub"))
+            {
+                if (grpMME.cmd.Equals("scan")) jm = JumboModes.scan;
+                if (grpMME.cmd.Equals("repeat")) jm = JumboModes.repeat;
+            }
+            return jm;
+        }
         //Collects time indices for each segment of analog data as a tuple tStart,tEnd
         public Dictionary<string, Tuple<int, int>> AnalogSegments { get; set; }
 
@@ -36,12 +48,11 @@ namespace MOTMaster2
         private int preTrigSamples = 64;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
-        public InterferometerParams InterferometerPulses { get; set; }
         public static double[] TransferFunc { get; set; }
-
 
         public ExperimentData()
         {
+           
            
         }
 
@@ -101,7 +112,6 @@ namespace MOTMaster2
             segData["AccMeanA"] = new double[] {accMean/accScale};
             segData["AccStdV"] = new double[] {accStd};
             segData["AccStdA"] = new double[] {accStd/accScale};
-          
         }
         //Useful when starting a new scan
         public void ClearData()
@@ -116,25 +126,21 @@ namespace MOTMaster2
         {
             double[,] fakeData = new double[2,NSamples];
             for (int i = 0; i < 2; i++)
-                for (int j = 0; j < NSamples; i++) { double g = Gauss(0, 1); fakeData[i,j] = g; }
+                for (int j = 0; j < NSamples; j++) { double g = Gauss(0, 1); fakeData[i,j] = g; }
             return fakeData;
         }
 
         //Randomly generates normally distributed numbers using the BoxMuller transform
         public double Gauss(double mean, double std)
         {
-            
             double u = 2 * random.NextDouble() - 1;
             double v = 2 * random.NextDouble() - 1;
             double w = u * u + v * v;
             if (w == 0 || w >= 1) return Gauss(mean, std);
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
             return u * c * std + mean;
-            
         }
-
-
-    }
+        }
 
     /// <summary>
     /// Data from a single experiment shot
@@ -145,7 +151,6 @@ namespace MOTMaster2
         //Index of run. Might not be needed if adding each to a list
         public int runID;
 
-        
         [JsonIgnore]
         internal double[,] analogInData;
 
@@ -157,30 +162,5 @@ namespace MOTMaster2
             analogInData = data;
             analogSegments = null;
         }
-    }
-
-    /// <summary>
-    /// Encapsulates data about the parameters for the interferometer pulses
-    /// </summary>
-    [Serializable,JsonObject]
-    public class InterferometerParams
-    {
-        public PulseParams VelPulse { get; set; }
-        public PulseParams Pulse1 { get; set; }
-        public PulseParams Pulse2 { get; set; }
-        public PulseParams Pulse3 { get; set; }
-
-        public double TTime { get; set; }
-        public void GetParametersFromMSquared()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public struct PulseParams
-    {
-        public double power;
-        public double duration;
-        public double phase;
     }
 }

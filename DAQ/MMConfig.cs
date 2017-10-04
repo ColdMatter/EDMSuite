@@ -26,6 +26,7 @@ namespace DAQ
             useAI = false;
             useMuquans = false;
             useMMScripts = true;
+            useMSquared = false;
         }
 
         private bool debug;
@@ -101,6 +102,12 @@ namespace DAQ
             set { useMuquans = value; }
         }
 
+        private bool useMSquared;
+        public bool UseMSquared
+        {
+            get {return useMSquared;}
+            set {useMSquared = value;}
+        }
         //Used to flag the use of motmaster scripts or the UI to generate a sequence
         private bool useMMScripts;
         public bool UseMMScripts

@@ -94,7 +94,8 @@ namespace MOTMaster2
                         {
                             case ("ping"):
                                 handled = sendCommand("pong");
-                                OnActiveComm(handled);
+                                if (lastConnection != handled) OnActiveComm(handled);
+                                lastConnection = handled; 
                                 break;
                             case ("pong"):
                                 handled = true;
@@ -161,21 +162,7 @@ namespace MOTMaster2
                 Marshal.FreeHGlobal(pMyStruct);
             }
         }
-
-        public void DoEvents()
-        {
-            DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
-                new DispatcherOperationCallback(ExitFrame), frame);
-            Dispatcher.PushFrame(frame);
-        }
-
-        public object ExitFrame(object f)
-        {
-            ((DispatcherFrame)f).Continue = false;
-            return null;
-        }
-
+        private bool lastConnection = false;
         public bool CheckConnection()
         {
             bool back = sendCommand("ping");
@@ -183,13 +170,13 @@ namespace MOTMaster2
             {
                 for (int i = 0; i < 200; i++)
                 {
-                    Thread.Sleep(10);
-                    DoEvents();
+                    Thread.Sleep(10);                    
                     if (lastRcvMsg.Equals("pong")) break;
                 }
             }
             back = back && (lastRcvMsg.Equals("pong"));
-            OnActiveComm(back);
+            if (lastConnection != back) OnActiveComm(back);
+            lastConnection = back;
             return back;
         }
 
@@ -270,6 +257,9 @@ namespace MOTMaster2
         public Dictionary<string, object> prms;
         public MMexec()
         {
+            mmexec = "";
+            sender = "";
+            cmd = "";
             id = rnd.Next(int.MaxValue);
             prms = new Dictionary<string, object>();
         }
@@ -300,7 +290,6 @@ namespace MOTMaster2
             mm.prms = new Dictionary<string, object>(prms);
             return mm;
         }
-
         public string Abort(string Sender = "")
         {
             cmd = "abort";
