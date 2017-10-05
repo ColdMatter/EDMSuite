@@ -338,8 +338,7 @@ namespace MOTMaster2
         {
             if (!config.Debug)
             {
-                if (!StaticSequence) WaitForRunToFinish();
-                else pauseHardware();
+                WaitForRunToFinish();
                 while (IsRunning() && !StaticSequence)
                 {
                     WaitForRunToFinish();
@@ -587,17 +586,10 @@ namespace MOTMaster2
                             if (config.ReporterUsed)
                             {
                                 report = GetExperimentReport();
-                                //TODO Change save method
                                
                             }
-                            if (config.UseMMScripts)
-                            {
-                                save(script, scriptPath, report, myBatchNumber);
-                            }
-                            else
-                            {
+                            if (!config.UseMMScripts)
                                 save(builder, motMasterDataPath,report, ExpData.ExperimentName,myBatchNumber);
-                            }
                         }
                     }
                     if (config.CameraUsed) finishCameraControl();

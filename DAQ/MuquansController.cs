@@ -33,10 +33,8 @@ namespace DAQ.HAL
             try
             {
                 //TODO check connect and disconnect doesn't cause timing issues
-                Connect();
                 this.serial.Write(message);
                 this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
-                Disconnect();
            
             }
             catch { throw new Exception("Error writing serial command: "+message); }
@@ -189,7 +187,7 @@ namespace DAQ.HAL
                 if (serialCounter < aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
                 serialCounter++;
                 if (serialCounter == slaveCommands.Count) serialCounter = 0; //Reset to allow for loop mode
-                Console.WriteLine(string.Format("wrote command {0} at {1}", serialCounter - 1,
+                Console.WriteLine(string.Format("wrote command {0} at {1}", slaveCommands[serialCounter],
                     stopwatch.ElapsedMilliseconds));
             }
         }

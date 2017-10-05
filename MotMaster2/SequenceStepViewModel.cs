@@ -130,7 +130,7 @@ namespace MOTMaster2
         public void DuplicateStep()
         {
             int index = SequenceSteps.IndexOf(_selectedStep);
-            SequenceSteps.Insert(index, _selectedStep);
+            SequenceSteps.Insert(index, _selectedStep.Copy());
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

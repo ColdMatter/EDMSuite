@@ -66,7 +66,7 @@ namespace MOTMaster2.SequenceData
           
             int digitalSample = 0;
             //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
-            int serialPreTrigger = ConvertToSampleTime(5, digitalClock);
+            int serialPreTrigger = ConvertToSampleTime(1.5, digitalClock);
             int serialWait = ConvertToSampleTime(2, digitalClock);
             SequenceStep previousStep = null;
             foreach (SequenceStep step in sequenceSteps)
@@ -141,10 +141,11 @@ namespace MOTMaster2.SequenceData
         {
             if (serialCommand.Value.Contains("\\n")) throw new Exception("Serial command contains an escape command. This is not necessary");
             string[] valueArr = serialCommand.Value.Split(' ');
-           
+            string val;
                 for (int i = 0; i < valueArr.Length; i++)
                 {
-                    if (Parameters.ContainsKey(valueArr[i])) valueArr[i] = Parameters[valueArr[i]].ToString();
+                    val = (valueArr[i].EndsWith(";")) ? valueArr[i].TrimEnd(';'):valueArr[i];
+                    if (Parameters.ContainsKey(val)) valueArr[i] = (valueArr[i].EndsWith(";")) ? Parameters[val].ToString() + ";" : Parameters[val].ToString();
                 }
 
                 string command = string.Join(" ", valueArr);

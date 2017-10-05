@@ -361,7 +361,7 @@ namespace MOTMaster2
                 Controller.ExpData.grpMME.Clear();
 
                 realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
-
+           //     controller.StopRunning();
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
@@ -374,6 +374,7 @@ namespace MOTMaster2
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
+                controller.StopRunning();
             }
 
             if (btnScan.Content.Equals("Abort Remote"))
@@ -382,6 +383,7 @@ namespace MOTMaster2
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
+                controller.StopRunning();
                 //Send Remote Message to AxelHub
                 if (!Utils.isNull(sender))
                 {

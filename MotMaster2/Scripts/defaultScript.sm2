@@ -69,7 +69,7 @@
       "Name": "Initialization 1",
       "Description": "",
       "Enabled": true,
-      "Duration": "8",
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -827,9 +827,9 @@
       "Name": "3Dcollection",
       "Description": "",
       "Enabled": true,
-      "Duration": "10",
+      "Duration": "0.1",
       "Timebase": 1,
-      "RS232Commands": true,
+      "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
         "2DaomAtten": 0,
@@ -1292,7 +1292,7 @@
       "serialCommands": [],
       "Name": "Launch",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 1.0,
       "Timebase": 1,
       "RS232Commands": false,
@@ -1447,7 +1447,7 @@
       "serialCommands": [],
       "Name": "Freq ramp",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "molassesRampTime",
       "Timebase": 1,
       "RS232Commands": false,
@@ -1585,7 +1585,7 @@
       "serialCommands": [],
       "Name": "Wait",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 3.5,
       "Timebase": 1,
       "RS232Commands": false,
@@ -1749,7 +1749,7 @@
       "serialCommands": [],
       "Name": "Intensity ramp",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "molassesIntRampDelay",
       "Timebase": 1,
       "RS232Commands": false,
@@ -1896,7 +1896,7 @@
       ],
       "Name": "RepumpPulse",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 9.0,
       "Timebase": 1,
       "RS232Commands": true,
@@ -2096,7 +2096,7 @@
       "serialCommands": [],
       "Name": "StateSelectPreset",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "2",
       "Timebase": 1,
       "RS232Commands": false,
@@ -2179,7 +2179,7 @@
           "Value": true
         },
         "acquisitionTrigger": {
-          "Value": false
+          "Value": true
         }
       }
     },
@@ -2234,7 +2234,7 @@
       "serialCommands": [],
       "Name": "F2->F'2",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 5.0,
       "Timebase": 0,
       "RS232Commands": false,
@@ -2372,7 +2372,7 @@
       "serialCommands": [],
       "Name": "F1, mF=0",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "500",
       "Timebase": 0,
       "RS232Commands": false,
@@ -2519,7 +2519,7 @@
       ],
       "Name": "Ready 1",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "8",
       "Timebase": 1,
       "RS232Commands": true,
@@ -2658,7 +2658,7 @@
       "Name": "Ready 2",
       "Description": "",
       "Enabled": false,
-      "Duration": 1.0,
+      "Duration": "expansionTime",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -2973,7 +2973,7 @@
       "serialCommands": [],
       "Name": "BSwitch1",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "3",
       "Timebase": 1,
       "RS232Commands": false,
@@ -3158,7 +3158,7 @@
       "serialCommands": [],
       "Name": "BSwitch 2",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 1.0,
       "Timebase": 1,
       "RS232Commands": false,
@@ -3296,7 +3296,7 @@
       "serialCommands": [],
       "Name": "MW1",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "mwTime",
       "Timebase": 0,
       "RS232Commands": false,
@@ -3434,7 +3434,7 @@
       "serialCommands": [],
       "Name": "Raman",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "4.2",
       "Timebase": 1,
       "RS232Commands": false,
@@ -3572,7 +3572,7 @@
       "serialCommands": [],
       "Name": "BlowAway",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "4.5",
       "Timebase": 1,
       "RS232Commands": false,
@@ -3710,7 +3710,7 @@
       "serialCommands": [],
       "Name": "2T Dwell Before",
       "Description": "",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 100.0,
       "Timebase": 0,
       "RS232Commands": false,
@@ -3848,7 +3848,7 @@
       "serialCommands": [
         {
           "Name": "Slaves_DDS",
-          "Value": "set_dds ddsq; set_freq slave0 88.9e6; ext_update"
+          "Value": "set_dds ddsq; set_freq slave0 MOTDDS; ext_update"
         },
         {
           "Name": "AOM_DDS",
@@ -3858,7 +3858,7 @@
       "Name": "2T",
       "Description": "DNS Interferometer",
       "Enabled": true,
-      "Duration": "45",
+      "Duration": "0.1",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -3907,13 +3907,13 @@
           "Value": false
         },
         "slaveDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "ramanDDSTrig": {
           "Value": true
         },
         "aomDDSTrig": {
-          "Value": false
+          "Value": true
         },
         "cameraTTL": {
           "Value": false
@@ -3995,7 +3995,7 @@
       "serialCommands": [],
       "Name": "2T Dwell After",
       "Description": "DNS",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": "0.1",
       "Timebase": 1,
       "RS232Commands": false,
@@ -4173,7 +4173,7 @@
       "serialCommands": [],
       "Name": "Detection B field 1",
       "Description": "DNS",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 1.0,
       "Timebase": 1,
       "RS232Commands": false,
@@ -4461,7 +4461,7 @@
       "serialCommands": [],
       "Name": "Detection B field 2",
       "Description": "DNS",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 2.0,
       "Timebase": 1,
       "RS232Commands": false,
@@ -4604,7 +4604,7 @@
       ],
       "Name": "Dwell",
       "Description": "DNS",
-      "Enabled": true,
+      "Enabled": false,
       "Duration": 250.0,
       "Timebase": 0,
       "RS232Commands": false,
@@ -4789,7 +4789,7 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": false
+          "Value": true
         },
         "slaveDDSTrig": {
           "Value": false
@@ -4801,7 +4801,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -4939,7 +4939,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -5059,13 +5059,13 @@
           "Value": false
         },
         "motTTL": {
-          "Value": true
+          "Value": false
         },
         "ramanTTL": {
           "Value": false
         },
         "mphiTTL": {
-          "Value": true
+          "Value": false
         },
         "slaveDDSTrig": {
           "Value": false
@@ -5194,7 +5194,7 @@
       "Name": "BlowAway2",
       "Description": "DNS",
       "Enabled": true,
-      "Duration": "10",
+      "Duration": "500",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -5815,7 +5815,7 @@
           "Value": false
         },
         "mphiTTL": {
-          "Value": false
+          "Value": true
         },
         "slaveDDSTrig": {
           "Value": false
@@ -5827,7 +5827,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -5965,7 +5965,7 @@
           "Value": false
         },
         "cameraTTL": {
-          "Value": false
+          "Value": true
         },
         "shutter": {
           "Value": false
@@ -6136,7 +6136,18 @@
         "zmaomFreq": {},
         "2DaomAtten": {},
         "xaomFreq": {},
-        "motCTRL": {},
+        "motCTRL": {
+          "_selectedItem": [
+            {
+              "Name": "Start Time",
+              "Value": ""
+            },
+            {
+              "Name": "Value",
+              "Value": "0"
+            }
+          ]
+        },
         "xbias2DCoil": {},
         "vertPiezo": {},
         "zmaomAtten": {},
@@ -6178,7 +6189,9 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "motCTRL"
+      ],
       "serialCommands": [],
       "Name": "Bg",
       "Description": "",
@@ -6190,7 +6203,6 @@
         "zmaomFreq": 0,
         "2DaomAtten": 0,
         "xaomFreq": 0,
-        "motCTRL": 0,
         "xbias2DCoil": 0,
         "vertPiezo": 0,
         "zmaomAtten": 0,
@@ -6210,7 +6222,8 @@
         "pushaomAtten": 0,
         "mot3DCoil": 0,
         "mphiCTRL": 0,
-        "yaomAtten": 0
+        "yaomAtten": 0,
+        "motCTRL": 1
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -6359,8 +6372,8 @@
       "serialCommands": [],
       "Name": "Off",
       "Description": "",
-      "Enabled": false,
-      "Duration": 50.0,
+      "Enabled": true,
+      "Duration": "500",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6951,6 +6964,20 @@
       "Description": "",
       "IsHidden": true,
       "SequenceVariable": false
+    },
+    {
+      "Name": "expansionTime",
+      "Value": 0.0,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": false
+    },
+    {
+      "Name": "MOTDDS",
+      "Value": 92900000.0,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
     }
   ]
 }
