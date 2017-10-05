@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Threading;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ErrorManager;
@@ -200,6 +201,7 @@ namespace MOTMaster2
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;
                 lbCurNumb.Content = i.ToString();
+                Thread.Sleep(100);
                 DoEvents();
                 if (!ScanFlag) break;
             }
@@ -653,15 +655,7 @@ namespace MOTMaster2
         private void Log(string txt, Color? clr = null)
         {
             if (!chkLog.IsChecked.Value) return;
-            string printOut;
-            if ((chkVerbatim.IsChecked.Value) || (txt.Length < 81)) printOut = txt;
-            else printOut = txt.Substring(0, 80) + "...";
-
-            Color ForeColor = clr.GetValueOrDefault(Brushes.Black.Color);
-            TextRange rangeOfText1 = new TextRange(tbLogger.Document.ContentEnd, tbLogger.Document.ContentEnd);
-            rangeOfText1.Text = printOut + "\r";
-            rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
-            tbLogger.ScrollToEnd();
+            ErrorMgr.AppendLog(txt, clr);
         }
 
         private void setProperty_Click(object sender, RoutedEventArgs e)

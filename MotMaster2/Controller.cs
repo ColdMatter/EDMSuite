@@ -178,13 +178,15 @@ namespace MOTMaster2
                 try
                 {
                     phaseStrobes = new PhaseStrobes();
+                    if (!config.Debug)
+                    {
+                        M2DCS.Connect();
+                        M2PLL.Connect();
 
-                    M2DCS.Connect();
-                    M2PLL.Connect();
-
-                    M2PLL.StartLink();
-                    M2DCS.StartLink();
-                    SetMSquaredParameters();
+                        M2PLL.StartLink();
+                        M2DCS.StartLink();
+                        SetMSquaredParameters();
+                    }
                 }
                 catch
                 {

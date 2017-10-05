@@ -522,7 +522,8 @@
         "ybiasCoil",
         "xbiasCoil",
         "xbias2DCoil",
-        "zmaomFreq"
+        "zmaomFreq",
+        "zpaomFreq"
       ],
       "serialCommands": [
         {
@@ -2093,7 +2094,12 @@
         "motCTRL",
         "zbiasCoil"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "",
+          "Value": ""
+        }
+      ],
       "Name": "StateSelectPreset",
       "Description": "",
       "Enabled": true,

@@ -41,21 +41,21 @@
             <ComboBox x:Name="cbPatternScript" HorizontalAlignment="Left" Height="27" Margin="10,41,0,0" VerticalAlignment="Top" Width="554" SelectionChanged="cbPatternScript_SelectionChanged" Visibility="Hidden"/>
             <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Height="27" Margin="571,41,0,0" VerticalAlignment="Top" Width="69" Click="btnRefresh_Click" Visibility="Hidden"/>
             <Button x:Name="btnOpenFile" Content="Open File" HorizontalAlignment="Left" Height="27" Margin="647,41,0,0" VerticalAlignment="Top" Width="75" Click="btnOpenFile_Click" Visibility="Hidden"/>
-            <ComboBox x:Name="cbHub" HorizontalAlignment="Left" Margin="314,21,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="1" SelectionChanged="cbHub_SelectionChanged">
+            <ComboBox x:Name="cbHub" HorizontalAlignment="Left" Margin="314,21,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="1" SelectionChanged="cbHub_SelectionChanged" Height="24">
                 <ComboBoxItem Content="None"/>
                 <ComboBoxItem Content="Local"/>
                 <ComboBoxItem Content="Axel-hub"/>
                 <ComboBoxItem Content="Mathematica"/>
             </ComboBox>
             <Label Content="Hub" HorizontalAlignment="Left" Margin="272,17,0,0" VerticalAlignment="Top" FontSize="13" Height="26"/>
-            <Button x:Name="btnRemote" Content="Connect" HorizontalAlignment="Left" Height="25" Margin="439,20,0,0" VerticalAlignment="Top" Width="83" Background="#FFC5D9FA" Click="btnRemote_Click" FontSize="13" Visibility="Hidden"/>
+            <Button x:Name="btnRemote" Content="Connect" HorizontalAlignment="Left" Height="25" Margin="439,20,0,0" VerticalAlignment="Top" Width="99" Background="#FFC5D9FA" Click="btnRemote_Click" FontSize="13" Visibility="Hidden"/>
             <Image HorizontalAlignment="Right" Height="28" Margin="0,17,0.286,0" VerticalAlignment="Top" Width="30" Source="3axis.ico"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0,5,-0.143,0.714">
             <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="108" Margin="5,0,0,0" VerticalAlignment="Top" Width="717" SelectedIndex="0" SelectionChanged="tcMain_SelectionChanged">
                 <TabItem x:Name="tbRepeat" Header="  Repeat  " Width="70" Height="25">
                     <Grid>
-                        <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,28,0,0" VerticalAlignment="Top" Width="113"/>
+                        <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,25,0,0" VerticalAlignment="Top" Width="113"/>
                         <Label Content="(-1 for endless)" HorizontalAlignment="Left" Height="24" Margin="10,44,0,0" VerticalAlignment="Top" Width="101"/>
                         <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="321,23,0,0" VerticalAlignment="Top" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
                         <ni:NumericTextBoxDouble x:Name="ntbIterNumb" HorizontalAlignment="Left" Height="27" Margin="123,27,0,0" VerticalAlignment="Top" Width="88" FontSize="14" Range="-1, Infinity, System.Double" Value="1"/>
@@ -66,13 +66,13 @@
                     <Grid>
                         <ComboBox x:Name="cbParamsScan" HorizontalAlignment="Left" Height="27" Margin="10,25,0,0" VerticalAlignment="Top" Width="206" Grid.ColumnSpan="2" SelectedIndex="0" SelectionChanged="cbParamsScan_SelectionChanged"/>
                         <Label Content="Parameter:" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
-                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="326,24,0,24.857" VerticalAlignment="Center" Width="38"/>
-                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="369,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" FontSize="14"/>
+                        <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="326,24,0,24.857" VerticalAlignment="Center" Width="41"/>
+                        <TextBox x:Name="tbFromScan" HorizontalAlignment="Left" Height="26" Margin="367,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="0" FontSize="14"/>
                         <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="446,24,0,24.857" VerticalAlignment="Center" Width="29"/>
-                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="555,24,0,24.857" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5"/>
+                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="550,24,0,24.857" VerticalAlignment="Center" Width="28" RenderTransformOrigin="0.546,0.5"/>
                         <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Height="33" Margin="618,21,0,21" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Click="btnScan_Click"/>
-                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="477,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" FontSize="14"/>
-                        <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="583,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="28" Text="1" FontSize="14"/>
+                        <TextBox x:Name="tbToScan" HorizontalAlignment="Left" Height="26" Margin="470,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" FontSize="14"/>
+                        <TextBox x:Name="tbByScan" HorizontalAlignment="Left" Height="26" Margin="575,24,0,24.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="37" Text="1" FontSize="14"/>
                         <Label x:Name="lbCurValue" Content="0" HorizontalAlignment="Left" Height="27" Margin="221,25,0,22.857" VerticalAlignment="Center" Width="100" FontWeight="Bold" FontSize="14" Foreground="#FF27836E"/>
                     </Grid>
                 </TabItem>
@@ -137,7 +137,7 @@
                 </TabItem>
             </TabControl>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,0,0,0" Width="5" Background="#FFFCF7D6"/>
-            <TabControl x:Name="tcVisual" Margin="0,0,250.143,-0.001" Grid.Column="0" Grid.ColumnSpan="2">
+            <TabControl x:Name="tcVisual" Margin="0" Grid.Column="0" Grid.ColumnSpan="1">
                 <TabItem x:Name="tiParameters" Header="Parameters" Width="90" Height="25" FontSize="13">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -222,10 +222,10 @@
                         <ni:NumericTextBoxDouble x:Name="PLLFreq" HorizontalAlignment="Left" Height="23" Margin="105,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
                         <ni:NumericTextBoxDouble x:Name="ChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
                         <ni:NumericTextBoxDouble x:Name="ChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
-                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,110,166" IsChecked="True" />
-                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,110,138" IsChecked="True"/>
-                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,110,109" IsChecked="True"/>
-                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,110,82" IsChecked="True" />
+                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,98.571,165.857" IsChecked="True" />
+                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,98.571,137.857" IsChecked="True"/>
+                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,98.571,108.857" IsChecked="True"/>
+                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,98.571,81.857" IsChecked="True" />
                         <Label Content="Int. Time 1" HorizontalAlignment="Left" Margin="140,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Int. Time 2" HorizontalAlignment="Left" Margin="220,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <ni:NumericTextBoxDouble x:Name="IntTime1" HorizontalAlignment="Left" Height="23" Margin="140,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>
@@ -233,7 +233,7 @@
                         <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,199,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,199,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
                         <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,198,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
-                        <Button Name="m2updateBtn" Content="Update" Height="26" Width="75" Margin="200,45,200,57" Grid.Row="1" Click="m2updateBtn_Click"/>
+                        <Button Name="m2updateBtn" Content="Update" Margin="297,39.143,98.571,60.143" Grid.Row="1" Click="m2updateBtn_Click" Background="#FFD7EFE8"/>
                     </Grid>
                 </TabItem>
 
