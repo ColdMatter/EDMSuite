@@ -349,23 +349,10 @@ namespace MOTMaster2.Interferometer
 
         }
 
-        public override MuquansBuilder GetMuquansCommands()
+        public override SerialBuilder GetMuquansCommands()
         {
-            MuquansBuilder mu = new MuquansBuilder();
+            SerialBuilder mu = new SerialBuilder();
 
-            mu.SetFrequency("slave0", (double)Parameters["MOTdetuning"]);
-            mu.SetFrequency("mphi", (double)Parameters["MPhidetuning"]);
-
-            mu.SweepFrequency("Slave0", (double)Parameters["MolassesSlavedetuning"], (double)Parameters["MolassesFreqDuration"]);
-            mu.SweepFrequency("mphi", (double)Parameters["MolassesMPhidetuning"], (double)Parameters["MolassesFreqDuration"]);
-
-            //Sets slave0 on to 2->2 taking account of the extra 1.5 MHz detuning from the Fibre AOMs
-            mu.SetFrequency("Slave0", (double)Parameters["StatePrepSlavedetuning"]);
-            //Puts the mphi sideband at the 1->0 transition
-            mu.SetFrequency("mphi", (double)Parameters["StatePrepMPhidetuning"]);
-
-            mu.SetFrequency("slave0", (double)Parameters["DetectionSlavedetuning"]);
-            mu.SetFrequency("mphi", (double)Parameters["DetectionMPhidetuning"]);
             return mu;
 
         }

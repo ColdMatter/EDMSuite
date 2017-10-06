@@ -193,7 +193,13 @@ namespace MOTMaster2.SequenceData
 
         internal List<SerialItem> GetSerialData()
         {
-            if (serialCommands.Count == 0) serialCommands.Add(new SerialItem("", ""));
+            //TODO Create SerialItems based on hardware channels
+            if (serialCommands.Count == 0 || serialCommands[0].Value == "")
+            {
+                serialCommands = new List<SerialItem>();
+                foreach (string inst in Environs.Hardware.Instruments.Keys)
+                { if (Environs.Hardware.Instruments[inst] is DAQ.HAL.RS232Instrument) serialCommands.Add(new SerialItem(inst, "")); }
+            }
             return serialCommands;
         }
     }

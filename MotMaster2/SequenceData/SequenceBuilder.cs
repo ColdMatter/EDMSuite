@@ -17,7 +17,7 @@ namespace MOTMaster2.SequenceData
         private List<SequenceStep> sequenceSteps;
         private AnalogPatternBuilder analogPB;
         private PatternBuilder32 digitalPB;
-        private MuquansBuilder muPB;
+        private SerialBuilder muPB;
         private double currentTime;
         private SequenceStep _sequenceStep;
         private bool staticSequence;
@@ -47,7 +47,7 @@ namespace MOTMaster2.SequenceData
             analogPB = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
             if (Controller.config.HSDIOCard) digitalPB = new HSDIOPatternBuilder();
             else digitalPB = new PatternBuilder32();
-            if (Controller.config.UseMuquans) muPB = new MuquansBuilder();
+            if (Controller.config.UseMuquans) muPB = new SerialBuilder();
         }
         //Builds a MOTMasterSequence using a list of SequenceSteps
         public void BuildSequence()
@@ -66,7 +66,7 @@ namespace MOTMaster2.SequenceData
           
             int digitalSample = 0;
             //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
-            int serialPreTrigger = ConvertToSampleTime(1.5, digitalClock);
+            int serialPreTrigger = ConvertToSampleTime(2, digitalClock);
             int serialWait = ConvertToSampleTime(2, digitalClock);
             SequenceStep previousStep = null;
             foreach (SequenceStep step in sequenceSteps)
@@ -97,17 +97,12 @@ namespace MOTMaster2.SequenceData
                 //Adds the Muquans string commands as well as the required serial pulses before digital pulses to prevent time order exceptions
                 if (step.RS232Commands)
                 {
-                    string laserID = "";
                     //TODO Fix the sequence parser to make it work with more generic serial commands
                     foreach (SerialItem serialCommand in step.GetSerialData())
                     {
                        AddSerialCommand(serialCommand);
-                    }
-                    //Serial Commands share 1 trigger
-                    
+                    }                  
                     digitalPB.Pulse(digitalSample-(serialPreTrigger + serialWait), 0, 200, "serialPreTrigger");
-                    //digitalPB.Pulse(digitalStartTime, serialWait, 200, "slaveDDSTrig");
-                    //digitalPB.Pulse(digitalStartTime, serialWait, 200, "aomDDSTrig");
                 }
                 //Adds the edges for each digital channel
                 foreach (string digitalChannel in step.GetUsedDigitalChannels(previousStep))
@@ -139,6 +134,7 @@ namespace MOTMaster2.SequenceData
 
         private void AddSerialCommand(SerialItem serialCommand)
         {
+            
             if (serialCommand.Value.Contains("\\n")) throw new Exception("Serial command contains an escape command. This is not necessary");
             string[] valueArr = serialCommand.Value.Split(' ');
             string val;
@@ -149,8 +145,9 @@ namespace MOTMaster2.SequenceData
                 }
 
                 string command = string.Join(" ", valueArr);
-                if (serialCommand.Name == "Slaves_DDS") muPB.AddCommand("slave0", command);
-                else if (serialCommand.Name == "AOM_DDS") muPB.AddCommand("mphi", command);
+            //TODO Make this work for general serial devices
+                if (serialCommand.Name == "muquansSlave") muPB.AddCommand("slave0", command);
+                else if (serialCommand.Name == "muquansAOM") muPB.AddCommand("mphi", command);
         }
 
 
@@ -164,7 +161,7 @@ namespace MOTMaster2.SequenceData
             return (HSDIOPatternBuilder)digitalPB;
         }
 
-        public override MuquansBuilder GetMuquansCommands()
+        public override SerialBuilder GetMuquansCommands()
         {
             return muPB;
         }

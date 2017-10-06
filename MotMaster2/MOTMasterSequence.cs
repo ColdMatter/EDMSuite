@@ -13,6 +13,6 @@ namespace MOTMaster2
         public PatternBuilder32 DigitalPattern;
         public AnalogPatternBuilder AnalogPattern;
         public MMAIConfiguration AIConfiguration;
-        public MuquansBuilder MuquansPattern;
+        public SerialBuilder MuquansPattern;
     }
 }

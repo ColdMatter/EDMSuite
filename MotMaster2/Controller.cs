@@ -260,6 +260,7 @@ namespace MOTMaster2
         {
             try
             {
+                pauseHardware();
                 if (!config.HSDIOCard) pg.StopPattern();
                 else hs.StopPattern();
                 apg.StopPattern();
@@ -268,7 +269,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                ErrorMgr.warningMsg("Error when releaseing hardware: " + e.Message, -3, false);
+                ErrorMgr.warningMsg("Error when releasing hardware: " + e.Message, -3, false);
             }
         }
 
@@ -342,8 +343,10 @@ namespace MOTMaster2
                 while (IsRunning() && !StaticSequence)
                 {
                     WaitForRunToFinish();
+                   
                 }
-                releaseHardware();
+                if(StaticSequence) releaseHardware();
+                muquans.DisposeAll();
                 
             }
             StaticSequence = false; //Set this here in case we want to scan after
@@ -588,7 +591,7 @@ namespace MOTMaster2
                                 report = GetExperimentReport();
                                
                             }
-                            if (!config.UseMMScripts)
+                            if (config.UseMMScripts)
                                 save(builder, motMasterDataPath,report, ExpData.ExperimentName,myBatchNumber);
                         }
                     }
@@ -605,7 +608,7 @@ namespace MOTMaster2
             }
             else
             {
-                throw new ErrorException("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.");
+                ErrorMgr.errorMsg("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.",-3);
 
             }
             status = RunningState.stopped;

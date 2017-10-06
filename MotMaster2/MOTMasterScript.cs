@@ -14,7 +14,7 @@ namespace MOTMaster2
         public Dictionary<String,Object> Parameters;
         public abstract MMAIConfiguration GetAIConfiguration();
         public abstract HSDIOPatternBuilder GetHSDIOPattern();
-        public abstract MuquansBuilder GetMuquansCommands();
+        public abstract SerialBuilder GetMuquansCommands();
 
 
         public MOTMasterSequence GetSequence()

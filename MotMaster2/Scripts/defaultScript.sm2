@@ -526,11 +526,11 @@
       ],
       "serialCommands": [
         {
-          "Name": "Slaves_DDS",
+          "Name": "muquansSlave",
           "Value": "set_dds ddsq; set_freq slave0 89.3229e6; ext_update"
         },
         {
-          "Name": "AOM_DDS",
+          "Name": "muquansAOM",
           "Value": "set_freq mphi 105.617e6; ext_update"
         }
       ],
@@ -673,7 +673,15 @@
       "usedAnalogChannels": [],
       "serialCommands": [
         {
-          "Name": "",
+          "Name": "muquansSlave",
+          "Value": ""
+        },
+        {
+          "Name": "microwaveSynth",
+          "Value": ""
+        },
+        {
+          "Name": "muquansAOM",
           "Value": ""
         }
       ],
@@ -816,18 +824,18 @@
       "usedAnalogChannels": [],
       "serialCommands": [
         {
-          "Name": "Slaves_DDS",
+          "Name": "muquansSlave",
           "Value": "set_dds ddsq; sweep_to slave0 98.75e6 1.4e-3; ext_update"
         },
         {
-          "Name": "AOM_DDS",
+          "Name": "muquansAOM",
           "Value": "sweep_to mphi 70.15e6 1.4e-3; ext_update"
         }
       ],
       "Name": "3Dcollection",
       "Description": "",
       "Enabled": true,
-      "Duration": "0.1",
+      "Duration": "10",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1444,13 +1452,26 @@
       "usedAnalogChannels": [
         "mphiCTRL"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "muquansSlave",
+          "Value": "set_dds ddsq; sweep_to slave0 98.75e6 1.4e-3; ext_update"
+        },
+        {
+          "Name": "microwaveSynth",
+          "Value": ""
+        },
+        {
+          "Name": "muquansAOM",
+          "Value": "sweep_to mphi 70.15e6 1.4e-3; ext_update"
+        }
+      ],
       "Name": "Freq ramp",
       "Description": "",
-      "Enabled": false,
+      "Enabled": true,
       "Duration": "molassesRampTime",
       "Timebase": 1,
-      "RS232Commands": false,
+      "RS232Commands": true,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
         "2DaomAtten": 0,
@@ -1521,7 +1542,7 @@
           "Value": false
         },
         "zmaomTTL": {
-          "Value": true
+          "Value": false
         },
         "2DaomTTL": {
           "Value": true
@@ -1585,8 +1606,8 @@
       "serialCommands": [],
       "Name": "Wait",
       "Description": "",
-      "Enabled": false,
-      "Duration": 3.5,
+      "Enabled": true,
+      "Duration": "3.5",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1745,11 +1766,14 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "mphiCTRL",
+        "motCTRL"
+      ],
       "serialCommands": [],
       "Name": "Intensity ramp",
       "Description": "",
-      "Enabled": false,
+      "Enabled": true,
       "Duration": "molassesIntRampDelay",
       "Timebase": 1,
       "RS232Commands": false,
@@ -1886,11 +1910,11 @@
       "usedAnalogChannels": [],
       "serialCommands": [
         {
-          "Name": "Slaves_DDS",
+          "Name": "muquansSlave",
           "Value": "set_dds ddsq; set_freq slave0 105.24e6; ext_update"
         },
         {
-          "Name": "AOM_DDS",
+          "Name": "muquansAOM",
           "Value": "set_freq mphi 98.6e6; ext_update"
         }
       ],
@@ -2509,11 +2533,11 @@
       "usedAnalogChannels": [],
       "serialCommands": [
         {
-          "Name": "Slaves_DDS",
+          "Name": "muquansSlave",
           "Value": "set_dds ddsq; set_freq slave0 88.45e6; ext_update"
         },
         {
-          "Name": "AOM_DDS",
+          "Name": "muquansAOM",
           "Value": " "
         }
       ],
@@ -2658,7 +2682,7 @@
       "Name": "Ready 2",
       "Description": "",
       "Enabled": false,
-      "Duration": "expansionTime",
+      "Duration": "1",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -3847,18 +3871,18 @@
       "usedAnalogChannels": [],
       "serialCommands": [
         {
-          "Name": "Slaves_DDS",
-          "Value": "set_dds ddsq; set_freq slave0 MOTDDS; ext_update"
+          "Name": "muquansSlave",
+          "Value": "set_dds ddsq; set_freq slave0 88.9e6; ext_update"
         },
         {
-          "Name": "AOM_DDS",
+          "Name": "muquansAOM",
           "Value": "set_freq mphi  107.975e6; ext_update"
         }
       ],
       "Name": "2T",
       "Description": "DNS Interferometer",
       "Enabled": true,
-      "Duration": "0.1",
+      "Duration": "expansionTime",
       "Timebase": 1,
       "RS232Commands": true,
       "AnalogValueTypes": {
@@ -4456,13 +4480,14 @@
         "xaomAtten",
         "zmaomAtten",
         "zmaomFreq",
-        "mphiCTRL"
+        "mphiCTRL",
+        "motCTRL"
       ],
       "serialCommands": [],
       "Name": "Detection B field 2",
       "Description": "DNS",
-      "Enabled": false,
-      "Duration": 2.0,
+      "Enabled": true,
+      "Duration": ".1",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6369,11 +6394,24 @@
       "usedAnalogChannels": [
         "ybiasCoil"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "muquansSlave",
+          "Value": ""
+        },
+        {
+          "Name": "microwaveSynth",
+          "Value": ""
+        },
+        {
+          "Name": "muquansAOM",
+          "Value": ""
+        }
+      ],
       "Name": "Off",
       "Description": "",
       "Enabled": true,
-      "Duration": "500",
+      "Duration": "1000",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -6966,15 +7004,15 @@
       "SequenceVariable": false
     },
     {
-      "Name": "expansionTime",
-      "Value": 0.0,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": false
-    },
-    {
       "Name": "MOTDDS",
       "Value": 92900000.0,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "expansionTime",
+      "Value": 0.1,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true

@@ -743,8 +743,16 @@ namespace MOTMaster2
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //Save the currently open sequence to a default location
-            List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-            controller.SaveSequenceAsDefault(steps);
+            MessageBoxResult result = MessageBox.Show("MOTMaster is closing. Do you want to save the sequence?","Save Sequence to File/Default" ,MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes)
+            {
+                SaveSequence_Click(sender, null);
+            }
+            else if (result == MessageBoxResult.No)
+            {
+                List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                controller.SaveSequenceAsDefault(steps);
+            }
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)

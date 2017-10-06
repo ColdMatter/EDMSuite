@@ -302,7 +302,7 @@
     <Compile Include="MMAIConfiguration.cs" />
     <Compile Include="MMAIWrapper.cs" />
     <Compile Include="MMConfig.cs" />
-    <Compile Include="MuquansBuilder.cs" />
+    <Compile Include="SerialBuilder.cs" />
     <Compile Include="MuquansController.cs" />
     <Compile Include="NavigatorFileSystem.cs" />
     <Compile Include="NavigatorHardware.cs" />
