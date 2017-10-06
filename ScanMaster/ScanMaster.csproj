@@ -137,6 +137,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCL|AnyCPU'">
     <OutputPath>bin\TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ConfocalMicroscope|AnyCPU'">
+    <OutputPath>bin\ConfocalMicroscope\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShapedPulseMaker\ShapedPulseMaker.csproj">
       <Project>{f951e985-dfc3-48e7-8d3d-ed4f1cfa4d62}</Project>
@@ -149,7 +152,7 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" >
+    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
     </Reference>
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>

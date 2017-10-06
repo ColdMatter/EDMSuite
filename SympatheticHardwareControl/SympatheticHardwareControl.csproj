@@ -95,6 +95,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCL|AnyCPU'">
     <OutputPath>bin\TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ConfocalMicroscope|AnyCPU'">
+    <OutputPath>bin\ConfocalMicroscope\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />

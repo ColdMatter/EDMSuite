@@ -3,5 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
         Title="MainWindow" Height="480" Width="640" >
-    <Grid></Grid>
+    <Grid>
+        <TextBox x:Name="galvo_position_display" HorizontalAlignment="Left" Height="23" Margin="148,129,0,0" TextWrapping="Wrap" Text="Galvo position" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="galvo_position_reader" Content="Button" HorizontalAlignment="Left" Margin="171,160,0,0" VerticalAlignment="Top" Width="75" Click="galvoRead_Click"/>
+    </Grid>
 </Window>

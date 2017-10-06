@@ -36,9 +36,16 @@ namespace ConfocalMicroscopeControl
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private Controller _controller;
+        public MainWindow(Controller controller)
         {
+            _controller = controller; 
             InitializeComponent();
+        }
+
+        private void galvoRead_Click(object sender, RoutedEventArgs e)
+        {
+            galvo_position_display.Text = "Hello";
         }
     }
 }
