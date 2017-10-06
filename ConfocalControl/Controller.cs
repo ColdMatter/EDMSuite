@@ -5,20 +5,19 @@ using System.Text;
 
 using DAQ.Environment;
 using DAQ.HAL;
-using ScanMaster;
-using ScanMaster.Acquire;
-using ScanMaster.Acquire.Plugin;
+//using ScanMaster;
+//using ScanMaster.Acquire;
+//using ScanMaster.Acquire.Plugin;
 using Data;
 using Data.Scans;
 
 using NationalInstruments.DAQmx;
 using NationalInstruments;
 
-namespace ConfocalMicroscopeControl
+namespace ConfocalControl
 {
-    class Controller
+    public class Controller
     {
-        MainWindow window;
 
         #region Class members
 
@@ -41,19 +40,12 @@ namespace ConfocalMicroscopeControl
             set { _rasterScanSettings = value; }
         }
 
-        // Storing raster Scan data
-        private DataStore dataStore = new DataStore();
-        public DataStore DataStore
-        {
-            get { return dataStore; }
-        }
-
-        // Get galvo controller
-        private GalvoPairPlugin _galvos;
-        public GalvoPairPlugin GalvoPair
-        {
-            get { return _galvos; }
-        }
+        // Storing raster Scan data - Implement
+        //private DataStore dataStore = new DataStore();
+        //public DataStore DataStore
+        //{
+        //    get { return dataStore; }
+        //}
 
         #endregion
 
@@ -79,34 +71,10 @@ namespace ConfocalMicroscopeControl
 
         #region Methods
 
-        public void StartApplication()
-        {
-            window = new MainWindow(this);
-            window.Show();
-        }
 
-        public void StopApplication()
-        {
-            // Implement
-        }
+        
 
-        private void DataHandler(object sender, DataEventArgs e)
-        {
-            lock (this)
-            {
-                // Implement
-                // store the datapoint
-                dataStore.AddScanPoint(e.point);
 
-                // tell the viewers to handle the data point.
-                // mainForm.UpdateGraphs(e.point);
-            }
-        }
-
-        private void ScanFinishedHandler(object sender, EventArgs e)
-        {
-            // Implement
-        }
 
         #endregion 
     }

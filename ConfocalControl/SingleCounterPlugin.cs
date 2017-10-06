@@ -8,11 +8,11 @@ using DAQ.Environment;
 using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
-using ScanMaster.Acquire.Plugin;
+//using ScanMaster.Acquire.Plugin;
 
-namespace ConfocalMicroscopeControl
+namespace ConfocalControl
 {
-    class SingleCounterPlugin
+    public class SingleCounterPlugin
     {
         #region Class members
 
@@ -24,7 +24,7 @@ namespace ConfocalMicroscopeControl
         }
 
         private Task countingTask;
-        private CounterReader countReader;
+        private CounterSingleChannelReader countReader;
 
         private double[] latestData;
 
@@ -73,7 +73,7 @@ namespace ConfocalMicroscopeControl
             countingTask.Control(TaskAction.Verify);
 
             // Set up a reader for the edge counter
-            countReader = new CounterReader(countingTask.Stream);
+            countReader = new CounterSingleChannelReader(countingTask.Stream);
         }
 
         public void AcquisitionFinished()
@@ -101,7 +101,7 @@ namespace ConfocalMicroscopeControl
             }
         }
 
-        public override void PostArm()
+        public void PostArm()
         {
             lock (this)
             {
@@ -111,7 +111,7 @@ namespace ConfocalMicroscopeControl
         }
 
         // Re-write
-        public override Shot Shot
+        public Shot Shot
         {
             get
             {

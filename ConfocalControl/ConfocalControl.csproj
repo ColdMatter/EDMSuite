@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9FDC67B7-A355-4D9D-83CD-187E9FE0D6E5}</ProjectGuid>
+    <ProjectGuid>{89960E0C-5319-4692-8F3D-73D79853C6BA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConfocalMicroscopeControl</RootNamespace>
-    <AssemblyName>ConfocalMicroscopeControl</AssemblyName>
+    <RootNamespace>ConfocalControl</RootNamespace>
+    <AssemblyName>ConfocalControl</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -29,7 +29,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -38,8 +38,8 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ConfocalMicroscope|AnyCPU'">
-    <OutputPath>bin\ConfocalMicroscope\</OutputPath>
+  <PropertyGroup>
+    <StartupObject>ConfocalControl.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Analysis.Enterprise, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -76,7 +76,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Runner.cs" />
+    <Compile Include="Controller.cs" />
+    <Compile Include="PluginSettings.cs" />
     <Compile Include="SingleCounterPlugin.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +88,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ConfocalRasterScan.cs" />
-    <Compile Include="Controller.cs" />
     <Compile Include="GalvoPairPlugin.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -98,7 +98,6 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MultiInputShotGathererPlugin.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -124,10 +123,6 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
-      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
-      <Name>ScanMaster</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>

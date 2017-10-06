@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ConfocalMicroscopeControl.Properties
+namespace ConfocalControl.Properties
 {
 
 

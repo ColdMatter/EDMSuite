@@ -12,11 +12,11 @@ using DAQ.Environment;
 using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
-using ScanMaster.Acquire.Plugin;
+//using ScanMaster.Acquire.Plugin;
 
-namespace ConfocalMicroscopeControl
+namespace ConfocalControl
 {
-    class GalvoPairPlugin
+    public class GalvoPairPlugin
     {
         #region Class members
 
@@ -59,13 +59,13 @@ namespace ConfocalMicroscopeControl
         private void InitialiseSettings()
         {
             settings["GalvoXRead"] = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["GalvoX"];
-            settings["GalvoXControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogInputChannels["GalvoXControl"];
+            settings["GalvoXControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["GalvoXControl"];
             settings["GalvoYRead"] = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["GalvoY"];
-            settings["GalvoYControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogInputChannels["GalvoYControl"];
-            settings["XRangeLow"] = ((AnalogOutputChannel)settings["GalvoXControl"]).RangeLow;
-            settings["XRangeHigh"] = ((AnalogOutputChannel)settings["GalvoXControl"]).RangeHigh;
-            settings["YRangeLow"] = ((AnalogOutputChannel)settings["GalvoYControl"]).RangeLow;
-            settings["YRangeHigh"] = ((AnalogOutputChannel)settings["GalvoYControl"]).RangeHigh;
+            settings["GalvoYControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["GalvoYControl"];
+            settings["XRangeLow"] = (double)-5;
+            settings["XRangeHigh"] = (double)5;
+            settings["YRangeLow"] = (double)-5;
+            settings["YRangeHigh"] = (double)5;
         }
 
         public GalvoPairPlugin() 
@@ -86,8 +86,8 @@ namespace ConfocalMicroscopeControl
             double XRangeLow = (double)settings["XRangeLow"]; double XRangeHigh = (double)settings["XRangeHigh"];
             double YRangeLow = (double)settings["YRangeLow"]; double YRangeHigh = (double)settings["YRangeHigh"];
 
-            ((AnalogInputChannel)settings["GalvoX"]).AddToTask(_galvoXInputTask, XRangeLow, XRangeHigh);
-            ((AnalogInputChannel)settings["GalvoY"]).AddToTask(_galvoYInputTask, YRangeLow, YRangeHigh);
+            ((AnalogInputChannel)settings["GalvoXRead"]).AddToTask(_galvoXInputTask, XRangeLow, XRangeHigh);
+            ((AnalogInputChannel)settings["GalvoYRead"]).AddToTask(_galvoYInputTask, YRangeLow, YRangeHigh);
 
             ((AnalogOutputChannel)settings["GalvoXControl"]).AddToTask(_galvoXOutputTask, XRangeLow, XRangeLow);
             ((AnalogOutputChannel)settings["GalvoYControl"]).AddToTask(_galvoYOutputTask, YRangeLow, YRangeLow);
@@ -107,7 +107,7 @@ namespace ConfocalMicroscopeControl
             galvoState = GalvoState.running;
         }
 
-        public override void AcquisitionFinished()
+        public void AcquisitionFinished()
         {
             _galvoXInputTask.Dispose();
             _galvoYInputTask.Dispose();
@@ -155,8 +155,8 @@ namespace ConfocalMicroscopeControl
             double XRangeLow = (double)settings["XRangeLow"]; double XRangeHigh = (double)settings["XRangeHigh"];
             double YRangeLow = (double)settings["YRangeLow"]; double YRangeHigh = (double)settings["YRangeHigh"];
 
-            ((AnalogInputChannel)settings["GalvoX"]).AddToTask(inputTask, XRangeLow, XRangeHigh);
-            ((AnalogInputChannel)settings["GalvoY"]).AddToTask(inputTask, YRangeLow, YRangeHigh);
+            ((AnalogInputChannel)settings["GalvoXRead"]).AddToTask(inputTask, XRangeLow, XRangeHigh);
+            ((AnalogInputChannel)settings["GalvoYRead"]).AddToTask(inputTask, YRangeLow, YRangeHigh);
 
             inputTask.Control(TaskAction.Verify);
 

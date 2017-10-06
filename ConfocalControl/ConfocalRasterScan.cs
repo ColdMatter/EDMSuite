@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using DAQ.Environment;
-using ScanMaster.Acquire.Plugins;
-using ScanMaster.Acquire;
+//using ScanMaster.Acquire.Plugins;
+//using ScanMaster.Acquire;
 using Data;
 using Data.Scans;
 using System.Diagnostics;
 
-namespace ConfocalMicroscopeControl
+namespace ConfocalControl
 {
     ///<summary>
     /// Plug-in for confocal raster scans. No fancy DAQ pattern builder is necessary here. 
@@ -23,7 +23,7 @@ namespace ConfocalMicroscopeControl
     public delegate void DataEventHandler(object sender, DataEventArgs e);
     public delegate void ScanFinishedEventHandler(object sender, EventArgs e);
 
-    class ConfocalRasterScan
+    public class ConfocalRasterScan
     {
         #region Class members
 
@@ -35,14 +35,8 @@ namespace ConfocalMicroscopeControl
         public event DataEventHandler Data;
         public event ScanFinishedEventHandler ScanFinished;
 
-        // 
+        // Understand this
         public object ScanitorMonitorLock = new Object();
-
-        // Fetch galvo controller 
-        private ConfocalMicroscopeControl.GalvoPairPlugin gController;
-
-        // Link to Controller, not bound to particular instance of RasterScan 
-        private static Controller controllerInstance;
 
         // From System.Threading 
         private Thread acquireThread;
@@ -61,11 +55,6 @@ namespace ConfocalMicroscopeControl
 
         public void StartScan()
         {
-
-            // Get running instance of controller 
-            controllerInstance = Controller.GetController();
-            gController = ConfocalMicroscopeControl.GalvoPairPlugin.GetController();
-
             // Define unparametrerized start method for thread
             acquireThread = new Thread(new ThreadStart(this.Acquire));
             acquireThread.Name = "Confocal Raster Scan";
@@ -98,20 +87,20 @@ namespace ConfocalMicroscopeControl
             SingleCounterPlugin directshotPlugin = new SingleCounterPlugin();
 
             // Get Galvo settings.
-            galvoXValue = gController.GetGalvoXSetpoint();
-            galvoYValue = gController.GetGalvoYSetpoint();
+            galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+            galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
 
             // Move to the start of the scan.
-            gController.SetGalvoXSetpoint(
-                         (double)controllerInstance.scanSettings["GalvoXStart"]);
-            galvoXValue = gController.GetGalvoXSetpoint();
+            GalvoPairPlugin.GetController().SetGalvoXSetpoint(
+                         (double)Controller.GetController().scanSettings["GalvoXStart"]);
+            galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
 
-            gController.SetGalvoYSetpoint(
-                         (double)controllerInstance.scanSettings["GalvoYStart"]);
-            galvoYValue = gController.GetGalvoYSetpoint();
+            GalvoPairPlugin.GetController().SetGalvoYSetpoint(
+                         (double)Controller.GetController().scanSettings["GalvoYStart"]);
+            galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
 
             // Get plugins
-            directshotPlugin.ReInitialiseSettings((double)controllerInstance.scanSettings["Exposure"]);
+            directshotPlugin.ReInitialiseSettings((double)Controller.GetController().scanSettings["Exposure"]);
             directshotPlugin.AcquisitionStarting();
 
             // Time initialization step
@@ -122,26 +111,26 @@ namespace ConfocalMicroscopeControl
 
             // Loop for X axis
             for (double XNumber = 0;
-                XNumber < (double)controllerInstance.scanSettings["GalvoXRes"];
+                XNumber < (double)Controller.GetController().scanSettings["GalvoXRes"];
                 XNumber++)
             {
                 // Reset Y axis for new line
-                gController.SetGalvoYSetpoint(
-                             (double)controllerInstance.scanSettings["GalvoYStart"]);
-                galvoYValue = gController.GetGalvoYSetpoint();
+                GalvoPairPlugin.GetController().SetGalvoYSetpoint(
+                             (double)Controller.GetController().scanSettings["GalvoYStart"]);
+                galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
 
                 // Calculate new X galvo point from current scan point 
-                double currentGalvoXpoint = (double)controllerInstance.
+                double currentGalvoXpoint = (double)Controller.GetController().
                     scanSettings["GalvoXStart"] + XNumber *
-                    ((double)controllerInstance.scanSettings["GalvoXEnd"] -
-                    (double)controllerInstance.scanSettings["GalvoXStart"]) /
-                    (double)controllerInstance.scanSettings["GalvoXRes"];
+                    ((double)Controller.GetController().scanSettings["GalvoXEnd"] -
+                    (double)Controller.GetController().scanSettings["GalvoXStart"]) /
+                    (double)Controller.GetController().scanSettings["GalvoXRes"];
 
                 // Move X galvo to new scan point 
-                gController.SetGalvoXSetpoint(currentGalvoXpoint);
+                GalvoPairPlugin.GetController().SetGalvoXSetpoint(currentGalvoXpoint);
 
                 // Measure X galvo 
-                galvoXValue = gController.GetGalvoXSetpoint();
+                galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
 
                 // Prep the data for fast scan
                 ScanPoint sp = new ScanPoint();
@@ -152,21 +141,21 @@ namespace ConfocalMicroscopeControl
 
                 // Loop for Y axis
                 for (double YNumber = 0;
-                    YNumber < (double)controllerInstance.scanSettings["GalvoYRes"];
+                    YNumber < (double)Controller.GetController().scanSettings["GalvoYRes"];
                     YNumber++)
                 {
                     // Calculate new Y galvo point from current scan point 
-                    double currentGalvoYpoint = (double)controllerInstance.
+                    double currentGalvoYpoint = (double)Controller.GetController().
                         scanSettings["GalvoYStart"] + YNumber *
-                        ((double)controllerInstance.scanSettings["GalvoYEnd"] -
-                        (double)controllerInstance.scanSettings["GalvoYStart"]) /
-                        (double)controllerInstance.scanSettings["GalvoYRes"];
+                        ((double)Controller.GetController().scanSettings["GalvoYEnd"] -
+                        (double)Controller.GetController().scanSettings["GalvoYStart"]) /
+                        (double)Controller.GetController().scanSettings["GalvoYRes"];
 
                     // Move Y galvo to new scan point
-                    gController.SetGalvoYSetpoint(currentGalvoYpoint);
+                    GalvoPairPlugin.GetController().SetGalvoYSetpoint(currentGalvoYpoint);
 
                     // Measure Y galvo 
-                    galvoYValue = gController.GetGalvoYSetpoint();
+                    galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
 
                     // Time Y galvo move
                     long timerFastMove = timer.ElapsedMilliseconds;
