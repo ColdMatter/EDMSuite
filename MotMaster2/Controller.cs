@@ -20,6 +20,7 @@ using System.Windows;
 using System.Runtime.Serialization.Formatters.Binary;
 using UtilsNS;
 using ErrorManager;
+using System.Threading.Tasks;
 
 namespace MOTMaster2
 {
@@ -57,6 +58,7 @@ namespace MOTMaster2
         public static MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
+        private static Exception runThreadException = null;
 
         public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
@@ -337,23 +339,36 @@ namespace MOTMaster2
 
         internal void StopRunning()
         {
+            
             if (!config.Debug)
             {
+                muquans.DisposeAll();
                 WaitForRunToFinish();
                 while (IsRunning() && !StaticSequence)
                 {
                     WaitForRunToFinish();
                    
                 }
-                if(StaticSequence) releaseHardware();
-                muquans.DisposeAll();
+                //if(StaticSequence) releaseHardware();
+                releaseHardware();
+                
                 
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
         }
 
-       
+        internal bool CheckForRunErrors()
+        {
+            if (runThreadException == null) return false;
+            else
+            {
+                status = RunningState.stopped;
+                Exception ex = runThreadException;
+                runThreadException = null;
+                throw ex;
+            }
+        }
         #endregion
 
         #region Housekeeping on UI
@@ -453,6 +468,21 @@ namespace MOTMaster2
         }
         public void RunStart(Dictionary<string,object> paramDict, bool loop = false)
         {
+            //runThread = new Thread(delegate()
+            //{
+            //    try
+            //    {
+            //        this.Run(paramDict);
+            //    }
+            //    catch (ThreadAbortException) { }
+            //    catch (Exception e)
+            //    {
+            //        status = RunningState.stopped;
+            //        throw e;
+                    
+            //    }
+
+            //});
             runThread = new Thread(new ParameterizedThreadStart(this.Run));
            // StaticSequence = loop;
             runThread.Name = "MOTMaster Controller";
@@ -463,7 +493,8 @@ namespace MOTMaster2
         }
         public void WaitForRunToFinish()
         {
-            if (runThread != null) runThread.Join();
+            if (runThread != null) { runThread.Join();}
+            if (IsRunning()) CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
 
@@ -499,7 +530,8 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                    if(!StaticSequence)sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence || myBatchNumber==0)sequence = getSequenceFromSequenceData(dict);
+                    if (sequence == null) { return; }
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (myBatchNumber == 0)
                     {
@@ -608,8 +640,7 @@ namespace MOTMaster2
             }
             else
             {
-                ErrorMgr.errorMsg("Sequence not found. \n Check that it has been built using the datagrid or loaded from a script.",-3);
-
+                ErrorMgr.errorMsg(runThreadException.Message, -5);
             }
             status = RunningState.stopped;
             //Dereferences the MMScan object
@@ -792,8 +823,8 @@ namespace MOTMaster2
             try { builder.BuildSequence(); }
             catch (Exception e)
             {
-                    ErrorMgr.errorMsg("Error building sequence: "+e.Message,100,true);
-                    return null;
+             runThreadException = new Exception("Error building sequence: \n"+e.Message);
+             return null;
             }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard,config.UseMuquans);
             return sequence;
@@ -1235,7 +1266,6 @@ namespace MOTMaster2
     public class DataEventArgs : EventArgs
     {
         public object Data { get; set; }
-
         public DataEventArgs(object data) : base()
         {
             Data = data;

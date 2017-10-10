@@ -168,8 +168,9 @@ namespace DAQ.HAL
 
             stopwatch = new Stopwatch();
             serialCounter = 0;
-            if(!slaveComm.Connected)slaveComm.Connect();
-            if(!aomComm.Connected) aomComm.Connect();
+            if (!slaveComm.Connected) slaveComm.Connect();
+            if (!aomComm.Connected) aomComm.Connect();
+           
             //stopwatch.Start();
             if (runningTask == null) {runningTask = counterTask; }
             counterTask.Start();
@@ -193,11 +194,11 @@ namespace DAQ.HAL
         /// </summary>
         public void DisposeAll()
         {
-            slaveComm.Disconnect();
-            aomComm.Disconnect();
+            if (slaveComm.Connected)slaveComm.Disconnect();
+            if (aomComm.Connected) aomComm.Disconnect();
             runningTask = null;
             //counterTask.Stop();
-            counterTask.Dispose();
+            if (counterTask != null )counterTask.Dispose();
         }
        
     }

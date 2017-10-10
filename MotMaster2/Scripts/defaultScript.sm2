@@ -519,10 +519,8 @@
       },
       "usedAnalogChannels": [
         "zbiasCoil",
-        "ybiasCoil",
         "xbiasCoil",
-        "xbias2DCoil",
-        "zmaomFreq"
+        "xbias2DCoil"
       ],
       "serialCommands": [
         {
@@ -1415,7 +1413,7 @@
           "_selectedItem": [
             {
               "Name": "X Values",
-              "Value": "0,1.4"
+              "Value": "0,molassesRampTime"
             },
             {
               "Name": "Y Values",
@@ -1455,7 +1453,7 @@
       "serialCommands": [
         {
           "Name": "muquansSlave",
-          "Value": "set_dds ddsq; sweep_to slave0 98.75e6 1.4e-3; ext_update"
+          "Value": "set_dds ddsq; sweep_to slave0 99.6562e6 molassesRampTime; ext_update"
         },
         {
           "Name": "microwaveSynth",
@@ -1463,14 +1461,14 @@
         },
         {
           "Name": "muquansAOM",
-          "Value": "sweep_to mphi 70.15e6 1.4e-3; ext_update"
+          "Value": "sweep_to mphi 64e6 molassesRampTime; ext_update"
         }
       ],
       "Name": "Freq ramp",
       "Description": "",
       "Enabled": true,
       "Duration": "molassesRampTime",
-      "Timebase": 1,
+      "Timebase": 2,
       "RS232Commands": true,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -1607,7 +1605,7 @@
       "Name": "Wait",
       "Description": "",
       "Enabled": true,
-      "Duration": "3.5",
+      "Duration": "molassesDelay",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -1767,10 +1765,22 @@
         "motTTL": false
       },
       "usedAnalogChannels": [
-        "mphiCTRL",
-        "motCTRL"
+        "mphiCTRL"
       ],
-      "serialCommands": [],
+      "serialCommands": [
+        {
+          "Name": "muquansSlave",
+          "Value": "set_dds ddsq; sweep_to slave0 99.6562e6 1.6e-3; ext_update"
+        },
+        {
+          "Name": "microwaveSynth",
+          "Value": ""
+        },
+        {
+          "Name": "muquansAOM",
+          "Value": "sweep_to mphi 64e6 1.6e-3; ext_update"
+        }
+      ],
       "Name": "Intensity ramp",
       "Description": "",
       "Enabled": true,
@@ -1970,13 +1980,13 @@
           "Value": false
         },
         "slaveDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "ramanDDSTrig": {
           "Value": false
         },
         "aomDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "cameraTTL": {
           "Value": false
@@ -3734,9 +3744,9 @@
       "serialCommands": [],
       "Name": "2T Dwell Before",
       "Description": "",
-      "Enabled": false,
-      "Duration": 100.0,
-      "Timebase": 0,
+      "Enabled": true,
+      "Duration": "5",
+      "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
         "zmaomFreq": 0,
@@ -4487,7 +4497,7 @@
       "Name": "Detection B field 2",
       "Description": "DNS",
       "Enabled": true,
-      "Duration": ".1",
+      "Duration": "1",
       "Timebase": 1,
       "RS232Commands": false,
       "AnalogValueTypes": {
@@ -4536,13 +4546,13 @@
           "Value": false
         },
         "slaveDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "ramanDDSTrig": {
           "Value": true
         },
         "aomDDSTrig": {
-          "Value": true
+          "Value": false
         },
         "cameraTTL": {
           "Value": false
@@ -5513,7 +5523,12 @@
         "ramanTTL": false,
         "motTTL": false
       },
-      "usedAnalogChannels": [],
+      "usedAnalogChannels": [
+        "yaomAtten",
+        "zmaomFreq",
+        "motCTRL",
+        "zmaomAtten"
+      ],
       "serialCommands": [],
       "Name": "DetWait",
       "Description": "DNS",
@@ -5535,17 +5550,17 @@
         "yaomFreq": 0,
         "pushaomAtten": 0,
         "mot3DCoil": 0,
-        "motCTRL": 4,
-        "mphiCTRL": 4,
-        "xbiasCoil": 4,
-        "ybiasCoil": 4,
-        "zbiasCoil": 1,
-        "zpaomFreq": 4,
-        "zmaomFreq": 4,
-        "xaomAtten": 4,
-        "yaomAtten": 4,
-        "zpaomAtten": 4,
-        "zmaomAtten": 4
+        "yaomAtten": 0,
+        "mphiCTRL": 0,
+        "zmaomFreq": 0,
+        "motCTRL": 0,
+        "zmaomAtten": 0,
+        "zbiasCoil": 0,
+        "ybiasCoil": 0,
+        "zpaomAtten": 0,
+        "xaomAtten": 0,
+        "zpaomFreq": 0,
+        "xbiasCoil": 0
       },
       "DigitalValueTypes": {
         "serialPreTrigger": {
@@ -6528,13 +6543,6 @@
       "SequenceVariable": false
     },
     {
-      "Name": "mwTime",
-      "Value": 128,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
       "Name": "motCTRL",
       "Value": 2.0,
       "Description": "",
@@ -6544,34 +6552,6 @@
     {
       "Name": "mphiCTRL",
       "Value": 0.22,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "molassesRampTime",
-      "Value": 1.4,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "xBiasMot",
-      "Value": 0.78,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "yBiasMot",
-      "Value": -0.25,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "zBiasMot",
-      "Value": -0.38,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
@@ -6670,13 +6650,6 @@
     {
       "Name": "PushAtten",
       "Value": 5.7,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "molassesIntRampDelay",
-      "Value": 1.6,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
@@ -6829,13 +6802,6 @@
       "SequenceVariable": true
     },
     {
-      "Name": "zBiasState",
-      "Value": 9,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
       "Name": "xBiasInt",
       "Value": -3.55,
       "Description": "",
@@ -6866,13 +6832,6 @@
     {
       "Name": "yBiasImg",
       "Value": -0.6,
-      "Description": "",
-      "IsHidden": false,
-      "SequenceVariable": true
-    },
-    {
-      "Name": "zBiasImg",
-      "Value": 9,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
@@ -7012,7 +6971,70 @@
     },
     {
       "Name": "expansionTime",
-      "Value": 0.1,
+      "Value": 1.0,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "yBiasMot",
+      "Value": -0.47,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "xBiasMot",
+      "Value": 0.75,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "zBiasMot",
+      "Value": -0.88,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "molassesIntRampDelay",
+      "Value": 1.4,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "molassesRampTime",
+      "Value": 0.001,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "mwTime",
+      "Value": 128,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "zBiasState",
+      "Value": 9,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "zBiasImg",
+      "Value": 9,
+      "Description": "",
+      "IsHidden": false,
+      "SequenceVariable": true
+    },
+    {
+      "Name": "molassesDelay",
+      "Value": 1,
       "Description": "",
       "IsHidden": false,
       "SequenceVariable": true
