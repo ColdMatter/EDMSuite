@@ -325,7 +325,6 @@ Global
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -380,7 +379,6 @@ Global
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -435,7 +433,6 @@ Global
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -486,7 +483,6 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -540,7 +536,6 @@ Global
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -592,7 +587,6 @@ Global
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -647,7 +641,6 @@ Global
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -700,7 +693,6 @@ Global
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -818,7 +810,6 @@ Global
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -876,7 +867,6 @@ Global
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -932,7 +922,6 @@ Global
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -987,7 +976,6 @@ Global
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.EDMTestCrate|x86.ActiveCfg = EDMTestCrate|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Microcavity|Any CPU.ActiveCfg = Microcavity|Any CPU
-		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Microcavity|Any CPU.Build.0 = Microcavity|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Microcavity|Mixed Platforms.ActiveCfg = Microcavity|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Microcavity|x86.ActiveCfg = Microcavity|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Release|Any CPU.ActiveCfg = SrF|Any CPU
@@ -1181,7 +1169,6 @@ Global
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.EDMTestCrate|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.EDMTestCrate|x86.ActiveCfg = Debug|Any CPU
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.Microcavity|Any CPU.ActiveCfg = Release|Any CPU
-		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.Microcavity|Any CPU.Build.0 = Release|Any CPU
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.Microcavity|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.Microcavity|x86.ActiveCfg = Release|Any CPU
 		{EC42DEF0-3671-40AD-86A1-6CE77E70909F}.Release|Any CPU.ActiveCfg = Release|Any CPU
