@@ -1,1 +1,4 @@
-(err:1008) Unable to convert to a Double.
+(err:-5) Error building sequence: 
+Failed to add analog data for Channel:zmaomAtten Step:Detection B field 2
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:5) Incorrect Value given for Start Time. Either choose a parameter name or enter a number.

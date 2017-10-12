@@ -57,6 +57,7 @@ namespace MOTMaster2
             {
                 string data = (string)e.Data;
                 remoteMsg.sendCommand(data);
+                if (messenger != null) messenger.Send(data.Replace("\r\n",String.Empty)+"\n");
             }
         }
 
@@ -64,7 +65,7 @@ namespace MOTMaster2
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
-            controller.WaitForRunToFinish();
+                controller.WaitForRunToFinish();
         }
 
         public void InitVisuals()
@@ -89,31 +90,12 @@ namespace MOTMaster2
         private bool SingleShot(Dictionary<string, object> paramDict, bool loop = false) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
-
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-            try
-            {
-                controller.RunStart(paramDict, loop);
-            }
-            catch (ErrorManager.WarningException w)
-            {
-                ErrorMgr.warningMsg(w.Message);
-                return false;
-            }
-            catch (ErrorException er)
-            {
-                ErrorMgr.errorMsg(er.Message, 11);
-                return false;
-            }
-            catch (Exception e)
-            {
-                ErrorMgr.errorMsg(e.Message, 11, true);
-                return false;
-            }
 
+            controller.RunStart(paramDict, loop);
             return true;
         }
         private bool SingleShot(bool loop = false) // true if OK
@@ -187,6 +169,7 @@ namespace MOTMaster2
             Controller.ExpData.ClearData();
             controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
+            Controller.StaticSequence = true;
             if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
@@ -211,6 +194,7 @@ namespace MOTMaster2
                 }
             }
             controller.StopLogging();
+            Controller.StaticSequence = false;
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
         }
 
@@ -225,9 +209,19 @@ namespace MOTMaster2
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
                 Controller.ExpData.grpMME.Clear();
+                Controller.SaveTempSequence();
                 int Iters = (int)ntbIterNumb.Value;
                 // Start repeat
-                realRun(Iters);
+                try
+                {
+                    realRun(Iters);
+                }
+                catch (Exception ex)
+                {
+                    ErrorMgr.errorMsg(ex.Message, -5);
+                    btnRun_Click(null, null);
+                    return;
+                }
                 return;
             }
 
@@ -340,7 +334,15 @@ namespace MOTMaster2
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
                 SetInterferometerParams(scanDict);
-                ScanFlag = SingleShot(scanDict);
+                try
+                {
+                    ScanFlag = SingleShot(scanDict);
+                }
+                catch (Exception e)
+                {
+                    ErrorMgr.errorMsg("Error running scan: " + e.Message, -2);
+                    break;
+                }
                 lbCurValue.Content = scanItem.ToString();
                 DoEvents();
                 if (!ScanFlag) break;
@@ -350,7 +352,6 @@ namespace MOTMaster2
             param.Value = defaultValue;
             lbCurValue.Content = defaultValue.ToString();
             controller.StopLogging();
-            controller.StopRunning();
         }
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
@@ -362,10 +363,19 @@ namespace MOTMaster2
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
+                Controller.SaveTempSequence();
                 Controller.ExpData.grpMME.Clear();
-
-                realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
-
+                try
+                {
+                    realScan(cbParamsScan.Text, tbFromScan.Text, tbToScan.Text, tbByScan.Text);
+                }
+                catch (Exception ex)
+                {
+                    ErrorMgr.errorMsg(ex.Message, -5);
+                    btnScan_Click(null, null);
+                    return;
+                }
+                controller.StopRunning();
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
@@ -378,6 +388,7 @@ namespace MOTMaster2
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
+                controller.StopRunning();
             }
 
             if (btnScan.Content.Equals("Abort Remote"))
@@ -386,6 +397,7 @@ namespace MOTMaster2
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 ScanFlag = false;
+                controller.StopRunning();
                 //Send Remote Message to AxelHub
                 if (!Utils.isNull(sender))
                 {
@@ -513,7 +525,7 @@ namespace MOTMaster2
                 // Process open file dialog box results
                 if (result != true) return;
                 string filename = dlg.FileName;
-                controller.SaveSequenceToPath(filename);
+                Controller.SaveSequenceToPath(filename);
             }
             else
                 ErrorMgr.warningMsg("You have tried to save a Sequence before loading a script", -1, true);
@@ -532,7 +544,7 @@ namespace MOTMaster2
             // Process open file dialog box results
             if (result != true) return;
             string filename = dlg.FileName;
-            controller.LoadSequenceFromPath(filename);
+            Controller.LoadSequenceFromPath(filename);
         }
 
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
@@ -671,8 +683,10 @@ namespace MOTMaster2
         {
             SequenceParser sqnParser = new SequenceParser();
             bool verified = false;
+
             //Checks the validity of all the values, but does not assign them until the sequence is built
             //TODO: Add a type check to make this work for AnalogItems or SerialItems
+            if (propertyGrid.DataContext == null) return;
             if (propertyGrid.DataContext.GetType() == typeof(List<AnalogArgItem>)) verified = ParseAnalogItems(sqnParser);
             else if (propertyGrid.DataContext.GetType() == typeof(List<SerialItem>)) verified = ParseSerialItems(sqnParser);
             if (verified)
@@ -705,6 +719,7 @@ namespace MOTMaster2
         }
         private bool ParseAnalogItems(SequenceParser sqnParser)
         {
+            //TODO Fix this to ignore no start time value
             foreach (AnalogArgItem analogItem in (List<AnalogArgItem>)propertyGrid.DataContext)
             {
                 double analogRawValue;
@@ -743,8 +758,16 @@ namespace MOTMaster2
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //Save the currently open sequence to a default location
-            List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-            controller.SaveSequenceAsDefault(steps);
+            MessageBoxResult result = MessageBox.Show("MOTMaster is closing. Do you want to save the sequence?","Save Sequence to File/Default" ,MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes)
+            {
+                SaveSequence_Click(sender, null);
+            }
+            else if (result == MessageBoxResult.No)
+            {
+                //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                Controller.SaveSequenceAsDefault();
+            }
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)
@@ -772,7 +795,7 @@ namespace MOTMaster2
 
         public bool Interpreter(string json)
         {
-            if (messenger != null) messenger.Send("<" + json + ">");
+            //if (messenger != null) messenger.Send("<" + json + ">");
             //return true;
             //string js = File.ReadAllText(@"e:\VSprojects\set.mme");
             MMexec mme = JsonConvert.DeserializeObject<MMexec>(json);
@@ -806,6 +829,10 @@ namespace MOTMaster2
                         if (mme.prms.ContainsKey("strobe2") && controller.phaseStrobes.DoubleStrobe) controller.phaseStrobes.Strobe2 = Convert.ToDouble(mme.prms["strobe2"]);
                         controller.phaseStrobes.Count = 0;
                     }
+                    else if (mme.sender.Equals("Python"))
+                    {
+                        realRun(cycles);
+                    }
                     ntbIterNumb.Value = cycles;
                     dispatcherTimer.Start();
                     break;
@@ -828,10 +855,10 @@ namespace MOTMaster2
                     }
                     break;
                 case ("load"):
-                    controller.LoadSequenceFromPath((string)mme.prms["file"]);
+                    Controller.LoadSequenceFromPath((string)mme.prms["file"]);
                     break;
                 case ("save"):
-                    controller.SaveSequenceToPath((string)mme.prms["file"]);
+                    Controller.SaveSequenceToPath((string)mme.prms["file"]);
                     break;
                 case ("abort"):
                     //Stop running
@@ -853,7 +880,7 @@ namespace MOTMaster2
             if (remoteMsg != null)
             {
                 remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
-                controller.SendDataRemotely = (cbHub.SelectedIndex == 2);
+                controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 3);
             }
             if (btnRemote == null) return;
             if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
@@ -879,7 +906,7 @@ namespace MOTMaster2
             {
                 if (btnRemote.Content.Equals("Connect"))
                 {
-                    messenger = new RemoteMessenger();
+                    messenger = new RemoteMessenger("127.0.0.1","127.0.0.1");
                     messenger.Remote += Interpreter;
                     Log("Awaiting remote requests");
                     btnRemote.Content = "Disconnect";

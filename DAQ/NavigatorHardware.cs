@@ -20,11 +20,11 @@ namespace DAQ.HAL
             //add information for MMConfig
             config = new MMConfig(false, false, false,Environment.Environs.Debug);
             config.HSDIOCard = true;
-            config.UseAI = true;
+            config.UseAI = false;
             config.DigitalPatternClockFrequency = 20000000;
             config.UseMuquans = true;
             config.UseMMScripts = false;
-            config.UseMSquared = true;
+            config.UseMSquared = false;
             Info.Add("MotMasterConfiguration", config);
             //add the boards - perhaps these values can be derived from a settings file
             Boards.Add("multiDAQ", "/Dev1");
@@ -76,7 +76,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
-            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 4);
+            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
             AddDigitalOutputChannel("shutter", hsdioBoard, 0, 6);
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
@@ -87,7 +87,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
             AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
-            AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
+//            AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("Analog Trigger", hsdioBoard, 0, 16);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 
@@ -129,7 +129,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
-            AddCounterChannel("Counter", multiBoard + "/ctr0");          
+            AddCounterChannel("Counter", multiBoard + "/ctr0");
         }
     }
 }

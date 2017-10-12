@@ -32,14 +32,18 @@ namespace DAQ.HAL
         {
             try
             {
+                //TODO check connect and disconnect doesn't cause timing issues
                 this.serial.Write(message);
                 this.serial.Flush(NationalInstruments.VisaNS.BufferTypes.OutBuffer, false);
-                
-                
+           
             }
             catch { throw new Exception("Error writing serial command: "+message); }
         }
 
+        public bool Connected
+        {
+        get {  return this.connected;}
+        }
        
         
     }
@@ -59,6 +63,7 @@ namespace DAQ.HAL
         private int counts;
         private Stopwatch stopwatch;
         int serialCounter = 0;
+        private bool loopMode;
 
        
 
@@ -98,84 +103,27 @@ namespace DAQ.HAL
             return info;
 
         }
-        #region Command Building
-        public string BuildLaserString(string laser, string command)
-        {
-            string msg;
-            if (laser == "mphi")
-                msg = command + " mphi ";
-            else
-            {
-                if (laser == "raman")
-                    msg = "set_dds dds_raman; " + command + " ";
-                else
-                    msg = "set_dds ddsq; " + command + " " + laser + " ";
-            }
-            return msg;
-        }
-
-        public string SetFrequency(string laser, double val)
-        {
-            string msg = BuildLaserString(laser, "set_freq");
-            msg += val + "e6; ext_update\n";
-            return msg;
-        }
-
-        public string SetPhase(string laser, double val)
-        {
-            string msg = BuildLaserString(laser, "set_phase");
-            msg += val + "; ext_update\n";
-            return msg;
-        }
-        //Sweeps the frequency of a laser. The frequency value is a DDS frequency in MHz and the time is in ms.
-        public string SweepFrequency(string laser, double freqTo, double time)
-        {
-            string msg = BuildLaserString(laser, "sweep_to");
-            msg += freqTo + "e6 " + time + "e-3; ext_update\n";
-            return msg;
-        }
-
-        public void SetMOTFrequency(double freq)
-        {
-            //ddsVal = 88.8125 - 0.0625 * freq;
-            slaveCommands.Add(SetFrequency("slave0", freq));
-        }
-        public void SetMPhiFrequency(double freq)
-        {
-           //double ddsVal = 107.975 + 0.25 * freq;
-            aomCommands.Add(SetFrequency("mphi", freq));
-        }
-
-        public void SweepMOTFrequency(double freq, double time)
-        {
-            //double ddsVal = 88.8125 - 0.0625 * freq;
-            slaveCommands.Add(SweepFrequency("slave0", freq, time));
-        }
-
-        public void SweepMphiFrequency(double freq, double time)
-        {
-            //double ddsVal = 107.975 + 0.25 * freq;
-            aomCommands.Add(SweepFrequency("mphi", freq, time));
-        }
-        #endregion
+        
         /// <summary>
         /// Configures the counter task on a specified counter channel. The sample clock for this task is the PFI channel used to trigger serial communication
         /// </summary>
         public void Configure(bool loop)
         {
-           
-            counterTask = new Task();
+            loopMode = loop;
+            if (runningTask == null)
+            {
+                counterTask = new Task();
 
-            CounterChannel counter = (CounterChannel) Environs.Hardware.CounterChannels["Counter"];
-            counterTask.CIChannels.CreateCountEdgesChannel(counter.PhysicalChannel, counter.Name, CICountEdgesActiveEdge.Rising, 0, CICountEdgesCountDirection.Up);
-            counterTask.CIChannels[0].CountEdgesTerminal = (string)Environs.Hardware.Boards["analogOut"] + "/pfi1";
+                CounterChannel counter = (CounterChannel)Environs.Hardware.CounterChannels["Counter"];
+                counterTask.CIChannels.CreateCountEdgesChannel(counter.PhysicalChannel, counter.Name, CICountEdgesActiveEdge.Rising, 0, CICountEdgesCountDirection.Up);
+                counterTask.CIChannels[0].CountEdgesTerminal = (string)Environs.Hardware.Boards["analogOut"] + "/pfi1";
 
-            counterTask.SampleClock += new SampleClockEventHandler(counterTask_Sample);
-        
-            counterTask.Timing.ConfigureSampleClock((string)Environs.Hardware.Boards["analogOut"] + "/pfi1", 100000, SampleClockActiveEdge.Rising, SampleQuantityMode.HardwareTimedSinglePoint);
+                counterTask.SampleClock += new SampleClockEventHandler(counterTask_Sample);
 
-            counterTask.Control(TaskAction.Verify);
-            
+                counterTask.Timing.ConfigureSampleClock((string)Environs.Hardware.Boards["analogOut"] + "/pfi1", 10000, SampleClockActiveEdge.Rising, SampleQuantityMode.HardwareTimedSinglePoint);
+
+                counterTask.Control(TaskAction.Verify);
+            }
         }
 
         
@@ -183,12 +131,16 @@ namespace DAQ.HAL
         {
             lock (slaveCommands)
             {
-                if (serialCounter < slaveCommands.Count) slaveComm.Output(slaveCommands[serialCounter]);
+                if (serialCounter == 0) stopwatch.Start();
+                if (serialCounter < slaveCommands.Count)slaveComm.Output(slaveCommands[serialCounter]);
+                Console.WriteLine(string.Format("wrote command {0}:{1} at {2}", serialCounter, slaveCommands[serialCounter],
+                  stopwatch.ElapsedMilliseconds));
                 if (serialCounter < aomCommands.Count) aomComm.Output(aomCommands[serialCounter]);
-                serialCounter++;
-                if (serialCounter == slaveCommands.Count) serialCounter = 0; //Reset to allow for loop mode
-                Console.WriteLine(string.Format("wrote command {0} at {1}", serialCounter - 1,
+                Console.WriteLine(string.Format("wrote command {0}:{1} at {2}", serialCounter, aomCommands[serialCounter],
                     stopwatch.ElapsedMilliseconds));
+                serialCounter++;
+                if (serialCounter == slaveCommands.Count) { if (loopMode) serialCounter = 0; } //Reset to allow for loop mode
+                
             }
         }
 
@@ -196,34 +148,16 @@ namespace DAQ.HAL
         /// Builds the string messages used for each command to the Muquans laser. These are added to a list of each DDS
         /// </summary>
         /// <param name="commands"></param>
-        public void BuildCommands(List<MuquansCommand> commands)
+        public void BuildCommands(List<SerialCommand> commands)
         {
-            foreach (MuquansCommand command in commands)
+            foreach (SerialCommand command in commands)
             {
                 if (command.rawMessage != null)
                 {
-                    if (command.laser == "mphi") aomCommands.Add(command.rawMessage);
-                    else if (command.laser == "slave0") slaveCommands.Add(command.rawMessage);
+                    if (command.id == "mphi") aomCommands.Add(command.rawMessage);
+                    else if (command.id == "slave0") slaveCommands.Add(command.rawMessage);
                     else throw new ArgumentException();
                     continue;
-                }
-                if (command.instruction == Instruction.set)
-                {
-                    if (command.laser == "mphi")
-                        SetMPhiFrequency(command.frequency);
-                    else if (command.laser == "raman")
-                        throw new NotImplementedException();
-                    else
-                        SetMOTFrequency(command.frequency);
-                }
-                else if (command.instruction == Instruction.sweep)
-                {
-                    if (command.laser == "mphi")
-                        SweepMphiFrequency(command.frequency, command.sweeptime);
-                    else if (command.laser == "raman")
-                        throw new NotImplementedException();
-                    else
-                        SweepMOTFrequency(command.frequency, command.sweeptime);
                 }
                 else
                     throw new NotImplementedException();
@@ -234,63 +168,49 @@ namespace DAQ.HAL
 
             stopwatch = new Stopwatch();
             serialCounter = 0;
-            slaveComm.Connect();
-            aomComm.Connect();
-            ////Outputs the first commands then waits 10ms before returning
-            //aomComm.Output(aomCommands[serialCounter]);
-            //slaveComm.Output(slaveCommands[serialCounter]);
-            //serialCounter++;
-            Thread.Sleep(10);
-            stopwatch.Start();
-            
+            if (!slaveComm.Connected) slaveComm.Connect();
+            if (!aomComm.Connected) aomComm.Connect();
+           
+            //stopwatch.Start();
+            if (runningTask == null) {runningTask = counterTask; }
             counterTask.Start();
             
         }
 
+        /// <summary>
+        /// Clears the output for the serial channels, but keeps the tasks  running to reduce timing jitter
+        /// </summary>
         public void StopOutput()
         {
-            counterTask.Dispose();
-            slaveComm.Disconnect();
-            aomComm.Disconnect();
             slaveCommands = new List<string>();
             aomCommands = new List<string>();
-            stopwatch.Stop();
+            counterTask.Stop();
+            serialCounter = 0;
+            stopwatch.Restart();
         }
-      
+        
+        /// <summary>
+        /// Disposes of the counter task and the serial connections once the entire run has finished
+        /// </summary>
+        public void DisposeAll()
+        {
+            if (slaveComm.Connected)slaveComm.Disconnect();
+            if (aomComm.Connected) aomComm.Disconnect();
+            runningTask = null;
+            //counterTask.Stop();
+            if (counterTask != null )counterTask.Dispose();
+        }
        
     }
       public enum Instruction: byte {sweep,set,phase};
-    public struct MuquansCommand
+    public struct SerialCommand
         { 
-            public string laser;
-            public double frequency;
-            public double sweeptime;
-            public Instruction instruction;
+            public string id;
             public string rawMessage;
-     
-            public MuquansCommand(string laser,double frequency, Instruction type, double time)
-                {
-                    this.laser = laser;
-                    this.frequency = frequency;
-                    this.sweeptime = time;
-                    this.instruction = type;
-                    this.rawMessage = null;
-                   
-                }
-           public MuquansCommand(string laser,double frequency, Instruction type)
-            {
-                this.laser = laser;
-                this.frequency = frequency;
-                this.sweeptime = 0.0;
-                this.instruction = type;
-                this.rawMessage = null;
-            }
-         public MuquansCommand(string laser,string rawMessage)
+    
+         public SerialCommand(string id,string rawMessage)
            {
-               this.laser = laser;
-               this.frequency = 0.0;
-               this.sweeptime = 0.0;
-               this.instruction = Instruction.set;
+               this.id = id;
                this.rawMessage = rawMessage;
            }
         }

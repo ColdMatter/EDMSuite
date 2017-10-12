@@ -202,8 +202,7 @@ namespace DAQ.HAL
             {
                 return;
             }
-            if (!done) dTime = hsTask.WaitUntilDone(10000);
-            else return;
+            dTime = hsTask.WaitUntilDone(10000);
             while (dTime != 0)
             {
                 dTime = hsTask.WaitUntilDone(10000);

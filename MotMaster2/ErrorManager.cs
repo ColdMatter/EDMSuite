@@ -119,6 +119,7 @@ namespace ErrorManager
 
         private async static Task WriteFileAsync(string txt)
         {
+
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
             else return;
         }

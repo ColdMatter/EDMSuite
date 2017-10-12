@@ -32,6 +32,7 @@ namespace MOTMaster2.SequenceData
             Value = 0.0;
             Description = "";
             IsHidden = false;
+            SequenceVariable = true;
         }
         public Parameter(string name, string description, object value,bool isHidden = false, bool sequenceVar = true)
         {
@@ -41,12 +42,10 @@ namespace MOTMaster2.SequenceData
             IsHidden = isHidden;
             SequenceVariable = sequenceVar;
         }
-
         public Parameter Copy()
         {
             Parameter newParam = new Parameter(this.Name,this.Description,this.Value,this.IsHidden,this.SequenceVariable);
             return newParam;
-
         }
 
         //Equality is only defined if two parameters have the same name. This is to make it easier for overriding them when loading a new sequence
@@ -55,7 +54,7 @@ namespace MOTMaster2.SequenceData
             if (obj.GetType() == typeof(Parameter))
             {
                 Parameter param = obj as Parameter;
-                if (param.Name == this.Name && param.Value == this.Value)
+                if (param.Name == this.Name && param.Value == this.Value && param.SequenceVariable == this.SequenceVariable)
                 {
                     return true;
                 }

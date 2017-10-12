@@ -193,7 +193,13 @@ namespace MOTMaster2.SequenceData
 
         internal List<SerialItem> GetSerialData()
         {
-            if (serialCommands.Count == 0) serialCommands.Add(new SerialItem("", ""));
+            //TODO Create SerialItems based on hardware channels
+            if (serialCommands.Count == 0 || serialCommands[0].Value == "")
+            {
+                serialCommands = new List<SerialItem>();
+                foreach (string inst in Environs.Hardware.Instruments.Keys)
+                { if (Environs.Hardware.Instruments[inst] is DAQ.HAL.RS232Instrument) serialCommands.Add(new SerialItem(inst, "")); }
+            }
             return serialCommands;
         }
     }
@@ -289,7 +295,7 @@ namespace MOTMaster2.SequenceData
 
         public string GetFunction()
         {
-            if (_selectedItem[2].Name != "Function") throw new Exception("Channel arguments do not have a function string");
+            if (_selectedItem[2].Name != "Function") { throw new Exception("Channel arguments do not have a function string"); }
             return _selectedItem[2].Value;
         }
 

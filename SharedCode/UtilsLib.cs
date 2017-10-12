@@ -109,6 +109,7 @@ namespace UtilsNS
         }
         public void DropLastChar()
         {
+            if (buffer.Count == 0) return;
             string lastItem = buffer[buffer.Count - 1];
             buffer[buffer.Count - 1] = lastItem.Substring(0, lastItem.Length - 1);
         }

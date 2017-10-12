@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using Newtonsoft.Json;
+using NetMQ;
 
 namespace MOTMaster2
 {
@@ -18,9 +19,12 @@ namespace MOTMaster2
         bool logComm = true;
         private string serverName; // incomming messages 
         private string clientName; // outgoing messages
+        private IPEndPoint clientEndPoint;
         private TcpListener listener;
+        private TcpClient client;
         private Int32 port = 12000;
         private IPAddress localAddr;
+
 
         public delegate bool RemoteHandler(string msg);
         public event RemoteHandler Remote;
@@ -45,7 +49,7 @@ namespace MOTMaster2
             Console.WriteLine(string.Format(System.Diagnostics.Process.GetCurrentProcess().ProcessName + "is listening on {0} port {1}", serverName, port));
             while (true)
             {
-                TcpClient client = await listener.AcceptTcpClientAsync();
+                client = await listener.AcceptTcpClientAsync();
                 Task t = Process(client);
                 await t;
                 client.Close();
@@ -54,14 +58,12 @@ namespace MOTMaster2
 
         private async Task Process(TcpClient tcpClient)
         {
-            string clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString();
-            Console.WriteLine("Received connection request from "+ clientEndPoint);
+            clientEndPoint = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+            Console.WriteLine("Received connection request from "+ clientEndPoint.ToString());
             try
             {
                 NetworkStream networkStream = tcpClient.GetStream();
                 StreamReader reader = new StreamReader(networkStream);
-                StreamWriter writer = new StreamWriter(networkStream);
-                writer.AutoFlush = true;
                 while (true)
                 {
                     string request = await reader.ReadLineAsync();
@@ -87,7 +89,7 @@ namespace MOTMaster2
 
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        private static async Task<string> SendRequest(string server, int port, string msg)
+        private static async Task<string> SendRequest(TcpClient client,IPEndPoint endPoint, string msg)
         {
             try
             {
@@ -104,15 +106,14 @@ namespace MOTMaster2
                 }
                 if (ipAddress == null)
                     throw new Exception("No IPv4 address for server"); */
-                TcpClient client = new TcpClient();
-                await client.ConnectAsync(server, port); // Connect ipAddress
+                if (!client.Connected)client.Connect(endPoint);
                 NetworkStream networkStream = client.GetStream();
                 StreamWriter writer = new StreamWriter(networkStream);
                 StreamReader reader = new StreamReader(networkStream);
                 writer.AutoFlush = true;
-                await writer.WriteLineAsync(msg);
+                writer.WriteLine(msg);
                 //string response = await reader.ReadLineAsync();
-                client.Close();
+              //  client.Close();
                 return "OK";
             }
             catch (Exception ex)
@@ -123,7 +124,7 @@ namespace MOTMaster2
 
         public async void Send(string msg)
         {
-            string sResponse = await SendRequest(clientName, port, msg);
+            string sResponse = await SendRequest(client,clientEndPoint,msg);
             if (logComm) Console.WriteLine("Sent out: " + msg + "\n");
             if (!sResponse.Equals("OK")) Console.WriteLine("Error sending a message" + sResponse + "\n");
         }
@@ -131,6 +132,7 @@ namespace MOTMaster2
         public void Close()
         {
             listener.Stop();
+            if (client != null) client.Close();
         }
 
     }
