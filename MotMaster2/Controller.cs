@@ -472,7 +472,7 @@ namespace MOTMaster2
             else
                 return false;
         }
-        public void RunStart(Dictionary<string,object> paramDict, bool loop = false)
+        public void RunStart(Dictionary<string,object> paramDict, bool loop = false, int myBatchNumber = 0)
         {
             //runThread = new Thread(delegate()
             //{
@@ -494,6 +494,7 @@ namespace MOTMaster2
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
+
             runThread.Start(paramDict);
             Console.WriteLine("Thread Starting");
         }

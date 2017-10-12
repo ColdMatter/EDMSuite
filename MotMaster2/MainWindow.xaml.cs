@@ -176,10 +176,10 @@ namespace MOTMaster2
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
             controller.StartLogging();
-
             for (int i = 0; i < numInterations; i++)
             {
                 Console.WriteLine("#: " + i.ToString());
+
                 controller.SetBatchNumber(i);
                 ScanFlag = SingleShot(true);               
                 if (Iters == -1) progBar.Value = i % 100;
@@ -187,6 +187,7 @@ namespace MOTMaster2
                 lbCurNumb.Content = i.ToString();
                 if (!ScanFlag) break;
                 wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
+                controller.WaitForRunToFinish();
                 while (wait4adjust)
                 {
                     Thread.Sleep(20);
