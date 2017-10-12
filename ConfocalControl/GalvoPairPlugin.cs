@@ -35,12 +35,22 @@ namespace ConfocalControl
             return controllerInstance;
         }
 
-        private PluginSettings settings = new PluginSettings();
+        private PluginSettings settings = new PluginSettings("galvoPair");
         public PluginSettings Settings
         {
             get { return settings; }
             set { settings = value; }
         }
+
+        private AnalogInputChannel _galvoXReadChannel;
+        private AnalogOutputChannel _galvoXControlChannel;
+        private AnalogInputChannel _galvoYReadChannel;
+        private AnalogOutputChannel _galvoYControlChannel;
+
+        private double XRangeLow;
+        private double XRangeHigh;
+        private double YRangeLow;
+        private double YRangeHigh;
 
         private Task _galvoXInputTask;
         private Task _galvoYInputTask;
@@ -52,25 +62,45 @@ namespace ConfocalControl
         private AnalogSingleChannelWriter _galvoXwriter;
         private AnalogSingleChannelWriter _galvoYwriter;
 
+        private Object thisLock = new Object(); 
+
         #endregion
 
         #region Initialisation
 
         private void InitialiseSettings()
         {
-            settings["GalvoXRead"] = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["GalvoX"];
-            settings["GalvoXControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["GalvoXControl"];
-            settings["GalvoYRead"] = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["GalvoY"];
-            settings["GalvoYControl"] = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["GalvoYControl"];
-            settings["XRangeLow"] = (double)-5;
-            settings["XRangeHigh"] = (double)5;
-            settings["YRangeLow"] = (double)-5;
-            settings["YRangeHigh"] = (double)5;
+            settings.LoadSettings();
+        }
+
+        public bool IsRunning()
+        {
+            return galvoState == GalvoState.running;
         }
 
         public GalvoPairPlugin() 
         {
             InitialiseSettings();
+
+            _galvoXReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoXRead"]];
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
+            _galvoYReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoYRead"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
+
+            XRangeLow = _galvoXControlChannel.RangeLow;
+            XRangeHigh = _galvoXControlChannel.RangeHigh;
+            YRangeLow = _galvoYControlChannel.RangeLow;
+            YRangeHigh = _galvoYControlChannel.RangeHigh;
+
+            _galvoXInputTask = null;
+            _galvoYInputTask = null;
+            _galvoXOutputTask = null;
+            _galvoYOutputTask = null;
+
+            _galvoXreader = null;
+            _galvoYreader = null;
+            _galvoXwriter = null;
+            _galvoYwriter = null;
         }
 
         #endregion
@@ -83,14 +113,11 @@ namespace ConfocalControl
             _galvoXOutputTask = new Task("galvo X analog set");
             _galvoYOutputTask = new Task("galvo Y analog set");
 
-            double XRangeLow = (double)settings["XRangeLow"]; double XRangeHigh = (double)settings["XRangeHigh"];
-            double YRangeLow = (double)settings["YRangeLow"]; double YRangeHigh = (double)settings["YRangeHigh"];
+            _galvoXReadChannel.AddToTask(_galvoXInputTask, XRangeLow, XRangeHigh);
+            _galvoYReadChannel.AddToTask(_galvoYInputTask, YRangeLow, YRangeHigh);
 
-            ((AnalogInputChannel)settings["GalvoXRead"]).AddToTask(_galvoXInputTask, XRangeLow, XRangeHigh);
-            ((AnalogInputChannel)settings["GalvoYRead"]).AddToTask(_galvoYInputTask, YRangeLow, YRangeHigh);
-
-            ((AnalogOutputChannel)settings["GalvoXControl"]).AddToTask(_galvoXOutputTask, XRangeLow, XRangeLow);
-            ((AnalogOutputChannel)settings["GalvoYControl"]).AddToTask(_galvoYOutputTask, YRangeLow, YRangeLow);
+            _galvoXControlChannel.AddToTask(_galvoXOutputTask, XRangeLow, XRangeHigh);
+            _galvoYControlChannel.AddToTask(_galvoYOutputTask, YRangeLow, YRangeHigh);
 
             _galvoXInputTask.Control(TaskAction.Verify);
             _galvoYInputTask.Control(TaskAction.Verify);
@@ -109,13 +136,26 @@ namespace ConfocalControl
 
         public void AcquisitionFinished()
         {
-            _galvoXInputTask.Dispose();
-            _galvoYInputTask.Dispose();
+            lock (thisLock)
+            {
+                _galvoXInputTask.Dispose();
+                _galvoYInputTask.Dispose();
 
-            _galvoXOutputTask.Dispose();
-            _galvoYOutputTask.Dispose();
+                _galvoXOutputTask.Dispose();
+                _galvoYOutputTask.Dispose();
 
-            galvoState = GalvoState.stopped;
+                _galvoXInputTask = null;
+                _galvoYInputTask = null;
+                _galvoXOutputTask = null;
+                _galvoYOutputTask = null;
+
+                _galvoXreader = null;
+                _galvoYreader = null;
+                _galvoXwriter = null;
+                _galvoYwriter = null;
+
+                galvoState = GalvoState.stopped;
+            }
         }
 
         public double GetGalvoXSetpoint()
@@ -138,61 +178,6 @@ namespace ConfocalControl
         public void SetGalvoYSetpoint(double _newValue)
         {
             _galvoYwriter.WriteSingleSample(true, _newValue);
-        }
-
-        public double[,] GetSingleGalvoPairSetpoint()
-        {
-            if (galvoState == GalvoState.running)
-            {
-                MessageBox.Show("Gavlos already running!");
-
-                // Implement exception
-            }
-
-
-            Task inputTask = new Task("single analog gatherer");
-
-            double XRangeLow = (double)settings["XRangeLow"]; double XRangeHigh = (double)settings["XRangeHigh"];
-            double YRangeLow = (double)settings["YRangeLow"]; double YRangeHigh = (double)settings["YRangeHigh"];
-
-            ((AnalogInputChannel)settings["GalvoXRead"]).AddToTask(inputTask, XRangeLow, XRangeHigh);
-            ((AnalogInputChannel)settings["GalvoYRead"]).AddToTask(inputTask, YRangeLow, YRangeHigh);
-
-            inputTask.Control(TaskAction.Verify);
-
-            AnalogMultiChannelReader reader = new AnalogMultiChannelReader(inputTask.Stream);
-
-            double[,] analogDataIn = reader.ReadMultiSample(1);
-
-            inputTask.Dispose();
-
-            return analogDataIn;
-        }
-
-        public void SetSingleGalvoPairSetpoint(double[,] _newValues)
-        {
-            if (galvoState == GalvoState.running)
-            {
-                MessageBox.Show("Galvos already running!");
-
-                // Implement exception
-            }
-
-            Task outputTask = new Task("single analog set");
-
-            double XRangeLow = (double)settings["XRangeLow"]; double XRangeHigh = (double)settings["XRangeHigh"];
-            double YRangeLow = (double)settings["YRangeLow"]; double YRangeHigh = (double)settings["YRangeHigh"];
-
-            ((AnalogOutputChannel)settings["GalvoXControl"]).AddToTask(outputTask, XRangeLow, XRangeHigh);
-            ((AnalogOutputChannel)settings["GalvoYControl"]).AddToTask(outputTask, YRangeLow, YRangeHigh);
-
-            outputTask.Control(TaskAction.Verify);
-
-            AnalogMultiChannelWriter writer = new AnalogMultiChannelWriter(outputTask.Stream);
-
-            writer.WriteMultiSample(true, _newValues);
-
-            outputTask.Dispose();
         }
     }
 }

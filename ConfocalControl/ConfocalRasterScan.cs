@@ -1,12 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Windows;
+using System.Windows.Media.Media3D;
+using Microsoft.Win32;
+
+using NationalInstruments.DAQmx;
 using DAQ.Environment;
-//using ScanMaster.Acquire.Plugins;
-//using ScanMaster.Acquire;
+
 using Data;
 using Data.Scans;
 using System.Diagnostics;
@@ -20,34 +24,64 @@ namespace ConfocalControl
     /// 
 
     // Uses delegate multicasting to compose and invoke event manager methods in series 
-    public delegate void DataEventHandler(object sender, DataEventArgs e);
-    public delegate void ScanFinishedEventHandler(object sender, EventArgs e);
+    public delegate void DataEventHandler(Point3D[] ps);
+    public delegate void ScanFinishedEventHandler();
+    public delegate void LineFinishedEventHandler(Point[] ps);
 
     public class ConfocalRasterScan
     {
         #region Class members
 
-        // Scan state, Implement !
-        public enum ScanState { stopped, running };
-        public ScanState scanState = ScanState.stopped;
+        // Dependencies should refer to this instance only 
+        private static ConfocalRasterScan controllerInstance;
+        public static ConfocalRasterScan GetController()
+        {
+            if (controllerInstance == null)
+            {
+                controllerInstance = new ConfocalRasterScan();
+            }
+            return controllerInstance;
+        }
+
+        private PluginSettings _rasterScanSettings = new PluginSettings("confocalScan");
+        public PluginSettings scanSettings
+        {
+            get { return _rasterScanSettings; }
+            set { _rasterScanSettings = value; }
+        }
 
         // Bound event managers to class
         public event DataEventHandler Data;
+        public event LineFinishedEventHandler LineFinished;
         public event ScanFinishedEventHandler ScanFinished;
-
-        // Understand this
-        public object ScanitorMonitorLock = new Object();
-
-        // From System.Threading 
-        private Thread acquireThread;
+        public event DaqExceptionEventHandler DaqProblem;
 
         // Define RasterScan state
         enum RasterScanState { stopped, running, stopping };
         private RasterScanState backendState = RasterScanState.stopped;
 
-        // Keeping track of galvo positions
-        private double galvoXValue;
-        private double galvoYValue;
+        // Keeping track of data
+        private List<double> dataX;
+        private List<double> dataY;
+        private List<double>[] dataInputs;
+        private List<Point3D> dataOutputs;
+
+        #endregion
+
+        #region Init
+
+        private void InitialiseSettings()
+        {
+            _rasterScanSettings.LoadSettings();
+        }
+
+        public ConfocalRasterScan() 
+        {
+            InitialiseSettings();
+            dataX = new List<double>();
+            dataY = new List<double>();
+            dataInputs = new List<double>[1];
+        }
 
         #endregion
 
@@ -55,191 +89,182 @@ namespace ConfocalControl
 
         public void StartScan()
         {
-            // Define unparametrerized start method for thread
-            acquireThread = new Thread(new ThreadStart(this.Acquire));
-            acquireThread.Name = "Confocal Raster Scan";
-            acquireThread.Priority = ThreadPriority.Normal;
-            backendState = RasterScanState.running;
+            try
+            {
+                dataInputs[0] = new List<double>();
+                dataOutputs = new List<Point3D>();
 
-            // Start thread
-            acquireThread.Start();
+                SingleCounterPlugin.GetController().AcquisitionStarting();
+                ThreadStart acquirethreadStart = new ThreadStart(SingleCounterPlugin.GetController().PreArm);
+                Thread acquireThread = new Thread(acquirethreadStart);
+                acquireThread.IsBackground = true;
+                acquireThread.Start();
+
+                backendState = RasterScanState.running;
+
+                Acquire();
+            }
+            catch (DaqException e)
+            {
+                if (DaqProblem != null) DaqProblem(e);
+            }
+
         }
 
         public void StopScan()
         {
-            // Ensures no other thread tried to access this object while the method is running 
-            lock (this)
-            {
-                backendState = RasterScanState.stopping;
-            }
+            backendState = RasterScanState.stopping;
         }
 
         private void Acquire()
             // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
         {
-            Stopwatch timer = new System.Diagnostics.Stopwatch();
-            timer.Start();
-
-            // Lock monitor to this thread until Exit is executed in AcquisitionFinishing()
-            Monitor.Enter(ScanitorMonitorLock);
-
-            // Get hold of counter plugin
-            SingleCounterPlugin directshotPlugin = new SingleCounterPlugin();
-
-            // Get Galvo settings.
-            galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-            galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+            GalvoPairPlugin.GetController().AcquisitionStarting();
 
             // Move to the start of the scan.
             GalvoPairPlugin.GetController().SetGalvoXSetpoint(
-                         (double)Controller.GetController().scanSettings["GalvoXStart"]);
-            galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                         (double)scanSettings["GalvoXStart"]);
 
             GalvoPairPlugin.GetController().SetGalvoYSetpoint(
-                         (double)Controller.GetController().scanSettings["GalvoYStart"]);
-            galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-
-            // Get plugins
-            directshotPlugin.ReInitialiseSettings((double)Controller.GetController().scanSettings["Exposure"]);
-            directshotPlugin.AcquisitionStarting();
-
-            // Time initialization step
-            long timerInitialise = timer.ElapsedMilliseconds;
-
-            // Update controller state and GUI. Implement this
-            scanState = ScanState.running;
+                         (double)scanSettings["GalvoYStart"]);
 
             // Loop for X axis
-            for (double XNumber = 0;
-                XNumber < (double)Controller.GetController().scanSettings["GalvoXRes"];
-                XNumber++)
+            for (double YNumber = 0;
+                    YNumber < (double)scanSettings["GalvoYRes"];
+                    YNumber++)
             {
+                List<Point> linePnts = new List<Point>();
                 // Reset Y axis for new line
                 GalvoPairPlugin.GetController().SetGalvoYSetpoint(
-                             (double)Controller.GetController().scanSettings["GalvoYStart"]);
-                galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                             (double)scanSettings["GalvoXStart"]);
 
                 // Calculate new X galvo point from current scan point 
-                double currentGalvoXpoint = (double)Controller.GetController().
-                    scanSettings["GalvoXStart"] + XNumber *
-                    ((double)Controller.GetController().scanSettings["GalvoXEnd"] -
-                    (double)Controller.GetController().scanSettings["GalvoXStart"]) /
-                    (double)Controller.GetController().scanSettings["GalvoXRes"];
+                double currentGalvoYpoint = (double)scanSettings["GalvoYStart"] + YNumber *
+                        ((double)scanSettings["GalvoYEnd"] -
+                        (double)scanSettings["GalvoYStart"]) /
+                        (double)scanSettings["GalvoYRes"];
 
-                // Move X galvo to new scan point 
-                GalvoPairPlugin.GetController().SetGalvoXSetpoint(currentGalvoXpoint);
+                dataY.Add(currentGalvoYpoint);
 
-                // Measure X galvo 
-                galvoXValue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-
-                // Prep the data for fast scan
-                ScanPoint sp = new ScanPoint();
-                sp.ScanParameter = galvoXValue;
-        
-                // Time X galvo move
-                long timerGalvoXMove = timer.ElapsedMilliseconds;
+                // Move Y galvo to new scan point
+                GalvoPairPlugin.GetController().SetGalvoYSetpoint(currentGalvoYpoint);
 
                 // Loop for Y axis
-                for (double YNumber = 0;
-                    YNumber < (double)Controller.GetController().scanSettings["GalvoYRes"];
-                    YNumber++)
+                for (double XNumber = 0;
+                        XNumber < (double)scanSettings["GalvoXRes"];
+                        XNumber++)
                 {
                     // Calculate new Y galvo point from current scan point 
-                    double currentGalvoYpoint = (double)Controller.GetController().
-                        scanSettings["GalvoYStart"] + YNumber *
-                        ((double)Controller.GetController().scanSettings["GalvoYEnd"] -
-                        (double)Controller.GetController().scanSettings["GalvoYStart"]) /
-                        (double)Controller.GetController().scanSettings["GalvoYRes"];
+                    double currentGalvoXpoint = (double)scanSettings["GalvoXStart"] + XNumber *
+                    ((double)scanSettings["GalvoXEnd"] -
+                    (double)scanSettings["GalvoXStart"]) /
+                    (double)scanSettings["GalvoXRes"];
 
-                    // Move Y galvo to new scan point
-                    GalvoPairPlugin.GetController().SetGalvoYSetpoint(currentGalvoYpoint);
+                    dataX.Add(currentGalvoXpoint);
 
-                    // Measure Y galvo 
-                    galvoYValue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-
-                    // Time Y galvo move
-                    long timerFastMove = timer.ElapsedMilliseconds;
-
-                    // Start the shot plugin
-                    directshotPlugin.PreArm();
+                    // Move X galvo to new scan point 
+                    GalvoPairPlugin.GetController().SetGalvoXSetpoint(currentGalvoXpoint);
 
                     // Take datapoint
-                    directshotPlugin.ArmAndWait();
-
-                    // Read out the data
-                    sp.OnShots.Add(directshotPlugin.Shot);
-
-                    // I am adding the fast axis laser position to the 
-                    // Off shots this is a horrible fudge but it is the 
-                    // quickest way to easily plot in realtime
-                    Shot offs = new Shot();
-                    TOF offt = new TOF();
-                    double[] offlist = { galvoYValue };
-                    offt.Data = offlist;
-                    offs.TOFs.Add(offt);
-                    sp.OffShots.Add(offs);
-
-                    // Stop the plugin.
-                    directshotPlugin.PostArm();
-
-                    // Time acquisition
-                    long timerTakeShot = timer.ElapsedMilliseconds;
+                    int latestData = SingleCounterPlugin.GetController().ArmAndWait();
+                    dataInputs[0].Add(latestData);
 
                     // Send up the data bundle
-                    DataEventArgs evArgs = new DataEventArgs();
-                    evArgs.point = sp;
+                    Point linePoint = new Point(XNumber + 1, latestData);
+                    linePnts.Add(linePoint);
 
-                    // Implement this
-                    OnData(evArgs);
-
-                    // Time full processing of shot
-                    long timerProcessShot = timer.ElapsedMilliseconds;
+                    Point3D point = new Point3D(XNumber + 1, YNumber + 1, latestData);
+                    dataOutputs.Add(point);
+                    OnData(dataOutputs.ToArray());
 
                     // Check if scan exit.
                     if (CheckIfStopping())
                     {
-                        // Quit plugin
-                        directshotPlugin.AcquisitionFinished();
+                        // Quit plugins
                         AcquisitionFinishing();
                         return;
                     }
                 }
-                
-                OnScanFinished();
+                OnLineFinished(linePnts.ToArray());
             }
 
-            // Again? 
-            directshotPlugin.AcquisitionFinished();
+            OnScanFinished();
             AcquisitionFinishing();
         }
 
         private void AcquisitionFinishing()
         {
-            Monitor.Pulse(ScanitorMonitorLock);
-            Monitor.Exit(ScanitorMonitorLock);
+            SingleCounterPlugin.GetController().AcquisitionFinished();
+            GalvoPairPlugin.GetController().AcquisitionFinished();
+            dataX = new List<double>();
+            dataY = new List<double>();
+            dataInputs = new List<double>[1];
+            backendState = RasterScanState.stopped;
         }
 
         private bool CheckIfStopping()
         {
             lock (this)
             {
-                if (backendState == RasterScanState.stopping)
-                {
-                    backendState = RasterScanState.stopped;
-                    return true;
-                }
+                if (backendState == RasterScanState.stopping) return true;
                 else return false;
             }
         }
 
-        private void OnData(DataEventArgs e)
+        private void OnData(Point3D[] ps)
         {
-            if (Data != null) Data(this, e);
+            if (Data != null) Data(ps);
+        }
+
+        private void OnLineFinished(Point[] ps)
+        {
+            if (LineFinished != null) LineFinished(ps);
         }
 
         private void OnScanFinished()
         {
-            if (ScanFinished != null) ScanFinished(this, new EventArgs());
+            if (ScanFinished != null) ScanFinished();
+        }
+
+        public void SaveData()
+        {
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            string fileName = "data_try.txt";
+
+            List<string> lines = new List<string>();
+            lines.Add("X, Y, Z"); lines.Add("");
+
+            foreach (Point3D pnt in dataOutputs)
+            {
+                string line = pnt.X.ToString() + ", " + pnt.Y.ToString() + ", " + pnt.Z.ToString();
+                lines.Add(line);
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = directory;
+            saveFileDialog.FileName = fileName;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
+            }
+        }
+
+        public void SaveDataAutomatic()
+        {
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            string fileName = directory + "data_try.txt";
+
+            List<string> lines = new List<string>();
+            lines.Add("X, Y, Z"); lines.Add("");
+
+            foreach (Point3D pnt in dataOutputs)
+            {
+                string line = pnt.X.ToString() + ", " + pnt.Y.ToString() + ", " + pnt.Z.ToString();
+                lines.Add(line);
+            }
+
+            System.IO.File.WriteAllLines(fileName, lines.ToArray());
         }
 
         #endregion 

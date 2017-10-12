@@ -76,9 +76,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controller.cs" />
+    <Compile Include="FileNameConfigure.xaml.cs">
+      <DependentUpon>FileNameConfigure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareConfigure.xaml.cs">
+      <DependentUpon>HardwareConfigure.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PluginSettings.cs" />
     <Compile Include="SingleCounterPlugin.cs" />
+    <Page Include="FileNameConfigure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareConfigure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
