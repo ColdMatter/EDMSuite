@@ -90,7 +90,7 @@ namespace MOTMaster2
 
         private WindfreakSynth microSynth;
         //public string ExperimentRunTag { get; set; }
-        public MMscan? ScanParam { get; set; }
+        public MMscan ScanParam { get; set; }
         public int numInterations;
         MuquansController muquans = null;
         public static ICEBlocDCS M2DCS;
@@ -98,7 +98,6 @@ namespace MOTMaster2
         public PhaseStrobes phaseStrobes;
 
         MMDataIOHelper ioHelper;
-
         SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
@@ -488,7 +487,7 @@ namespace MOTMaster2
                    
                 }
                     if(!StaticSequence)sequence = getSequenceFromSequenceData(dict);
-                    //TODO Change where this is sent. Di we want to send this before each shot during a scan?
+                    //TODO Change where this is sent. Do we want to send this before each shot during a scan?
                     if (myBatchNumber == 0)
                     {
                         //Only intialise and build once
@@ -1140,7 +1139,7 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        public MMexec InitialCommand(MMscan? scan)
+        public MMexec InitialCommand(MMscan scan)
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";

@@ -19,11 +19,15 @@ namespace UtilsNS
 
         public static double EnsureRange(double Value, double MinValue, double MaxValue)
         {
-            return Math.Max(Math.Min(Value, MaxValue), MinValue);
+            if (Value < MinValue) return MinValue;
+            if (Value > MaxValue) return MaxValue;
+            return Value;
         }
         public static int EnsureRange(int Value, int MinValue, int MaxValue)
         {
-            return Math.Max(Math.Min(Value, MaxValue), MinValue);
+            if (Value < MinValue) return MinValue;
+            if (Value > MaxValue) return MaxValue;
+            return Value;
         }
         public static bool InRange(double Value, double MinValue, double MaxValue)
         {
@@ -38,7 +42,7 @@ namespace UtilsNS
             Console.WriteLine("Error: " + errorMsg);
         }
 
-        public static double formatDouble(double d, string format)
+        public static double formatDouble(double d, string format) 
         {
             return Convert.ToDouble(d.ToString(format));
         }
@@ -65,7 +69,27 @@ namespace UtilsNS
 
         public static string basePath = Directory.GetParent(Directory.GetParent(Environment.GetCommandLineArgs()[0]).Parent.FullName).Parent.FullName;
         public static string configPath { get { return basePath + "\\Config\\"; } }
-        public static string dataPath { get { return basePath + "\\Data\\"; } }        
+        public static string dataPath { get { return basePath + "\\Data\\"; } }
+
+ /*       public static void ExecuteBatFile(string batchFN, string arguments = "") // batch file in Config folder
+        {
+            Process proc = null;
+            try
+            {
+                proc = new Process();
+                //proc.StartInfo.WorkingDirectory = configPath;
+                proc.StartInfo.FileName = batchFN;  
+                proc.StartInfo.Arguments = arguments;  
+                proc.StartInfo.CreateNoWindow = false;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;  //this is for hiding the cmd window...so execution will happen in back ground.
+                proc.Start();
+                proc.WaitForExit(); // waits for the batch excution to end
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception Occurred :{0},{1}", ex.Message, ex.StackTrace.ToString());
+            }
+        }*/
     }
 
     #region async file logger

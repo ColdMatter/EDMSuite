@@ -167,7 +167,7 @@ namespace MOTMaster2
         }
 
         #region RUNNING THINGS
-
+        bool wait4adjust = false;
         private void realRun(int Iters, string Hub = "none", int cmdId = -1)
         {
             if ((Iters == 0) || (Iters < -1))
@@ -196,14 +196,19 @@ namespace MOTMaster2
 
             for (int i = 0; i < numInterations; i++)
             {
+                Console.WriteLine("#: " + i.ToString());
                 controller.SetBatchNumber(i);
-                ScanFlag = SingleShot(true);
+                ScanFlag = SingleShot(true);               
                 if (Iters == -1) progBar.Value = i % 100;
-                else progBar.Value = i;
+                else progBar.Value = i;                
                 lbCurNumb.Content = i.ToString();
-                Thread.Sleep(100);
-                DoEvents();
                 if (!ScanFlag) break;
+                wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
+                while (wait4adjust)
+                {
+                    Thread.Sleep(20);
+                    DoEvents();
+                }
             }
             controller.StopLogging();
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
@@ -348,8 +353,6 @@ namespace MOTMaster2
             controller.StopRunning();
         }
 
-
-
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
             var converter = new System.Windows.Media.BrushConverter();
@@ -412,7 +415,7 @@ namespace MOTMaster2
                 if (paramCheck)
                     return;
                 paramCheck = true;
-                if (tcMain.SelectedIndex == 1)
+                if (tcMain.SelectedIndex == 1) // scan
                 {
                     int selIdx = cbParamsScan.SelectedIndex;
                     if (selIdx == -1) selIdx = 0;
@@ -421,7 +424,14 @@ namespace MOTMaster2
                         cbParamsScan.Items.Add(param);
                     cbParamsScan.SelectedIndex = selIdx;
                 }
-                if (tcMain.SelectedIndex == 2)
+                if (tcMain.SelectedIndex == 2) // multi-scan
+                {
+                    cbParamsMScan.Items.Clear();
+                    foreach (string param in ParamsArray)
+                        cbParamsMScan.Items.Add(param);
+                    if (lstParams.Items.Count > 0) lstParams.SelectedIndex = 0;
+                }
+                if (tcMain.SelectedIndex == 3) // manual
                 {
                     int selIdx = cbParamsManual.SelectedIndex;
                     if (selIdx == -1) selIdx = 0;
@@ -430,7 +440,6 @@ namespace MOTMaster2
                         cbParamsManual.Items.Add(param);
                     //cbParamsManual.Text = ParamsArray[0];
                     cbParamsManual.SelectedIndex = selIdx;
-
                 }
                 paramCheck = false;
             }
@@ -779,6 +788,7 @@ namespace MOTMaster2
                         if (mme.prms.ContainsKey("phaseCorrection")) corr = Convert.ToDouble(mme.prms["phaseCorrection"]);
                         Log("<< phaseAdjust to " + corr.ToString("G6"));
                         controller.phaseStrobes.Correction(corr);
+                        wait4adjust = false;        
                     }
                     break;
                 case ("repeat"):
@@ -964,8 +974,117 @@ namespace MOTMaster2
             Controller.SetMSquaredParameters();
             Log("Updated MSquared laser parameters");
         }
+        #region multi-scan
+        private void lstParams_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {           
+            if (lstParams.SelectedItem == null) return;
+            btnMScan.IsEnabled = false;
+            MMscan mms = new MMscan();
+            mms.AsString = (string)(lstParams.SelectedItem as ListBoxItem).Content;
+            cbParamsMScan.Text = mms.sParam;
+            tbFromMScan.Text = mms.sFrom.ToString("G6");
+            tbToMScan.Text = mms.sTo.ToString("G6");
+            tbByMScan.Text = mms.sBy.ToString("G6");
+            btnMScan.IsEnabled = true;
+        }
+        string ParamsMScan = null;
+        private void tbFromMScan_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Utils.isNull(lstParams) || Utils.isNull(btnMScan)) return;
+            if (Utils.isNull(lstParams.SelectedItem) || !btnMScan.IsEnabled) return;
+            MMscan mms = new MMscan();
+            if (Utils.isNull(ParamsMScan)) mms.sParam = cbParamsMScan.Text;
+            else mms.sParam = ParamsMScan;
+            try
+            {
+                mms.sFrom = Convert.ToDouble(tbFromMScan.Text);
+                mms.sTo = Convert.ToDouble(tbToMScan.Text);
+                mms.sBy = Convert.ToDouble(tbByMScan.Text);                
+            }
+            catch (FormatException)
+            {
+                ErrorMgr.errorMsg("Unable to convert to a Double.",1008);
+            }               
+            (lstParams.SelectedItem as ListBoxItem).Content = mms.AsString;
+        }
 
+        private void cbParamsMScan_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count>0) ParamsMScan = e.AddedItems[0] as string;
+            tbFromMScan_TextChanged(null,null);
+        }
 
+        private void btnMScan_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstParams.Items.Count == 0) return;
+            List<MMscan> mms = new List<MMscan>();
+            foreach (object ms in lstParams.Items)
+            {
+                mms.Add(new MMscan());
+                mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
+                if (!mms[mms.Count - 1].Check())
+                {
+                    ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                }
+            }
+            for (int i = 0; i < mms.Count - 1; i++)
+            {
+                mms[i].NextInChain = mms[i + 1];
+            }
+            foreach (MMscan ms in mms)
+            {
+                ms.Value = ms.sFrom;
+            }
+
+            while (mms[0].Next())
+            {
+                Thread.Sleep(10);
+                DoEvents();
+                lstValue.Items.Clear();
+                foreach (MMscan ms in mms)
+                {
+                    lstValue.Items.Add(ms.Value.ToString("G6"));
+                    // TODO update parameres from ms
+                }
+                // TODO measure and add record to the data output/file 
+            }
+        }
+        
+        private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem lbi = new ListBoxItem(); 
+            lbi.Content = "prm 0..10;0.1";
+            lstParams.Items.Add(lbi);
+        }
+
+        private void btnMinusMScan_Click(object sender, RoutedEventArgs e)
+        {
+            if (Utils.isNull(lstParams.SelectedItem)) return;
+            lstParams.Items.Remove(lstParams.SelectedItem);
+        }
+
+        private void btnUpMScan_Click(object sender, RoutedEventArgs e)
+        {
+            if (Utils.isNull(lstParams.SelectedItem)) return;
+            int si = lstParams.SelectedIndex;
+            if(si < 1) return;
+            string ss = (string)(lstParams.Items[si-1] as ListBoxItem).Content;
+            lstParams.Items.RemoveAt(si - 1);
+            ListBoxItem lbi = new ListBoxItem(); lbi.Content = ss;
+            lstParams.Items.Insert(si, lbi);
+        }
+
+        private void btnDownMScan_Click(object sender, RoutedEventArgs e)
+        {
+            if (Utils.isNull(lstParams.SelectedItem)) return;
+            int si = lstParams.SelectedIndex; int cnt = lstParams.Items.Count;
+            if (si > cnt-2) return;
+            string ss = (string)(lstParams.Items[si + 1] as ListBoxItem).Content;
+            lstParams.Items.RemoveAt(si + 1);
+            ListBoxItem lbi = new ListBoxItem(); lbi.Content = ss;
+            lstParams.Items.Insert(si, lbi);
+        }
+        #endregion multi-scan
     }
 
 }

@@ -10,17 +10,18 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace MOTMaster2
 {
-    class RemoteMessaging
+    public class RemoteMessaging
     {
         public string partner { get; private set; }
         private IntPtr windowHandle;
         public string lastRcvMsg { get; private set; }
         public string lastSndMsg { get; private set; }
         public List<string> msgLog;
-        public System.Windows.Threading.DispatcherTimer dTimer = null;
+        public DispatcherTimer dTimer, sTimer;
         private int _autoCheckPeriod = 10; // sec
         public int autoCheckPeriod
         {
@@ -44,6 +45,11 @@ namespace MOTMaster2
             dTimer.Tick += new EventHandler(dTimer_Tick);
             dTimer.Interval = new TimeSpan(0, 0, autoCheckPeriod);
             dTimer.Start();
+
+            sTimer = new DispatcherTimer(DispatcherPriority.Send);
+            sTimer.Tick += new EventHandler(sTimer_Tick);
+            sTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+
         }
         private void ResetTimer()
         {
@@ -94,8 +100,8 @@ namespace MOTMaster2
                         {
                             case ("ping"):
                                 handled = sendCommand("pong");
-                                if (lastConnection != handled) OnActiveComm(handled);
-                                lastConnection = handled; 
+                                if (lastConnection != handled) OnActiveComm(handled); // it fires only if the state has been changed
+                                lastConnection = handled;
                                 break;
                             case ("pong"):
                                 handled = true;
@@ -110,9 +116,34 @@ namespace MOTMaster2
             return hwnd;
         }
 
-        public bool sendCommand(string msg)
+        private string json2send = "";
+        private bool lastSentOK = true;
+        private void sTimer_Tick(object sender, EventArgs e)
+        {
+            sTimer.Stop();
+            if (json2send == "") throw new Exception("no message to be sent");
+            lastSentOK = sendCommand(json2send);
+            AsyncSent(lastSentOK, json2send);
+        }
+
+        public delegate void AsyncSentHandler(bool OK, string json2send);
+        public event AsyncSentHandler OnAsyncSent;
+        protected void AsyncSent(bool OK, string json2send)
+        {
+            if (OnAsyncSent != null) OnAsyncSent(OK, json2send);
+        }
+
+        public bool sendCommand(string msg, int delay = 0)
         {
             if (!Enabled) return false;
+            if (delay > 0)
+            {
+                sTimer.Interval = new TimeSpan(0, 0, 0, 0, delay);
+                json2send = msg;
+                sTimer.Start();
+                return true;
+            }
+
             // Find the target window handle.
             IntPtr hTargetWnd = NativeMethod.FindWindow(null, partner);
             if (hTargetWnd == IntPtr.Zero)
@@ -162,6 +193,7 @@ namespace MOTMaster2
                 Marshal.FreeHGlobal(pMyStruct);
             }
         }
+
         private bool lastConnection = false;
         public bool CheckConnection()
         {
@@ -170,12 +202,12 @@ namespace MOTMaster2
             {
                 for (int i = 0; i < 200; i++)
                 {
-                    Thread.Sleep(10);                    
+                    Thread.Sleep(10);
                     if (lastRcvMsg.Equals("pong")) break;
                 }
             }
             back = back && (lastRcvMsg.Equals("pong"));
-            if (lastConnection != back) OnActiveComm(back);
+            if (lastConnection != back) OnActiveComm(back); // it fires only if the state has been changed
             lastConnection = back;
             return back;
         }
@@ -255,14 +287,7 @@ namespace MOTMaster2
         public string cmd { get; set; }
         public int id { get; set; }
         public Dictionary<string, object> prms;
-        public MMexec()
-        {
-            mmexec = "";
-            sender = "";
-            cmd = "";
-            id = rnd.Next(int.MaxValue);
-            prms = new Dictionary<string, object>();
-        }
+
         public MMexec(string Caption = "", string Sender = "", string Command = "", int ID = -1)
         {
             mmexec = Caption;
@@ -290,6 +315,7 @@ namespace MOTMaster2
             mm.prms = new Dictionary<string, object>(prms);
             return mm;
         }
+
         public string Abort(string Sender = "")
         {
             cmd = "abort";
@@ -300,17 +326,67 @@ namespace MOTMaster2
         }
     }
 
-    public struct MMscan
+    public class MMscan
     {
         public string groupID;
         public string sParam;
         public double sFrom;
         public double sTo;
         public double sBy;
+        public double Value;
+
+        public bool Check()
+        {
+            if((sFrom == sTo) || (sBy == 0) || (Math.Abs(sBy) > Math.Abs(sTo - sFrom))) return false;
+            if ((sBy > 0) && (sFrom > sTo)) return false;
+            if ((sBy < 0) && (sFrom < sTo)) return false;
+            return true;
+        }
+
+        public MMscan NextInChain = null;
+        public bool Next()
+        {
+            bool NextValue = false;
+            if(NextInChain != null)
+            {
+                NextValue = NextInChain.Next();
+            }
+            if (NextValue) return true;
+            else
+            {
+                Value += sBy;
+                if (Value > sTo)
+                {
+                    Value = sFrom;
+                    return false;
+                }
+                else return true;
+            }
+        }
+
+        public string AsString
+        {
+            get { return sParam + "\t" + sFrom.ToString("G6") + " .. " + sTo.ToString("G6") + "; " + sBy.ToString("G6"); }
+            set 
+            {
+                if (value == null) return;
+                if (value == "")
+                {
+                    TestInit(); return;
+                }
+                string[] parts = value.Split('\t'); sParam = parts[0];
+                string ss = parts[1]; int j = ss.IndexOf(".."); if(j == -1) return;
+                parts[0] = ss.Substring(0, j); parts[1] = ss.Substring(j+2);
+                sFrom = Convert.ToDouble(parts[0]);
+                parts = parts[1].Split(';'); sTo = Convert.ToDouble(parts[0]);
+                sBy = Convert.ToDouble(parts[1]);
+            }
+        }
+
         public void TestInit()
         {
             groupID = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
-            sParam = "frng";
+            sParam = "prm";
             sFrom = 0;
             sTo = 4 * 3.14;
             sBy = 0.1;
@@ -324,13 +400,23 @@ namespace MOTMaster2
             dict["to"] = sTo;
             dict["by"] = sBy;
         }
-        public void FromDictionary(Dictionary<string, object> dict)
+        public bool FromDictionary(Dictionary<string, object> dict)
         {
-            groupID = (string)dict["groupID"];
-            sParam = (string)dict["param"];
-            sFrom = (double)dict["from"];
-            sTo = (double)dict["to"];
-            sBy = (double)dict["by"];
+            if (!string.IsNullOrEmpty((string)dict["groupID"])) groupID = (string)dict["groupID"];
+            else return false;
+            if (!string.IsNullOrEmpty((string)dict["param"])) sParam = (string)dict["param"];
+            else return false;
+            try
+            {
+                sFrom = (double)dict["from"];
+                sTo = (double)dict["to"];
+                sBy = (double)dict["by"];
+            }
+            catch (InvalidCastException e)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
