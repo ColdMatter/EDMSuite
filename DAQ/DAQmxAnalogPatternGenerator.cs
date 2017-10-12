@@ -70,6 +70,7 @@ namespace DAQ.Analog
 
         public void StopPattern()
         {
+            analogOutputTask.WaitUntilDone();
             analogOutputTask.Stop();
             analogOutputTask.Dispose();
             writer = null;

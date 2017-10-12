@@ -53,6 +53,8 @@ namespace MOTMaster2
 
         private static string defaultScriptPath = scriptListPath + "\\defaultScript.sm2";
 
+        private static string tempScriptPath = scriptListPath + "\\tempScript.sm2";
+
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
 
         public static MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
@@ -85,7 +87,7 @@ namespace MOTMaster2
         private static int aiSampleRate = 200000;
         private static double riseTime = 0.0001;
         public static bool StaticSequence { get; set; }
-
+        private bool hardwareError = false;
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
@@ -262,7 +264,7 @@ namespace MOTMaster2
         {
             try
             {
-                pauseHardware();
+                //if (StaticSequence) pauseHardware();
                 if (!config.HSDIOCard) pg.StopPattern();
                 else hs.StopPattern();
                 apg.StopPattern();
@@ -342,16 +344,18 @@ namespace MOTMaster2
             
             if (!config.Debug)
             {
-                muquans.DisposeAll();
+               
+                
                 WaitForRunToFinish();
                 while (IsRunning() && !StaticSequence)
                 {
                     WaitForRunToFinish();
                    
                 }
-                //if(StaticSequence) releaseHardware();
-                releaseHardware();
-                
+                try { if (StaticSequence) releaseHardware(); }
+                catch { }
+                if (!hardwareError) releaseHardware();
+                muquans.DisposeAll();
                 
             }
             StaticSequence = false; //Set this here in case we want to scan after
@@ -366,6 +370,7 @@ namespace MOTMaster2
                 status = RunningState.stopped;
                 Exception ex = runThreadException;
                 runThreadException = null;
+                hardwareError = true;
                 throw ex;
             }
         }
@@ -494,7 +499,7 @@ namespace MOTMaster2
         public void WaitForRunToFinish()
         {
             if (runThread != null) { runThread.Join();}
-            if (IsRunning()) CheckForRunErrors();
+            if (IsRunning()) hardwareError = CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
 
@@ -1049,24 +1054,24 @@ namespace MOTMaster2
             File.WriteAllText("config.json", configJson);
         }
 
-        public void LoadDefaultSequence()
+        public static void LoadDefaultSequence()
         {
             if (File.Exists(defaultScriptPath)) LoadSequenceFromPath(defaultScriptPath);
         }
 
-        public void LoadSequenceFromPath(string path)
+        public static void LoadSequenceFromPath(string path)
         {
             string sequenceJson = File.ReadAllText(path);
             sequenceData = JsonConvert.DeserializeObject<Sequence>(sequenceJson);
             //script.Parameters = sequenceData.CreateParameterDictionary();
 
         }
-        public void SaveSequenceAsDefault(List<SequenceStep> steps)
+        public static void SaveSequenceAsDefault()
         {
-            SaveSequenceToPath(defaultScriptPath, steps);
+            SaveSequenceToPath(defaultScriptPath);
         }
 
-        public void SaveSequenceToPath(string path, List<SequenceStep> steps)
+        /*public static void SaveSequenceToPath(string path, List<SequenceStep> steps)
         {
            
             if (sequenceData == null)
@@ -1078,8 +1083,8 @@ namespace MOTMaster2
             string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             File.WriteAllText(path, sequenceJson);
         }
-
-        public void SaveSequenceToPath(string path)
+        */
+        public static void SaveSequenceToPath(string path)
         {
             string sequenceJson = JsonConvert.SerializeObject(sequenceData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             File.WriteAllText(path, sequenceJson);
@@ -1260,6 +1265,11 @@ namespace MOTMaster2
         {
             if (sequenceData.Parameters.ContainsKey(key)) sequenceData.Parameters[key].Value = p;
             else sequenceData.Parameters[key] = new Parameter(key, "", p, true, false);
+        }
+
+        internal static void SaveTempSequence()
+        {
+            SaveSequenceToPath(tempScriptPath);
         }
     }
 

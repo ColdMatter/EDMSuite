@@ -202,6 +202,7 @@ namespace MOTMaster2
                 btnRun.Background = Brushes.LightYellow;
                 ScanFlag = true;
                 Controller.ExpData.grpMME.Clear();
+                Controller.SaveTempSequence();
                 int Iters = (int)ntbIterNumb.Value;
                 // Start repeat
                 try
@@ -357,6 +358,7 @@ namespace MOTMaster2
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
                 ScanFlag = true;
+                Controller.SaveTempSequence();
                 Controller.ExpData.grpMME.Clear();
                 try
                 {
@@ -512,7 +514,7 @@ namespace MOTMaster2
                 // Process open file dialog box results
                 if (result != true) return;
                 string filename = dlg.FileName;
-                controller.SaveSequenceToPath(filename);
+                Controller.SaveSequenceToPath(filename);
             }
             else
                 ErrorMgr.warningMsg("You have tried to save a Sequence before loading a script", -1, true);
@@ -531,7 +533,7 @@ namespace MOTMaster2
             // Process open file dialog box results
             if (result != true) return;
             string filename = dlg.FileName;
-            controller.LoadSequenceFromPath(filename);
+            Controller.LoadSequenceFromPath(filename);
         }
 
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
@@ -678,6 +680,7 @@ namespace MOTMaster2
         {
             SequenceParser sqnParser = new SequenceParser();
             bool verified = false;
+
             //Checks the validity of all the values, but does not assign them until the sequence is built
             //TODO: Add a type check to make this work for AnalogItems or SerialItems
             if (propertyGrid.DataContext == null) return;
@@ -759,8 +762,8 @@ namespace MOTMaster2
             }
             else if (result == MessageBoxResult.No)
             {
-                List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-                controller.SaveSequenceAsDefault(steps);
+                //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                Controller.SaveSequenceAsDefault();
             }
         }
 
@@ -848,10 +851,10 @@ namespace MOTMaster2
                     }
                     break;
                 case ("load"):
-                    controller.LoadSequenceFromPath((string)mme.prms["file"]);
+                    Controller.LoadSequenceFromPath((string)mme.prms["file"]);
                     break;
                 case ("save"):
-                    controller.SaveSequenceToPath((string)mme.prms["file"]);
+                    Controller.SaveSequenceToPath((string)mme.prms["file"]);
                     break;
                 case ("abort"):
                     //Stop running

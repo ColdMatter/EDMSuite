@@ -88,7 +88,14 @@ namespace MOTMaster2.SequenceData
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
-                    AddAnalogChannelStep(timeMultiplier, analogClock, step, analogChannel);
+                    try
+                    {
+                        AddAnalogChannelStep(timeMultiplier, analogClock, step, analogChannel);
+                    }
+                    catch
+                    {
+                        throw new Exception(string.Format("Failed to add analog data for Channel:{0} Step:{1}",analogChannel,step.Name));
+                    }
 
                 }
                 //Adds the Muquans string commands as well as the required serial pulses before digital pulses to prevent time order exceptions
@@ -275,7 +282,7 @@ namespace MOTMaster2.SequenceData
             }
             catch (DAQ.Analog.AnalogPatternBuilder.InsufficientPatternLengthException e)
             {
-                throw new Exception(string.Format("Inusfficient length for pattern. Step: {0} Channel: {1} Start time: {2}", step.Name, analogChannel, analogStartTime));
+                throw new Exception(string.Format("Insufficient length for pattern. Step: {0} Channel: {1} Start time: {2}", step.Name, analogChannel, analogStartTime));
             }
         }
 
@@ -306,6 +313,7 @@ namespace MOTMaster2.SequenceData
         /// <param name="duration">Duration of the function output in units of samples</param>
         void CompileAnalogFunction(string analogChannel, string function, double startTime, int analogStartTime, int analogClock, int duration)
         {
+            if (function == "") throw new Exception(string.Format("Expected function for Channel: {0} in Step: {1}",analogChannel,_sequenceStep.Name));
             if (Parameters.Keys.Contains(function))
             {
                 analogPB.AddAnalogValue(analogChannel, analogStartTime, (double)Parameters[function]);

@@ -295,7 +295,7 @@ namespace MOTMaster2.SequenceData
 
         public string GetFunction()
         {
-            if (_selectedItem[2].Name != "Function") throw new Exception("Channel arguments do not have a function string");
+            if (_selectedItem[2].Name != "Function") { throw new Exception("Channel arguments do not have a function string"); }
             return _selectedItem[2].Value;
         }
 
