@@ -195,7 +195,6 @@ namespace MOTMaster2
                 }
             }
             controller.StopLogging();
-            Controller.StaticSequence = false;
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
         }
 
@@ -1073,6 +1072,7 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     // TODO update parameres from ms
+                    Controller.SetParameter(ms.sParam, ms.Value);
                 }
                 // TODO measure and add record to the data output/file 
             }
@@ -1081,7 +1081,7 @@ namespace MOTMaster2
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem lbi = new ListBoxItem(); 
-            lbi.Content = "prm 0..10;0.1";
+            lbi.Content = "prm \t 0..10;0.1";
             lstParams.Items.Add(lbi);
         }
 

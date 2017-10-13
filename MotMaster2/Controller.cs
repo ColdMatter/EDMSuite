@@ -215,20 +215,28 @@ namespace MOTMaster2
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            if (config.UseMuquans)
+            try
             {
-                muquans.StartOutput();
+                if (config.UseMuquans)
+                {
+                    muquans.StartOutput();
+                }
+                Console.WriteLine("Started muquans at {0}ms", watch.ElapsedMilliseconds);
+                apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+                Console.WriteLine("Started apg at {0}ms", watch.ElapsedMilliseconds);
+                if (config.UseAI) aip.StartTask();
+                if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
+                else
+                {
+                    int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
+                    hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
+                    Console.WriteLine("Started hs at {0}ms", watch.ElapsedMilliseconds);
+                }
             }
-            Console.WriteLine("Started muquans at {0}ms", watch.ElapsedMilliseconds);
-            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            Console.WriteLine("Started apg at {0}ms", watch.ElapsedMilliseconds);
-            if (config.UseAI) aip.StartTask();
-            if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
-            else
+            catch
             {
-                int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
-                hs.OutputPattern(sequence.DigitalPattern.Pattern, loopTimes);
-                Console.WriteLine("Started hs at {0}ms", watch.ElapsedMilliseconds);
+                releaseHardware();
+                runThreadException = new Exception("Failed to start output patterns. Releasing hardware");
             }
 
         }
@@ -345,17 +353,14 @@ namespace MOTMaster2
             
             if (!config.Debug)
             {
-               
-                
                 WaitForRunToFinish();
                 while (IsRunning() && !StaticSequence)
                 {
                     WaitForRunToFinish();
-                   
+                    if(!hardwareError)releaseHardware();
                 }
                 try { if (StaticSequence) releaseHardware(); }
                 catch { }
-                if (!hardwareError) releaseHardware();
                 muquans.DisposeAll();
                 
             }
@@ -710,7 +715,7 @@ namespace MOTMaster2
                 }
             }
             run(sequence);
-            if (!StaticSequence) { if (config.UseAI) aip.ReadAnalogDataFromBuffer(); releaseHardware(); }
+            if (!StaticSequence) { if (config.UseAI) aip.ReadAnalogDataFromBuffer(); releaseHardware(); status = RunningState.stopped; }
             //else pauseHardware();
         }
 
