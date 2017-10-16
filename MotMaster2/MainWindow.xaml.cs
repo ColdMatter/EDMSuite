@@ -65,7 +65,8 @@ namespace MOTMaster2
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
-                controller.WaitForRunToFinish();
+            //Not needed for repeat run. Might be needed for scan
+               // controller.WaitForRunToFinish(); 
         }
 
         public void InitVisuals()
@@ -178,21 +179,23 @@ namespace MOTMaster2
             controller.StartLogging();
             for (int i = 0; i < numInterations; i++)
             {
+                if (!ScanFlag) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
-
                 controller.SetBatchNumber(i);
                 ScanFlag = SingleShot(true);               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
                 lbCurNumb.Content = i.ToString();
                 if (!ScanFlag) break;
+                DoEvents();
                 wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
-                controller.WaitForRunToFinish();
                 while (wait4adjust)
                 {
                     Thread.Sleep(20);
                     DoEvents();
                 }
+                controller.WaitForRunToFinish();
+
             }
             controller.StopLogging();
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);

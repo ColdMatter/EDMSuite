@@ -143,7 +143,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
             if (config.UseMSquared)
             {
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
@@ -260,7 +260,7 @@ namespace MOTMaster2
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, false);
-            if (config.UseMuquans) muquans.Configure(StaticSequence);
+            if (config.UseMuquans) { muquans.Configure(StaticSequence); microSynth.Connect(); }
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, StaticSequence);
             if (config.UseAI) { 
                 aip.Configure(sequence.AIConfiguration, StaticSequence);
@@ -278,7 +278,7 @@ namespace MOTMaster2
             else hs.StopPattern();
             apg.StopPattern();
             if (config.UseAI) { aip.StopPattern(); }
-            if (config.UseMuquans) muquans.StopOutput();
+            if (config.UseMuquans) { muquans.StopOutput(); microSynth.Disconnect(); }
         }
             catch (Exception e)
             {
@@ -642,7 +642,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI) OnAnalogDataReceived(this, null);
+                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, null);
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
