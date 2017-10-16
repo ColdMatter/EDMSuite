@@ -26,7 +26,7 @@
                 </MenuItem>
                 <MenuItem Header="Edit">
                     <MenuItem Header="Sequence Parameters" Click="EditParameters_Click"/>
-                    <MenuItem Header="Hardware / File System" Click="EditHardware_Click"/>
+                    <MenuItem Header="Options / File System" Click="EditOptions_Click"/>
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header=" About..." Click="About_Click"/>
@@ -98,7 +98,7 @@
                             <ListBoxItem Content="xFreq&#x09;1..8;0.1"/>
                             <ListBoxItem Content="xAtten&#x09;0.2..3.9;0.2"/>
                         </ListBox>
-                        <ListBox x:Name="lstValue" Margin="0,0,0,0" Grid.Column="2" FontSize="13"/>
+                        <ListBox x:Name="lstValue" Margin="0,0,0,0" Grid.Column="2" FontSize="13" FontWeight="Bold" Foreground="#FF0F03AA"/>
                         <ListBox x:Name="lstOut" Margin="0,0,0,0" Grid.Column="4" FontSize="13">
                             <CheckBox Content="MEMS accelero."/>
                             <CheckBox Content="Photo-diode"/>

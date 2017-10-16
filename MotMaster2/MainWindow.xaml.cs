@@ -72,7 +72,7 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
-            SetInterferometerParams(Controller.sequenceData.Parameters);
+            if (!Utils.isNull(Controller.sequenceData)) SetInterferometerParams(Controller.sequenceData.Parameters);
         }
 
         private string[] ParamsArray
@@ -596,9 +596,9 @@ namespace MOTMaster2
         {
             controller.LoadEnvironment();
         }
-        private void EditHardware_Click(object sender, RoutedEventArgs e)
+        private void EditOptions_Click(object sender, RoutedEventArgs e)
         {
-            HardwareOptions optionsWindow = new HardwareOptions();
+            OptionWindow optionsWindow = new OptionWindow();
             optionsWindow.Show();
         }
         private void About_Click(object sender, RoutedEventArgs e)
@@ -757,17 +757,23 @@ namespace MOTMaster2
 
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //Save the currently open sequence to a default location
-            MessageBoxResult result = MessageBox.Show("MOTMaster is closing. Do you want to save the sequence?","Save Sequence to File/Default" ,MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Yes)
+            if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask))
             {
-                SaveSequence_Click(sender, null);
+                //Save the currently open sequence to a default location
+                MessageBoxResult result = MessageBox.Show("MOTMaster is closing. \nDo you want to save the sequence? ...or cancel closing?","    Save Default Sequence" ,MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Controller.SaveSequenceAsDefault();
+                    //SaveSequence_Click(sender, null);
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                    e.Cancel = true;
+                }
             }
-            else if (result == MessageBoxResult.No)
-            {
-                //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-                Controller.SaveSequenceAsDefault();
-            }
+            if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.save)) Controller.SaveSequenceAsDefault();
+            Controller.genOptions.Save();
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)
@@ -961,11 +967,10 @@ namespace MOTMaster2
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
+            if (Utils.isNull(Controller.sequenceData)) return;
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
-
-
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
@@ -1080,7 +1085,7 @@ namespace MOTMaster2
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem lbi = new ListBoxItem(); 
-            lbi.Content = "prm 0..10;0.1";
+            lbi.Content = "prm\t0 .. 10; 0.1";
             lstParams.Items.Add(lbi);
         }
 

@@ -3,7 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Edit Sequence Parameters" Height="300" Width="500" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
     <Grid>
-        <DataGrid Name="parameterGrid" Margin="0,0,0,47.5" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="225*"/>
+            <RowDefinition Height="46"/>
+        </Grid.RowDefinitions>
+        <DataGrid Name="parameterGrid" Margin="0,0,0.286,1" >
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="New Parameter" Command="{Binding Path=NewParameter}"/>
@@ -11,7 +15,7 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
-        <Button Content="OK" Height="20" Width="40" Margin="50,230,205,22.5" Click="OK_Click"/>
-        <Button Content="Cancel" Height="20" Width="40" Margin="205,230,50,22.5" Click="Cancel_Click"/>
+        <Button x:Name="btnOK" Content="OK" Height="20" Margin="0,0,24.286,10.429" Click="OK_Click" FontWeight="Bold" HorizontalAlignment="Right" Width="85" VerticalAlignment="Bottom" Grid.Row="1"/>
+        <Button x:Name="btnCancel" Content="Cancel" Height="20" Margin="0,0,124.286,10.429" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Grid.Row="1"/>
     </Grid>
 </Window>

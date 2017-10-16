@@ -68,6 +68,7 @@ namespace MOTMaster2
         public List<string> analogChannels;
         public List<string> digitalChannels;
         public MOTMasterScript script;
+        public static GeneralOptions genOptions;
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
         public static ExperimentData ExpData { get; set; }
@@ -124,6 +125,9 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
+            string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
+            Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
+
             LoadDefaultSequence();
             if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
@@ -146,10 +150,10 @@ namespace MOTMaster2
             if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect(); /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
             if (config.UseMSquared)
             {
-            if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
-                else throw new Exception("Cannot find DCS ICE-BLOC");
-            if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
-                else throw new Exception("Cannot find PLL ICE-BLOC");
+                if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
+                    else throw new Exception("Cannot find DCS ICE-BLOC");
+                if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
+                    else throw new Exception("Cannot find PLL ICE-BLOC");
 
 
                 //Adds MSquared parameters if not already found
@@ -180,7 +184,7 @@ namespace MOTMaster2
                 }
                 try
                 {
-                    phaseStrobes = new PhaseStrobes();
+                    
                     if (!config.Debug)
                     {
                     M2DCS.Connect();
@@ -199,7 +203,7 @@ namespace MOTMaster2
             }
 
             //if (Environs.Hardware.Instruments.ContainsKey("m2PLL")) { m2FreqComm = (MuquansRS232)Environs.Hardware.Instruments["m2PLL"];}
-
+            phaseStrobes = new PhaseStrobes();
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -499,7 +503,7 @@ namespace MOTMaster2
         }
         public void WaitForRunToFinish()
         {
-            if (runThread != null) { runThread.Join();}
+            if (runThread != null) { runThread.Join(); }
             if (IsRunning()) hardwareError = CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
@@ -531,14 +535,14 @@ namespace MOTMaster2
             else
             {
                 
-                if (config.UseAI)
+                if (config.UseAI || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                    
                 }
                     if(!StaticSequence || myBatchNumber==0)sequence = getSequenceFromSequenceData(dict);
                     if (sequence == null) { return; }
-                    //TODO Change where this is sent. Di we want to send this before each shot during a scan?
+                    //TODO Change where this is sent. Do we want to send this before each shot during a scan?
                     if (myBatchNumber == 0)
                     {
                         //Only intialise and build once
@@ -636,7 +640,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI) OnAnalogDataReceived(this, null);
+                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, null);
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)

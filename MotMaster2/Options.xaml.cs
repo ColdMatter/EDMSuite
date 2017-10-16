@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,23 +15,39 @@ using System.Windows.Shapes;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UtilsNS;
 
 namespace MOTMaster2
 {
+
+    public class GeneralOptions
+    {
+        public enum SaveOption { save, ask, nosave }
+
+        public SaveOption saveSequence;
+
+        public void Save()
+        {
+            string fileJson = JsonConvert.SerializeObject(this);
+            File.WriteAllText(Utils.configPath+"genOptions.cfg", fileJson);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for Options.xaml
     /// </summary>
-    public partial class HardwareOptions : Window
+    public partial class OptionWindow : Window
     {
-        public HardwareOptions()
+        public OptionWindow()
         {
             InitializeComponent();
+
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem);
             hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             LoadJsonToTreeView(hardwareTreeView, hardwareJson);
             LoadJsonToTreeView(filesystemTreeView, fileJson);
-        }
-
+        }       
+        
         string hardwareJson = "";
         void LoadJsonToTreeView(TreeView treeView, string json)
         {
@@ -47,18 +64,17 @@ namespace MOTMaster2
             treeView.ItemsSource = children;
         }
 
-        private void OKButton_Click(object sender, RoutedEventArgs e)
+        private void OKButton_Click(object sender, RoutedEventArgs e) // visual to internal 
         {
-            if (btnModify.Content.Equals("Verify"))
-                if (!CheckHardwareJson()) return;
+            if (rbSaveSeqYes.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.save;
+            if (rbSaveSeqAsk.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.ask;
+            if (rbSaveSeqNo.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.nosave;
 
             Close();
         }
 
         private void tabCtrl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((tabCtrl.SelectedIndex == 0) || (tabCtrl.SelectedIndex == 2)) btnModify.Visibility = System.Windows.Visibility.Visible;
-            else btnModify.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private bool CheckHardwareJson()
@@ -76,31 +92,19 @@ namespace MOTMaster2
             return true;
         }
 
-        private void btnModify_Click(object sender, RoutedEventArgs e)
+        private void frmOptions_Loaded(object sender, RoutedEventArgs e) // internal to visual
         {
-            if (btnModify.Content.Equals("Modify"))
-            {
-                btnModify.Content = "Verify";
-                tiHardware.Visibility = System.Windows.Visibility.Hidden;
-                tiFileSystem.Visibility = System.Windows.Visibility.Hidden;
-                tiModify.Visibility = System.Windows.Visibility.Visible;
+            rbSaveSeqYes.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.save);
+            rbSaveSeqAsk.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask);
+            rbSaveSeqNo.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.nosave);
+       }
 
-                tabCtrl.SelectedIndex = 2;
-                rtbModify.Document.Blocks.Clear();
-                rtbModify.AppendText(hardwareJson);
-            }
-            else
-            {
-                if (!CheckHardwareJson()) return;
-                btnModify.Content = "Modify";
-                tabCtrl.SelectedIndex = 0;
-                tiModify.Visibility = System.Windows.Visibility.Hidden;
-                tiHardware.Visibility = System.Windows.Visibility.Visible;
-                tiFileSystem.Visibility = System.Windows.Visibility.Visible;
-            }
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
-
     }
+
     public sealed class MethodToValueConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
