@@ -38,7 +38,7 @@ namespace MOTMaster2.SequenceData
             Parameters = sequenceData.CreateParameterDictionary();
             foreach (string entry in new List<string>() { "AnalogLength", "HSClockFrequency", "AnalogClockFrequency" })
             {
-                if (!Parameters.ContainsKey(entry)) throw new Exception(string.Format("Sequence does not contain the required parameter {0}", entry));
+                if (!Parameters.ContainsKey(entry) && !Controller.config.Debug) throw new Exception(string.Format("Sequence does not contain the required parameter {0}", entry));
             }
         }
 

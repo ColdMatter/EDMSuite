@@ -140,7 +140,7 @@ namespace MOTMaster2
                 }
                 else
                 {
-                    Dictionary<string,double> accDict = ConvertAccelerometerVoltage(segData[name]);
+                    Dictionary<string,double> accDict = ConvertAccelerometerVoltage((double[])segData[name]);
                     avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 }
             }

@@ -155,7 +155,7 @@ namespace MOTMaster2
 
 
                 //Adds MSquared parameters if not already found
-                if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
+                if (sequenceData!=null && !sequenceData.Parameters.ContainsKey("PLLFreq"))
                 {
                     sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
                     sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.5,true,false);
@@ -350,7 +350,8 @@ namespace MOTMaster2
             if (multiScanLogger != null)
             {
                 var segData = config.UseAI ? finalData.prms: null;
-                AppendMultiScan(segData);
+                bool columns = (batchNumber == 0);
+                AppendMultiScan(segData,columns);
             }
         }
 
@@ -457,6 +458,10 @@ namespace MOTMaster2
             batchNumber = number;
             //controllerWindow.WriteToSaveBatchTextBox(number);
         }
+        public void IncrementBatchNumber()
+        {
+            batchNumber++;
+        }
         private string scriptPath = "";
         public void SetScriptPath(String path)
         {
@@ -484,7 +489,7 @@ namespace MOTMaster2
             else
                 return false;
         }
-        public void RunStart(Dictionary<string,object> paramDict, bool loop = false, int myBatchNumber = 0)
+        public void RunStart(Dictionary<string,object> paramDict, int myBatchNumber = 0)
         {
             //runThread = new Thread(delegate()
             //{
@@ -502,7 +507,6 @@ namespace MOTMaster2
 
             //});
             runThread = new Thread(new ParameterizedThreadStart(this.Run));
-           // StaticSequence = loop;
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
@@ -666,7 +670,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, null);
+                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(myBatchNumber));
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -1088,6 +1092,7 @@ namespace MOTMaster2
         public static void LoadDefaultSequence()
         {
             if (File.Exists(defaultScriptPath)) LoadSequenceFromPath(defaultScriptPath);
+            else sequenceData = new Sequence();
         }
 
         public static void LoadSequenceFromPath(string path)
@@ -1173,7 +1178,9 @@ namespace MOTMaster2
             multiScanLogger.Enabled = false;
             if (multiScanLogger.Enabled) multiScanLogger.Enabled = false;
         }
-        //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
+        /// <summary>
+        /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
+        /// </summary>
         public void CreateAcquisitionTimeSegments()
         {
             if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new WarningException("No channel named acquisitionTrigger found in Hardware");
@@ -1189,7 +1196,7 @@ namespace MOTMaster2
             }
             catch
             {
-                ErrorMgr.errorMsg("No step named Interferometer.",-2);
+                ExpData.InterferometerStepName = null;
             }
             foreach (SequenceStep step in sequenceData.Steps)
             {
@@ -1247,47 +1254,47 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        private void AppendMultiScan(Dictionary<string,object> segData)
+        private void AppendMultiScan(Dictionary<string,object> segData, bool writeColumnNames = false)
         {
          string row = "";
             if (segData != null)
             {
-                foreach (var item in segData.Where(kvp => typeof(kvp) != typeof(double[])).ToList())
+                foreach (var item in segData.Where(kvp => kvp.Value.GetType() != typeof(double[])).ToList())
                 {
-                    segData.Remove(item.key);
+                    segData.Remove(item.Key);
                 }
             }
             Dictionary<string,double> avgDict = (segData == null) ? null: ExpData.GetAverageValues(segData);
-            if (!multiScanLogger.Enabled)
+            if (writeColumnNames)
             {
                 multiScanLogger.Enabled = true;
                 foreach (string name in sequenceData.Parameters.Keys)
                 {
-                    row += name +",";
+                    row += name +"\t";
                 }
                 if (avgDict != null)
                 {
                     foreach (string name in avgDict.Keys)
                     {
-                        row += name+",";
+                        row += name+"\t";
                     }
                 }
-                row = row.TrimEnd(',');
+                row = row.TrimEnd('\t');
                 multiScanLogger.log(row);
                 row = "";
             }
             foreach (string name in sequenceData.Parameters.Keys)
             {
-                row += sequenceData.Parameters[name].Value.ToString() +",";
+                row += sequenceData.Parameters[name].Value.ToString() +"\t";
             }
             if (avgDict != null)
             {
                 foreach (string name in avgDict.Keys)
                 {
-                    row += avgDict[name].ToString() +",";
+                    row += avgDict[name].ToString() +"\t";
                 }
             }
-            row = row.TrimEnd(',');
+            row = row.TrimEnd('\t');
             multiScanLogger.log(row);
         }
             
