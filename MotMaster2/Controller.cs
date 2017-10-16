@@ -65,7 +65,7 @@ namespace MOTMaster2
         public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
 
-        public List<string> analogChannels;
+        //public List<string> analogChannels;
         public List<string> digitalChannels;
         public MOTMasterScript script;
         public static Sequence sequenceData;
@@ -73,6 +73,8 @@ namespace MOTMaster2
         public static ExperimentData ExpData { get; set; }
         public static AutoFileLogger dataLogger;
         public static AutoFileLogger paramLogger;
+
+        public static AutoFileLogger multiScanLogger;
         public bool SendDataRemotely { get; set; }
 
         public event DataEventHandler MotMasterDataEvent;
@@ -345,6 +347,11 @@ namespace MOTMaster2
             {
                 if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
             }
+            if (multiScanLogger != null)
+            {
+                var segData = config.UseAI ? finalData.prms: null;
+                AppendMultiScan(segData);
+            }
         }
 
 
@@ -558,6 +565,23 @@ namespace MOTMaster2
                         MMexec mme = InitialCommand(ScanParam);
                         string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
                         paramLogger.log("{\"MMExec\":" + initJson + "},");
+                        if (multiScanLogger.Enabled)
+                        {
+                            string header = "";
+                            foreach (string name in sequenceData.Parameters.Keys)
+                            {
+                                header+=name+",";
+                            }
+                            if (config.UseAI)
+                            {
+                                foreach (string name in ExpData.AnalogSegments.Keys)
+                                {
+                                    header+=name+",";
+                                }
+                            }
+                            header=header.TrimEnd(',');
+                            multiScanLogger.log(header);
+                        }
                         if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
                         {
                             MotMasterDataEvent(this, new DataEventArgs(initJson));
@@ -1131,6 +1155,7 @@ namespace MOTMaster2
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
             dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
             paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
+            multiScanLogger = new AutoFileLogger(fileTag+"_multiscan.ahf");
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
@@ -1145,6 +1170,8 @@ namespace MOTMaster2
             paramLogger.log("]\n}");
             dataLogger.Enabled= false;
             paramLogger.Enabled = false;
+            multiScanLogger.Enabled = false;
+            if (multiScanLogger.Enabled) multiScanLogger.Enabled = false;
         }
         //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
         public void CreateAcquisitionTimeSegments()
@@ -1220,6 +1247,56 @@ namespace MOTMaster2
             return axelCommand;
         }
 
+        private void AppendMultiScan(Dictionary<string,object> segData)
+        {
+         string row = "";
+            if (segData != null)
+            {
+                foreach (var item in segData.Where(kvp => typeof(kvp) != typeof(double[])).ToList())
+                {
+                    segData.Remove(item.key);
+                }
+            }
+            Dictionary<string,double> avgDict = (segData == null) ? null: ExpData.GetAverageValues(segData);
+            if (!multiScanLogger.Enabled)
+            {
+                multiScanLogger.Enabled = true;
+                foreach (string name in sequenceData.Parameters.Keys)
+                {
+                    row += name +",";
+                }
+                if (avgDict != null)
+                {
+                    foreach (string name in avgDict.Keys)
+                    {
+                        row += name+",";
+                    }
+                }
+                row = row.TrimEnd(',');
+                multiScanLogger.log(row);
+                row = "";
+            }
+            foreach (string name in sequenceData.Parameters.Keys)
+            {
+                row += sequenceData.Parameters[name].Value.ToString() +",";
+            }
+            if (avgDict != null)
+            {
+                foreach (string name in avgDict.Keys)
+                {
+                    row += avgDict[name].ToString() +",";
+                }
+            }
+            row = row.TrimEnd(',');
+            multiScanLogger.log(row);
+        }
+            
+
+        
+        private void EndMultiScan()
+        {
+
+        }
         #endregion
 
         #region MSquared Control - Maybe move elswhere?

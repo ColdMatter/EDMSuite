@@ -1047,6 +1047,8 @@ namespace MOTMaster2
         private void btnMScan_Click(object sender, RoutedEventArgs e)
         {
             if (lstParams.Items.Count == 0) return;
+            string filename = "";
+            controller.StartLogging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)
             {
@@ -1067,7 +1069,7 @@ namespace MOTMaster2
             }
 
             while (mms[0].Next())
-            {
+            
                 Thread.Sleep(10);
                 DoEvents();
                 lstValue.Items.Clear();
@@ -1076,8 +1078,11 @@ namespace MOTMaster2
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     // TODO update parameres from ms
                     Controller.SetParameter(ms.sParam, ms.Value);
+                    ScanFlag = SingleShot(true);
+                    if (!ScanFlag) break;
                 }
                 // TODO measure and add record to the data output/file 
+                controller.StopLogging();
             }
         }
         
