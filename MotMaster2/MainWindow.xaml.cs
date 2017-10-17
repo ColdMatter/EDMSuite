@@ -91,12 +91,11 @@ namespace MOTMaster2
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
+            controller.RunStart(paramDict);
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-
-            controller.RunStart(paramDict);
             return true;
         }
         private bool SingleShot() // true if OK
@@ -181,7 +180,7 @@ namespace MOTMaster2
             {
                 if (!ScanFlag) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
-                controller.SetBatchNumber(i);
+                controller.BatchNumber = i;
                 ScanFlag = SingleShot();               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
@@ -332,7 +331,7 @@ namespace MOTMaster2
             controller.ScanParam = scanParam;
             foreach (object scanItem in scanArray)
             {
-                controller.SetBatchNumber(c);
+                controller.BatchNumber = c;
                 param.Value = scanItem;
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
@@ -350,6 +349,7 @@ namespace MOTMaster2
                 DoEvents();
                 if (!ScanFlag) break;
                 c++;
+      
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
@@ -1053,7 +1053,7 @@ namespace MOTMaster2
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            controller.SetBatchNumber(0);
+            controller.BatchNumber = 0;
             controller.StartLogging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)

@@ -1,5 +1,9 @@
-﻿using System;
+﻿using MOTMaster2.SequenceData;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MOTMaster2.SequenceData;
-using System.Dynamic;
-using System.Collections.ObjectModel;
+using System.Windows.Markup;
 
 
 namespace MOTMaster2
@@ -24,6 +26,7 @@ namespace MOTMaster2
     /// </summary>
     public partial class SequenceDataGrid : UserControl
     {
+
         public SequenceDataGrid()
         {
             InitializeComponent();
@@ -68,15 +71,18 @@ namespace MOTMaster2
                 dg.Columns.Add(col);
             }*/
             var dignames = first.DigitalValueTypes.Keys;
-            Style digitalStyle = new Style(typeof(CheckBox));
+           // Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
+            Style digitalStyle = new Style();
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
 
             foreach (var name in dignames)
             {
                 //var resource = this.FindResource("digitalProvider");
-                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name, EditingElementStyle = digitalStyle };
+
+                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name};
                 col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value") };
+                col.ElementStyle = digitalStyle;
                 dg.Columns.Add(col);
             }
             dg.FrozenColumnCount = 5;
@@ -95,7 +101,7 @@ namespace MOTMaster2
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            Controller ctrl;
+            //Controller ctrl;
         }
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -116,8 +122,12 @@ namespace MOTMaster2
         }
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
-            //Console.WriteLine("654654");            
+            //Console.WriteLine("654654");
+            var cell = sender as CheckBox;
+            //cell.Background 
             Console.WriteLine(sender.ToString());
+            if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
+            else cell.Background = new SolidColorBrush(Colors.Black);
         }
 
         public delegate void ChangedAnalogChannelCellHandler(object sender, SelectionChangedEventArgs e);
@@ -167,7 +177,54 @@ namespace MOTMaster2
 
         }
 
+        private void sequenceDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine("Clicked: " + sender.ToString());
+        }
+
     }
 
+    [ValueConversion(typeof(bool),typeof(Brush))]
+    public class BooleanToBrushConverter : MarkupExtension,IValueConverter
+    {
+        private static BooleanToBrushConverter _converter = null;
+        public BooleanToBrushConverter()
+        {
+
+        }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return Brushes.Transparent;
+
+            Brush[] brushes = parameter as Brush[];
+            if (brushes == null)
+                return Brushes.Red;
+
+            bool isTrue;
+            bool.TryParse(value.ToString(), out isTrue);
+
+            if (isTrue)
+            {
+                var brush = (SolidColorBrush)brushes[0];
+                return brush ?? Brushes.Transparent;
+            }
+            else
+            {
+                var brush = (SolidColorBrush)brushes[1];
+                return brush ?? Brushes.Transparent;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return _converter ?? (_converter = new BooleanToBrushConverter());
+        }
+    }
 }
 

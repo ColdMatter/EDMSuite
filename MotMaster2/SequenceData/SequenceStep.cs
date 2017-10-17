@@ -5,6 +5,7 @@ using DAQ.Environment;
 using NavigatorHardwareControl;
 using System.ComponentModel;
 using Newtonsoft.Json;
+using System.Windows.Media;
 
 namespace MOTMaster2.SequenceData
 {
@@ -30,9 +31,11 @@ namespace MOTMaster2.SequenceData
         private List<string> usedAnalogChannels;
         [JsonProperty]
         private List<SerialItem> serialCommands;
+
         
         public SequenceStep()
         {
+
             if (analogData == null) analogData = new Dictionary<string, AnalogValueArgs>();
             if (digitalData == null) digitalData = new Dictionary<string, bool>();
             if (usedAnalogChannels == null) usedAnalogChannels = new List<string>();

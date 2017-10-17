@@ -350,7 +350,7 @@ namespace MOTMaster2
             if (multiScanLogger != null)
             {
                 var segData = config.UseAI ? finalData.prms: null;
-                bool columns = (batchNumber == 0);
+                bool columns = (BatchNumber == 0);
                 AppendMultiScan(segData,columns);
             }
         }
@@ -452,15 +452,11 @@ namespace MOTMaster2
             //saveEnable = value;
             //controllerWindow.SetSaveCheckBox(value);
         }
-        private int batchNumber = 0;
-        public void SetBatchNumber(Int32 number)
-        {
-            batchNumber = number;
-            //controllerWindow.WriteToSaveBatchTextBox(number);
-        }
+        public int BatchNumber { get;set;}
+
         public void IncrementBatchNumber()
         {
-            batchNumber++;
+            BatchNumber++;
         }
         private string scriptPath = "";
         public void SetScriptPath(String path)
@@ -520,24 +516,24 @@ namespace MOTMaster2
             if (IsRunning()) hardwareError = CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
-
+        /*
         public void Run()
         {
             status = RunningState.running;
             Run(replicaRun ? ioHelper.LoadDictionary(dictionaryPath) : null);
         }
-
+        
         public void Run(Dictionary<String, Object> dict)
         {
             Run(dict, batchNumber);
         }
-
+        */
         public void Run(object dict)
         {
-            Run((Dictionary<string, object>) dict, batchNumber);
+            Run((Dictionary<string, object>) dict);
         }
        
-        public void Run(Dictionary<String, Object> dict, int myBatchNumber)
+        public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
             if (config.UseMMScripts || sequenceData == null)
@@ -553,10 +549,10 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                    
                 }
-                    if(!StaticSequence || myBatchNumber==0)sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence || BatchNumber==0)sequence = getSequenceFromSequenceData(dict);
                     if (sequence == null) { return; }
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
-                    if (myBatchNumber == 0)
+                    if (BatchNumber == 0)
                     {
                         //Only intialise and build once
                         if (StaticSequence)
@@ -622,7 +618,7 @@ namespace MOTMaster2
                     watch.Start();
                     if (!config.Debug)
                     {
-                        if (myBatchNumber == 0 || !StaticSequence) runPattern(sequence);
+                        if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
                         else if (status == RunningState.running) ContinueLoop();
                         else return;
                     }
@@ -653,7 +649,7 @@ namespace MOTMaster2
                                 //TODO Change save method
                                 
                             }
-                            save(script, scriptPath, imageData, report, myBatchNumber);
+                            save(script, scriptPath, imageData, report, BatchNumber);
                         }
                         else
                         {
@@ -664,13 +660,13 @@ namespace MOTMaster2
                                
                             }
                             if (config.UseMMScripts)
-                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,myBatchNumber);
+                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,BatchNumber);
                             }
                         }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(myBatchNumber));
+                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -1003,7 +999,7 @@ namespace MOTMaster2
         /// These then get loaded in the usual way through Run().
         /// disposeReplicaRun does some clean up after the experiment is finished.
         /// </summary>
-
+        /*
         public void RunReplica()
         {
             armReplicaRun();
@@ -1033,10 +1029,11 @@ namespace MOTMaster2
             SetReplicaRunBool(false);
             ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
+        */
         #endregion
 
         #region Remotable Stuff from python
-
+        /*
         public void RemoteRun(string scriptName, Dictionary<String, Object> parameters, bool save)
         {
             scriptPath = scriptName;
@@ -1059,7 +1056,7 @@ namespace MOTMaster2
         {
             return saveToDirectory;
         }
-
+        */
         #endregion
 
         #region Environment Loading
@@ -1224,7 +1221,7 @@ namespace MOTMaster2
             axelCommand.cmd = "shotData";
             Dictionary<string,double[]> segData = ExpData.SegmentShot(aiData);
             foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
-            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["runID"] = BatchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
             return axelCommand;
         }
@@ -1237,7 +1234,7 @@ namespace MOTMaster2
             axelCommand.mmexec = "";
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
-            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["runID"] = BatchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
             if (scan != null)
             {
