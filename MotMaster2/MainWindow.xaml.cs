@@ -65,7 +65,8 @@ namespace MOTMaster2
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
-                controller.WaitForRunToFinish();
+            //Not needed for repeat run. Might be needed for scan
+               // controller.WaitForRunToFinish(); 
         }
 
         public void InitVisuals()
@@ -87,7 +88,7 @@ namespace MOTMaster2
         }
 
         //TODO Rename to reflect loop runs
-        private bool SingleShot(Dictionary<string, object> paramDict, bool loop = false) // true if OK
+        private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
@@ -95,12 +96,12 @@ namespace MOTMaster2
                 controller.WaitForRunToFinish();
             }
 
-            controller.RunStart(paramDict, loop);
+            controller.RunStart(paramDict);
             return true;
         }
-        private bool SingleShot(bool loop = false) // true if OK
+        private bool SingleShot() // true if OK
         {
-            return SingleShot(null, loop);
+            return SingleShot(null);
         }
 
         private static string
@@ -176,25 +177,27 @@ namespace MOTMaster2
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
             controller.StartLogging();
-
             for (int i = 0; i < numInterations; i++)
             {
+                if (!ScanFlag) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
                 controller.SetBatchNumber(i);
-                ScanFlag = SingleShot(true);               
+                ScanFlag = SingleShot();               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
                 lbCurNumb.Content = i.ToString();
                 if (!ScanFlag) break;
+                DoEvents();
                 wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
                 while (wait4adjust)
                 {
                     Thread.Sleep(20);
                     DoEvents();
                 }
+                controller.WaitForRunToFinish();
+
             }
             controller.StopLogging();
-            Controller.StaticSequence = false;
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
         }
 
@@ -760,7 +763,7 @@ namespace MOTMaster2
             if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask))
             {
                 //Save the currently open sequence to a default location
-                MessageBoxResult result = MessageBox.Show("MOTMaster is closing. \nDo you want to save the sequence? ...or cancel closing?","    Save Default Sequence" ,MessageBoxButton.YesNoCancel);
+                MessageBoxResult result = MessageBox.Show("MOTMaster is closing. \nDo you want to save the sequence? ...or cancel closing?", "    Save Default Sequence", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes)
                 {
                     Controller.SaveSequenceAsDefault();
@@ -967,10 +970,11 @@ namespace MOTMaster2
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (Utils.isNull(Controller.sequenceData)) return;
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
+
+
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
@@ -1049,6 +1053,14 @@ namespace MOTMaster2
         private void btnMScan_Click(object sender, RoutedEventArgs e)
         {
             if (lstParams.Items.Count == 0) return;
+            string filename = "";
+            if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
+            {
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = Controller.ExpData.ExperimentName;
+            }
+            controller.SetBatchNumber(0);
+            controller.StartLogging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)
             {
@@ -1077,15 +1089,22 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     // TODO update parameres from ms
+                    Controller.SetParameter(ms.sParam, ms.Value);
+                    ScanFlag = SingleShot();
+                    if (!ScanFlag) break;
+                    controller.WaitForRunToFinish();
+                    controller.IncrementBatchNumber();
                 }
                 // TODO measure and add record to the data output/file 
+
             }
+            controller.StopLogging();
         }
         
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem lbi = new ListBoxItem(); 
-            lbi.Content = "prm\t0 .. 10; 0.1";
+            lbi.Content = "prm \t 0..10;0.1";
             lstParams.Items.Add(lbi);
         }
 
