@@ -153,8 +153,8 @@
     <Compile Include="dotMath\Parser.cs" />
     <Compile Include="ErrorManager.cs" />
     <Compile Include="ExperimentData.cs" />
-    <Compile Include="HardwareOptions.xaml.cs">
-      <DependentUpon>HardwareOptions.xaml</DependentUpon>
+    <Compile Include="Options.xaml.cs">
+      <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObservableDictionary.cs" />
     <Compile Include="ParametersWindow.xaml.cs">
@@ -191,7 +191,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="HardwareOptions.xaml">
+    <Page Include="Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

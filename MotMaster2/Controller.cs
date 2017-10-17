@@ -68,6 +68,7 @@ namespace MOTMaster2
         //public List<string> analogChannels;
         public List<string> digitalChannels;
         public MOTMasterScript script;
+        public static GeneralOptions genOptions;
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
         public static ExperimentData ExpData { get; set; }
@@ -126,6 +127,9 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
+            string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
+            Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
+
             LoadDefaultSequence();
             if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
@@ -182,7 +186,7 @@ namespace MOTMaster2
                 }
                 try
                 {
-                    phaseStrobes = new PhaseStrobes();
+                    
                     if (!config.Debug)
                     {
                     M2DCS.Connect();
@@ -201,7 +205,7 @@ namespace MOTMaster2
             }
 
             //if (Environs.Hardware.Instruments.ContainsKey("m2PLL")) { m2FreqComm = (MuquansRS232)Environs.Hardware.Instruments["m2PLL"];}
-
+            phaseStrobes = new PhaseStrobes();
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -508,11 +512,12 @@ namespace MOTMaster2
             status = RunningState.running;
 
             runThread.Start(paramDict);
+            if(batchNumber==0) WaitForRunToFinish();
             Console.WriteLine("Thread Starting");
         }
         public void WaitForRunToFinish()
         {
-            if (runThread != null) { runThread.Join();}
+            if (runThread != null) { runThread.Join(); }
             if (IsRunning()) hardwareError = CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
@@ -522,7 +527,7 @@ namespace MOTMaster2
             status = RunningState.running;
             Run(replicaRun ? ioHelper.LoadDictionary(dictionaryPath) : null);
         }
-        
+
         public void Run(Dictionary<String, Object> dict)
         {
             Run(dict, batchNumber);
@@ -544,7 +549,7 @@ namespace MOTMaster2
             else
             {
                 
-                if (config.UseAI)
+                if (config.UseAI || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                    

@@ -94,9 +94,8 @@ namespace MOTMaster2.SequenceData
                     }
                     catch
                     {
-                        throw new Exception(string.Format("Failed to add analog data for Channel:{0} Step:{1}",analogChannel,step.Name));
+                       throw new Exception(string.Format("Failed to add analog data for Channel:{0} Step:{1}",analogChannel,step.Name));
                     }
-
                 }
                 //Adds the Muquans string commands as well as the required serial pulses before digital pulses to prevent time order exceptions
                 if (step.RS232Commands)
