@@ -45,7 +45,8 @@ namespace MOTMaster2
         //Rise time in seconds to be excluded from data
         public double RiseTime { get; set; }
 
-        private int preTrigSamples = 64;
+        //This depends on the number of channels and sampling rate
+        private int preTrigSamples = 32;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
         public static double[] TransferFunc { get; set; }
@@ -69,7 +70,7 @@ namespace MOTMaster2
                     imin = entry.Value.Item1 + riseSamples;
                     imax = entry.Value.Item2;
                     double[] data = new double[imax-imin];
-                    for (int i = imin; i < imax; i++) data[i-imin] = rawData[0,i];
+                    for (int i = imin; i < imax; i++) data[i-imin] = rawData[1,i];
                     segData[entry.Key] = data;
                 }
                 else if (entry.Key == InterferometerStepName)
@@ -77,7 +78,7 @@ namespace MOTMaster2
                     imin = entry.Value.Item1;
                     imax = entry.Value.Item2;
                     double[] accelData = new double[imax-imin];
-                    for (int i = imin; i < imax; i++) accelData[i - imin] = rawData[1, i];
+                    for (int i = imin; i < imax; i++) accelData[i - imin] = rawData[0, i];
                     ConvertAccelerometerVoltage(ref segData, accelData);
                 }
             }

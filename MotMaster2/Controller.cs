@@ -85,7 +85,7 @@ namespace MOTMaster2
         MMAIWrapper aip;
 
         private static int aiSampleRate = 200000;
-        private static double riseTime = 0.0001;
+        private static double riseTime = 0.00012;
         public static bool StaticSequence { get; set; }
         private bool hardwareError = false;
         CameraControllable camera = null;
@@ -143,7 +143,7 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect();/*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
             if (config.UseMSquared)
             {
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
@@ -260,7 +260,7 @@ namespace MOTMaster2
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, false);
-            if (config.UseMuquans) { muquans.Configure(StaticSequence); microSynth.Connect(); }
+            if (config.UseMuquans) { muquans.Configure(StaticSequence);}
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, StaticSequence);
             if (config.UseAI) { 
                 aip.Configure(sequence.AIConfiguration, StaticSequence);
@@ -278,7 +278,7 @@ namespace MOTMaster2
             else hs.StopPattern();
             apg.StopPattern();
             if (config.UseAI) { aip.StopPattern(); }
-            if (config.UseMuquans) { muquans.StopOutput(); microSynth.Disconnect(); }
+            if (config.UseMuquans) { muquans.StopOutput(); }
         }
             catch (Exception e)
             {
@@ -578,7 +578,7 @@ namespace MOTMaster2
 
                     if (config.UseMuquans && !config.Debug)
                     {
-                        microSynth.ChannelA.RFOn = true;
+                        //microSynth.ChannelA.RFOn = true;
                         //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                    
@@ -641,7 +641,7 @@ namespace MOTMaster2
                         }
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                    if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+                  //  if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
                     if (config.UseAI || config.Debug) OnAnalogDataReceived(this, null);
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
@@ -1172,7 +1172,9 @@ namespace MOTMaster2
                 if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1e-3;
                 else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 1e-6;
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1.0;
-                double duration = Convert.ToDouble(step.Duration);
+                double duration = 0.0;
+                if (step.Duration is string) duration = SequenceParser.ParseOrGetParameter((string)step.Duration);
+                else duration = Convert.ToDouble(step.Duration);
                 int sampleDuration = Convert.ToInt32(duration*timeMultiplier*sampleRate);
                 string name = step.Name;
                 Tuple<int, int> segmentTimes = Tuple.Create<int,int>(sampleStartTime, sampleStartTime + sampleDuration );
@@ -1246,15 +1248,17 @@ namespace MOTMaster2
             M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
-
+           /* 
             M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value,pulse1Enabled);
             M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value,pulse2Enabled);
             M2DCS.ConfigureIntTime(1, intTime1);
             M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value,pulse3Enabled);
             M2DCS.ConfigureIntTime(2, intTime2);
             M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value,velPulseEnabled);
-
+            
             M2DCS.UpdateSequenceParameters();
+            */
+          
             }
 
         private static bool CheckPhaseLock()
