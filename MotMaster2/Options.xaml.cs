@@ -30,6 +30,9 @@ namespace MOTMaster2
 
         public DataLogOption dataLog;
 
+        public enum M2CommOption { on, off}
+        public M2CommOption m2Comm;
+
         public void Save()
         {
             string fileJson = JsonConvert.SerializeObject(this);
@@ -75,6 +78,8 @@ namespace MOTMaster2
             if (rbSaveSeqAsk.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.ask;
             if (rbSaveSeqNo.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.nosave;
 
+            if (m2Off.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.off;
+            if (m2On.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.on;
             Close();
         }
 
@@ -102,6 +107,9 @@ namespace MOTMaster2
             rbSaveSeqYes.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.save);
             rbSaveSeqAsk.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask);
             rbSaveSeqNo.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.nosave);
+
+            m2On.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.on);
+            m2Off.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.off);
        }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

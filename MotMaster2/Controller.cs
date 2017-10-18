@@ -124,25 +124,32 @@ namespace MOTMaster2
 
         public void StartApplication()
         {
-            if (Environs.Debug && config == null)
-            {
-                LoadEnvironment();
-            }
-            if (File.Exists(Utils.configPath + "genOptions.cfg"))
-            {
-                string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
-                Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
-            }
-            else
-                Controller.genOptions = new GeneralOptions();
+            LoadEnvironment();
+        
             LoadDefaultSequence();
-            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+
+            //TODO Analog input config should be moved to GeneralOptions
+            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
+
+            CheckHardware(config.Debug);
+
+            phaseStrobes = new PhaseStrobes();
+            ioHelper = new MMDataIOHelper(motMasterDataPath,
+                    (string)Environs.Hardware.GetInfo("Element"));
+
+            ScriptLookupAndDisplay();
+        }
+
+        //TODO Set config flags based on if hardware exists
+        private void CheckHardware(bool debug)
+        {
+            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["digital"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["analogIn"]);
 
-            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
+            
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -154,46 +161,30 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
             if (config.UseMSquared)
             {
+                CheckMSquaredHardware();
+            }
+        }
+
+        private void CheckMSquaredHardware()
+        {
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
-                else throw new Exception("Cannot find DCS ICE-BLOC");
+            else throw new Exception("Cannot find DCS ICE-BLOC");
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
-                else throw new Exception("Cannot find PLL ICE-BLOC");
+            else throw new Exception("Cannot find PLL ICE-BLOC");
 
-
-                //Adds MSquared parameters if not already found
-                if (sequenceData!=null && !sequenceData.Parameters.ContainsKey("PLLFreq"))
+            //Adds MSquared parameters if not already found
+            if (sequenceData != null && !sequenceData.Parameters.ContainsKey("PLLFreq"))
+            {
+                CreateDefaultMSquaredParams();
+            }
+            try
+            {
+                DCSParams = new Dictionary<string, object>();
+                if (!config.Debug)
                 {
-                    sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
-                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.5,true,false);
-                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.5,true,false);
-
-                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",22.0,true,false);
-                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",22,true,false);
-                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",22.0,true,false);
-                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",22.0,true,false);
-                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",10,true,false);
-                    sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
-
-                    sequenceData.Parameters["IntTime1"] = new Parameter("IntTime1", "", 25.0, true, false);
-                    sequenceData.Parameters["IntTime2"] = new Parameter("IntTime2", "", 25.0, true, false);
-                }
-                try
-                {
-                    DCSParams = new Dictionary<string, object>();
-                    if (!config.Debug)
-                    {
                     M2DCS.Connect();
                     M2PLL.Connect();
 
@@ -201,22 +192,40 @@ namespace MOTMaster2
                     M2DCS.StartLink();
                     SetMSquaredParameters();
                 }
-                }
-                catch
-                {
-                    //Set to popup to avoid Exception called when it can't write to a Log
-                       ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
-                }
             }
-
-            //if (Environs.Hardware.Instruments.ContainsKey("m2PLL")) { m2FreqComm = (MuquansRS232)Environs.Hardware.Instruments["m2PLL"];}
-            phaseStrobes = new PhaseStrobes();
-            ioHelper = new MMDataIOHelper(motMasterDataPath,
-                    (string)Environs.Hardware.GetInfo("Element"));
-
-            ScriptLookupAndDisplay();
+            catch
+            {
+                //Set to popup to avoid Exception called when it can't write to a Log
+                ErrorMgr.warningMsg("Could not set MSquared Parameters", -1, true);
+            }
         }
 
+        private static void CreateDefaultMSquaredParams()
+        {
+
+            sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq", "", 6834.689, true, false);
+            sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate", "", 0.5, true, false);
+            sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration", "", 0.5, true, false);
+
+            sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power", "", 22.0, true, false);
+            sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power", "", 22, true, false);
+            sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power", "", 22.0, true, false);
+            sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower", "", 22.0, true, false);
+            sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration", "", 10, true, false);
+            sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase", "", 0.0, true, false);
+
+            sequenceData.Parameters["IntTime1"] = new Parameter("IntTime1", "", 25.0, true, false);
+            sequenceData.Parameters["IntTime2"] = new Parameter("IntTime2", "", 25.0, true, false);
+        }
         #endregion
 
         #region Hardware control methods
@@ -1072,30 +1081,52 @@ namespace MOTMaster2
         #endregion
 
         #region Environment Loading
-        public void LoadEnvironment()
+        public void LoadEnvironment(bool daqClassLoad = false)
         {
 
-            string fileJson = File.ReadAllText("filesystem.json");
-            string hardwareJson = File.ReadAllText("hardware.json");
-            string configJson = File.ReadAllText("config.json");
+            if (File.Exists(Utils.configPath + "genOptions.cfg"))
+            {
+                string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
+                Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
+            }
+            else
+                Controller.genOptions = new GeneralOptions();
 
-            LoadEnvironment(fileJson, hardwareJson, configJson);
+            if (daqClassLoad)
+            {
+                if (File.Exists((Utils.configPath + "filesystem.json")))
+                {
+                    string fileSystemJson = File.ReadAllText(Utils.configPath + "filesystem.json");
+                    DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileSystemJson);
+                }
+
+                if (File.Exists((Utils.configPath + "hardware.json")))
+                {
+                    string hardwareJson = File.ReadAllText(Utils.configPath + "hardware.json");
+                    DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
+                }
+
+                if (File.Exists((Utils.configPath + "config.json")))
+                {
+                    string configJson = File.ReadAllText(Utils.configPath + "config.json");
+                    config = JsonConvert.DeserializeObject<MMConfig>(configJson);
+                }
+            }
+            
         }
 
-        public void LoadEnvironment(string fileJson, string hardwareJson, string configJson)
-        {
-            DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
-            DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
-            config = JsonConvert.DeserializeObject<MMConfig>(configJson);
-        }
+
         public void SaveEnvironment()
         {
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem, Formatting.Indented);
             string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             string configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText("filesystem.json", fileJson);
-            File.WriteAllText("hardware.json", hardwareJson);
-            File.WriteAllText("config.json", configJson);
+            string optionsJson = JsonConvert.SerializeObject(Controller.genOptions, Formatting.Indented);
+
+            File.WriteAllText(Utils.configPath + "filesystem.json", fileJson);
+            File.WriteAllText(Utils.configPath + "hardware.json", hardwareJson);
+            File.WriteAllText(Utils.configPath + "config.json", configJson);
+            File.WriteAllText(Utils.configPath + "genOptions.cfg", optionsJson);
         }
 
         public static void LoadDefaultSequence()
@@ -1335,21 +1366,27 @@ namespace MOTMaster2
                 if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
                 }
             CheckPhaseLock();
-            if (DCSParams.ContainsKey("PLLFreq")) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            if (DCSParams.ContainsKey("PLLFreq") && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
 
             //Updates DCS if parameters have been modified
+            if (DCSParams.Any(kvp => kvp.Key.Contains("VelPulse"))) DCSParams["VelPulseEnabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse1"))) DCSParams["Pulse1Enabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse2"))) DCSParams["Pulse2Enabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse3"))) DCSParams["Pulse3Enabled"] = true;
+
             if (Utils.Get(DCSParams, "VelPulseEnabled") != null) M2DCS.ConfigurePulse("X", 0, Utils.Get(DCSParams, "VelPulseDuration"), Utils.Get(DCSParams, "VelPulsePower"), 1e-6, Utils.Get(DCSParams, "VelPulsePhase"), (bool)Utils.Get(DCSParams, "VelPulseEnabled"));
             if (Utils.Get(DCSParams, "Pulse1Enabled") != null) M2DCS.ConfigurePulse("X", 1, Utils.Get(DCSParams, "Pulse1Duration"), Utils.Get(DCSParams, "Pulse1Power"), 1e-6, Utils.Get(DCSParams, "Pulse1Phase"), (bool)Utils.Get(DCSParams, "Pulse1Enabled"));
             if (Utils.Get(DCSParams, "IntTime1") != null) M2DCS.ConfigureIntTime(1, (double)DCSParams["IntTime1"]);
-            if (Utils.Get(DCSParams, "Pulse2Enabled") != null) M2DCS.ConfigurePulse("X", 2, Utils.Get(DCSParams, "Pulse2Duration"), Utils.Get(DCSParams, "Pulse2Power"), 1e-6, Utils.Get(DCSParams, "Pulse2Phase"), (bool)Utils.Get(DCSParams, "Pulse2Enabled"));
+            if (Utils.Get(DCSParams, "Pulse2Enabled") !=null) M2DCS.ConfigurePulse("X", 2, Utils.Get(DCSParams, "Pulse2Duration"), Utils.Get(DCSParams, "Pulse2Power"), 1e-6, Utils.Get(DCSParams, "Pulse2Phase"), (bool)Utils.Get(DCSParams, "Pulse2Enabled"));
             if (Utils.Get(DCSParams, "IntTime2") != null) M2DCS.ConfigureIntTime(2, (double)DCSParams["IntTime2"]);
             if (Utils.Get(DCSParams, "Pulse3Enabled") != null) M2DCS.ConfigurePulse("X", 3, Utils.Get(DCSParams, "Pulse3Duration"), Utils.Get(DCSParams, "Pulse3Power"), 1e-6, Utils.Get(DCSParams, "Pulse3Phase"), (bool)Utils.Get(DCSParams, "Pulse3Enabled"));
-
-            if (!config.Debug)M2DCS.UpdateSequenceParameters();
-            M2DCS.ClearParameters();
             DCSParams.Clear();
+            //TODO Send this to MainWindow Log
+            if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2DCS.UpdateSequenceParameters();
+            else  Console.WriteLine(M2DCS.PrintParametersToConsole());
+            
             }
 
         private static bool CheckPhaseLock()
