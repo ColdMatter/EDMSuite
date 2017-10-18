@@ -127,9 +127,13 @@ namespace MOTMaster2
             {
                 LoadEnvironment();
             }
-            string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
-            Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
-
+            if (File.Exists(Utils.configPath + "genOptions.cfg"))
+            {
+                string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
+                Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
+            }
+            else
+                Controller.genOptions = new GeneralOptions();
             LoadDefaultSequence();
             if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
@@ -512,7 +516,7 @@ namespace MOTMaster2
             status = RunningState.running;
 
             runThread.Start(paramDict);
-            if(batchNumber==0) WaitForRunToFinish();
+            if(BatchNumber==0) WaitForRunToFinish();
             Console.WriteLine("Thread Starting");
         }
         public void WaitForRunToFinish()

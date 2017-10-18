@@ -26,11 +26,16 @@ namespace MOTMaster2
 
         public SaveOption saveSequence;
 
+        public enum DataLogOption { allData, average}
+
+        public DataLogOption dataLog;
+
         public void Save()
         {
             string fileJson = JsonConvert.SerializeObject(this);
-            File.WriteAllText(Utils.configPath+"genOptions.cfg", fileJson);
+            File.WriteAllText(Utils.configPath + "genOptions.cfg", fileJson);
         }
+
     }
 
     /// <summary>

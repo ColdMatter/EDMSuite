@@ -26,11 +26,13 @@ namespace MOTMaster2
     /// </summary>
     public partial class SequenceDataGrid : UserControl
     {
+        public static Dictionary<string, Brush> DigitalColourDict;
 
         public SequenceDataGrid()
         {
             InitializeComponent();
             sequenceDataGrid.DataContext = new SequenceStepViewModel();
+            DigitalColourDict = new Dictionary<string, Brush>();
         }
 
         public void UpdateSequenceData()
@@ -71,19 +73,24 @@ namespace MOTMaster2
                 dg.Columns.Add(col);
             }*/
             var dignames = first.DigitalValueTypes.Keys;
-           // Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
-            Style digitalStyle = new Style();
+            Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
+            //Style digitalStyle = new Style();
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
-            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
 
+            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+            Brush[] colours = new Brush[]{new SolidColorBrush(Colors.Red),new SolidColorBrush(Colors.Orange),new SolidColorBrush(Colors.Yellow),new SolidColorBrush(Colors.Green),new SolidColorBrush(Colors.Blue)};
+            int i = 0;
             foreach (var name in dignames)
             {
                 //var resource = this.FindResource("digitalProvider");
-
                 DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name};
                 col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value") };
+       
+                //Path p = (Path)this.Resources["CheckMark"];
+                //p.Stroke = colours[i % colours.Length];
                 col.ElementStyle = digitalStyle;
                 dg.Columns.Add(col);
+                i++;
             }
             dg.FrozenColumnCount = 5;
         }
@@ -126,8 +133,8 @@ namespace MOTMaster2
             var cell = sender as CheckBox;
             //cell.Background 
             Console.WriteLine(sender.ToString());
-            if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
-            else cell.Background = new SolidColorBrush(Colors.Black);
+           // if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
+            //else cell.Background = new SolidColorBrush(Colors.Black);
         }
 
         public delegate void ChangedAnalogChannelCellHandler(object sender, SelectionChangedEventArgs e);
@@ -177,53 +184,36 @@ namespace MOTMaster2
 
         }
 
-        private void sequenceDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            Console.WriteLine("Clicked: " + sender.ToString());
-        }
 
     }
 
-    [ValueConversion(typeof(bool),typeof(Brush))]
-    public class BooleanToBrushConverter : MarkupExtension,IValueConverter
+    public class ValueToBrushConverter : IValueConverter
     {
-        private static BooleanToBrushConverter _converter = null;
-        public BooleanToBrushConverter()
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-
-        }
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return Brushes.Transparent;
-
-            Brush[] brushes = parameter as Brush[];
-            if (brushes == null)
-                return Brushes.Red;
-
-            bool isTrue;
-            bool.TryParse(value.ToString(), out isTrue);
-
-            if (isTrue)
+            int input;
+            try
             {
-                var brush = (SolidColorBrush)brushes[0];
-                return brush ?? Brushes.Transparent;
+                DataGridCell dgc = (DataGridCell)value;
+                System.Data.DataRowView rowView = (System.Data.DataRowView)dgc.DataContext;
+                input = (int)rowView.Row.ItemArray[dgc.Column.DisplayIndex];
             }
-            else
+            catch (InvalidCastException e)
             {
-                var brush = (SolidColorBrush)brushes[1];
-                return brush ?? Brushes.Transparent;
+                return DependencyProperty.UnsetValue;
+            }
+            switch (input)
+            {
+                case 1: return Brushes.Red;
+                case 2: return Brushes.White;
+                case 3: return Brushes.Blue;
+                default: return DependencyProperty.UnsetValue;
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return _converter ?? (_converter = new BooleanToBrushConverter());
+            throw new NotSupportedException();
         }
     }
 }
