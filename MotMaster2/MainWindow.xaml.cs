@@ -73,7 +73,7 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
-            SetInterferometerParams(Controller.sequenceData.Parameters);
+            if (!Utils.isNull(Controller.sequenceData)) SetInterferometerParams(Controller.sequenceData.Parameters);
         }
 
         private string[] ParamsArray
@@ -88,20 +88,19 @@ namespace MOTMaster2
         }
 
         //TODO Rename to reflect loop runs
-        private bool SingleShot(Dictionary<string, object> paramDict, bool loop = false) // true if OK
+        private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
             //Would like to use RunStart as this Runs in a new thread
+            controller.RunStart(paramDict);
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-
-            controller.RunStart(paramDict, loop);
             return true;
         }
-        private bool SingleShot(bool loop = false) // true if OK
+        private bool SingleShot() // true if OK
         {
-            return SingleShot(null, loop);
+            return SingleShot(null);
         }
 
         private static string
@@ -181,8 +180,8 @@ namespace MOTMaster2
             {
                 if (!ScanFlag) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
-                controller.SetBatchNumber(i);
-                ScanFlag = SingleShot(true);               
+                controller.BatchNumber = i;
+                ScanFlag = SingleShot();               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
                 lbCurNumb.Content = i.ToString();
@@ -332,7 +331,7 @@ namespace MOTMaster2
             controller.ScanParam = scanParam;
             foreach (object scanItem in scanArray)
             {
-                controller.SetBatchNumber(c);
+                controller.BatchNumber = c;
                 param.Value = scanItem;
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
@@ -350,6 +349,7 @@ namespace MOTMaster2
                 DoEvents();
                 if (!ScanFlag) break;
                 c++;
+      
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
@@ -599,9 +599,9 @@ namespace MOTMaster2
         {
             controller.LoadEnvironment();
         }
-        private void EditHardware_Click(object sender, RoutedEventArgs e)
+        private void EditOptions_Click(object sender, RoutedEventArgs e)
         {
-            HardwareOptions optionsWindow = new HardwareOptions();
+            OptionWindow optionsWindow = new OptionWindow();
             optionsWindow.Show();
         }
         private void About_Click(object sender, RoutedEventArgs e)
@@ -760,17 +760,23 @@ namespace MOTMaster2
 
         private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //Save the currently open sequence to a default location
-            MessageBoxResult result = MessageBox.Show("MOTMaster is closing. Do you want to save the sequence?","Save Sequence to File/Default" ,MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Yes)
+            if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask))
             {
-                SaveSequence_Click(sender, null);
+                //Save the currently open sequence to a default location
+                MessageBoxResult result = MessageBox.Show("MOTMaster is closing. \nDo you want to save the sequence? ...or cancel closing?", "    Save Default Sequence", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Controller.SaveSequenceAsDefault();
+                    //SaveSequence_Click(sender, null);
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                    e.Cancel = true;
+                }
             }
-            else if (result == MessageBoxResult.No)
-            {
-                //List<SequenceStep> steps = sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
-                Controller.SaveSequenceAsDefault();
-            }
+            if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.save)) Controller.SaveSequenceAsDefault();
+            Controller.genOptions.Save();
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)
@@ -967,22 +973,26 @@ namespace MOTMaster2
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
-
-
+            controller.StoreDCSParameter(laserKey, type.GetProperty("Value").GetValue(sender));
+            
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            string key = scanDict.Keys.ToArray()[0];
-            object control = MSquaredTab.FindName(key);
-            if (control == null) return;
-            else
+            object control;
+            foreach (KeyValuePair<string,object> entry in scanDict)
             {
-                ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
-                //Only set them if one is changed
+                control = MSquaredTab.FindName(entry.Key);
+                if (control == null) continue;
+                else
+                {
+                    ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value;
+                    controller.StoreDCSParameter(entry.Key, entry.Value); 
+                }
                 //TODO fix handling of warnings if ICE-BLocs are not connected
-                Controller.SetMSquaredParameters();
+                controller.SetMSquaredParameters();
             }
+
         }
 
         private void SetInterferometerParams(ObservableDictionary<string, Parameter> observableDictionary)
@@ -994,14 +1004,18 @@ namespace MOTMaster2
                 {
                     object control = MSquaredTab.FindName(entry.Key);
                     if (control == null) continue;
-                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
+                    else
+                    {
+                        ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
+                        //controller.StoreDCSParameter(entry.Key, entry.Value.Value);
+                    }
                 }
             }
         }
 
         private void m2updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            Controller.SetMSquaredParameters();
+            controller.SetMSquaredParameters();
             Log("Updated MSquared laser parameters");
         }
         #region multi-scan
@@ -1047,6 +1061,14 @@ namespace MOTMaster2
         private void btnMScan_Click(object sender, RoutedEventArgs e)
         {
             if (lstParams.Items.Count == 0) return;
+            string filename = "";
+            if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
+            {
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                tbExperimentRun.Text = Controller.ExpData.ExperimentName;
+            }
+            controller.BatchNumber = 0;
+            controller.StartLogging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)
             {
@@ -1076,9 +1098,15 @@ namespace MOTMaster2
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     // TODO update parameres from ms
                     Controller.SetParameter(ms.sParam, ms.Value);
+                    ScanFlag = SingleShot();
+                    if (!ScanFlag) break;
+                    controller.WaitForRunToFinish();
+                    controller.IncrementBatchNumber();
                 }
                 // TODO measure and add record to the data output/file 
+
             }
+            controller.StopLogging();
         }
         
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
@@ -1116,6 +1144,13 @@ namespace MOTMaster2
             lstParams.Items.Insert(si, lbi);
         }
         #endregion multi-scan
+
+        private void btnPulseEnable_Click(object sender, RoutedEventArgs e)
+        {
+            var check = sender as CheckBox;
+            string name = check.Name;
+            controller.StoreDCSParameter(name, check.IsChecked.Value);
+        }
     }
 
 }

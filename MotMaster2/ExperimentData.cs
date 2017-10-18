@@ -78,8 +78,8 @@ namespace MOTMaster2
                     imin = entry.Value.Item1;
                     imax = entry.Value.Item2;
                     double[] accelData = new double[imax-imin];
-                    for (int i = imin; i < imax; i++) accelData[i - imin] = rawData[0, i];
-                    ConvertAccelerometerVoltage(ref segData, accelData);
+                    for (int i = imin; i < imax; i++) accelData[i - imin] = rawData[1, i];
+                    segData["AccV"] = accelData;
                 }
             }
             return segData;
@@ -90,8 +90,9 @@ namespace MOTMaster2
         /// </summary>
         /// <param name="segData"></param>
         /// <param name="accelData"></param>
-        private void ConvertAccelerometerVoltage(ref Dictionary<string, double[]> segData, double[] accelData)
+        private Dictionary<string,double> ConvertAccelerometerVoltage(double[] accelData)
         {
+            Dictionary<string,double> accDict = new Dictionary<string,double>();
             double keff = 4 * Math.PI / (780 * 1e-9);
             double accScale = 1.235976 * 1e-3 * 6 * 1e3 / 9.81;// V/ms^-2
             int nAccSamps = accelData.Length;
@@ -105,14 +106,46 @@ namespace MOTMaster2
             double accMean = accelData.Average();
             double accStd = 0.0;
             for (int i = 0; i < accelData.Length; i++) accStd += accelData[i]*accelData[i];
-            accStd = accStd/nAccSamps-1;
+            accStd = accStd/(nAccSamps-1);
             accStd = Math.Sqrt(accStd - accMean*accMean);
 
-            segData["AccPhase"] = new double[] {accPhase};
-            segData["AccMeanV"] = new double[] {accMean};
-            segData["AccMeanA"] = new double[] {accMean/accScale};
-            segData["AccStdV"] = new double[] {accStd};
-            segData["AccStdA"] = new double[] {accStd/accScale};
+            accDict["AccPhase"] = accPhase;
+            accDict["AccV_mean"] = accMean;
+            accDict["AccV_std"] = accStd;
+            accDict["AccA_mean"] = accMean/accScale;
+            accDict["AccA_std"] = accStd/accScale;
+            return accDict;
+        }
+
+        public Dictionary<string,double> GetAverageValues(Dictionary<string,object> segData)
+        {
+            Dictionary<string,double> avgDict = new Dictionary<string, double>();
+            double[] rawData;
+            double mean = 0.0;
+            double std =0.0;
+            foreach (string name in segData.Keys)
+            {
+                if (name != "AccV")
+                {
+                rawData = (double[])segData[name];
+                mean = rawData.Average();
+                std = 0.0;
+                for (int i = 0; i< rawData.Length; i++)
+                {
+                    std += rawData[i]*rawData[i];
+                }
+                std /= (rawData.Length-1);
+                std = Math.Sqrt(std-mean*mean);
+                avgDict[name+"_mean"] = mean;
+                avgDict[name+"_std"] = std;
+                }
+                else
+                {
+                    Dictionary<string,double> accDict = ConvertAccelerometerVoltage((double[])segData[name]);
+                    avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                }
+            }
+            return avgDict;
         }
         //Useful when starting a new scan
         public void ClearData()

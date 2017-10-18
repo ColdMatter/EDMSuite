@@ -65,14 +65,17 @@ namespace MOTMaster2
         public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
 
-        public List<string> analogChannels;
+        //public List<string> analogChannels;
         public List<string> digitalChannels;
         public MOTMasterScript script;
+        public static GeneralOptions genOptions;
         public static Sequence sequenceData;
         public static MOTMasterSequence sequence;
         public static ExperimentData ExpData { get; set; }
         public static AutoFileLogger dataLogger;
         public static AutoFileLogger paramLogger;
+
+        public static AutoFileLogger multiScanLogger;
         public bool SendDataRemotely { get; set; }
 
         public event DataEventHandler MotMasterDataEvent;
@@ -100,6 +103,7 @@ namespace MOTMaster2
         public static ICEBlocDCS M2DCS;
         public static ICEBlocPLL M2PLL;
         public PhaseStrobes phaseStrobes;
+        private Dictionary<string, object> DCSParams;
 
         MMDataIOHelper ioHelper;
         SequenceBuilder builder;
@@ -120,18 +124,32 @@ namespace MOTMaster2
 
         public void StartApplication()
         {
-            if (Environs.Debug && config == null)
-            {
                 LoadEnvironment();
-            }
+        
             LoadDefaultSequence();
-            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["analog"]);
+
+            //TODO Analog input config should be moved to GeneralOptions
+            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
+
+            CheckHardware(config.Debug);
+
+            phaseStrobes = new PhaseStrobes();
+            ioHelper = new MMDataIOHelper(motMasterDataPath,
+                    (string)Environs.Hardware.GetInfo("Element"));
+
+            ScriptLookupAndDisplay();
+        }
+
+        //TODO Set config flags based on if hardware exists
+        private void CheckHardware(bool debug)
+        {
+            if (!config.HSDIOCard) pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["digital"]);
             else hs = new HSDIOPatternGenerator((string)Environs.Hardware.Boards["hsDigital"]);
             apg = new DAQMxAnalogPatternGenerator();
             PCIpg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQPCI"]);
             aip = new MMAIWrapper((string)Environs.Hardware.Boards["analogIn"]);
 
-            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
+            
             digitalChannels = Environs.Hardware.DigitalOutputChannels.Keys.Cast<string>().ToList();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -143,44 +161,28 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; microSynth.Connect();/*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController();  if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
             if (config.UseMSquared)
             {
+                CheckMSquaredHardware();
+            }
+        }
+
+        private void CheckMSquaredHardware()
+        {
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredDCS")) M2DCS = (ICEBlocDCS)Environs.Hardware.Instruments["MSquaredDCS"];
                 else throw new Exception("Cannot find DCS ICE-BLOC");
             if (Environs.Hardware.Instruments.ContainsKey("MSquaredPLL")) M2PLL = (ICEBlocPLL)Environs.Hardware.Instruments["MSquaredPLL"];
                 else throw new Exception("Cannot find PLL ICE-BLOC");
 
-
                 //Adds MSquared parameters if not already found
-                if (!sequenceData.Parameters.ContainsKey("PLLFreq"))
+            if (sequenceData != null && !sequenceData.Parameters.ContainsKey("PLLFreq"))
                 {
-                    sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq","",6834.689,true,false);
-                    sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate","",0.5,true,false);
-                    sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration","",0.5,true,false);
-
-                    sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power","",22.0,true,false);
-                    sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power","",22,true,false);
-                    sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power","",22.0,true,false);
-                    sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration","",10,true,false);
-                    sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase","",0.0,true,false);
-
-                    sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower","",22.0,true,false);
-                    sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration","",10,true,false);
-                    sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase","",0.0,true,false);
-
-                    sequenceData.Parameters["IntTime1"] = new Parameter("IntTime1", "", 25.0, true, false);
-                    sequenceData.Parameters["IntTime2"] = new Parameter("IntTime2", "", 25.0, true, false);
+                CreateDefaultMSquaredParams();
                 }
                 try
                 {
-                    phaseStrobes = new PhaseStrobes();
+                DCSParams = new Dictionary<string, object>();
                     if (!config.Debug)
                     {
                     M2DCS.Connect();
@@ -194,18 +196,36 @@ namespace MOTMaster2
                 catch
                 {
                     //Set to popup to avoid Exception called when it can't write to a Log
-                       ErrorMgr.warningMsg("Could not set MSquared Parameters",-1,true);
+                ErrorMgr.warningMsg("Could not set MSquared Parameters", -1, true);
                 }
             }
 
-            //if (Environs.Hardware.Instruments.ContainsKey("m2PLL")) { m2FreqComm = (MuquansRS232)Environs.Hardware.Instruments["m2PLL"];}
+        private static void CreateDefaultMSquaredParams()
+        {
 
-            ioHelper = new MMDataIOHelper(motMasterDataPath,
-                    (string)Environs.Hardware.GetInfo("Element"));
+            sequenceData.Parameters["PLLFreq"] = new Parameter("PLLFreq", "", 6834.689, true, false);
+            sequenceData.Parameters["ChirpRate"] = new Parameter("ChirpRate", "", 0.5, true, false);
+            sequenceData.Parameters["ChirpDuration"] = new Parameter("ChirpDuration", "", 0.5, true, false);
 
-            ScriptLookupAndDisplay();
+            sequenceData.Parameters["Pulse1Power"] = new Parameter("Pulse1Power", "", 22.0, true, false);
+            sequenceData.Parameters["Pulse1Duration"] = new Parameter("Pulse1Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse1Phase"] = new Parameter("Pulse1Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["Pulse2Power"] = new Parameter("Pulse2Power", "", 22, true, false);
+            sequenceData.Parameters["Pulse2Duration"] = new Parameter("Pulse2Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse2Phase"] = new Parameter("Pulse2Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["Pulse3Power"] = new Parameter("Pulse3Power", "", 22.0, true, false);
+            sequenceData.Parameters["Pulse3Duration"] = new Parameter("Pulse3Duration", "", 10, true, false);
+            sequenceData.Parameters["Pulse3Phase"] = new Parameter("Pulse3Phase", "", 0.0, true, false);
+
+            sequenceData.Parameters["VelPulsePower"] = new Parameter("VelPulsePower", "", 22.0, true, false);
+            sequenceData.Parameters["VelPulseDuration"] = new Parameter("VelPulseDuration", "", 10, true, false);
+            sequenceData.Parameters["VelPulsePhase"] = new Parameter("VelPulsePhase", "", 0.0, true, false);
+
+            sequenceData.Parameters["IntTime1"] = new Parameter("IntTime1", "", 25.0, true, false);
+            sequenceData.Parameters["IntTime2"] = new Parameter("IntTime2", "", 25.0, true, false);
         }
-
         #endregion
 
         #region Hardware control methods
@@ -345,6 +365,12 @@ namespace MOTMaster2
             {
                 if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
             }
+            if (multiScanLogger != null)
+            {
+                var segData = config.UseAI ? finalData.prms: null;
+                bool columns = (BatchNumber == 0);
+                AppendMultiScan(segData,columns);
+        }
         }
 
 
@@ -444,18 +470,20 @@ namespace MOTMaster2
             //saveEnable = value;
             //controllerWindow.SetSaveCheckBox(value);
         }
-        private int batchNumber = 0;
-        public void SetBatchNumber(Int32 number)
+        public int BatchNumber { get;set;}
+
+        public void IncrementBatchNumber()
         {
-            batchNumber = number;
-            //controllerWindow.WriteToSaveBatchTextBox(number);
+            BatchNumber++;
         }
+        
         private string scriptPath = "";
         public void SetScriptPath(String path)
         {
             scriptPath = path;
             //controllerWindow.WriteToScriptPath(path);
         }
+        /*
         private bool replicaRun = false;
         public void SetReplicaRunBool(System.Boolean value)
         {
@@ -466,7 +494,7 @@ namespace MOTMaster2
         {
             dictionaryPath = path;
         }
-
+        */
         public bool IsRunning()
         {
             if (status == RunningState.running)
@@ -477,7 +505,7 @@ namespace MOTMaster2
             else
                 return false;
         }
-        public void RunStart(Dictionary<string,object> paramDict, bool loop = false, int myBatchNumber = 0)
+        public void RunStart(Dictionary<string,object> paramDict, int myBatchNumber = 0)
         {
             //runThread = new Thread(delegate()
             //{
@@ -495,21 +523,21 @@ namespace MOTMaster2
 
             //});
             runThread = new Thread(new ParameterizedThreadStart(this.Run));
-           // StaticSequence = loop;
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Highest;
             status = RunningState.running;
 
             runThread.Start(paramDict);
+            if(BatchNumber==0) WaitForRunToFinish();
             Console.WriteLine("Thread Starting");
         }
         public void WaitForRunToFinish()
         {
-            if (runThread != null) { runThread.Join();}
+            if (runThread != null) { runThread.Join(); }
             if (IsRunning()) hardwareError = CheckForRunErrors();
             Console.WriteLine("Thread Waiting");
         }
-
+        /*
         public void Run()
         {
             status = RunningState.running;
@@ -520,13 +548,13 @@ namespace MOTMaster2
         {
             Run(dict, batchNumber);
         }
-
+        */
         public void Run(object dict)
         {
-            Run((Dictionary<string, object>) dict, batchNumber);
+            Run((Dictionary<string, object>) dict);
         }
        
-        public void Run(Dictionary<String, Object> dict, int myBatchNumber)
+        public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
             if (config.UseMMScripts || sequenceData == null)
@@ -537,15 +565,15 @@ namespace MOTMaster2
             else
             {
                 
-                if (config.UseAI)
+                if (config.UseAI || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                    
                 }
-                    if(!StaticSequence || myBatchNumber==0)sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence || BatchNumber==0)sequence = getSequenceFromSequenceData(dict);
                     if (sequence == null) { return; }
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
-                    if (myBatchNumber == 0)
+                    if (BatchNumber == 0)
                     {
                         //Only intialise and build once
                         if (StaticSequence)
@@ -558,6 +586,23 @@ namespace MOTMaster2
                         MMexec mme = InitialCommand(ScanParam);
                         string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
                         paramLogger.log("{\"MMExec\":" + initJson + "},");
+                        if (multiScanLogger.Enabled)
+                        {
+                            string header = "";
+                            foreach (string name in sequenceData.Parameters.Keys)
+                            {
+                                header+=name+",";
+                            }
+                            if (config.UseAI)
+                            {
+                                foreach (string name in ExpData.AnalogSegments.Keys)
+                                {
+                                    header+=name+",";
+                                }
+                            }
+                            header=header.TrimEnd(',');
+                            multiScanLogger.log(header);
+                        }
                         if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
                         {
                             MotMasterDataEvent(this, new DataEventArgs(initJson));
@@ -594,7 +639,7 @@ namespace MOTMaster2
                     watch.Start();
                     if (!config.Debug)
                     {
-                        if (myBatchNumber == 0 || !StaticSequence) runPattern(sequence);
+                        if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
                         else if (status == RunningState.running) ContinueLoop();
                         else return;
                     }
@@ -625,7 +670,7 @@ namespace MOTMaster2
                                 //TODO Change save method
                                 
                             }
-                            save(script, scriptPath, imageData, report, myBatchNumber);
+                            save(script, scriptPath, imageData, report, BatchNumber);
                         }
                         else
                         {
@@ -636,7 +681,7 @@ namespace MOTMaster2
                                
                             }
                             if (config.UseMMScripts)
-                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,myBatchNumber);
+                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,BatchNumber);
                             }
                         }
                     if (config.CameraUsed) finishCameraControl();
@@ -975,7 +1020,7 @@ namespace MOTMaster2
         /// These then get loaded in the usual way through Run().
         /// disposeReplicaRun does some clean up after the experiment is finished.
         /// </summary>
-
+        /*
         public void RunReplica()
         {
             armReplicaRun();
@@ -1005,10 +1050,11 @@ namespace MOTMaster2
             SetReplicaRunBool(false);
             ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
+        */
         #endregion
 
         #region Remotable Stuff from python
-
+        /*
         public void RemoteRun(string scriptName, Dictionary<String, Object> parameters, bool save)
         {
             scriptPath = scriptName;
@@ -1031,39 +1077,62 @@ namespace MOTMaster2
         {
             return saveToDirectory;
         }
-
+        */
         #endregion
 
         #region Environment Loading
-        public void LoadEnvironment()
+        public void LoadEnvironment(bool daqClassLoad = false)
         {
 
-            string fileJson = File.ReadAllText("filesystem.json");
-            string hardwareJson = File.ReadAllText("hardware.json");
-            string configJson = File.ReadAllText("config.json");
+            if (File.Exists(Utils.configPath + "genOptions.cfg"))
+            {
+                string fileJson = File.ReadAllText(Utils.configPath + "genOptions.cfg");
+                Controller.genOptions = JsonConvert.DeserializeObject<GeneralOptions>(fileJson);
+            }
+            else
+                Controller.genOptions = new GeneralOptions();
 
-            LoadEnvironment(fileJson, hardwareJson, configJson);
+            if (daqClassLoad)
+            {
+                if (File.Exists((Utils.configPath + "filesystem.json")))
+                {
+                    string fileSystemJson = File.ReadAllText(Utils.configPath + "filesystem.json");
+                    DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileSystemJson);
         }
 
-        public void LoadEnvironment(string fileJson, string hardwareJson, string configJson)
+                if (File.Exists((Utils.configPath + "hardware.json")))
         {
-            DAQ.Environment.Environs.FileSystem = JsonConvert.DeserializeObject<DAQ.Environment.FileSystem>(fileJson);
+                    string hardwareJson = File.ReadAllText(Utils.configPath + "hardware.json");
             DAQ.Environment.Environs.Hardware = JsonConvert.DeserializeObject<DAQ.HAL.NavigatorHardware>(hardwareJson);
+                }
+
+                if (File.Exists((Utils.configPath + "config.json")))
+                {
+                    string configJson = File.ReadAllText(Utils.configPath + "config.json");
             config = JsonConvert.DeserializeObject<MMConfig>(configJson);
         }
+            }
+            
+        }
+
+
         public void SaveEnvironment()
         {
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem, Formatting.Indented);
             string hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             string configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText("filesystem.json", fileJson);
-            File.WriteAllText("hardware.json", hardwareJson);
-            File.WriteAllText("config.json", configJson);
+            string optionsJson = JsonConvert.SerializeObject(Controller.genOptions, Formatting.Indented);
+
+            File.WriteAllText(Utils.configPath + "filesystem.json", fileJson);
+            File.WriteAllText(Utils.configPath + "hardware.json", hardwareJson);
+            File.WriteAllText(Utils.configPath + "config.json", configJson);
+            File.WriteAllText(Utils.configPath + "genOptions.cfg", optionsJson);
         }
 
         public static void LoadDefaultSequence()
         {
             if (File.Exists(defaultScriptPath)) LoadSequenceFromPath(defaultScriptPath);
+            else sequenceData = new Sequence();
         }
 
         public static void LoadSequenceFromPath(string path)
@@ -1131,6 +1200,7 @@ namespace MOTMaster2
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
             dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
             paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
+            multiScanLogger = new AutoFileLogger(fileTag+"_multiscan.ahf");
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
@@ -1145,8 +1215,12 @@ namespace MOTMaster2
             paramLogger.log("]\n}");
             dataLogger.Enabled= false;
             paramLogger.Enabled = false;
+            multiScanLogger.Enabled = false;
+            if (multiScanLogger.Enabled) multiScanLogger.Enabled = false;
         }
-        //This is very specific to the Navigator experiment. Assumes that the acqusition trigger channel is high during each segment that the data is recorded during 
+        /// <summary>
+        /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
+        /// </summary>
         public void CreateAcquisitionTimeSegments()
         {
             if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new WarningException("No channel named acquisitionTrigger found in Hardware");
@@ -1162,7 +1236,7 @@ namespace MOTMaster2
             }
             catch
             {
-                ErrorMgr.errorMsg("No step named Interferometer.",-2);
+                ExpData.InterferometerStepName = null;
             }
             foreach (SequenceStep step in sequenceData.Steps)
             {
@@ -1192,7 +1266,7 @@ namespace MOTMaster2
             axelCommand.cmd = "shotData";
             Dictionary<string,double[]> segData = ExpData.SegmentShot(aiData);
             foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
-            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["runID"] = BatchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
             return axelCommand;
         }
@@ -1205,7 +1279,7 @@ namespace MOTMaster2
             axelCommand.mmexec = "";
             axelCommand.prms["params"] = sequenceData.CreateParameterDictionary();
             axelCommand.prms["sampleRate"] = ExpData.SampleRate;
-            axelCommand.prms["runID"] = batchNumber;
+            axelCommand.prms["runID"] = BatchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
             if (scan != null)
             {
@@ -1222,6 +1296,56 @@ namespace MOTMaster2
             return axelCommand;
         }
 
+        private void AppendMultiScan(Dictionary<string,object> segData, bool writeColumnNames = false)
+        {
+         string row = "";
+            if (segData != null)
+            {
+                foreach (var item in segData.Where(kvp => kvp.Value.GetType() != typeof(double[])).ToList())
+                {
+                    segData.Remove(item.Key);
+                }
+            }
+            Dictionary<string,double> avgDict = (segData == null) ? null: ExpData.GetAverageValues(segData);
+            if (writeColumnNames)
+            {
+                multiScanLogger.Enabled = true;
+                foreach (string name in sequenceData.Parameters.Keys)
+                {
+                    row += name +"\t";
+                }
+                if (avgDict != null)
+                {
+                    foreach (string name in avgDict.Keys)
+                    {
+                        row += name+"\t";
+                    }
+                }
+                row = row.TrimEnd('\t');
+                multiScanLogger.log(row);
+                row = "";
+            }
+            foreach (string name in sequenceData.Parameters.Keys)
+            {
+                row += sequenceData.Parameters[name].Value.ToString() +"\t";
+            }
+            if (avgDict != null)
+            {
+                foreach (string name in avgDict.Keys)
+                {
+                    row += avgDict[name].ToString() +"\t";
+                }
+            }
+            row = row.TrimEnd('\t');
+            multiScanLogger.log(row);
+        }
+
+
+        
+        private void EndMultiScan()
+        {
+
+        }
         #endregion
 
         #region MSquared Control - Maybe move elswhere?
@@ -1237,36 +1361,46 @@ namespace MOTMaster2
             }
         }
 
-        public static void SetMSquaredParameters(bool pulse1Enabled = true, bool pulse2Enabled = true, bool pulse3Enabled = true, bool velPulseEnabled = true, double intTime1 = 25.0, double intTime2 = 25.0)
+        public void SetMSquaredParameters()
             {
             if (!M2DCS.Connected || !M2PLL.Connected)
                 {
-                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-Blocs");
-                return;
+                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
                 }
             CheckPhaseLock();
-            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            if (DCSParams.ContainsKey("PLLFreq") && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
-           /* 
-            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value,pulse1Enabled);
-            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value,pulse2Enabled);
-            M2DCS.ConfigureIntTime(1, intTime1);
-            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value,pulse3Enabled);
-            M2DCS.ConfigureIntTime(2, intTime2);
-            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value,velPulseEnabled);
-            
-            M2DCS.UpdateSequenceParameters();
-            */
-          
+
+            //Updates DCS if parameters have been modified
+            if (DCSParams.Any(kvp => kvp.Key.Contains("VelPulse"))) DCSParams["VelPulseEnabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse1"))) DCSParams["Pulse1Enabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse2"))) DCSParams["Pulse2Enabled"] = true;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse3"))) DCSParams["Pulse3Enabled"] = true;
+
+            if (Utils.Get(DCSParams, "VelPulseEnabled") != null) M2DCS.ConfigurePulse("X", 0, Utils.Get(DCSParams, "VelPulseDuration"), Utils.Get(DCSParams, "VelPulsePower"), 1e-6, Utils.Get(DCSParams, "VelPulsePhase"), (bool)Utils.Get(DCSParams, "VelPulseEnabled"));
+            if (Utils.Get(DCSParams, "Pulse1Enabled") != null) M2DCS.ConfigurePulse("X", 1, Utils.Get(DCSParams, "Pulse1Duration"), Utils.Get(DCSParams, "Pulse1Power"), 1e-6, Utils.Get(DCSParams, "Pulse1Phase"), (bool)Utils.Get(DCSParams, "Pulse1Enabled"));
+            if (Utils.Get(DCSParams, "IntTime1") != null) M2DCS.ConfigureIntTime(1, (double)DCSParams["IntTime1"]);
+            if (Utils.Get(DCSParams, "Pulse2Enabled") !=null) M2DCS.ConfigurePulse("X", 2, Utils.Get(DCSParams, "Pulse2Duration"), Utils.Get(DCSParams, "Pulse2Power"), 1e-6, Utils.Get(DCSParams, "Pulse2Phase"), (bool)Utils.Get(DCSParams, "Pulse2Enabled"));
+            if (Utils.Get(DCSParams, "IntTime2") != null) M2DCS.ConfigureIntTime(2, (double)DCSParams["IntTime2"]);
+            if (Utils.Get(DCSParams, "Pulse3Enabled") != null) M2DCS.ConfigurePulse("X", 3, Utils.Get(DCSParams, "Pulse3Duration"), Utils.Get(DCSParams, "Pulse3Power"), 1e-6, Utils.Get(DCSParams, "Pulse3Phase"), (bool)Utils.Get(DCSParams, "Pulse3Enabled"));
+            DCSParams.Clear();
+            //TODO Send this to MainWindow Log
+            if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2DCS.UpdateSequenceParameters();
+            else  Console.WriteLine(M2DCS.PrintParametersToConsole());
+
             }
 
         private static bool CheckPhaseLock()
         {
+            if (!config.Debug)
+            {
             DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
             bool locked = M2PLL.main_lock_status(out lockStatus);
             //if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
             return locked;
+        }
+            else return true;
         }
         #endregion
 
@@ -1282,6 +1416,14 @@ namespace MOTMaster2
         {
             SaveSequenceToPath(tempScriptPath);
         }
+
+        internal void StoreDCSParameter(string laserKey, object p)
+        {
+            if (DCSParams == null) DCSParams = new Dictionary<string, object>();
+            DCSParams[laserKey] = p;
+        }
+
+       
     }
 
     public class DataEventArgs : EventArgs
@@ -1292,4 +1434,6 @@ namespace MOTMaster2
             Data = data;
         }
     }
+
+
 }

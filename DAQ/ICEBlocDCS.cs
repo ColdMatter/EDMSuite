@@ -315,6 +315,30 @@ namespace DAQ.HAL
         }
 
 #endregion
+
+        public string PrintParametersToConsole()
+        {
+            string paramString = "";
+           foreach (KeyValuePair<string,Dictionary<string,object>> timeBlock in _timeBlockDict)
+           {
+               paramString+= "Parameters for " + timeBlock.Key+"\n";
+               foreach (KeyValuePair<string, object> entry in timeBlock.Value)
+               {
+                   string v = "";
+                   if (entry.Value.GetType() == typeof(Dictionary<string,object>)) {
+                       var val = entry.Value as Dictionary<string,object>;
+                       v = string.Join(";", val.Select(x => x.Key + "=" + x.Value));
+                   }
+                   else
+                   {
+                       v = entry.Value.ToString();
+                   }
+                   paramString+="\t" + entry.Key + ": " + v+"\n";
+               }
+           }
+           _timeBlockDict.Clear();
+            return paramString;
+        }
     }
 
     public class PLLException : Exception { public PLLException(string message) : base(message) { } }

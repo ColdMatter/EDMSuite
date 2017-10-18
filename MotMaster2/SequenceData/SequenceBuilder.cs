@@ -38,7 +38,7 @@ namespace MOTMaster2.SequenceData
             Parameters = sequenceData.CreateParameterDictionary();
             foreach (string entry in new List<string>() { "AnalogLength", "HSClockFrequency", "AnalogClockFrequency" })
             {
-                if (!Parameters.ContainsKey(entry)) throw new Exception(string.Format("Sequence does not contain the required parameter {0}", entry));
+                if (!Parameters.ContainsKey(entry) && !Controller.config.Debug) throw new Exception(string.Format("Sequence does not contain the required parameter {0}", entry));
             }
         }
 
@@ -94,9 +94,8 @@ namespace MOTMaster2.SequenceData
                     }
                     catch
                     {
-                        throw new Exception(string.Format("Failed to add analog data for Channel:{0} Step:{1}",analogChannel,step.Name));
+                       throw new Exception(string.Format("Failed to add analog data for Channel:{0} Step:{1}",analogChannel,step.Name));
                     }
-
                 }
                 //Adds the Muquans string commands as well as the required serial pulses before digital pulses to prevent time order exceptions
                 if (step.RS232Commands)

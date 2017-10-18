@@ -72,19 +72,28 @@ namespace ErrorManager
 
         private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            status.Content = prevText;
-            status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
-            btnReset.Visibility = Visibility.Hidden; 
+            Application.Current.Dispatcher.BeginInvoke(
+              DispatcherPriority.Background,
+              new Action(() =>
+              {
+                 status.Content = prevText;
+                 status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
+                 btnReset.Visibility = Visibility.Hidden;
+              }));
         }
 
         public static void StatusLine(string text, Color Foreground)
         {
             if (status == null) return;
             status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
-
-            btnReset.Visibility = Visibility.Visible; 
-            prevText = status.Content.ToString();
-            status.Content = text;
+            Application.Current.Dispatcher.BeginInvoke(
+              DispatcherPriority.Background,
+              new Action(() =>
+              {
+                  btnReset.Visibility = Visibility.Visible; 
+                  prevText = status.Content.ToString();
+                  status.Content = text;
+              }));
         }
 
         public static void AppendLog(string text, Color? clr = null)
@@ -114,7 +123,6 @@ namespace ErrorManager
                   rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
                   log.ScrollToEnd();
               }));
-
         }
 
         private async static Task WriteFileAsync(string txt)
