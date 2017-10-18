@@ -103,6 +103,7 @@ namespace MOTMaster2
         public static ICEBlocDCS M2DCS;
         public static ICEBlocPLL M2PLL;
         public PhaseStrobes phaseStrobes;
+        private Dictionary<string, object> DCSParams;
 
         MMDataIOHelper ioHelper;
         SequenceBuilder builder;
@@ -190,7 +191,7 @@ namespace MOTMaster2
                 }
                 try
                 {
-                    
+                    DCSParams = new Dictionary<string, object>();
                     if (!config.Debug)
                     {
                     M2DCS.Connect();
@@ -466,12 +467,14 @@ namespace MOTMaster2
         {
             BatchNumber++;
         }
+        
         private string scriptPath = "";
         public void SetScriptPath(String path)
         {
             scriptPath = path;
             //controllerWindow.WriteToScriptPath(path);
         }
+        /*
         private bool replicaRun = false;
         public void SetReplicaRunBool(System.Boolean value)
         {
@@ -482,7 +485,7 @@ namespace MOTMaster2
         {
             dictionaryPath = path;
         }
-
+        */
         public bool IsRunning()
         {
             if (status == RunningState.running)
@@ -1325,34 +1328,40 @@ namespace MOTMaster2
             }
         }
 
-        public static void SetMSquaredParameters(bool pulse1Enabled = true, bool pulse2Enabled = true, bool pulse3Enabled = true, bool velPulseEnabled = true, double intTime1 = 25.0, double intTime2 = 25.0)
+        public void SetMSquaredParameters()
             {
             if (!M2DCS.Connected || !M2PLL.Connected)
                 {
-                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-Blocs");
-                return;
+                if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
                 }
             CheckPhaseLock();
-            M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+            if (DCSParams.ContainsKey("PLLFreq")) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value*1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value*1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
             //Checks the phase lock has not come out-of-loop
             CheckPhaseLock();
 
-            M2DCS.ConfigurePulse("X", 0, sequenceData.Parameters["VelPulseDuration"].Value, sequenceData.Parameters["VelPulsePower"].Value, 1e-6, sequenceData.Parameters["VelPulsePhase"].Value,pulse1Enabled);
-            M2DCS.ConfigurePulse("X", 1, sequenceData.Parameters["Pulse1Duration"].Value, sequenceData.Parameters["Pulse1Power"].Value, 1e-6, sequenceData.Parameters["Pulse1Phase"].Value,pulse2Enabled);
-            M2DCS.ConfigureIntTime(1, intTime1);
-            M2DCS.ConfigurePulse("X", 2, sequenceData.Parameters["Pulse2Duration"].Value, sequenceData.Parameters["Pulse2Power"].Value, 1e-6, sequenceData.Parameters["Pulse2Phase"].Value,pulse3Enabled);
-            M2DCS.ConfigureIntTime(2, intTime2);
-            M2DCS.ConfigurePulse("X", 3, sequenceData.Parameters["Pulse3Duration"].Value, sequenceData.Parameters["Pulse3Power"].Value, 1e-6, sequenceData.Parameters["Pulse3Phase"].Value,velPulseEnabled);
+            //Updates DCS if parameters have been modified
+            if (Utils.Get(DCSParams, "VelPulseEnabled") != null) M2DCS.ConfigurePulse("X", 0, Utils.Get(DCSParams, "VelPulseDuration"), Utils.Get(DCSParams, "VelPulsePower"), 1e-6, Utils.Get(DCSParams, "VelPulsePhase"), (bool)Utils.Get(DCSParams, "VelPulseEnabled"));
+            if (Utils.Get(DCSParams, "Pulse1Enabled") != null) M2DCS.ConfigurePulse("X", 1, Utils.Get(DCSParams, "Pulse1Duration"), Utils.Get(DCSParams, "Pulse1Power"), 1e-6, Utils.Get(DCSParams, "Pulse1Phase"), (bool)Utils.Get(DCSParams, "Pulse1Enabled"));
+            if (Utils.Get(DCSParams, "IntTime1") != null) M2DCS.ConfigureIntTime(1, (double)DCSParams["IntTime1"]);
+            if (Utils.Get(DCSParams, "Pulse2Enabled") != null) M2DCS.ConfigurePulse("X", 2, Utils.Get(DCSParams, "Pulse2Duration"), Utils.Get(DCSParams, "Pulse2Power"), 1e-6, Utils.Get(DCSParams, "Pulse2Phase"), (bool)Utils.Get(DCSParams, "Pulse2Enabled"));
+            if (Utils.Get(DCSParams, "IntTime2") != null) M2DCS.ConfigureIntTime(2, (double)DCSParams["IntTime2"]);
+            if (Utils.Get(DCSParams, "Pulse3Enabled") != null) M2DCS.ConfigurePulse("X", 3, Utils.Get(DCSParams, "Pulse3Duration"), Utils.Get(DCSParams, "Pulse3Power"), 1e-6, Utils.Get(DCSParams, "Pulse3Phase"), (bool)Utils.Get(DCSParams, "Pulse3Enabled"));
 
-            M2DCS.UpdateSequenceParameters();
+            if (!config.Debug)M2DCS.UpdateSequenceParameters();
+            M2DCS.ClearParameters();
+            DCSParams.Clear();
             }
 
         private static bool CheckPhaseLock()
         {
-            DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
-            bool locked = M2PLL.main_lock_status(out lockStatus);
-            //if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
-            return locked;
+            if (!config.Debug)
+            {
+                DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
+                bool locked = M2PLL.main_lock_status(out lockStatus);
+                //if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
+                return locked;
+            }
+            else return true;
         }
         #endregion
 
@@ -1368,6 +1377,14 @@ namespace MOTMaster2
         {
             SaveSequenceToPath(tempScriptPath);
         }
+
+        internal void StoreDCSParameter(string laserKey, object p)
+        {
+            if (DCSParams == null) DCSParams = new Dictionary<string, object>();
+            DCSParams[laserKey] = p;
+        }
+
+       
     }
 
     public class DataEventArgs : EventArgs
@@ -1378,4 +1395,6 @@ namespace MOTMaster2
             Data = data;
         }
     }
+
+
 }

@@ -65,7 +65,17 @@ namespace UtilsNS
 
         public static string basePath = Directory.GetParent(Directory.GetParent(Environment.GetCommandLineArgs()[0]).Parent.FullName).FullName;
         public static string configPath { get { return basePath + "\\Config\\"; } }
-        public static string dataPath { get { return basePath + "\\Data\\"; } }        
+        public static string dataPath { get { return basePath + "\\Data\\"; } }
+
+        /// <summary>
+        /// Returns null if key not found in dictionary
+        /// </summary>
+        public static U Get<T, U>(this Dictionary<T, U> dict, T key) where U : class
+        {
+            U val;
+            dict.TryGetValue(key, out val);
+            return val;
+        }
     }
 
     #region async file logger

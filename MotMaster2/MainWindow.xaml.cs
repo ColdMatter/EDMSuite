@@ -973,22 +973,26 @@ namespace MOTMaster2
             Type type = typeof(NationalInstruments.Controls.NumericTextBoxDouble);
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
-
-
+            controller.StoreDCSParameter(laserKey, type.GetProperty("Value").GetValue(sender));
+            
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            string key = scanDict.Keys.ToArray()[0];
-            object control = MSquaredTab.FindName(key);
-            if (control == null) return;
-            else
+            object control;
+            foreach (KeyValuePair<string,object> entry in scanDict)
             {
-                ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)scanDict[key];
-                //Only set them if one is changed
+                control = MSquaredTab.FindName(entry.Key);
+                if (control == null) continue;
+                else
+                {
+                    ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value;
+                    controller.StoreDCSParameter(entry.Key, entry.Value); 
+                }
                 //TODO fix handling of warnings if ICE-BLocs are not connected
-                Controller.SetMSquaredParameters();
+                controller.SetMSquaredParameters();
             }
+
         }
 
         private void SetInterferometerParams(ObservableDictionary<string, Parameter> observableDictionary)
@@ -1000,14 +1004,18 @@ namespace MOTMaster2
                 {
                     object control = MSquaredTab.FindName(entry.Key);
                     if (control == null) continue;
-                    else ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
+                    else
+                    {
+                        ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = Convert.ToDouble(entry.Value.Value);
+                        //controller.StoreDCSParameter(entry.Key, entry.Value.Value);
+                    }
                 }
             }
         }
 
         private void m2updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            Controller.SetMSquaredParameters();
+            controller.SetMSquaredParameters();
             Log("Updated MSquared laser parameters");
         }
         #region multi-scan
@@ -1136,6 +1144,13 @@ namespace MOTMaster2
             lstParams.Items.Insert(si, lbi);
         }
         #endregion multi-scan
+
+        private void btnPulseEnable_Click(object sender, RoutedEventArgs e)
+        {
+            var check = sender as CheckBox;
+            string name = check.Name;
+            controller.StoreDCSParameter(name, check.IsChecked.Value);
+        }
     }
 
 }

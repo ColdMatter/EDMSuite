@@ -315,6 +315,11 @@ namespace DAQ.HAL
         }
 
 #endregion
+        //Used to clear pulse parameters if not actaully sending a message 
+        public void ClearParameters()
+        {
+            _timeBlockDict.Clear();
+        }
     }
 
     public class PLLException : Exception { public PLLException(string message) : base(message) { } }
