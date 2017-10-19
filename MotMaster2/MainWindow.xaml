@@ -257,10 +257,10 @@
                         <ni:NumericTextBoxDouble x:Name="PLLFreq" HorizontalAlignment="Left" Height="23" Margin="105,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
                         <ni:NumericTextBoxDouble x:Name="ChirpRate" HorizontalAlignment="Left" Height="23" Margin="185,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
                         <ni:NumericTextBoxDouble x:Name="ChirpDuration" HorizontalAlignment="Left" Height="23" Margin="265,0,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Grid.Row="1"/>
-                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,98.571,165.857" IsChecked="True" />
-                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,98.571,137.857" IsChecked="True"/>
-                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,98.571,108.857" IsChecked="True"/>
-                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,98.571,81.857" IsChecked="True" />
+                        <CheckBox x:Name="Pulse1Enabled" Margin="350,40,98.571,165.857" IsChecked="True" Click="btnPulseEnable_Click"/>
+                        <CheckBox x:Name="Pulse2Enabled" Margin="350,69,98.571,137.857" IsChecked="True" Click="btnPulseEnable_Click"/>
+                        <CheckBox x:Name="Pulse3Enabled" Margin="350,98,98.571,108.857" IsChecked="True" Click="btnPulseEnable_Click"/>
+                        <CheckBox x:Name="VelPulseEnabled" Margin="350,125,98.571,81.857" IsChecked="True" Click="btnPulseEnable_Click"/>
                         <Label Content="Int. Time 1" HorizontalAlignment="Left" Margin="140,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Int. Time 2" HorizontalAlignment="Left" Margin="220,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <ni:NumericTextBoxDouble x:Name="IntTime1" HorizontalAlignment="Left" Height="23" Margin="140,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>

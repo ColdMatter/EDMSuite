@@ -33,16 +33,19 @@
             <RowDefinition Height="46"/>
         </Grid.RowDefinitions>
         <TabControl x:Name="tabCtrl" Margin="0,0,0.143,45.286" Grid.Row="0" Grid.RowSpan="2" SelectionChanged="tabCtrl_SelectionChanged">
-            <TabItem x:Name="tiOptions" Header="Gereral Options" Width="170">
+            <TabItem x:Name="tiOptions" Header="General Options" Width="170">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="7*"/>
-                        <RowDefinition Height="102*"/>
+                        <RowDefinition Height="7*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Save sequence on exit" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Center" Height="26" Width="127"/>
                     <RadioButton x:Name="rbSaveSeqYes" Content="Save" HorizontalAlignment="Left" Margin="177,0,0,0" VerticalAlignment="Center" Height="15" Width="55" />
                     <RadioButton x:Name="rbSaveSeqAsk" Content="Ask" HorizontalAlignment="Left" Margin="237,0,0,0" VerticalAlignment="Center" IsChecked="True" Height="15" Width="38" />
                     <RadioButton x:Name="rbSaveSeqNo" Content="No save" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="15" Width="61" />
+                    <Label Content="MSquared Communication" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Height="26" Width="150" Grid.Row="1"/>
+                    <RadioButton x:Name="m2On" Content="Yes" Grid.Row="1"  Margin="150,0,0,0"/>
+                    <RadioButton x:Name="m2Off" Content="No" Grid.Row="1" Margin="200,0,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tiFileSystem" Header="File System" Height="24" Margin="-0.286,-1,0,1" HorizontalAlignment="Left" Width="140">
