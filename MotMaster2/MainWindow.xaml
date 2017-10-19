@@ -94,9 +94,7 @@
                         <Button x:Name="btnMScan" Content="Multi Scan" HorizontalAlignment="Left" Height="33" Margin="135,94,0,5" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Grid.Column="3" Click="btnMScan_Click"/>
                         <TextBox x:Name="tbToMScan" HorizontalAlignment="Left" Height="26" Margin="52,100,0,6" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" FontSize="14" Grid.Column="3" TextChanged="tbFromMScan_TextChanged"/>
                         <TextBox x:Name="tbByMScan" HorizontalAlignment="Left" Height="26" Margin="183,61,0,45" TextWrapping="Wrap" VerticalAlignment="Center" Width="37" Text="1" FontSize="14" Grid.Column="3" TextChanged="tbFromMScan_TextChanged"/>
-                        <ListBox x:Name="lstParams" Margin="0,0,0,0" Grid.Column="1" MouseUp="lstParams_MouseUp" FontSize="13">
-                            <ListBoxItem Content="xFreq&#x09;1..8;0.1"/>
-                            <ListBoxItem Content="xAtten&#x09;0.2..3.9;0.2"/>
+                        <ListBox x:Name="lstParams" Margin="0,0,0,0" Grid.Column="1" MouseUp="lstParams_MouseUp" FontSize="13" DataContextChanged="lstParams_DataContextChanged">
                         </ListBox>
                         <ListBox x:Name="lstValue" Margin="0,0,0,0" Grid.Column="2" FontSize="13" FontWeight="Bold" Foreground="#FF0F03AA"/>
                         <ListBox x:Name="lstOut" Margin="0,0,0,0" Grid.Column="4" FontSize="13">
@@ -214,9 +212,6 @@
                             <RowDefinition Height="186*"/>
                             <RowDefinition Height="247*"/>
                         </Grid.RowDefinitions>
-                        <CheckBox Name="aiEnable" Content="Enable Analog Input" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top" Checked="aiEnable_Checked" Width="155"/>
-                        <Label Content="Sample Rate" HorizontalAlignment="Left" Height="26" Margin="22,37,0,0" VerticalAlignment="Top" Width="111" RenderTransformOrigin="0.538,-0.066"/>
-                        <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="107,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Text="{Binding Source = {StaticResource controller}, Path=ExpData.SampleRate}" />
 
                         <!--<GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>-->
                     </Grid>

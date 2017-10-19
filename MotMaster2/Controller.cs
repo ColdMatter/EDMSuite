@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using System.Windows;
 //using DataStructures;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -63,7 +64,22 @@ namespace MOTMaster2
         private static Exception runThreadException = null;
 
         public enum RunningState { stopped, running };
-        public RunningState status = RunningState.stopped;
+        private static RunningState _runningStatus = RunningState.stopped;
+        public static RunningState status
+        {
+            get { return _runningStatus; }
+            set
+            {
+                if (value != _runningStatus)
+                 Application.Current.Dispatcher.BeginInvoke(
+                  DispatcherPriority.Background,
+                  new Action(() =>
+                  {
+                      RunStatusEvent(value == RunningState.running);
+                  }));
+                _runningStatus = value;
+            }
+        }
 
         //public List<string> analogChannels;
         public List<string> digitalChannels;
@@ -109,6 +125,15 @@ namespace MOTMaster2
 
         DataStructures.SequenceData ciceroSequence;
         DataStructures.SettingsData ciceroSettings;
+
+        public delegate void RunStatusHandler(bool running);
+        public static event RunStatusHandler OnRunStatus;
+
+        protected static void RunStatusEvent(bool running)
+        {
+            if (OnRunStatus != null) OnRunStatus(running);
+        }
+
         #endregion
 
         #region Initialisation
@@ -499,7 +524,7 @@ namespace MOTMaster2
         */
         public bool IsRunning()
         {
-            if (status == RunningState.running)
+            if (status == RunningState.running && !config.Debug)
             {
                 Console.WriteLine("Thread Running");
                 return true;
@@ -530,7 +555,6 @@ namespace MOTMaster2
             status = RunningState.running;
 
             runThread.Start(paramDict);
-            if(BatchNumber==0) WaitForRunToFinish();
             Console.WriteLine("Thread Starting");
         }
         public void WaitForRunToFinish()
@@ -571,7 +595,6 @@ namespace MOTMaster2
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
-                   
                 }
                     if(!StaticSequence || BatchNumber==0)sequence = getSequenceFromSequenceData(dict);
                     if (sequence == null) { return; }
@@ -719,7 +742,6 @@ namespace MOTMaster2
             {
                 Directory.CreateDirectory(saveToDirectory);
             }
-
         }
 
         //TODO Change the way everything is saved
@@ -1429,13 +1451,23 @@ namespace MOTMaster2
             DCSParams[laserKey] = p;
         }
 
-
+       
 
         internal static void UpdateAIValues()
         {
             ExpData.PreTrigSamples = Controller.genOptions.PreTrigSamples;
             ExpData.SampleRate = Controller.genOptions.AISampleRate;
             ExpData.RiseTime = Controller.genOptions.RiseTime;
+        }
+
+        internal static void SetMultiScanParameters(List<MMscan> mms)
+        {
+            Controller.sequenceData.ScanningParams = mms;
+        }
+
+        internal static List<MMscan> GetMultiScanParameters()
+        {
+            return Controller.sequenceData.ScanningParams?? new List<MMscan>();
         }
     }
 

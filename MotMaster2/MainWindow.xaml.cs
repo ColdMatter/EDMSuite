@@ -36,6 +36,7 @@ namespace MOTMaster2
         {
             controller = new Controller();
             controller.StartApplication();
+            Controller.OnRunStatus += new Controller.RunStatusHandler(OnRunStatus);
             InitializeComponent();
             InitVisuals();
             ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
@@ -63,6 +64,7 @@ namespace MOTMaster2
 
         public static void DoEvents()
         {
+            if (Utils.isNull(Application.Current)) return;
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
             //Not needed for repeat run. Might be needed for scan
@@ -73,7 +75,17 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
-            if (!Utils.isNull(Controller.sequenceData)) SetInterferometerParams(Controller.sequenceData.Parameters);
+            if (!Utils.isNull(Controller.sequenceData))
+            {
+                SetInterferometerParams(Controller.sequenceData.Parameters);
+                foreach (MMscan mms in Controller.GetMultiScanParameters())
+                {
+                    ListBoxItem lbi = new ListBoxItem();
+                    lbi.Content = mms.AsString;
+                    lstParams.Items.Add(lbi);
+                }
+            }
+
         }
 
         private string[] ParamsArray
@@ -90,8 +102,8 @@ namespace MOTMaster2
         //TODO Rename to reflect loop runs
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
-            //Would like to use RunStart as this Runs in a new thread
             controller.RunStart(paramDict);
+            //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
@@ -170,6 +182,7 @@ namespace MOTMaster2
             controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             Controller.StaticSequence = true;
+            ScanFlag = true;
             if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
@@ -951,12 +964,6 @@ namespace MOTMaster2
             remoteMsg.OnReceive += Interpreter;
         }
 
-        private void aiEnable_Checked(object sender, RoutedEventArgs e)
-        {
-            //TODO Fix this to bind to hardware class
-            DAQ.HAL.NavigatorHardware hardware = (DAQ.HAL.NavigatorHardware)Environs.Hardware;
-            hardware.config.UseAI = aiEnable.IsChecked.Value;
-        }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
@@ -974,7 +981,7 @@ namespace MOTMaster2
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
             controller.StoreDCSParameter(laserKey, type.GetProperty("Value").GetValue(sender));
-            
+
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
@@ -984,8 +991,8 @@ namespace MOTMaster2
             {
                 control = MSquaredTab.FindName(entry.Key);
                 if (control == null) continue;
-                else
-                {
+            else
+            {
                     ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value;
                     controller.StoreDCSParameter(entry.Key, entry.Value); 
                 }
@@ -1018,6 +1025,7 @@ namespace MOTMaster2
             controller.SetMSquaredParameters();
             Log("Updated MSquared laser parameters");
         }
+
         #region multi-scan
         private void lstParams_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {           
@@ -1079,6 +1087,7 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
             }
+            Controller.SetMultiScanParameters(mms);
             for (int i = 0; i < mms.Count - 1; i++)
             {
                 mms[i].NextInChain = mms[i + 1];
@@ -1151,6 +1160,26 @@ namespace MOTMaster2
             string name = check.Name;
             controller.StoreDCSParameter(name, check.IsChecked.Value);
         }
-    }
 
+        protected void OnRunStatus(bool running) // example of RunStatus event 
+        {            
+            Log("running is " + running.ToString());
+        }
+
+
+        private void lstParams_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            List<MMscan> mms = new List<MMscan>();
+            foreach (object ms in lstParams.Items)
+            {
+                mms.Add(new MMscan());
+                mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
+                if (!mms[mms.Count - 1].Check())
+                {
+                    ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                }
+            }
+            Controller.SetMultiScanParameters(mms);
+        }
+    }
 }
