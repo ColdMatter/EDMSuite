@@ -36,6 +36,7 @@ namespace MOTMaster2
         {
             controller = new Controller();
             controller.StartApplication();
+            Controller.OnRunStatus += new Controller.RunStatusHandler(OnRunStatus);
             InitializeComponent();
             InitVisuals();
             ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
@@ -63,6 +64,7 @@ namespace MOTMaster2
 
         public static void DoEvents()
         {
+            if (Utils.isNull(Application.Current)) return;
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
             //Not needed for repeat run. Might be needed for scan
@@ -90,13 +92,12 @@ namespace MOTMaster2
         //TODO Rename to reflect loop runs
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
+            controller.RunStart(paramDict);
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-
-            controller.RunStart(paramDict);
             return true;
         }
         private bool SingleShot() // true if OK
@@ -171,6 +172,7 @@ namespace MOTMaster2
             controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             Controller.StaticSequence = true;
+            ScanFlag = true;
             if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
@@ -1136,6 +1138,10 @@ namespace MOTMaster2
             lstParams.Items.Insert(si, lbi);
         }
         #endregion multi-scan
-    }
 
+        protected void OnRunStatus(bool running) // example of RunStatus event 
+        {            
+            Log("running is " + running.ToString());
+        }
+    }
 }
