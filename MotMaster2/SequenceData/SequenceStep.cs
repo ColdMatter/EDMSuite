@@ -67,9 +67,15 @@ namespace MOTMaster2.SequenceData
         //If a property is changed, this will modify the SequenceData object that exists in the Controller
         public static void SequenceStep_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "EnabledRS232") return;
-           
-            
+            var model = sender as SequenceStepViewModel;
+            var step = model.SelectedSequenceStep;
+            switch (e.PropertyName){
+                case "SelectedDigitalChannel":
+                    step.DigitalValueTypes[model.SelectedDigitalChannel.Key] = model.SelectedDigitalChannel.Value;
+                    break;
+                default:
+                    break;
+            }
         }
         public SequenceStep Copy()
         {
@@ -234,6 +240,10 @@ namespace MOTMaster2.SequenceData
         public DigitalChannelSelector()
         {
             Value = false;
+        }
+        public DigitalChannelSelector(bool value)
+        {
+            Value = value;
         }
     }
 

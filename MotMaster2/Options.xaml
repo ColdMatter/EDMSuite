@@ -36,8 +36,9 @@
             <TabItem x:Name="tiOptions" Header="General Options" Width="170">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="7*"/>
-                        <RowDefinition Height="7*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="30*"/>
                     </Grid.RowDefinitions>
                     <Label Content="" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Center" Height="26" Width="127"/>
                     <GroupBox Header="Save sequence on exit" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="50" Width="212">

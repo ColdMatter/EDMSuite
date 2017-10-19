@@ -127,12 +127,17 @@ namespace MOTMaster2
                 }
             }
         }
+
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
             //Console.WriteLine("654654");
             var cell = sender as CheckBox;
-            //cell.Background 
-            Console.WriteLine(sender.ToString());
+            if (sequenceDataGrid.CurrentColumn != null)
+            {
+                string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
+                model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
+            }
            // if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
             //else cell.Background = new SolidColorBrush(Colors.Black);
         }

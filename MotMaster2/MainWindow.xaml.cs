@@ -75,7 +75,17 @@ namespace MOTMaster2
         {
             btnRefresh_Click(null, null);
             tcMain.SelectedIndex = 0;
-            if (!Utils.isNull(Controller.sequenceData)) SetInterferometerParams(Controller.sequenceData.Parameters);
+            if (!Utils.isNull(Controller.sequenceData))
+            {
+                SetInterferometerParams(Controller.sequenceData.Parameters);
+                foreach (MMscan mms in Controller.GetMultiScanParameters())
+                {
+                    ListBoxItem lbi = new ListBoxItem();
+                    lbi.Content = mms.AsString;
+                    lstParams.Items.Add(lbi);
+        }
+            }
+
         }
 
         private string[] ParamsArray
@@ -94,7 +104,6 @@ namespace MOTMaster2
         {
             controller.RunStart(paramDict);
             //Would like to use RunStart as this Runs in a new thread
-            
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
@@ -956,12 +965,6 @@ namespace MOTMaster2
             remoteMsg.OnReceive += Interpreter;
         }
 
-        private void aiEnable_Checked(object sender, RoutedEventArgs e)
-        {
-            //TODO Fix this to bind to hardware class
-            DAQ.HAL.NavigatorHardware hardware = (DAQ.HAL.NavigatorHardware)Environs.Hardware;
-            hardware.config.UseAI = aiEnable.IsChecked.Value;
-        }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
@@ -1023,6 +1026,7 @@ namespace MOTMaster2
             controller.SetMSquaredParameters();
             Log("Updated MSquared laser parameters");
         }
+
         #region multi-scan
         private void lstParams_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {           
@@ -1083,6 +1087,7 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
             }
+            Controller.SetMultiScanParameters(mms);
             for (int i = 0; i < mms.Count - 1; i++)
             {
                 mms[i].NextInChain = mms[i + 1];
@@ -1159,6 +1164,22 @@ namespace MOTMaster2
         protected void OnRunStatus(bool running) // example of RunStatus event 
         {            
             //Log("running is " + running.ToString());
+        }
+
+
+        private void lstParams_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            List<MMscan> mms = new List<MMscan>();
+            foreach (object ms in lstParams.Items)
+            {
+                mms.Add(new MMscan());
+                mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
+                if (!mms[mms.Count - 1].Check())
+                {
+                    ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                }
+            }
+            Controller.SetMultiScanParameters(mms);
         }
     }
 }
