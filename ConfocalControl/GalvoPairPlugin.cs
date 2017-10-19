@@ -62,15 +62,24 @@ namespace ConfocalControl
         private AnalogSingleChannelWriter _galvoXwriter;
         private AnalogSingleChannelWriter _galvoYwriter;
 
-        private Object thisLock = new Object(); 
-
         #endregion
 
         #region Initialisation
 
         private void InitialiseSettings()
         {
-            settings.LoadSettings();
+            //settings.LoadSettings();
+            if (settings.Keys.Count == 0)
+            {
+                settings["GalvoXInit"] = "0.5";
+                settings["GalvoYInit"] = "0.5";
+                settings["GalvoXControl"] = "AO0";
+                settings["GalvoYControl"] = "AO1";
+                settings["GalvoXRead"] = "AI0";
+                settings["GalvoYRead"] = "AI1";
+                settings["pointsPerVolt"] = 100;
+                return;
+            }
         }
 
         public bool IsRunning()
@@ -107,6 +116,11 @@ namespace ConfocalControl
 
         public void AcquisitionStarting()
         {
+            if (IsRunning())
+            {
+                throw new DaqException("Counter already running");
+            }
+
             _galvoXInputTask = new Task("galvo X analog gather");
             _galvoYInputTask = new Task("galvo Y analog gather");
 
@@ -136,11 +150,8 @@ namespace ConfocalControl
 
         public void AcquisitionFinished()
         {
-            lock (thisLock)
-            {
                 _galvoXInputTask.Dispose();
                 _galvoYInputTask.Dispose();
-
                 _galvoXOutputTask.Dispose();
                 _galvoYOutputTask.Dispose();
 
@@ -155,7 +166,6 @@ namespace ConfocalControl
                 _galvoYwriter = null;
 
                 galvoState = GalvoState.stopped;
-            }
         }
 
         public double GetGalvoXSetpoint()
@@ -178,6 +188,54 @@ namespace ConfocalControl
         public void SetGalvoYSetpoint(double _newValue)
         {
             _galvoYwriter.WriteSingleSample(true, _newValue);
+        }
+
+        public void MoveOnlyAcquisitionStarting()
+        {
+            if (IsRunning())
+            {
+                throw new DaqException("Galvo already running");
+            }
+
+            _galvoXOutputTask = new Task("galvo X analog set");
+            _galvoYOutputTask = new Task("galvo Y analog set");
+
+            _galvoXControlChannel.AddToTask(_galvoXOutputTask, XRangeLow, XRangeHigh);
+            _galvoYControlChannel.AddToTask(_galvoYOutputTask, YRangeLow, YRangeHigh);
+
+            _galvoXOutputTask.Control(TaskAction.Verify);
+            _galvoYOutputTask.Control(TaskAction.Verify);
+
+            _galvoXwriter = new AnalogSingleChannelWriter(_galvoXOutputTask.Stream);
+            _galvoYwriter = new AnalogSingleChannelWriter(_galvoYOutputTask.Stream);
+
+            galvoState = GalvoState.running;
+        }
+
+        public void MoveOnlyAcquisitionFinished()
+        {
+                _galvoXOutputTask.Dispose();
+                _galvoYOutputTask.Dispose();
+
+                _galvoXOutputTask = null;
+                _galvoYOutputTask = null;
+
+                _galvoXwriter = null;
+                _galvoYwriter = null;
+
+                galvoState = GalvoState.stopped;
+        }
+
+        public void  SetGalvoXSetpointAndWait(double _newValue, AsyncCallback callBackFunction, Object stateObject)
+        {
+            IAsyncResult ar = _galvoXwriter.BeginWriteSingleSample(true, _newValue, callBackFunction, stateObject);
+            _galvoXwriter.EndWrite(ar);
+        }
+
+        public void SetGalvoYSetpointAndWait(double _newValue, AsyncCallback callBackFunction, Object stateObject)
+        {
+            IAsyncResult ar = _galvoYwriter.BeginWriteSingleSample(true, _newValue, callBackFunction, stateObject);
+            _galvoYwriter.EndWrite(ar);
         }
     }
 }

@@ -7,7 +7,6 @@
         <DockPanel x:Name="dockPanel">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Configure file names" Click="open_FileNameConfigure"/>
                     <MenuItem Header="_Close" Click="close_Click"/>
                 </MenuItem>
                 <MenuItem Header="_RasterScan">
@@ -15,7 +14,7 @@
                     <MenuItem Header="_Load settings" Click="load_settings_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Hardware">
-                    <MenuItem x:Name="hardware_MenuItem" Header="_Configure" Click="open_HardwareConfigure"/>
+                    <MenuItem x:Name="hardware_MenuItem" Header="_Configure Galvos" Click="open_HardwareConfigure"/>
                 </MenuItem>
                 <MenuItem Header="_Laser Control">
                     <MenuItem Header="_Bay1 Ti:Sapph"/>
@@ -96,7 +95,7 @@
                 </ni:ColorScale>
             </ni:IntensityGraph.ColorScale>
         </ni:IntensityGraph>
-        <ni:Switch x:Name="rasterScan_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,377,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="rasterScan_Click" ClickMode="Press"/>
+        <ni:Switch x:Name="rasterScan_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,417,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="rasterScan_Click" ClickMode="Press"/>
         <ni:Graph x:Name="rasterScan_lineDisplay" HorizontalAlignment="Left" Height="200" Margin="773,301,0,0" VerticalAlignment="Top" Width="300">
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 2">
@@ -123,6 +122,10 @@
         <Button x:Name="set_galvos_from_scan" Content="Set" HorizontalAlignment="Left" Margin="633,539,0,0" VerticalAlignment="Top" Width="75" Click="set_galvos_from_scan_Click"/>
         <Label Content="Galvo X" HorizontalAlignment="Left" Margin="486,512,0,0" VerticalAlignment="Top"/>
         <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="565,512,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="save_automatic" Content="Save data when scan ends" Margin="293,405,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="159"/>
+        <CheckBox x:Name="save_automatic" Content="Save data when scan ends" Margin="293,445,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="159"/>
+        <ni:RadixNumericTextBoxInt32 x:Name="scan_number_points_set" HorizontalAlignment="Left" Height="23" Margin="165,440,0,0" VerticalAlignment="Top" Width="89" ValueChanged="scan_number_points_set_ValueChanged" Value="10"/>
+        <Label Content="Points per exposure" HorizontalAlignment="Left" Margin="30,439,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="311,380,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="311,353,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_type_box_SelectionChanged"/>
     </Grid>
 </Window>

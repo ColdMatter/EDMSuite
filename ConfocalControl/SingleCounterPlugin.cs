@@ -67,7 +67,14 @@ namespace ConfocalControl
 
         private void InitialiseSettings()
         {
-            settings.LoadSettings();
+            //settings.LoadSettings();
+            if (settings.Keys.Count == 0)
+            {
+                settings["sampleRate"] = (double)100;
+                settings["channel"] = "APD0";
+                settings["bufferSize"] = (int)10000;
+                return;
+            }
         }
 
         public SingleCounterPlugin() 
@@ -129,9 +136,9 @@ namespace ConfocalControl
 
         public void AcquisitionStarting()
         {
-            if (counterState == CounterState.running)
+            if (IsRunning())
             {
-                throw new Exception("Counter already running");
+                throw new DaqException("Counter already running");
             }
 
             data_buffer = new List<int>();
@@ -178,9 +185,9 @@ namespace ConfocalControl
 
         public void ContinuousAcquisitionStarting()
         {
-            if (counterState == CounterState.running)
+            if (IsRunning())
             {
-                throw new Exception("Counter already running");
+                throw new DaqException("Counter already running");
             }
 
             data_buffer = new List<int>();
@@ -230,6 +237,10 @@ namespace ConfocalControl
             {
                 freqOutTask.Dispose();
                 countingTask.Dispose();
+
+                freqOutTask = null;
+                countingTask = null;
+                countReader = null;
 
                 _latestCount = 0;
                 latestData = 0;

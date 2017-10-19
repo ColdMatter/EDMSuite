@@ -23,37 +23,25 @@ namespace DAQ.HAL
             string daqBoard = (string)Boards["daq"];
 
             // map the analog channels
-            AddAnalogInputChannel("GalvoX", daqBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("GalvoY", daqBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI0", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI1", daqBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI2", daqBoard + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI3", daqBoard + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI4", daqBoard + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("AI5", daqBoard + "/ai5", AITerminalConfiguration.Differential);
 
             //map the analogue output channels
-            AddAnalogOutputChannel("GalvoXControl", daqBoard + "/ao0", -5, 5);
-            AddAnalogOutputChannel("GalvoYControl", daqBoard + "/ao1", -5, 5);
+            AddAnalogOutputChannel("AO0", daqBoard + "/ao0", -5, 5);
+            AddAnalogOutputChannel("AO1", daqBoard + "/ao1", -5, 5);
 
             // map the counter channels
-            AddCounterChannel("ConfocalAPD", daqBoard + "/ctr0");
+            AddCounterChannel("APD0", daqBoard + "/ctr0");
+            AddCounterChannel("APD1", daqBoard + "/ctr1");
+            AddCounterChannel("APD2", daqBoard + "/ctr2");
 
-            // sample clock
-            AddCounterChannel("SampleClock", daqBoard + "/ctr3");
-            Info.Add("SampleClockReader", "/dev1/PFI15");
-        }
-
-        public ConfocalHardware(string ConfocalAPDPath)
-        {
-            // Add board
-            Boards.Add("daq", "Dev1");
-            string daqBoard = (string)Boards["daq"];
-
-            // map the analog channels
-            AddAnalogInputChannel("GalvoX", daqBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("GalvoY", daqBoard + "/ai1", AITerminalConfiguration.Differential);
-
-            //map the analogue output channels
-            AddAnalogOutputChannel("GalvoXControl", daqBoard + "/ao0", -5, 5);
-            AddAnalogOutputChannel("GalvoYControl", daqBoard + "/ao1", -5, 5);
-
-            // map the counter channels
-            AddCounterChannel("ConfocalAPD", ConfocalAPDPath);
+            // pause trigger
+            AddDigitalOutputChannel("StartTrigger", daqBoard, 0, 23);
+            Info.Add("StartTriggerReader", "/dev1/PFI7");
 
             // sample clock
             AddCounterChannel("SampleClock", daqBoard + "/ctr3");

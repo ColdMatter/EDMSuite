@@ -78,40 +78,44 @@ namespace ConfocalControl
 
         public void LoadSettings()
         {
-            string directory = (string)Environs.FileSystem.Paths["settingsPath"];
-            string address = directory + _controller + "Settings.txt";
-
-            System.IO.StreamReader file = new System.IO.StreamReader(@address);
-
-            string line;
-            while((line = file.ReadLine()) != null)
+            try
             {
-                string[] slist = line.Split(null);
-                string name = slist[1];
+                string directory = (string)Environs.FileSystem.Paths["settingsPath"];
+                string address = directory + _controller + "Settings.txt";
 
-                switch (CheckType(slist[0]))
+                System.IO.StreamReader file = new System.IO.StreamReader(@address);
+
+                string line;
+                while ((line = file.ReadLine()) != null)
                 {
-                    case ISTYPE.INT:
-                        settings[name] = Convert.ToInt32(slist[3]);
-                        break;
+                    string[] slist = line.Split(null);
+                    string name = slist[1];
 
-                    case ISTYPE.DOUBLE:
-                        settings[name] = Convert.ToDouble(slist[3]);
-                        break;
+                    switch (CheckType(slist[0]))
+                    {
+                        case ISTYPE.INT:
+                            settings[name] = Convert.ToInt32(slist[3]);
+                            break;
 
-                    case ISTYPE.STRING:
-                        settings[name] = slist[3];
-                        break;
+                        case ISTYPE.DOUBLE:
+                            settings[name] = Convert.ToDouble(slist[3]);
+                            break;
 
-                    case ISTYPE.UNKNOWN:
-                        break;
+                        case ISTYPE.STRING:
+                            settings[name] = slist[3];
+                            break;
 
-                    default:
-                        break;
+                        case ISTYPE.UNKNOWN:
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
-            }
 
-            file.Close();
+                file.Close();
+            }
+            catch { }
         }
 	}
 }

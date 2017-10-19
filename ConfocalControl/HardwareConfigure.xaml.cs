@@ -32,21 +32,53 @@ namespace ConfocalControl
         {
             InitializeComponent();
 
-            string sampleclock = ((CounterChannel)Environs.Hardware.CounterChannels["SampleClock"]).PhysicalChannel;
-
-            foreach (string pc in DaqSystem.Local.GetPhysicalChannels(PhysicalChannelTypes.CI, PhysicalChannelAccess.External))
+            string galvoX = (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"];
+            foreach (string key in Environs.Hardware.AnalogInputChannels.Keys)
             {
-                if (pc != sampleclock) APD1_channel_set.Items.Add(pc);
+                string pc = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[key]).PhysicalChannel;
+                galvo_x_input_channel_set.Items.Add(pc);
+                if (key == galvoX)
+                {
+                    galvo_x_input_channel_set.SelectedValue = pc;
+                }
             }
 
-            string current = ((CounterChannel)Environs.Hardware.CounterChannels["ConfocalAPD"]).PhysicalChannel;
-            APD1_channel_set.SelectedValue = current;
+            string galvoXControl = (string)GalvoPairPlugin.GetController().Settings["GalvoXControl"];
+            foreach (string key in Environs.Hardware.AnalogOutputChannels.Keys)
+            {
+                string pc = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[key]).PhysicalChannel;
+                galvo_x_output_channel_set.Items.Add(pc);
+                if (key == galvoXControl)
+                {
+                    galvo_x_output_channel_set.SelectedValue = pc;
+                }
+            }
+
+            string galvoY = (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"];
+            foreach (string key in Environs.Hardware.AnalogInputChannels.Keys)
+            {
+                string pc = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[key]).PhysicalChannel;
+                galvo_y_input_channel_set.Items.Add(pc);
+                if (key == galvoY)
+                {
+                    galvo_y_input_channel_set.SelectedValue = pc;
+                }
+            }
+
+            string galvoYControl = (string)GalvoPairPlugin.GetController().Settings["GalvoYControl"];
+            foreach (string key in Environs.Hardware.AnalogOutputChannels.Keys)
+            {
+                string pc = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[key]).PhysicalChannel;
+                galvo_y_output_channel_set.Items.Add(pc);
+                if (key == galvoYControl)
+                {
+                    galvo_y_output_channel_set.SelectedValue = pc;
+                }
+            }
         }
 
         private void ok_Click(object sender, RoutedEventArgs e)
         {
-            ConfocalHardware Confhard = new ConfocalHardware((string)APD1_channel_set.SelectedValue);
-            Environs.Hardware = Confhard;
             this.Close();
         }
 

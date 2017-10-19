@@ -43,6 +43,7 @@ namespace ConfocalControl
             return controllerInstance;
         }
 
+        // Settings
         private PluginSettings _rasterScanSettings = new PluginSettings("confocalScan");
         public PluginSettings scanSettings
         {
@@ -57,7 +58,7 @@ namespace ConfocalControl
         public event DaqExceptionEventHandler DaqProblem;
 
         // Define RasterScan state
-        enum RasterScanState { stopped, running, stopping };
+        private enum RasterScanState { stopped, running, stopping };
         private RasterScanState backendState = RasterScanState.stopped;
 
         // Keeping track of data
@@ -265,6 +266,24 @@ namespace ConfocalControl
             }
 
             System.IO.File.WriteAllLines(fileName, lines.ToArray());
+        }
+
+        public bool AcceptableSettings()
+        {
+            if ((double)scanSettings["GalvoXStart"] >= (double)scanSettings["GalvoXEnd"])
+            {
+                MessageBox.Show("Galvo X settings unacceptable.");
+                return false;
+            }
+            else if ((double)scanSettings["GalvoYStart"] >= (double)scanSettings["GalvoYEnd"])
+            {
+                MessageBox.Show("Galvo Y settings unacceptable.");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         #endregion 
