@@ -102,6 +102,7 @@ namespace MOTMaster2
         public static ICEBlocPLL M2PLL;
         public PhaseStrobes phaseStrobes;
         private Dictionary<string, object> DCSParams;
+        private Stopwatch logWatch;
 
         MMDataIOHelper ioHelper;
         SequenceBuilder builder;
@@ -233,6 +234,7 @@ namespace MOTMaster2
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
+
             try
             {
                 if (config.UseMuquans)
@@ -367,6 +369,7 @@ namespace MOTMaster2
             {
                 var segData = Controller.genOptions.AIEnable ? finalData.prms: null;
                 bool columns = (BatchNumber == 0);
+                sequenceData.Parameters["ElapsedTime"].Value = logWatch.ElapsedMilliseconds;
                 AppendMultiScan(segData,columns);
             }
         }
@@ -390,6 +393,7 @@ namespace MOTMaster2
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
+            if (logWatch.IsRunning) { logWatch.Reset(); }
         }
 
         internal bool CheckForRunErrors()
@@ -555,6 +559,7 @@ namespace MOTMaster2
         public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
+
             if (config.UseMMScripts || sequenceData == null)
             {
                 script = prepareScript(scriptPath, dict);
@@ -635,6 +640,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
                     watch.Start();
+                    logWatch.Start();
                     if (!config.Debug)
                     {
                         if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
@@ -1131,6 +1137,8 @@ namespace MOTMaster2
         {
             if (File.Exists(defaultScriptPath)) LoadSequenceFromPath(defaultScriptPath);
             else sequenceData = new Sequence();
+
+            if (!sequenceData.Parameters.ContainsKey("ElapsedTime")) sequenceData.Parameters["ElapsedTime"] = new Parameter("ElapsedTime", "", 0.0, true, false);
         }
 
         public static void LoadSequenceFromPath(string path)
@@ -1203,6 +1211,7 @@ namespace MOTMaster2
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
             paramLogger.log("{\"MMbatch\":[");
+            logWatch = new Stopwatch();
         }
         public void StopLogging()
         {
@@ -1318,7 +1327,8 @@ namespace MOTMaster2
                     }
                 }
                 row = row.TrimEnd('\t');
-                multiScanLogger.log(row+"\n");
+                multiScanLogger.log(row);
+                //multiScanLogger.log("\n");
                 row = "";
             }
             foreach (string name in sequenceData.Parameters.Keys)
