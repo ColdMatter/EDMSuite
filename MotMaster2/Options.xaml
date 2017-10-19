@@ -39,13 +39,23 @@
                         <RowDefinition Height="7*"/>
                         <RowDefinition Height="7*"/>
                     </Grid.RowDefinitions>
-                    <Label Content="Save sequence on exit" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Center" Height="26" Width="127"/>
-                    <RadioButton x:Name="rbSaveSeqYes" Content="Save" HorizontalAlignment="Left" Margin="177,0,0,0" VerticalAlignment="Center" Height="15" Width="55" />
-                    <RadioButton x:Name="rbSaveSeqAsk" Content="Ask" HorizontalAlignment="Left" Margin="237,0,0,0" VerticalAlignment="Center" IsChecked="True" Height="15" Width="38" />
-                    <RadioButton x:Name="rbSaveSeqNo" Content="No save" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="15" Width="61" />
-                    <Label Content="MSquared Communication" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Height="26" Width="150" Grid.Row="1"/>
-                    <RadioButton x:Name="m2On" Content="Yes" Grid.Row="1"  Margin="150,0,0,0"/>
-                    <RadioButton x:Name="m2Off" Content="No" Grid.Row="1" Margin="200,0,0,0"/>
+                    <Label Content="" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Center" Height="26" Width="127"/>
+                    <GroupBox Header="Save sequence on exit" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="50" Width="212">
+                        <Grid>
+                            <RadioButton x:Name="rbSaveSeqYes" Content="Save" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Center" Height="15" Width="55" RenderTransformOrigin="-2.119,0.79"/>
+                            <RadioButton x:Name="rbSaveSeqAsk" Content="Ask" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" IsChecked="True" Height="15" Width="38"/>
+                            <RadioButton x:Name="rbSaveSeqNo" Content="No save" HorizontalAlignment="Left" Margin="130,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="15" Width="61" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="MSquared Communication" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Height="46" Width="167">
+                        <Grid Margin="0,0,-1.571,-5.143">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton x:Name="m2On" Content="Yes"  Margin="25,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <RadioButton x:Name="m2Off" Content="No"  Margin="86,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tiFileSystem" Header="File System" Height="24" Margin="-0.286,-1,0,1" HorizontalAlignment="Left" Width="140">

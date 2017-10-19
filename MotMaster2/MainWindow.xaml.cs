@@ -94,12 +94,12 @@ namespace MOTMaster2
         {
             controller.RunStart(paramDict);
             //Would like to use RunStart as this Runs in a new thread
-            controller.RunStart(paramDict);
+            
             if (controller.IsRunning())
             {
                 controller.WaitForRunToFinish();
             }
-            return true;
+            return !controller.IsRunning();
         }
         private bool SingleShot() // true if OK
         {
@@ -426,14 +426,13 @@ namespace MOTMaster2
             tcMain.SelectedIndex = 0;
         }
 
-        private bool paramCheck;
+        private bool paramCheck = false;
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(TabControl))
             {
-                if (paramCheck)
-                    return;
-                paramCheck = true;
+                if (paramCheck) return; // avoid recursion
+                paramCheck = true;  int gl = 110;
                 if (tcMain.SelectedIndex == 1) // scan
                 {
                     int selIdx = cbParamsScan.SelectedIndex;
@@ -449,6 +448,7 @@ namespace MOTMaster2
                     foreach (string param in ParamsArray)
                         cbParamsMScan.Items.Add(param);
                     if (lstParams.Items.Count > 0) lstParams.SelectedIndex = 0;
+                    gl = 170;
                 }
                 if (tcMain.SelectedIndex == 3) // manual
                 {
@@ -460,6 +460,7 @@ namespace MOTMaster2
                     //cbParamsManual.Text = ParamsArray[0];
                     cbParamsManual.SelectedIndex = selIdx;
                 }
+                gridMain.RowDefinitions[2].Height = new GridLength(gl);
                 paramCheck = false;
             }
         }
@@ -1065,7 +1066,6 @@ namespace MOTMaster2
         private void btnMScan_Click(object sender, RoutedEventArgs e)
         {
             if (lstParams.Items.Count == 0) return;
-            string filename = "";
             if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
             {
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
@@ -1158,7 +1158,7 @@ namespace MOTMaster2
 
         protected void OnRunStatus(bool running) // example of RunStatus event 
         {            
-            Log("running is " + running.ToString());
+            //Log("running is " + running.ToString());
         }
     }
 }
