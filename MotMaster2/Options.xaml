@@ -36,16 +36,42 @@
             <TabItem x:Name="tiOptions" Header="General Options" Width="170">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="7*"/>
-                        <RowDefinition Height="7*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="30*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Save sequence on exit" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Center" Height="26" Width="127"/>
-                    <RadioButton x:Name="rbSaveSeqYes" Content="Save" HorizontalAlignment="Left" Margin="177,0,0,0" VerticalAlignment="Center" Height="15" Width="55" />
-                    <RadioButton x:Name="rbSaveSeqAsk" Content="Ask" HorizontalAlignment="Left" Margin="237,0,0,0" VerticalAlignment="Center" IsChecked="True" Height="15" Width="38" />
-                    <RadioButton x:Name="rbSaveSeqNo" Content="No save" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="15" Width="61" />
-                    <Label Content="MSquared Communication" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Height="26" Width="150" Grid.Row="1"/>
-                    <RadioButton x:Name="m2On" Content="Yes" Grid.Row="1"  Margin="150,0,0,0"/>
-                    <RadioButton x:Name="m2Off" Content="No" Grid.Row="1" Margin="200,0,0,0"/>
+                    <RadioButton x:Name="rbSaveSeqYes" GroupName="Save" Content="Save" HorizontalAlignment="Left" Margin="177,0,0,0" VerticalAlignment="Center" Height="16" Width="55" />
+                    <RadioButton x:Name="rbSaveSeqAsk" GroupName="Save" Content="Ask" HorizontalAlignment="Left" Margin="237,0,0,0" VerticalAlignment="Center" IsChecked="True" Height="16" Width="38" />
+                    <RadioButton x:Name="rbSaveSeqNo" GroupName="Save" Content="No save" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="16" Width="61" />
+                    <Label Content="MSquared Communication"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="35,0,0,0" Width="157" Grid.Row="1"/>
+                    <RadioButton x:Name="m2On" GroupName="M2" Content="Yes" Grid.Row="1"   HorizontalAlignment="Left" VerticalAlignment="Center" Margin="200,0,0,0"/>
+                    <RadioButton x:Name="m2Off" GroupName="M2" Content="No" Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="250,0,0,0"/>
+                    <GroupBox Header="Analog Input" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="450" Height="104">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="60"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="Enable" HorizontalAlignment="Center"/>
+                            <CheckBox x:Name="aiEnable" Grid.Row="1" HorizontalAlignment="Center" Height="60" Margin="28,0" VerticalAlignment="Bottom" Click="aiEnable_Click"/>
+                            <Label Content="Sample Rate"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="Auto" Grid.Column="1" Grid.Row="0"/>
+                            <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="1" Grid.Row="0"/>
+                            <Label Content="PreTrig Samples"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="Auto" Grid.Column="2"/>
+                            <TextBox x:Name="tbPreTrig" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" ToolTip="Initial number of samples per channel to exclude"/>
+                            <Label Content="Rise Time"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="Auto" Grid.Column="2" Grid.Row="1" ToolTip=""/>
+                            <TextBox x:Name="tbRiseTime" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" Grid.Row="1" ToolTip="Rise time for photodiode in seconds"/>
+                            <Label Content="Save Mode"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="Auto" Grid.Column="1" Grid.Row="1"/>
+                            <RadioButton x:Name="aiFull" GroupName="analog" Content="All" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save segmented raw data"/>
+                            <RadioButton x:Name="aiAverage" GroupName="analog" Content="Avg." HorizontalAlignment="Left" Margin="100,15,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save averages/std. dev"/>
+                            <RadioButton x:Name="aiBoth" GroupName="analog" Content="Both" HorizontalAlignment="Left" Margin="100,30,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save both segmented raw data and averages/std. dev" />
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tiFileSystem" Header="File System" Height="24" Margin="-0.286,-1,0,1" HorizontalAlignment="Left" Width="140">

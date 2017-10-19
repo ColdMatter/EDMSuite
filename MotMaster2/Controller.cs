@@ -87,8 +87,6 @@ namespace MOTMaster2
         DAQMxAnalogPatternGenerator apg;
         MMAIWrapper aip;
 
-        private static int aiSampleRate = 200000;
-        private static double riseTime = 0.0001;
         public static bool StaticSequence { get; set; }
         private bool hardwareError = false;
         CameraControllable camera = null;
@@ -129,7 +127,7 @@ namespace MOTMaster2
             LoadDefaultSequence();
 
             //TODO Analog input config should be moved to GeneralOptions
-            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = aiSampleRate; ExpData.RiseTime = riseTime; }
+            if (ExpData == null) { ExpData = new ExperimentData(); ExpData.SampleRate = Controller.genOptions.AISampleRate; ExpData.RiseTime = Controller.genOptions.RiseTime; }
 
             CheckHardware(config.Debug);
 
@@ -244,7 +242,7 @@ namespace MOTMaster2
                 Console.WriteLine("Started muquans at {0}ms", watch.ElapsedMilliseconds);
                 apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
                 Console.WriteLine("Started apg at {0}ms", watch.ElapsedMilliseconds);
-                if (config.UseAI) aip.StartTask();
+                if (Controller.genOptions.AIEnable) aip.StartTask();
                 if (!config.HSDIOCard) pg.OutputPattern(sequence.DigitalPattern.Pattern, true);
                 else
                 {
@@ -265,7 +263,7 @@ namespace MOTMaster2
            
             //Just need to restart the cards
             apg.StartPattern();
-            if (config.UseAI) aip.StartTask();
+            if (Controller.genOptions.AIEnable) aip.StartTask();
             if (config.HSDIOCard)
             {
                 hs.StartPattern();
@@ -282,7 +280,7 @@ namespace MOTMaster2
             else hs.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, false);
             if (config.UseMuquans) { muquans.Configure(StaticSequence); microSynth.Connect(); }
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, StaticSequence);
-            if (config.UseAI) { 
+            if (Controller.genOptions.AIEnable) { 
                 aip.Configure(sequence.AIConfiguration, StaticSequence);
                 aip.AnalogDataReceived += OnAnalogDataReceived;
             }
@@ -297,7 +295,7 @@ namespace MOTMaster2
             if (!config.HSDIOCard) pg.StopPattern();
             else hs.StopPattern();
             apg.StopPattern();
-            if (config.UseAI) { aip.StopPattern(); }
+            if (Controller.genOptions.AIEnable) { aip.StopPattern(); }
             if (config.UseMuquans) { muquans.StopOutput(); microSynth.Disconnect(); }
         }
             catch (Exception e)
@@ -309,7 +307,7 @@ namespace MOTMaster2
         private void pauseHardware()
         {
             apg.PauseLoop();
-            if (config.UseAI) aip.PauseLoop();
+            if (Controller.genOptions.AIEnable) aip.PauseLoop();
             if (config.HSDIOCard) hs.PauseLoop();
             else throw new NotImplementedException("DAQmx digital cards not currently supported");
         }
@@ -318,7 +316,7 @@ namespace MOTMaster2
         //    if (!config.HSDIOCard) pg.StopPattern();
         //    else hs.AbortRunning();
         //    apg.AbortRunning();
-        //    if (config.UseAI) aip.AbortRunning();
+        //    if (Controller.genOptions.AIEnable) aip.AbortRunning();
         //    if (config.UseMuquans) muquans.StopOutput();
         //}
         private void clearDigitalPattern(MOTMasterSequence sequence)
@@ -367,7 +365,7 @@ namespace MOTMaster2
             }
             if (multiScanLogger != null)
             {
-                var segData = config.UseAI ? finalData.prms: null;
+                var segData = Controller.genOptions.AIEnable ? finalData.prms: null;
                 bool columns = (BatchNumber == 0);
                 AppendMultiScan(segData,columns);
             }
@@ -565,7 +563,7 @@ namespace MOTMaster2
             else
             {
                 
-                if (config.UseAI || config.Debug)
+                if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                    
@@ -593,7 +591,7 @@ namespace MOTMaster2
                             {
                                 header+=name+",";
                             }
-                            if (config.UseAI)
+                            if (Controller.genOptions.AIEnable)
                             {
                                 foreach (string name in ExpData.AnalogSegments.Keys)
                                 {
@@ -687,7 +685,7 @@ namespace MOTMaster2
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (config.UseAI || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
+                    if (Controller.genOptions.AIEnable || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
                     if (StaticSequence && !config.Debug) pauseHardware();
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -760,7 +758,7 @@ namespace MOTMaster2
                 }
             }
             run(sequence);
-            if (!StaticSequence) { if (config.UseAI) aip.ReadAnalogDataFromBuffer(); releaseHardware(); status = RunningState.stopped; }
+            if (!StaticSequence) { if (Controller.genOptions.AIEnable) aip.ReadAnalogDataFromBuffer(); releaseHardware(); status = RunningState.stopped; }
             //else pauseHardware();
         }
 
@@ -1198,9 +1196,9 @@ namespace MOTMaster2
         {
             string now = DateTime.Now.ToString("yyMMdd_hhmmss");
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
-            dataLogger = new AutoFileLogger(fileTag + "_data.ahf");
-            paramLogger = new AutoFileLogger(fileTag + "_parameters.ahf");
-            multiScanLogger = new AutoFileLogger(fileTag+"_multiscan.ahf");
+            dataLogger = new AutoFileLogger(fileTag + ".dta");
+            paramLogger = new AutoFileLogger(fileTag + ".prm");
+            multiScanLogger = new AutoFileLogger(fileTag+".scn");
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
@@ -1320,7 +1318,7 @@ namespace MOTMaster2
                     }
                 }
                 row = row.TrimEnd('\t');
-                multiScanLogger.log(row);
+                multiScanLogger.log(row+"\n");
                 row = "";
             }
             foreach (string name in sequenceData.Parameters.Keys)
@@ -1421,7 +1419,14 @@ namespace MOTMaster2
             DCSParams[laserKey] = p;
         }
 
-       
+
+
+        internal static void UpdateAIValues()
+        {
+            ExpData.PreTrigSamples = Controller.genOptions.PreTrigSamples;
+            ExpData.SampleRate = Controller.genOptions.AISampleRate;
+            ExpData.RiseTime = Controller.genOptions.RiseTime;
+        }
     }
 
     public class DataEventArgs : EventArgs
