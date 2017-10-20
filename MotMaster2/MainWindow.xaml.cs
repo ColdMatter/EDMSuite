@@ -1069,6 +1069,31 @@ namespace MOTMaster2
 
         private void btnMScan_Click(object sender, RoutedEventArgs e)
         {
+            var scanBox = sender as Button;
+            switch ((string)scanBox.Content)
+            {
+                case "Multi Scan":
+                    scanBox.Content = "Cancel";
+                    scanBox.Background = Brushes.Red;
+                    StartMultiScan();
+                    btnMScan_Click(scanBox, null);
+                    break;
+                case "Cancel":
+                    //TODO fix this so that it will interrupt a MultiScan
+                    ScanFlag = false;
+                    controller.StopRunning();
+                    controller.StopLogging();
+                    scanBox.Content = "Multi Scan";
+                    scanBox.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFF9E76B");
+                    break;
+                default:
+                    break;
+            }
+           
+        }
+
+        private void StartMultiScan()
+        {
             if (lstParams.Items.Count == 0) return;
             if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
             {
@@ -1105,17 +1130,14 @@ namespace MOTMaster2
                 foreach (MMscan ms in mms)
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
-                    // TODO update parameres from ms
                     Controller.SetParameter(ms.sParam, ms.Value);
                     ScanFlag = SingleShot();
                     if (!ScanFlag) break;
                     controller.WaitForRunToFinish();
                     controller.IncrementBatchNumber();
                 }
-                // TODO measure and add record to the data output/file 
 
             }
-            controller.StopLogging();
         }
         
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
