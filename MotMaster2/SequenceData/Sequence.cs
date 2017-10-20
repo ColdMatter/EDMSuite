@@ -18,6 +18,7 @@ namespace MOTMaster2.SequenceData
         [JsonConverter(typeof(DictionaryConverter))]
         public ObservableDictionary<string,Parameter> Parameters { get; set; }
 
+        public List<MMscan> ScanningParams { get; set; }
         public Dictionary<string,object> CreateParameterDictionary()
         {
             Dictionary<string,object> paramDict = new Dictionary<string,object>();
@@ -52,6 +53,7 @@ namespace MOTMaster2.SequenceData
 
     }
 
+    
     public class DictionaryConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

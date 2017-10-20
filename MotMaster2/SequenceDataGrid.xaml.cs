@@ -47,26 +47,26 @@ namespace MOTMaster2
             if (first == null) return;
             var names = first.AnalogValueTypes.Keys;
             Style analogStyle = new Style(typeof(ComboBox));
-
+     
             analogStyle.Setters.Add(new EventSetter() { Event = ComboBox.SelectionChangedEvent, Handler = new SelectionChangedEventHandler(this.sequenceDataGrid_AnalogValueChanged) });
             foreach (var name in names)
             {
                 DataGridComboBoxColumn col = new DataGridComboBoxColumn { Header = name, EditingElementStyle = analogStyle };
-
+  
                 var resource = this.FindResource("analogProvider");
                 BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() { Source = resource });
                 col.SelectedItemBinding = new Binding("AnalogValueTypes[" + name + "]");
                 dg.Columns.Add(col);
-
-
+                
+       
             }
-            /*    var dignames = first.DigitalValueTypes.Keys;
-                foreach (var name in dignames)
-                {
-                    DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name };
-                    col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value")};
-                    dg.Columns.Add(col);
-                }*/
+        /*    var dignames = first.DigitalValueTypes.Keys;
+            foreach (var name in dignames)
+            {
+                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name };
+                col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value")};
+                dg.Columns.Add(col);
+            }*/
             var dignames = first.DigitalValueTypes.Keys;
             Style digitalStyle = new Style(typeof(CheckBox));
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
@@ -95,7 +95,7 @@ namespace MOTMaster2
 
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            Controller ctrl;
+            //Controller ctrl;
         }
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -114,10 +114,19 @@ namespace MOTMaster2
                 }
             }
         }
+
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
-            //Console.WriteLine("654654");            
-            Console.WriteLine(sender.ToString());
+            //Console.WriteLine("654654");
+            var cell = sender as CheckBox;
+            if (sequenceDataGrid.CurrentColumn != null)
+            {
+                string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
+                model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
+            }
+           // if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
+            //else cell.Background = new SolidColorBrush(Colors.Black);
         }
 
         public delegate void ChangedAnalogChannelCellHandler(object sender, SelectionChangedEventArgs e);
@@ -138,20 +147,20 @@ namespace MOTMaster2
 
 
 
-        /*       public static readonly RoutedEvent ChangedAnalogChannelCellEvent = EventManager.RegisterRoutedEvent("ChangedAnalogChannelCellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ComboBox));
+ /*       public static readonly RoutedEvent ChangedAnalogChannelCellEvent = EventManager.RegisterRoutedEvent("ChangedAnalogChannelCellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ComboBox));
 
-               public static readonly RoutedEvent ChangedRS232CellEvent = EventManager.RegisterRoutedEvent("ChangedRS232CellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CheckBox));
+        public static readonly RoutedEvent ChangedRS232CellEvent = EventManager.RegisterRoutedEvent("ChangedRS232CellEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CheckBox));
         
-               public event RoutedEventHandler ChangedAnalogCell
-               {
-                   add { AddHandler(ChangedAnalogChannelCellEvent, value); }
-                   remove { RemoveHandler(ChangedAnalogChannelCellEvent, value); }
-               }
-               public event RoutedEventHandler ChangedRS232Event
-               {
-                   add { AddHandler(ChangedRS232CellEvent, value); }
-                   remove { RemoveHandler(ChangedRS232CellEvent, value); }
-               }*/
+        public event RoutedEventHandler ChangedAnalogCell
+        {
+            add { AddHandler(ChangedAnalogChannelCellEvent, value); }
+            remove { RemoveHandler(ChangedAnalogChannelCellEvent, value); }
+        }
+        public event RoutedEventHandler ChangedRS232Event
+        {
+            add { AddHandler(ChangedRS232CellEvent, value); }
+            remove { RemoveHandler(ChangedRS232CellEvent, value); }
+        }*/
 
         private void sequenceDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
@@ -167,7 +176,37 @@ namespace MOTMaster2
 
         }
 
+
     }
 
+    public class ValueToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            int input;
+            try
+            {
+                DataGridCell dgc = (DataGridCell)value;
+                System.Data.DataRowView rowView = (System.Data.DataRowView)dgc.DataContext;
+                input = (int)rowView.Row.ItemArray[dgc.Column.DisplayIndex];
+            }
+            catch (InvalidCastException e)
+            {
+                return DependencyProperty.UnsetValue;
+            }
+            switch (input)
+            {
+                case 1: return Brushes.Red;
+                case 2: return Brushes.White;
+                case 3: return Brushes.Blue;
+                default: return DependencyProperty.UnsetValue;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }
 

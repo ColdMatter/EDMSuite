@@ -50,6 +50,17 @@ namespace MOTMaster2
             }
         }
 
+        private KeyValuePair<string, DigitalChannelSelector> _selectedDigitalChannel;
+        public KeyValuePair<string,DigitalChannelSelector> SelectedDigitalChannel
+        {
+            get { return _selectedDigitalChannel; }
+            set
+            {
+                _selectedDigitalChannel = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("SelectedDigitalChannel"));
+            }
+        }
         private bool _rs232Enabled;
         public bool RS232Enabled
         {

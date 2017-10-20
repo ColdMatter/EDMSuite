@@ -33,6 +33,15 @@ namespace MOTMaster2
         public enum M2CommOption { on, off}
         public M2CommOption m2Comm;
 
+        public enum AISaveOption { rawData,average,both}
+        public AISaveOption aiSaveMode;
+
+        public int AISampleRate { get; set; }
+        public int PreTrigSamples { get; set; }
+        public double RiseTime { get; set; }
+
+        public bool AIEnable { get; set; }
+
         public void Save()
         {
             string fileJson = JsonConvert.SerializeObject(this);
@@ -80,6 +89,19 @@ namespace MOTMaster2
 
             if (m2Off.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.off;
             if (m2On.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.on;
+
+            if (aiEnable.IsChecked.Value) {
+                Controller.genOptions.AISampleRate = Convert.ToInt32(tbSampleRate.Text);
+                Controller.genOptions.PreTrigSamples = Convert.ToInt32(tbPreTrig.Text);
+                Controller.genOptions.RiseTime = Convert.ToDouble(tbRiseTime.Text);
+                if (aiRaw.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.rawData;
+                if (aiAverage.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.average;
+                if (aiBoth.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.both;
+
+                Controller.UpdateAIValues();
+            }
+
+            Controller.genOptions.AIEnable = aiEnable.IsChecked.Value;
             Close();
         }
 
@@ -110,11 +132,46 @@ namespace MOTMaster2
 
             m2On.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.on);
             m2Off.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.off);
+
+            aiEnable.IsChecked = Controller.genOptions.AIEnable;
+
+            switch (Controller.genOptions.aiSaveMode)
+            {
+                case GeneralOptions.AISaveOption.rawData:
+                    aiRaw.IsChecked = true;
+                    break;
+                case GeneralOptions.AISaveOption.average:
+                    aiAverage.IsChecked = true;
+                    break;
+                case GeneralOptions.AISaveOption.both:
+                    aiBoth.IsChecked = true;
+                    break;
+                default:
+                    break;
+            }
+
+            tbSampleRate.Text = Controller.genOptions.AISampleRate.ToString();
+            tbPreTrig.Text = Controller.genOptions.PreTrigSamples.ToString();
+            tbRiseTime.Text = Controller.genOptions.RiseTime.ToString();
        }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void aiEnable_Click(object sender, RoutedEventArgs e)
+        {
+            bool state = aiEnable.IsChecked.Value;
+            tbSampleRate.IsReadOnly = !state;
+            tbRiseTime.IsReadOnly = !state;
+            tbPreTrig.IsReadOnly = !state;
+            
+
+            aiRaw.IsEnabled = state;
+            aiAverage.IsEnabled = state;
+            aiBoth.IsEnabled = state;
+
         }
     }
 
