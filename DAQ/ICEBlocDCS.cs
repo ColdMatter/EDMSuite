@@ -288,7 +288,7 @@ namespace DAQ.HAL
                 _timeBlockDict[pulseStep].Add(pulseDict.Keys.First(),pulseDict.Values.First());
             }
             if (length != null && !_timeBlockDict[pulseStep].ContainsKey("length")) _timeBlockDict[pulseStep].Add("length",Convert.ToInt32(length));
-            if (multiplier != null && !_timeBlockDict[pulseStep].ContainsKey("multiplier")) _timeBlockDict[pulseStep].Add("multiplier", (double)multiplier);
+            if (multiplier != 1e-6 && !_timeBlockDict[pulseStep].ContainsKey("multiplier")) _timeBlockDict[pulseStep].Add("multiplier", (double)multiplier);
 
             //Sets the channel on/off as well
             Dictionary<string, object> rfDict = CreateSubParameterDict(RFchannel, state);
@@ -338,6 +338,11 @@ namespace DAQ.HAL
            }
            _timeBlockDict.Clear();
             return paramString;
+        }
+
+        public void StartFPGA()
+        {
+            FPGARun("Start", false);
         }
     }
 

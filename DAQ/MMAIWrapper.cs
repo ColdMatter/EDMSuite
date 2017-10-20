@@ -130,5 +130,10 @@ namespace DAQ.Analog
             ReadAnalogDataFromBuffer();
             AITask.Stop();
         }
+
+        public void ClearBuffer()
+        {
+            AIConfig.AIData = null;
+        }
     }
 }

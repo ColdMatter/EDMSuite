@@ -369,8 +369,14 @@ namespace MOTMaster2
             {
                 var segData = config.UseAI ? finalData.prms: null;
                 bool columns = (BatchNumber == 0);
-                AppendMultiScan(segData,columns);
-        }
+               AppendMultiScan(segData,columns);
+            }
+            dataJson = null;
+            finalData = null;
+            aip.ClearBuffer();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
 
@@ -1340,14 +1346,15 @@ namespace MOTMaster2
             multiScanLogger.log(row);
         }
 
-
+        
         
         private void EndMultiScan()
         {
 
         }
+  
         #endregion
-
+        
         #region MSquared Control - Maybe move elswhere?
         public void GetMSquaredParameters()
         {
@@ -1367,16 +1374,26 @@ namespace MOTMaster2
                 {
                 if(!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
                 }
-            CheckPhaseLock();
-            if (DCSParams.ContainsKey("PLLFreq") && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
-            //Checks the phase lock has not come out-of-loop
-            CheckPhaseLock();
+
+            try
+            {
+                CheckPhaseLock();
+                if (DCSParams.ContainsKey("PLLFreq") && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+                //Checks the phase lock has not come out-of-loop
+                CheckPhaseLock();
+            }
+            catch (Exception e)
+            {
+                ErrorMgr.warningMsg("Failed to set phase lock." + e.Message);
+            }
+
 
             //Updates DCS if parameters have been modified
-            if (DCSParams.Any(kvp => kvp.Key.Contains("VelPulse"))) DCSParams["VelPulseEnabled"] = true;
-            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse1"))) DCSParams["Pulse1Enabled"] = true;
-            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse2"))) DCSParams["Pulse2Enabled"] = true;
-            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse3"))) DCSParams["Pulse3Enabled"] = true;
+            bool updateDCS = false;
+            if (DCSParams.Any(kvp => kvp.Key.Contains("VelPulse"))) { DCSParams["VelPulseEnabled"] = true; updateDCS = true; }
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse1"))) { DCSParams["Pulse1Enabled"] = true; updateDCS = true; }
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse2"))) {DCSParams["Pulse2Enabled"] = true; updateDCS = true; }
+            if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse3"))){ DCSParams["Pulse3Enabled"] = true; updateDCS = true; }
 
             if (Utils.Get(DCSParams, "VelPulseEnabled") != null) M2DCS.ConfigurePulse("X", 0, Utils.Get(DCSParams, "VelPulseDuration"), Utils.Get(DCSParams, "VelPulsePower"), 1e-6, Utils.Get(DCSParams, "VelPulsePhase"), (bool)Utils.Get(DCSParams, "VelPulseEnabled"));
             if (Utils.Get(DCSParams, "Pulse1Enabled") != null) M2DCS.ConfigurePulse("X", 1, Utils.Get(DCSParams, "Pulse1Duration"), Utils.Get(DCSParams, "Pulse1Power"), 1e-6, Utils.Get(DCSParams, "Pulse1Phase"), (bool)Utils.Get(DCSParams, "Pulse1Enabled"));
@@ -1386,8 +1403,11 @@ namespace MOTMaster2
             if (Utils.Get(DCSParams, "Pulse3Enabled") != null) M2DCS.ConfigurePulse("X", 3, Utils.Get(DCSParams, "Pulse3Duration"), Utils.Get(DCSParams, "Pulse3Power"), 1e-6, Utils.Get(DCSParams, "Pulse3Phase"), (bool)Utils.Get(DCSParams, "Pulse3Enabled"));
             DCSParams.Clear();
             //TODO Send this to MainWindow Log
-            if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2DCS.UpdateSequenceParameters();
-            else  Console.WriteLine(M2DCS.PrintParametersToConsole());
+            if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on) && updateDCS) {
+                try { M2DCS.UpdateSequenceParameters(); M2DCS.StartFPGA(); Thread.Sleep(1000); }
+                catch (Exception e) { ErrorMgr.warningMsg("Failed to update DCS paramaters. " + e.Message); }
+            }
+            else Console.WriteLine(M2DCS.PrintParametersToConsole());
 
             }
 
