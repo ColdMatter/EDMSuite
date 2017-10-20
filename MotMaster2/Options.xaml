@@ -67,14 +67,14 @@
                             </Grid.RowDefinitions>
                             <Label Content="Enabled" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Margin="0" Width="53"/>
                             <CheckBox x:Name="aiEnable" Grid.Row="0" HorizontalAlignment="Center" Height="15" Margin="55,7,5.286,7.714" VerticalAlignment="Center" Click="aiEnable_Click" Width="22"/>
-                            <Label Content="Sample Rate"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,2,0,1.714" Width="76" Grid.Row="0" Grid.ColumnSpan="2" Height="26"/>
-                            <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="75.714,2,0,3.714" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="1" Grid.Row="0"/>
+                            <Label Content="Sample Rate [Hz]"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,2,0,1.714" Width="100" Grid.Row="0" Grid.ColumnSpan="2" Height="26"/>
+                            <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="97,2,0,4" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="1" Grid.Row="0"/>
                             <Label Content="PreTrig Samples"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1.714,2,0,1.714" Width="94" Grid.Column="2" Height="26"/>
                             <TextBox x:Name="tbPreTrig" HorizontalAlignment="Left" Height="24" Margin="98.714,3,0,2.714" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" ToolTip="Initial number of samples per channel to exclude"/>
-                            <Label Content="Rise Time"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1.714,17.286,0,17.857" Width="61" Grid.Column="2" Grid.Row="1" ToolTip="" Height="26"/>
+                            <Label Content="Rise Time [s]"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1.714,17.286,0,17.857" Width="61" Grid.Column="2" Grid.Row="1" ToolTip="" Height="26"/>
                             <TextBox x:Name="tbRiseTime" HorizontalAlignment="Left" Height="24" Margin="98.714,18.286,0,18.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" Grid.Row="1" ToolTip="Rise time for photodiode in seconds"/>
                             <Label Content="Save Mode"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,17.286,0,17.857" Width="69" Grid.Row="1" Grid.ColumnSpan="2" Height="26"/>
-                            <RadioButton x:Name="aiFull" GroupName="analog" Content="All" HorizontalAlignment="Left" Margin="75.714,5.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save segmented raw data"/>
+                            <RadioButton x:Name="aiRaw" GroupName="analog" Content="Raw" HorizontalAlignment="Left" Margin="75.714,5.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save segmented raw data"/>
                             <RadioButton x:Name="aiAverage" GroupName="analog" Content="Avg." HorizontalAlignment="Left" Margin="75.714,20.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save averages/std. dev"/>
                             <RadioButton x:Name="aiBoth" GroupName="analog" Content="Both" HorizontalAlignment="Left" Margin="75.714,35.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save both segmented raw data and averages/std. dev" />
                         </Grid>
