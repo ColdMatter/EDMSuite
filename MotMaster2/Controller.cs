@@ -579,11 +579,75 @@ namespace MOTMaster2
         {
             Run((Dictionary<string, object>) dict);
         }
-       
+
         public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
 
+            BuildMMSequence(dict);
+
+            if (BatchNumber == 0)
+            {
+                if (StaticSequence) hardwareError = InitialiseHardwareAndPattern();
+                InitialiseData();
+            }
+            if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
+            PrepareNonDAQHardware();
+
+            if (!StaticSequence)
+            {
+                hardwareError = InitialiseHardwareAndPattern();
+            }
+
+            if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+
+            watch.Start();
+            logWatch.Start();
+
+            if (!config.Debug)
+            {
+                if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
+                else if (status == RunningState.running) ContinueLoop();
+                else return;
+            }
+
+            watch.Stop();
+
+            if (saveEnable)
+            {
+                AcquireDataFromHardware();
+            }
+
+            if (config.CameraUsed) finishCameraControl();
+            if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+            if (Controller.genOptions.AIEnable || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
+            if (StaticSequence && !config.Debug) pauseHardware();
+
+            status = RunningState.stopped;
+            //Dereferences the MMScan object
+            ScanParam = null;
+        }
+
+        private bool InitialiseHardwareAndPattern()
+        {
+            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
+            try
+            {
+                 if (!config.Debug)initializeHardware(sequence);
+
+            }
+            catch (Exception e)
+            {
+                ErrorMgr.errorMsg("Could not initialise hardware:" + e.Message, -2, true);
+                return false;
+            }
+            return true;
+        }
+
+        private void BuildMMSequence(Dictionary<String, Object> dict)
+        {
             if (config.UseMMScripts || sequenceData == null)
             {
                 script = prepareScript(scriptPath, dict);
@@ -591,144 +655,111 @@ namespace MOTMaster2
             }
             else
             {
-                
+
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                 }
-                    if(!StaticSequence || BatchNumber==0)sequence = getSequenceFromSequenceData(dict);
-                    if (sequence == null) { return; }
-                    //TODO Change where this is sent. Di we want to send this before each shot during a scan?
-                    if (BatchNumber == 0)
-                    {
-                        //Only intialise and build once
-                        if (StaticSequence)
-                        {
-                            sequence = getSequenceFromSequenceData(dict);
-                            if(!config.Debug) initializeHardware(sequence);
-                            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-                            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
-                        }
-                        MMexec mme = InitialCommand(ScanParam);
-                        string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
-                        paramLogger.log("{\"MMExec\":" + initJson + "},");
-                        if (multiScanLogger.Enabled)
-                        {
-                            string header = "";
-                            foreach (string name in sequenceData.Parameters.Keys)
-                            {
-                                header+=name+",";
-                            }
-                            if (Controller.genOptions.AIEnable)
-                            {
-                                foreach (string name in ExpData.AnalogSegments.Keys)
-                                {
-                                    header+=name+",";
-                                }
-                            }
-                            header=header.TrimEnd(',');
-                            multiScanLogger.log(header);
-                        }
-                        if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
-                        {
-                            MotMasterDataEvent(this, new DataEventArgs(initJson));
-                            ExpData.grpMME = mme.Clone();
-                        }
-                    }
-                }
-            
-            if (sequence != null)
+                if (!StaticSequence || BatchNumber == 0) sequence = getSequenceFromSequenceData(dict);
+                if (sequence == null) { throw new Exception("Sequence build error"); }
+               
+            }
+        }
+
+        /// <summary>
+        /// Prepares the hardware that is not controlled using DAQmx voltage patterns. Typically, these are experiment specific.
+        /// </summary>
+        private void PrepareNonDAQHardware()
+        {
+            if (config.CameraUsed) prepareCameraControl();
+
+            if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
+
+            if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+
+            if (config.UseMuquans && !config.Debug)
             {
+                microSynth.ChannelA.RFOn = true;
+                //microSynth.ChannelA.Amplitude = 6.0;
+                WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
+
+                //microSynth.ReadSettingsFromDevice();
+            }
+        }
+        /// <summary>
+        /// Initialises the objects used to store data from the run
+        /// </summary>
+        private void InitialiseData()
+        {
+            MMexec mme = InitialCommand(ScanParam);
+            string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
+            paramLogger.log("{\"MMExec\":" + initJson + "},");
+            if (multiScanLogger.Enabled)
+            {
+                BuildMultiScanHeader();
+            }
+            if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
+            {
+                MotMasterDataEvent(this, new DataEventArgs(initJson));
+                ExpData.grpMME = mme.Clone();
+            }
+        }
+
+        private static void BuildMultiScanHeader()
+        {
+            string header = "";
+            foreach (string name in sequenceData.Parameters.Keys)
+            {
+                header += name + ",";
+            }
+            if (Controller.genOptions.AIEnable)
+            {
+                foreach (string name in ExpData.AnalogSegments.Keys)
+                {
+                    header += name + ",";
+                }
+            }
+            header = header.TrimEnd(',');
+            multiScanLogger.log(header);
+        }
+
+        [Obsolete("This method encapsulates the old-style data acquisition and will be removed in the future",false)]
+        private void AcquireDataFromHardware()
+        {
+            if (config.CameraUsed)
+            {
+
+                waitUntilCameraAquisitionIsDone();
+
                 try
                 {
-                    if (config.CameraUsed) prepareCameraControl();
-
-                    if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
-
-                    if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
-
-                    if (config.UseMuquans && !config.Debug)
-                    {
-                        microSynth.ChannelA.RFOn = true;
-                        //microSynth.ChannelA.Amplitude = 6.0;
-                        WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
-                   
-                        //microSynth.ReadSettingsFromDevice();
-                    }
-                    if (!StaticSequence)
-                    {
-                        if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-                        else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
-                    }
-                    if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
-
-                    watch.Start();
-                    logWatch.Start();
-                    if (!config.Debug)
-                    {
-                        if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
-                        else if (status == RunningState.running) ContinueLoop();
-                        else return;
-                    }
-                    //if (!config.Debug || config.UseMMScripts)clearDigitalPattern(sequence);
-
-                    watch.Stop();
-                    if (saveEnable)
-                    {
-
-                        if (config.CameraUsed)
-                        {
-
-                            waitUntilCameraAquisitionIsDone();
-
-                            try
-                            {
-                                checkDataArrived();
-                            }
-                            catch (DataNotArrivedFromHardwareControllerException)
-                            {
-                                return;
-                            }
-
-                            Dictionary<String, Object> report = new Dictionary<string, object>();
-                            if (config.ReporterUsed)
-                            {
-                                report = GetExperimentReport();
-                                //TODO Change save method
-                                
-                            }
-                            save(script, scriptPath, imageData, report, BatchNumber);
-                        }
-                        else
-                        {
-                            Dictionary<String, Object> report = new Dictionary<string, object>();
-                            if (config.ReporterUsed)
-                            {
-                                report = GetExperimentReport();
-                               
-                            }
-                            if (config.UseMMScripts)
-                                save(builder, motMasterDataPath,report, ExpData.ExperimentName,BatchNumber);
-                            }
-                        }
-                    if (config.CameraUsed) finishCameraControl();
-                    if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                    if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
-                    if (Controller.genOptions.AIEnable || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
-                    if (StaticSequence && !config.Debug) pauseHardware();
+                    checkDataArrived();
                 }
-                catch (System.Net.Sockets.SocketException e)
+                catch (DataNotArrivedFromHardwareControllerException)
                 {
-                    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+                    ErrorMgr.warningMsg("No Data Arrived from Hardware Controller", -10, true);
                 }
+
+                Dictionary<String, Object> report = new Dictionary<string, object>();
+                if (config.ReporterUsed)
+                {
+                    report = GetExperimentReport();
+                    //TODO Change save method
+
+                }
+                save(script, scriptPath, imageData, report, BatchNumber);
             }
             else
             {
-                ErrorMgr.errorMsg(runThreadException.Message, -5);
+                Dictionary<String, Object> report = new Dictionary<string, object>();
+                if (config.ReporterUsed)
+                {
+                    report = GetExperimentReport();
+
+                }
+                if (config.UseMMScripts)
+                    save(builder, motMasterDataPath, report, ExpData.ExperimentName, BatchNumber);
             }
-            status = RunningState.stopped;
-            //Dereferences the MMScan object
-            ScanParam = null;
         }
 
         #endregion
@@ -773,18 +804,7 @@ namespace MOTMaster2
         
         private void runPattern(MOTMasterSequence sequence)
         {
-            if (!StaticSequence)
-            {
-                try
-                {
-                    initializeHardware(sequence);
-                }
-                catch (Exception e)
-                {
-                    ErrorMgr.errorMsg("Could not initialise hardware:" + e.Message,-2,true);
-                    return;
-                }
-            }
+           
             run(sequence);
             if (!StaticSequence) { if (Controller.genOptions.AIEnable) aip.ReadAnalogDataFromBuffer(); releaseHardware(); status = RunningState.stopped; }
             //else pauseHardware();
@@ -977,8 +997,15 @@ namespace MOTMaster2
         }
         private bool waitUntilCameraIsReadyForAcquisition()
         {
-            while (!camera.IsReadyForAcquisition())
-            { Thread.Sleep(10); }
+            try
+            {
+                while (!camera.IsReadyForAcquisition())
+                { Thread.Sleep(10); }
+            }
+            catch (System.Net.Sockets.SocketException e)
+            {
+                MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+            }
             return true;
         }
         private void prepareCameraControl()
@@ -987,7 +1014,14 @@ namespace MOTMaster2
         }
         private void finishCameraControl()
         {
-            camera.FinishRemoteCameraControl();
+            try
+            {
+                camera.FinishRemoteCameraControl();
+            }
+            catch (System.Net.Sockets.SocketException e)
+            {
+                MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+            }
         }
         private void checkDataArrived()
         {
