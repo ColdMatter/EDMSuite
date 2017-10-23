@@ -70,7 +70,7 @@ namespace MOTMaster2
             get { return _runningStatus; }
             set
             {
-                if (value != _runningStatus)
+                if((value != _runningStatus) && !Utils.isNull(Application.Current))
                  Application.Current.Dispatcher.BeginInvoke(
                   DispatcherPriority.Background,
                   new Action(() =>
@@ -254,7 +254,6 @@ namespace MOTMaster2
 
         #region Hardware control methods
 
-
         private void run(MOTMasterSequence sequence)
         {
             Stopwatch watch = new Stopwatch();
@@ -396,7 +395,9 @@ namespace MOTMaster2
                 bool columns = (BatchNumber == 0);
                 sequenceData.Parameters["ElapsedTime"].Value = logWatch.ElapsedMilliseconds;
                 AppendMultiScan(segData,columns);
+                segData = null;
             }
+            rawData = null; finalData = null; dataJson = null;
         }
 
 
@@ -524,7 +525,7 @@ namespace MOTMaster2
         */
         public bool IsRunning()
         {
-            if (status == RunningState.running && !config.Debug)
+            if (status == RunningState.running) // && !config.Debug)
             {
                 Console.WriteLine("Thread Running");
                 return true;
@@ -590,13 +591,12 @@ namespace MOTMaster2
                 sequence = getSequenceFromScript(script);
             }
             else
-            {
-                
+            {                
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
                 }
-                    if(!StaticSequence || BatchNumber==0)sequence = getSequenceFromSequenceData(dict);
+                    if(!StaticSequence || BatchNumber==0) sequence = getSequenceFromSequenceData(dict);
                     if (sequence == null) { return; }
                     //TODO Change where this is sent. Di we want to send this before each shot during a scan?
                     if (BatchNumber == 0)
@@ -636,7 +636,7 @@ namespace MOTMaster2
                         }
                     }
                 }
-            
+
             if (sequence != null)
             {
                 try
@@ -711,6 +711,7 @@ namespace MOTMaster2
                                 save(builder, motMasterDataPath,report, ExpData.ExperimentName,BatchNumber);
                             }
                         }
+
                     if (config.CameraUsed) finishCameraControl();
                     if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
                     if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;

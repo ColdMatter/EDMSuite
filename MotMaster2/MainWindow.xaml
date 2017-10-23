@@ -36,8 +36,7 @@
                     </MenuItem>
                 </Menu>
             </Menu>
-            <ProgressBar x:Name="progBar" Height="22" Margin="115,0,3,0" Foreground="#FFB1E3D8" Background="#FFFDFFFF"/>
-
+            <ProgressBar x:Name="progBar" Height="22" Margin="119,-3,2,0" Foreground="#FFB1E3D8" Background="#FFFDFFFF"/>
         </Grid>
         <Grid Grid.RowSpan="1" Grid.Row="1" Margin="0,8,-0.143,4">
             <Label Content="Run Name" HorizontalAlignment="Left" Height="26" Margin="10,0,0,0" VerticalAlignment="Center" Width="111" RenderTransformOrigin="0.538,-0.066"/>
@@ -53,7 +52,7 @@
                 <ComboBoxItem Content="Mathematica"/>
             </ComboBox>
             <Label Content="Hub" HorizontalAlignment="Left" Margin="348,0,0,0" VerticalAlignment="Center" FontSize="13" Height="26"/>
-            <Button x:Name="btnRemote" Content="Connect" HorizontalAlignment="Left" Height="25" Margin="510,0,0,0" VerticalAlignment="Center" Width="110" Background="#FFE0EBFE" Click="btnRemote_Click" FontSize="13"/>
+            <Button x:Name="btnRemote" Content="Connect" HorizontalAlignment="Left" Height="25" Margin="510,0,0,0" VerticalAlignment="Center" Width="110" Background="#FFE0EBFE" Click="btnRemote_Click" FontSize="13" Visibility="Hidden"/>
             <Image HorizontalAlignment="Right" Height="28" Margin="0,0,0.286,0" VerticalAlignment="Center" Width="30" Source="3axis.ico"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0,5,-0.143,0.714">
@@ -66,7 +65,7 @@
                         <Label Content="Iterations number:" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="113"/>
                         <Label Content="(-1 for endless)" HorizontalAlignment="Left" Height="24" Margin="10,44,0,0" VerticalAlignment="Top" Width="101"/>
                         <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Height="33" Margin="321,0,0,0" VerticalAlignment="Center" Width="87" FontWeight="Bold" Background="#FF99E699" Click="btnRun_Click" FontSize="13"/>
-                        <ni:NumericTextBoxDouble x:Name="ntbIterNumb" HorizontalAlignment="Left" Height="27" Margin="123,22,0,22.429" VerticalAlignment="Center" Width="88" FontSize="14" Range="-1, Infinity, System.Double" Value="1"/>
+                        <ni:NumericTextBoxDouble x:Name="ntbIterNumb" HorizontalAlignment="Left" Height="27" Margin="123,22,0,22.429" VerticalAlignment="Center" Width="88" FontSize="14" Range="-1, Infinity, System.Double" Value="-1"/>
                         <Label x:Name="lbCurNumb" Content="0" HorizontalAlignment="Left" Height="27" Margin="221,0,0,0" VerticalAlignment="Center" Width="95" FontWeight="Bold" FontSize="14" Foreground="#FF27836E"/>
                     </Grid>
                 </TabItem>
