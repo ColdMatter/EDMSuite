@@ -152,7 +152,7 @@ namespace MOTMaster2
         {
             shotData.Clear();
             shotParams.Clear();
-            ExperimentName = "";
+            ExperimentName = null;
         }
 
         //Generates some fake data that is normally distributed about some mean value

@@ -605,7 +605,7 @@ namespace MOTMaster2
                 if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern();
                 InitialiseData();
             }
-            if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
+           // if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
             PrepareNonDAQHardware();
 
             if (!StaticSequence)
@@ -644,21 +644,21 @@ namespace MOTMaster2
                 }
 
         private bool InitialiseHardwareAndPattern()
-                        {
-                            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-                            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
+        {
+            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
             try
             {
-                 if (!config.Debug)initializeHardware(sequence);
+                if (!config.Debug) initializeHardware(sequence);
 
-                        }
+            }
             catch (Exception e)
-                            {
+            {
                 ErrorMgr.errorMsg("Could not initialise hardware:" + e.Message, -2, true);
                 return false;
             }
             return true;
-                            }
+        }
 
         private void BuildMMSequence(Dictionary<String, Object> dict)
                             {
