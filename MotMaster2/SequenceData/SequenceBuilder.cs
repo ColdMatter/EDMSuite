@@ -7,6 +7,7 @@ using DAQ.Pattern;
 using DataStructures;
 using DAQ;
 using dotMath;
+using System.Collections.ObjectModel;
 
 namespace MOTMaster2.SequenceData
 {
@@ -14,7 +15,7 @@ namespace MOTMaster2.SequenceData
     class SequenceBuilder : MOTMasterScript
     {
         private MOTMasterSequence sequence;
-        private List<SequenceStep> sequenceSteps;
+        private ObservableCollection<SequenceStep> sequenceSteps;
         private AnalogPatternBuilder analogPB;
         private PatternBuilder32 digitalPB;
         private SerialBuilder muPB;
@@ -25,7 +26,7 @@ namespace MOTMaster2.SequenceData
         private int[] digitalSampleTimes;
         private double[] currentTimes;
 
-
+        /*
         public SequenceBuilder(List<SequenceStep> steps, Dictionary<string, object> prms)
         {
             sequence = new MOTMasterSequence();
@@ -33,7 +34,7 @@ namespace MOTMaster2.SequenceData
             Parameters = prms;
 
         }
-
+        */
         public SequenceBuilder(Sequence sequenceData)
         {
             sequence = new MOTMasterSequence();

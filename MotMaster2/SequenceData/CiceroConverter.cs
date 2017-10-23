@@ -9,6 +9,7 @@ using DataStructures;
 using DAQ.HAL;
 using DAQ.Environment;
 using dotMath;
+using System.Collections.ObjectModel;
 
 namespace MOTMaster2.SequenceData
 {
@@ -83,7 +84,7 @@ namespace MOTMaster2.SequenceData
         public override object ConvertFrom(ITypeDescriptorContext context,
            CultureInfo culture, object value)
         {
-            mmSequence.Steps = new List<SequenceStep>();
+            mmSequence.Steps = new ObservableCollection<SequenceStep>();
            
             if (value is DataStructures.SequenceData)
             {

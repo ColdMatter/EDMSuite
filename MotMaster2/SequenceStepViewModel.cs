@@ -84,7 +84,7 @@ namespace MOTMaster2
             }
             else
             {
-                SequenceSteps = new ObservableCollection<SequenceStep>(Controller.sequenceData.Steps);
+                SequenceSteps = Controller.sequenceData.Steps;
             }
 
             this.PropertyChanged += SequenceStep.SequenceStep_PropertyChanged;

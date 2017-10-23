@@ -233,7 +233,7 @@ namespace MOTMaster2.SequenceData
     }
     //Enumerates the state of each digital channel. For now, this is either on/off, but we may want to add the option of including pulses within a single step   
     [Serializable,JsonObject]
-     public class DigitalChannelSelector
+     public class DigitalChannelSelector : INotifyPropertyChanged
     {
 
         public bool Value {get; set;}
@@ -245,6 +245,8 @@ namespace MOTMaster2.SequenceData
         {
             Value = value;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     //This stores a list of arguments for each analog channel in the sequence step. Nominally these are strings which are parsed to either numbers or Parameter names
