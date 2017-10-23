@@ -766,7 +766,7 @@ namespace MOTMaster2
                 case ("btnDown"):
                     break;
                 case ("btnBuild"):
-                    List<SequenceStep> steps = this.sequenceControl.sequenceDataGrid.ItemsSource.Cast<SequenceStep>().ToList();
+                    ObservableCollection<SequenceStep> steps = this.sequenceControl.sequenceDataGrid.ItemsSource as ObservableCollection<SequenceStep>;
                     controller.BuildMOTMasterSequence(steps);
                     break;
             }

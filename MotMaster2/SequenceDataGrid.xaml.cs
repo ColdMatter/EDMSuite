@@ -87,7 +87,7 @@ namespace MOTMaster2
         {
             var dg = sender as DataGrid;
             if (dg.CurrentItem.GetType() == null) { return; }
-            List<SequenceStep> first = new List<SequenceStep>((ObservableCollection<SequenceStep>)dg.ItemsSource);
+            ObservableCollection<SequenceStep> first = (ObservableCollection<SequenceStep>)dg.ItemsSource;
             SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
             if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
             if (Controller.sequenceData != null) Controller.sequenceData.Steps = first;

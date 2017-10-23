@@ -145,7 +145,7 @@ namespace UtilsNS
             return task;
         }
 
-        private async Task FileWriteAsync(string filePath, string messaage, bool append = true)
+        private async Task FileWriteAsync(string filePath, string message, bool append = true)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace UtilsNS
                 {
                     writing = true;
                     ConsoleLine("1k: " + stw.ElapsedMilliseconds.ToString());
-                    await sw.WriteAsync(messaage);
+                    await sw.WriteAsync(message);
                     ConsoleLine("2p: " + stw.ElapsedMilliseconds.ToString());
                     writing = false;
                 }
