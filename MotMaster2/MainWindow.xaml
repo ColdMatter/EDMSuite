@@ -273,8 +273,8 @@
                         <CheckBox x:Name="VelPulseEnabled" Margin="350,125,98.571,81.857" IsChecked="True" Click="btnPulseEnable_Click"/>
                         <Label Content="Int. Time 1" HorizontalAlignment="Left" Margin="140,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Int. Time 2" HorizontalAlignment="Left" Margin="220,152,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
-                        <ni:NumericTextBoxDouble x:Name="IntTime1" HorizontalAlignment="Left" Height="23" Margin="140,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>
-                        <ni:NumericTextBoxDouble x:Name="IntTime2" HorizontalAlignment="Left" Height="23" Margin="220,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged" Value="25.0"/>
+                        <ni:NumericTextBoxDouble x:Name="IntTime1" HorizontalAlignment="Left" Height="23" Margin="140,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
+                        <ni:NumericTextBoxDouble x:Name="IntTime2" HorizontalAlignment="Left" Height="23" Margin="220,178,0,0" VerticalAlignment="Top" Width="65" ValueChanged="nbPower1_ValueChanged"/>
                         <Label Content="Freq.[MHz]" HorizontalAlignment="Left" Margin="100,199,0,0" VerticalAlignment="Top" Height="27" Width="75"/>
                         <Label Content="Chirp[MHz/s]" HorizontalAlignment="Left" Margin="180,199,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
                         <Label Content="Duration[ms]" HorizontalAlignment="Left" Margin="260,198,0,0" VerticalAlignment="Top" Height="27" Width="90"/>

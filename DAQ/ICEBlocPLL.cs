@@ -147,7 +147,7 @@ namespace DAQ.HAL
 
             Dictionary<string, object> rslt = GenericCommand("configure_lo_profile", prms, report);
 
-            if (report) AdjustReport(ref rslt);
+            //if (report) AdjustReport(ref rslt);
             if (rslt.Count == 0) return false;
             if (report) return ((int)rslt["report"] == 0);
             else return ((int)rslt["status"] == 0);

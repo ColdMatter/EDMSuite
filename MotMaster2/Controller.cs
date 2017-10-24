@@ -325,7 +325,7 @@ namespace MOTMaster2
                 else hs.StopPattern();
                 apg.StopPattern();
                 if (Controller.genOptions.AIEnable) { aip.StopPattern(); }
-                if (config.UseMuquans) { muquans.StopOutput(); microSynth.Disconnect(); }
+                if (config.UseMuquans) { muquans.StopOutput(); }//microSynth.Disconnect(); }
             }
             catch (Exception e)
             {
@@ -639,7 +639,7 @@ namespace MOTMaster2
 
             if (config.CameraUsed) finishCameraControl();
             if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
+            //if (config.UseMuquans && !config.Debug) microSynth.ChannelA.RFOn = false;
             if (Controller.genOptions.AIEnable || config.Debug) OnAnalogDataReceived(this, new DataEventArgs(BatchNumber));
             if (StaticSequence && !config.Debug) pauseHardware();
 
@@ -1455,7 +1455,7 @@ namespace MOTMaster2
             try
             {
                 CheckPhaseLock();
-                if (DCSParams.ContainsKey("PLLFreq") && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
+                if ((DCSParams.ContainsKey("PLLFreq") || DCSParams.ContainsKey("ChirpRate")|| DCSParams.ContainsKey("ChirpDuration"))&& (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on)) M2PLL.configure_lo_profile(true, false, "ecd", (double)sequenceData.Parameters["PLLFreq"].Value * 1e6, 0.0, (double)sequenceData.Parameters["ChirpRate"].Value * 1e6, (double)sequenceData.Parameters["ChirpDuration"].Value, true);
                 //Checks the phase lock has not come out-of-loop
                 CheckPhaseLock();
             }
