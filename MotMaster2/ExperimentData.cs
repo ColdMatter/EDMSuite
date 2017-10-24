@@ -45,7 +45,8 @@ namespace MOTMaster2
         //Rise time in seconds to be excluded from data
         public double RiseTime { get; set; }
 
-        private int preTrigSamples = 64;
+        //This depends on the number of channels and sampling rate
+        private int preTrigSamples = 32;
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
         public static double[] TransferFunc { get; set; }
@@ -69,7 +70,7 @@ namespace MOTMaster2
                     imin = entry.Value.Item1 + riseSamples;
                     imax = entry.Value.Item2;
                     double[] data = new double[imax-imin];
-                    for (int i = imin; i < imax; i++) data[i-imin] = rawData[0,i];
+                    for (int i = imin; i < imax; i++) data[i-imin] = rawData[1,i];
                     segData[entry.Key] = data;
                 }
                 else if (entry.Key == InterferometerStepName)
@@ -133,8 +134,7 @@ namespace MOTMaster2
                 {
                     std += rawData[i]*rawData[i];
                 }
-                std /= (rawData.Length-1);
-                std = Math.Sqrt(std-mean*mean);
+                std = Math.Sqrt((std-mean*mean)/(rawData.Length-1));
                 avgDict[name+"_mean"] = mean;
                 avgDict[name+"_std"] = std;
                 }
@@ -151,7 +151,7 @@ namespace MOTMaster2
         {
             shotData.Clear();
             shotParams.Clear();
-            ExperimentName = "";
+            ExperimentName = null;
         }
 
         //Generates some fake data that is normally distributed about some mean value

@@ -182,7 +182,7 @@ namespace DAQ.Analog
         }
 
 
-        public double[,] BuildPattern()
+        public void BuildPattern()
         {
             Pattern = new double[AnalogPatterns.Count, PatternLength];
             ICollection<string> keys = AnalogPatterns.Keys;
@@ -197,9 +197,12 @@ namespace DAQ.Analog
                 i++;
             }
 
-            return Pattern;
         }
 
+        public void Clear()
+        {
+            Pattern = null;
+        }
         public void SwitchOffAtEndOfPattern(string channel)
         {
             AddAnalogValue(channel, PatternLength - 1, 0.0);

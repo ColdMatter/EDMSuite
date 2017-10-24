@@ -147,7 +147,7 @@ namespace UtilsNS
             return task;
         }
 
-        private async Task FileWriteAsync(string filePath, string messaage, bool append = true)
+        private async Task FileWriteAsync(string filePath, string message, bool append = true)
         {
             FileStream stream = null;
             try

@@ -168,23 +168,38 @@ namespace DAQ.HAL
             Send(msg);
             string msgIn = Receive();
             string msgReport = "";
-            if (report) {
+
+            Dictionary<string, object> replyDict = ConvertMessageToDictionary(command, msgIn);
+            if (replyDict.ContainsKey("protocol_error"))
+            {
+                throw new Exception("Failed to send command: "+command);
+            }
+            if (report)
+            {
                 while (msgReport == "")
                 {
                     msgReport = Receive();
                 }
+                Dictionary<string, object> reportDict = ConvertMessageToDictionary(command, msgReport);
+                return reportDict;
             }
+            return replyDict;
 
+        }
+
+        private Dictionary<string, object> ConvertMessageToDictionary(string command, string msgIn)
+        {
             Dictionary<string, object> rslt = JsonConvert.DeserializeObject<Dictionary<string, object>>(msgIn);
             JObject j0 = (JObject)rslt["message"];
             bool ok = j0.GetValue("op").ToObject<string>().Equals(command + "_reply");
             int[] j = j0.GetValue("transmission_id").ToObject<int[]>();
             ok = ok && j[0].Equals(transmission_id);
-            if (!ok)
+            /*if (!ok)
             {
-                rslt.Clear();
+                //rslt.Clear();
                 return rslt;
             }
+            */
             Dictionary<string, object> final = j0.GetValue("parameters").ToObject<Dictionary<string, object>>();
             Dictionary<string, object> finalCopy = new Dictionary<string, object>(final);
             foreach (string key in final.Keys)
@@ -206,7 +221,7 @@ namespace DAQ.HAL
                         JToken v = value.First;
                         finalCopy[key] = v.ToObject<int>();
                     }
-                   
+
                 }
                 if (final[key].GetType().Name == "Int32[]")
                 {

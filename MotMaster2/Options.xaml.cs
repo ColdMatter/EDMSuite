@@ -33,7 +33,7 @@ namespace MOTMaster2
         public enum M2CommOption { on, off}
         public M2CommOption m2Comm;
 
-        public enum AISaveOption { fullData,average,both}
+        public enum AISaveOption { rawData,average,both}
         public AISaveOption aiSaveMode;
 
         public int AISampleRate { get; set; }
@@ -94,7 +94,7 @@ namespace MOTMaster2
                 Controller.genOptions.AISampleRate = Convert.ToInt32(tbSampleRate.Text);
                 Controller.genOptions.PreTrigSamples = Convert.ToInt32(tbPreTrig.Text);
                 Controller.genOptions.RiseTime = Convert.ToDouble(tbRiseTime.Text);
-                if (aiFull.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.fullData;
+                if (aiRaw.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.rawData;
                 if (aiAverage.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.average;
                 if (aiBoth.IsChecked.Value) Controller.genOptions.aiSaveMode = GeneralOptions.AISaveOption.both;
 
@@ -137,8 +137,8 @@ namespace MOTMaster2
 
             switch (Controller.genOptions.aiSaveMode)
             {
-                case GeneralOptions.AISaveOption.fullData:
-                    aiFull.IsChecked = true;
+                case GeneralOptions.AISaveOption.rawData:
+                    aiRaw.IsChecked = true;
                     break;
                 case GeneralOptions.AISaveOption.average:
                     aiAverage.IsChecked = true;
@@ -168,7 +168,7 @@ namespace MOTMaster2
             tbPreTrig.IsReadOnly = !state;
             
 
-            aiFull.IsEnabled = state;
+            aiRaw.IsEnabled = state;
             aiAverage.IsEnabled = state;
             aiBoth.IsEnabled = state;
 

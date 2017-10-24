@@ -8,13 +8,14 @@ using System.Reflection;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace MOTMaster2.SequenceData
 {
     [Serializable,JsonObject]
     public class Sequence
     {
-        public List<SequenceStep> Steps { get; set; }
+        public ObservableCollection<SequenceStep> Steps { get; set; }
         [JsonConverter(typeof(DictionaryConverter))]
         public ObservableDictionary<string,Parameter> Parameters { get; set; }
 
@@ -47,7 +48,7 @@ namespace MOTMaster2.SequenceData
 
         public Sequence()
         {
-            Steps = new List<SequenceStep>();
+            Steps = new ObservableCollection<SequenceStep>();
             Parameters = new ObservableDictionary<string,Parameter>();
         }
 

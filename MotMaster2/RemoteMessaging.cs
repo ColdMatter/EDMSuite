@@ -14,20 +14,20 @@ using System.Text.RegularExpressions;
 
 namespace MOTMaster2
 {
-    public class memLog
+    public class memLog : List<string>
     {
-        public List<string> msgLog;
         public bool Enabled = true;
-        private int bufferLimit = 32;
-        public memLog()
+        private int bufferLimit;
+        public memLog(int depth = 32)
+            : base()
         {
-            msgLog = new List<string>();
+            bufferLimit = depth;
         }
-        public void Add(string txt)
+        public void log(string txt)
         {
             if (!Enabled) return;
-            msgLog.Add(txt);
-            while (msgLog.Count > bufferLimit) msgLog.RemoveAt(0);
+            Add(txt);
+            while (Count > bufferLimit) RemoveAt(0);
         }
     }
     public class RemoteMessaging
@@ -36,7 +36,7 @@ namespace MOTMaster2
         private IntPtr windowHandle;
         public string lastRcvMsg { get; private set; }
         public string lastSndMsg { get; private set; }
-        public memLog log;
+        public memLog Log;
 
         public DispatcherTimer dTimer, sTimer;
         private int _autoCheckPeriod = 10; // sec
@@ -55,7 +55,7 @@ namespace MOTMaster2
             HwndSource hwndSource = HwndSource.FromHwnd(windowHandle);
             hwndSource.AddHook(new HwndSourceHook(WndProc));
 
-            log = new memLog();
+            Log = new memLog(); Log.Enabled = false; // for debug use 
             lastRcvMsg = ""; lastSndMsg = "";
 
             dTimer = new System.Windows.Threading.DispatcherTimer();
@@ -110,7 +110,7 @@ namespace MOTMaster2
                     if (msgID == 666)
                     {
                         lastRcvMsg = myStruct.Message;
-                        log.Add("R: " + lastRcvMsg);
+                        Log.log("R: " + lastRcvMsg);
                         ResetTimer();
                         switch (lastRcvMsg)
                         {
@@ -198,7 +198,7 @@ namespace MOTMaster2
                 }
                 else
                 {
-                    lastSndMsg = msg; log.Add("S: " + lastSndMsg);
+                    lastSndMsg = msg; Log.log("S: " + lastSndMsg);
                     ResetTimer();
                 }
                 return true;
@@ -226,6 +226,7 @@ namespace MOTMaster2
             lastConnection = back;
             return back;
         }
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct MyStruct
         {

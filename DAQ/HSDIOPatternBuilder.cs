@@ -54,7 +54,7 @@ namespace DAQ.Pattern
             if (Layout.EventTimes.Count == 0)
                 throw new PatternBuildException("No events to build patterns for.");
             // Check the length is long enough
-            if (length < Layout.LastEventTime + 1)
+            if (length < Layout.LastEventTime)
                 throw new PatternBuildException("Pattern will not fit in array of requested length.\n"
                     + "Pattern length is " + Layout.LastEventTime + ". Array length is " + length);
             ArrayList times = Layout.EventTimes;

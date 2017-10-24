@@ -7,6 +7,7 @@ using DAQ.Pattern;
 using DataStructures;
 using DAQ;
 using dotMath;
+using System.Collections.ObjectModel;
 
 namespace MOTMaster2.SequenceData
 {
@@ -14,15 +15,18 @@ namespace MOTMaster2.SequenceData
     class SequenceBuilder : MOTMasterScript
     {
         private MOTMasterSequence sequence;
-        private List<SequenceStep> sequenceSteps;
+        private ObservableCollection<SequenceStep> sequenceSteps;
         private AnalogPatternBuilder analogPB;
         private PatternBuilder32 digitalPB;
         private SerialBuilder muPB;
-        private double currentTime;
         private SequenceStep _sequenceStep;
         private bool staticSequence;
+        private int analogClock;
+        private int digitalClock;
+        private int[] digitalSampleTimes;
+        private double[] currentTimes;
 
-
+        /*
         public SequenceBuilder(List<SequenceStep> steps, Dictionary<string, object> prms)
         {
             sequence = new MOTMasterSequence();
@@ -30,7 +34,7 @@ namespace MOTMaster2.SequenceData
             Parameters = prms;
 
         }
-
+        */
         public SequenceBuilder(Sequence sequenceData)
         {
             sequence = new MOTMasterSequence();
@@ -44,36 +48,30 @@ namespace MOTMaster2.SequenceData
 
         public void CreatePatternBuilders()
         {
+            analogClock = Controller.config.AnalogPatternClockFrequency;
+            if (Controller.config.HSDIOCard) digitalClock = Controller.config.DigitalPatternClockFrequency;
+            else digitalClock = (int)Parameters["PGClockFrequency"];
 
+            GetPatternLengthsFromSteps();
             analogPB = new AnalogPatternBuilder((int)Parameters["AnalogLength"]);
             if (Controller.config.HSDIOCard) digitalPB = new HSDIOPatternBuilder();
             else digitalPB = new PatternBuilder32();
             if (Controller.config.UseMuquans) muPB = new SerialBuilder();
         }
-        //Builds a MOTMasterSequence using a list of SequenceSteps
-        public void BuildSequence()
+
+        private void GetPatternLengthsFromSteps()
         {
-            //List of digital channels which are reserved for trigger pulses. These are excluded when adding the edges for digital channels
-            List<string> digitalChannelExcludeList = new List<string>() { "serialPreTrigger" };
-            CreatePatternBuilders();
-
-            foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
-            double timeMultiplier = 1.0;
-            int analogClock = Controller.config.AnalogPatternClockFrequency;
-            int digitalClock;
-            if (Controller.config.HSDIOCard) digitalClock = Controller.config.DigitalPatternClockFrequency;
-            else digitalClock = (int)Parameters["PGClockFrequency"];
-
-
+            int index = 0;
+            double currentTime = 0.0;
             int digitalSample = 0;
-            //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
-            int serialPreTrigger = ConvertToSampleTime(2, digitalClock);
-            int serialWait = ConvertToSampleTime(2, digitalClock);
-            SequenceStep previousStep = null;
+            digitalSampleTimes = new int[sequenceSteps.Where(t=>t.Enabled).Count()];
+            currentTimes = new double[sequenceSteps.Where(t => t.Enabled).Count()];
             foreach (SequenceStep step in sequenceSteps)
             {
-                _sequenceStep = step;
+
                 double duration = 0.0;
+                double timeMultiplier = 1.0;
+               
                 //TODO Is there a better way to reference parameters for the step duration?
                 if (step.Duration is string)
                 {
@@ -86,11 +84,59 @@ namespace MOTMaster2.SequenceData
                 if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
                 else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
                 else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
+
+                //Adds the time of the sequence step to the total running time
+
+                //if (index == 0) { digitalSampleTimes[0] = ConvertToSampleTime(duration * timeMultiplier, digitalClock); }
+                //else
+                //{
+                //    digitalSampleTimes[index] = digitalSampleTimes[index - 1] + ConvertToSampleTime(duration * timeMultiplier, digitalClock);
+                    
+                //}
+                digitalSampleTimes[index] = digitalSample;
+                digitalSample += ConvertToSampleTime(duration * timeMultiplier, digitalClock);
+                currentTimes[index] = currentTime;
+                currentTime += duration * timeMultiplier;
+                index++;
+            }
+            //Sets the Analog and Digital pattern lengths
+            int analogLength = ConvertToSampleTime(currentTime, analogClock);
+            int digitalLength = ConvertToSampleTime(currentTime, digitalClock);
+            Parameters["AnalogLength"] = analogLength;
+            Parameters["PatternLength"] = digitalLength;
+
+        }
+        //Builds a MOTMasterSequence using a list of SequenceSteps
+        public void BuildSequence()
+        {
+            //List of digital channels which are reserved for trigger pulses. These are excluded when adding the edges for digital channels
+            List<string> digitalChannelExcludeList = new List<string>() { "serialPreTrigger" };
+            CreatePatternBuilders();
+
+            foreach (string channel in Environs.Hardware.AnalogOutputChannels.Keys) analogPB.AddChannel(channel);
+
+            int index = 0;
+            //These hardcoded times are used to specify a pre-trigger time for both the trigger to send the serial command and the trigger to start the laser frequency ramp.
+            int serialPreTrigger = ConvertToSampleTime(2, digitalClock);
+            int serialWait = ConvertToSampleTime(2, digitalClock);
+
+            SequenceStep previousStep = null;
+            foreach (SequenceStep step in sequenceSteps)
+            {
+                _sequenceStep = step;
+                if (!step.Enabled) continue;
+                int digitalSample = digitalSampleTimes[index];
+                double currentTime = currentTimes[index];
+                double timeMultiplier = 0.0;
+                if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
+                else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
+                else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
+
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
                     try
                     {
-                        AddAnalogChannelStep(timeMultiplier, analogClock, step, analogChannel);
+                        AddAnalogChannelStep(timeMultiplier, analogClock,currentTime, step, analogChannel);
                     }
                     catch
                     {
@@ -128,21 +174,11 @@ namespace MOTMaster2.SequenceData
                         throw new Exception(string.Format("Error adding digital value. Step: {0} Channel: {1}", step.Name, digitalChannel));
                     }
                 }
-
-                //Adds the time of the sequence step to the total running time
-                currentTime += duration * timeMultiplier;
-                digitalSample += ConvertToSampleTime(duration * timeMultiplier, digitalClock);
-
                 previousStep = step;
+                index++;
 
             }
-            //Sets the Analog and Digital pattern lengths
-            int analogLength = ConvertToSampleTime(currentTime, analogClock);
-            int digitalLength = ConvertToSampleTime(currentTime, digitalClock);
-            Parameters["AnalogLength"] = analogLength;
-            Parameters["PatternLength"] = digitalLength;
-            analogPB.PatternLength = analogLength;
-
+           
         }
 
         private void AddSerialCommand(SerialItem serialCommand)
@@ -207,7 +243,7 @@ namespace MOTMaster2.SequenceData
             digitalPB.AddEdge(digitalChannel, digitalStartTime, step.GetDigitalData(digitalChannel));
         }
 
-        private void AddAnalogChannelStep(double timeMultiplier, int analogClock, SequenceStep step, string analogChannel)
+        private void AddAnalogChannelStep(double timeMultiplier, int analogClock,double currentTime, SequenceStep step, string analogChannel)
         {
             AnalogChannelSelector channelType = step.GetAnalogChannelType(analogChannel);
             //Does not try to add anything if the channel does not do anything during this time
