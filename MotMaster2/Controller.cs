@@ -71,7 +71,7 @@ namespace MOTMaster2
             get { return _runningStatus; }
             set
             {
-                if (value != _runningStatus)
+                if((value != _runningStatus) && !Utils.isNull(Application.Current))
                     Application.Current.Dispatcher.BeginInvoke(
                      DispatcherPriority.Background,
                      new Action(() =>
@@ -254,7 +254,6 @@ namespace MOTMaster2
         #endregion
 
         #region Hardware control methods
-
 
         private void run(MOTMasterSequence sequence)
         {

@@ -64,7 +64,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="60"/>
-                    </Grid.RowDefinitions>
+                            </Grid.RowDefinitions>
                             <Label Content="Enabled" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Margin="0" Width="53"/>
                             <CheckBox x:Name="aiEnable" Grid.Row="0" HorizontalAlignment="Center" Height="15" Margin="55,7,5.286,7.714" VerticalAlignment="Center" Click="aiEnable_Click" Width="22"/>
                             <Label Content="Sample Rate [Hz]"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,2,0,1.714" Width="100" Grid.Row="0" Grid.ColumnSpan="2" Height="26"/>

@@ -14,13 +14,30 @@ using System.Text.RegularExpressions;
 
 namespace MOTMaster2
 {
+    public class memLog : List<string>
+    {
+        public bool Enabled = true;
+        private int bufferLimit;
+        public memLog(int depth = 32)
+            : base()
+        {
+            bufferLimit = depth;
+        }
+        public void log(string txt)
+        {
+            if (!Enabled) return;
+            Add(txt);
+            while (Count > bufferLimit) RemoveAt(0);
+        }
+    }
     public class RemoteMessaging
     {
         public string partner { get; private set; }
         private IntPtr windowHandle;
         public string lastRcvMsg { get; private set; }
         public string lastSndMsg { get; private set; }
-        public List<string> msgLog;
+        public memLog Log;
+
         public DispatcherTimer dTimer, sTimer;
         private int _autoCheckPeriod = 10; // sec
         public int autoCheckPeriod
@@ -38,7 +55,7 @@ namespace MOTMaster2
             HwndSource hwndSource = HwndSource.FromHwnd(windowHandle);
             hwndSource.AddHook(new HwndSourceHook(WndProc));
 
-            msgLog = new List<string>();
+            Log = new memLog(); Log.Enabled = false; // for debug use 
             lastRcvMsg = ""; lastSndMsg = "";
 
             dTimer = new System.Windows.Threading.DispatcherTimer();
@@ -49,7 +66,6 @@ namespace MOTMaster2
             sTimer = new DispatcherTimer(DispatcherPriority.Send);
             sTimer.Tick += new EventHandler(sTimer_Tick);
             sTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-
         }
         private void ResetTimer()
         {
@@ -94,14 +110,13 @@ namespace MOTMaster2
                     if (msgID == 666)
                     {
                         lastRcvMsg = myStruct.Message;
-                        msgLog.Add("R: " + lastRcvMsg);
+                        Log.log("R: " + lastRcvMsg);
                         ResetTimer();
                         switch (lastRcvMsg)
                         {
                             case ("ping"):
                                 handled = sendCommand("pong");
-                                if (lastConnection != handled) OnActiveComm(handled); // it fires only if the state has been changed
-                                lastConnection = handled;
+                                OnActiveComm(handled);
                                 break;
                             case ("pong"):
                                 handled = true;
@@ -183,7 +198,7 @@ namespace MOTMaster2
                 }
                 else
                 {
-                    lastSndMsg = msg; msgLog.Add("S: " + lastSndMsg);
+                    lastSndMsg = msg; Log.log("S: " + lastSndMsg);
                     ResetTimer();
                 }
                 return true;
@@ -207,7 +222,7 @@ namespace MOTMaster2
                 }
             }
             back = back && (lastRcvMsg.Equals("pong"));
-            if (lastConnection != back) OnActiveComm(back); // it fires only if the state has been changed
+            if (lastConnection != back) OnActiveComm(back); // fire only if the state has been changed
             lastConnection = back;
             return back;
         }
