@@ -17,6 +17,7 @@ using System.Diagnostics; //for stopwatch
 namespace MicrocavityScanner.Acquire
 {
     public delegate void DataEventHandler(object sender, DataEventArgs e);
+    public delegate void GUIUpdateEventHandler(object sender, GUIUpdateEventArgs e);
     public delegate void ScanFinishedEventHandler(object sender, EventArgs e);
 
     public class Scanitor
@@ -28,6 +29,7 @@ namespace MicrocavityScanner.Acquire
             get { return config; }
         }
         public event DataEventHandler Data;
+        public event GUIUpdateEventHandler GUIUpdate;
         public event ScanFinishedEventHandler ScanFinished;
         public object ScanitorMonitorLock = new Object();
 
@@ -250,9 +252,9 @@ namespace MicrocavityScanner.Acquire
                     long timerTakeShot = timer.ElapsedMilliseconds;
 
                     // send up the data bundle
-                    DataEventArgs evArgs = new DataEventArgs();
-                    evArgs.point = sp;
-                    OnData(evArgs);
+                    //DataEventArgs evArgs = new DataEventArgs();
+                    //evArgs.point = sp;
+                    //OnData(evArgs);
 
                     long timerProcessShot = timer.ElapsedMilliseconds;
 
@@ -260,14 +262,27 @@ namespace MicrocavityScanner.Acquire
                     if (CheckIfStopping())
                     {
                         //OnScanFinished();
+                        // send up the data bundle
+                        DataEventArgs newevArgs = new DataEventArgs();
+                        newevArgs.point = sp;
+                        OnData(newevArgs);
+
                         directanalogPlugin.AcquisitionFinished();
                         directshotPlugin.AcquisitionFinished();
                         AcquisitionFinishing();
                         return;
                     }
+                    // keep the GUI updated
+                    GUIUpdateEventArgs tempevArgs = new GUIUpdateEventArgs();
+                    tempevArgs.point = sp;
+                    TempUpdate(tempevArgs);
                 }
-                OnScanFinished();
+                // send up the data bundle
+                DataEventArgs evArgs = new DataEventArgs();
+                evArgs.point = sp;
+                OnData(evArgs);
             }
+            OnScanFinished();
             directanalogPlugin.AcquisitionFinished();
             directshotPlugin.AcquisitionFinished();
 
@@ -339,6 +354,11 @@ namespace MicrocavityScanner.Acquire
             tclController.SetLaserSetpoint(channel, setV);
         }
 
+        protected virtual void TempUpdate(GUIUpdateEventArgs e)
+        {
+            if (GUIUpdate != null) GUIUpdate(this, e);
+        }
+
         protected virtual void OnData(DataEventArgs e)
         {
             if (Data != null) Data(this, e);
@@ -348,6 +368,11 @@ namespace MicrocavityScanner.Acquire
         {
             if (ScanFinished != null) ScanFinished(this, new EventArgs());
         }
+    }
+
+    public class GUIUpdateEventArgs : EventArgs
+    {
+        public ScanPoint point;
     }
 
     public class DataEventArgs : EventArgs

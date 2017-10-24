@@ -81,6 +81,7 @@ namespace MicrocavityScanner
             scanitor = new Scanitor();
             scanitor.Data += new DataEventHandler(DataHandler);
             scanitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
+            scanitor.GUIUpdate += new GUIUpdateEventHandler(GUIUpdateHandler);
 
             mainForm = new MainForm(this);
             mainForm.Show();
@@ -130,6 +131,15 @@ namespace MicrocavityScanner
                 // store the datapoint
                 dataStore.AddScanPoint(e.point);
 
+                // tell the viewers to handle the data point.
+                mainForm.UpdateGraphs(e.point);
+            }
+        }
+
+        private void GUIUpdateHandler(object sender, GUIUpdateEventArgs e)
+        {
+            lock (this)
+            {
                 // tell the viewers to handle the data point.
                 mainForm.UpdateGraphs(e.point);
             }
