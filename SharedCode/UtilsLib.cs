@@ -158,7 +158,7 @@ namespace UtilsNS
                 {
                     writing = true;
                     ConsoleLine("1.log: " + stw.ElapsedMilliseconds.ToString());
-                    await sw.WriteAsync(messaage);
+                    await sw.WriteAsync(message);
                     ConsoleLine("2.log: " + stw.ElapsedMilliseconds.ToString());
                     writing = false;
                 }
