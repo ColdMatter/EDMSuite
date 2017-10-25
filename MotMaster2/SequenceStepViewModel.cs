@@ -106,7 +106,8 @@ namespace MOTMaster2
 
         public void AddStep()
         {
-            SequenceSteps.Add(new SequenceStep());
+            int index = SequenceSteps.IndexOf(_selectedStep)+1;
+            SequenceSteps.Insert(index,new SequenceStep());
         }
 
         private RelayCommand deleteSequenceStep;

@@ -132,9 +132,9 @@ namespace MOTMaster2
                 std = 0.0;
                 for (int i = 0; i< rawData.Length; i++)
                 {
-                    std += rawData[i]*rawData[i];
+                    std += (rawData[i]-mean)*(rawData[i]-mean);
                 }
-                std = Math.Sqrt((std-mean*mean)/(rawData.Length-1));
+                std = Math.Sqrt(std/(rawData.Length-1));
                 avgDict[name+"_mean"] = mean;
                 avgDict[name+"_std"] = std;
                 }

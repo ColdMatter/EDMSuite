@@ -84,45 +84,45 @@ namespace MOTMaster2
 
         //public List<string> analogChannels;
         public List<string> digitalChannels;
-        public MOTMasterScript script;
+        public static MOTMasterScript script;
         public static GeneralOptions genOptions;
         public static Sequence sequenceData;
-        public static MOTMasterSequence sequence;
+        public MOTMasterSequence sequence;
         public static ExperimentData ExpData { get; set; }
         public static AutoFileLogger dataLogger;
         public static AutoFileLogger paramLogger;
 
         public static AutoFileLogger multiScanLogger;
-        public bool SendDataRemotely { get; set; }
+        public static bool SendDataRemotely { get; set; }
 
-        public event DataEventHandler MotMasterDataEvent;
+        public static event DataEventHandler MotMasterDataEvent;
         public delegate void DataEventHandler(object sender, DataEventArgs d);
 
-        DAQMxPatternGenerator pg;
-        HSDIOPatternGenerator hs;
-        DAQMxPatternGenerator PCIpg;
-        DAQMxAnalogPatternGenerator apg;
-        MMAIWrapper aip;
+        private static DAQMxPatternGenerator pg;
+        private static HSDIOPatternGenerator hs;
+        private static DAQMxPatternGenerator PCIpg;
+        private static DAQMxAnalogPatternGenerator apg;
+        private static MMAIWrapper aip;
 
         public static bool StaticSequence { get; set; }
         private bool hardwareError = false;
-        CameraControllable camera = null;
-        TranslationStageControllable tstage = null;
-        ExperimentReportable experimentReporter = null;
+        private static CameraControllable camera = null;
+        private static TranslationStageControllable tstage = null;
+        private static ExperimentReportable experimentReporter = null;
 
-        private WindfreakSynth microSynth;
+        private static WindfreakSynth microSynth;
         //public string ExperimentRunTag { get; set; }
-        public MMscan ScanParam { get; set; }
-        public int numInterations;
-        MuquansController muquans = null;
+        public static MMscan ScanParam { get; set; }
+        public static int numInterations;
+        private static MuquansController muquans = null;
         public static ICEBlocDCS M2DCS;
         public static ICEBlocPLL M2PLL;
         public PhaseStrobes phaseStrobes;
         private Dictionary<string, object> DCSParams;
-        private Stopwatch logWatch;
+        private static Stopwatch logWatch;
 
         MMDataIOHelper ioHelper;
-        SequenceBuilder builder;
+        static SequenceBuilder builder;
 
         DataStructures.SequenceData ciceroSequence;
         DataStructures.SettingsData ciceroSettings;
@@ -302,7 +302,7 @@ namespace MOTMaster2
             }
         }
 
-        private void initializeHardware(MOTMasterSequence sequence)
+        private static void initializeHardware(MOTMasterSequence sequence)
         {
             if (!config.HSDIOCard) pg.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
             else hs.Configure(config.DigitalPatternClockFrequency, StaticSequence, true, false);
@@ -366,13 +366,13 @@ namespace MOTMaster2
             GC.Collect();
         }
         //TODO Add this to the experiment-specific AccelSuite
-        private void WriteToMicrowaveSynth(double value)
+        private static void WriteToMicrowaveSynth(double value)
         {
             if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
 
 
-        protected void OnAnalogDataReceived(object sender, EventArgs e)
+        protected static void OnAnalogDataReceived(object sender, EventArgs e)
         {
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
@@ -397,7 +397,7 @@ namespace MOTMaster2
             dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)
             {
-                if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
+                if (MotMasterDataEvent != null) MotMasterDataEvent(sender, new DataEventArgs(dataJson));
             }
             if (multiScanLogger != null)
             {
@@ -513,7 +513,7 @@ namespace MOTMaster2
             //saveEnable = value;
             //controllerWindow.SetSaveCheckBox(value);
         }
-        public int BatchNumber { get; set; }
+        public static int BatchNumber { get; set; }
 
         public void IncrementBatchNumber()
         {
@@ -603,11 +603,11 @@ namespace MOTMaster2
         {
             Stopwatch watch = new Stopwatch();
 
-            BuildMMSequence(dict);
+            sequence = BuildMMSequence(dict);
 
             if (BatchNumber == 0)
             {
-                if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern();
+                if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern(sequence);
                 InitialiseData();
             }
            // if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
@@ -615,14 +615,14 @@ namespace MOTMaster2
 
             if (!StaticSequence)
             {
-                hardwareError = InitialiseHardwareAndPattern();
+                hardwareError = InitialiseHardwareAndPattern(sequence);
             }
 
             if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
             watch.Start();
             logWatch.Start();
-
+            //TODO Try WaitForRunToFinish here and nowhere else
             if (!config.Debug)
             {
                 if (BatchNumber == 0 || !StaticSequence) runPattern(sequence);
@@ -648,7 +648,7 @@ namespace MOTMaster2
             ScanParam = null;
         }
 
-        private bool InitialiseHardwareAndPattern()
+        private static bool InitialiseHardwareAndPattern(MOTMasterSequence sequence)
         {
             if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
             else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
@@ -665,8 +665,9 @@ namespace MOTMaster2
             return true;
         }
 
-        private void BuildMMSequence(Dictionary<String, Object> dict)
+        private static MOTMasterSequence BuildMMSequence(Dictionary<String, Object> dict, string scriptPath = null)
         {
+            MOTMasterSequence sequence = new MOTMasterSequence();
             if (config.UseMMScripts || sequenceData == null)
             {
                 script = prepareScript(scriptPath, dict);
@@ -683,12 +684,13 @@ namespace MOTMaster2
                 if (sequence == null) { throw new Exception("Sequence build error"); }
 
             }
+            return sequence;
         }
 
         /// <summary>
         /// Prepares the hardware that is not controlled using DAQmx voltage patterns. Typically, these are experiment specific.
         /// </summary>
-        private void PrepareNonDAQHardware()
+        private static void PrepareNonDAQHardware()
         {
             if (config.CameraUsed) prepareCameraControl();
 
@@ -708,7 +710,7 @@ namespace MOTMaster2
         /// <summary>
         /// Initialises the objects used to store data from the run
         /// </summary>
-        private void InitialiseData()
+        private static void InitialiseData()
         {
             MMexec mme = InitialCommand(ScanParam);
             string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
@@ -719,7 +721,7 @@ namespace MOTMaster2
             }
             if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
             {
-                MotMasterDataEvent(this, new DataEventArgs(initJson));
+                MotMasterDataEvent(null, new DataEventArgs(initJson));
                 ExpData.grpMME = mme.Clone();
             }
         }
@@ -834,7 +836,7 @@ namespace MOTMaster2
             int[] loopTimes = ((DAQ.Pattern.HSDIOPatternBuilder)sequence.DigitalPattern).LoopTimes;
             hs.BuildScriptForDebug(sequence.DigitalPattern.Pattern, loopTimes);
         }
-        public MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
+        public static MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)
         {
             MOTMasterScript script;
             CompilerResults results = compileFromFile(pathToPattern);
@@ -853,7 +855,7 @@ namespace MOTMaster2
             return null;
         }
 
-        private void buildPattern(MOTMasterSequence sequence, int patternLength)
+        private static void buildPattern(MOTMasterSequence sequence, int patternLength)
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
@@ -874,7 +876,7 @@ namespace MOTMaster2
         /// "MOTMasterSequence", which comprises a PatternBuilder32 and an AnalogPatternBuilder.
         /// </summary>
 
-        private CompilerResults compileFromFile(string scriptPath)
+        private static CompilerResults compileFromFile(string scriptPath)
         {
             CompilerParameters options = new CompilerParameters();
 
@@ -907,7 +909,7 @@ namespace MOTMaster2
             return results;
         }
 
-        private MOTMasterScript loadScriptFromDLL(CompilerResults results)
+        private static MOTMasterScript loadScriptFromDLL(CompilerResults results)
         {
             object loadedInstance = new object();
             try
@@ -930,14 +932,14 @@ namespace MOTMaster2
             return (MOTMasterScript)loadedInstance;
         }
 
-        private MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
+        private static MOTMasterSequence getSequenceFromScript(MOTMasterScript script)
         {
             MOTMasterSequence sequence = script.GetSequence(config.HSDIOCard, config.UseMuquans);
 
             return sequence;
         }
 
-        private MOTMasterSequence getSequenceFromSequenceData(Dictionary<string, object> paramDict)
+        private static MOTMasterSequence getSequenceFromSequenceData(Dictionary<string, object> paramDict)
         {
 
             builder = new SequenceBuilder(sequenceData);
@@ -983,8 +985,8 @@ namespace MOTMaster2
         /// want to fix this.
         /// </summary>
         /// 
-        int nof;
-        public void GrabImage(int numberOfFrames)
+        static int nof;
+        public static void GrabImage(int numberOfFrames)
         {
             nof = numberOfFrames;
             Thread LLEThread = new Thread(new ThreadStart(grabImage));
@@ -992,7 +994,7 @@ namespace MOTMaster2
 
         }
 
-        bool imagesRecieved = false;
+        static bool imagesRecieved = false;
         /*private byte[,] imageData;
         private void grabImage()
         {
@@ -1000,8 +1002,8 @@ namespace MOTMaster2
             imageData = (byte[,])camera.GrabSingleImage(cameraAttributesPath);
             imagesRecieved = true;
         }*/
-        private byte[][,] imageData;
-        private void grabImage()
+        private static byte[][,] imageData;
+        private static void grabImage()
         {
             imagesRecieved = false;
             imageData = camera.GrabMultipleImages(cameraAttributesPath, nof);
@@ -1027,7 +1029,7 @@ namespace MOTMaster2
             }
             return true;
         }
-        private void prepareCameraControl()
+        private static void prepareCameraControl()
         {
             camera.PrepareRemoteCameraControl();
         }
@@ -1066,7 +1068,7 @@ namespace MOTMaster2
         #endregion
 
         #region Translation stage
-        private void armTranslationStageForTimedMotion(MOTMasterScript script)
+        private static void armTranslationStageForTimedMotion(MOTMasterScript script)
         {
             tstage.TSConnect();
             Thread.Sleep(50);
@@ -1303,7 +1305,7 @@ namespace MOTMaster2
         /// <summary>
         /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
         /// </summary>
-        public void CreateAcquisitionTimeSegments()
+        public static void CreateAcquisitionTimeSegments()
         {
             if (!Environs.Hardware.DigitalOutputChannels.ContainsKey("acquisitionTrigger")) throw new WarningException("No channel named acquisitionTrigger found in Hardware");
             Dictionary<string, Tuple<int, int>> analogSegments = new Dictionary<string, Tuple<int, int>>();
@@ -1341,7 +1343,7 @@ namespace MOTMaster2
             ExpData.NSamples = sampleStartTime;
         }
 
-        public MMexec ConvertDataToAxelHub(double[,] aiData)
+        public static MMexec ConvertDataToAxelHub(double[,] aiData)
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
@@ -1353,7 +1355,7 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        public MMexec InitialCommand(MMscan scan)
+        public static MMexec InitialCommand(MMscan scan)
         {
             MMexec axelCommand = new MMexec();
             axelCommand.sender = "MOTMaster";
@@ -1378,7 +1380,7 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        private void AppendMultiScan(Dictionary<string, object> segData, bool writeColumnNames = false)
+        private static void AppendMultiScan(Dictionary<string, object> segData, bool writeColumnNames = false)
         {
             string row = "";
             if (segData != null)
