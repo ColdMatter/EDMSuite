@@ -299,6 +299,7 @@ namespace MOTMaster2
             {
                 throw new NotImplementedException("DAQmx digital cards not currently supported");
             }
+            if (Controller.genOptions.AIEnable)aip.ReadAnalogDataFromBuffer();
         }
 
         private static void initializeHardware(MOTMasterSequence sequence)
@@ -335,7 +336,7 @@ namespace MOTMaster2
         private void pauseHardware()
         {
             apg.PauseLoop();
-            if (Controller.genOptions.AIEnable) aip.PauseLoop();
+            if (Controller.genOptions.AIEnable)aip.PauseLoop();
             if (config.HSDIOCard) hs.PauseLoop();
             else throw new NotImplementedException("DAQmx digital cards not currently supported");
         }
@@ -407,7 +408,7 @@ namespace MOTMaster2
             }
             dataJson = null;
             finalData = null;
-            if (Controller.genOptions.AIEnable && !config.Debug) aip.ClearBuffer();
+           // if (Controller.genOptions.AIEnable && !config.Debug) aip.ClearBuffer();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -607,7 +608,7 @@ namespace MOTMaster2
             if (BatchNumber == 0)
             {
                 if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern(sequence);
-                InitialiseData();
+                InitialiseData(this);
             }
            // if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
             PrepareNonDAQHardware();
@@ -709,7 +710,7 @@ namespace MOTMaster2
         /// <summary>
         /// Initialises the objects used to store data from the run
         /// </summary>
-        private static void InitialiseData()
+        private static void InitialiseData(object sender)
                     {
             MMexec mme = InitialCommand(ScanParam);
             string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
@@ -718,9 +719,9 @@ namespace MOTMaster2
             {
                 BuildMultiScanHeader();
             }
-            if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
+            if (SendDataRemotely)// && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
             {
-                MotMasterDataEvent(null, new DataEventArgs(initJson));
+                MotMasterDataEvent(sender, new DataEventArgs(initJson));
                 ExpData.grpMME = mme.Clone();
             }
                     }
@@ -826,7 +827,8 @@ namespace MOTMaster2
         {
 
             run(sequence);
-            if (!StaticSequence) { if (Controller.genOptions.AIEnable) aip.ReadAnalogDataFromBuffer(); releaseHardware(); status = RunningState.stopped; }
+            if (Controller.genOptions.AIEnable) aip.ReadAnalogDataFromBuffer();
+            if (!StaticSequence) {  releaseHardware(); status = RunningState.stopped; }
             //else pauseHardware();
         }
 

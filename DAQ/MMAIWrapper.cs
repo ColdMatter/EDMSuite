@@ -85,8 +85,10 @@ namespace DAQ.Analog
 
         public void ReadAnalogDataFromBuffer()
         {
-            if (AIDataReader == null) AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
+            AIDataReader = new AnalogMultiChannelReader(AITask.Stream);
             AIConfig.AIData = AIDataReader.ReadMultiSample(samples);
+            AIDataReader = null;
+
         }
 
         public double[,] GetAnalogData()
@@ -127,7 +129,7 @@ namespace DAQ.Analog
         public void PauseLoop()
         {
             AITask.WaitUntilDone();
-            ReadAnalogDataFromBuffer();
+            //ReadAnalogDataFromBuffer();
             AITask.Stop();
         }
 
