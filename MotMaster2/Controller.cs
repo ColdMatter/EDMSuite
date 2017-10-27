@@ -602,9 +602,16 @@ namespace MOTMaster2
         public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
-
-            sequence = BuildMMSequence(dict);
-
+            try
+            {
+                sequence = BuildMMSequence(dict);
+            }
+            catch
+            {
+                //Exception has been thrown. Will be passed when CheckForRunErrors is called.
+                status = RunningState.stopped;
+                return;
+            }
             if (BatchNumber == 0)
             {
                 if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern(sequence);
@@ -681,7 +688,7 @@ namespace MOTMaster2
                     CreateAcquisitionTimeSegments();
                         }
                 if (!StaticSequence || BatchNumber == 0) sequence = getSequenceFromSequenceData(dict);
-                if (sequence == null) { throw new Exception("Sequence build error"); }
+                if (sequence == null) { throw runThreadException; }
 
                     }
             return sequence;
@@ -949,7 +956,7 @@ namespace MOTMaster2
             catch (Exception e)
             {
                 runThreadException = new Exception("Error building sequence: \n" + e.Message);
-             return null;
+                return null;
             }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
             return sequence;
