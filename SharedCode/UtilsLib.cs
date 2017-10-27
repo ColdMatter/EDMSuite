@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-
+using System.Windows.Media;
 
 namespace UtilsNS
 {
@@ -36,6 +36,10 @@ namespace UtilsNS
         public static void errorMessage(string errorMsg)
         {
             Console.WriteLine("Error: " + errorMsg);
+        }
+        public static SolidColorBrush ToSolidColorBrush(this string hex_code)
+        {
+            return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
         }
 
         public static double formatDouble(double d, string format)
@@ -147,7 +151,7 @@ namespace UtilsNS
             return task;
         }
 
-        private async Task FileWriteAsync(string filePath, string message, bool append = true)
+        private async Task FileWriteAsync(string filePath, string messaage, bool append = true)
         {
             FileStream stream = null;
             try

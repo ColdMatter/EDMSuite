@@ -36,6 +36,11 @@ namespace MOTMaster2
         public enum AISaveOption { rawData,average,both}
         public AISaveOption aiSaveMode;
 
+        public bool AxelHubLogger { get; set; }
+        public bool MatematicaLogger { get; set; }
+        public bool BriefData { get; set; }
+        public bool ParamIncl { get; set; }
+
         public int AISampleRate { get; set; }
         public int PreTrigSamples { get; set; }
         public double RiseTime { get; set; }
@@ -47,7 +52,6 @@ namespace MOTMaster2
             string fileJson = JsonConvert.SerializeObject(this);
             File.WriteAllText(Utils.configPath + "genOptions.cfg", fileJson);
         }
-
     }
 
     /// <summary>
@@ -86,6 +90,11 @@ namespace MOTMaster2
             if (rbSaveSeqYes.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.save;
             if (rbSaveSeqAsk.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.ask;
             if (rbSaveSeqNo.IsChecked.Value) Controller.genOptions.saveSequence = GeneralOptions.SaveOption.nosave;
+
+            Controller.genOptions.AxelHubLogger = chkAxelHubLogger.IsChecked.Value;
+            Controller.genOptions.MatematicaLogger = chkMatematicaLogger.IsChecked.Value;
+            Controller.genOptions.BriefData = chkBriefData.IsChecked.Value;
+            Controller.genOptions.ParamIncl = chkParamIncl.IsChecked.Value;
 
             if (m2Off.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.off;
             if (m2On.IsChecked.Value) Controller.genOptions.m2Comm = GeneralOptions.M2CommOption.on;
@@ -130,6 +139,11 @@ namespace MOTMaster2
             rbSaveSeqAsk.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.ask);
             rbSaveSeqNo.IsChecked = Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.nosave);
 
+            chkAxelHubLogger.IsChecked = Controller.genOptions.AxelHubLogger;
+            chkMatematicaLogger.IsChecked = Controller.genOptions.MatematicaLogger;
+            chkBriefData.IsChecked = Controller.genOptions.BriefData;
+            chkParamIncl.IsChecked = Controller.genOptions.ParamIncl;
+
             m2On.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.on);
             m2Off.IsChecked = Controller.genOptions.m2Comm.Equals(GeneralOptions.M2CommOption.off);
 
@@ -165,13 +179,11 @@ namespace MOTMaster2
             bool state = aiEnable.IsChecked.Value;
             tbSampleRate.IsReadOnly = !state;
             tbRiseTime.IsReadOnly = !state;
-            tbPreTrig.IsReadOnly = !state;
-            
+            tbPreTrig.IsReadOnly = !state;            
 
             aiRaw.IsEnabled = state;
             aiAverage.IsEnabled = state;
             aiBoth.IsEnabled = state;
-
         }
     }
 

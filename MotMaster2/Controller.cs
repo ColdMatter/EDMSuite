@@ -94,6 +94,17 @@ namespace MOTMaster2
 
         public static AutoFileLogger multiScanLogger;
         public bool SendDataRemotely { get; set; }
+        private bool _AutoLogging;
+        public bool AutoLogging
+        {
+            get { return _AutoLogging; }
+            set
+            {
+                if (value) StartLogging();
+                else StartLogging();
+                _AutoLogging = value;
+            }
+        }
 
         public event DataEventHandler MotMasterDataEvent;
         public delegate void DataEventHandler(object sender, DataEventArgs d);
@@ -1278,9 +1289,9 @@ namespace MOTMaster2
         {
             string now = DateTime.Now.ToString("yyMMdd_hhmmss");
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
-            dataLogger = new AutoFileLogger(fileTag + ".dta");
-            paramLogger = new AutoFileLogger(fileTag + ".prm");
-            multiScanLogger = new AutoFileLogger(fileTag + ".scn");
+            if(Utils.isNull(dataLogger)) dataLogger = new AutoFileLogger(fileTag + ".dta");
+            if(Utils.isNull(paramLogger)) paramLogger = new AutoFileLogger(fileTag + ".prm");
+            if(Utils.isNull(multiScanLogger)) multiScanLogger = new AutoFileLogger(fileTag + ".scn");
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
@@ -1297,7 +1308,6 @@ namespace MOTMaster2
             dataLogger.Enabled = false;
             paramLogger.Enabled = false;
             multiScanLogger.Enabled = false;
-            if (multiScanLogger.Enabled) multiScanLogger.Enabled = false;
         }
         /// <summary>
         /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
