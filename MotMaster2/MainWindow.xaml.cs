@@ -26,6 +26,7 @@ namespace MOTMaster2
     public partial class MainWindow : Window
     {
         public static Controller controller;
+        
         private RemoteMessenger messenger;
         DispatcherTimer dispatcherTimer;
 
@@ -99,6 +100,22 @@ namespace MOTMaster2
             }
         }
 
+        public enum GroupRun { none, repeat, scan, multiScan };
+        private GroupRun _groupRun;
+        public GroupRun groupRun
+        {
+            get
+            {
+                return _groupRun;
+            }
+            set
+            {
+                _groupRun = value;
+                cbHub.IsEnabled = (value == GroupRun.none);
+                tbExperimentRun.IsEnabled = (value == GroupRun.none);
+            }
+        }
+
         //TODO Rename to reflect loop runs
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
@@ -164,6 +181,7 @@ namespace MOTMaster2
         bool wait4adjust = false;
         private void realRun(int Iters, string Hub = "none", int cmdId = -1)
         {
+            controller.AutoLogging = Check4Logging();
             if ((Iters == 0) || (Iters < -1))
             {
                 ErrorMgr.errorMsg("Invalid <Iteration Number> value.", 2, true);
@@ -182,23 +200,23 @@ namespace MOTMaster2
             Controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             Controller.StaticSequence = true;
-            ScanFlag = true;
+            groupRun = GroupRun.repeat;
             if ((Controller.ExpData.ExperimentName.Equals("---") || String.IsNullOrEmpty(Controller.ExpData.ExperimentName)))
             {
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            controller.StartLogging();
+            
             for (int i = 0; i < numInterations; i++)
             {
-                if (!ScanFlag) break; //False if runThread was stopped elsewhere
+                if (groupRun != GroupRun.repeat) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
-                Controller.BatchNumber = i;
-                ScanFlag = SingleShot();               
+                controller.BatchNumber = i;
+                if (!SingleShot()) groupRun = GroupRun.none;               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
                 lbCurNumb.Content = i.ToString();
-                if (!ScanFlag) break;
+                if (groupRun != GroupRun.repeat) break; 
                 DoEvents();
                 wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
                 while (wait4adjust)
@@ -207,14 +225,11 @@ namespace MOTMaster2
                     DoEvents();
                 }
                 controller.WaitForRunToFinish();
-
             }
-            controller.StopLogging();
+            controller.AutoLogging = false;
             if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
         }
 
-
-        private bool ScanFlag = false;
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
             if (btnRun.Content.Equals("Run"))
@@ -222,7 +237,6 @@ namespace MOTMaster2
                 Controller.ExpData.SaveRawData = true;
                 btnRun.Content = "Stop";
                 btnRun.Background = Brushes.LightYellow;
-                ScanFlag = true;
                 Controller.ExpData.grpMME.Clear();
                 Controller.SaveTempSequence();
                 int Iters = (int)ntbIterNumb.Value;
@@ -245,7 +259,7 @@ namespace MOTMaster2
                 tbExperimentRun.Text = "---";
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
-                ScanFlag = false;
+                groupRun = GroupRun.none;
                 controller.StopRunning();
                 lbCurNumb.Content = "";
                 // End repeat
@@ -256,7 +270,7 @@ namespace MOTMaster2
                 tbExperimentRun.Text = "---";
                 btnRun.Content = "Run";
                 btnRun.Background = Brushes.LightGreen;
-                ScanFlag = false;
+                groupRun = GroupRun.none;
                 //Send Remote Message to AxelHub
                 controller.StopRunning();
                 lbCurNumb.Content = "";
@@ -266,6 +280,18 @@ namespace MOTMaster2
                     remoteMsg.sendCommand(mme.Abort("MOTMaster"));
                 }
             }
+        }
+
+        private bool Check4Logging()
+        {
+            switch (cbHub.SelectedIndex)
+            {
+                case 0: return false;               
+                case 1: return true;                
+                case 2: return Controller.genOptions.AxelHubLogger;
+                case 3: return Controller.genOptions.MatematicaLogger;
+                default: return false;
+            }            
         }
 
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
@@ -284,7 +310,7 @@ namespace MOTMaster2
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            controller.StartLogging();
+            controller.AutoLogging = Check4Logging();
             scanDict[parameter] = param.Value;
             object defaultValue = param.Value;
             MMscan scanParam = new MMscan();
@@ -341,7 +367,8 @@ namespace MOTMaster2
                 }
             }
             int c = 0;
-            Controller.ScanParam = scanParam;
+            controller.ScanParam = scanParam;
+            groupRun = GroupRun.scan;
             foreach (object scanItem in scanArray)
             {
                 Controller.BatchNumber = c;
@@ -351,7 +378,7 @@ namespace MOTMaster2
                 SetInterferometerParams(scanDict);
                 try
                 {
-                    ScanFlag = SingleShot(scanDict);
+                    if(!SingleShot(scanDict)) groupRun = GroupRun.none;
                 }
                 catch (Exception e)
                 {
@@ -360,14 +387,14 @@ namespace MOTMaster2
                 }
                 lbCurValue.Content = scanItem.ToString();
                 DoEvents();
-                if (!ScanFlag) break;
+                if (groupRun != GroupRun.scan) break;
                 c++;
       
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
             lbCurValue.Content = defaultValue.ToString();
-            controller.StopLogging();
+            controller.AutoLogging = false;
         }
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
@@ -378,7 +405,6 @@ namespace MOTMaster2
             {
                 btnScan.Content = "Cancel";
                 btnScan.Background = Brushes.LightYellow;
-                ScanFlag = true;
                 Controller.SaveTempSequence();
                 Controller.ExpData.grpMME.Clear();
                 try
@@ -394,7 +420,7 @@ namespace MOTMaster2
                 controller.StopRunning();
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
-                ScanFlag = false;
+                groupRun = GroupRun.none;
                 return;
             }
 
@@ -403,7 +429,7 @@ namespace MOTMaster2
                 tbExperimentRun.Text = "---";
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
-                ScanFlag = false;
+                groupRun = GroupRun.none;
                 controller.StopRunning();
             }
 
@@ -412,7 +438,7 @@ namespace MOTMaster2
                 tbExperimentRun.Text = "---";
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
-                ScanFlag = false;
+                groupRun = GroupRun.none;
                 controller.StopRunning();
                 //Send Remote Message to AxelHub
                 if (!Utils.isNull(sender))
@@ -435,13 +461,24 @@ namespace MOTMaster2
             tcMain.SelectedIndex = 0;
         }
 
-        private bool paramCheck = false;
+        private bool paramCheck = false; private int _TabItemIndex;
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource.GetType() == typeof(TabControl))
             {
                 if (paramCheck) return; // avoid recursion
                 paramCheck = true;  int gl = 110;
+                if (groupRun == GroupRun.none)
+                {
+                    _TabItemIndex = tcMain.SelectedIndex;
+                }
+                else if (tcMain.SelectedIndex != _TabItemIndex)
+                {
+                    e.Handled = true;
+                    tcMain.SelectedIndex = _TabItemIndex;
+                    paramCheck = false;
+                    return;
+                }
                 if (tcMain.SelectedIndex == 1) // scan
                 {
                     int selIdx = cbParamsScan.SelectedIndex;
@@ -470,6 +507,7 @@ namespace MOTMaster2
                     cbParamsManual.SelectedIndex = selIdx;
                 }
                 gridMain.RowDefinitions[2].Height = new GridLength(gl);
+
                 paramCheck = false;
             }
         }
@@ -906,8 +944,16 @@ namespace MOTMaster2
                 Controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 3);
             }
             if (btnRemote == null) return;
-            if (cbHub.SelectedIndex == 2) btnRemote.Content = "Check comm.";
-            if (cbHub.SelectedIndex == 3) btnRemote.Content = "Connect";
+            if (cbHub.SelectedIndex == 2)
+            {
+                btnRemote.Content = "Check comm."; btnRemote.Background = Brushes.LightBlue;
+            }
+
+            if (cbHub.SelectedIndex == 3)
+            {
+                btnRemote.Content = "Connect"; btnRemote.Background = Brushes.LightBlue;
+            } 
+                               
             if (cbHub.SelectedIndex > 1)
             {
                 btnRemote.Visibility = System.Windows.Visibility.Visible;
@@ -954,8 +1000,14 @@ namespace MOTMaster2
         }
         private void OnActiveComm(bool active)
         {
-            if (active) ErrorMgr.simpleMsg("Connected to Axel Hub");
-            else ErrorMgr.errorMsg("Commun. problem with Axel Hub", 666);
+            if (active) 
+            {
+                btnRemote.Content = "Connected"; btnRemote.Background = Utils.ToSolidColorBrush("#FFBEFDD1");
+            }
+            else
+            {
+                btnRemote.Content = "Disconnected"; btnRemote.Background = Brushes.LightYellow;
+            }                
         }
         private void frmMain_SourceInitialized(object sender, EventArgs e)
         {
@@ -1000,7 +1052,6 @@ namespace MOTMaster2
                 //TODO fix handling of warnings if ICE-BLocs are not connected
                 controller.SetMSquaredParameters();
             }
-
         }
 
         private void SetInterferometerParams(ObservableDictionary<string, Parameter> observableDictionary)
@@ -1080,11 +1131,11 @@ namespace MOTMaster2
                     break;
                 case "Cancel":
                     //TODO fix this so that it will interrupt a MultiScan
-                    ScanFlag = false;
+                    groupRun = GroupRun.none;
                     controller.StopRunning();
-                    controller.StopLogging();
+                    controller.AutoLogging = false;
                     scanBox.Content = "Multi Scan";
-                    scanBox.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFF9E76B");
+                    scanBox.Background = Utils.ToSolidColorBrush("#FFF9E76B");
                     break;
                 default:
                     break;
@@ -1100,8 +1151,8 @@ namespace MOTMaster2
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            Controller.BatchNumber = 0;
-            controller.StartLogging();
+            controller.BatchNumber = 0;
+            controller.AutoLogging = Check4Logging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)
             {
@@ -1112,6 +1163,7 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
             }
+            groupRun = GroupRun.multiScan;
             Controller.SetMultiScanParameters(mms);
             for (int i = 0; i < mms.Count - 1; i++)
             {
@@ -1131,12 +1183,11 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
-                    ScanFlag = SingleShot();
-                    if (!ScanFlag) break;
+                    if (!SingleShot()) groupRun = GroupRun.none; 
                     controller.WaitForRunToFinish();
                     controller.IncrementBatchNumber();
                 }
-
+                if (groupRun != GroupRun.multiScan) break;
             }
         }
         
@@ -1187,7 +1238,6 @@ namespace MOTMaster2
         {            
             //Log("running is " + running.ToString());
         }
-
 
         private void lstParams_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {

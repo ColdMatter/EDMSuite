@@ -3,6 +3,13 @@ using System.Collections;
 using System.Globalization;
 using System.IO;
 
+namespace MOTMaster2
+{
+    public static class Constants
+    {
+        public readonly static string LogDataFormat = "G8";
+    }
+} 
 
 namespace DAQ.Environment
 {

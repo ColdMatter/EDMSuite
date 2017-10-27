@@ -5,7 +5,7 @@
         xmlns:json ="clr-namespace:Newtonsoft.Json;assembly=Newtonsoft.Json"
         xmlns:jlinq ="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
         xmlns:w="clr-namespace:MOTMaster2"
-        Title="Options" Height="650.714" Width="542.857" ResizeMode="CanResizeWithGrip" Loaded="frmOptions_Loaded">
+        Title="Options" Height="650.714" Width="677.857" ResizeMode="CanResizeWithGrip" Loaded="frmOptions_Loaded">
     <Window.Resources>
         <w:MethodToValueConverter x:Key="MethodToValueConverter"/>
         <HierarchicalDataTemplate DataType="{x:Type jlinq:JArray}" ItemsSource="{Binding Converter={StaticResource MethodToValueConverter}, ConverterParameter='Children'}">
@@ -48,6 +48,19 @@
                             <RadioButton x:Name="rbSaveSeqNo" Content="No save" HorizontalAlignment="Left" Margin="130,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.184,-0.833" Height="15" Width="61" />
                         </Grid>
                     </GroupBox>
+                    <GroupBox Header="Save data when is connected to:" Grid.Row="0" HorizontalAlignment="Left" Margin="230,10,0,0" VerticalAlignment="Top" Height="50" Width="195">
+                        <Grid>
+                            <CheckBox x:Name="chkAxelHubLogger" Content="Axel-hub" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="chkMatematicaLogger" Content="Matematica" HorizontalAlignment="Left" Margin="90,0,0,0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Save data as:" Grid.Row="0" HorizontalAlignment="Left" Margin="435,10,0,0" VerticalAlignment="Top" Height="50" Width="187">
+                        <Grid>
+                            <CheckBox x:Name="chkBriefData" Content="Brief data" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="chkParamIncl" Content="Param.Incl." HorizontalAlignment="Left" Margin="90,0,0,0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </GroupBox>
+
                     <GroupBox Header="MSquared Communication" Grid.Row="1" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Height="46" Width="167" Grid.RowSpan="2">
                         <Grid Margin="0,0,0,0">
                             <RadioButton x:Name="m2On" Content="Yes"  Margin="25,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
