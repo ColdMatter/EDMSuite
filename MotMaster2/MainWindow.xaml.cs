@@ -48,7 +48,7 @@ namespace MOTMaster2
 
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
-            controller.MotMasterDataEvent += OnDataCreated;
+            Controller.MotMasterDataEvent += OnDataCreated;
 
             //   ((INotifyPropertyChanged)Controller.sequenceData.Parameters).PropertyChanged += this.InterferometerParams_Changed;
         }
@@ -84,7 +84,7 @@ namespace MOTMaster2
                     ListBoxItem lbi = new ListBoxItem();
                     lbi.Content = mms.AsString;
                     lstParams.Items.Add(lbi);
-                }
+        }
             }
 
         }
@@ -197,7 +197,7 @@ namespace MOTMaster2
                 progBar.Maximum = 100;
             }
             Controller.ExpData.ClearData();
-            controller.numInterations = numInterations;
+            Controller.numInterations = numInterations;
             Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             Controller.StaticSequence = true;
             groupRun = GroupRun.repeat;
@@ -296,7 +296,7 @@ namespace MOTMaster2
 
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
         {
-            string parameter = prm; 
+            string parameter = prm;
             if (!Controller.sequenceData.Parameters.ContainsKey(prm)) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
             Parameter param = Controller.sequenceData.Parameters[prm];
             //Sets the sequence to static if we know the scan parameter does not modify the sequence
@@ -371,7 +371,7 @@ namespace MOTMaster2
             groupRun = GroupRun.scan;
             foreach (object scanItem in scanArray)
             {
-                controller.BatchNumber = c;
+                Controller.BatchNumber = c;
                 param.Value = scanItem;
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
@@ -454,7 +454,7 @@ namespace MOTMaster2
             //Load the new script
             if ((!String.IsNullOrEmpty(cbPatternScript.Text)) && (!cbPatternScript.Text.Equals("- - -")))
             {
-                controller.script = controller.prepareScript((string)cbPatternScript.SelectedItem, null);
+                Controller.script = Controller.prepareScript((string)cbPatternScript.SelectedItem, null);
                 controller.SetScriptPath((string)cbPatternScript.SelectedItem);
             }
             //Change parameters
@@ -514,7 +514,7 @@ namespace MOTMaster2
 
         private void LoadParameters_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.script != null)
+            if (Controller.script != null)
             { // Configure open file dialog box
                 Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
                 dlg.FileName = ""; // Default file name
@@ -532,9 +532,9 @@ namespace MOTMaster2
                     Dictionary<String, Object> LoadedParameters = new Dictionary<string, object>();
                     string json = File.ReadAllText(filename);
                     LoadedParameters = (Dictionary<String, Object>)JsonConvert.DeserializeObject(json, typeof(Dictionary<String, Object>));
-                    if (controller.script != null)
+                    if (Controller.script != null)
                         foreach (string key in LoadedParameters.Keys)
-                            controller.script.Parameters[key] = LoadedParameters[key];
+                            Controller.script.Parameters[key] = LoadedParameters[key];
                     else
                         ErrorMgr.warningMsg("You have tried to load parameters without loading a script");
                 }
@@ -544,7 +544,7 @@ namespace MOTMaster2
 
         private void SaveParameters_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.script != null)
+            if (Controller.script != null)
             { // Configure open file dialog box
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = ""; // Default file name
@@ -557,7 +557,7 @@ namespace MOTMaster2
                 // Process open file dialog box results
                 if (result != true) return;
                 string filename = dlg.FileName;
-                string json = JsonConvert.SerializeObject(controller.script.Parameters, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(Controller.script.Parameters, Formatting.Indented);
                 File.WriteAllText(filename, json);
             }
             else
@@ -677,7 +677,7 @@ namespace MOTMaster2
 
         private void cbParamsManual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.OriginalSource.GetType() == typeof(ComboBox) && controller.script != null)
+            if (e.OriginalSource.GetType() == typeof(ComboBox) && Controller.script != null)
                 tbValue.Text = Controller.sequenceData.Parameters[cbParamsManual.SelectedItem.ToString()].Value.ToString();
         }
 
@@ -941,7 +941,7 @@ namespace MOTMaster2
             if (remoteMsg != null)
             {
                 remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
-                controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 3);
+                Controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 3);
             }
             if (btnRemote == null) return;
             if (cbHub.SelectedIndex == 2)
@@ -1184,7 +1184,7 @@ namespace MOTMaster2
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
                     if (!SingleShot()) groupRun = GroupRun.none; 
-                    controller.WaitForRunToFinish();                    
+                    controller.WaitForRunToFinish();
                     controller.IncrementBatchNumber();
                 }
                 if (groupRun != GroupRun.multiScan) break;
