@@ -72,15 +72,28 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 def ScanSingleParameter2(script_name, parameter_name, values):
 	ScanMultipleParameters(script_name, [parameter_name], [values])
 	
-def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range):
+def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, channel='A'):
 	lowest_freq = centre_freq - freq_range/2
 	spacing = freq_range/(num_steps - 1)
 	values = [lowest_freq + spacing * x for x in range(0, num_steps)]
 	shuffle(values)
+	channel_bool = channel == 'B'
 	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
-		hc.tabs["Windfreak Synthesizer"].SetFrequency(value, False)
+		hc.tabs["Windfreak Synthesizer"].SetFrequency(value, channel_bool)
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} seconds'.format(value, int(round(end-start)))
+	print 'Finished'
+	
+def ScanMicrowaveAmplitude(script_name, values, channel='A'):
+	channel_bool = channel == 'B'
+	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		start = time.time()
+		hc.tabs["Windfreak Synthesizer"].SetAmplitude(value, channel_bool)
+		time.sleep(5)
 		mm.Go()
 		end = time.time()
 		print '{0} : {1} seconds'.format(value, int(round(end-start)))
@@ -98,6 +111,14 @@ def ScanExpansionTimeHot(values=[50, 260, 180, 140, 300, 220, 100]):
 	script_name = 'MOTRampIntensity'
 	parameter_name = 'ExpansionTime'
 	return ScanSingleParameter(script_name, parameter_name, values)
+	
+
+	
+def ScanMolassesHoldTime(values=[500,1000]):
+	script_name = 'MOTBlueMolassesLifetime'
+	parameter_name = 'MolassesHoldTime'
+	return ScanSingleParameter(script_name, parameter_name, values)
+	
 	
 def ScanOscillationTime(values=[0, 1200, 500, 900, 200, 1000, 300, 700, 400, 100, 600, 1100, 800, 1300]):
 	script_name = 'MOTOscillation'

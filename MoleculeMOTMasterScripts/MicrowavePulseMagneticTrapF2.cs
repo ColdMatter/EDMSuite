@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 100000;
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -27,14 +27,14 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 100;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 7;
-        Parameters["MicrowavePulseDuration2"] = 7;
+        Parameters["MicrowavePulseDuration"] = 4;
+        Parameters["MicrowavePulseDuration2"] = 9;
 
-        Parameters["MicrowaveDelay"] = 400;
+        Parameters["MicrowaveDelay"] = 100;
         Parameters["MOTWaitBeforeImage"] = 0;
        // Parameters["zShimZeemanSplitValue"] = -6.82;
-        Parameters["MagTrapDuration"] = 4000;
-        Parameters["MagTrapCoilsCurrentValue"] = 1.5;
+        Parameters["MagTrapDuration"] = 2000;
+        Parameters["MagTrapCoilsCurrentValue"] = 0.65;
 
         // Poke
         Parameters["PokeDetuningValue"] = -1.35;
@@ -75,7 +75,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampDuration"] = 25;
         Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.21
 
-        Parameters["CoilsSwitchOffTime"] = 40000;
+        Parameters["CoilsSwitchOffTime"] = 95000;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;// 3.0;
@@ -98,7 +98,7 @@ public class Patterns : MOTMasterScript
 
         // v0 pumping EOM
         Parameters["v0EOMMOTValue"] = 5.45;
-        Parameters["v0EOMPumpValue"] = 3.5; 
+        Parameters["v0EOMPumpValue"] = 4.0; 
 
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
@@ -125,12 +125,15 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.AddEdge("v00Shutter", 0, true);
+        //p.AddEdge("v00Shutter", 0, true);
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveIO");//pump out
+        p.Pulse(patternStartBeforeQ, microwavePulseTimeSecond, (int)Parameters["MicrowavePulseDuration2"], "microwaveSweepTrigger"); //pump back
+
+        p.Pulse(patternStartBeforeQ, magTrapStartTime - 200, (int)Parameters["MagTrapDuration"], "bXShutter");// takes 12ms to shut, want 10 ms poke, don't care when it reopens
+        p.Pulse(patternStartBeforeQ, magTrapStartTime - 1500, (int)Parameters["MagTrapDuration"] - 500, "v00Shutter");// takes 15ms to shut, 20ms to reopen, want open at end of trap but closed at start
 
 
-
-        p.Pulse(patternStartBeforeQ, microwavePulseTimeSecond, (int)Parameters["MicrowavePulseDuration2"], "microwaveIO");//pump back
+       // p.Pulse(patternStartBeforeQ, microwavePulseTimeSecond, (int)Parameters["MicrowavePulseDuration2"], "microwaveIO");//pump back this is now done with microwaveSweepTrigger
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); // pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, microwavePulseTime, motRecaptureTime - microwavePulseTime, "v00AOM"); // turn off the MOT light for microwave pulse
         p.Pulse(patternStartBeforeQ, magTrapStartTime + (int)Parameters["MOTCoilsCurrentRampDuration"], (int)Parameters["PokeDuration"], "aom"); //poke pulse to MOT 
@@ -167,9 +170,12 @@ public class Patterns : MOTMasterScript
         p.AddChannel("zShimCoilCurrent");
         p.AddChannel("slowingCoilsCurrent");
 
-        //dodgy way of checking frequency after second microwave pulse
-        p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
-        p.AddAnalogValue("yShimCoilCurrent", motRecaptureTime, 5.0);
+        //dodgy way of pulsing second
+       // p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
+        
+      //  p.AddAnalogPulse("yShimCoilCurrent", microwavePulseTimeSecond, (int)Parameters["MicrowavePulseDuration2"], 5.0, 0.0);
+      
+
 
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
@@ -192,6 +198,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
        // p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
+        //p.AddAnalogValue("zShimCoilCurrent", magTrapStartTime, -4.0);
+        //p.AddAnalogValue("zShimCoilCurrent", magTrapStartTime + 2000, 0.0);
         //p.AddLinearRamp("zShimCoilCurrent", v0F0PumpStartTime, 50, (double)Parameters["zShimZeemanSplitValue"]);
        // p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
        // p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, 10.0);

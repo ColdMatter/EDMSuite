@@ -43,7 +43,12 @@
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
-    <Compile Include="MicrowavePulseMagneticTrap.cs" />
+    <Compile Include="MicrowaveMagneticTrapLifetimeN0.cs" />
+    <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
+    <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
+    <Compile Include="MicrowavePulseExperimental.cs" />
+    <Compile Include="MicrowavePulseExperimental2.cs" />
+    <Compile Include="MicrowavePulseMagneticTrapF2.cs" />
     <Compile Include="MicrowaveSpectroscopy.cs" />
     <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
@@ -61,6 +66,7 @@
     <Compile Include="MOTBlueMolassesShimSwitchRamp.cs" />
     <Compile Include="MOTBlueMolassesShimSwitchShort.cs" />
     <Compile Include="MOTFreqScan.cs" />
+    <Compile Include="MOTLifetime.cs" />
     <Compile Include="MOTMagTrapLifetime.cs" />
     <Compile Include="MOTOscillation.cs" />
     <Compile Include="MOTOscillationExperimental.cs" />
@@ -77,6 +83,7 @@
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
     <Compile Include="ScatteringRate.cs" />
+    <Compile Include="ShutterTest.cs" />
     <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -24,8 +24,10 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame1Trigger"] = 10000;
+        //Parameters["Frame2Trigger"] = 30000;
         Parameters["Frame0TriggerDuration"] = 10;
-        
+
         //PMT
         Parameters["PMTTrigger"] = 8000;
         Parameters["PMTTriggerDuration"] = 10;
@@ -49,7 +51,7 @@ public class Patterns : MOTMasterScript
         // Slowing field
         Parameters["slowingCoilsValue"] = 1.05;
         Parameters["slowingCoilsOffTime"] = 1500;
-        
+
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
@@ -67,19 +69,20 @@ public class Patterns : MOTMasterScript
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 2000;
-        Parameters["v0IntensityRampStartValue"] = 5.8;
+        Parameters["v0IntensityRampStartValue"] = 5.0;
+        Parameters["v0IntensityRampEndValue"] = 5.0;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 9.0;
 
         // triggering delay (10V = 1 second)
-       // Parameters["triggerDelay"] = 5.0;
+        // Parameters["triggerDelay"] = 5.0;
 
         // v0 F=1 (dodgy code using an analogue output to control a TTL)
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
-       
-        
+
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -88,10 +91,13 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-     //   p.AddEdge("v00Shutter", 0, true);
+        //   p.AddEdge("v00Shutter", 0, true);
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame1Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame2Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
-          
+
+
         return p;
     }
 
@@ -102,7 +108,7 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
-        
+
         p.AddChannel("v00Intensity");
         p.AddChannel("v00Frequency");
         p.AddChannel("xShimCoilCurrent");
@@ -124,18 +130,18 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
         // trigger delay
-       // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
+        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
         p.AddAnalogValue("v00EOMAmp", 0, 5.45);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
-        
+
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
 
         return p;
-   }
+    }
 
 }

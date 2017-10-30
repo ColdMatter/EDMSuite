@@ -17,28 +17,26 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 50000;
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 15000;
+        Parameters["TCLBlockDuration"] = 11000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
 
         Parameters["MOTSwitchOffTime"] = 6300;
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesDuration"] = 200;
-        Parameters["v0F0PumpDuration"] = 100;
+        Parameters["MolassesHoldTime"] = 600;
+        Parameters["MolassesRampDuration"] = 200;
+        Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 7;
-        Parameters["MicrowavePulseDuration2"] = 7;
-
-        Parameters["MicrowaveDelay"] = 400;
+        Parameters["MicrowavePulseDuration"] = 4;
+        Parameters["MicrowaveSecondPulseDuration"] = 7;
+        Parameters["MagneticTrapDuration"] = 2000;
         Parameters["MOTWaitBeforeImage"] = 0;
-       // Parameters["zShimZeemanSplitValue"] = -6.82;
-        Parameters["MagTrapDuration"] = 4000;
-        Parameters["MagTrapCoilsCurrentValue"] = 1.5;
+        Parameters["xShimZeemanSplitValue"] = 0.0;
 
-        // Poke
+        // BX poke
         Parameters["PokeDetuningValue"] = -1.35;
-        Parameters["PokeDuration"] = 1000;
+        Parameters["PokeDuration"] = 100;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -72,7 +70,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampStartValue"] = 0.65;
         Parameters["MOTCoilsCurrentRampStartTime"] = 4000;
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
-        Parameters["MOTCoilsCurrentRampDuration"] = 25;
+        Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.21
 
         Parameters["CoilsSwitchOffTime"] = 40000;
@@ -80,16 +78,16 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;// 3.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -6.0;// 3.32;
+        Parameters["zShimLoadCurrent"] = -6.0;//3.32; //-6.82;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;
-        Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 7.95;
-        Parameters["v0IntensityMolassesValue"] = 5.0;
-        Parameters["v0IntensityF0PumpValue"] = 8.75;
-        Parameters["v0IntensityImageValue"] = 5.0;
+        Parameters["v0IntensityRampStartValue"] = 5.8;
+        Parameters["v0IntensityRampEndValue"] = 8.465;
+        Parameters["v0IntensityMolassesValue"] = 5.8;
+        Parameters["v0IntensityF0PumpValue"] = 9.33;
+        Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
         Parameters["v0FrequencyMOTValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -97,8 +95,8 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyF0PumpValue"] = 0.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         // v0 pumping EOM
-        Parameters["v0EOMMOTValue"] = 5.45;
-        Parameters["v0EOMPumpValue"] = 3.5; 
+        Parameters["v0EOMMOTValue"] = 5.65;
+        Parameters["v0EOMPumpValue"] = 4.3; //3.5
 
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
@@ -113,28 +111,26 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
+        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
+        int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
-
-        int magTrapStartTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
-        int magTrapStopTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
-        int microwavePulseTimeSecond = magTrapStopTime + (int)Parameters["MicrowaveDelay"];
-        int motRecaptureTime = microwavePulseTimeSecond + (int)Parameters["MicrowavePulseDuration2"];
-
+        int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
+        int microwaveSecondPulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
+        int magTrapStartTime = microwaveSecondPulseTime + (int)Parameters["MicrowaveSecondPulseDuration"];
+        int motRecaptureTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.AddEdge("v00Shutter", 0, true);
-        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveIO");//pump out
+        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveIO"); //now linked to B channel
+        p.Pulse(patternStartBeforeQ, microwaveSecondPulseTime, (int)Parameters["MicrowaveSecondPulseDuration"], "microwaveSweepTrigger"); // now linked to A channel
 
-
-
-        p.Pulse(patternStartBeforeQ, microwavePulseTimeSecond, (int)Parameters["MicrowavePulseDuration2"], "microwaveIO");//pump back
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); // pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, microwavePulseTime, motRecaptureTime - microwavePulseTime, "v00AOM"); // turn off the MOT light for microwave pulse
-        p.Pulse(patternStartBeforeQ, magTrapStartTime + (int)Parameters["MOTCoilsCurrentRampDuration"], (int)Parameters["PokeDuration"], "aom"); //poke pulse to MOT 
+
+        p.Pulse(patternStartBeforeQ, blowAwayTime, (int)Parameters["PokeDuration"], "aom"); // Blow away pulse during magnetic trap 
         p.AddEdge("aom", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
+
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTPictureTriggerTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of initial MOT
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
@@ -147,15 +143,15 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
+        int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
+        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
+        int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
-
-        int magTrapStartTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
-        int magTrapStopTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
-        int microwavePulseTimeSecond = magTrapStopTime + (int)Parameters["MicrowaveDelay"];
-        int motRecaptureTime = microwavePulseTimeSecond + (int)Parameters["MicrowavePulseDuration2"];
-
+        int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
+        int microwaveSecondPulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
+        int magTrapStartTime = microwaveSecondPulseTime + (int)Parameters["MicrowaveSecondPulseDuration"];
+        int motRecaptureTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         // Add Analog Channels
@@ -165,11 +161,6 @@ public class Patterns : MOTMasterScript
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("v00EOMAmp");
         p.AddChannel("zShimCoilCurrent");
-        p.AddChannel("slowingCoilsCurrent");
-
-        //dodgy way of checking frequency after second microwave pulse
-        p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
-        p.AddAnalogValue("yShimCoilCurrent", motRecaptureTime, 5.0);
 
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
@@ -179,35 +170,35 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-       
-        p.AddAnalogValue("MOTCoilsCurrent", magTrapStartTime, (double)Parameters["MagTrapCoilsCurrentValue"]);
-       // p.AddLinearRamp("MOTCoilsCurrent", magTrapStartTime, (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MagTrapCoilsCurrentValue"]);
-       // p.AddLinearRamp("MOTCoilsCurrent", magTrapStopTime, (int)Parameters["MOTCoilsCurrentRampDuration"], 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", magTrapStopTime, (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-
-        p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", magTrapStartTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], 0.0);
+
+
+
+
+
+        //dodgy way of checking frequency after second microwave pulse
+        //p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
+        // p.AddAnalogValue("yShimCoilCurrent", motRecaptureTime, 5.0);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-       // p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
+        //  p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        //p.AddLinearRamp("zShimCoilCurrent", v0F0PumpStartTime, 50, (double)Parameters["zShimZeemanSplitValue"]);
-       // p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
-       // p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, 10.0);
-       // p.AddAnalogValue("xShimCoilCurrent", magTrapStartTime, (double)Parameters["xShimLoadCurrent"]);
-      //  p.AddAnalogValue("xShimCoilCurrent", magTrapStopTime + 100, 10.0);
-      //  p.AddAnalogValue("xShimCoilCurrent", motRecaptureTime, (double)Parameters["xShimLoadCurrent"]);
+        //p.AddLinearRamp("zShimCoilCurrent",v0F0PumpStartTime,50,(double)Parameters["zShimZeemanSplitValue"]);
+        //p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, (double)Parameters["xShimZeemanSplitValue"]);//used to be at v0f0pump time
+        //p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
 
-        
+        //p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, 5.0);
+        //p.AddAnalogValue("xShimCoilCurrent", motRecaptureTime, (double)Parameters["xShimLoadCurrent"]);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 50, 6.76);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 100, 7.24);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 150, 7.54);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 7.83);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", v0F0PumpStartTime, (double)Parameters["v0IntensityF0PumpValue"]);
         p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityImageValue"]);
 

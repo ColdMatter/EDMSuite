@@ -76,10 +76,12 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartValue"] = 5.8;
         Parameters["v0IntensityRampEndValue"] = 8.465;
         Parameters["v0IntensityMolassesValue"] = 5.8;
+        Parameters["v0IntensityPictureValue"] = 7.4;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
         Parameters["v0FrequencyNewValue"] = 30.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
+        Parameters["v0FrequencyPictureValue"] = 30.0;
 
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
@@ -96,14 +98,14 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
-        int releaseTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
-        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"];
+        int cameraTriggerTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
+        //int releaseTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
+        //int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); //pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, molassesRampTime + (int)Parameters["MolassesRampDuration"], (int)Parameters["ExpansionTime"], "v00AOM"); //pulse off the MOT light to release the cloud
+        //p.Pulse(patternStartBeforeQ, molassesRampTime + (int)Parameters["MolassesRampDuration"], (int)Parameters["ExpansionTime"], "v00AOM"); //pulse off the MOT light to release the cloud
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
@@ -115,10 +117,9 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
+        int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
-        int releaseTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
-        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"];
+        int cameraTriggerTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
 
         // Add Analog Channels
         p.AddChannel("v00Intensity");
@@ -147,10 +148,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 7.83);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
-        p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
+        p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityPictureValue"]);
 
         //F=0
         p.AddAnalogValue("v00EOMAmp", 0, 5.65);
@@ -160,7 +158,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Frequency", molassesStartTime, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyNewValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);//jump to blue detuning
         p.AddAnalogValue("v00Frequency", cameraTriggerTime, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
 
-        
+
         return p;
     }
 
