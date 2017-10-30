@@ -35,6 +35,7 @@ namespace EDMBlockHead.Acquire.Channels
 				}
 				catch (Exception e)
 				{
+                    hardwareController.ReSwitch(Channel, value);
                     MessageBox.Show("Unable to switch " + Channel + Environment.NewLine + e, "Switch error ...");
 				}
 			}

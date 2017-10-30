@@ -113,11 +113,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|AnyCPU'">
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
+    <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
@@ -128,7 +129,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies (64-bit)\15.5.45.109\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.40.167, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -191,7 +192,12 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EnvironsHelper.cs" />
+    <Compile Include="TCLEDMFileSystem.cs" />
+    <Compile Include="TCLEDMHardware.cs" />
+    <Compile Include="USBInstrument.cs" />
     <Compile Include="HP5350BCounter.cs" />
+    <Compile Include="AnapicoSynth.cs" />
     <Compile Include="HP8673BSynth.cs" />
     <Compile Include="MMConfig.cs" />
     <Compile Include="EDMTestCrateHardware.cs" />
@@ -255,7 +261,7 @@
     <Compile Include="DataFaker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MoleculeMOTHardware.cs">
+    <Compile Include="DecelerationHardware.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DigitalInputChannel.cs">
@@ -353,7 +359,6 @@
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WindfreakSynth.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>

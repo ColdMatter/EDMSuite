@@ -44,6 +44,7 @@ namespace TransferCavityLock2012
             
             double high = getMax(voltages).value;
             double low = getMin(voltages).value;
+            double pointsToConsider = 0;
             System.Diagnostics.Debug.WriteLine("   " + low.ToString() + "   " + high.ToString());
             LorentzianFitter lorentzianFitter = new LorentzianFitter();
 
@@ -58,9 +59,19 @@ namespace TransferCavityLock2012
                     allxypairs[i][1] = signal[i];
 	            }
 
+            
+            if(pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0]<10)
+            {
+                pointsToConsider=10;
+            } 
+            else
+            {
+                pointsToConsider = pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0];
+            } 
+
             for(int i = 0; i<voltages.Length; i++)
             {
-                if ((allxypairs[i][0] > (parameters[1] - pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])) && (allxypairs[i][0] < (parameters[1] + pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])))
+                if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
                 {
                     j++;
                 }
@@ -72,7 +83,7 @@ namespace TransferCavityLock2012
 
             for(int i = 0, k=0; i<voltages.Length; i++)
             {
-                if ((allxypairs[i][0] > (parameters[1] - pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])) && (allxypairs[i][0] < (parameters[1] + pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0])))
+                if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
                 {
                     selectedvoltages[k] = allxypairs[i][0];
                     selectedsignal[k] = allxypairs[i][1];

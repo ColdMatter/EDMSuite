@@ -40,19 +40,39 @@ namespace Analysis.EDM
             return gd;
         }
 
-        // this is a funny kind of division! The mean of d1 is left unchanged, but d1 is
-        // divided through point by point by d2. It's probably an abuse of operator overloading.
+        // This divides the gated tofs of d1 point by point by the gated tofs of d2
         public static GatedDetectorData operator /(GatedDetectorData d1, GatedDetectorData d2)
         {
             GatedDetectorData d3 = new GatedDetectorData();
             d3.Gate = d1.Gate;
             d3.SubtractedBackground = d1.SubtractedBackground;
-            double d2Mean = 0;
-            for (int i = 0; i < d2.PointValues.Count; i++) d2Mean += d2.PointValues[i];
-            d2Mean /= d2.PointValues.Count;
             for (int i = 0; i < d1.PointValues.Count; i++)
-                d3.PointValues.Add((d2Mean * d1.PointValues[i]) / d2.PointValues[i]);
+                d3.PointValues.Add((d1.PointValues[i]) / d2.PointValues[i]);
             return d3;
         }
+
+        // This subtracts the gated tofs of d1 point by point by the gated tofs of d2
+        public static GatedDetectorData operator -(GatedDetectorData d1, GatedDetectorData d2)
+        {
+            GatedDetectorData d3 = new GatedDetectorData();
+            d3.Gate = d1.Gate;
+            d3.SubtractedBackground = d1.SubtractedBackground;
+            for (int i = 0; i < d1.PointValues.Count; i++)
+                d3.PointValues.Add((d1.PointValues[i]) - d2.PointValues[i]);
+            return d3;
+        }
+
+        // This adds the gated tofs of d1 point by point by the gated tofs of d2
+        public static GatedDetectorData operator +(GatedDetectorData d1, GatedDetectorData d2)
+        {
+            GatedDetectorData d3 = new GatedDetectorData();
+            d3.Gate = d1.Gate;
+            d3.SubtractedBackground = d1.SubtractedBackground;
+            for (int i = 0; i < d1.PointValues.Count; i++)
+                d3.PointValues.Add((d1.PointValues[i]) + d2.PointValues[i]);
+            return d3;
+        }
+
+
     }
 }

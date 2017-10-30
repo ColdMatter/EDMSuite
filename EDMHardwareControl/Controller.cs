@@ -42,8 +42,8 @@ namespace EDMHardwareControl
         private const int eChargeTime = 5000;
         // E field monitor scale factors - what you need to multiply the monitor voltage by
         // to get the plate voltage
-        public double CPlusMonitorScale { get { return 10000; } }
-        public double CMinusMonitorScale { get { return 10000; } }
+        public double CPlusMonitorScale { get { return 1000; } }
+        public double CMinusMonitorScale { get { return 1000; } }
         // E field controller mode
         /*private enum EFieldMode { TTL, GPIB };
         private EFieldMode eFieldMode = EFieldMode.TTL;*/
@@ -75,6 +75,7 @@ namespace EDMHardwareControl
         SerialDAQ bfieldCntrl = (SerialDAQ)Environs.Hardware.Instruments["BfieldController"];
         SerialMotorControllerBCD probePolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["probePolControl"];
         SerialMotorControllerBCD pumpPolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["pumpPolControl"];
+        AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapico"];
 
         
         
@@ -109,7 +110,6 @@ namespace EDMHardwareControl
         Task miniFlux3MonitorInputTask;
         Task groundedInputTask;
         Task piMonitorTask;
-        Task MenloPZTOutputTask;
         Task i2ErrorSignalInputTask;
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
@@ -170,6 +170,7 @@ namespace EDMHardwareControl
             //CreateDigitalTask("I2IntSwitch");
             CreateDigitalTask("eSwitching");
             CreateDigitalTask("patternTTL");
+            CreateDigitalTask("mwSwitching");
 
             // digitial input tasks
 
@@ -183,7 +184,7 @@ namespace EDMHardwareControl
             pumpPolCont.InitPolariserControl();
 
             // analog outputs
-            bBoxAnalogOutputTask = CreateAnalogOutputTask("b");
+            bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
             //steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
@@ -195,7 +196,6 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
-            MenloPZTOutputTask = CreateAnalogOutputTask("MenloPZT");
             //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
@@ -1384,6 +1384,193 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool MwListSweepEnabled
+        {
+            get
+            {
+                return window.listSweepEnabledCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.listSweepEnabledCheckBox, value);
+            }
+        }
+
+        public bool MwSwitchState
+        {
+            get
+            {
+                return window.microwaveStateCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.microwaveStateCheckBox, value);
+            }
+        }
+
+        public double AnapicoCWFrequency
+        {
+            get
+            {
+                return Double.Parse(window.anapicoCwFreqBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.anapicoCwFreqBox, value.ToString());
+            }
+        }
+
+        public double AnapicoFrequency0
+        {
+            get
+            {
+                return Double.Parse(window.anapicof0FreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.anapicof0FreqTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoFrequency1
+        {
+            get
+            {
+                return Double.Parse(window.anapicof1FreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.anapicof1FreqTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoPumpMWDwellOnTime
+        {
+            get
+            {
+                return Double.Parse(window.pumpMWDwellOnTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.pumpMWDwellOnTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoPumpMWDwellOffTime
+        {
+            get
+            {
+                return Double.Parse(window.pumpMWDwellOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.pumpMWDwellOffTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoBottomProbeMWDwellOnTime
+        {
+            get
+            {
+                return Double.Parse(window.bottomProbeMWDwellOnTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.pumpMWDwellOnTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoBottomProbeMWDwellOffTime
+        {
+            get
+            {
+                return Double.Parse(window.bottomProbeMWDwellOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.bottomProbeMWDwellOffTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoTopProbeMWDwellOnTime
+        {
+            get
+            {
+                return Double.Parse(window.topProbeMWDwellOnTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.topProbeMWDwellOnTextBox, value.ToString());
+            }
+        }
+
+        public double AnapicoTopProbeMWDwellOffTime
+        {
+            get
+            {
+                return Double.Parse(window.topProbeMWDwellOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.topProbeMWDwellOffTextBox, value.ToString());
+            }
+        }
+
+        public bool AnapicoPumpMWf0Indicator
+        {
+            set
+            {
+                window.SetLED(window.pumpMWf0Indicator, value);
+            }
+        }
+
+        public bool AnapicoPumpMWf1Indicator
+        {
+            set
+            {
+                window.SetLED(window.pumpMWf1Indicator, value);
+            }
+        }
+
+        public bool AnapicoBottomProbeMWf0Indicator
+        {
+            set
+            {
+                window.SetLED(window.bottomProbeMWf0Indicator, value);
+            }
+        }
+
+        public bool AnapicoBottomProbeMWf1Indicator
+        {
+            set
+            {
+                window.SetLED(window.bottomProbeMWf1Indicator, value);
+            }
+        }
+
+        public bool AnapicoTopProbeMWf0Indicator
+        {
+            set
+            {
+                window.SetLED(window.topProbeMWf0Indicator, value);
+            }
+        }
+
+        public bool AnapicoTopProbeMWf1Indicator
+        {
+            set
+            {
+                window.SetLED(window.topProbeMWf1Indicator, value);
+            }
+        }
+
+        public string AnapicoCurrentList
+        {
+            set
+            {
+                window.SetTextBox(window.displayCurrentListBox, value);
+            }
+        }
 
         #endregion
 
@@ -1722,8 +1909,28 @@ namespace EDMHardwareControl
                 case "pumpAOM": //probe laser
                     SwitchLF2(state);
                     break;
+                case "mwChan":
+                    SwitchMwAndWait(state);
+                    break;
             }
         }
+
+        public void ReSwitch(string channel, bool state)
+        {
+            switch (channel)
+            {
+                case "eChan":
+                    break;
+                case "probeAOM": //probe laser
+                    break;
+                case "pumpAOM": //probe laser
+                    break;
+                case "mwChan":
+                    ReSwitchMwAndWait(state);
+                    break;
+            }
+        }
+
 
         private bool lf1State;
         private double calculateProbeAOMFrequency(bool lf1State)
@@ -2268,8 +2475,8 @@ namespace EDMHardwareControl
                 (gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
             window.SetTextBox(window.gMinusVMonitorTextBox, 
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
-            cPlusMonitorVoltage = -1.5*ReadAnalogInput(cPlusMonitorInputTask);
-            cMinusMonitorVoltage = -1.5*ReadAnalogInput(cMinusMonitorInputTask);
+            cPlusMonitorVoltage = ReadAnalogInput(cPlusMonitorInputTask);
+            cMinusMonitorVoltage = -ReadAnalogInput(cMinusMonitorInputTask);
         }
         public void UpdateVMonitorUI()
         {
@@ -3503,6 +3710,223 @@ namespace EDMHardwareControl
             SetAnalogOutput(uWaveDCFMAnalogOutputTask, newPZTVoltage);
             window.uWaveDCFMTextBox.Text = newPZTVoltage.ToString();
             window.uWaveDCFMTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void EnableAnapico(bool enable)
+        {
+            UpdateAnapicoRAMList(MwSwitchState);
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.CWFrequency = AnapicoCWFrequency;
+                anapico.Enabled = true;
+            }
+            else
+            {
+                anapico.Enabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoCW()
+        {
+            anapico.Connect();
+            anapico.CWFrequency = AnapicoCWFrequency;
+            anapico.Disconnect();
+        }
+
+        // When writing a list to RAM, the data has to be transferred according to the IEEE 488.2 Definite Length Block Response Data format.
+        // This is #<number of digits that follows this><number of data bytes><data>
+        // <data> has to be the form <frequency in Hz>;<power in dBm>;<dwell on time>;<dwell off time>\r\n<next frequency in Hz>...
+        public void UpdateAnapicoRAMList(bool trueState)
+        {
+            try
+            {
+                bool currentMwListSweepStatus = MwListSweepEnabled;
+                MwListSweepEnabled = false;
+                anapico.Connect();
+                if (trueState)
+                {
+                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    int numBytes = list.Length;
+
+                    int numDigits = numBytes.ToString().Length;
+
+                    string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+
+                    AnapicoBottomProbeMWf0Indicator = true;
+                    AnapicoBottomProbeMWf1Indicator = false;
+                    AnapicoTopProbeMWf0Indicator = false;
+                    AnapicoTopProbeMWf1Indicator = true;
+
+                    anapico.WriteList(sendList);
+                }
+                else
+                {
+                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    int numBytes = list.Length;
+
+                    int numDigits = numBytes.ToString().Length;
+
+                    string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+
+                    AnapicoBottomProbeMWf0Indicator = false;
+                    AnapicoBottomProbeMWf1Indicator = true;
+                    AnapicoTopProbeMWf0Indicator = true;
+                    AnapicoTopProbeMWf1Indicator = false;
+
+                    anapico.WriteList(sendList);
+                }
+                anapico.Disconnect();
+                MwListSweepEnabled = currentMwListSweepStatus;
+            }
+            catch
+            {
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
+            }
+        }
+
+        public void EnableAnapicoListSweep(bool enable)
+        {
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.ListSweepEnabled = true;
+            }
+            else
+            {
+                anapico.ListSweepEnabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+        // When reading a list to RAM, the data is transferred according to the IEEE 488.2 Definite Length Block Response Data format.
+        // This is #<number of digits that follows this><number of data bytes><data>
+        // <data> is in the form <frequency in Hz>;<power in dBm>;<dwell on time>;<dwell off time>\r\n<next frequency in Hz>...
+        public void GetAnapicoCurrentList()
+        {
+            anapico.Connect();
+
+            string list = anapico.ReadList();
+            int numDigits = Convert.ToInt32(list[1].ToString());
+            string subList = list.Substring(numDigits + 2);
+
+            char[] delimiters = {';','\r','\n'};
+            string[] splitList = subList.Split(delimiters);
+
+            string displayList = string.Empty;
+
+            for (int i = 0; i < splitList.Length/4; ++i)
+            {
+                int j = 4 * i;
+                string num = Convert.ToString(i + 1);
+                displayList += "Frequency " + num + " (Hz): " + splitList[j] + "\r\n" 
+                    + "Dwell on time " + num + " (s): " + splitList[j + 2] + "\r\n" 
+                    + "Dwell off time " + num + " (s): " + splitList[j + 3] + "\r\n";
+            }
+
+            AnapicoCurrentList = displayList;
+
+            anapico.Disconnect();
+        }
+
+        private bool switchingMw;
+        public bool SwitchingMw
+        {
+            get
+            {
+                return switchingMw;
+            }
+            set
+            {
+                    switchingMw = value;
+                try
+                {
+                    SetDigitalLine("mwSwitching", value);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("cannot set digital line" + Environment.NewLine + e, "Connect error ...");
+                }
+            }
+
+        }
+
+        public void SwitchMw()
+        {
+            SwitchMw(!MwSwitchState);
+        }
+
+        public void SwitchMwAndWait(bool state)
+        {
+            SwitchMw(state);
+            switchMwThread.Join();
+        }
+
+        public void ReSwitchMwAndWait(bool state)
+        {
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
+                Thread.Sleep((int)(1000));
+                SwitchMwAndWait(state);
+
+        }
+
+        public void SwitchMwAndWait()
+        {
+            SwitchMwAndWait(!MwSwitchState);
+        }
+
+
+        private bool newMwSwitchState;
+        private object switchingMwLock = new object();
+        private Thread switchMwThread;
+        public void SwitchMw(bool state)
+        {
+            lock (switchingMwLock)
+            {
+                newMwSwitchState = state;
+                switchMwThread = new Thread(new ThreadStart(SwitchMwWorker));
+                window.EnableControl(window.microwaveStateCheckBox, false);
+                window.EnableControl(window.listSweepEnabledCheckBox, false);
+                window.EnableControl(window.anapicoEnabledCheckBox, false);
+                switchMwThread.Start();
+            }
+        }
+
+        public void SwitchMwWorker()
+        {
+
+            lock (switchingMwLock)
+            {
+                // raise flag for switching microwaves
+
+                SwitchingMw = true;
+
+                MwSwitchState = newMwSwitchState;
+                //Thread.Sleep((int)(170)); //Here I put in the 164ms delay time (of the Anapico switching) by hand. 
+            }
+
+            MwSwitchDone();
+        }
+
+        private void MwSwitchDone()
+        {
+            SwitchingMw = false;
+            window.EnableControl(window.microwaveStateCheckBox, true);
+            window.EnableControl(window.listSweepEnabledCheckBox, true);
+            window.EnableControl(window.anapicoEnabledCheckBox, true);
         }
 
         #endregion
