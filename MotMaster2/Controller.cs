@@ -101,7 +101,7 @@ namespace MOTMaster2
             set
             {
                 if (value) StartLogging();
-                else StartLogging();
+                else StopLogging();
                 _AutoLogging = value;
             }
         }
@@ -406,12 +406,13 @@ namespace MOTMaster2
                 }
             }
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
-            dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            if (!Utils.isNull(dataLogger))
+                dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)
             {
                 if (MotMasterDataEvent != null) MotMasterDataEvent(sender, new DataEventArgs(dataJson));
             }
-            if (multiScanLogger != null)
+            if (!Utils.isNull(multiScanLogger))
             {
                 var segData = Controller.genOptions.AIEnable ? finalData.prms : null;
                 bool columns = (BatchNumber == 0);
@@ -445,7 +446,8 @@ namespace MOTMaster2
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
-            if (logWatch.IsRunning) { logWatch.Reset(); }
+            if (!Utils.isNull(logWatch))
+                if (logWatch.IsRunning) logWatch.Reset(); 
             ClearPatterns();
         }
 
@@ -633,7 +635,8 @@ namespace MOTMaster2
             if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
             watch.Start();
-            logWatch.Start();
+            if(!Utils.isNull(logWatch))
+                logWatch.Start();
             //TODO Try WaitForRunToFinish here and nowhere else
             if (!config.Debug)
                 {
@@ -645,7 +648,7 @@ namespace MOTMaster2
             watch.Stop();
 
             if (saveEnable)
-                    {
+            {
                 AcquireDataFromHardware();
             }
 
@@ -723,20 +726,22 @@ namespace MOTMaster2
         /// Initialises the objects used to store data from the run
         /// </summary>
         private static void InitialiseData()
-                    {
+        {
             MMexec mme = InitialCommand(ScanParam);
             string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
-            paramLogger.log("{\"MMExec\":" + initJson + "},");
-            if (multiScanLogger.Enabled)
-            {
-                BuildMultiScanHeader();
-            }
+            if (!Utils.isNull(paramLogger))
+                paramLogger.log("{\"MMExec\":" + initJson + "},");
+            if (!Utils.isNull(multiScanLogger))
+                if (multiScanLogger.Enabled)
+                {
+                    BuildMultiScanHeader();
+                }
             if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
             {
                 MotMasterDataEvent(null, new DataEventArgs(initJson));
                 ExpData.grpMME = mme.Clone();
             }
-                    }
+        }
 
         private static void BuildMultiScanHeader()
         {
@@ -1305,13 +1310,20 @@ namespace MOTMaster2
         public void StopLogging()
         {
             //Finishes writing the JSONs. Removes the last comma since Mathematica has issues with it
-            dataLogger.DropLastChar();
-            paramLogger.DropLastChar();
-            dataLogger.log("]\n}");
-            paramLogger.log("]\n}");
-            dataLogger.Enabled = false;
-            paramLogger.Enabled = false;
-            multiScanLogger.Enabled = false;
+            if (!Utils.isNull(dataLogger))
+            {
+                dataLogger.DropLastChar();
+                paramLogger.DropLastChar();
+                dataLogger.log("]\n}");
+                dataLogger.Enabled = false;
+            }
+            if (!Utils.isNull(paramLogger))
+            {
+                paramLogger.log("]\n}");
+                paramLogger.Enabled = false;
+            }
+            if (!Utils.isNull(multiScanLogger))
+                multiScanLogger.Enabled = false;
         }
         /// <summary>
         /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
