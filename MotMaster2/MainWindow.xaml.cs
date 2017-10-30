@@ -84,9 +84,8 @@ namespace MOTMaster2
                     ListBoxItem lbi = new ListBoxItem();
                     lbi.Content = mms.AsString;
                     lstParams.Items.Add(lbi);
-        }
+                }
             }
-
         }
 
         private string[] ParamsArray
@@ -113,6 +112,8 @@ namespace MOTMaster2
                 _groupRun = value;
                 cbHub.IsEnabled = (value == GroupRun.none);
                 tbExperimentRun.IsEnabled = (value == GroupRun.none);
+                sequenceControl.IsReadOnly = (value != GroupRun.none);
+                setPropertyBtn.IsEnabled = (value == GroupRun.none);
             }
         }
 

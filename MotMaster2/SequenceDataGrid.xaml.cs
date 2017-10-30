@@ -29,6 +29,14 @@ namespace MOTMaster2
             InitializeComponent();
             sequenceDataGrid.DataContext = new SequenceStepViewModel();
         }
+        public bool IsReadOnly { get { return sequenceDataGrid.IsReadOnly; } set { sequenceDataGrid.IsReadOnly = value; } }
+        public static readonly DependencyProperty RunningProperty
+            = DependencyProperty.Register(
+                  "IsReadOnly",
+                  typeof(bool),
+                  typeof(SequenceDataGrid),
+                  new PropertyMetadata(false)
+              );
 
         public void UpdateSequenceData()
         {
