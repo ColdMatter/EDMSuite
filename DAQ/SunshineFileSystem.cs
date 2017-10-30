@@ -14,7 +14,7 @@ namespace DAQ.Environment
             Paths.Add("vcoLockData", "c:\\Data\\VCO Lock\\");
             Paths.Add("transferCavityData", "c:\\Data\\LCMCaF\\TCL\\");
 
-            Paths.Add("MOTMasterDataPath", "c:\\Data\\MOTMasterData\\");
+            Paths.Add("MOTMasterDataPath", "C:\\Users\\Cooler\\Box Sync\\CaF MOT\\MOTData\\MOTMasterData\\");
             Paths.Add("scriptListPath", "C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts");
             Paths.Add("daqDLLPath", "C:\\Control Programs\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
             Paths.Add("MOTMasterExePath", "C:\\Control Programs\\EDMSuite\\MOTMaster\\bin\\CaF\\");
