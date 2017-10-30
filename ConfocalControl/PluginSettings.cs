@@ -3,6 +3,8 @@ using System.Collections;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using System.IO;
+using System.Windows;
 
 using DAQ.Environment;
 using DAQ.HAL;
@@ -12,10 +14,13 @@ namespace ConfocalControl
 	/// <summary>
 	/// This class holds the settings for a plugin.
 	/// </summary>
+    /// 
+    [Serializable]
 	public class PluginSettings
 	{
 		private Hashtable settings = new Hashtable();
         private string _controller;
+        public string controller { get { return _controller; } }
 
 		public PluginSettings(string controller)
 		{
@@ -58,64 +63,49 @@ namespace ConfocalControl
 			return sb.ToString();
 		}
 
-        public void SaveSettings()
+        public void Save()
+        {
+            PluginSaveLoad.WriteToBinaryFile(this);
+        }
+	}
+
+    public class PluginSaveLoad
+    {
+        public static void WriteToBinaryFile(PluginSettings objectToWrite, bool append = false)
         {
             string directory = (string)Environs.FileSystem.Paths["settingsPath"];
-            string address = directory + _controller + "Settings.txt";
+            string filePath = directory + objectToWrite.controller + "Settings";
 
-            System.IO.File.WriteAllText(@address, ToString());
+            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(stream, objectToWrite);
+            }
         }
 
-        private enum ISTYPE { DOUBLE, INT, STRING, UNKNOWN };
-
-        private ISTYPE CheckType(string type)
+        public static PluginSettings ReadFromBinaryFile(string controller)
         {
-            if (type == "System.Int32") return ISTYPE.INT;
-            else if (type == "System.Double") return ISTYPE.DOUBLE;
-            else if (type == "System.String") return ISTYPE.STRING;
-            else return ISTYPE.UNKNOWN;
+            string directory = (string)Environs.FileSystem.Paths["settingsPath"];
+            string filePath = directory + controller + "Settings";
+
+            using (Stream stream = File.Open(filePath, FileMode.Open))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                return (PluginSettings)binaryFormatter.Deserialize(stream);
+            }
         }
 
-        public void LoadSettings()
+        public static PluginSettings LoadSettings(string controller)
         {
             try
             {
-                string directory = (string)Environs.FileSystem.Paths["settingsPath"];
-                string address = directory + _controller + "Settings.txt";
-
-                System.IO.StreamReader file = new System.IO.StreamReader(@address);
-
-                string line;
-                while ((line = file.ReadLine()) != null)
-                {
-                    string[] slist = line.Split(null);
-                    string name = slist[1];
-
-                    switch (CheckType(slist[0]))
-                    {
-                        case ISTYPE.INT:
-                            settings[name] = Convert.ToInt32(slist[3]);
-                            break;
-
-                        case ISTYPE.DOUBLE:
-                            settings[name] = Convert.ToDouble(slist[3]);
-                            break;
-
-                        case ISTYPE.STRING:
-                            settings[name] = slist[3];
-                            break;
-
-                        case ISTYPE.UNKNOWN:
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-                file.Close();
+                return ReadFromBinaryFile(controller);
             }
-            catch { }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return new PluginSettings(controller);
+            }
         }
-	}
+    }
 }

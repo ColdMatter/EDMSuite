@@ -35,7 +35,7 @@ namespace ConfocalControl
             return controllerInstance;
         }
 
-        private PluginSettings settings = new PluginSettings("galvoPair");
+        private PluginSettings settings;
         public PluginSettings Settings
         {
             get { return settings; }
@@ -66,10 +66,15 @@ namespace ConfocalControl
 
         #region Initialisation
 
+        public void LoadSettings()
+        {
+            settings = PluginSaveLoad.LoadSettings("galvoPair");
+        }
+
         private void InitialiseSettings()
         {
-            //settings.LoadSettings();
-            if (settings.Keys.Count == 0)
+            LoadSettings();
+            if (settings.Keys.Count != 7)
             {
                 settings["GalvoXInit"] = "0.5";
                 settings["GalvoYInit"] = "0.5";
@@ -91,15 +96,15 @@ namespace ConfocalControl
         {
             InitialiseSettings();
 
-            _galvoXReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoXRead"]];
-            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
-            _galvoYReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoYRead"]];
-            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
+            _galvoXReadChannel = null;
+            _galvoXControlChannel = null;
+            _galvoYReadChannel = null;
+            _galvoYControlChannel = null;
 
-            XRangeLow = _galvoXControlChannel.RangeLow;
-            XRangeHigh = _galvoXControlChannel.RangeHigh;
-            YRangeLow = _galvoYControlChannel.RangeLow;
-            YRangeHigh = _galvoYControlChannel.RangeHigh;
+            XRangeLow = -5;
+            XRangeHigh = 5;
+            YRangeLow = -5;
+            YRangeHigh = 5;
 
             _galvoXInputTask = null;
             _galvoYInputTask = null;
@@ -118,8 +123,13 @@ namespace ConfocalControl
         {
             if (IsRunning())
             {
-                throw new DaqException("Counter already running");
+                throw new DaqException("Galvo already running");
             }
+
+            _galvoXReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoXRead"]];
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
+            _galvoYReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoYRead"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
 
             _galvoXInputTask = new Task("galvo X analog gather");
             _galvoYInputTask = new Task("galvo Y analog gather");
@@ -165,6 +175,11 @@ namespace ConfocalControl
                 _galvoXwriter = null;
                 _galvoYwriter = null;
 
+                _galvoXReadChannel = null;
+                _galvoXControlChannel = null;
+                _galvoYReadChannel = null;
+                _galvoYControlChannel = null;
+
                 galvoState = GalvoState.stopped;
         }
 
@@ -197,6 +212,9 @@ namespace ConfocalControl
                 throw new DaqException("Galvo already running");
             }
 
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
+
             _galvoXOutputTask = new Task("galvo X analog set");
             _galvoYOutputTask = new Task("galvo Y analog set");
 
@@ -222,6 +240,9 @@ namespace ConfocalControl
 
                 _galvoXwriter = null;
                 _galvoYwriter = null;
+
+                _galvoXControlChannel = null;
+                _galvoYControlChannel = null;
 
                 galvoState = GalvoState.stopped;
         }

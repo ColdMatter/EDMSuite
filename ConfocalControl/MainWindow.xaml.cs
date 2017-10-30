@@ -31,6 +31,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
+using System.Globalization;
 
 namespace ConfocalControl
 {
@@ -39,10 +40,26 @@ namespace ConfocalControl
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Class members
+
+        private PluginSettings settings = PluginSaveLoad.LoadSettings("mainWindow");
+
+        private void InitialiseSettings()
+        {
+            if (settings.Keys.Count != 1)
+            {
+                settings["saveFile"] = "file_name";
+            }
+        }
+
+        #endregion
+
         #region Initialization
 
         public MainWindow()
         {
+            InitialiseSettings();
+
             InitializeComponent();
 
             try
@@ -62,9 +79,12 @@ namespace ConfocalControl
             }
             finally
             {
+                fileName_set.Text = (string)settings["saveFile"];
+
                 exposure_set.Value = SingleCounterPlugin.GetController().GetExposure();
                 int val = SingleCounterPlugin.GetController().GetBufferSize();
                 buffer_size_set.Value = val;
+                binNumber_set.Value = (int)SingleCounterPlugin.GetController().Settings["binNumber"];
 
                 SingleCounterPlugin.GetController().setTextBox += singleCounter_setTextBox;
                 SingleCounterPlugin.GetController().setWaveForm += singleCounter_setWaveForm;
@@ -81,8 +101,6 @@ namespace ConfocalControl
                 scan_y_min_set.Value = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
                 scan_y_max_set.Value = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"];
                 scan_y_res_set.Value = Convert.ToInt32((double)MultiChannelRasterScan.GetController().scanSettings["GalvoYRes"]);
-
-                set_galvos_from_scan.IsEnabled = false;
 
                 output_type_box.Items.Add("Counters");
                 output_type_box.Items.Add("Analogues");
@@ -126,7 +144,7 @@ namespace ConfocalControl
 
         public void galvo_X_set_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && !GalvoPairPlugin.GetController().IsRunning())
             {
                 if (galvo_X_set.Text == "")
                 {
@@ -199,7 +217,7 @@ namespace ConfocalControl
 
         public void galvo_Y_set_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && !GalvoPairPlugin.GetController().IsRunning())
             {
                 if (galvo_Y_set.Text == "")
                 {
@@ -274,12 +292,12 @@ namespace ConfocalControl
 
         #region Timetrace events
 
-        public void singleCounter_setTextBox(int value)
+        public void singleCounter_setTextBox(double value)
         {
             // If on a different thread 
             if (Application.Current.Dispatcher.CheckAccess())
             {
-                single_photon_counts.Text = value.ToString();
+                single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
             }
 
             else
@@ -288,13 +306,13 @@ namespace ConfocalControl
                     DispatcherPriority.Background,
                     new Action(() =>
                         {
-                            this.single_photon_counts.Text = value.ToString();
+                            this.single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
                         }
                 ));
             }
         }
 
-        public void singleCounter_setWaveForm(int[] values, Point[] histData)
+        public void singleCounter_setWaveForm(double[] values, Point[] histData)
         {
             // If on a different thread 
             if (Application.Current.Dispatcher.CheckAccess())
@@ -329,11 +347,14 @@ namespace ConfocalControl
                            this.oscilloscope_switch.Value = false;
                            this.exposure_set.IsEnabled = true;
                            this.rasterScan_switch.IsReadOnly = false;
-                           this.hardware_MenuItem.IsEnabled = true;
+                           this.timetrace_hardware_MenuItem.IsEnabled = true;
+                           this.single_photon_counts.Text = "Stopped";
+                           this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvo_X_set.IsReadOnly = false;
+                           this.galvo_Y_set.IsReadOnly = false;
+                           this.set_galvos_from_scan.IsEnabled = true;
                        }
                    ));
-
-            single_photon_counts.Text = "Stopped";
         }
 
         private void oscilloscope_Click(object sender, RoutedEventArgs e)
@@ -347,7 +368,16 @@ namespace ConfocalControl
                            this.oscilloscope_switch.Value = true;
                            this.exposure_set.IsEnabled = false;
                            this.rasterScan_switch.IsReadOnly = true;
-                           this.hardware_MenuItem.IsEnabled = false;
+                           this.timetrace_hardware_MenuItem.IsEnabled = false;
+
+                           if ((string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"]
+                                || (string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"])
+                           {
+                               this.galvo_setpoint_reader.IsEnabled = false;
+                               this.galvo_X_set.IsReadOnly = true;
+                               this.galvo_Y_set.IsReadOnly = true;
+                               this.set_galvos_from_scan.IsEnabled = false;
+                           }
                        }
                    ));
 
@@ -367,11 +397,14 @@ namespace ConfocalControl
                            this.oscilloscope_switch.Value = false;
                            this.exposure_set.IsEnabled = true;
                            this.rasterScan_switch.IsReadOnly = false;
-                           this.hardware_MenuItem.IsEnabled = true;
+                           this.timetrace_hardware_MenuItem.IsEnabled = true;
+                           this.single_photon_counts.Text = "Stopped";
+                           this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvo_X_set.IsReadOnly = false;
+                           this.galvo_Y_set.IsReadOnly = false;
+                           this.set_galvos_from_scan.IsEnabled = true;
                        }
                    ));
-
-                single_photon_counts.Text = "Stopped";
             }
         }
 
@@ -388,6 +421,15 @@ namespace ConfocalControl
                 SingleCounterPlugin.GetController().Settings["bufferSize"] = e.NewValue;
             }
             else buffer_size_set.Value = e.OldValue;
+        }
+
+        private void binNumber_set_ValueChanged(object sender, ValueChangedEventArgs<int> e)
+        {
+            if (e.NewValue > 1)
+            {
+                SingleCounterPlugin.GetController().Settings["binNumber"] = e.NewValue;
+            }
+            else binNumber_set.Value = e.OldValue;
         }
 
         #endregion
@@ -420,7 +462,7 @@ namespace ConfocalControl
             }
         }
 
-        public void rasterScan_setArrays(MultiChannelData data)
+        private void rasterScan_setArrays(MultiChannelData data)
         {
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
@@ -431,7 +473,12 @@ namespace ConfocalControl
                         case 0:
                             if (output_box.SelectedIndex >= 0)
                             {
-                                this.rasterScan_display.DataSource = data.GetCounterData(output_box.SelectedIndex).ToArray();
+                                List<Point3D> dataSpecific = data.GetCounterData(output_box.SelectedIndex);
+                                if (dataSpecific != null)
+                                {
+                                    this.rasterScan_display.DataSource = dataSpecific.ToArray();
+                                }
+                                else this.rasterScan_display.DataSource = null;
                             }
                             else this.rasterScan_display.DataSource = null;
                             break;
@@ -439,7 +486,12 @@ namespace ConfocalControl
                         case 1:
                             if (output_box.SelectedIndex >= 0)
                             {
-                                this.rasterScan_display.DataSource = data.GetAnalogueData(output_box.SelectedIndex).ToArray();
+                                List<Point3D> dataSpecific = data.GetAnalogueData(output_box.SelectedIndex);
+                                if (dataSpecific != null)
+                                {
+                                    this.rasterScan_display.DataSource = dataSpecific.ToArray();
+                                }
+                                else this.rasterScan_display.DataSource = null;
                             }
                             else this.rasterScan_display.DataSource = null;
                             break;
@@ -448,11 +500,16 @@ namespace ConfocalControl
                             this.rasterScan_display.DataSource = null;
                             break;
                     }
+
+                    double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                    this.raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                    double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                    this.raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
                 }
             ));
         }
 
-        public void rasterScan_setLines(MultiChannelData data)
+        private void rasterScan_setLines(MultiChannelData data)
         {
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
@@ -463,7 +520,12 @@ namespace ConfocalControl
                         case 0:
                             if (output_box.SelectedIndex >= 0)
                             {
-                                this.rasterScan_lineDisplay.DataSource = data.GetCounterData(output_box.SelectedIndex).ToArray();
+                                List<Point3D> dataSpecific = data.GetCounterData(output_box.SelectedIndex);
+                                if (dataSpecific != null)
+                                {
+                                    this.rasterScan_lineDisplay.DataSource = dataSpecific.ToArray();
+                                }
+                                else this.rasterScan_lineDisplay.DataSource = null;
                             }
                             else this.rasterScan_lineDisplay.DataSource = null;
                             break;
@@ -471,7 +533,12 @@ namespace ConfocalControl
                         case 1:
                             if (output_box.SelectedIndex >= 0)
                             {
-                                this.rasterScan_lineDisplay.DataSource = data.GetAnalogueData(output_box.SelectedIndex).ToArray();
+                                List<Point3D> dataSpecific = data.GetAnalogueData(output_box.SelectedIndex);
+                                if (dataSpecific != null)
+                                {
+                                    this.rasterScan_lineDisplay.DataSource = dataSpecific.ToArray();
+                                }
+                                else this.rasterScan_lineDisplay.DataSource = null;
                             }
                             else this.rasterScan_lineDisplay.DataSource = null;
                             break;
@@ -484,7 +551,7 @@ namespace ConfocalControl
             ));
         }
 
-        public void rasterScan_problemHandler(DaqException e)
+        private void rasterScan_problemHandler(DaqException e)
         {
             MessageBox.Show("Caught exception: " + e.Message);
             if (MultiChannelRasterScan.GetController().IsRunning())
@@ -510,12 +577,13 @@ namespace ConfocalControl
                            this.scan_y_res_set.IsEnabled = true;
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
-                           this.scan_number_points_set.IsEnabled = true;
+                           this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.rasterScan_lineDisplay.DataSource = null;
                        }
                    ));
         }
 
-        public void rasterScan_Click(object sender, RoutedEventArgs e)
+        private void rasterScan_Click(object sender, RoutedEventArgs e)
         {
             if (!rasterScan_switch.Value)
             {
@@ -548,7 +616,7 @@ namespace ConfocalControl
                            this.scan_y_res_set.IsEnabled = false;
                            this.set_galvos_from_scan.IsEnabled = false;
                            this.hardware_MenuItem.IsEnabled = false;
-                           this.scan_number_points_set.IsEnabled = false;
+                           this.rasterScan_hardware_MenuItem.IsEnabled = false;
 
                            double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
                            double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
@@ -605,18 +673,14 @@ namespace ConfocalControl
                            this.scan_y_res_set.IsEnabled = true;
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
-                           this.scan_number_points_set.IsEnabled = true;
-
-                           if ((bool)this.save_automatic.IsChecked)
-                           {
-                               MultiChannelRasterScan.GetController().SaveDataAutomatic();
-                           }
+                           this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.rasterScan_lineDisplay.DataSource = null;
                        }
                    ));
             }
         }
 
-        public void rasterScan_End()
+        private void rasterScan_End()
         {
             Thread.Sleep(1000);
             Application.Current.Dispatcher.BeginInvoke(
@@ -637,11 +701,12 @@ namespace ConfocalControl
                            this.scan_y_res_set.IsEnabled = true;
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
-                           this.scan_number_points_set.IsEnabled = true;
+                           this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.rasterScan_lineDisplay.DataSource = null;
 
                            if ((bool)this.save_automatic.IsChecked)
                            {
-                               MultiChannelRasterScan.GetController().SaveDataAutomatic();
+                               MultiChannelRasterScan.GetController().SaveDataAutomatic(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
                            }
                        }
                    ));
@@ -677,30 +742,28 @@ namespace ConfocalControl
             MultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] = (double)e.NewValue;
         }
 
-        private void scan_number_points_set_ValueChanged(object sender, ValueChangedEventArgs<int> e)
-        {
-            if (e.NewValue > 0)
-            {
-                MultiChannelRasterScan.GetController().scanSettings["pointsPerExposure"] = (double)e.NewValue;
-            }
-            else scan_number_points_set.Value = e.OldValue;
-        }
-
         private void cursor_PositionChanged(object sender, EventArgs e)
         {
-            Point pnt = scan_cursor.GetRelativePosition();
-            double xVal = pnt.X;
-            double yVal = pnt.Y;
-
-            double hStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
-            double vStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
-            double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
-            double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-
-            if (galvo_x_scan_pos != null && galvo_y_scan_pos != null)
+            if (scan_cursor.Value.Count > 2)
             {
-                galvo_x_scan_pos.Text = string.Format("{0:0.000}", hStart + hRange * xVal);
-                galvo_y_scan_pos.Text = string.Format("{0:0.000}", vStart + vRange * yVal);
+                double xVal = Convert.ToDouble(scan_cursor.Value[0]) - 1;
+                double yVal = Convert.ToDouble(scan_cursor.Value[1]) - 1;
+
+                double hStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+                double vStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+                double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
+                double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
+                double hres = hRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
+                double vres = vRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+
+                if (galvo_x_scan_pos != null && galvo_y_scan_pos != null)
+                {
+                    galvo_x_scan_pos.Text = string.Format("{0:0.000}", hStart + hres * xVal);
+                    galvo_y_scan_pos.Text = string.Format("{0:0.000}", vStart + vres * yVal);
+                }
+
+                object value = scan_cursor.Value[2];
+                cursor_signal_value.Text = (Convert.ToDouble(value)).ToString("G6", CultureInfo.InvariantCulture);
             }
         }
 
@@ -729,6 +792,64 @@ namespace ConfocalControl
                 if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
                 if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
             }
+            catch (FormatException e2)
+            {
+                MessageBox.Show("Caught exception: " + e2.Message);
+                if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
+                if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
+            }
+        }
+
+        private void output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (output_type_box.SelectedIndex)
+            {
+                case 0:
+                    if (output_box.SelectedIndex >= 0)
+                    {
+                        MultiChannelData data = MultiChannelRasterScan.GetController().dataOutputHistory;
+                        if (data != null)
+                        {
+                            List<Point3D> dataSpecific = data.GetCounterData(output_box.SelectedIndex);
+                            if (dataSpecific != null)
+                            {
+                                rasterScan_display.DataSource = dataSpecific.ToArray();
+                                double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                                raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                                double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                                raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
+                            }
+                            else this.rasterScan_display.DataSource = null;
+                        }
+                    }
+                    else this.rasterScan_display.DataSource = null;
+                    break;
+
+                case 1:
+                    if (output_box.SelectedIndex >= 0)
+                    {
+                        MultiChannelData data = MultiChannelRasterScan.GetController().dataOutputHistory;
+                        if (data != null)
+                        {
+                            List<Point3D> dataSpecific = data.GetAnalogueData(output_box.SelectedIndex);
+                            if (dataSpecific != null)
+                            {
+                                rasterScan_display.DataSource = dataSpecific.ToArray();
+                                double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                                raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                                double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                                raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
+                            }
+                            else this.rasterScan_display.DataSource = null;
+                        }
+                    }
+                    else this.rasterScan_display.DataSource = null;
+                    break;
+
+                default:
+                    this.rasterScan_display.DataSource = null;
+                    break;
+            }
         }
 
         #endregion
@@ -737,23 +858,27 @@ namespace ConfocalControl
 
         private void save_settings_Click(object sender, RoutedEventArgs e)
         {
-            GalvoPairPlugin.GetController().Settings.SaveSettings();
-            SingleCounterPlugin.GetController().Settings.SaveSettings();
-            MultiChannelRasterScan.GetController().scanSettings.SaveSettings();
+            settings.Save();
+            GalvoPairPlugin.GetController().Settings.Save();
+            SingleCounterPlugin.GetController().Settings.Save();
+            MultiChannelRasterScan.GetController().scanSettings.Save();
         }
 
         private void load_settings_Click(object sender, RoutedEventArgs e)
         {
-            GalvoPairPlugin.GetController().Settings.LoadSettings();
+            settings = PluginSaveLoad.LoadSettings("mainWindow");
+            fileName_set.Text = (string)settings["saveFile"];
+
+            GalvoPairPlugin.GetController().LoadSettings();
             galvo_X_set.Text = (string)GalvoPairPlugin.GetController().Settings["GalvoXInit"];
             galvo_Y_set.Text = (string)GalvoPairPlugin.GetController().Settings["GalvoYInit"];
 
-            SingleCounterPlugin.GetController().Settings.LoadSettings();
+            SingleCounterPlugin.GetController().LoadSettings();
             exposure_set.Value = SingleCounterPlugin.GetController().GetExposure();
             int val = SingleCounterPlugin.GetController().GetBufferSize();
             buffer_size_set.Value = val;
 
-            MultiChannelRasterScan.GetController().scanSettings.LoadSettings();
+            MultiChannelRasterScan.GetController().LoadSettings();
             scan_x_min_set.Value = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
             scan_x_max_set.Value = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"];
             scan_x_res_set.Value = Convert.ToInt32((double)MultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
@@ -764,13 +889,31 @@ namespace ConfocalControl
 
         private void open_HardwareConfigure(object sender, RoutedEventArgs e)
         {
-            HardwareConfigure win = new HardwareConfigure();
-            win.Show();
+            HardwareConfigure window = new HardwareConfigure();
+            window.ShowDialog();
+        }
+
+        private void open_TimeTraceHardwareConfigure(object sender, RoutedEventArgs e)
+        {
+            TimeTraceHardwareConfigure window = new TimeTraceHardwareConfigure();
+            window.ShowDialog();
+        }
+
+        private void rasterScan_hardware_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            rasterScan_display.DataSource = null;
+            RasterScanHardwareConfigure window = new RasterScanHardwareConfigure();
+            window.ShowDialog();
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void fileName_set_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            settings["saveFile"] = fileName_set.Text;
         }
 
         #endregion 
@@ -779,20 +922,50 @@ namespace ConfocalControl
 
         private void save_raster_scan_Click(object sender, RoutedEventArgs e)
         {
-            MultiChannelRasterScan.GetController().SaveData();
+            if (this.rasterScan_display.DataSource != null)
+            {
+                MultiChannelRasterScan.GetController().SaveData(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+            }
         }
 
         private void save_timetrace_Click(object sender, RoutedEventArgs e)
         {
-            SingleCounterPlugin.GetController().SaveData();
+            if (this.APD_monitor.DataSource != null)
+            {
+                SingleCounterPlugin.GetController().SaveData(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+            }
         }
 
         private void save_hist_Click(object sender, RoutedEventArgs e)
         {
-            SingleCounterPlugin.GetController().SaveHistogram();
+            if (this.APD_hist.DataSource != null)
+            {
+                SingleCounterPlugin.GetController().SaveHistogram(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+            }
         }
 
         #endregion
+
+        private void main_window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MultiChannelRasterScan.GetController().IsRunning())
+            {
+                MultiChannelRasterScan.GetController().StopScan();
+                Thread.Sleep(1000);
+            }
+
+            if (SingleCounterPlugin.GetController().IsRunning())
+            {
+                SingleCounterPlugin.GetController().StopContinuousAcquisition();
+                Thread.Sleep(1000);
+            }
+
+            if (GalvoPairPlugin.GetController().IsRunning())
+            {
+                SingleCounterPlugin.GetController().AcquisitionFinished();
+                Thread.Sleep(1000);
+            }
+        }
 
     }
 }

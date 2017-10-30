@@ -32,54 +32,86 @@ namespace ConfocalControl
         {
             InitializeComponent();
 
-            string galvoX = (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"];
+            List<string> analogInputChannelsKeys = new List<string>();
             foreach (string key in Environs.Hardware.AnalogInputChannels.Keys)
             {
-                string pc = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[key]).PhysicalChannel;
-                galvo_x_input_channel_set.Items.Add(pc);
+                analogInputChannelsKeys.Add(key);
+            }
+            analogInputChannelsKeys.Sort();
+
+            List<string> analogOutputChannelsKeys = new List<string>();
+            foreach (string key in Environs.Hardware.AnalogOutputChannels.Keys)
+            {
+                analogOutputChannelsKeys.Add(key);
+            }
+            analogOutputChannelsKeys.Sort();
+
+            string galvoX = (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"];
+            foreach (string key in analogInputChannelsKeys)
+            {
+                galvo_x_input_channel_set.Items.Add(key);
                 if (key == galvoX)
                 {
-                    galvo_x_input_channel_set.SelectedValue = pc;
+                    galvo_x_input_channel_set.SelectedValue = key;
                 }
             }
 
             string galvoXControl = (string)GalvoPairPlugin.GetController().Settings["GalvoXControl"];
-            foreach (string key in Environs.Hardware.AnalogOutputChannels.Keys)
+            foreach (string key in analogOutputChannelsKeys)
             {
-                string pc = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[key]).PhysicalChannel;
-                galvo_x_output_channel_set.Items.Add(pc);
+                galvo_x_output_channel_set.Items.Add(key);
                 if (key == galvoXControl)
                 {
-                    galvo_x_output_channel_set.SelectedValue = pc;
+                    galvo_x_output_channel_set.SelectedValue = key;
                 }
             }
 
             string galvoY = (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"];
-            foreach (string key in Environs.Hardware.AnalogInputChannels.Keys)
+            foreach (string key in analogInputChannelsKeys)
             {
-                string pc = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[key]).PhysicalChannel;
-                galvo_y_input_channel_set.Items.Add(pc);
+                galvo_y_input_channel_set.Items.Add(key);
                 if (key == galvoY)
                 {
-                    galvo_y_input_channel_set.SelectedValue = pc;
+                    galvo_y_input_channel_set.SelectedValue = key;
                 }
             }
 
             string galvoYControl = (string)GalvoPairPlugin.GetController().Settings["GalvoYControl"];
-            foreach (string key in Environs.Hardware.AnalogOutputChannels.Keys)
+            foreach (string key in analogOutputChannelsKeys)
             {
-                string pc = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[key]).PhysicalChannel;
-                galvo_y_output_channel_set.Items.Add(pc);
+                galvo_y_output_channel_set.Items.Add(key);
                 if (key == galvoYControl)
                 {
-                    galvo_y_output_channel_set.SelectedValue = pc;
+                    galvo_y_output_channel_set.SelectedValue = key;
                 }
             }
         }
 
+        private bool AcceptableSettings()
+        {
+            if ((string)galvo_x_input_channel_set.SelectedValue == (string)galvo_y_input_channel_set.SelectedValue)
+            {
+                MessageBox.Show("Input channels settings unacceptable.");
+                return false;
+            }
+            else if ((string)galvo_x_output_channel_set.SelectedValue == (string)galvo_y_output_channel_set.SelectedValue)
+            {
+                MessageBox.Show("Output channels settings unacceptable.");
+                return false;
+            }
+            else return true;
+        }
+
         private void ok_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if (AcceptableSettings())
+            {
+                GalvoPairPlugin.GetController().Settings["GalvoXRead"] = (string)galvo_x_input_channel_set.SelectedValue;
+                GalvoPairPlugin.GetController().Settings["GalvoXControl"] = (string)galvo_x_output_channel_set.SelectedValue;
+                GalvoPairPlugin.GetController().Settings["GalvoYRead"] = (string)galvo_y_input_channel_set.SelectedValue;
+                GalvoPairPlugin.GetController().Settings["GalvoYControl"] = (string)galvo_y_output_channel_set.SelectedValue;
+                this.Close();
+            }
         }
 
         private void cancel_button_Click(object sender, RoutedEventArgs e)

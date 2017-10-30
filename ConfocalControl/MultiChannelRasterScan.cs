@@ -5,11 +5,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Threading;
+using Microsoft.Win32;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
-
 using DAQ.HAL;
 
 namespace ConfocalControl
@@ -35,15 +35,17 @@ namespace ConfocalControl
         }
 
         // Settings
-        private PluginSettings _rasterScanSettings = new PluginSettings("multiChannelConfocalScan");
+        private PluginSettings _rasterScanSettings;
         public PluginSettings scanSettings
         {
             get { return _rasterScanSettings; }
             set { _rasterScanSettings = value; }
         }
 
-        // Galvo controller
-        GalvoPairPlugin galvoPair;
+        private int MINNUMBEROFSAMPLES = 10;
+        private double TRUESAMPLERATE = 1000;
+        private int pointsPerExposure;
+        private double sampleRate;
 
         // Bound event managers to class
         public event MultiChannelDataEventHandler Data;
@@ -59,11 +61,11 @@ namespace ConfocalControl
         List<double[]> counterLatestData;
         private double[,] analogLatestData;
         private MultiChannelData dataOutputs;
+        public MultiChannelData dataOutputHistory { get { return dataOutputs; } }
         private MultiChannelData dataLines;
 
         // Keep track of tasks
         private Task triggerTask;
-        private DigitalWaveform triggerWaveform;
         private DigitalSingleChannelWriter triggerWriter;
         private Task freqOutTask;
         private List<Task> counterTasks;
@@ -75,11 +77,16 @@ namespace ConfocalControl
 
         #region Init
 
+        public void LoadSettings()
+        {
+            _rasterScanSettings = PluginSaveLoad.LoadSettings("multiChannelConfocalScan");
+        }
+
         private void InitialiseSettings()
         {
-            //_rasterScanSettings.LoadSettings();
+            LoadSettings();
 
-            if (_rasterScanSettings.Keys.Count == 0)
+            if (_rasterScanSettings.Keys.Count != 9)
             {
                 _rasterScanSettings["GalvoXStart"] = (double)0;
                 _rasterScanSettings["GalvoXEnd"] = (double)1;
@@ -89,11 +96,8 @@ namespace ConfocalControl
                 _rasterScanSettings["GalvoYRes"] = (double)21;
 
                 _rasterScanSettings["counterChannels"] = new List<string> {"APD0", "APD1" };
-                _rasterScanSettings["analogueChannels"] = new List<string> {"AI0","AI1"};
+                _rasterScanSettings["analogueChannels"] = new List<string> {};
                 _rasterScanSettings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
-                _rasterScanSettings["pointsPerExposure"] = (double)10;
-
-                return;
             }
         }
 
@@ -118,10 +122,30 @@ namespace ConfocalControl
 
         #region Synchronous methods
 
+        private void CalculateParameters()
+        {
+            double _sampleRate = (double)SingleCounterPlugin.GetController().Settings["sampleRate"];
+            if (_sampleRate * MINNUMBEROFSAMPLES >= TRUESAMPLERATE)
+            {
+                pointsPerExposure = MINNUMBEROFSAMPLES;
+                sampleRate = _sampleRate * pointsPerExposure;
+            }
+            else
+            {
+                pointsPerExposure = Convert.ToInt32(TRUESAMPLERATE / _sampleRate);
+                sampleRate = _sampleRate * pointsPerExposure;
+            }
+        }
+
         public void SynchronousStartScan()
         {
             try
             {
+                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Counter already running");
+                }
+
                 dataOutputs = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
                                                     ((List<string>)scanSettings["analogueChannels"]).Count);
 
@@ -138,8 +162,7 @@ namespace ConfocalControl
         private void SynchronousAcquisitionStarting()
         {
             // Define sample rate 
-            double exposure = 1 / (double)SingleCounterPlugin.GetController().Settings["sampleRate"];
-            double sample_rate = (double)scanSettings["pointsPerExposure"] / exposure;
+            CalculateParameters();
 
             // Set up trigger task
             triggerTask = new Task("pause trigger task");
@@ -164,7 +187,7 @@ namespace ConfocalControl
                 COPulseFrequencyUnits.Hertz,
                 COPulseIdleState.Low,
                 0,
-                sample_rate,
+                sampleRate,
                 0.5);
 
             freqOutTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
@@ -174,7 +197,7 @@ namespace ConfocalControl
             freqOutTask.Triggers.StartTrigger.Retriggerable = true;
 
 
-            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, Convert.ToInt32((double)scanSettings["pointsPerExposure"]) + 1);
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, pointsPerExposure + 1);
 
             freqOutTask.Control(TaskAction.Verify);
 
@@ -201,14 +224,13 @@ namespace ConfocalControl
                 // Take one sample within a window determined by sample rate using clock task
                 counterTasks[i].Timing.ConfigureSampleClock(
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                    sample_rate,
+                    sampleRate,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.ContinuousSamples);
 
                 counterTasks[i].Control(TaskAction.Verify);
 
                 DaqStream counterStream = counterTasks[i].Stream;
-                //counterStream.ReadOverwriteMode = ReadOverwriteMode.OverwriteUnreadSamples;
                 counterReaders.Add(new CounterSingleChannelReader(counterStream));
 
                 // Start tasks
@@ -236,14 +258,13 @@ namespace ConfocalControl
             {
                 analoguesTask.Timing.ConfigureSampleClock(
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                    sample_rate,
+                    sampleRate,
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.ContinuousSamples);
 
                 analoguesTask.Control(TaskAction.Verify);
 
                 DaqStream analogStream = analoguesTask.Stream;
-                //analogStream.ReadOverwriteMode = ReadOverwriteMode.OverwriteUnreadSamples;
                 analoguesReader = new AnalogMultiChannelReader(analogStream);
 
                 // Start tasks
@@ -265,6 +286,7 @@ namespace ConfocalControl
                          (double)scanSettings["GalvoYStart"], null, null);
 
             // Snake the raster
+            bool IsSnaked = false;
             bool inverted = true;
 
             // Loop for X axis
@@ -272,9 +294,12 @@ namespace ConfocalControl
                     YNumber < (double)scanSettings["GalvoYRes"];
                     YNumber++)
             {
-
-                if (inverted) inverted = false;
-                else inverted = true;
+                if (IsSnaked)
+                {
+                    if (inverted) inverted = false;
+                    else inverted = true;
+                }
+                else inverted = false;
 
                 dataLines = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
                     ((List<string>)scanSettings["analogueChannels"]).Count);
@@ -283,7 +308,7 @@ namespace ConfocalControl
                 double currentGalvoYpoint = (double)scanSettings["GalvoYStart"] + YNumber *
                         ((double)scanSettings["GalvoYEnd"] -
                         (double)scanSettings["GalvoYStart"]) /
-                        ((double)scanSettings["GalvoYRes"] - 1);
+                        ((double)scanSettings["GalvoYRes"]);
 
                 // Move Y galvo to new scan point
                 GalvoPairPlugin.GetController().SetGalvoYSetpointAndWait(currentGalvoYpoint, null, null);
@@ -297,11 +322,11 @@ namespace ConfocalControl
                     if (inverted) XNumber = (double)scanSettings["GalvoXRes"] - 1 - _XNumber;
                     else XNumber = _XNumber;
 
-                    // Calculate new Y galvo point from current scan point 
+                    // Calculate new X galvo point from current scan point 
                     double currentGalvoXpoint = (double)scanSettings["GalvoXStart"] + XNumber *
                     ((double)scanSettings["GalvoXEnd"] -
                     (double)scanSettings["GalvoXStart"]) /
-                    ((double)scanSettings["GalvoXRes"] - 1);
+                    ((double)scanSettings["GalvoXRes"]);
 
                     // Move X galvo to new scan point 
                     GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(currentGalvoXpoint, null, null);
@@ -313,13 +338,13 @@ namespace ConfocalControl
                     counterLatestData = new List<double[]>();
                     foreach (CounterSingleChannelReader counterReader in counterReaders)
                     {
-                        counterLatestData.Add(counterReader.ReadMultiSampleDouble(Convert.ToInt32((double)scanSettings["pointsPerExposure"]) + 1));
+                        counterLatestData.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
                     }
 
                     // Read analogue data
                     if (((List<string>)scanSettings["analogueChannels"]).Count != 0)
                     {
-                        analogLatestData = analoguesReader.ReadMultiSample(Convert.ToInt32((double)scanSettings["pointsPerExposure"]) + 1);
+                        analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
                     }
 
                     // re-init the trigger 
@@ -338,18 +363,21 @@ namespace ConfocalControl
                     }
 
                     // Store analogue data
-                    for (int i = 0; i < analogLatestData.GetLength(0); i++)
+                    if (((List<string>)scanSettings["analogueChannels"]).Count != 0)
                     {
-                        double sum = 0;
-                        for (int j = 0; j < analogLatestData.GetLength(1) - 1; j++)
+                        for (int i = 0; i < analogLatestData.GetLength(0); i++)
                         {
-                            sum = sum + analogLatestData[i, j];
+                            double sum = 0;
+                            for (int j = 0; j < analogLatestData.GetLength(1) - 1; j++)
+                            {
+                                sum = sum + analogLatestData[i, j];
+                            }
+                            double average = sum / (analogLatestData.GetLength(1) - 1);
+                            Point3D pnt = new Point3D(XNumber + 1, YNumber + 1, average);
+                            Point3D pntLine = new Point3D(XNumber + 1, average, 0);
+                            dataLines.AddtoAnalogueData(i, pntLine);
+                            dataOutputs.AddtoAnalogueData(i, pnt);
                         }
-                        double average = sum / (analogLatestData.GetLength(1) - 1);
-                        Point3D pnt = new Point3D(XNumber + 1, YNumber + 1, average);
-                        Point3D pntLine = new Point3D(XNumber + 1, average, 0);
-                        dataLines.AddtoAnalogueData(i, pntLine);
-                        dataOutputs.AddtoAnalogueData(i, pnt);
                     }
 
                     OnData(dataOutputs);
@@ -448,44 +476,104 @@ namespace ConfocalControl
                 MessageBox.Show("Galvo Y settings unacceptable.");
                 return false;
             }
-            else if ((double)scanSettings["pointsPerExposure"] < 1)
-            {
-                MessageBox.Show("Not enough point per exposure.");
-                return false;
-            }
             else
             {
                 return true;
             }
         }
 
-        public void SaveDataAutomatic()
+        public void SaveDataAutomatic(string fileName)
         {
-            return;
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+
+            List<string> lines = new List<string>();
+            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
+            lines.Add("Exposure =, " + SingleCounterPlugin.GetController().GetExposure().ToString());
+            lines.Add("X start =, " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop =, " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution =, " + ((double)scanSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("");
+
+            string descriptionString = "data, X, Y";
+            foreach (string channel in (List<string>)scanSettings["counterChannels"])
+            {
+                descriptionString = descriptionString + ", " + channel;
+            }
+            foreach (string channel in (List<string>)scanSettings["analogueChannels"])
+            {
+                descriptionString = descriptionString + ", " + channel;
+            }
+            lines.Add(descriptionString);
+
+            foreach (double[] completeData in dataOutputs.TransposeData())
+            {
+                string line = "data";
+                foreach (double dataPnt in completeData)
+                {
+                    line = line + ", " + dataPnt.ToString();
+                }
+                lines.Add(line);
+            }
+
+            System.IO.File.WriteAllLines(directory + fileName, lines.ToArray());
         }
 
-        public void SaveData()
+        public void SaveData(string fileName)
         {
-            return;
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+
+            List<string> lines = new List<string>();
+            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
+            lines.Add("Exposure =, " + SingleCounterPlugin.GetController().GetExposure().ToString());
+            lines.Add("X start =, " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop =, " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution =, " + ((double)scanSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("");
+
+            string descriptionString = "data, X, Y";
+            foreach (string channel in (List<string>)scanSettings["counterChannels"])
+            {
+                descriptionString = descriptionString + ", " + channel;
+            }
+            foreach (string channel in (List<string>)scanSettings["analogueChannels"])
+            {
+                descriptionString = descriptionString + ", " + channel;
+            }
+            lines.Add(descriptionString);
+
+            foreach (double[] completeData in dataOutputs.TransposeData())
+            {
+                string line = "data";
+                foreach (double dataPnt in completeData)
+                {
+                    line = line + ", " + dataPnt.ToString();
+                }
+                lines.Add(line);
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = directory;
+            saveFileDialog.FileName = fileName;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
+            }
         }
 
         #endregion
 
     }
 
-
-
     public class MultiChannelData
     {
-        private List<Point3D> galvoXData;
-        private List<Point3D> galvoYData;
+        private int numberCounterChannels;
+        private int numberAnalogChannels;
         private List<Point3D>[] counterDataStore;
         private List<Point3D>[] analogDataStore;
 
         public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
         {
-            galvoXData = new List<Point3D>();
-            galvoYData = new List<Point3D>();
+            numberCounterChannels = number_of_counter_channels;
+            numberAnalogChannels = number_of_analog_channels;
 
             counterDataStore = new List<Point3D>[number_of_counter_channels];
             for (int i = 0; i < number_of_counter_channels; i++)
@@ -500,29 +588,10 @@ namespace ConfocalControl
             }
         }
 
-        public List<Point3D> GetGalvoXData()
-        {
-            return galvoXData;
-        }
-
-        public void AddtoGalvoXData(Point3D pnt)
-        {
-            galvoXData.Add(pnt);
-        }
-
-        public List<Point3D> GetGalvoYData()
-        {
-            return galvoYData;
-        }
-
-        public void AddtoGalvoYData(Point3D pnt)
-        {
-            galvoYData.Add(pnt);
-        }
-
         public List<Point3D> GetCounterData(int counter_channel_number)
         {
-            return counterDataStore[counter_channel_number];
+            if (counter_channel_number >= numberCounterChannels) return null;
+            else return counterDataStore[counter_channel_number];
         }
 
         public void AddtoCounterData(int counter_channel_number, Point3D pnt)
@@ -532,12 +601,69 @@ namespace ConfocalControl
 
         public List<Point3D> GetAnalogueData(int analog_channel_number)
         {
-            return analogDataStore[analog_channel_number];
+            if (analog_channel_number >= numberAnalogChannels) return null;
+            else return analogDataStore[analog_channel_number];
         }
 
         public void AddtoAnalogueData(int analog_channel_number, Point3D pnt)
         {
             analogDataStore[analog_channel_number].Add(pnt);
+        }
+
+        public int Count()
+        {
+            if (numberCounterChannels != 0) return counterDataStore[0].Count;
+            else if (numberAnalogChannels != 0) return analogDataStore[0].Count;
+            else return 0;
+        }
+
+        public List<double[]> TransposeData()
+        {
+            List<double[]> returnList = new List<double[]>();
+
+            int count = Count();
+            if (count == 0) return returnList;
+            else 
+            {
+                for (int i = 0; i < count; i++)
+			    {
+			        double[] transposedData = new double[2 + numberCounterChannels + numberAnalogChannels];
+
+                    double hStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+                    double vStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+                    double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
+                    double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
+                    double hres = hRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
+                    double vres = vRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+
+                    if (numberCounterChannels != 0)
+                    {
+                        double xVal = GetCounterData(0)[i].X - 1;
+                        double yVal = GetCounterData(0)[i].Y - 1;
+
+                        transposedData[0] = hStart + hres * xVal; transposedData[1] = vStart + vres * yVal;
+                    }
+                    else
+                    {
+                        double xVal = GetAnalogueData(0)[i].X - 1;
+                        double yVal = GetAnalogueData(0)[i].Y - 1;
+                    }
+
+                    for (int j = 0; j < numberCounterChannels; j++)
+			        {
+			            transposedData[2 + j] = GetCounterData(j)[i].Z;
+			        }
+
+                    for (int j = 0; j < numberAnalogChannels; j++)
+			        {
+			            transposedData[2 + numberCounterChannels + j] = GetAnalogueData(j)[i].Z;
+			        }
+
+                    returnList.Add(transposedData);
+			    }
+
+                return returnList;
+            }
         }
     }
 }

@@ -1,20 +1,20 @@
-﻿<Window x:Class="ConfocalControl.MainWindow"
+﻿<Window x:Name="main_window" x:Class="ConfocalControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
-        Title="Confocal Rasterscan Acquisition Program" Height="620" Width="1100">
+        Title="Confocal Rasterscan Acquisition Program" Height="590" Width="1100" Icon="confocal_app_icon.ico" Closing="main_window_Closing">
     <Grid>
         <DockPanel x:Name="dockPanel">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Close" Click="close_Click"/>
-                </MenuItem>
-                <MenuItem Header="_RasterScan">
                     <MenuItem Header="_Save settings" Click="save_settings_Click"/>
                     <MenuItem Header="_Load settings" Click="load_settings_Click"/>
+                    <MenuItem Header="_Close" Click="close_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Hardware">
                     <MenuItem x:Name="hardware_MenuItem" Header="_Configure Galvos" Click="open_HardwareConfigure"/>
+                    <MenuItem x:Name="timetrace_hardware_MenuItem" Header="_Configure Time Trace" Click="open_TimeTraceHardwareConfigure"/>
+                    <MenuItem x:Name="rasterScan_hardware_MenuItem" Header="_Configure Raster Scan" Click="rasterScan_hardware_MenuItem_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Laser Control">
                     <MenuItem Header="_Bay1 Ti:Sapph"/>
@@ -24,15 +24,35 @@
             <StackPanel></StackPanel>
         </DockPanel>
         <TextBox x:Name="galvo_X_display" HorizontalAlignment="Left" Height="23" Margin="94,121,0,0" TextWrapping="Wrap" Text="Galvo X" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.5,0.454" TextAlignment="Center" IsReadOnly="True"/>
-        <Button x:Name="galvo_setpoint_reader" Content="Read Galvos" HorizontalAlignment="Left" Margin="94,84,0,0" VerticalAlignment="Top" Width="75" Click="galvo_setpoint_Click" Height="22"/>
+        <Button x:Name="galvo_setpoint_reader" Content="Read Galvos" HorizontalAlignment="Left" Margin="94,91,0,0" VerticalAlignment="Top" Width="75" Click="galvo_setpoint_Click" Height="22"/>
         <TextBox x:Name="galvo_Y_display" HorizontalAlignment="Left" Height="23" Margin="94,155,0,0" TextWrapping="Wrap" Text="Galvo Y" VerticalAlignment="Top" Width="75" TextAlignment="Center" IsReadOnly="True"/>
         <Label Content="Galvo X" HorizontalAlignment="Left" Margin="30,118,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
         <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="30,153,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
-        <Label Content="Set Galvos" HorizontalAlignment="Left" Margin="183,82,0,0" VerticalAlignment="Top" Width="65" Height="26"/>
+        <Label Content="Set Galvos" HorizontalAlignment="Left" Margin="181,89,0,0" VerticalAlignment="Top" Width="65" Height="26"/>
         <TextBox x:Name="galvo_X_set" HorizontalAlignment="Left" Height="23" Margin="179,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75" KeyUp="galvo_X_set_KeyUp" TextAlignment="Center" TextChanged="galvo_X_set_TextChanged"/>
         <TextBox x:Name="galvo_Y_set" HorizontalAlignment="Left" Height="23" Margin="179,155,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75" KeyUp="galvo_Y_set_KeyUp" TextAlignment="Center" TextChanged="galvo_Y_set_TextChanged"/>
-        <TextBox x:Name="single_photon_counts" HorizontalAlignment="Left" Height="35" Margin="322,217,0,0" TextWrapping="Wrap" Text="Counts" VerticalAlignment="Top" Width="100" TextAlignment="Center" FontSize="20" IsReadOnly="True"/>
-        <ni:Switch x:Name="oscilloscope_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,175,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="oscilloscope_Click" ClickMode="Press"/>
+        <ItemsControl>
+            <ItemsControl.Resources>
+                <Style x:Key="ScaleStyle" TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Grid.ZIndex" Value="1"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="3" ScaleY="3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Resources>
+            <TextBox x:Name="single_photon_counts" Style="{StaticResource ScaleStyle}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Height="35" Margin="108,225,0,0" TextWrapping="Wrap" Text="Counts" VerticalAlignment="Top" Width="100" TextAlignment="Center" FontSize="20" IsReadOnly="True">
+                <TextBox.Background>
+                    <SolidColorBrush Color="White"/>
+                </TextBox.Background>
+            </TextBox>
+        </ItemsControl>
+        <ni:Switch x:Name="oscilloscope_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,205,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="oscilloscope_Click" ClickMode="Press"/>
         <ni:Graph x:Name="APD_monitor" HorizontalAlignment="Left" Margin="466,42,0,0" Width="300" Height="200" VerticalAlignment="Top">
             <ni:Graph.ContextMenu>
                 <ContextMenu>
@@ -45,7 +65,7 @@
                 </ni:Plot>
             </ni:Graph.Plots>
         </ni:Graph>
-        <Label Content="Exposure (s)" HorizontalAlignment="Left" Margin="336,51,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
+        <Label Content="Exposure (s)" HorizontalAlignment="Left" Margin="336,42,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
         <ni:Graph x:Name="APD_hist" HorizontalAlignment="Left" Margin="771,42,0,0" RenderTransformOrigin="0.5,0.5" Width="300" Height="200" VerticalAlignment="Top">
             <ni:Graph.ContextMenu>
                 <ContextMenu>
@@ -70,8 +90,8 @@
                 </ni:Plot>
             </ni:Graph.Plots>
         </ni:Graph>
-        <Label Content="Buffer size" HorizontalAlignment="Left" Margin="338,104,0,0" VerticalAlignment="Top" Height="26" Width="65"/>
-        <ni:IntensityGraph x:Name="rasterScan_display" HorizontalAlignment="Left" Height="220" Margin="473,287,0,0" VerticalAlignment="Top" Width="300" RenderTransformOrigin="0.877,0.39" MaxHeight="220" MinHeight="220" MaxWidth="300" MinWidth="300" Cursor="None">
+        <Label Content="Buffer size" HorizontalAlignment="Left" Margin="338,95,0,0" VerticalAlignment="Top" Height="26" Width="65"/>
+        <ni:IntensityGraph x:Name="rasterScan_display" HorizontalAlignment="Left" Height="250" Margin="467,273,0,0" VerticalAlignment="Top" Width="290" RenderTransformOrigin="0.544,0.459" Cursor="Arrow" HorizontalContentAlignment="Center">
             <ni:IntensityGraph.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Save Data" Click="save_raster_scan_Click" />
@@ -87,16 +107,19 @@
                 <ni:AxisDouble Orientation="Horizontal" Range="0, 10, System.Double" OverridesDefaultStyle="True" Adjuster="None"/>
             </ni:IntensityGraph.HorizontalAxis>
             <ni:IntensityGraph.ColorScale>
-                <ni:ColorScale Adjuster="FitExactly">
-                    <ni:ColorScaleMarker Color="Blue" Value="0"/>
+                <ni:ColorScale Adjuster="FitLoosely" LabelOrientation="Natural" Location="Far">
+                    <ni:ColorScale.MajorDivisions>
+                        <ni:ScaleLabeledDivisions LabelVisibility="Collapsed" TickVisibility="Collapsed"/>
+                    </ni:ColorScale.MajorDivisions>
                     <ni:ColorScaleMarker Color="#FFFDFDE9" Value="40"/>
                     <ni:ColorScaleMarker Color="#FFFDFD85" Value="60"/>
                     <ni:ColorScaleMarker Color="Red" Value="100"/>
+                    <ni:ColorScaleMarker Color="Blue" Value="0"/>
                 </ni:ColorScale>
             </ni:IntensityGraph.ColorScale>
         </ni:IntensityGraph>
         <ni:Switch x:Name="rasterScan_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,417,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="rasterScan_Click" ClickMode="Press"/>
-        <ni:Graph x:Name="rasterScan_lineDisplay" HorizontalAlignment="Left" Height="200" Margin="773,301,0,0" VerticalAlignment="Top" Width="300">
+        <ni:Graph x:Name="rasterScan_lineDisplay" HorizontalAlignment="Left" Height="200" Margin="771,273,0,0" VerticalAlignment="Top" Width="300">
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 2">
                     <ni:LinePlotRenderer Stroke="Blue"/>
@@ -115,17 +138,23 @@
         <Label Content="Start" HorizontalAlignment="Left" Margin="28,355,0,0" VerticalAlignment="Top"/>
         <Label Content="Stop" HorizontalAlignment="Left" Margin="28,383,0,0" VerticalAlignment="Top"/>
         <Label Content="Res" HorizontalAlignment="Left" Margin="30,410,0,0" VerticalAlignment="Top"/>
-        <ni:NumericTextBoxDouble x:Name="exposure_set" HorizontalAlignment="Left" Height="23" Margin="336,79,0,0" VerticalAlignment="Top" Width="74" ValueChanged="exposure_set_ValueChanged" Interval="0.1"/>
-        <ni:RadixNumericTextBoxInt32 x:Name="buffer_size_set" HorizontalAlignment="Left" Height="23" Margin="326,131,0,0" VerticalAlignment="Top" Width="91" ValueChanged="buffer_size_set_ValueChanged" Interval="1000"/>
-        <TextBox x:Name="galvo_x_scan_pos" HorizontalAlignment="Left" Height="23" Margin="473,538,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
-        <TextBox x:Name="galvo_y_scan_pos" HorizontalAlignment="Left" Height="23" Margin="553,538,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
-        <Button x:Name="set_galvos_from_scan" Content="Set" HorizontalAlignment="Left" Margin="633,539,0,0" VerticalAlignment="Top" Width="75" Click="set_galvos_from_scan_Click"/>
-        <Label Content="Galvo X" HorizontalAlignment="Left" Margin="486,512,0,0" VerticalAlignment="Top"/>
-        <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="565,512,0,0" VerticalAlignment="Top"/>
+        <ni:NumericTextBoxDouble x:Name="exposure_set" HorizontalAlignment="Left" Height="23" Margin="336,70,0,0" VerticalAlignment="Top" Width="74" ValueChanged="exposure_set_ValueChanged" Interval="0.1"/>
+        <ni:RadixNumericTextBoxInt32 x:Name="buffer_size_set" HorizontalAlignment="Left" Height="23" Margin="326,122,0,0" VerticalAlignment="Top" Width="91" ValueChanged="buffer_size_set_ValueChanged" Interval="1000"/>
+        <TextBox x:Name="galvo_x_scan_pos" HorizontalAlignment="Left" Height="23" Margin="836,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="galvo_y_scan_pos" HorizontalAlignment="Left" Height="23" Margin="916,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
+        <Button x:Name="set_galvos_from_scan" Content="Set" HorizontalAlignment="Left" Margin="996,516,0,0" VerticalAlignment="Top" Width="75" Click="set_galvos_from_scan_Click"/>
+        <Label Content="Galvo X" HorizontalAlignment="Left" Margin="849,489,0,0" VerticalAlignment="Top"/>
+        <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="928,489,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="save_automatic" Content="Save data when scan ends" Margin="293,445,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="159"/>
-        <ni:RadixNumericTextBoxInt32 x:Name="scan_number_points_set" HorizontalAlignment="Left" Height="23" Margin="165,440,0,0" VerticalAlignment="Top" Width="89" ValueChanged="scan_number_points_set_ValueChanged" Value="10"/>
-        <Label Content="Points per exposure" HorizontalAlignment="Left" Margin="30,439,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="311,380,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="311,380,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_box_SelectionChanged"/>
         <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="311,353,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_type_box_SelectionChanged"/>
+        <TextBox x:Name="raster_plot_range_low" HorizontalAlignment="Left" Margin="699,470,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="0"/>
+        <TextBox x:Name="raster_plot_range_high" HorizontalAlignment="Left" Height="18" Margin="699,279,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="100"/>
+        <TextBox x:Name="cursor_signal_value" HorizontalAlignment="Left" Height="23" Margin="756,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" TextAlignment="Center"/>
+        <Label Content="CCMQN" HorizontalAlignment="Left" Margin="30,488,0,0" VerticalAlignment="Top" FontWeight="Medium" Height="50" Width="158" FontSize="35" FontFamily="Simplex"/>
+        <ni:RadixNumericTextBoxInt32 x:Name="binNumber_set" HorizontalAlignment="Left" Height="23" Margin="326,171,0,0" VerticalAlignment="Top" Width="91" ValueChanged="binNumber_set_ValueChanged" Interval="10"/>
+        <Label Content="Number of bins" HorizontalAlignment="Left" Margin="326,145,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="fileName_set" HorizontalAlignment="Left" Height="23" Margin="94,52,0,0" TextWrapping="Wrap" Text="file_name" VerticalAlignment="Top" Width="160" TextChanged="fileName_set_TextChanged"/>
+        <Label Content="File Name" HorizontalAlignment="Left" Margin="17,50,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
