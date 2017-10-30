@@ -93,7 +93,7 @@ namespace MOTMaster2
         public static AutoFileLogger paramLogger;
 
         public static AutoFileLogger multiScanLogger;
-        public bool SendDataRemotely { get; set; }
+        public static bool SendDataRemotely { get; set; }
         private bool _AutoLogging;
         public bool AutoLogging
         {
@@ -369,6 +369,9 @@ namespace MOTMaster2
         }
         private void ClearPatterns()
         {
+            if (Utils.isNull(sequence)) return;
+            if (Utils.isNull(sequence.AnalogPattern)) return;
+            if (Utils.isNull(sequence.DigitalPattern)) return;
             sequence.AnalogPattern.Clear();
             sequence.DigitalPattern.Clear();
             GC.Collect();
@@ -380,7 +383,6 @@ namespace MOTMaster2
         {
             if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
-
 
         protected static void OnAnalogDataReceived(object sender, EventArgs e)
         {
