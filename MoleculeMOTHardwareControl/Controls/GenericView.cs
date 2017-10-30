@@ -14,6 +14,13 @@ namespace MoleculeMOTHardwareControl.Controls
     {
         public GenericController controller; 
 
+        private GenericView()
+        {
+            // This is just required for the designer to work
+            // The constructor that takes controllerInstance argument below should be the one used
+            InitializeComponent();
+        }
+
         public GenericView(GenericController controllerInstance)
         {
             controller = controllerInstance;

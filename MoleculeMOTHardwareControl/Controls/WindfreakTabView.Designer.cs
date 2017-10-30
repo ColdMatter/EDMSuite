@@ -581,6 +581,7 @@
             this.lowerSweepFreqBox.TabIndex = 0;
             this.lowerSweepFreqBox.TabStop = false;
             this.lowerSweepFreqBox.Text = "Lower Sweep Frequency (MHz)";
+            this.lowerSweepFreqBox.Visible = false;
             // 
             // lowerSweepFreq
             // 
@@ -618,6 +619,7 @@
             this.upperSweepFreqBox.TabIndex = 1;
             this.upperSweepFreqBox.TabStop = false;
             this.upperSweepFreqBox.Text = "Upper Sweep Frequency (MHz)";
+            this.upperSweepFreqBox.Visible = false;
             // 
             // upperSweepFreq
             // 
@@ -655,6 +657,7 @@
             this.sweepStepSizeBox.TabIndex = 2;
             this.sweepStepSizeBox.TabStop = false;
             this.sweepStepSizeBox.Text = "Sweep Step Size (MHz)";
+            this.sweepStepSizeBox.Visible = false;
             // 
             // sweepStepSize
             // 
@@ -682,6 +685,7 @@
             this.sweepStepTimeBox.TabIndex = 3;
             this.sweepStepTimeBox.TabStop = false;
             this.sweepStepTimeBox.Text = "Sweep Step Time (ms)";
+            this.sweepStepTimeBox.Visible = false;
             // 
             // sweepStepTime
             // 

@@ -32,8 +32,8 @@ namespace DAQ.HAL
         public enum TriggerTypes
         {
             Continuous = 0,
-            Sweep = 1,
-            Pulse = 4
+            //Sweep = 1,
+            //Pulse = 4
         }
 
         public class WindfreakChannel

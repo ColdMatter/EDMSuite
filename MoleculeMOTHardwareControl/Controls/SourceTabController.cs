@@ -58,7 +58,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected double ConvertVoltageToResistance(double voltage, double reference)
         {
-            return referenceResistance * voltage / (5 - voltage);
+            return referenceResistance * voltage / (reference - voltage);
         }
 
         protected double Convert10kResistanceToCelcius(double resistance)
@@ -82,9 +82,9 @@ namespace MoleculeMOTHardwareControl.Controls
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
         {
             double temp = GetTemperature();
-            if (temp < -40)
+            if (temp < -34)
             {
-                castView.UpdateCurrentTemperature("<-40");
+                castView.UpdateCurrentTemperature("<-34");
             }
             else
             {

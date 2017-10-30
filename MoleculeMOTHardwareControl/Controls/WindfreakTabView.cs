@@ -136,19 +136,20 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private void UpdateSettings(object sender, EventArgs e)
         {
+
             double freq = GetFrequency();
             double amp = GetAmplitude();
-            double sweepUpper = GetSweepUpper();
-            double sweepLower = GetSweepLower();
-            double sweepStepSize = GetSweepStepSize();
-            double sweepStepTime = GetSweepStepTime();
+            //double sweepUpper = GetSweepUpper();
+            //double sweepLower = GetSweepLower();
+            //double sweepStepSize = GetSweepStepSize();
+            //double sweepStepTime = GetSweepStepTime();
             bool channel = GetChannel();
             castController.SetFrequency(freq, channel);
             castController.SetAmplitude(amp, channel);
-            castController.SetSweepUpper(sweepUpper, channel);
-            castController.SetSweepLower(sweepLower, channel);
-            castController.SetSweepStepSize(sweepStepSize, channel);
-            castController.SetSweepStepTime(sweepStepTime, channel);
+            //castController.SetSweepUpper(sweepUpper, channel);
+            //castController.SetSweepLower(sweepLower, channel);
+            //castController.SetSweepStepSize(sweepStepSize, channel);
+            //castController.SetSweepStepTime(sweepStepTime, channel);
         }
 
         private void ReadSettings(object sender, EventArgs e)
