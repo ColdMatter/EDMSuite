@@ -35,13 +35,10 @@ namespace ConfocalControl
             return controllerInstance;
         }
 
-        private PluginSettings settings;
-        public PluginSettings Settings
-        {
-            get { return settings; }
-            set { settings = value; }
-        }
+        // Settings
+        public PluginSettings Settings { get; set; }
 
+        // Store channels, tasks, readers and writers 
         private AnalogInputChannel _galvoXReadChannel;
         private AnalogOutputChannel _galvoXControlChannel;
         private AnalogInputChannel _galvoYReadChannel;
@@ -68,21 +65,21 @@ namespace ConfocalControl
 
         public void LoadSettings()
         {
-            settings = PluginSaveLoad.LoadSettings("galvoPair");
+            Settings = PluginSaveLoad.LoadSettings("galvoPair");
         }
 
         private void InitialiseSettings()
         {
             LoadSettings();
-            if (settings.Keys.Count != 7)
+            if (Settings.Keys.Count != 7)
             {
-                settings["GalvoXInit"] = "0.5";
-                settings["GalvoYInit"] = "0.5";
-                settings["GalvoXControl"] = "AO0";
-                settings["GalvoYControl"] = "AO1";
-                settings["GalvoXRead"] = "AI0";
-                settings["GalvoYRead"] = "AI1";
-                settings["pointsPerVolt"] = 100;
+                Settings["GalvoXInit"] = "0.5";
+                Settings["GalvoYInit"] = "0.5";
+                Settings["GalvoXControl"] = "AO0";
+                Settings["GalvoYControl"] = "AO1";
+                Settings["GalvoXRead"] = "AI0";
+                Settings["GalvoYRead"] = "AI1";
+                Settings["pointsPerVolt"] = 100;
                 return;
             }
         }
@@ -126,10 +123,10 @@ namespace ConfocalControl
                 throw new DaqException("Galvo already running");
             }
 
-            _galvoXReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoXRead"]];
-            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
-            _galvoYReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)settings["GalvoYRead"]];
-            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
+            _galvoXReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)Settings["GalvoXRead"]];
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoXControl"]];
+            _galvoYReadChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[(string)Settings["GalvoYRead"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoYControl"]];
 
             _galvoXInputTask = new Task("galvo X analog gather");
             _galvoYInputTask = new Task("galvo Y analog gather");
@@ -212,8 +209,8 @@ namespace ConfocalControl
                 throw new DaqException("Galvo already running");
             }
 
-            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoXControl"]];
-            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)settings["GalvoYControl"]];
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoXControl"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoYControl"]];
 
             _galvoXOutputTask = new Task("galvo X analog set");
             _galvoYOutputTask = new Task("galvo Y analog set");

@@ -98,16 +98,24 @@
     <Compile Include="HardwareConfigure.xaml.cs">
       <DependentUpon>HardwareConfigure.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LaserControl.xaml.cs">
+      <DependentUpon>LaserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MultiChannelRasterScan.cs" />
     <Compile Include="PluginSettings.cs" />
     <Compile Include="RasterScanHardwareConfigure.xaml.cs">
       <DependentUpon>RasterScanHardwareConfigure.xaml</DependentUpon>
     </Compile>
     <Compile Include="SingleCounterPlugin.cs" />
+    <Compile Include="SolsTiSPlugin.cs" />
     <Compile Include="TimeTraceHardwareConfigure.xaml.cs">
       <DependentUpon>TimeTraceHardwareConfigure.xaml</DependentUpon>
     </Compile>
     <Page Include="HardwareConfigure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LaserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

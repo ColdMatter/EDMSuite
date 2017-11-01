@@ -27,13 +27,8 @@ namespace ConfocalControl
         private enum CounterState { stopped, running, stopping};
         private CounterState counterState = CounterState.stopped;
 
-        // Class settings
-        private PluginSettings settings;
-        public PluginSettings Settings
-        {
-            get { return settings; }
-            set { settings = value; }
-        }
+        // Class Settings
+        public PluginSettings Settings { get; set; }
 
         // Keep track of tasks
         private Task freqOutTask;
@@ -69,20 +64,20 @@ namespace ConfocalControl
 
         public void LoadSettings()
         {
-            settings = PluginSaveLoad.LoadSettings("singleCounter");
+            Settings = PluginSaveLoad.LoadSettings("singleCounter");
         }
 
         private void InitialiseSettings()
         {
             LoadSettings();
-            if (settings.Keys.Count != 6)
+            if (Settings.Keys.Count != 6)
             {
-                settings["sampleRate"] = (double)100;
-                settings["channel_type"] = "Counters";
-                settings["analogueLowHighs"] = new double[] { -5, 5 };
-                settings["channel"] = "APD0";
-                settings["bufferSize"] = (int)10000;
-                settings["binNumber"] = (int)20;
+                Settings["sampleRate"] = (double)100;
+                Settings["channel_type"] = "Counters";
+                Settings["analogueLowHighs"] = new double[] { -5, 5 };
+                Settings["channel"] = "APD0";
+                Settings["bufferSize"] = (int)10000;
+                Settings["binNumber"] = (int)20;
                 return;
             }
         }
@@ -99,22 +94,22 @@ namespace ConfocalControl
 
         public double GetExposure()
         {
-            return 1 / (double)settings["sampleRate"];
+            return 1 / (double)Settings["sampleRate"];
         }
 
         public void UpdateExposure(double exp)
         {
-            settings["sampleRate"] = (double) 1 / exp;
+            Settings["sampleRate"] = (double) 1 / exp;
         }
 
         public int GetBufferSize()
         {
-            return (int)settings["bufferSize"];
+            return (int)Settings["bufferSize"];
         }
 
         public void UpdateBufferSize(int buff)
         {
-            settings["bufferSize"] = buff;
+            Settings["bufferSize"] = buff;
         }
 
         public bool IsRunning()
@@ -129,7 +124,7 @@ namespace ConfocalControl
                 double min = data_buffer.Min();
                 double max = data_buffer.Max();
                 double[] centerVals;
-                int[] _hist = Statistics.Histogram(data_buffer.ToArray(), min, max, (int)settings["binNumber"], out centerVals);
+                int[] _hist = Statistics.Histogram(data_buffer.ToArray(), min, max, (int)Settings["binNumber"], out centerVals);
                 Point[] hist = new Point[_hist.Length];
 
                 for (int i = 0; i < _hist.Length; i++)
@@ -164,20 +159,20 @@ namespace ConfocalControl
                 COPulseFrequencyUnits.Hertz,
                 COPulseIdleState.Low,
                 0,
-                (double)settings["sampleRate"],
+                (double)Settings["sampleRate"],
                 0.5);
 
             freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
 
-            switch ((string)settings["channel_type"])
+            switch ((string)Settings["channel_type"])
             {
                 case "Counters":
                     // Set up an edge-counting task
-                    samplingTask = new Task("buffered edge counter gatherer " + (string)settings["channel"]);
+                    samplingTask = new Task("buffered edge counter gatherer " + (string)Settings["channel"]);
 
                     // Count upwards on rising edges starting from zero
                     samplingTask.CIChannels.CreateCountEdgesChannel(
-                        ((CounterChannel)Environs.Hardware.CounterChannels[(string)settings["channel"]]).PhysicalChannel,
+                        ((CounterChannel)Environs.Hardware.CounterChannels[(string)Settings["channel"]]).PhysicalChannel,
                         "edge counter",
                         CICountEdgesActiveEdge.Rising,
                         0,
@@ -186,7 +181,7 @@ namespace ConfocalControl
                     // Take one sample within a window determined by sample rate using clock task
                     samplingTask.Timing.ConfigureSampleClock(
                         (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                        (double)settings["sampleRate"],
+                        (double)Settings["sampleRate"],
                         SampleClockActiveEdge.Rising,
                         SampleQuantityMode.ContinuousSamples);
 
@@ -198,11 +193,11 @@ namespace ConfocalControl
 
                 case "Analogues":
                     // Set up an analogue sampling task
-                    samplingTask = new Task("buffered edge counter gatherer " + (string)settings["channel"]);
+                    samplingTask = new Task("buffered edge counter gatherer " + (string)Settings["channel"]);
 
-                    string channelName = (string)settings["channel"];
-                    double inputRangeLow = ((double[])settings["analogueLowHighs"])[0];
-                    double inputRangeHigh = ((double[])settings["analogueLowHighs"])[1];
+                    string channelName = (string)Settings["channel"];
+                    double inputRangeLow = ((double[])Settings["analogueLowHighs"])[0];
+                    double inputRangeHigh = ((double[])Settings["analogueLowHighs"])[1];
 
                     ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                         samplingTask,
@@ -213,7 +208,7 @@ namespace ConfocalControl
                     // Take one sample within a window determined by sample rate using clock task
                     samplingTask.Timing.ConfigureSampleClock(
                         (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                        (double)settings["sampleRate"],
+                        (double)Settings["sampleRate"],
                         SampleClockActiveEdge.Rising,
                         SampleQuantityMode.ContinuousSamples);
 
@@ -252,15 +247,15 @@ namespace ConfocalControl
 
         private void ArmAndWaitContinuous()
         {
-            if (data_buffer.Count > (int)settings["bufferSize"])
+            if (data_buffer.Count > (int)Settings["bufferSize"])
             {
-                data_buffer.RemoveRange(0, data_buffer.Count - (int)settings["bufferSize"]);
+                data_buffer.RemoveRange(0, data_buffer.Count - (int)Settings["bufferSize"]);
             }
 
 
             // Read all the data from the buffer - update buffer position
             double[] _data;
-            switch ((string)settings["channel_type"])
+            switch ((string)Settings["channel_type"])
             {
                 case "Counters":
                     _data = countReader.ReadMultiSampleInt32(-1).Select(Convert.ToDouble).ToArray();
@@ -279,7 +274,7 @@ namespace ConfocalControl
                             }
                         }
 
-                        if (data_buffer.Count < ((int)settings["bufferSize"] - data.Length))
+                        if (data_buffer.Count < ((int)Settings["bufferSize"] - data.Length))
                         {
                             data_buffer.AddRange(data);
                         }
@@ -298,7 +293,7 @@ namespace ConfocalControl
 
                     if (_data.Length != 0)
                     {
-                        if (data_buffer.Count < ((int)settings["bufferSize"] - _data.Length))
+                        if (data_buffer.Count < ((int)Settings["bufferSize"] - _data.Length))
                         {
                             data_buffer.AddRange(_data);
                         }

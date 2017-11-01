@@ -8,7 +8,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Save settings" Click="save_settings_Click"/>
-                    <MenuItem Header="_Load settings" Click="load_settings_Click"/>
+                    <MenuItem x:Name="loadSettings_MenuItem" Header="_Load settings" Click="load_settings_Click"/>
                     <MenuItem Header="_Close" Click="close_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Hardware">
@@ -17,8 +17,8 @@
                     <MenuItem x:Name="rasterScan_hardware_MenuItem" Header="_Configure Raster Scan" Click="rasterScan_hardware_MenuItem_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Laser Control">
+                    <MenuItem x:Name="solstis_MenuItem" Header="_Bay0 SolsTiS" Click="solstis_MenuItem_Click"/>
                     <MenuItem Header="_Bay1 Ti:Sapph"/>
-                    <MenuItem Header="_Bay2 Ti:Sapph"/>
                 </MenuItem>
             </Menu>
             <StackPanel></StackPanel>

@@ -35,13 +35,9 @@ namespace ConfocalControl
         }
 
         // Settings
-        private PluginSettings _rasterScanSettings;
-        public PluginSettings scanSettings
-        {
-            get { return _rasterScanSettings; }
-            set { _rasterScanSettings = value; }
-        }
+        public PluginSettings scanSettings {get; set;}
 
+        // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
         private int pointsPerExposure;
@@ -79,25 +75,25 @@ namespace ConfocalControl
 
         public void LoadSettings()
         {
-            _rasterScanSettings = PluginSaveLoad.LoadSettings("multiChannelConfocalScan");
+            scanSettings = PluginSaveLoad.LoadSettings("multiChannelConfocalScan");
         }
 
         private void InitialiseSettings()
         {
             LoadSettings();
 
-            if (_rasterScanSettings.Keys.Count != 9)
+            if (scanSettings.Keys.Count != 9)
             {
-                _rasterScanSettings["GalvoXStart"] = (double)0;
-                _rasterScanSettings["GalvoXEnd"] = (double)1;
-                _rasterScanSettings["GalvoXRes"] = (double)21;
-                _rasterScanSettings["GalvoYStart"] = (double)0;
-                _rasterScanSettings["GalvoYEnd"] = (double)1;
-                _rasterScanSettings["GalvoYRes"] = (double)21;
+                scanSettings["GalvoXStart"] = (double)0;
+                scanSettings["GalvoXEnd"] = (double)1;
+                scanSettings["GalvoXRes"] = (double)21;
+                scanSettings["GalvoYStart"] = (double)0;
+                scanSettings["GalvoYEnd"] = (double)1;
+                scanSettings["GalvoYRes"] = (double)21;
 
-                _rasterScanSettings["counterChannels"] = new List<string> {"APD0", "APD1" };
-                _rasterScanSettings["analogueChannels"] = new List<string> {};
-                _rasterScanSettings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
+                scanSettings["counterChannels"] = new List<string> {"APD0", "APD1" };
+                scanSettings["analogueChannels"] = new List<string> {};
+                scanSettings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
             }
         }
 

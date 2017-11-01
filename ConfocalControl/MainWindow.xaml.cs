@@ -348,6 +348,7 @@ namespace ConfocalControl
                            this.exposure_set.IsEnabled = true;
                            this.rasterScan_switch.IsReadOnly = false;
                            this.timetrace_hardware_MenuItem.IsEnabled = true;
+                           this.loadSettings_MenuItem.IsEnabled = true;
                            this.single_photon_counts.Text = "Stopped";
                            this.galvo_setpoint_reader.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
@@ -369,6 +370,7 @@ namespace ConfocalControl
                            this.exposure_set.IsEnabled = false;
                            this.rasterScan_switch.IsReadOnly = true;
                            this.timetrace_hardware_MenuItem.IsEnabled = false;
+                           this.loadSettings_MenuItem.IsEnabled = false;
 
                            if ((string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"]
                                 || (string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"])
@@ -398,6 +400,7 @@ namespace ConfocalControl
                            this.exposure_set.IsEnabled = true;
                            this.rasterScan_switch.IsReadOnly = false;
                            this.timetrace_hardware_MenuItem.IsEnabled = true;
+                           this.loadSettings_MenuItem.IsEnabled = true;
                            this.single_photon_counts.Text = "Stopped";
                            this.galvo_setpoint_reader.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
@@ -578,6 +581,7 @@ namespace ConfocalControl
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
                        }
                    ));
@@ -617,6 +621,7 @@ namespace ConfocalControl
                            this.set_galvos_from_scan.IsEnabled = false;
                            this.hardware_MenuItem.IsEnabled = false;
                            this.rasterScan_hardware_MenuItem.IsEnabled = false;
+                           this.loadSettings_MenuItem.IsEnabled = false;
 
                            double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
                            double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
@@ -674,6 +679,7 @@ namespace ConfocalControl
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
                        }
                    ));
@@ -702,6 +708,7 @@ namespace ConfocalControl
                            this.set_galvos_from_scan.IsEnabled = true;
                            this.hardware_MenuItem.IsEnabled = true;
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                           this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
 
                            if ((bool)this.save_automatic.IsChecked)
@@ -916,6 +923,12 @@ namespace ConfocalControl
             settings["saveFile"] = fileName_set.Text;
         }
 
+        private void solstis_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LaserControl.GetWindow().Show();
+            LaserControl.GetWindow().Activate();
+        }
+
         #endregion 
 
         #region Save events
@@ -946,6 +959,8 @@ namespace ConfocalControl
 
         #endregion
 
+        #region Closing event
+
         private void main_window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (MultiChannelRasterScan.GetController().IsRunning())
@@ -967,5 +982,6 @@ namespace ConfocalControl
             }
         }
 
+        #endregion 
     }
 }
