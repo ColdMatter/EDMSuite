@@ -169,7 +169,7 @@ namespace MOTMaster2.SequenceData
                     {
                         AddDigitalChannelStep(step, digitalSample, digitalChannel);
                     }
-                    catch (DAQ.Pattern.TimeOrderException e)
+                    catch (Exception e)
                     {
                         throw new Exception(string.Format("Error adding digital value. Step: {0} Channel: {1}", step.Name, digitalChannel));
                     }

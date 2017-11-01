@@ -211,7 +211,7 @@ namespace MOTMaster2
             {
                 if (groupRun != GroupRun.repeat) break; //False if runThread was stopped elsewhere
                 Console.WriteLine("#: " + i.ToString());
-                controller.BatchNumber = i;
+                Controller.BatchNumber = i;
                 if (!SingleShot()) groupRun = GroupRun.none;               
                 if (Iters == -1) progBar.Value = i % 100;
                 else progBar.Value = i;                
@@ -367,7 +367,7 @@ namespace MOTMaster2
                 }
             }
             int c = 0;
-            controller.ScanParam = scanParam;
+            Controller.ScanParam = scanParam;
             groupRun = GroupRun.scan;
             foreach (object scanItem in scanArray)
             {
@@ -1151,7 +1151,7 @@ namespace MOTMaster2
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            controller.BatchNumber = 0;
+            Controller.BatchNumber = 0;
             controller.AutoLogging = Check4Logging();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)

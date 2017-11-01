@@ -93,7 +93,7 @@ namespace MOTMaster2
         public static AutoFileLogger paramLogger;
 
         public static AutoFileLogger multiScanLogger;
-        public bool SendDataRemotely { get; set; }
+        public static bool SendDataRemotely { get; set; }
         private bool _AutoLogging;
         public bool AutoLogging
         {
@@ -385,6 +385,7 @@ namespace MOTMaster2
 
         protected static void OnAnalogDataReceived(object sender, EventArgs e)
         {
+         
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
             if (ExpData.grpMME.cmd.Equals("repeat") && SendDataRemotely)
