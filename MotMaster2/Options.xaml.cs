@@ -19,7 +19,6 @@ using UtilsNS;
 
 namespace MOTMaster2
 {
-
     public class GeneralOptions
     {
         public enum SaveOption { save, ask, nosave }

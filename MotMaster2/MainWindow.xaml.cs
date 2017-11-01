@@ -55,12 +55,9 @@ namespace MOTMaster2
 
         private void OnDataCreated(object sender, DataEventArgs e)
         {
-            if (sender is Controller)
-            {
-                string data = (string)e.Data;
-                remoteMsg.sendCommand(data);
-                if (messenger != null) messenger.Send(data.Replace("\r\n",String.Empty)+"\n");
-            }
+            string data = (string)e.Data;
+            remoteMsg.sendCommand(data); // Axel-hub
+            if (messenger != null) messenger.Send(data.Replace("\r\n",String.Empty)+"\n"); // mathematica
         }
 
         public static void DoEvents()
@@ -541,7 +538,6 @@ namespace MOTMaster2
                 }
             }
         }
-
 
         private void SaveParameters_Click(object sender, RoutedEventArgs e)
         {

@@ -277,6 +277,7 @@ namespace MOTMaster2
                 {
                     muquans.StartOutput();
                 }
+                
                 Console.WriteLine("Started muquans at {0}ms", watch.ElapsedMilliseconds);
                 apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
                 Console.WriteLine("Started apg at {0}ms", watch.ElapsedMilliseconds);
@@ -324,7 +325,6 @@ namespace MOTMaster2
                 aip.AnalogDataReceived += OnAnalogDataReceived;
             }
         }
-
 
         private void releaseHardware()
         {
@@ -616,7 +616,7 @@ namespace MOTMaster2
         public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
-
+            //throw new Exception("Test exception");
             sequence = BuildMMSequence(dict);
 
             if (BatchNumber == 0)
@@ -965,7 +965,7 @@ namespace MOTMaster2
             catch (Exception e)
             {
                 runThreadException = new Exception("Error building sequence: \n" + e.Message);
-             return null;
+                return null;
             }
             MOTMasterSequence sequence = builder.GetSequence(config.HSDIOCard, config.UseMuquans);
             return sequence;
