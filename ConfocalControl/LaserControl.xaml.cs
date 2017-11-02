@@ -43,6 +43,11 @@ namespace ConfocalControl
 
         #endregion
 
+        private void foo_action_Button_Click(object sender, RoutedEventArgs e)
+        {
+            return;
+        }
+
         #region Closing event
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

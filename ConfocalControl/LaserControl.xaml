@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LaserControl" Height="600" Width="600" Closing="Window_Closing">
     <Grid>
-        
+        <Button x:Name="foo_action_Button" Content="Action" HorizontalAlignment="Left" Margin="271,164,0,0" VerticalAlignment="Top" Width="75" Click="foo_action_Button_Click"/>
+
     </Grid>
 </Window>

@@ -255,5 +255,10 @@ namespace ConfocalControl
             IAsyncResult ar = _galvoYwriter.BeginWriteSingleSample(true, _newValue, callBackFunction, stateObject);
             _galvoYwriter.EndWrite(ar);
         }
+
+        public void SetMultiGalvoSetpoints(double[,] data)
+        {
+            return;
+        }
     }
 }

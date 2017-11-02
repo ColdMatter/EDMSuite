@@ -242,8 +242,14 @@ namespace DAQ.Environment
                     break;
 
                 case "PH-SPB10-2":
-                    Hardware = new ConfocalHardware();
+                    Hardware = new ConfocalHardware("ColdConfocal");
                     FileSystem = new ConfocalFileSystem("ColdConfocal");
+                    Debug = false;
+                    break;
+
+                case "PH-JHWANG4":
+                    Hardware = new ConfocalHardware("RoomTConfocal");
+                    FileSystem = new ConfocalFileSystem("RoomTConfocal");
                     Debug = false;
                     break;
 

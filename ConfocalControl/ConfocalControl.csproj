@@ -95,6 +95,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FastMultiChannelRasterScan.cs" />
     <Compile Include="HardwareConfigure.xaml.cs">
       <DependentUpon>HardwareConfigure.xaml</DependentUpon>
     </Compile>

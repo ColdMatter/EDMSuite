@@ -14,22 +14,17 @@ using DAQ.HAL;
 
 namespace ConfocalControl
 {
-    // Uses delegate multicasting to compose and invoke event manager methods in series 
-    public delegate void MultiChannelDataEventHandler(MultiChannelData ps);
-    public delegate void MultiChannelScanFinishedEventHandler();
-    public delegate void MultiChannelLineFinishedEventHandler(MultiChannelData ps);
-
-    public class MultiChannelRasterScan
+    class FastMultiChannelRasterScan
     {
         #region Class members
 
         // Dependencies should refer to this instance only 
-        private static MultiChannelRasterScan controllerInstance;
-        public static MultiChannelRasterScan GetController()
+        private static FastMultiChannelRasterScan controllerInstance;
+        public static FastMultiChannelRasterScan GetController()
         {
             if (controllerInstance == null)
             {
-                controllerInstance = new MultiChannelRasterScan();
+                controllerInstance = new FastMultiChannelRasterScan();
             }
             return controllerInstance;
         }
@@ -97,7 +92,7 @@ namespace ConfocalControl
             }
         }
 
-        public MultiChannelRasterScan() 
+        public FastMultiChannelRasterScan() 
         {
             InitialiseSettings();
 
@@ -307,7 +302,7 @@ namespace ConfocalControl
                         ((double)scanSettings["GalvoYRes"]);
 
                 // Move Y galvo to new scan point
-                GalvoPairPlugin.GetController().SetGalvoYSetpoint(currentGalvoYpoint);
+                GalvoPairPlugin.GetController().SetGalvoYSetpointAndWait(currentGalvoYpoint, null, null);
 
                 // Loop for X axis
                 for (double _XNumber = 0;
@@ -325,7 +320,7 @@ namespace ConfocalControl
                     ((double)scanSettings["GalvoXRes"]);
 
                     // Move X galvo to new scan point 
-                    GalvoPairPlugin.GetController().SetGalvoXSetpoint(currentGalvoXpoint);
+                    GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(currentGalvoXpoint, null, null);
 
                     // Start trigger task
                     triggerWriter.WriteSingleSampleSingleLine(true, true);
@@ -557,109 +552,5 @@ namespace ConfocalControl
 
         #endregion
 
-    }
-
-    public class MultiChannelData
-    {
-        private int numberCounterChannels;
-        private int numberAnalogChannels;
-        private List<Point3D>[] counterDataStore;
-        private List<Point3D>[] analogDataStore;
-
-        public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
-        {
-            numberCounterChannels = number_of_counter_channels;
-            numberAnalogChannels = number_of_analog_channels;
-
-            counterDataStore = new List<Point3D>[number_of_counter_channels];
-            for (int i = 0; i < number_of_counter_channels; i++)
-            {
-                counterDataStore[i] = new List<Point3D>();
-            }
-
-            analogDataStore = new List<Point3D>[number_of_analog_channels];
-            for (int i = 0; i < number_of_analog_channels; i++)
-            {
-                analogDataStore[i] = new List<Point3D>();
-            }
-        }
-
-        public List<Point3D> GetCounterData(int counter_channel_number)
-        {
-            if (counter_channel_number >= numberCounterChannels) return null;
-            else return counterDataStore[counter_channel_number];
-        }
-
-        public void AddtoCounterData(int counter_channel_number, Point3D pnt)
-        {
-            counterDataStore[counter_channel_number].Add(pnt);
-        }
-
-        public List<Point3D> GetAnalogueData(int analog_channel_number)
-        {
-            if (analog_channel_number >= numberAnalogChannels) return null;
-            else return analogDataStore[analog_channel_number];
-        }
-
-        public void AddtoAnalogueData(int analog_channel_number, Point3D pnt)
-        {
-            analogDataStore[analog_channel_number].Add(pnt);
-        }
-
-        public int Count()
-        {
-            if (numberCounterChannels != 0) return counterDataStore[0].Count;
-            else if (numberAnalogChannels != 0) return analogDataStore[0].Count;
-            else return 0;
-        }
-
-        public List<double[]> TransposeData()
-        {
-            List<double[]> returnList = new List<double[]>();
-
-            int count = Count();
-            if (count == 0) return returnList;
-            else 
-            {
-                for (int i = 0; i < count; i++)
-			    {
-			        double[] transposedData = new double[2 + numberCounterChannels + numberAnalogChannels];
-
-                    double hStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
-                    double vStart = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
-                    double hRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
-                    double vRange = (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-                    double hres = hRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
-                    double vres = vRange / (double)MultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
-
-                    if (numberCounterChannels != 0)
-                    {
-                        double xVal = GetCounterData(0)[i].X - 1;
-                        double yVal = GetCounterData(0)[i].Y - 1;
-
-                        transposedData[0] = hStart + hres * xVal; transposedData[1] = vStart + vres * yVal;
-                    }
-                    else
-                    {
-                        double xVal = GetAnalogueData(0)[i].X - 1;
-                        double yVal = GetAnalogueData(0)[i].Y - 1;
-                    }
-
-                    for (int j = 0; j < numberCounterChannels; j++)
-			        {
-			            transposedData[2 + j] = GetCounterData(j)[i].Z;
-			        }
-
-                    for (int j = 0; j < numberAnalogChannels; j++)
-			        {
-			            transposedData[2 + numberCounterChannels + j] = GetAnalogueData(j)[i].Z;
-			        }
-
-                    returnList.Add(transposedData);
-			    }
-
-                return returnList;
-            }
-        }
     }
 }
