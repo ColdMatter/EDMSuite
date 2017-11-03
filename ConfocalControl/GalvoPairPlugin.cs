@@ -59,6 +59,9 @@ namespace ConfocalControl
         private AnalogSingleChannelWriter _galvoXwriter;
         private AnalogSingleChannelWriter _galvoYwriter;
 
+        private Task _galvosTask;
+        private AnalogMultiChannelWriter _galvosWriter;
+
         #endregion
 
         #region Initialisation
@@ -112,9 +115,14 @@ namespace ConfocalControl
             _galvoYreader = null;
             _galvoXwriter = null;
             _galvoYwriter = null;
+
+            _galvosTask = null;
+            _galvosWriter = null;
         }
 
         #endregion
+
+        #region Single shot
 
         public void AcquisitionStarting()
         {
@@ -202,6 +210,10 @@ namespace ConfocalControl
             _galvoYwriter.WriteSingleSample(true, _newValue);
         }
 
+        #endregion
+
+        #region Rasterscan helper
+
         public void MoveOnlyAcquisitionStarting()
         {
             if (IsRunning())
@@ -259,6 +271,51 @@ namespace ConfocalControl
         public void SetMultiGalvoSetpoints(double[,] data)
         {
             return;
+        }
+
+        #endregion
+
+        public void MultiWriterAcquisitionStarting(string clockSignalSource, double clockRate)
+        {
+            if (IsRunning())
+            {
+                throw new DaqException("Galvo already running");
+            }
+
+            _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoXControl"]];
+            _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoYControl"]];
+
+            _galvosTask = new Task("galvo X analog set");
+
+            _galvoXControlChannel.AddToTask(_galvosTask, XRangeLow, XRangeHigh);
+            _galvoYControlChannel.AddToTask(_galvosTask, YRangeLow, YRangeHigh);
+
+            _galvosTask.Timing.ConfigureSampleClock(clockSignalSource, clockRate, SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+            _galvosTask.Control(TaskAction.Verify);
+
+            _galvosWriter = new AnalogMultiChannelWriter(_galvosTask.Stream);
+
+            galvoState = GalvoState.running;
+        }
+
+        public void MultiWriterAcquisitionFinished()
+        {
+            _galvosTask.Dispose();
+            _galvosTask = null;
+
+            _galvosWriter = null;
+
+            _galvoXControlChannel = null;
+            _galvoYControlChannel = null;
+
+            galvoState = GalvoState.stopped;
+        }
+
+        public void SetMultiGalvoSetpoint(double[,] data)
+        {
+            _galvosWriter.WriteMultiSample(true, data);
         }
     }
 }

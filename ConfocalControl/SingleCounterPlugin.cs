@@ -374,7 +374,7 @@ namespace ConfocalControl
             foreach (int pnt in data_buffer)
             {
                 string line = pnt.ToString();
-                lines.Add("data, " + line);
+                lines.Add(line);
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -399,8 +399,8 @@ namespace ConfocalControl
 
             foreach (Point pnt in pnts)
             {
-                string line = pnt.X.ToString() + ", " + pnt.Y.ToString();
-                lines.Add("data, " + line);
+                string line = pnt.X.ToString() + " " + pnt.Y.ToString();
+                lines.Add(line);
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();

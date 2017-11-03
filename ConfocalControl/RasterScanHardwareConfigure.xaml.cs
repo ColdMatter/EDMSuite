@@ -27,7 +27,7 @@ namespace ConfocalControl
             InitializeComponent();
 
             List<string> includedAnalogInputChannelsKeys = new List<string>();
-            foreach (string key in (List<string>)MultiChannelRasterScan.GetController().scanSettings["analogueChannels"])
+            foreach (string key in (List<string>)FastMultiChannelRasterScan.GetController().scanSettings["analogueChannels"])
             {
                 includedAnalogInputChannelsKeys.Add(key);
             }
@@ -51,7 +51,7 @@ namespace ConfocalControl
             }
 
             List<string> includedCounterChannelsKeys = new List<string>();
-            foreach (string key in (List<string>)MultiChannelRasterScan.GetController().scanSettings["counterChannels"])
+            foreach (string key in (List<string>)FastMultiChannelRasterScan.GetController().scanSettings["counterChannels"])
             {
                 includedCounterChannelsKeys.Add(key);
             }
@@ -134,14 +134,14 @@ namespace ConfocalControl
             {
                 new_analog.Add(key);
             }
-            MultiChannelRasterScan.GetController().scanSettings["analogueChannels"] = new_analog;
+            FastMultiChannelRasterScan.GetController().scanSettings["analogueChannels"] = new_analog;
 
             List<string> new_counters = new List<string>();
             foreach (string key in counters_included.Items)
             {
                 new_counters.Add(key);
             }
-            MultiChannelRasterScan.GetController().scanSettings["counterChannels"] = new_counters;
+            FastMultiChannelRasterScan.GetController().scanSettings["counterChannels"] = new_counters;
 
             this.Close();
         }
