@@ -180,9 +180,7 @@
   <ItemGroup>
     <Compile Include="CameraController.cs" />
     <Compile Include="Getthearray.cs" />
-    <Compile Include="ImageViewerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="ImageViewerWindow.cs" />
     <Compile Include="ImageViewerWindow.Designer.cs">
       <DependentUpon>ImageViewerWindow.cs</DependentUpon>
     </Compile>

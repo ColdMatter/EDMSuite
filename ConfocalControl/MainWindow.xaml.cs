@@ -9,7 +9,6 @@ using NationalInstruments.Analysis.SignalGeneration;
 using NationalInstruments.Analysis.SpectralMeasurements;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.NI4882;
 using NationalInstruments.NetworkVariable;
 using NationalInstruments.NetworkVariable.WindowsForms;
 using NationalInstruments.Tdms;
