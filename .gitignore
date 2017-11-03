@@ -6,3 +6,4 @@ obj
 *.lnk
 iamjack.sh
 iamjoe.sh
+.vs/*
