@@ -448,7 +448,8 @@ namespace MOTMaster2
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
-            if (logWatch.IsRunning) { logWatch.Reset(); }
+            if(logWatch != null)
+                if (logWatch.IsRunning) { logWatch.Reset(); }
             //ClearPatterns();
         }
 
@@ -1516,7 +1517,7 @@ namespace MOTMaster2
             //TODO Send this to MainWindow Log
             if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on) && updateDCS)
             {
-                try { M2DCS.UpdateSequenceParameters(); M2DCS.StartFPGA(); Thread.Sleep(5000); }
+                try { M2DCS.UpdateSequenceParameters(); M2DCS.StartFPGA(); Thread.Sleep(2500); }
                 catch (Exception e) { ErrorMgr.warningMsg("Failed to update DCS paramaters. " + e.Message); }
             }
             else Console.WriteLine(M2DCS.PrintParametersToConsole());
