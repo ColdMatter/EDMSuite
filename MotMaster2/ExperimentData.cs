@@ -19,7 +19,8 @@ namespace MOTMaster2
         public enum JumboModes { none, scan, repeat };
         public JumboModes jumboMode()
         {
-             JumboModes jm = JumboModes.none;
+            JumboModes jm = JumboModes.none;
+            if (UtilsNS.Utils.isNull(grpMME)) return jm;
             if (grpMME.sender.Equals("Axel-hub"))
             {
                 if (grpMME.cmd.Equals("scan")) jm = JumboModes.scan;

@@ -444,12 +444,11 @@ namespace MOTMaster2
                 try { if (StaticSequence) releaseHardware(); }
                 catch { }
                 muquans.DisposeAll();
-                
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
-            if(logWatch != null)
-                if (logWatch.IsRunning) { logWatch.Reset(); }
+            if (logWatch != null)
+            if (logWatch.IsRunning) { logWatch.Reset(); }
             //ClearPatterns();
         }
 
@@ -732,7 +731,7 @@ namespace MOTMaster2
                     }
         }
         /// <summary>
-        /// Initialises the objects used to store data from the run
+        /// Initialises the objects used to store data from the run !
         /// </summary>
         private static void InitialiseData(object sender)
                     {
@@ -745,7 +744,7 @@ namespace MOTMaster2
             {
                 BuildMultiScanHeader();
             }
-            if (SendDataRemotely)// && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
+            if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
             {
                 MotMasterDataEvent(sender, new DataEventArgs(initJson));
                 ExpData.grpMME = mme.Clone();
