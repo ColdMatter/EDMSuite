@@ -76,7 +76,7 @@ namespace ErrorManager
               DispatcherPriority.Background,
               new Action(() =>
               {
-                 status.Content = prevText;
+                 status.Content = "Status:";
                  status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
                  btnReset.Visibility = Visibility.Hidden;
               }));
@@ -161,7 +161,7 @@ namespace ErrorManager
             }
             else
             {
-                StatusLine("Warning: " + warningText, Brushes.Green.Color);
+                StatusLine("Warning: " + warningText, Brushes.DarkOrange.Color);
             }
             string outText = warningText;
             if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;

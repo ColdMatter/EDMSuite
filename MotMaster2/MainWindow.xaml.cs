@@ -208,7 +208,7 @@ namespace MOTMaster2
             for (int i = 0; i < numInterations; i++)
             {
                 if (groupRun != GroupRun.repeat) break; //False if runThread was stopped elsewhere
-                Console.WriteLine("#: " + i.ToString());
+                //Console.WriteLine("#: " + i.ToString());
                 Controller.BatchNumber = i;
                 if (!SingleShot()) groupRun = GroupRun.none;               
                 if (Iters == -1) progBar.Value = i % 100;
@@ -217,15 +217,17 @@ namespace MOTMaster2
                 if (groupRun != GroupRun.repeat) break; 
                 DoEvents();
                 wait4adjust = (Controller.ExpData.jumboMode() == ExperimentData.JumboModes.repeat);
-                while (wait4adjust)
+                int j = 0;
+                while ((wait4adjust) && (j < 10))
                 {
-                    Thread.Sleep(20);
+                    Thread.Sleep(10);
                     DoEvents();
+                    j += 1;
                 }
+                if (j == 10) ErrorMgr.warningMsg("Time-out at wait4adjust loop");
                 controller.WaitForRunToFinish();
             }
             controller.AutoLogging = false;
-            if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
         }
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
@@ -246,10 +248,10 @@ namespace MOTMaster2
                 catch (Exception ex)
                 {
                     ErrorMgr.errorMsg(ex.Message, -5);
-                    btnRun_Click(null, null);
-                    return;
                 }
+                if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
                 return;
+
             }
 
             if (btnRun.Content.Equals("Stop"))
@@ -397,8 +399,7 @@ namespace MOTMaster2
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
-            var converter = new System.Windows.Media.BrushConverter();
-            var brush = (Brush)converter.ConvertFromString("#FFF9E76B");
+            var brush = Utils.ToSolidColorBrush("#FFF9E76B"); 
             if (btnScan.Content.Equals("Scan"))
             {
                 btnScan.Content = "Cancel";
@@ -1123,6 +1124,7 @@ namespace MOTMaster2
                 case "Multi Scan":
                     scanBox.Content = "Cancel";
                     scanBox.Background = Brushes.Red;
+                    Controller.ExpData.grpMME.Clear();
                     StartMultiScan();
                     btnMScan_Click(scanBox, null);
                     break;
@@ -1150,6 +1152,7 @@ namespace MOTMaster2
             }
             Controller.BatchNumber = 0;
             controller.AutoLogging = Check4Logging();
+            Controller.ExpData.grpMME.Clear();
             List<MMscan> mms = new List<MMscan>();
             foreach (object ms in lstParams.Items)
             {

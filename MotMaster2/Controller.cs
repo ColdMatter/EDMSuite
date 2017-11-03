@@ -443,12 +443,12 @@ namespace MOTMaster2
                 }
                 try { if (StaticSequence) releaseHardware(); }
                 catch { }
-                muquans.DisposeAll();
-                
+                muquans.DisposeAll();               
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
-            if (logWatch.IsRunning) { logWatch.Reset(); }
+            if (logWatch != null)
+                if (logWatch.IsRunning) { logWatch.Reset(); }
             //ClearPatterns();
         }
 
@@ -723,7 +723,7 @@ namespace MOTMaster2
 
                     if (config.UseMuquans && !config.Debug)
                     {
-                //microSynth.ChannelA.RFOn = true;
+                        //microSynth.ChannelA.RFOn = true;
                         //microSynth.ChannelA.Amplitude = 6.0;
                         WriteToMicrowaveSynth((double)builder.Parameters["MWFreq"]);
                    
@@ -731,25 +731,25 @@ namespace MOTMaster2
                     }
         }
         /// <summary>
-        /// Initialises the objects used to store data from the run
+        /// Initialises the objects used to store data from the run !
         /// </summary>
         private static void InitialiseData(object sender)
-                    {
+        {
             MMexec mme = InitialCommand(ScanParam);
             string initJson = JsonConvert.SerializeObject(mme, Formatting.Indented);
             if (!Utils.isNull(paramLogger))
             paramLogger.log("{\"MMExec\":" + initJson + "},");
             if (!Utils.isNull(multiScanLogger))
-            if (multiScanLogger.Enabled)
-            {
-                BuildMultiScanHeader();
-            }
-            if (SendDataRemotely)// && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
+                if (multiScanLogger.Enabled)
+                {
+                    BuildMultiScanHeader();
+                }
+            if (SendDataRemotely && (ExpData.jumboMode() == ExperimentData.JumboModes.none))
             {
                 MotMasterDataEvent(sender, new DataEventArgs(initJson));
                 ExpData.grpMME = mme.Clone();
             }
-                    }
+        }
 
         private static void BuildMultiScanHeader()
         {
