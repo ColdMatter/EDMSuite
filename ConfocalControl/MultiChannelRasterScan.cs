@@ -564,7 +564,9 @@ namespace ConfocalControl
         private int numberCounterChannels;
         private int numberAnalogChannels;
         private List<Point3D>[] counterDataStore;
+        private Point3D[][] counterStoreConverted;
         private List<Point3D>[] analogDataStore;
+        private Point3D[][] analogStoreConverted;
 
         public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
         {
@@ -582,28 +584,43 @@ namespace ConfocalControl
             {
                 analogDataStore[i] = new List<Point3D>();
             }
+
+            counterStoreConverted = new Point3D[number_of_counter_channels][];
+            analogStoreConverted = new Point3D[number_of_analog_channels][];
         }
 
-        public List<Point3D> GetCounterData(int counter_channel_number)
+        public Point3D[] GetCounterData(int counter_channel_number)
         {
             if (counter_channel_number >= numberCounterChannels) return null;
-            else return counterDataStore[counter_channel_number];
+            else return counterStoreConverted[counter_channel_number];
+        }
+
+        private void SetCounterData(List<Point3D>[] counterStore)
+        {
+            counterDataStore = counterStore;
         }
 
         public void AddtoCounterData(int counter_channel_number, Point3D pnt)
         {
             counterDataStore[counter_channel_number].Add(pnt);
+            counterStoreConverted[counter_channel_number] = counterDataStore[counter_channel_number].ToArray();
         }
 
-        public List<Point3D> GetAnalogueData(int analog_channel_number)
+        public Point3D[] GetAnalogueData(int analog_channel_number)
         {
             if (analog_channel_number >= numberAnalogChannels) return null;
-            else return analogDataStore[analog_channel_number];
+            else return analogStoreConverted[analog_channel_number];
+        }
+
+        private void SetAnalogueData(List<Point3D>[] analogStore)
+        {
+            analogDataStore = analogStore;
         }
 
         public void AddtoAnalogueData(int analog_channel_number, Point3D pnt)
         {
             analogDataStore[analog_channel_number].Add(pnt);
+            analogStoreConverted[analog_channel_number] = analogDataStore[analog_channel_number].ToArray();
         }
 
         public int Count()

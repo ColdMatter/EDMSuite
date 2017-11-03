@@ -30,13 +30,14 @@ namespace ConfocalControl
         }
 
         // Settings
-        public PluginSettings scanSettings {get; set;}
+        public PluginSettings scanSettings { get; set; }
 
-        // Constants relating to sample acquisition
+        // Keeping track of parameters for sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
         private int pointsPerExposure;
         private double sampleRate;
+        private double[,] waveform;
 
         // Bound event managers to class
         public event MultiChannelDataEventHandler Data;
@@ -66,7 +67,7 @@ namespace ConfocalControl
 
         #endregion
 
-        #region Init
+        #region Initialization
 
         public void LoadSettings()
         {
@@ -86,13 +87,13 @@ namespace ConfocalControl
                 scanSettings["GalvoYEnd"] = (double)1;
                 scanSettings["GalvoYRes"] = (double)21;
 
-                scanSettings["counterChannels"] = new List<string> {"APD0", "APD1" };
-                scanSettings["analogueChannels"] = new List<string> {};
+                scanSettings["counterChannels"] = new List<string> { "APD0", "APD1" };
+                scanSettings["analogueChannels"] = new List<string> { };
                 scanSettings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
             }
         }
 
-        public FastMultiChannelRasterScan() 
+        public FastMultiChannelRasterScan()
         {
             InitialiseSettings();
 
@@ -128,6 +129,58 @@ namespace ConfocalControl
             }
         }
 
+        private void GetGalvoWaveform()
+        {
+            int numberofSamples = Convert.ToInt32((double)scanSettings["GalvoYRes"] * (double)scanSettings["GalvoXRes"] * (pointsPerExposure + 1));
+            waveform = new double[2, numberofSamples];
+
+            // Snake the raster
+            bool IsSnaked = false;
+            bool inverted = true;
+
+            // Loop for Y axis
+            for (double YNumber = 0;
+                    YNumber < (double)scanSettings["GalvoYRes"];
+                    YNumber++)
+            {
+                if (IsSnaked)
+                {
+                    if (inverted) inverted = false;
+                    else inverted = true;
+                }
+                else inverted = false;
+
+                // Calculate new Y galvo point from current scan point 
+                double currentGalvoYpoint = (double)scanSettings["GalvoYStart"] + YNumber *
+                        ((double)scanSettings["GalvoYEnd"] -
+                        (double)scanSettings["GalvoYStart"]) /
+                        ((double)scanSettings["GalvoYRes"]);
+
+                // Loop for X axis
+                for (double _XNumber = 0;
+                        _XNumber < (double)scanSettings["GalvoXRes"];
+                        _XNumber++)
+                {
+                    double XNumber;
+                    if (inverted) XNumber = (double)scanSettings["GalvoXRes"] - 1 - _XNumber;
+                    else XNumber = _XNumber;
+
+                    // Calculate new X galvo point from current scan point 
+                    double currentGalvoXpoint = (double)scanSettings["GalvoXStart"] + XNumber *
+                    ((double)scanSettings["GalvoXEnd"] -
+                    (double)scanSettings["GalvoXStart"]) /
+                    ((double)scanSettings["GalvoXRes"]);
+
+                    for (int n = 0; n < (pointsPerExposure + 1); n++)
+                    {
+                        int currentPosition = Convert.ToInt32((YNumber * (double)scanSettings["GalvoXRes"] + XNumber) * (pointsPerExposure + 1) + n);
+                        waveform[0, currentPosition] = currentGalvoXpoint;
+                        waveform[1, currentPosition] = currentGalvoYpoint;
+                    }
+                }
+            }
+        }
+
         public void SynchronousStartScan()
         {
             try
@@ -152,8 +205,20 @@ namespace ConfocalControl
 
         private void SynchronousAcquisitionStarting()
         {
+            // Move to the start of the scan.
+            GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
+            GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(
+                         (double)scanSettings["GalvoXStart"], null, null);
+
+            GalvoPairPlugin.GetController().SetGalvoYSetpointAndWait(
+                         (double)scanSettings["GalvoYStart"], null, null);
+            GalvoPairPlugin.GetController().MoveOnlyAcquisitionFinished();
+
             // Define sample rate 
             CalculateParameters();
+
+            // Get analogue sequence
+            GetGalvoWaveform();
 
             // Set up trigger task
             triggerTask = new Task("pause trigger task");
@@ -179,16 +244,13 @@ namespace ConfocalControl
                 COPulseIdleState.Low,
                 0,
                 sampleRate,
-                0.5);
+                0.9);
 
             freqOutTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo("StartTriggerReader"),
                 DigitalEdgeStartTriggerEdge.Rising);
 
-            freqOutTask.Triggers.StartTrigger.Retriggerable = true;
-
-
-            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, pointsPerExposure + 1);
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, waveform.GetLength(1));
 
             freqOutTask.Control(TaskAction.Verify);
 
@@ -216,7 +278,7 @@ namespace ConfocalControl
                 counterTasks[i].Timing.ConfigureSampleClock(
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
                     sampleRate,
-                    SampleClockActiveEdge.Rising,
+                    SampleClockActiveEdge.Falling,
                     SampleQuantityMode.ContinuousSamples);
 
                 counterTasks[i].Control(TaskAction.Verify);
@@ -250,7 +312,7 @@ namespace ConfocalControl
                 analoguesTask.Timing.ConfigureSampleClock(
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
                     sampleRate,
-                    SampleClockActiveEdge.Rising,
+                    SampleClockActiveEdge.Falling,
                     SampleQuantityMode.ContinuousSamples);
 
                 analoguesTask.Control(TaskAction.Verify);
@@ -263,68 +325,23 @@ namespace ConfocalControl
             }
 
             // Start Galvos
-            GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
+            GalvoPairPlugin.GetController().MultiWriterAcquisitionStarting((string)Environs.Hardware.GetInfo("SampleClockReader"), sampleRate);
+            GalvoPairPlugin.GetController().SetMultiGalvoSetpoint(waveform);
         }
 
         private void SynchronousAcquire()
         // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
         {
-             // Move to the start of the scan.
-            GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(
-                         (double)scanSettings["GalvoXStart"], null, null);
+            // Start trigger task
+            triggerWriter.WriteSingleSampleSingleLine(true, true);
 
-            GalvoPairPlugin.GetController().SetGalvoYSetpointAndWait(
-                         (double)scanSettings["GalvoYStart"], null, null);
-
-            // Snake the raster
-            bool IsSnaked = false;
-            bool inverted = true;
-
-            // Loop for X axis
-            for (double YNumber = 0;
-                    YNumber < (double)scanSettings["GalvoYRes"];
-                    YNumber++)
+            for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"]; YNumber++)
             {
-                if (IsSnaked)
-                {
-                    if (inverted) inverted = false;
-                    else inverted = true;
-                }
-                else inverted = false;
-
                 dataLines = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
-                    ((List<string>)scanSettings["analogueChannels"]).Count);
+                                    ((List<string>)scanSettings["analogueChannels"]).Count);
 
-                // Calculate new Y galvo point from current scan point 
-                double currentGalvoYpoint = (double)scanSettings["GalvoYStart"] + YNumber *
-                        ((double)scanSettings["GalvoYEnd"] -
-                        (double)scanSettings["GalvoYStart"]) /
-                        ((double)scanSettings["GalvoYRes"]);
-
-                // Move Y galvo to new scan point
-                GalvoPairPlugin.GetController().SetGalvoYSetpointAndWait(currentGalvoYpoint, null, null);
-
-                // Loop for X axis
-                for (double _XNumber = 0;
-                        _XNumber < (double)scanSettings["GalvoXRes"];
-                        _XNumber++)
+                for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"]; XNumber++)
                 {
-                    double XNumber;
-                    if (inverted) XNumber = (double)scanSettings["GalvoXRes"] - 1 - _XNumber;
-                    else XNumber = _XNumber;
-
-                    // Calculate new X galvo point from current scan point 
-                    double currentGalvoXpoint = (double)scanSettings["GalvoXStart"] + XNumber *
-                    ((double)scanSettings["GalvoXEnd"] -
-                    (double)scanSettings["GalvoXStart"]) /
-                    ((double)scanSettings["GalvoXRes"]);
-
-                    // Move X galvo to new scan point 
-                    GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(currentGalvoXpoint, null, null);
-
-                    // Start trigger task
-                    triggerWriter.WriteSingleSampleSingleLine(true, true);
-
                     // Read counter data
                     counterLatestData = new List<double[]>();
                     foreach (CounterSingleChannelReader counterReader in counterReaders)
@@ -337,9 +354,6 @@ namespace ConfocalControl
                     {
                         analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
                     }
-
-                    // re-init the trigger 
-                    triggerWriter.WriteSingleSampleSingleLine(true, false);
 
                     // Store counter data
 
@@ -400,7 +414,7 @@ namespace ConfocalControl
 
         public void AcquisitionFinishing()
         {
-            GalvoPairPlugin.GetController().MoveOnlyAcquisitionFinished();
+            GalvoPairPlugin.GetController().MultiWriterAcquisitionFinished();
 
             triggerTask.Dispose();
             freqOutTask.Dispose();
@@ -484,23 +498,23 @@ namespace ConfocalControl
             lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
-            string descriptionString = "data, X, Y";
+            string descriptionString = "X Y";
             foreach (string channel in (List<string>)scanSettings["counterChannels"])
             {
-                descriptionString = descriptionString + ", " + channel;
+                descriptionString = descriptionString + " " + channel;
             }
             foreach (string channel in (List<string>)scanSettings["analogueChannels"])
             {
-                descriptionString = descriptionString + ", " + channel;
+                descriptionString = descriptionString + " " + channel;
             }
             lines.Add(descriptionString);
 
             foreach (double[] completeData in dataOutputs.TransposeData())
             {
-                string line = "data";
+                string line = "";
                 foreach (double dataPnt in completeData)
                 {
-                    line = line + ", " + dataPnt.ToString();
+                    line = line + dataPnt.ToString() + " ";
                 }
                 lines.Add(line);
             }
@@ -519,23 +533,23 @@ namespace ConfocalControl
             lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
-            string descriptionString = "data, X, Y";
+            string descriptionString = "X Y";
             foreach (string channel in (List<string>)scanSettings["counterChannels"])
             {
-                descriptionString = descriptionString + ", " + channel;
+                descriptionString = descriptionString + " " + channel;
             }
             foreach (string channel in (List<string>)scanSettings["analogueChannels"])
             {
-                descriptionString = descriptionString + ", " + channel;
+                descriptionString = descriptionString + " " + channel;
             }
             lines.Add(descriptionString);
 
             foreach (double[] completeData in dataOutputs.TransposeData())
             {
-                string line = "data";
+                string line = "";
                 foreach (double dataPnt in completeData)
                 {
-                    line = line + ", " + dataPnt.ToString();
+                    line = line + dataPnt.ToString() + " ";
                 }
                 lines.Add(line);
             }
