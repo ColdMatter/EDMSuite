@@ -89,7 +89,6 @@ namespace ConfocalControl
                 SingleCounterPlugin.GetController().setWaveForm += singleCounter_setWaveForm;
                 SingleCounterPlugin.GetController().DaqProblem += singleCounter_problemHandler;
 
-                FastMultiChannelRasterScan.GetController().Data += rasterScan_setArrays;
                 FastMultiChannelRasterScan.GetController().LineFinished += rasterScan_setLines;
                 FastMultiChannelRasterScan.GetController().ScanFinished += rasterScan_End;
                 FastMultiChannelRasterScan.GetController().DaqProblem += rasterScan_problemHandler;
@@ -464,55 +463,6 @@ namespace ConfocalControl
             }
         }
 
-        private static readonly object Locker = new object();
-
-        private void rasterScan_setArrays(MultiChannelData data)
-        {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                {
-                        switch (output_type_box.SelectedIndex)
-                        {
-                            case 0:
-                                if (output_box.SelectedIndex >= 0)
-                                {
-                                    Point3D[] dataSpecific = data.GetCounterData(output_box.SelectedIndex);
-                                    if (dataSpecific != null)
-                                    {
-                                        this.rasterScan_display.DataSource = dataSpecific;
-                                    }
-                                    else this.rasterScan_display.DataSource = null;
-                                }
-                                else this.rasterScan_display.DataSource = null;
-                                break;
-
-                            case 1:
-                                if (output_box.SelectedIndex >= 0)
-                                {
-                                    Point3D[] dataSpecific = data.GetAnalogueData(output_box.SelectedIndex);
-                                    if (dataSpecific != null)
-                                    {
-                                        this.rasterScan_display.DataSource = dataSpecific;
-                                    }
-                                    else this.rasterScan_display.DataSource = null;
-                                }
-                                else this.rasterScan_display.DataSource = null;
-                                break;
-
-                            default:
-                                this.rasterScan_display.DataSource = null;
-                                break;
-                        }
-
-                        double range_low = rasterScan_display.ColorScale.Range.Minimum;
-                        this.raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
-                        double range_high = rasterScan_display.ColorScale.Range.Maximum;
-                        this.raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
-                }
-            ));
-        }
-
         private void rasterScan_setLines(MultiChannelData data)
         {
             Application.Current.Dispatcher.BeginInvoke(
@@ -527,11 +477,11 @@ namespace ConfocalControl
                                 Point3D[] dataSpecific = data.GetCounterData(output_box.SelectedIndex);
                                 if (dataSpecific != null)
                                 {
-                                    this.rasterScan_lineDisplay.DataSource = dataSpecific;
+                                    this.rasterScan_display.DataSource = dataSpecific;
                                 }
-                                else this.rasterScan_lineDisplay.DataSource = null;
+                                else this.rasterScan_display.DataSource = null;
                             }
-                            else this.rasterScan_lineDisplay.DataSource = null;
+                            else this.rasterScan_display.DataSource = null;
                             break;
 
                         case 1:
@@ -540,17 +490,22 @@ namespace ConfocalControl
                                 Point3D[] dataSpecific = data.GetAnalogueData(output_box.SelectedIndex);
                                 if (dataSpecific != null)
                                 {
-                                    this.rasterScan_lineDisplay.DataSource = dataSpecific;
+                                    this.rasterScan_display.DataSource = dataSpecific;
                                 }
-                                else this.rasterScan_lineDisplay.DataSource = null;
+                                else this.rasterScan_display.DataSource = null;
                             }
-                            else this.rasterScan_lineDisplay.DataSource = null;
+                            else this.rasterScan_display.DataSource = null;
                             break;
 
                         default:
                             this.rasterScan_display.DataSource = null;
                             break;
                     }
+
+                    double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                    this.raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                    double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                    this.raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
                 }
             ));
         }
@@ -750,6 +705,35 @@ namespace ConfocalControl
             FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] = (double)e.NewValue;
         }
 
+        private void up_Button_Click(object sender, RoutedEventArgs e)
+        {
+            scan_cursor.Index += Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
+        }
+
+        private void down_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (scan_cursor.Index > (Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]) - 1))
+            {
+                scan_cursor.Index -= Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
+            }
+        }
+
+        private void left_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if ((scan_cursor.Index % Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"])) != 0)
+            {
+                scan_cursor.Index -= 1;
+            }
+        }
+
+        private void right_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if ((scan_cursor.Index % Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"])) != Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]) - 1)
+            {
+                scan_cursor.Index += 1;
+            }
+        }
+
         private void cursor_PositionChanged(object sender, EventArgs e)
         {
             if (scan_cursor.Value.Count > 2)
@@ -757,12 +741,14 @@ namespace ConfocalControl
                 double xVal = Convert.ToDouble(scan_cursor.Value[0]) - 1;
                 double yVal = Convert.ToDouble(scan_cursor.Value[1]) - 1;
 
+                double hGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
+                double vGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
                 double hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
                 double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
                 double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
                 double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-                double hres = hRange / (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
-                double vres = vRange / (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+                double hres = hRange / hGridPoints;
+                double vres = vRange / vGridPoints;
 
                 if (galvo_x_scan_pos != null && galvo_y_scan_pos != null)
                 {
@@ -772,6 +758,32 @@ namespace ConfocalControl
 
                 object value = scan_cursor.Value[2];
                 cursor_signal_value.Text = (Convert.ToDouble(value)).ToString("G6", CultureInfo.InvariantCulture);
+
+                Point3D[] fullCurrentData = (Point3D[])rasterScan_display.DataSource;
+                if (fullCurrentData != null)
+                {
+                    int skipPos = Convert.ToInt32(yVal * hGridPoints);
+                    if ((skipPos + hGridPoints) > fullCurrentData.Length)
+                    {
+                        Point3D[] trimmedCurrentData = fullCurrentData.Skip(skipPos).ToArray();
+                        Point[] lineCurrentData = new Point[trimmedCurrentData.Length];
+                        for (int i = 0; i < trimmedCurrentData.Length; i++)
+                        {
+                            lineCurrentData[i] = new Point(trimmedCurrentData[i].X, trimmedCurrentData[i].Z);
+                        }
+                        rasterScan_lineDisplay.DataSource = lineCurrentData;
+                    }
+                    else
+                    {
+                        Point3D[] trimmedCurrentData = fullCurrentData.Skip(skipPos).Take(Convert.ToInt32(hGridPoints)).ToArray();
+                        Point[] lineCurrentData = new Point[trimmedCurrentData.Length];
+                        for (int i = 0; i < trimmedCurrentData.Length; i++)
+                        {
+                            lineCurrentData[i] = new Point(trimmedCurrentData[i].X, trimmedCurrentData[i].Z);
+                        }
+                        rasterScan_lineDisplay.DataSource = lineCurrentData;
+                    }
+                }
             }
         }
 

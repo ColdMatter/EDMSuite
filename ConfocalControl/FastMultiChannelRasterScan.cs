@@ -54,7 +54,6 @@ namespace ConfocalControl
         private double[,] analogLatestData;
         private MultiChannelData dataOutputs;
         public MultiChannelData dataOutputHistory { get { return dataOutputs; } }
-        private MultiChannelData dataLines;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -171,7 +170,7 @@ namespace ConfocalControl
                     (double)scanSettings["GalvoXStart"]) /
                     ((double)scanSettings["GalvoXRes"]);
 
-                    for (int n = 0; n < (pointsPerExposure + 1); n++)
+                    for (int n = 0; n < (pointsPerExposure+1); n++)
                     {
                         int currentPosition = Convert.ToInt32((YNumber * (double)scanSettings["GalvoXRes"] + XNumber) * (pointsPerExposure + 1) + n);
                         waveform[0, currentPosition] = currentGalvoXpoint;
@@ -279,7 +278,8 @@ namespace ConfocalControl
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
                     sampleRate,
                     SampleClockActiveEdge.Falling,
-                    SampleQuantityMode.ContinuousSamples);
+                    SampleQuantityMode.ContinuousSamples,
+                    waveform.GetLength(1) + 10);
 
                 counterTasks[i].Control(TaskAction.Verify);
 
@@ -313,7 +313,8 @@ namespace ConfocalControl
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
                     sampleRate,
                     SampleClockActiveEdge.Falling,
-                    SampleQuantityMode.ContinuousSamples);
+                    SampleQuantityMode.ContinuousSamples,
+                    waveform.GetLength(1) + 10);
 
                 analoguesTask.Control(TaskAction.Verify);
 
@@ -337,9 +338,6 @@ namespace ConfocalControl
 
             for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"]; YNumber++)
             {
-                dataLines = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
-                                    ((List<string>)scanSettings["analogueChannels"]).Count);
-
                 for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"]; XNumber++)
                 {
                     // Read counter data
@@ -362,8 +360,6 @@ namespace ConfocalControl
                         double[] latestData = counterLatestData[i];
                         double data = latestData[latestData.Length - 1] - latestData[0];
                         Point3D pnt = new Point3D(XNumber + 1, YNumber + 1, data);
-                        Point3D pntLine = new Point3D(XNumber + 1, data, 0);
-                        dataLines.AddtoCounterData(i, pntLine);
                         dataOutputs.AddtoCounterData(i, pnt);
                     }
 
@@ -379,13 +375,9 @@ namespace ConfocalControl
                             }
                             double average = sum / (analogLatestData.GetLength(1) - 1);
                             Point3D pnt = new Point3D(XNumber + 1, YNumber + 1, average);
-                            Point3D pntLine = new Point3D(XNumber + 1, average, 0);
-                            dataLines.AddtoAnalogueData(i, pntLine);
                             dataOutputs.AddtoAnalogueData(i, pnt);
                         }
                     }
-
-                    OnData(dataOutputs);
 
                     // Check if scan exit.
                     if (CheckIfStopping())
@@ -396,7 +388,7 @@ namespace ConfocalControl
                     }
                 }
 
-                OnLineFinished(dataLines);
+                OnLineFinished(dataOutputs);
             }
 
             AcquisitionFinishing();
@@ -493,9 +485,9 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure =, " + SingleCounterPlugin.GetController().GetExposure().ToString());
-            lines.Add("X start =, " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop =, " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution =, " + ((double)scanSettings["GalvoXRes"]).ToString());
-            lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("Exposure = " + SingleCounterPlugin.GetController().GetExposure().ToString());
+            lines.Add("X start = " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)scanSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start = " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)scanSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
@@ -528,9 +520,9 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure =, " + SingleCounterPlugin.GetController().GetExposure().ToString());
-            lines.Add("X start =, " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop =, " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution =, " + ((double)scanSettings["GalvoXRes"]).ToString());
-            lines.Add("Y start =, " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop =, " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution =, " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("Exposure = " + SingleCounterPlugin.GetController().GetExposure().ToString());
+            lines.Add("X start = " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)scanSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start = " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)scanSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
