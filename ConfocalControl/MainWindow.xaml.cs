@@ -141,6 +141,45 @@ namespace ConfocalControl
             GalvoPairPlugin.GetController().Settings["GalvoYInit"] = galvo_Y_set.Text;
         }
 
+        private void galvosSet_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (galvo_X_set.Text == "" && galvo_Y_set.Text == "")
+            {
+                return;
+            }
+            else
+            {
+                try
+                {
+                    double valueX;
+                    double valueY;
+                    valueX = Convert.ToDouble(galvo_X_set.Text);
+                    valueY = Convert.ToDouble(galvo_Y_set.Text);
+                    GalvoPairPlugin.GetController().AcquisitionStarting();
+                    GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
+                    GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
+                    double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                    double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                    GalvoPairPlugin.GetController().AcquisitionFinished();
+
+                    galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                    galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                }
+                catch (FormatException e1)
+                {
+                    MessageBox.Show("Caught exception: " + e1.Message);
+                    if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
+                    if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
+                }
+                catch (DaqException e1)
+                {
+                    MessageBox.Show("Caught exception: " + e1.Message);
+                    if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
+                    if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
+                }
+            }
+        }
+
         public void galvo_X_set_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter && !GalvoPairPlugin.GetController().IsRunning())
@@ -350,6 +389,7 @@ namespace ConfocalControl
                            this.loadSettings_MenuItem.IsEnabled = true;
                            this.single_photon_counts.Text = "Stopped";
                            this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvosSet_Button.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.set_galvos_from_scan.IsEnabled = true;
@@ -375,6 +415,7 @@ namespace ConfocalControl
                                 || (string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"])
                            {
                                this.galvo_setpoint_reader.IsEnabled = false;
+                               this.galvosSet_Button.IsEnabled = false;
                                this.galvo_X_set.IsReadOnly = true;
                                this.galvo_Y_set.IsReadOnly = true;
                                this.set_galvos_from_scan.IsEnabled = false;
@@ -402,6 +443,7 @@ namespace ConfocalControl
                            this.loadSettings_MenuItem.IsEnabled = true;
                            this.single_photon_counts.Text = "Stopped";
                            this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvosSet_Button.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.set_galvos_from_scan.IsEnabled = true;
@@ -527,6 +569,7 @@ namespace ConfocalControl
                            this.oscilloscope_switch.IsReadOnly = false;
                            this.exposure_set.IsEnabled = true;
                            this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvosSet_Button.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.scan_x_min_set.IsEnabled = true;
@@ -567,6 +610,7 @@ namespace ConfocalControl
                            this.oscilloscope_switch.IsReadOnly = true;
                            this.exposure_set.IsEnabled = false;
                            this.galvo_setpoint_reader.IsEnabled = false;
+                           this.galvosSet_Button.IsEnabled = false;
                            this.galvo_X_set.IsReadOnly = true;
                            this.galvo_Y_set.IsReadOnly = true;
                            this.scan_x_min_set.IsEnabled = false;
@@ -625,6 +669,7 @@ namespace ConfocalControl
                            this.oscilloscope_switch.IsReadOnly = false;
                            this.exposure_set.IsEnabled = true;
                            this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvosSet_Button.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.scan_x_min_set.IsEnabled = true;
@@ -654,6 +699,7 @@ namespace ConfocalControl
                            this.oscilloscope_switch.IsReadOnly = false;
                            this.exposure_set.IsEnabled = true;
                            this.galvo_setpoint_reader.IsEnabled = true;
+                           this.galvosSet_Button.IsEnabled = true;
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.scan_x_min_set.IsEnabled = true;
@@ -670,7 +716,7 @@ namespace ConfocalControl
 
                            if ((bool)this.save_automatic.IsChecked)
                            {
-                               FastMultiChannelRasterScan.GetController().SaveDataAutomatic(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+                               FastMultiChannelRasterScan.GetController().SaveDataAutomatic(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + "rasterScan_" + (string)settings["saveFile"] + ".txt");
                            }
                        }
                    ));
@@ -709,6 +755,7 @@ namespace ConfocalControl
         private void up_Button_Click(object sender, RoutedEventArgs e)
         {
             scan_cursor.Index += Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
+            if (set_galvos_from_scan.IsEnabled && (bool)moveAndSet_CheckBox.IsChecked) set_galvos_from_scan_Click(this, null); 
         }
 
         private void down_Button_Click(object sender, RoutedEventArgs e)
@@ -716,6 +763,7 @@ namespace ConfocalControl
             if (scan_cursor.Index > (Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]) - 1))
             {
                 scan_cursor.Index -= Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
+                if (set_galvos_from_scan.IsEnabled && (bool)moveAndSet_CheckBox.IsChecked) set_galvos_from_scan_Click(this, null); 
             }
         }
 
@@ -724,6 +772,7 @@ namespace ConfocalControl
             if ((scan_cursor.Index % Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"])) != 0)
             {
                 scan_cursor.Index -= 1;
+                if (set_galvos_from_scan.IsEnabled && (bool)moveAndSet_CheckBox.IsChecked) set_galvos_from_scan_Click(this, null); 
             }
         }
 
@@ -732,6 +781,7 @@ namespace ConfocalControl
             if ((scan_cursor.Index % Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"])) != Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]) - 1)
             {
                 scan_cursor.Index += 1;
+                if (set_galvos_from_scan.IsEnabled && (bool)moveAndSet_CheckBox.IsChecked) set_galvos_from_scan_Click(this, null); 
             }
         }
 
@@ -951,7 +1001,7 @@ namespace ConfocalControl
         {
             if (this.rasterScan_display.DataSource != null)
             {
-                FastMultiChannelRasterScan.GetController().SaveData(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+                FastMultiChannelRasterScan.GetController().SaveData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_rasterScan_" + (string)settings["saveFile"] + ".txt");
             }
         }
 
@@ -959,7 +1009,7 @@ namespace ConfocalControl
         {
             if (this.APD_monitor.DataSource != null)
             {
-                SingleCounterPlugin.GetController().SaveData(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+                SingleCounterPlugin.GetController().SaveData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_timeTrace_" + (string)settings["saveFile"] + ".txt");
             }
         }
 
@@ -967,7 +1017,7 @@ namespace ConfocalControl
         {
             if (this.APD_hist.DataSource != null)
             {
-                SingleCounterPlugin.GetController().SaveHistogram(DateTime.Today.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_" + (string)settings["saveFile"] + ".txt");
+                SingleCounterPlugin.GetController().SaveHistogram(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_histogram_" + (string)settings["saveFile"] + ".txt");
             }
         }
 

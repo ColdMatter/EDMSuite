@@ -19,7 +19,7 @@ namespace DAQ
         {
             _experimentName = experimentName;
             Paths.Add("settingsPath", "C:\\Users\\ccmqn\\Documents\\ConfocalMicroscope\\bin\\");
-            Paths.Add("scanMasterDataPath", "C:\\Users\\ccmqn\\Documents\\ConfocalMicroscope\\");
+            Paths.Add("scanMasterDataPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

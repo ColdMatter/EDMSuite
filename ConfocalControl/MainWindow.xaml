@@ -28,7 +28,6 @@
         <TextBox x:Name="galvo_Y_display" HorizontalAlignment="Left" Height="23" Margin="94,155,0,0" TextWrapping="Wrap" Text="Galvo Y" VerticalAlignment="Top" Width="75" TextAlignment="Center" IsReadOnly="True"/>
         <Label Content="Galvo X" HorizontalAlignment="Left" Margin="30,118,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
         <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="30,153,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
-        <Label Content="Set Galvos" HorizontalAlignment="Left" Margin="181,89,0,0" VerticalAlignment="Top" Width="65" Height="26"/>
         <TextBox x:Name="galvo_X_set" HorizontalAlignment="Left" Height="23" Margin="179,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75" KeyUp="galvo_X_set_KeyUp" TextAlignment="Center" TextChanged="galvo_X_set_TextChanged"/>
         <TextBox x:Name="galvo_Y_set" HorizontalAlignment="Left" Height="23" Margin="179,155,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75" KeyUp="galvo_Y_set_KeyUp" TextAlignment="Center" TextChanged="galvo_Y_set_TextChanged"/>
         <ItemsControl>
@@ -160,5 +159,9 @@
         <Button x:Name="right_Button" Content="Right" HorizontalAlignment="Left" Margin="378,437,0,0" VerticalAlignment="Top" Width="40" Click="right_Button_Click"/>
         <Button x:Name="down_Button" Content="Down" HorizontalAlignment="Left" Margin="353,459,0,0" VerticalAlignment="Top" Width="40" Click="down_Button_Click"/>
         <Button x:Name="left_Button" Content="Left" HorizontalAlignment="Left" Margin="327,437,0,0" VerticalAlignment="Top" Width="40" Click="left_Button_Click"/>
+        <CheckBox x:Name="moveAndSet_CheckBox" Content="Move cursor and set galvos" HorizontalAlignment="Left" Margin="290,488,0,0" VerticalAlignment="Top"/>
+        <Label Content="V" HorizontalAlignment="Left" Margin="259,118,0,0" VerticalAlignment="Top"/>
+        <Label Content="V" HorizontalAlignment="Left" Margin="259,153,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="galvosSet_Button" Content="Set Galvos" HorizontalAlignment="Left" Margin="179,91,0,0" VerticalAlignment="Top" Width="75" Click="galvosSet_Button_Click"/>
     </Grid>
 </Window>
