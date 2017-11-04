@@ -369,7 +369,7 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure =, " + GetExposure().ToString()); lines.Add("");
+            lines.Add("Exposure = " + GetExposure().ToString()); lines.Add("");
 
             foreach (int pnt in data_buffer)
             {
@@ -395,7 +395,7 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH-mm-ss"));
-            lines.Add("Exposure =, " + GetExposure().ToString()); lines.Add("Number, freq"); lines.Add("");
+            lines.Add("Exposure = " + GetExposure().ToString()); lines.Add(""); lines.Add("Number freq");
 
             foreach (Point pnt in pnts)
             {

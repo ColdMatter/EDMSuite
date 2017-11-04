@@ -118,7 +118,7 @@
                 </ni:ColorScale>
             </ni:IntensityGraph.ColorScale>
         </ni:IntensityGraph>
-        <ni:Switch x:Name="rasterScan_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,417,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="rasterScan_Click" ClickMode="Press"/>
+        <ni:Switch x:Name="rasterScan_switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="322,361,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="rasterScan_Click" ClickMode="Press"/>
         <ni:Graph x:Name="rasterScan_lineDisplay" HorizontalAlignment="Left" Height="200" Margin="771,273,0,0" VerticalAlignment="Top" Width="300">
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 2">
@@ -145,9 +145,9 @@
         <Button x:Name="set_galvos_from_scan" Content="Set" HorizontalAlignment="Left" Margin="996,516,0,0" VerticalAlignment="Top" Width="75" Click="set_galvos_from_scan_Click"/>
         <Label Content="Galvo X" HorizontalAlignment="Left" Margin="849,489,0,0" VerticalAlignment="Top"/>
         <Label Content="Galvo Y" HorizontalAlignment="Left" Margin="928,489,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="save_automatic" Content="Save data when scan ends" Margin="293,445,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="159"/>
-        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="311,380,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_box_SelectionChanged"/>
-        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="311,353,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_type_box_SelectionChanged"/>
+        <CheckBox x:Name="save_automatic" Content="Save data when scan ends" Margin="293,389,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="159"/>
+        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="311,324,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_box_SelectionChanged"/>
+        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="311,297,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_type_box_SelectionChanged"/>
         <TextBox x:Name="raster_plot_range_low" HorizontalAlignment="Left" Margin="699,470,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="0"/>
         <TextBox x:Name="raster_plot_range_high" HorizontalAlignment="Left" Height="18" Margin="699,279,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="100"/>
         <TextBox x:Name="cursor_signal_value" HorizontalAlignment="Left" Height="23" Margin="756,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" TextAlignment="Center"/>
@@ -156,5 +156,9 @@
         <Label Content="Number of bins" HorizontalAlignment="Left" Margin="326,145,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="fileName_set" HorizontalAlignment="Left" Height="23" Margin="94,52,0,0" TextWrapping="Wrap" Text="file_name" VerticalAlignment="Top" Width="160" TextChanged="fileName_set_TextChanged"/>
         <Label Content="File Name" HorizontalAlignment="Left" Margin="17,50,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="up_Button" Content="Up" HorizontalAlignment="Left" Margin="353,415,0,0" VerticalAlignment="Top" Width="40" Click="up_Button_Click"/>
+        <Button x:Name="right_Button" Content="Right" HorizontalAlignment="Left" Margin="378,437,0,0" VerticalAlignment="Top" Width="40" Click="right_Button_Click"/>
+        <Button x:Name="down_Button" Content="Down" HorizontalAlignment="Left" Margin="353,459,0,0" VerticalAlignment="Top" Width="40" Click="down_Button_Click"/>
+        <Button x:Name="left_Button" Content="Left" HorizontalAlignment="Left" Margin="327,437,0,0" VerticalAlignment="Top" Width="40" Click="left_Button_Click"/>
     </Grid>
 </Window>
