@@ -68,8 +68,8 @@ namespace MOTMaster2
             {
                 if (!IgnoredSegments.Contains(entry.Key))
                 {
-                    imin = entry.Value.Item1 + riseSamples;
-                    imax = entry.Value.Item2;
+                    imin = entry.Value.Item1 + riseSamples/2;
+                    imax = entry.Value.Item2 - riseSamples/2;
                     double[] data = new double[imax-imin];
                     for (int i = imin; i < imax; i++) data[i-imin] = rawData[1,i];
                     segData[entry.Key] = data;
