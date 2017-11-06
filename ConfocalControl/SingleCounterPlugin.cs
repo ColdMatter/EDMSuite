@@ -142,7 +142,7 @@ namespace ConfocalControl
 
         private void ContinuousAcquisitionStarting()
         {
-            if (IsRunning() || MultiChannelRasterScan.GetController().IsRunning())
+            if (IsRunning() || MultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }

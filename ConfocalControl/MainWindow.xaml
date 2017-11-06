@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
-        Title="Confocal Rasterscan Acquisition Program" Height="590" Width="1100" Icon="confocal_app_icon.ico" Closing="main_window_Closing">
+        Title="Confocal Rasterscan Acquisition Program" Height="610" Width="1100" Icon="confocal_app_icon.ico" Closing="main_window_Closing">
     <Grid>
         <DockPanel x:Name="dockPanel">
             <Menu DockPanel.Dock="Top">
@@ -150,7 +150,7 @@
         <TextBox x:Name="raster_plot_range_low" HorizontalAlignment="Left" Margin="699,470,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="0"/>
         <TextBox x:Name="raster_plot_range_high" HorizontalAlignment="Left" Height="18" Margin="699,279,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56" TextAlignment="Center" BorderThickness="0" Text="100"/>
         <TextBox x:Name="cursor_signal_value" HorizontalAlignment="Left" Height="23" Margin="756,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" TextAlignment="Center"/>
-        <Label Content="CCMQN" HorizontalAlignment="Left" Margin="30,488,0,0" VerticalAlignment="Top" FontWeight="Medium" Height="50" Width="158" FontSize="35" FontFamily="Simplex"/>
+        <Label Content="CCMQN" HorizontalAlignment="Left" Margin="17,519,0,0" VerticalAlignment="Top" FontWeight="Medium" Height="50" Width="158" FontSize="35" FontFamily="Simplex"/>
         <ni:RadixNumericTextBoxInt32 x:Name="binNumber_set" HorizontalAlignment="Left" Height="23" Margin="326,171,0,0" VerticalAlignment="Top" Width="91" ValueChanged="binNumber_set_ValueChanged" Interval="10"/>
         <Label Content="Number of bins" HorizontalAlignment="Left" Margin="326,145,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="fileName_set" HorizontalAlignment="Left" Height="23" Margin="94,52,0,0" TextWrapping="Wrap" Text="file_name" VerticalAlignment="Top" Width="160" TextChanged="fileName_set_TextChanged"/>
@@ -163,5 +163,6 @@
         <Label Content="V" HorizontalAlignment="Left" Margin="259,118,0,0" VerticalAlignment="Top"/>
         <Label Content="V" HorizontalAlignment="Left" Margin="259,153,0,0" VerticalAlignment="Top"/>
         <Button x:Name="galvosSet_Button" Content="Set Galvos" HorizontalAlignment="Left" Margin="179,91,0,0" VerticalAlignment="Top" Width="75" Click="galvosSet_Button_Click"/>
+        <Button x:Name="optimize_Button" Content="Optimize" HorizontalAlignment="Left" Margin="756,543,0,0" VerticalAlignment="Top" Width="75" Click="optimize_Button_Click"/>
     </Grid>
 </Window>

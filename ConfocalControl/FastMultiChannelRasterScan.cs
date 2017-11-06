@@ -186,7 +186,7 @@ namespace ConfocalControl
         {
             try
             {
-                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning())
+                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }

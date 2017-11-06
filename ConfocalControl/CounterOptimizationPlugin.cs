@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Media.Media3D;
+using System.Threading;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
@@ -14,11 +17,17 @@ namespace ConfocalControl
 {
 
     // Uses delegate multicasting to compose and invoke event manager methods in series 
-    public delegate void CounterOptimizationDataEventHandler(MultiChannelData ps);
+    public delegate void CounterOptimizationDataEventHandler(Point3D[] ptns);
     public delegate void CounterOptimizationFinishedEventHandler();
+    public delegate void OptExceptionEventHandler(Exception e);
 
     class CounterOptimizationPlugin
     {
+        // Bound event managers to class
+        public event CounterOptimizationDataEventHandler Data;
+        public event CounterOptimizationFinishedEventHandler OptFinished;
+        public event OptExceptionEventHandler DaqProblem;
+
         // Dependencies should refer to this instance only 
         private static CounterOptimizationPlugin controllerInstance;
         public static CounterOptimizationPlugin GetController()
@@ -30,6 +39,10 @@ namespace ConfocalControl
             return controllerInstance;
         }
 
+        // Define Opt state
+        private enum OptimizationState { stopped, running, stopping };
+        private OptimizationState backendState = OptimizationState.stopped;
+
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
@@ -37,6 +50,7 @@ namespace ConfocalControl
         private double sampleRate;
 
         // Keep track of tasks
+        private List<Point3D> pointHistory;
         private Task triggerTask;
         private DigitalSingleChannelWriter triggerWriter;
         private Task freqOutTask;
@@ -71,7 +85,16 @@ namespace ConfocalControl
 
         public void OptimizationStarting(string countChannel)
         {
+            if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning())
+            {
+                throw new DaqException("Counter already running");
+            }
+
+            backendState = OptimizationState.running;
+
             counterChannel = countChannel;
+
+            pointHistory = new List<Point3D>();
 
             // Define sample rate 
             CalculateParameters();
@@ -147,6 +170,12 @@ namespace ConfocalControl
 
         public double EvaluateAt(double Xpos, double Ypos)
         {
+            if (!IsRunning())
+            {
+                //throw new Exception("Optimization ended prematurely.");
+                Thread.CurrentThread.Abort(); 
+            }
+
             GalvoPairPlugin.GetController().SetGalvoXSetpoint(Xpos);
             GalvoPairPlugin.GetController().SetGalvoYSetpoint(Ypos);
 
@@ -158,12 +187,35 @@ namespace ConfocalControl
             // re-init the trigger 
             triggerWriter.WriteSingleSampleSingleLine(true, false);
 
-            return counterLatestData[counterLatestData.Length - 1] - counterLatestData[0];
+            double resu = counterLatestData[counterLatestData.Length - 1] - counterLatestData[0];
+
+            Point3D outPoint = new Point3D(Xpos, Ypos, resu);
+            pointHistory.Add(outPoint);
+            OnData(pointHistory.ToArray());
+
+            return - resu;
         }
 
-        public void FindOptimum()
+        public void FindOptimum(double cursorX, double cursorY, double cursorZ)
         {
-            return;
+            try
+            {
+                double[] guessArray = new double[] { cursorX, cursorY };
+                MathNet.Numerics.LinearAlgebra.Vector<double> initGuess = MathNet.Numerics.LinearAlgebra.Vector<double>.Build.Dense(guessArray);
+
+                MinimizationResult result = NelderMeadSimplex.Minimum(new CounterObjectiveFunction(), initGuess, Math.Sqrt(cursorZ)/10, 1000);
+
+                OnOptFinished();
+            }
+            catch (Exception e)
+            {
+                if (e.Message != "Optimization ended prematurely.") DaqProblem(e);
+            }
+            finally
+            {
+                OptimizationEnding();
+            }
+
         }
 
         public void OptimizationEnding()
@@ -180,19 +232,35 @@ namespace ConfocalControl
 
             triggerWriter = null;
             counterReader = null;
+
+            backendState = OptimizationState.stopped;
+
+            OnOptFinished();
+        }
+
+        public void StopOptimizing()
+        {
+            backendState = OptimizationState.stopping;
+        }
+
+        private void OnData(Point3D[] ps)
+        {
+            if (Data != null) Data(ps);
+        }
+
+        private void OnOptFinished()
+        {
+            if (OptFinished != null) OptFinished();
+        }
+
+        public bool IsRunning()
+        {
+            return backendState == OptimizationState.running;
         }
     }
 
-
-
-
     class CounterObjectiveFunction : IObjectiveFunction
     {
-        public CounterObjectiveFunction()
-        {
-
-        }
-
         void IObjectiveFunction.EvaluateAt(MathNet.Numerics.LinearAlgebra.Vector<double> point)
         {
             currentPoint = point;

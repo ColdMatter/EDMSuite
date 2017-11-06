@@ -93,6 +93,10 @@ namespace ConfocalControl
                 FastMultiChannelRasterScan.GetController().ScanFinished += rasterScan_End;
                 FastMultiChannelRasterScan.GetController().DaqProblem += rasterScan_problemHandler;
 
+                CounterOptimizationPlugin.GetController().Data += opt_setLines;
+                CounterOptimizationPlugin.GetController().OptFinished += opt_End;
+                CounterOptimizationPlugin.GetController().DaqProblem += opt_problemHandler;
+
                 scan_x_min_set.Value = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
                 scan_x_max_set.Value = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"];
                 scan_x_res_set.Value = Convert.ToInt32((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"]);
@@ -786,7 +790,7 @@ namespace ConfocalControl
 
         private void cursor_PositionChanged(object sender, EventArgs e)
         {
-            if (scan_cursor.Value.Count > 2)
+            if (scan_cursor.Value.Count > 2 && !CounterOptimizationPlugin.GetController().IsRunning())
             {
                 double xVal = Convert.ToDouble(scan_cursor.Value[0]) - 1;
                 double yVal = Convert.ToDouble(scan_cursor.Value[1]) - 1;
@@ -920,6 +924,104 @@ namespace ConfocalControl
                     this.rasterScan_display.DataSource = null;
                     break;
             }
+        }
+
+        #endregion
+
+        #region Optimization events
+
+        private int cursorIndexFromGalvoPosition(double galvXPos, double galvYPos)
+        {
+            double hGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
+            double vGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+            double hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+            double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+            double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
+            double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
+            double hres = hRange / hGridPoints;
+            double vres = vRange / vGridPoints;
+
+            int xVal = Convert.ToInt32((galvXPos - hStart) / hres);
+            int yVal = Convert.ToInt32((galvYPos - vStart) / vres);
+
+            if (xVal < 0 || xVal >= hGridPoints) return -1;
+            else return yVal * Convert.ToInt32(hGridPoints) + xVal;
+        }
+
+        private void opt_setLines(Point3D[] ptns)
+        {
+            double xLast = ptns[ptns.Length - 1].X;
+            double yLast = ptns[ptns.Length - 1].Y;
+            double zLast = ptns[ptns.Length - 1].Z;
+            Point[] optHist = new Point[ptns.Length];
+            for (int i = 0; i < ptns.Length; i++)
+			{
+                optHist[i] = new Point(i, ptns[i].Z);
+			}
+
+            int cursorIndex = cursorIndexFromGalvoPosition(xLast, yLast);
+
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    this.rasterScan_lineDisplay.DataSource = optHist;
+                    this.cursor_signal_value.Text = zLast.ToString("G6", CultureInfo.InvariantCulture);
+                    this.galvo_x_scan_pos.Text = xLast.ToString("G6", CultureInfo.InvariantCulture);
+                    this.galvo_y_scan_pos.Text = yLast.ToString("G6", CultureInfo.InvariantCulture);
+
+                    if (cursorIndex >= 0 && cursorIndex < ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"] * (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"]))
+                    {
+                        this.scan_cursor.Index = cursorIndex;
+                    }
+                }
+            ));
+        }
+
+        private void opt_End()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    this.optimize_Button.Content = "Optimize";
+                }
+            ));
+        }
+
+        private void opt_problemHandler(Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
+
+        private void optimize_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (output_type_box.SelectedIndex == 0 && output_box.SelectedIndex >= 0 && scan_cursor.Value.Count > 2 && (string)optimize_Button.Content == "Optimize")
+            {
+                double xVal = Convert.ToDouble(scan_cursor.Value[0]) - 1;
+                double yVal = Convert.ToDouble(scan_cursor.Value[1]) - 1;
+                double zVal = (double)scan_cursor.Value[2];
+
+                double hGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
+                double vGridPoints = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+                double hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+                double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+                double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
+                double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
+                double hres = hRange / hGridPoints;
+                double vres = vRange / vGridPoints; 
+
+                CounterOptimizationPlugin.GetController().OptimizationStarting((string)output_box.SelectedValue);
+
+                Thread thread;
+                thread = new Thread(() => CounterOptimizationPlugin.GetController().FindOptimum(hStart + hres * xVal, vStart + vres * yVal, zVal));
+                thread.IsBackground = true;
+                thread.Start();
+
+                optimize_Button.Content = "Stop";
+            }
+
+            else if ((string)optimize_Button.Content == "Stop") CounterOptimizationPlugin.GetController().StopOptimizing();
         }
 
         #endregion
