@@ -19,7 +19,7 @@ namespace ConfocalControl
     // Uses delegate multicasting to compose and invoke event manager methods in series 
     public delegate void CounterOptimizationDataEventHandler(Point3D[] ptns);
     public delegate void CounterOptimizationFinishedEventHandler();
-    public delegate void OptExceptionEventHandler(Exception e);
+    public delegate void OptExceptionEventHandler(DaqException e);
 
     class CounterOptimizationPlugin
     {
@@ -52,6 +52,7 @@ namespace ConfocalControl
         private double sampleRate;
 
         // Keep track of optimizer
+        private double[] startParams;
         private NelderMead nonLinearOptimizer;
         private CancellationTokenSource tokenSource;
 
@@ -68,6 +69,10 @@ namespace ConfocalControl
 
         public CounterOptimizationPlugin()
         {
+            startParams = null;
+            nonLinearOptimizer = null;
+            tokenSource = null;
+
             triggerTask = null;
             freqOutTask = null;
             counterTask = null;
@@ -176,14 +181,13 @@ namespace ConfocalControl
             GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
         }
 
-        public double EvaluateAt(double[] optParams)
+        private double EvaluateAt(double[] _optParams)
         {
-            double Xpos = optParams[0]; double Ypos = optParams[1];
+            nonLinearOptimizer.Token.ThrowIfCancellationRequested();
 
-            if (!IsRunning())
-            {
-                tokenSource.Cancel();
-            }
+            double[] optParams = ParameterInverseTransform(_optParams);
+
+            double Xpos = optParams[0]; double Ypos = optParams[1];
 
             GalvoPairPlugin.GetController().SetGalvoXSetpoint(Xpos);
             GalvoPairPlugin.GetController().SetGalvoYSetpoint(Ypos);
@@ -196,17 +200,41 @@ namespace ConfocalControl
             // re-init the trigger 
             triggerWriter.WriteSingleSampleSingleLine(true, false);
 
-            double resu = counterLatestData[counterLatestData.Length - 1] - counterLatestData[0];
+            double result = counterLatestData[counterLatestData.Length - 1] - counterLatestData[0];
 
-            Point3D outPoint = new Point3D(Xpos, Ypos, resu);
+            Point3D outPoint = new Point3D(Xpos, Ypos, result);
             pointHistory.Add(outPoint);
             OnData(pointHistory.ToArray());
 
-            return - resu;
+            return result;
+        }
+
+        private double[] ParameterTransform(double[] untransformed)
+        {
+            double hrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+            double vrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+
+            double xtransformed = (untransformed[0] - startParams[0]) / (hrange * 1000);
+            double ytransformed = (untransformed[1] - startParams[1]) / (vrange * 1000);
+
+            return new double[] { xtransformed, ytransformed };
+        }
+
+        private double[] ParameterInverseTransform(double[] transformed)
+        {
+            double hrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+            double vrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+
+            double xuntransformed = transformed[0] * hrange * 1000 + startParams[0];
+            double yuntransformed = transformed[1] * vrange * 1000 + startParams[1];
+
+            return new double[] { xuntransformed, yuntransformed };
         }
 
         public void FindOptimum(double cursorX, double cursorY, double cursorZ)
         {
+            startParams = new double[] { cursorX, cursorY };
+
             tokenSource = new CancellationTokenSource();
 
             Func<double[], double> objFunction = (double[] x) => EvaluateAt(x);
@@ -214,13 +242,24 @@ namespace ConfocalControl
             nonLinearOptimizer = new NelderMead(2, objFunction);
             nonLinearOptimizer.Token = tokenSource.Token;
 
-            nonLinearOptimizer.Minimize();
+            try
+            {
+                nonLinearOptimizer.Maximize(ParameterTransform(startParams));
+            }
+            
+            catch(DaqException e1)
+            {
+                if (DaqProblem != null) DaqProblem(e1);
+            }
+            
+            catch (OperationCanceledException) { }
 
-            OptimizationEnding();
+            finally { OptimizationEnding(); }
         }
 
         private void OptimizationEnding()
         {
+            startParams = null;
             nonLinearOptimizer = null;
             tokenSource = null;
 
@@ -244,6 +283,7 @@ namespace ConfocalControl
 
         public void StopOptimizing()
         {
+            tokenSource.Cancel();
             backendState = OptimizationState.stopping;
         }
 

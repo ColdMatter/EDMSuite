@@ -93,6 +93,8 @@
         <ni:IntensityGraph x:Name="rasterScan_display" HorizontalAlignment="Left" Height="250" Margin="467,273,0,0" VerticalAlignment="Top" Width="290" RenderTransformOrigin="0.544,0.459" Cursor="Arrow" HorizontalContentAlignment="Center">
             <ni:IntensityGraph.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Set Start Scan"></MenuItem>
+                    <MenuItem Header="Set Stop Scan"></MenuItem>
                     <MenuItem Header="Save Data" Click="save_raster_scan_Click" />
                 </ContextMenu>
             </ni:IntensityGraph.ContextMenu>
@@ -163,6 +165,6 @@
         <Label Content="V" HorizontalAlignment="Left" Margin="259,118,0,0" VerticalAlignment="Top"/>
         <Label Content="V" HorizontalAlignment="Left" Margin="259,153,0,0" VerticalAlignment="Top"/>
         <Button x:Name="galvosSet_Button" Content="Set Galvos" HorizontalAlignment="Left" Margin="179,91,0,0" VerticalAlignment="Top" Width="75" Click="galvosSet_Button_Click"/>
-        <Button x:Name="optimize_Button" Content="Optimize" HorizontalAlignment="Left" Margin="756,543,0,0" VerticalAlignment="Top" Width="75" Click="optimize_Button_Click"/>
+        <Button x:Name="optimize_Button" Content="Optimize" HorizontalAlignment="Left" Margin="756,491,0,0" VerticalAlignment="Top" Width="75" Click="optimize_Button_Click"/>
     </Grid>
 </Window>

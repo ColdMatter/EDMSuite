@@ -396,6 +396,7 @@ namespace ConfocalControl
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.set_galvos_from_scan.IsEnabled = true;
+                           this.optimize_Button.IsEnabled = true;
                        }
                    ));
         }
@@ -413,6 +414,7 @@ namespace ConfocalControl
                            this.rasterScan_switch.IsReadOnly = true;
                            this.timetrace_hardware_MenuItem.IsEnabled = false;
                            this.loadSettings_MenuItem.IsEnabled = false;
+                           this.optimize_Button.IsEnabled = false;
 
                            if ((string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"]
                                 || (string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"])
@@ -450,6 +452,7 @@ namespace ConfocalControl
                            this.galvo_X_set.IsReadOnly = false;
                            this.galvo_Y_set.IsReadOnly = false;
                            this.set_galvos_from_scan.IsEnabled = true;
+                           this.optimize_Button.IsEnabled = true;
                        }
                    ));
             }
@@ -1006,7 +1009,6 @@ namespace ConfocalControl
                     this.hardware_MenuItem.IsEnabled = true;
                     this.rasterScan_hardware_MenuItem.IsEnabled = true;
                     this.loadSettings_MenuItem.IsEnabled = true;
-                    this.rasterScan_lineDisplay.DataSource = null;
                     this.rasterScan_switch.IsEnabled = true;
                     this.up_Button.IsEnabled = true;
                     this.down_Button.IsEnabled = true;
@@ -1016,8 +1018,10 @@ namespace ConfocalControl
             ));
         }
 
-        private void opt_problemHandler(Exception e)
+        private void opt_problemHandler(DaqException e)
         {
+            MessageBox.Show("Caught exception: " + e.Message);
+
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
                 new Action(() =>
@@ -1041,7 +1045,6 @@ namespace ConfocalControl
                     this.hardware_MenuItem.IsEnabled = true;
                     this.rasterScan_hardware_MenuItem.IsEnabled = true;
                     this.loadSettings_MenuItem.IsEnabled = true;
-                    this.rasterScan_lineDisplay.DataSource = null;
                     this.rasterScan_switch.IsEnabled = true;
                     this.up_Button.IsEnabled = true;
                     this.down_Button.IsEnabled = true;
@@ -1214,8 +1217,11 @@ namespace ConfocalControl
 
         private void main_window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-           
-            CounterOptimizationPlugin.GetController().StopOptimizing();
+            if (CounterOptimizationPlugin.GetController().IsRunning())
+            {
+                CounterOptimizationPlugin.GetController().StopOptimizing();
+                Thread.Sleep(1000);
+            }
 
             if (FastMultiChannelRasterScan.GetController().IsRunning())
             {
