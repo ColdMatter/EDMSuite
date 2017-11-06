@@ -586,6 +586,7 @@ namespace ConfocalControl
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
                            this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
+                           this.optimize_Button.IsEnabled = true;
                        }
                    ));
         }
@@ -626,6 +627,7 @@ namespace ConfocalControl
                            this.hardware_MenuItem.IsEnabled = false;
                            this.rasterScan_hardware_MenuItem.IsEnabled = false;
                            this.loadSettings_MenuItem.IsEnabled = false;
+                           this.optimize_Button.IsEnabled = false;
 
                            double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
                            double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
@@ -686,6 +688,7 @@ namespace ConfocalControl
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
                            this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
+                           this.optimize_Button.IsEnabled = true;
                        }
                    ));
             }
@@ -716,6 +719,7 @@ namespace ConfocalControl
                            this.rasterScan_hardware_MenuItem.IsEnabled = true;
                            this.loadSettings_MenuItem.IsEnabled = true;
                            this.rasterScan_lineDisplay.DataSource = null;
+                           this.optimize_Button.IsEnabled = true;
 
                            if ((bool)this.save_automatic.IsChecked)
                            {
@@ -985,19 +989,101 @@ namespace ConfocalControl
                 new Action(() =>
                 {
                     this.optimize_Button.Content = "Optimize";
+                    this.rasterScan_switch.Value = false;
+                    this.oscilloscope_switch.IsReadOnly = false;
+                    this.exposure_set.IsEnabled = true;
+                    this.galvo_setpoint_reader.IsEnabled = true;
+                    this.galvosSet_Button.IsEnabled = true;
+                    this.galvo_X_set.IsReadOnly = false;
+                    this.galvo_Y_set.IsReadOnly = false;
+                    this.scan_x_min_set.IsEnabled = true;
+                    this.scan_x_max_set.IsEnabled = true;
+                    this.scan_x_res_set.IsEnabled = true;
+                    this.scan_y_min_set.IsEnabled = true;
+                    this.scan_y_max_set.IsEnabled = true;
+                    this.scan_y_res_set.IsEnabled = true;
+                    this.set_galvos_from_scan.IsEnabled = true;
+                    this.hardware_MenuItem.IsEnabled = true;
+                    this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                    this.loadSettings_MenuItem.IsEnabled = true;
+                    this.rasterScan_lineDisplay.DataSource = null;
+                    this.rasterScan_switch.IsEnabled = true;
+                    this.up_Button.IsEnabled = true;
+                    this.down_Button.IsEnabled = true;
+                    this.right_Button.IsEnabled = true;
+                    this.left_Button.IsEnabled = true;
                 }
             ));
         }
 
         private void opt_problemHandler(Exception e)
         {
-            MessageBox.Show(e.Message);
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    MessageBox.Show(e.Message);
+                    this.optimize_Button.Content = "Optimize";
+                    this.rasterScan_switch.Value = false;
+                    this.oscilloscope_switch.IsReadOnly = false;
+                    this.exposure_set.IsEnabled = true;
+                    this.galvo_setpoint_reader.IsEnabled = true;
+                    this.galvosSet_Button.IsEnabled = true;
+                    this.galvo_X_set.IsReadOnly = false;
+                    this.galvo_Y_set.IsReadOnly = false;
+                    this.scan_x_min_set.IsEnabled = true;
+                    this.scan_x_max_set.IsEnabled = true;
+                    this.scan_x_res_set.IsEnabled = true;
+                    this.scan_y_min_set.IsEnabled = true;
+                    this.scan_y_max_set.IsEnabled = true;
+                    this.scan_y_res_set.IsEnabled = true;
+                    this.set_galvos_from_scan.IsEnabled = true;
+                    this.hardware_MenuItem.IsEnabled = true;
+                    this.rasterScan_hardware_MenuItem.IsEnabled = true;
+                    this.loadSettings_MenuItem.IsEnabled = true;
+                    this.rasterScan_lineDisplay.DataSource = null;
+                    this.rasterScan_switch.IsEnabled = true;
+                    this.up_Button.IsEnabled = true;
+                    this.down_Button.IsEnabled = true;
+                    this.right_Button.IsEnabled = true;
+                    this.left_Button.IsEnabled = true;
+                }
+            ));
         }
 
         private void optimize_Button_Click(object sender, RoutedEventArgs e)
         {
             if (output_type_box.SelectedIndex == 0 && output_box.SelectedIndex >= 0 && scan_cursor.Value.Count > 2 && (string)optimize_Button.Content == "Optimize")
             {
+                Application.Current.Dispatcher.BeginInvoke(
+                    DispatcherPriority.Background,
+                    new Action(() =>
+                    {
+                        this.rasterScan_switch.Value = true;
+                        this.oscilloscope_switch.IsReadOnly = true;
+                        this.exposure_set.IsEnabled = false;
+                        this.galvo_setpoint_reader.IsEnabled = false;
+                        this.galvosSet_Button.IsEnabled = false;
+                        this.galvo_X_set.IsReadOnly = true;
+                        this.galvo_Y_set.IsReadOnly = true;
+                        this.scan_x_min_set.IsEnabled = false;
+                        this.scan_x_max_set.IsEnabled = false;
+                        this.scan_x_res_set.IsEnabled = false;
+                        this.scan_y_min_set.IsEnabled = false;
+                        this.scan_y_max_set.IsEnabled = false;
+                        this.scan_y_res_set.IsEnabled = false;
+                        this.set_galvos_from_scan.IsEnabled = false;
+                        this.hardware_MenuItem.IsEnabled = false;
+                        this.rasterScan_hardware_MenuItem.IsEnabled = false;
+                        this.loadSettings_MenuItem.IsEnabled = false;
+                        this.rasterScan_switch.IsEnabled = false;
+                        this.up_Button.IsEnabled = false;
+                        this.down_Button.IsEnabled = false;
+                        this.right_Button.IsEnabled = false;
+                        this.left_Button.IsEnabled = false;
+                    }
+                ));
+
                 double xVal = Convert.ToDouble(scan_cursor.Value[0]) - 1;
                 double yVal = Convert.ToDouble(scan_cursor.Value[1]) - 1;
                 double zVal = (double)scan_cursor.Value[2];
@@ -1128,6 +1214,9 @@ namespace ConfocalControl
 
         private void main_window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+           
+            CounterOptimizationPlugin.GetController().StopOptimizing();
+
             if (FastMultiChannelRasterScan.GetController().IsRunning())
             {
                 FastMultiChannelRasterScan.GetController().StopScan();

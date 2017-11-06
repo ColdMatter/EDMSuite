@@ -11,7 +11,7 @@ using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
 
-using MathNet.Numerics.Optimization;
+using Accord.Math.Optimization;
 
 namespace ConfocalControl
 {
@@ -23,6 +23,8 @@ namespace ConfocalControl
 
     class CounterOptimizationPlugin
     {
+        #region Class members
+
         // Bound event managers to class
         public event CounterOptimizationDataEventHandler Data;
         public event CounterOptimizationFinishedEventHandler OptFinished;
@@ -49,6 +51,10 @@ namespace ConfocalControl
         private int pointsPerExposure;
         private double sampleRate;
 
+        // Keep track of optimizer
+        private NelderMead nonLinearOptimizer;
+        private CancellationTokenSource tokenSource;
+
         // Keep track of tasks
         private List<Point3D> pointHistory;
         private Task triggerTask;
@@ -57,6 +63,8 @@ namespace ConfocalControl
         private string counterChannel;
         private Task counterTask;
         private CounterSingleChannelReader counterReader;
+
+        #endregion
 
         public CounterOptimizationPlugin()
         {
@@ -168,12 +176,13 @@ namespace ConfocalControl
             GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
         }
 
-        public double EvaluateAt(double Xpos, double Ypos)
+        public double EvaluateAt(double[] optParams)
         {
+            double Xpos = optParams[0]; double Ypos = optParams[1];
+
             if (!IsRunning())
             {
-                //throw new Exception("Optimization ended prematurely.");
-                Thread.CurrentThread.Abort(); 
+                tokenSource.Cancel();
             }
 
             GalvoPairPlugin.GetController().SetGalvoXSetpoint(Xpos);
@@ -198,28 +207,23 @@ namespace ConfocalControl
 
         public void FindOptimum(double cursorX, double cursorY, double cursorZ)
         {
-            try
-            {
-                double[] guessArray = new double[] { cursorX, cursorY };
-                MathNet.Numerics.LinearAlgebra.Vector<double> initGuess = MathNet.Numerics.LinearAlgebra.Vector<double>.Build.Dense(guessArray);
+            tokenSource = new CancellationTokenSource();
 
-                MinimizationResult result = NelderMeadSimplex.Minimum(new CounterObjectiveFunction(), initGuess, Math.Sqrt(cursorZ)/10, 1000);
+            Func<double[], double> objFunction = (double[] x) => EvaluateAt(x);
 
-                OnOptFinished();
-            }
-            catch (Exception e)
-            {
-                if (e.Message != "Optimization ended prematurely.") DaqProblem(e);
-            }
-            finally
-            {
-                OptimizationEnding();
-            }
+            nonLinearOptimizer = new NelderMead(2, objFunction);
+            nonLinearOptimizer.Token = tokenSource.Token;
 
+            nonLinearOptimizer.Minimize();
+
+            OptimizationEnding();
         }
 
-        public void OptimizationEnding()
+        private void OptimizationEnding()
         {
+            nonLinearOptimizer = null;
+            tokenSource = null;
+
             GalvoPairPlugin.GetController().MoveOnlyAcquisitionFinished();
 
             triggerTask.Dispose();
@@ -256,63 +260,6 @@ namespace ConfocalControl
         public bool IsRunning()
         {
             return backendState == OptimizationState.running;
-        }
-    }
-
-    class CounterObjectiveFunction : IObjectiveFunction
-    {
-        void IObjectiveFunction.EvaluateAt(MathNet.Numerics.LinearAlgebra.Vector<double> point)
-        {
-            currentPoint = point;
-
-            double currentGalvoXpoint = point[0];
-            double currentGalvoYpoint = point[1];
-
-            currentValue = CounterOptimizationPlugin.GetController().EvaluateAt(currentGalvoXpoint, currentGalvoYpoint);
-        }
-
-        IObjectiveFunction IObjectiveFunction.Fork()
-        {
-            throw new NotImplementedException();
-        }
-
-        IObjectiveFunction IObjectiveFunctionEvaluation.CreateNew()
-        {
-            throw new NotImplementedException();
-        }
-
-        MathNet.Numerics.LinearAlgebra.Vector<double> IObjectiveFunctionEvaluation.Gradient
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        MathNet.Numerics.LinearAlgebra.Matrix<double> IObjectiveFunctionEvaluation.Hessian
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        private bool noGradient = false;
-        bool IObjectiveFunctionEvaluation.IsGradientSupported
-        {
-            get { return noGradient; }
-        }
-
-        private bool noHessian = false;
-        bool IObjectiveFunctionEvaluation.IsHessianSupported
-        {
-            get { return noHessian; }
-        }
-
-        private MathNet.Numerics.LinearAlgebra.Vector<double> currentPoint;
-        MathNet.Numerics.LinearAlgebra.Vector<double> IObjectiveFunctionEvaluation.Point
-        {
-            get { return currentPoint; }
-        }
-
-        private double currentValue;
-        double IObjectiveFunctionEvaluation.Value
-        {
-            get { return currentValue; }
         }
     }
 }

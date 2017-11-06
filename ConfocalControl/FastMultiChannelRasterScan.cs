@@ -12,8 +12,6 @@ using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
 
-using MathNet.Numerics.Optimization;
-
 namespace ConfocalControl
 {
     class FastMultiChannelRasterScan
