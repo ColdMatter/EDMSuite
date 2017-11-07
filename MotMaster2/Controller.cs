@@ -432,7 +432,6 @@ namespace MOTMaster2
 
         internal void StopRunning()
         {
-            
             if (!config.Debug)
             {
                 WaitForRunToFinish();
@@ -1381,7 +1380,7 @@ namespace MOTMaster2
             axelCommand.sender = "MOTMaster";
             axelCommand.cmd = "shotData";
             Dictionary<string, double[]> segData = ExpData.SegmentShot(aiData);
-            foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = item.Value;
+            foreach (KeyValuePair<string, double[]> item in segData) axelCommand.prms[item.Key] = Utils.formatDouble(item.Value,Constants.LogDataFormat);
             axelCommand.prms["runID"] = BatchNumber;
             axelCommand.prms["groupID"] = ExpData.ExperimentName;
             return axelCommand;

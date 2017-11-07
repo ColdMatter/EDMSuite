@@ -224,7 +224,7 @@ namespace MOTMaster2
                     DoEvents();
                     j += 1;
                 }
-                if (j == 10) ErrorMgr.warningMsg("Time-out at wait4adjust loop");
+                if (j == 10) ErrorMgr.Log("Time-out at wait4adjust loop", Brushes.DarkOrange.Color);
                 controller.WaitForRunToFinish();
             }
             controller.AutoLogging = false;
@@ -236,7 +236,7 @@ namespace MOTMaster2
             {
                 Controller.ExpData.SaveRawData = true;
                 btnRun.Content = "Stop";
-                btnRun.Background = Brushes.LightYellow;
+                btnRun.Background = Brushes.Coral;
                 Controller.ExpData.grpMME.Clear();
                 Controller.SaveTempSequence();
                 int Iters = (int)ntbIterNumb.Value;
@@ -251,7 +251,6 @@ namespace MOTMaster2
                 }
                 if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
                 return;
-
             }
 
             if (btnRun.Content.Equals("Stop"))
@@ -385,15 +384,14 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("Error running scan: " + e.Message, -2);
                     break;
                 }
-                lbCurValue.Content = scanItem.ToString();
+                lbCurValue.Content = ((double)scanItem).ToString(Constants.LogDataFormat);
                 DoEvents();
                 if (groupRun != GroupRun.scan) break;
-                c++;
-      
+                c++;      
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
-            lbCurValue.Content = defaultValue.ToString();
+            lbCurValue.Content = ((double)defaultValue).ToString(Constants.LogDataFormat);
             controller.AutoLogging = false;
         }
 
@@ -403,7 +401,7 @@ namespace MOTMaster2
             if (btnScan.Content.Equals("Scan"))
             {
                 btnScan.Content = "Cancel";
-                btnScan.Background = Brushes.LightYellow;
+                btnScan.Background = Brushes.Coral;
                 Controller.SaveTempSequence();
                 Controller.ExpData.grpMME.Clear();
                 try
@@ -729,7 +727,7 @@ namespace MOTMaster2
         private void Log(string txt, Color? clr = null)
         {
             if (!chkLog.IsChecked.Value) return;
-            ErrorMgr.AppendLog(txt, clr);
+            ErrorMgr.Log(txt, clr);
         }
 
         private void setProperty_Click(object sender, RoutedEventArgs e)
@@ -1011,11 +1009,11 @@ namespace MOTMaster2
                 else
                 {
                     if (!File.Exists(Utils.configPath + "axel-hub.bat") || !forced) return;
-                    ErrorMgr.StatusLine("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
+                    ErrorMgr.Status("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
                     System.Diagnostics.Process.Start(File.ReadAllText(Utils.configPath + "axel-hub.bat"), "-remote");
                     Thread.Sleep(1000);
                     if(remoteMsg.CheckConnection()) OnActiveComm(remoteMsg.Connected, false);
-                    ErrorMgr.StatusLine("Status:", Brushes.Black.Color);
+                    ErrorMgr.Status("Status:", Brushes.Black.Color);
                 }
             }                
         }
@@ -1133,13 +1131,12 @@ namespace MOTMaster2
             {
                 case "Multi Scan":
                     scanBox.Content = "Cancel";
-                    scanBox.Background = Brushes.Red;
+                    scanBox.Background = Brushes.Coral;
                     Controller.ExpData.grpMME.Clear();
                     StartMultiScan();
-                    btnMScan_Click(scanBox, null);
+                    if(groupRun == GroupRun.multiScan) btnMScan_Click(scanBox, null);
                     break;
                 case "Cancel":
-                    //TODO fix this so that it will interrupt a MultiScan
                     groupRun = GroupRun.none;
                     controller.StopRunning();
                     controller.AutoLogging = false;
@@ -1149,7 +1146,6 @@ namespace MOTMaster2
                 default:
                     break;
             }
-           
         }
 
         private void StartMultiScan()

@@ -47,6 +47,13 @@ namespace UtilsNS
             return Convert.ToDouble(d.ToString(format));
         }
 
+        public static double[] formatDouble(double[] d, string format)
+        {
+            double[] da = new double[d.Length];
+            for (int i = 0; i < d.Length; i++) da[i] = Convert.ToDouble(d[i].ToString(format));
+            return da;
+        }
+        
         public static string RemoveLineEndings(string value)
         {
             if (String.IsNullOrEmpty(value))
@@ -93,10 +100,10 @@ namespace UtilsNS
     {
         public string header = ""; // that will be put as a file first line with # in front of it
         List<string> buffer;
-        public int bufferLimit = 256;
-        private int bufferCharLimit = 256000;
+        public int bufferLimit = 256; // item number
+        private int bufferCharLimit = 256000; // the whole char size
         public int bufferSize { get { return buffer.Count; } }
-        public int bufferCharSize { get; set; }
+        public int bufferCharSize { get; private set; }
         public bool writing { get; private set; }
         public bool missingData { get; private set; }
         Stopwatch stw;

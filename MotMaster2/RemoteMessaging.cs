@@ -220,7 +220,9 @@ namespace MOTMaster2
         private bool lastConnection = false;
         public bool CheckConnection(bool forced = false)
         {
-            bool back = sendCommand("ping");
+            if (!Enabled) return false;
+            lastRcvMsg = "";
+            bool back = sendCommand("ping");            
             if (back)
             {
                 for (int i = 0; i < 200; i++)
