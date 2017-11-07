@@ -12,6 +12,7 @@ using DAQ.Environment;
 using DAQ.HAL;
 
 using Accord.Math.Optimization;
+using Accord.Math.Convergence;
 
 namespace ConfocalControl
 {
@@ -214,8 +215,8 @@ namespace ConfocalControl
             double hrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
             double vrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
 
-            double xtransformed = (untransformed[0] - startParams[0]) / (hrange * 1000);
-            double ytransformed = (untransformed[1] - startParams[1]) / (vrange * 1000);
+            double xtransformed = (untransformed[0] - startParams[0]) / 5000;
+            double ytransformed = (untransformed[1] - startParams[1]) / 5000;
 
             return new double[] { xtransformed, ytransformed };
         }
@@ -225,8 +226,8 @@ namespace ConfocalControl
             double hrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
             double vrange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
 
-            double xuntransformed = transformed[0] * hrange * 1000 + startParams[0];
-            double yuntransformed = transformed[1] * vrange * 1000 + startParams[1];
+            double xuntransformed = transformed[0] * 5000 + startParams[0];
+            double yuntransformed = transformed[1] * 5000 + startParams[1];
 
             return new double[] { xuntransformed, yuntransformed };
         }
@@ -238,6 +239,10 @@ namespace ConfocalControl
             tokenSource = new CancellationTokenSource();
 
             Func<double[], double> objFunction = (double[] x) => EvaluateAt(x);
+
+            GeneralConvergence convergence = new GeneralConvergence(2);
+            convergence.MaximumEvaluations = 1000;
+            convergence.RelativeFunctionTolerance = Math.Sqrt(cursorZ) / 10;
 
             nonLinearOptimizer = new NelderMead(2, objFunction);
             nonLinearOptimizer.Token = tokenSource.Token;

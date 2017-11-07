@@ -31,7 +31,7 @@ namespace DAQ.HAL
                 my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
             }
             
-            M2_ip_address = "192.168.1.228";
+            M2_ip_address = "192.168.1.222";
         }
 
         #endregion

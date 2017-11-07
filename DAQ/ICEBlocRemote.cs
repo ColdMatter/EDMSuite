@@ -24,8 +24,8 @@ namespace DAQ.HAL
         TcpClient socket;
         NetworkStream stream;
         bool logFlag = true;
-        protected string my_ip_address = "192.168.1.100";
-        protected byte[] my_byte_ip_address = { 192, 168, 1, 100 };
+        protected string my_ip_address = "192.168.1.23";
+        protected byte[] my_byte_ip_address = { 192, 168, 1, 23 };
         protected string M2_ip_address { get; set; }
         protected int M2_ip_port { get; set; }
         string lastMessage = "";
@@ -33,7 +33,7 @@ namespace DAQ.HAL
 
         protected ICEBlocRemote()
         {
-            M2_ip_address = "192.168.1.228";
+            M2_ip_address = "192.168.1.222";
             M2_ip_port = 1025;
         }
 
@@ -143,7 +143,6 @@ namespace DAQ.HAL
             Dictionary<string, object> prmsIn = GenericCommand("ping", prmsOut);
             return (prmsIn.Count > 0);
         }
-
 
         protected Dictionary<string, object> GenericCommand(string command, Dictionary<string, object> prms, bool report)
         {

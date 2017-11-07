@@ -45,7 +45,12 @@ namespace ConfocalControl
 
         private void foo_action_Button_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            SolsTiSPlugin.GetController().Solstis.Connect();
+
+            bool status = SolsTiSPlugin.GetController().Solstis.PingTest();
+
+            if (status) MessageBox.Show("It worked");
+            else MessageBox.Show("Nope");
         }
 
         #region Closing event

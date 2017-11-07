@@ -13,12 +13,12 @@ namespace ConfocalControl
         #region Class members
 
         // Dependencies should refer to this instance only 
-        private static MultiChannelRasterScan controllerInstance;
-        public static MultiChannelRasterScan GetController()
+        private static SolsTiSPlugin controllerInstance;
+        public static SolsTiSPlugin GetController()
         {
             if (controllerInstance == null)
             {
-                controllerInstance = new MultiChannelRasterScan();
+                controllerInstance = new SolsTiSPlugin();
             }
             return controllerInstance;
         }
@@ -36,7 +36,7 @@ namespace ConfocalControl
 
         public SolsTiSPlugin()
         {
-            string computer_ip = "1.1.1";
+            string computer_ip = "192.168.1.23";
             solstis = new ICEBlocSolsTiS(computer_ip);
         }
 
