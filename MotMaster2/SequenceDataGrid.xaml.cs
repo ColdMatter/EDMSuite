@@ -76,16 +76,24 @@ namespace MOTMaster2
                 dg.Columns.Add(col);
             }*/
             var dignames = first.DigitalValueTypes.Keys;
-            Style digitalStyle = new Style(typeof(CheckBox));
+            Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
+            //Style digitalStyle = new Style();
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
-            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
 
+            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+            Brush[] colours = new Brush[] { new SolidColorBrush(Colors.Red), new SolidColorBrush(Colors.Orange), new SolidColorBrush(Colors.Yellow), new SolidColorBrush(Colors.Green), new SolidColorBrush(Colors.Blue) };
+            int i = 0;
             foreach (var name in dignames)
             {
                 //var resource = this.FindResource("digitalProvider");
-                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name, EditingElementStyle = digitalStyle };
+                DataGridCheckBoxColumn col = new DataGridCheckBoxColumn { Header = name };
                 col.Binding = new Binding() { Path = new PropertyPath("DigitalValueTypes[" + name + "].Value") };
+
+                //Path p = (Path)this.Resources["CheckMark"];
+                //p.Stroke = colours[i % colours.Length];
+                col.ElementStyle = digitalStyle;
                 dg.Columns.Add(col);
+                i++;
             }
             dg.FrozenColumnCount = 5;
         }
