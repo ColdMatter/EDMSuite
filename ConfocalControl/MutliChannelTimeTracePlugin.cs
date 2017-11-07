@@ -20,7 +20,7 @@ namespace ConfocalControl
     public delegate void SetWaveFormHandler(double[] values, Point[] hist);
     public delegate void DaqExceptionEventHandler(DaqException e);
 
-    public class SingleCounterPlugin
+    public class MutliChannelTimeTracePlugin
     {
         #region Class members
 
@@ -47,13 +47,13 @@ namespace ConfocalControl
         public event DaqExceptionEventHandler DaqProblem;
 
         // Refer to only one instance of singlecounter 
-        private static SingleCounterPlugin controllerInstance;
+        private static MutliChannelTimeTracePlugin controllerInstance;
 
-        public static SingleCounterPlugin GetController()
+        public static MutliChannelTimeTracePlugin GetController()
         {
             if (controllerInstance == null)
             {
-                controllerInstance = new SingleCounterPlugin();
+                controllerInstance = new MutliChannelTimeTracePlugin();
             }
             return controllerInstance;
         }
@@ -71,16 +71,16 @@ namespace ConfocalControl
             if (Settings.Keys.Count != 6)
             {
                 Settings["sampleRate"] = (double)100;
-                Settings["channel_type"] = "Counters";
-                Settings["analogueLowHighs"] = new double[] { -5, 5 };
-                Settings["channel"] = "APD0";
+                Settings["counterChannels"] = new List<string> { "APD0" };
+                Settings["analogueChannels"] = new List<string> { };
+                Settings["analogueLowHighs"] = new Dictionary<string, double[]>();
                 Settings["bufferSize"] = (int)10000;
                 Settings["binNumber"] = (int)20;
                 return;
             }
         }
 
-        public SingleCounterPlugin() 
+        public MutliChannelTimeTracePlugin() 
         {
             InitialiseSettings();
             setTextBox = null;
@@ -140,7 +140,7 @@ namespace ConfocalControl
 
         private void ContinuousAcquisitionStarting()
         {
-            if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+            if (IsRunning() || MultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }
@@ -409,6 +409,59 @@ namespace ConfocalControl
             {
                 System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
             }
+        }
+    }
+    
+    class MutliChannelBufferStore
+    {
+        private int numberCounterChannels;
+        private int numberAnalogChannels;
+        private List<double>[] counterDataStore;
+        private double[][] counterStoreConverted;
+        private Point[][] counterHistogramStore;
+        private List<double>[] analogDataStore;
+        private double[][] analogStoreConverted;
+        private Point[][] analogHistogramStore;
+
+        public MutliChannelBufferStore(int number_of_counter_channels, int number_of_analog_channels)
+        {
+            numberCounterChannels = number_of_counter_channels;
+            numberAnalogChannels = number_of_analog_channels;
+
+            counterDataStore = new List<double>[number_of_counter_channels];
+            for (int i = 0; i < number_of_counter_channels; i++)
+            {
+                counterDataStore[i] = new List<double>();
+            }
+
+            analogDataStore = new List<double>[number_of_analog_channels];
+            for (int i = 0; i < number_of_analog_channels; i++)
+            {
+                analogDataStore[i] = new List<double>();
+            }
+
+            counterStoreConverted = new double[number_of_counter_channels][];
+            counterHistogramStore = new Point[number_of_counter_channels][];
+            analogStoreConverted = new double[number_of_analog_channels][];
+            analogHistogramStore = new Point[number_of_analog_channels][];
+        }
+
+        public double[] GetCounterData(int counter_channel_number)
+        {
+            if (counter_channel_number >= numberCounterChannels) return null;
+            else return counterStoreConverted[counter_channel_number];
+        }
+
+        public Point[] GetCounterHistrogram(int counter_channel_number)
+        {
+            if (counter_channel_number >= numberCounterChannels) return null;
+            else return counterHistogramStore[counter_channel_number];
+        }
+
+        public void AddRangetoCounterData(int counter_channel_number, double[]data)
+        {
+            counterDataStore[counter_channel_number].AddRange(data);
+            counterStoreConverted[counter_channel_number] = counterDataStore[counter_channel_number].ToArray();
         }
     }
 }
