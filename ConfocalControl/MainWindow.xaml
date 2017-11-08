@@ -88,8 +88,8 @@
         <ni:IntensityGraph x:Name="rasterScan_display" HorizontalAlignment="Left" Height="250" Margin="467,273,0,0" VerticalAlignment="Top" Width="290" RenderTransformOrigin="0.544,0.459" Cursor="Arrow" HorizontalContentAlignment="Center">
             <ni:IntensityGraph.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Set Start Scan"></MenuItem>
-                    <MenuItem Header="Set Stop Scan"></MenuItem>
+                    <MenuItem x:Name="setStartScan_MenuItem" Header="Set Start Scan" Click="setStartScan_MenuItem_Click"/>
+                    <MenuItem x:Name="setStopScan_MenuItem" Header="Set Stop Scan" Click="setStopScan_MenuItem_Click"></MenuItem>
                     <MenuItem Header="Save Data" Click="save_raster_scan_Click" />
                 </ContextMenu>
             </ni:IntensityGraph.ContextMenu>

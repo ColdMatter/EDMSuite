@@ -77,7 +77,7 @@ namespace ConfocalControl
 
                 Settings["counterChannels"] = new List<string> { "APD0", "APD1" };
                 Settings["analogueChannels"] = new List<string> { };
-                Settings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
+                Settings["analogueLowHighs"] = new Dictionary<string, double[]>();
 
                 Settings["channel_type"] = "Counters";
                 Settings["display_channel_index"] = 0;
@@ -232,8 +232,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)Settings["analogueChannels"])[i];
 
-                double inputRangeLow = -5;
-                double inputRangeHigh = 5;
+                double inputRangeLow = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][1];
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
@@ -419,7 +419,7 @@ namespace ConfocalControl
 
         public void RequestHistoricData()
         {
-            OnData();
+            if (analogBuffer != null && counterBuffer != null) OnData();
         }
 
         public void SaveData(string fileName)

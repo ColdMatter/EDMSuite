@@ -75,6 +75,7 @@ namespace ConfocalControl
             catch (DaqException e1)
             {
                 MessageBox.Show("Caught exception: " + e1.Message);
+                if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
             }
             finally
             {
@@ -134,7 +135,6 @@ namespace ConfocalControl
             {
                 MessageBox.Show("Caught exception: " + e1.Message);
                 if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
             }
         }
 
@@ -176,13 +176,11 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("Caught exception: " + e1.Message);
                     if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                    if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                 }
                 catch (DaqException e1)
                 {
                     MessageBox.Show("Caught exception: " + e1.Message);
                     if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                    if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                 }
             }
         }
@@ -218,13 +216,11 @@ namespace ConfocalControl
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                         catch (DaqException e1)
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                     }
                     else
@@ -247,13 +243,11 @@ namespace ConfocalControl
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                         catch (DaqException e1)
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                     }
                 }
@@ -291,13 +285,11 @@ namespace ConfocalControl
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                         catch (DaqException e1)
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
                         }
                     }
                     else
@@ -375,7 +367,7 @@ namespace ConfocalControl
                     if (output_box_TimeTrace.SelectedIndex >= 0)
                     {
                         SingleCounterPlugin.GetController().Settings["display_channel_index"] = output_box_TimeTrace.SelectedIndex;
-                        //SingleCounterPlugin.GetController().RequestHistoricData();
+                        SingleCounterPlugin.GetController().RequestHistoricData();
                     }
                     else
                     {
@@ -388,7 +380,7 @@ namespace ConfocalControl
                     if (output_box_TimeTrace.SelectedIndex >= 0)
                     {
                         SingleCounterPlugin.GetController().Settings["display_channel_index"] = output_box_TimeTrace.SelectedIndex;
-                        //SingleCounterPlugin.GetController().RequestHistoricData();
+                        SingleCounterPlugin.GetController().RequestHistoricData();
                     }
                     else
                     {
@@ -484,8 +476,10 @@ namespace ConfocalControl
                            this.loadSettings_MenuItem.IsEnabled = false;
                            this.optimize_Button.IsEnabled = false;
 
-                           if ((string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"]
-                                || (string)SingleCounterPlugin.GetController().Settings["channel"] == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"])
+                           bool HasGalvoX = ((List<string>)SingleCounterPlugin.GetController().Settings["analogueChannels"]).Any(s => s == (string)GalvoPairPlugin.GetController().Settings["GalvoXRead"]);
+                           bool HasGalvoY = ((List<string>)SingleCounterPlugin.GetController().Settings["analogueChannels"]).Any(s => s == (string)GalvoPairPlugin.GetController().Settings["GalvoYRead"]);
+
+                           if (HasGalvoX || HasGalvoY)
                            {
                                this.galvo_setpoint_reader.IsEnabled = false;
                                this.galvosSet_Button.IsEnabled = false;
@@ -939,13 +933,11 @@ namespace ConfocalControl
             {
                 MessageBox.Show("Caught exception: " + e1.Message);
                 if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
             }
             catch (FormatException e2)
             {
                 MessageBox.Show("Caught exception: " + e2.Message);
                 if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
             }
         }
 
@@ -999,6 +991,26 @@ namespace ConfocalControl
                     this.rasterScan_display.DataSource = null;
                     break;
             }
+        }
+
+        private void setStartScan_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                scan_x_min_set.Value = Convert.ToDouble(galvo_x_scan_pos.Text);
+                scan_y_min_set.Value = Convert.ToDouble(galvo_y_scan_pos.Text);
+            }
+            catch (FormatException e2) { MessageBox.Show("Caught exception: " + e2.Message); }
+        }
+
+        private void setStopScan_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                scan_x_max_set.Value = Convert.ToDouble(galvo_x_scan_pos.Text);
+                scan_y_max_set.Value = Convert.ToDouble(galvo_y_scan_pos.Text);
+            }
+            catch (FormatException e2) { MessageBox.Show("Caught exception: " + e2.Message); }
         }
 
         #endregion
@@ -1305,5 +1317,6 @@ namespace ConfocalControl
         }
 
         #endregion 
+
     }
 }

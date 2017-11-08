@@ -22,9 +22,13 @@ namespace ConfocalControl
     /// </summary>
     public partial class RasterScanHardwareConfigure : Window
     {
+        private Dictionary<string, double[]> analogHighLowsIncluded;
+
         public RasterScanHardwareConfigure()
         {
             InitializeComponent();
+
+            analogHighLowsIncluded = (Dictionary<string, double[]>)FastMultiChannelRasterScan.GetController().scanSettings["analogueLowHighs"];
 
             List<string> includedAnalogInputChannelsKeys = new List<string>();
             foreach (string key in (List<string>)FastMultiChannelRasterScan.GetController().scanSettings["analogueChannels"])
@@ -76,13 +80,35 @@ namespace ConfocalControl
             }
         }
 
+        private void analog_included_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (analog_included.SelectedIndex >= 0)
+            {
+                string key = (string)analog_included.SelectedValue;
+                analogLow_reader.Text = analogHighLowsIncluded[key][0].ToString(); ;
+                analogHigh_reader.Text = analogHighLowsIncluded[key][1].ToString();
+            }
+        }
+
         private void add_analog_Click(object sender, RoutedEventArgs e)
         {
             if (analog_not_included.SelectedIndex >= 0)
             {
-                string key = (string)analog_not_included.SelectedValue;
-                analog_not_included.Items.Remove(key);
-                analog_included.Items.Add(key);
+                double lowInput = analogLow_input.Value;
+                double highInput = analogHigh_input.Value;
+
+                if (lowInput >= highInput)
+                {
+                    MessageBox.Show("Analogue bounds unacceptable.");
+                }
+                else
+                {
+                    string key = (string)analog_not_included.SelectedValue;
+                    analog_not_included.Items.Remove(key);
+                    analog_included.Items.Add(key);
+                    analogHighLowsIncluded[key] = new double[] { analogLow_input.Value, analogHigh_input.Value };
+                    analogLow_input.Value = 0; analogHigh_input.Value = 0;
+                }
             }
         }
 
@@ -92,6 +118,7 @@ namespace ConfocalControl
             {
                 string key = (string)analog_included.SelectedValue;
                 analog_included.Items.Remove(key);
+                analogHighLowsIncluded.Remove(key);
                 analog_not_included.Items.Add(key);
             }
         }
@@ -142,6 +169,7 @@ namespace ConfocalControl
                 new_counters.Add(key);
             }
             FastMultiChannelRasterScan.GetController().scanSettings["counterChannels"] = new_counters;
+            FastMultiChannelRasterScan.GetController().scanSettings["analogueLowHighs"] = analogHighLowsIncluded;
 
             this.Close();
         }

@@ -88,7 +88,7 @@ namespace ConfocalControl
 
                 scanSettings["counterChannels"] = new List<string> { "APD0", "APD1" };
                 scanSettings["analogueChannels"] = new List<string> { };
-                scanSettings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
+                scanSettings["analogueLowHighs"] = new Dictionary<string, double[]>();
             }
         }
 
@@ -297,8 +297,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)scanSettings["analogueChannels"])[i];
 
-                double inputRangeLow = -5;
-                double inputRangeHigh = 5;
+                double inputRangeLow = ((Dictionary<string, double[]>)scanSettings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)scanSettings["analogueLowHighs"])[channelName][1];
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
