@@ -1,12 +1,22 @@
 ﻿<Window x:Class="ConfocalControl.TimeTraceHardwareConfigure"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TimeTraceHardwareConfigure" Height="240" Width="300">
+        Title="TimeTraceHardwareConfigure" Height="450" Width="400">
     <Grid>
-        <Button x:Name="ok_button" Content="OK" HorizontalAlignment="Left" Margin="72,154,0,0" VerticalAlignment="Top" Width="75" Click="ok_button_Click"/>
-        <Button x:Name="cancel_button" Content="Cancel" HorizontalAlignment="Left" Margin="152,154,0,0" VerticalAlignment="Top" Width="75" Click="cancel_button_Click"/>
-        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="90,52,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="output_type_box_SelectionChanged"/>
-        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="90,79,0,0" VerticalAlignment="Top" Width="120"/>
+        <ListBox x:Name="analog_not_included" HorizontalAlignment="Left" Height="100" Margin="112,52,0,0" VerticalAlignment="Top" Width="100"/>
+        <ListBox x:Name="analog_included" HorizontalAlignment="Left" Height="100" Margin="248,52,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="add_analog" Content="Add" HorizontalAlignment="Left" Margin="126,157,0,0" VerticalAlignment="Top" Width="75" Click="add_analog_Click"/>
+        <Button x:Name="remove_analog" Content="Remove" HorizontalAlignment="Left" Margin="261,157,0,0" VerticalAlignment="Top" Width="75" Click="remove_analog_Click"/>
+        <Label Content="Available" HorizontalAlignment="Left" Margin="134,21,0,0" VerticalAlignment="Top"/>
+        <Label Content="Included" HorizontalAlignment="Left" Margin="270,21,0,0" VerticalAlignment="Top"/>
+        <Label Content="Analogues" HorizontalAlignment="Left" Margin="23,89,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="counters_not_included" HorizontalAlignment="Left" Height="100" Margin="112,213,0,0" VerticalAlignment="Top" Width="100"/>
+        <ListBox x:Name="counters_included" HorizontalAlignment="Left" Height="100" Margin="248,213,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label Content="Counters" HorizontalAlignment="Left" Margin="23,250,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="add_counters" Content="Add" HorizontalAlignment="Left" Margin="126,318,0,0" VerticalAlignment="Top" Width="75" Click="add_counters_Click"/>
+        <Button x:Name="remove_counters" Content="Remove" HorizontalAlignment="Left" Margin="261,318,0,0" VerticalAlignment="Top" Width="75" Click="remove_counters_Click"/>
+        <Button x:Name="ok_Button" Content="OK" HorizontalAlignment="Left" Margin="153,375,0,0" VerticalAlignment="Top" Width="75" Click="ok_Button_Click"/>
+        <Button x:Name="cancel_Button" Content="Cancel" HorizontalAlignment="Left" Margin="233,375,0,0" VerticalAlignment="Top" Width="75" Click="cancel_Button_Click"/>
 
     </Grid>
 </Window>

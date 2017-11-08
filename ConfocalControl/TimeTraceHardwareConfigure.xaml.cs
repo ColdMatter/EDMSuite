@@ -29,64 +29,124 @@ namespace ConfocalControl
         {
             InitializeComponent();
 
-            analogInputChannelsKeys = new List<string>();
+            List<string> includedAnalogInputChannelsKeys = new List<string>();
+            foreach (string key in (List<string>)SingleCounterPlugin.GetController().Settings["analogueChannels"])
+            {
+                includedAnalogInputChannelsKeys.Add(key);
+            }
+            includedAnalogInputChannelsKeys.Sort();
+
+            foreach (string key in includedAnalogInputChannelsKeys)
+            {
+                analog_included.Items.Add(key);
+            }
+
+            List<string> analogInputChannelsKeys = new List<string>();
             foreach (string key in Environs.Hardware.AnalogInputChannels.Keys)
             {
                 analogInputChannelsKeys.Add(key);
             }
             analogInputChannelsKeys.Sort();
 
-            counterInputChannelsKeys = new List<string>();
+            foreach (string key in analogInputChannelsKeys)
+            {
+                if (!includedAnalogInputChannelsKeys.Contains(key)) analog_not_included.Items.Add(key);
+            }
+
+            List<string> includedCounterChannelsKeys = new List<string>();
+            foreach (string key in (List<string>)SingleCounterPlugin.GetController().Settings["counterChannels"])
+            {
+                includedCounterChannelsKeys.Add(key);
+            }
+            includedCounterChannelsKeys.Sort();
+
+            foreach (string key in includedCounterChannelsKeys)
+            {
+                counters_included.Items.Add(key);
+            }
+
+            List<string> counterChannelsKeys = new List<string>();
             foreach (string key in Environs.Hardware.CounterChannels.Keys)
             {
-                if (key != "SampleClock") counterInputChannelsKeys.Add(key);
+                counterChannelsKeys.Add(key);
             }
-            counterInputChannelsKeys.Sort();
+            counterChannelsKeys.Sort();
 
-            output_type_box.Items.Add("Counters");
-            output_type_box.Items.Add("Analogues");
-            output_type_box.SelectedValue = (string)SingleCounterPlugin.GetController().Settings["channel_type"];
-            output_box.SelectedValue = (string)SingleCounterPlugin.GetController().Settings["channel"];
-        }
-
-        private void ok_button_Click(object sender, RoutedEventArgs e)
-        {
-            SingleCounterPlugin.GetController().Settings["channel_type"] = (string)output_type_box.SelectedValue;
-            SingleCounterPlugin.GetController().Settings["channel"] = (string)output_box.SelectedValue;
-            this.Close();
-        }
-
-        private void cancel_button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            output_box.Items.Clear();
-            output_box.SelectedIndex = -1;
-
-            switch (output_type_box.SelectedIndex)
+            foreach (string key in counterChannelsKeys)
             {
-                case 0:
-                    foreach (string input in counterInputChannelsKeys)
-                    {
-                        output_box.Items.Add(input);
-                    }
-                    if (output_box.Items.Count != 0) output_box.SelectedIndex = 0;
-                    break;
-
-                case 1:
-                    foreach (string input in analogInputChannelsKeys)
-                    {
-                        output_box.Items.Add(input);
-                    }
-                    if (output_box.Items.Count != 0) output_box.SelectedIndex = 0;
-                    break;
-
-                default:
-                    break;
+                if (!includedCounterChannelsKeys.Contains(key) && !(key == "SampleClock"))
+                    counters_not_included.Items.Add(key);
             }
+        }
+
+        private void add_analog_Click(object sender, RoutedEventArgs e)
+        {
+            if (analog_not_included.SelectedIndex >= 0)
+            {
+                string key = (string)analog_not_included.SelectedValue;
+                analog_not_included.Items.Remove(key);
+                analog_included.Items.Add(key);
+            }
+        }
+
+        private void remove_analog_Click(object sender, RoutedEventArgs e)
+        {
+            if (analog_included.SelectedIndex >= 0)
+            {
+                string key = (string)analog_included.SelectedValue;
+                analog_included.Items.Remove(key);
+                analog_not_included.Items.Add(key);
+            }
+        }
+
+        private void add_counters_Click(object sender, RoutedEventArgs e)
+        {
+            if (counters_not_included.SelectedIndex >= 0)
+            {
+                string key = (string)counters_not_included.SelectedValue;
+                counters_not_included.Items.Remove(key);
+                counters_included.Items.Add(key);
+            }
+        }
+
+        private void remove_counters_Click(object sender, RoutedEventArgs e)
+        {
+            if (counters_included.SelectedIndex >= 0)
+            {
+                string key = (string)counters_included.SelectedValue;
+                counters_included.Items.Remove(key);
+                counters_not_included.Items.Add(key);
+            }
+        }
+
+        private void cancel_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ok_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (counters_included.Items.Count < 1)
+            {
+                MessageBox.Show("Need at least one counter");
+                return;
+            }
+
+            List<string> new_analog = new List<string>();
+            foreach (string key in analog_included.Items)
+            {
+                new_analog.Add(key);
+            }
+            SingleCounterPlugin.GetController().Settings["analogueChannels"] = new_analog;
+
+            List<string> new_counters = new List<string>();
+            foreach (string key in counters_included.Items)
+            {
+                new_counters.Add(key);
+            }
+            SingleCounterPlugin.GetController().Settings["counterChannels"] = new_counters;
+
+            this.Close();
         }
     }
 }

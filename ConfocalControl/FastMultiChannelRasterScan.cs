@@ -297,8 +297,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)scanSettings["analogueChannels"])[i];
 
-                double inputRangeLow = ((List<double[]>)scanSettings["analogueLowHighs"])[i][0];
-                double inputRangeHigh = ((List<double[]>)scanSettings["analogueLowHighs"])[i][1];
+                double inputRangeLow = -5;
+                double inputRangeHigh = 5;
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,

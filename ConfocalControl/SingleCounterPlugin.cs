@@ -32,14 +32,16 @@ namespace ConfocalControl
 
         // Keep track of tasks
         private Task freqOutTask;
-        private Task samplingTask;
-        private CounterSingleChannelReader countReader;
-        private AnalogSingleChannelReader analogReader;
+        private List<Task> counterTasks;
+        private List<CounterSingleChannelReader> counterReaders;
+        private Task analoguesTask;
+        private AnalogMultiChannelReader analoguesReader;
 
         // Keep track of data
-        private double _latestCount;
-        public List<double> data_buffer;
-        public double latestData;
+        private List<double>[] analogBuffer;
+        private List<double>[] counterBuffer;
+        private double[] latestAnalogs;
+        private double[] latestCounters;
 
         // Bound event managers to class
         public event SetTextBoxHandler setTextBox;
@@ -68,13 +70,18 @@ namespace ConfocalControl
         private void InitialiseSettings()
         {
             LoadSettings();
-            if (Settings.Keys.Count != 6)
+            if (Settings.Keys.Count != 8)
             {
                 Settings["sampleRate"] = (double)100;
-                Settings["channel_type"] = "Counters";
-                Settings["analogueLowHighs"] = new double[] { -5, 5 };
-                Settings["channel"] = "APD0";
                 Settings["bufferSize"] = (int)10000;
+
+                Settings["counterChannels"] = new List<string> { "APD0", "APD1" };
+                Settings["analogueChannels"] = new List<string> { };
+                Settings["analogueLowHighs"] = new List<double[]> { new double[] { -5, 5 }, new double[] { -5, 5 } };
+
+                Settings["channel_type"] = "Counters";
+                Settings["display_channel_index"] = 0;
+
                 Settings["binNumber"] = (int)20;
                 return;
             }
@@ -85,9 +92,15 @@ namespace ConfocalControl
             InitialiseSettings();
             setTextBox = null;
             setWaveForm = null;
-            
-            _latestCount = 0;
-            latestData = 0;
+
+            freqOutTask = null;
+            counterReaders = null;
+            analoguesReader = null;
+
+            analogBuffer = null;
+            counterBuffer = null;
+            latestAnalogs = null;
+            latestCounters = null;
         }
 
         public double GetExposure()
@@ -115,14 +128,14 @@ namespace ConfocalControl
             return counterState == CounterState.running;
         }
 
-        public Point[] HistogramFromBuffer()
+        private Point[] HistogramFromBuffer(double[] data_buffer)
         {
-            if (data_buffer.Count > 1)
+            if (data_buffer.Length > 1)
             {
                 double min = data_buffer.Min();
                 double max = data_buffer.Max();
                 double[] centerVals;
-                int[] _hist = Statistics.Histogram(data_buffer.ToArray(), min, max, (int)Settings["binNumber"], out centerVals);
+                int[] _hist = Statistics.Histogram(data_buffer, min, max, (int)Settings["binNumber"], out centerVals);
                 Point[] hist = new Point[_hist.Length];
 
                 for (int i = 0; i < _hist.Length; i++)
@@ -145,7 +158,23 @@ namespace ConfocalControl
                 throw new DaqException("Counter already running");
             }
 
-            data_buffer = new List<double>();
+            int numberOfAnalogs = ((List<string>)Settings["analogueChannels"]).Count;
+            analogBuffer = new List<double>[numberOfAnalogs];
+            latestAnalogs = new double[numberOfAnalogs];
+            for (int i = 0; i < numberOfAnalogs; i++)
+            {
+                analogBuffer[i] = new List<double>();
+                latestAnalogs[i] = 0;
+            }
+
+            int numberOfCounters = ((List<string>)Settings["counterChannels"]).Count;
+            counterBuffer = new List<double>[numberOfCounters];
+            latestCounters = new double[numberOfCounters];
+            for (int i = 0; i < numberOfCounters; i++)
+            {
+                counterBuffer[i] = new List<double>();
+                latestCounters[i] = 0;
+            }
 
             // Set up clock task
             freqOutTask = new Task("sample clock task");
@@ -162,167 +191,167 @@ namespace ConfocalControl
 
             freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
 
-            switch ((string)Settings["channel_type"])
+            // Set up edge-counting tasks
+            counterTasks = new List<Task>();
+            counterReaders = new List<CounterSingleChannelReader>();
+
+            for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
             {
-                case "Counters":
-                    // Set up an edge-counting task
-                    samplingTask = new Task("buffered edge counter gatherer " + (string)Settings["channel"]);
+                string channelName = ((List<string>)Settings["counterChannels"])[i];
 
-                    // Count upwards on rising edges starting from zero
-                    samplingTask.CIChannels.CreateCountEdgesChannel(
-                        ((CounterChannel)Environs.Hardware.CounterChannels[(string)Settings["channel"]]).PhysicalChannel,
-                        "edge counter",
-                        CICountEdgesActiveEdge.Rising,
-                        0,
-                        CICountEdgesCountDirection.Up);
+                counterTasks.Add(new Task("buffered edge counters " + channelName));
 
-                    // Take one sample within a window determined by sample rate using clock task
-                    samplingTask.Timing.ConfigureSampleClock(
-                        (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                        (double)Settings["sampleRate"],
-                        SampleClockActiveEdge.Rising,
-                        SampleQuantityMode.ContinuousSamples);
+                // Count upwards on rising edges starting from zero
+                counterTasks[i].CIChannels.CreateCountEdgesChannel(
+                    ((CounterChannel)Environs.Hardware.CounterChannels[channelName]).PhysicalChannel,
+                    "edge counter " + channelName,
+                    CICountEdgesActiveEdge.Rising,
+                    0,
+                    CICountEdgesCountDirection.Up);
 
-                    samplingTask.Control(TaskAction.Verify);
+                // Take one sample within a window determined by sample rate using clock task
+                counterTasks[i].Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    (double)Settings["sampleRate"],
+                    SampleClockActiveEdge.Falling,
+                    SampleQuantityMode.ContinuousSamples);
 
-                    // Set up a reader for the edge counter
-                    countReader = new CounterSingleChannelReader(samplingTask.Stream);
-                    break;
+                counterTasks[i].Control(TaskAction.Verify);
 
-                case "Analogues":
-                    // Set up an analogue sampling task
-                    samplingTask = new Task("buffered edge counter gatherer " + (string)Settings["channel"]);
+                DaqStream counterStream = counterTasks[i].Stream;
+                counterReaders.Add(new CounterSingleChannelReader(counterStream));
 
-                    string channelName = (string)Settings["channel"];
-                    double inputRangeLow = ((double[])Settings["analogueLowHighs"])[0];
-                    double inputRangeHigh = ((double[])Settings["analogueLowHighs"])[1];
+                // Start tasks
+                counterTasks[i].Start();
+            }
 
-                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
-                        samplingTask,
-                        inputRangeLow,
-                        inputRangeHigh
-                        );
+            // Set up analogue sampling tasks
+            analoguesTask = new Task("analogue sampler");
 
-                    // Take one sample within a window determined by sample rate using clock task
-                    samplingTask.Timing.ConfigureSampleClock(
-                        (string)Environs.Hardware.GetInfo("SampleClockReader"),
-                        (double)Settings["sampleRate"],
-                        SampleClockActiveEdge.Rising,
-                        SampleQuantityMode.ContinuousSamples);
+            for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)Settings["analogueChannels"])[i];
 
-                    samplingTask.Control(TaskAction.Verify);
+                double inputRangeLow = -5;
+                double inputRangeHigh = 5;
 
-                    // Set up a reader for the edge counter
-                    analogReader = new AnalogSingleChannelReader(samplingTask.Stream);
-                    break;
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
+                    analoguesTask,
+                    inputRangeLow,
+                    inputRangeHigh
+                    );
+            }
 
-                default:
-                    throw new DaqException("Did not understand time trace input type.");
+            if (((List<string>)Settings["analogueChannels"]).Count != 0)
+            {
+                analoguesTask.Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    (double)Settings["sampleRate"],
+                    SampleClockActiveEdge.Falling,
+                    SampleQuantityMode.ContinuousSamples);
+
+                analoguesTask.Control(TaskAction.Verify);
+
+                DaqStream analogStream = analoguesTask.Stream;
+                analoguesReader = new AnalogMultiChannelReader(analogStream);
+
+                // Start tasks
+                analoguesTask.Start();
             }
         }
 
         public void AcquisitionFinished()
         {
-            samplingTask.Dispose(); 
+            freqOutTask.Dispose();
+            foreach (Task counterTask in counterTasks)
+            {
+                counterTask.Dispose();
+            }
+            analoguesTask.Dispose(); 
             freqOutTask.Dispose();
 
             freqOutTask = null;
-            samplingTask = null;
-            countReader = null;
-            analogReader = null;
+            counterReaders = null;
+            analoguesReader = null;
 
-            _latestCount = 0;
-            latestData = 0;
             counterState = CounterState.stopped;
         }
 
         private void PreArm() 
         {
-            freqOutTask.Start();
-            samplingTask.Start();
             counterState = CounterState.running;
+            freqOutTask.Start();
         }
 
         private void ArmAndWaitContinuous()
         {
-            if (data_buffer.Count > (int)Settings["bufferSize"])
+            // Read counter data
+            for (int i = 0; i < counterBuffer.Length; i++)
             {
-                data_buffer.RemoveRange(0, data_buffer.Count - (int)Settings["bufferSize"]);
-            }
+                if (counterBuffer[i].Count > (int)Settings["bufferSize"])
+                {
+                    counterBuffer[i].RemoveRange(0, counterBuffer[i].Count - (int)Settings["bufferSize"]);
+                }
 
+                double[] counterRead = counterReaders[i].ReadMultiSampleDouble(-1);
 
-            // Read all the data from the buffer - update buffer position
-            double[] _data;
-            switch ((string)Settings["channel_type"])
-            {
-                case "Counters":
-                    _data = countReader.ReadMultiSampleInt32(-1).Select(Convert.ToDouble).ToArray();
+                if (counterRead.Length > 0)
+                {
+                    double[] dataRead = new double[counterRead.Length];
+                    dataRead[0] = counterRead[0] - latestCounters[i];
+                    latestCounters[i] = counterRead[counterRead.Length - 1];
 
-                    if (_data.Length != 0)
+                    if (counterRead.Length > 1)
                     {
-                        double[] data = new double[_data.Length];
-                        data[0] = _data[0] - _latestCount;
-                        _latestCount = _data[_data.Length - 1];
-
-                        if (_data.Length > 1)
+                        for (int j = 1; j < counterRead.Length; j++)
                         {
-                            for (int i = 1; i < _data.Length; i++)
-                            {
-                                data[i] = _data[i] - _data[i - 1];
-                            }
+                            dataRead[j] = counterRead[j] - counterRead[j - 1];
                         }
-
-                        if (data_buffer.Count < ((int)Settings["bufferSize"] - data.Length))
-                        {
-                            data_buffer.AddRange(data);
-                        }
-                        else
-                        {
-                            data_buffer.RemoveRange(0, data.Length);
-                            data_buffer.AddRange(data);
-                        }
-
                     }
 
-                    break;
-
-                case "Analogues":
-                    _data = analogReader.ReadMultiSample(-1);
-
-                    if (_data.Length != 0)
+                    if (counterBuffer[i].Count > ((int)Settings["bufferSize"] - dataRead.Length))
                     {
-                        if (data_buffer.Count < ((int)Settings["bufferSize"] - _data.Length))
-                        {
-                            data_buffer.AddRange(_data);
-                        }
-                        else
-                        {
-                            data_buffer.RemoveRange(0, _data.Length);
-                            data_buffer.AddRange(_data);
-                        }
-
+                        counterBuffer[i].RemoveRange(0, dataRead.Length);
                     }
 
-                    break;
-
-                default:
-                    throw new DaqException("Did not understand time trace input type.");
+                    counterBuffer[i].AddRange(dataRead);
+                }
             }
 
-            if (data_buffer.Count < 1)
+            // Read analogue data
+            if (((List<string>)Settings["analogueChannels"]).Count != 0)
             {
-                latestData = 0;
-            }
-            else
-            {
-                latestData = data_buffer[data_buffer.Count - 1];
+                double[,] analogRead = analoguesReader.ReadMultiSample(-1);
+
+                for (int i = 0; i < analogRead.GetLength(0); i++)
+                {
+                    if (analogBuffer[i].Count > (int)Settings["bufferSize"])
+                    {
+                        analogBuffer[i].RemoveRange(0, analogBuffer[i].Count - (int)Settings["bufferSize"]);
+                    }
+
+                    if (analogRead.GetLength(1) > 0)
+                    {
+                        latestAnalogs[i] = analogRead[i, analogRead.GetLength(1) - 1];
+
+                        if (analogBuffer[i].Count > ((int)Settings["bufferSize"] - analogRead.GetLength(1)))
+                        {
+                            analogBuffer[i].RemoveRange(0, analogRead.GetLength(1));
+                        }
+
+                        for (int j = 0; j < analogRead.GetLength(1); j++)
+			            {
+			                analogBuffer[i].Add(analogRead[i, j]);
+			            }
+                    }
+
+                }
             }
         }
 
         private void PostArm()
         {
             // Stop the counter; the job's done
-            samplingTask.Stop();
             freqOutTask.Stop();
         }
 
@@ -335,16 +364,7 @@ namespace ConfocalControl
                 while (counterState == CounterState.running)
                 {
                     ArmAndWaitContinuous();
-                    if (setTextBox != null)
-                    {
-                        setTextBox(latestData);
-                    }
-
-                    if (setWaveForm != null)
-                    {
-                        setWaveForm(data_buffer.ToArray(), HistogramFromBuffer());
-                    }
-
+                    OnData();
                     Thread.Sleep(10);
                 }
                 PostArm();
@@ -356,9 +376,50 @@ namespace ConfocalControl
             }
         }
 
+        private void OnData()
+        {
+            switch ((string)Settings["channel_type"])
+            {
+                case "Counters":
+                    if (setTextBox != null && setWaveForm != null)
+                    {
+                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
+                        {
+                            double[] dataWaveform = counterBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
+                            if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1] * (double)Settings["sampleRate"]);
+                            setWaveForm(dataWaveform, HistogramFromBuffer(dataWaveform));
+                        }
+                        else setWaveForm(null, null);
+                    }
+                    break;
+
+                case "Analogues":
+                    if (setTextBox != null && setWaveForm != null && (int)Settings["display_channel_index"] >= 0)
+                    {
+                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
+                        {
+                            double[] dataWaveform = analogBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
+                            if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1]);
+                            setWaveForm(dataWaveform, HistogramFromBuffer(dataWaveform));
+                        }
+                        else setWaveForm(null, null);
+                    }
+                    break;
+
+                default:
+                    throw new DaqException("Did not understand data type");
+            }
+
+        }
+
         public void StopContinuousAcquisition()
         {
             counterState = CounterState.stopping;
+        }
+
+        public void RequestHistoricData()
+        {
+            OnData();
         }
 
         public void SaveData(string fileName)
@@ -369,36 +430,43 @@ namespace ConfocalControl
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
             lines.Add("Exposure = " + GetExposure().ToString()); lines.Add("");
 
-            foreach (int pnt in data_buffer)
+            string descriptionString = "";
+            foreach (string channel in (List<string>)Settings["counterChannels"])
             {
-                string line = pnt.ToString();
-                lines.Add(line);
+                descriptionString = descriptionString + channel + " ";
+            }
+            foreach (string channel in (List<string>)Settings["analogueChannels"])
+            {
+                descriptionString = descriptionString + channel + " ";
+            }
+            lines.Add(descriptionString);
+
+            int minLength = -1;
+            foreach (List<double> counterData in counterBuffer)
+            {
+                if (minLength == -1) minLength = counterData.Count;
+                else if (counterData.Count < minLength) minLength = counterData.Count;
+            }
+            foreach (List<double> analogData in analogBuffer)
+            {
+                if (analogData.Count < minLength) minLength = analogData.Count;
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = directory;
-            saveFileDialog.FileName = fileName;
-
-            if (saveFileDialog.ShowDialog() == true)
+            if (minLength != 0)
             {
-                System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
-            }
-        }
-
-        public void SaveHistogram(string fileName)
-        {
-            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
-
-            Point[] pnts = HistogramFromBuffer();
-
-            List<string> lines = new List<string>();
-            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH-mm-ss"));
-            lines.Add("Exposure = " + GetExposure().ToString()); lines.Add(""); lines.Add("Number freq");
-
-            foreach (Point pnt in pnts)
-            {
-                string line = pnt.X.ToString() + " " + pnt.Y.ToString();
-                lines.Add(line);
+                for (int i = 0; i < minLength; i++)
+                {
+                    string line = "";
+                    foreach (List<double> counterData in counterBuffer)
+                    {
+                        line = line + counterData[i].ToString() + " ";
+                    }
+                    foreach (List<double> analogData in analogBuffer)
+                    {
+                        line = line + analogData[i].ToString() + " ";
+                    }
+                    lines.Add(line);
+                }
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();

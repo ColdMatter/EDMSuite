@@ -107,6 +107,10 @@ namespace ConfocalControl
                 output_type_box.Items.Add("Counters");
                 output_type_box.Items.Add("Analogues");
                 output_type_box.SelectedIndex = 0;
+
+                output_type_box_TimeTrace.Items.Add("Counters");
+                output_type_box_TimeTrace.Items.Add("Analogues");
+                output_type_box_TimeTrace.SelectedIndex = 0;
             }
         }
 
@@ -333,6 +337,71 @@ namespace ConfocalControl
 
         #region Timetrace events
 
+        private void output_type_box_TimeTrace_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            output_box_TimeTrace.Items.Clear();
+            output_box_TimeTrace.SelectedIndex = -1;
+
+            switch (output_type_box_TimeTrace.SelectedIndex)
+            {
+                case 0:
+                    SingleCounterPlugin.GetController().Settings["channel_type"] = "Counters";
+                    foreach (string input in (List<string>)SingleCounterPlugin.GetController().Settings["counterChannels"])
+                    {
+                        output_box_TimeTrace.Items.Add(input);
+                    }
+                    if (output_box_TimeTrace.Items.Count != 0) output_box_TimeTrace.SelectedIndex = 0;
+                    break;
+
+                case 1:
+                    SingleCounterPlugin.GetController().Settings["channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)SingleCounterPlugin.GetController().Settings["analogueChannels"])
+                    {
+                        output_box_TimeTrace.Items.Add(input);
+                    }
+                    if (output_box_TimeTrace.Items.Count != 0) output_box_TimeTrace.SelectedIndex = 0;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void output_box_TimeTrace_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (output_type_box_TimeTrace.SelectedIndex)
+            {
+                case 0:
+                    if (output_box_TimeTrace.SelectedIndex >= 0)
+                    {
+                        SingleCounterPlugin.GetController().Settings["display_channel_index"] = output_box_TimeTrace.SelectedIndex;
+                        //SingleCounterPlugin.GetController().RequestHistoricData();
+                    }
+                    else
+                    {
+                        this.APD_monitor.DataSource = null;
+                        this.APD_hist.DataSource = null;
+                    }
+                    break;
+
+                case 1:
+                    if (output_box_TimeTrace.SelectedIndex >= 0)
+                    {
+                        SingleCounterPlugin.GetController().Settings["display_channel_index"] = output_box_TimeTrace.SelectedIndex;
+                        //SingleCounterPlugin.GetController().RequestHistoricData();
+                    }
+                    else
+                    {
+                        this.APD_monitor.DataSource = null;
+                        this.APD_hist.DataSource = null;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         public void singleCounter_setTextBox(double value)
         {
             // If on a different thread 
@@ -378,7 +447,6 @@ namespace ConfocalControl
         public void singleCounter_problemHandler(DaqException e)
         {
             MessageBox.Show("Caught exception: " + e.Message);
-            if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
             if (SingleCounterPlugin.GetController().IsRunning()) SingleCounterPlugin.GetController().AcquisitionFinished();
 
             Application.Current.Dispatcher.BeginInvoke(
@@ -1021,6 +1089,7 @@ namespace ConfocalControl
         private void opt_problemHandler(DaqException e)
         {
             MessageBox.Show("Caught exception: " + e.Message);
+            if (CounterOptimizationPlugin.GetController().IsRunning()) CounterOptimizationPlugin.GetController().StopOptimizing();
 
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
@@ -1138,6 +1207,7 @@ namespace ConfocalControl
             exposure_set.Value = SingleCounterPlugin.GetController().GetExposure();
             int val = SingleCounterPlugin.GetController().GetBufferSize();
             buffer_size_set.Value = val;
+            binNumber_set.Value = (int)SingleCounterPlugin.GetController().Settings["binNumber"];
 
             FastMultiChannelRasterScan.GetController().LoadSettings();
             scan_x_min_set.Value = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
@@ -1200,14 +1270,6 @@ namespace ConfocalControl
             if (this.APD_monitor.DataSource != null)
             {
                 SingleCounterPlugin.GetController().SaveData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_timeTrace_" + (string)settings["saveFile"] + ".txt");
-            }
-        }
-
-        private void save_hist_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.APD_hist.DataSource != null)
-            {
-                SingleCounterPlugin.GetController().SaveHistogram(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_histogram_" + (string)settings["saveFile"] + ".txt");
             }
         }
 

@@ -118,7 +118,6 @@
       <DependentUpon>LaserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultiChannelRasterScan.cs" />
-    <Compile Include="MutliChannelTimeTracePlugin.cs" />
     <Compile Include="PluginSettings.cs" />
     <Compile Include="RasterScanHardwareConfigure.xaml.cs">
       <DependentUpon>RasterScanHardwareConfigure.xaml</DependentUpon>
