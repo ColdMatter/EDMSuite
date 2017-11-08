@@ -166,5 +166,6 @@
         <Label Content="V" HorizontalAlignment="Left" Margin="259,355,0,0" VerticalAlignment="Top"/>
         <Label Content="V" HorizontalAlignment="Left" Margin="259,383,0,0" VerticalAlignment="Top"/>
         <Label Content="(Points)" HorizontalAlignment="Left" Margin="20,429,0,0" VerticalAlignment="Top"/>
+        <Label Content="(/s)" HorizontalAlignment="Left" Margin="146,260,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

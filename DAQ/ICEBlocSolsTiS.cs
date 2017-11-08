@@ -38,6 +38,25 @@ namespace DAQ.HAL
 
         #region Laser control methods
 
+        public string StartLink(int foo)
+        {
+            Dictionary<string, object> prmsOut = new Dictionary<string, object>();
+            prmsOut.Add("ip_address", my_ip_address);
+            Dictionary<string, object> prmsIn = GenericCommand("start_link", prmsOut);
+
+            if (prmsIn.Count > 0) return (string)prmsIn["status"];
+            else return "failed";
+        }
+
+        public string PingTest(string foo)
+        {
+            Dictionary<string, object> prmsOut = new Dictionary<string, object>();
+            prmsOut.Add("text_in", foo);
+            Dictionary<string, object> prmsIn = GenericCommand("ping", prmsOut);
+            if (prmsIn.Count != 0) return (string)prmsIn["text_out"];
+            else return "Failed";
+        }
+
         // Following the manual ....
         // 3.1
 

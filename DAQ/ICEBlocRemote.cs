@@ -34,7 +34,7 @@ namespace DAQ.HAL
         protected ICEBlocRemote()
         {
             M2_ip_address = "192.168.1.222";
-            M2_ip_port = 99999;
+            M2_ip_port = 23232;
         }
 
         protected ICEBlocRemote(string ip_address)

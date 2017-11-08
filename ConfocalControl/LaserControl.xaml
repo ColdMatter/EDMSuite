@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LaserControl" Height="600" Width="600" Closing="Window_Closing">
     <Grid>
-        <Button x:Name="foo_action_Button" Content="Action" HorizontalAlignment="Left" Margin="271,164,0,0" VerticalAlignment="Top" Width="75" Click="foo_action_Button_Click"/>
-
+        <Button x:Name="connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="41,31,0,0" VerticalAlignment="Top" Width="75" Click="connect_Button_Click"/>
+        <Button x:Name="disconnect_Button" Content="Disconnect" HorizontalAlignment="Left" Margin="41,58,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="checkConnection_Button" Content="Check" HorizontalAlignment="Left" Margin="121,31,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="121,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>

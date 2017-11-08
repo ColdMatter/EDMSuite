@@ -43,14 +43,26 @@ namespace ConfocalControl
 
         #endregion
 
+        private void connect_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (true)
+            {
+                SolsTiSPlugin.GetController().Solstis.Connect();
+                string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
+                MessageBox.Show(reply);
+            }
+        }
+
         private void foo_action_Button_Click(object sender, RoutedEventArgs e)
         {
             SolsTiSPlugin.GetController().Solstis.Connect();
+            SolsTiSPlugin.GetController().Solstis.StartLink();
 
-            bool status = SolsTiSPlugin.GetController().Solstis.PingTest();
+            string pong = SolsTiSPlugin.GetController().Solstis.PingTest("HELLOworld");
 
-            if (status) MessageBox.Show("It worked");
-            else MessageBox.Show("Nope");
+            MessageBox.Show(pong);
+
+            SolsTiSPlugin.GetController().Solstis.Disconnect();
         }
 
         #region Closing event
@@ -61,5 +73,6 @@ namespace ConfocalControl
         }
 
         #endregion
+
     }
 }
