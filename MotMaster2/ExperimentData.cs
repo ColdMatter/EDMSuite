@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using MOTMaster2.SequenceData;
 using Newtonsoft.Json;
+using DAQ.Analyze;
 
 namespace MOTMaster2
 {
@@ -118,7 +119,7 @@ namespace MOTMaster2
             return accDict;
         }
 
-        public Dictionary<string,double> GetAverageValues(Dictionary<string,object> segData)
+        public Dictionary<string,double> GetAverageValues(Dictionary<string,object> segData, bool fitN2 = false)
         {
             Dictionary<string,double> avgDict = new Dictionary<string, double>();
             double[] rawData;
@@ -126,9 +127,9 @@ namespace MOTMaster2
             double std =0.0;
             foreach (string name in segData.Keys)
             {
+                rawData = (double[])segData[name];
                 if (name != "AccV")
                 {
-                rawData = (double[])segData[name];
                 mean = rawData.Average();
                 std = 0.0;
                 for (int i = 0; i< rawData.Length; i++)
@@ -143,6 +144,12 @@ namespace MOTMaster2
                 {
                     Dictionary<string,double> accDict = ConvertAccelerometerVoltage((double[])segData[name]);
                     avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                }
+                if (name == "N2" && fitN2)
+                {
+                    double[] linearParams = LinearFit(rawData, 2);
+                    avgDict[name+"_x0"] = linearParams[0];
+                    avgDict[name+"_x1"] = linearParams[1];
                 }
             }
             return avgDict;
@@ -174,6 +181,26 @@ namespace MOTMaster2
             double c = Math.Sqrt(-2 * Math.Log(w) / w);
             return u * c * std + mean;
         }
+
+        //Performs a Least-Sqaures optimisation to fit a linear model. Assumes a polynomial model with the highest degree given by paramNo
+        public double[] LinearFit(double[] yData, int paramNo)
+        {
+            double[,] fMatrix = new double [yData.Length,paramNo];
+            double[] xData = new double[yData.Length];
+            int info;
+            double[] c = new double[paramNo];
+            alglib.lsfitreport report = new alglib.lsfitreport();
+            for (int i = 0; i < fMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < fMatrix.GetLength(1); j++){
+                    fMatrix[i,j] = Math.Pow(i * 1 / SampleRate,j);
+                }
+            }
+            alglib.lsfitlinear(yData, fMatrix, out info, out c, out report);
+
+            return c;
+        }
+
         }
 
     /// <summary>
@@ -197,4 +224,6 @@ namespace MOTMaster2
             analogSegments = null;
         }
     }
+
+
 }
