@@ -197,7 +197,8 @@ namespace MOTMaster2
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseMuquans) { muquans = new MuquansController(); if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; /*microSynth.TriggerMode = WindfreakSynth.TriggerTypes.Pulse;*/ } }
+            if (config.UseMuquans) { muquans = new MuquansController(); }
+            if (Controller.genOptions.WindFreakEnable && !config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"];}
             if (config.UseMSquared)
             {
                 CheckMSquaredHardware();
@@ -382,7 +383,7 @@ namespace MOTMaster2
         //TODO Add this to the experiment-specific AccelSuite
         private static void WriteToMicrowaveSynth(double value)
         {
-            if (config.UseMuquans && !config.Debug) microSynth.ChannelA.Frequency = value;
+            if (Controller.genOptions.WindFreakEnable && !config.Debug) microSynth.ChannelA.Frequency = value;
         }
 
         protected static void OnAnalogDataReceived(object sender, EventArgs e)
@@ -1421,7 +1422,8 @@ namespace MOTMaster2
                     segData.Remove(item.Key);
                 }
             }
-            Dictionary<string, double> avgDict = (segData == null) ? null : ExpData.GetAverageValues(segData);
+            //TODO Make fitting the N2 level an option
+            Dictionary<string, double> avgDict = (segData == null) ? null : ExpData.GetAverageValues(segData,true);
             if (writeColumnNames)
             {
                 multiScanLogger.Enabled = true;
