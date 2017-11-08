@@ -242,9 +242,10 @@ namespace ConfocalControl
 
             GeneralConvergence convergence = new GeneralConvergence(2);
             convergence.MaximumEvaluations = 1000;
-            convergence.RelativeFunctionTolerance = Math.Sqrt(cursorZ) / 10;
+            convergence.RelativeParameterTolerance = 0.0001;
 
             nonLinearOptimizer = new NelderMead(2, objFunction);
+            nonLinearOptimizer.Convergence = convergence;
             nonLinearOptimizer.Token = tokenSource.Token;
 
             try
