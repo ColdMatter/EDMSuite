@@ -39,31 +39,207 @@ namespace ConfocalControl
         public LaserControl()
         {
             InitializeComponent();
+
+            checkConnection_Button_Click(null, null);
         }
 
         #endregion
 
+        #region TCP connection events
+
         private void connect_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (true)
+            if (!SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                SolsTiSPlugin.GetController().Solstis.Connect();
-                string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
-                MessageBox.Show(reply);
+                try
+                {
+                    SolsTiSPlugin.GetController().Solstis.Connect();
+                    string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
+                    MessageBox.Show(reply);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
+            else
+            {
+                MessageBox.Show("already connected");
+            }
+
+            checkConnection_Button_Click(null, null);
         }
 
-        private void foo_action_Button_Click(object sender, RoutedEventArgs e)
+        private void disconnect_Button_Click(object sender, RoutedEventArgs e)
         {
-            SolsTiSPlugin.GetController().Solstis.Connect();
-            SolsTiSPlugin.GetController().Solstis.StartLink();
+            if (SolsTiSPlugin.GetController().Solstis.Connected) SolsTiSPlugin.GetController().Solstis.Disconnect();
+            else MessageBox.Show("already disconnected");
 
-            string pong = SolsTiSPlugin.GetController().Solstis.PingTest("HELLOworld");
-
-            MessageBox.Show(pong);
-
-            SolsTiSPlugin.GetController().Solstis.Disconnect();
+            checkConnection_Button_Click(null, null);
         }
+
+        private void checkConnection_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected) checkConnection_Reader.Text = "Active";
+            else checkConnection_Reader.Text = "Inactive";
+        }
+
+        private void ping_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                string pong = SolsTiSPlugin.GetController().Solstis.PingTest("PONG");
+                MessageBox.Show(pong);
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        #endregion
+
+        #region Etalon events
+
+        private void etalonCheck_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.etalon_lock_status();
+
+                switch ((int)reply["status"])
+                {
+                    case 0:
+                        etalonCheck_Reader.Text = (string)reply["condition"];
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
+                }
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        private void etalonLock_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                int reply = SolsTiSPlugin.GetController().Solstis.etalon_lock(true, true);
+                
+                switch (reply)
+                {
+                    case 0:
+                        MessageBox.Show("task completed");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
+                }
+
+                etalonCheck_Button_Click(null, null);
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        private void etalonUnLock_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                int reply = SolsTiSPlugin.GetController().Solstis.etalon_lock(false, true);
+
+                switch (reply)
+                {
+                    case 0:
+                        MessageBox.Show("task completed");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
+                }
+
+                etalonCheck_Button_Click(null, null);
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        #endregion
+
+        #region Wavelength events
+
+        private void wavelengthRead_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+
+                switch ((int)reply["status"])
+                {
+                    case 0:
+                        MessageBox.Show("tuning software not active");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("no link to wavelength meter or no meter configured");
+                        break;
+
+                    case 2:
+                        MessageBox.Show("tuning in progress");
+                        wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                        break;
+
+                    case 3:
+                        wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
+                }
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        private void wavelengthSet_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                double wavelength = wavelengthSet_Numeric.Value;
+
+                int reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
+
+                switch (reply)
+                {
+                    case 0:
+                        MessageBox.Show("task completed");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
+                }
+
+                wavelengthRead_Button_Click(null, null);
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        #endregion
 
         #region Closing event
 

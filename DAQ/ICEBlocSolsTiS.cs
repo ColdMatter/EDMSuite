@@ -54,32 +54,63 @@ namespace DAQ.HAL
             prmsOut.Add("text_in", foo);
             Dictionary<string, object> prmsIn = GenericCommand("ping", prmsOut);
             if (prmsIn.Count != 0) return (string)prmsIn["text_out"];
-            else return "Failed";
+            else return "failed";
         }
 
         // Following the manual ....
-        // 3.1
 
+        // 3.1
         public int set_wave_m(double wavelength, bool report)
         {
+            if (wavelength < 700 || wavelength > 1000) throw new Exception("wavelength out of range");
+
             Dictionary<string, object> prms = new Dictionary<string, object>();
-            // implement exception
             prms.Add("wavelength", wavelength);
             if (report) prms.Add("report", "finished");
 
-            Dictionary<string, object> rslt = GenericCommand("tune_resonator", prms, report);
-            if (rslt.Count == 0) return 2;
+            Dictionary<string, object> rslt = GenericCommand("set_wave_m", prms, report);
+            if (rslt.Count == 0) return -1;
             if (report) return ((int)rslt["report"]);
             else return ((int)rslt["status"]);
+        }
+
+        // 3.2
+        public Dictionary<string, object> poll_wave_m()
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            Dictionary<string, object> rslt = GenericCommand("poll_wave_m", prms);
+            return rslt;
         }
 
         // 3.4
         public int stop_wave_m()
         {
             Dictionary<string, object> prms = new Dictionary<string, object>();
-            Dictionary<string, object> rslt = GenericCommand("tune_resonator", prms);
-            if (rslt.Count == 0) return 2;
+            Dictionary<string, object> rslt = GenericCommand("stop_wave_m", prms);
+            if (rslt.Count == 0) return -1;
             else return ((int)rslt["status"]);
+        }
+
+        // 3.13
+        public int etalon_lock(bool request_condition, bool report)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            if (request_condition) prms.Add("operation", "on");
+            else prms.Add("operation", "off");
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("etalon_lock", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.14
+        public Dictionary<string, object> etalon_lock_status()
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            Dictionary<string, object> rslt = GenericCommand("etalon_lock_status", prms);
+            return rslt;
         }
 
         #endregion
