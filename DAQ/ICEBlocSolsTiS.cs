@@ -83,12 +83,11 @@ namespace DAQ.HAL
         }
 
         // 3.4
-        public int stop_wave_m()
+        public Dictionary<string, object> stop_wave_m()
         {
             Dictionary<string, object> prms = new Dictionary<string, object>();
             Dictionary<string, object> rslt = GenericCommand("stop_wave_m", prms);
-            if (rslt.Count == 0) return -1;
-            else return ((int)rslt["status"]);
+            return rslt;
         }
 
         // 3.13

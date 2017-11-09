@@ -34,10 +34,22 @@ namespace ConfocalControl
 
         #region Initialization
 
+        public void LoadSettings()
+        {
+            Settings = PluginSaveLoad.LoadSettings("solstis");
+        }
+
         public SolsTiSPlugin()
         {
             string computer_ip = "192.168.1.23";
             solstis = new ICEBlocSolsTiS(computer_ip);
+
+            LoadSettings();
+            if (Settings.Keys.Count != 1)
+            {
+                Settings["wavelength"] = 785.0;
+                return;
+            }
         }
 
         #endregion

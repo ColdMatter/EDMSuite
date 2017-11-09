@@ -41,6 +41,8 @@ namespace ConfocalControl
             InitializeComponent();
 
             checkConnection_Button_Click(null, null);
+
+            wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
         }
 
         #endregion
@@ -104,19 +106,26 @@ namespace ConfocalControl
             {
                 Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.etalon_lock_status();
 
-                switch ((int)reply["status"])
+                if (reply.Count == 0)
                 {
-                    case 0:
-                        etalonCheck_Reader.Text = (string)reply["condition"];
-                        break;
+                    MessageBox.Show("empty reply");
+                }
+                else
+                {
+                    switch ((int)reply["status"])
+                    {
+                        case 0:
+                            etalonCheck_Reader.Text = (string)reply["condition"];
+                            break;
 
-                    case 1:
-                        MessageBox.Show("task failed");
-                        break;
+                        case 1:
+                            MessageBox.Show("task failed");
+                            break;
 
-                    default:
-                        MessageBox.Show("did not understand reply");
-                        break;
+                        default:
+                            MessageBox.Show("did not understand reply");
+                            break;
+                    }
                 }
             }
             else MessageBox.Show("not connected");
@@ -130,6 +139,10 @@ namespace ConfocalControl
                 
                 switch (reply)
                 {
+                    case -1:
+                        MessageBox.Show("empty reply");
+                        break;
+
                     case 0:
                         MessageBox.Show("task completed");
                         break;
@@ -156,6 +169,10 @@ namespace ConfocalControl
 
                 switch (reply)
                 {
+                    case -1:
+                        MessageBox.Show("empty reply");
+                        break;
+
                     case 0:
                         MessageBox.Show("task completed");
                         break;
@@ -184,28 +201,35 @@ namespace ConfocalControl
             {
                 Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
 
-                switch ((int)reply["status"])
+                if (reply.Count == 0)
                 {
-                    case 0:
-                        MessageBox.Show("tuning software not active");
-                        break;
+                    MessageBox.Show("empty reply");
+                }
+                else
+                {
+                    switch ((int)reply["status"])
+                    {
+                        case 0:
+                            MessageBox.Show("tuning software not active");
+                            break;
 
-                    case 1:
-                        MessageBox.Show("no link to wavelength meter or no meter configured");
-                        break;
+                        case 1:
+                            MessageBox.Show("no link to wavelength meter or no meter configured");
+                            break;
 
-                    case 2:
-                        MessageBox.Show("tuning in progress");
-                        wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
-                        break;
+                        case 2:
+                            MessageBox.Show("tuning in progress");
+                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                            break;
 
-                    case 3:
-                        wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
-                        break;
+                        case 3:
+                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                            break;
 
-                    default:
-                        MessageBox.Show("did not understand reply");
-                        break;
+                        default:
+                            MessageBox.Show("did not understand reply");
+                            break;
+                    }
                 }
             }
             else MessageBox.Show("not connected");
@@ -221,6 +245,10 @@ namespace ConfocalControl
 
                 switch (reply)
                 {
+                    case -1:
+                        MessageBox.Show("empty reply");
+                        break;
+
                     case 0:
                         MessageBox.Show("task completed");
                         break;
@@ -235,6 +263,37 @@ namespace ConfocalControl
                 }
 
                 wavelengthRead_Button_Click(null, null);
+            }
+            else MessageBox.Show("not connected");
+        }
+
+        private void wavelengthStop_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (SolsTiSPlugin.GetController().Solstis.Connected)
+            {
+                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.stop_wave_m();
+
+                if (reply.Count == 0)
+                {
+                    MessageBox.Show("empty reply");
+                }
+                else
+                {
+                    switch ((int)reply["status"])
+                    {
+                        case 0:
+                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                            break;
+
+                        case 1:
+                            MessageBox.Show("no link to wavelength meter");
+                            break;
+
+                        default:
+                            MessageBox.Show("did not understand reply");
+                            break;
+                    }
+                }
             }
             else MessageBox.Show("not connected");
         }
