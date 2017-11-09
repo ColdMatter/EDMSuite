@@ -888,26 +888,27 @@ namespace ConfocalControl
                 if (fullCurrentData != null)
                 {
                     int skipPos = Convert.ToInt32(yVal * hGridPoints);
-                    if ((skipPos + hGridPoints) > fullCurrentData.Length)
+
+                    Point3D[] trimmedCurrentData;
+                    if ((skipPos + hGridPoints) > fullCurrentData.Length) trimmedCurrentData = fullCurrentData.Skip(skipPos).ToArray();
+                    else trimmedCurrentData = fullCurrentData.Skip(skipPos).Take(Convert.ToInt32(hGridPoints)).ToArray();
+
+                    Point[] lineCurrentData = new Point[trimmedCurrentData.Length];
+                    for (int i = 0; i < trimmedCurrentData.Length; i++)
                     {
-                        Point3D[] trimmedCurrentData = fullCurrentData.Skip(skipPos).ToArray();
-                        Point[] lineCurrentData = new Point[trimmedCurrentData.Length];
-                        for (int i = 0; i < trimmedCurrentData.Length; i++)
-                        {
-                            lineCurrentData[i] = new Point(trimmedCurrentData[i].X, trimmedCurrentData[i].Z);
-                        }
-                        rasterScan_lineDisplay.DataSource = lineCurrentData;
+                        lineCurrentData[i] = new Point(trimmedCurrentData[i].X, trimmedCurrentData[i].Z);
                     }
-                    else
+
+                    if (scan_cursor.Value.Count > 2)
                     {
-                        Point3D[] trimmedCurrentData = fullCurrentData.Skip(skipPos).Take(Convert.ToInt32(hGridPoints)).ToArray();
-                        Point[] lineCurrentData = new Point[trimmedCurrentData.Length];
-                        for (int i = 0; i < trimmedCurrentData.Length; i++)
-                        {
-                            lineCurrentData[i] = new Point(trimmedCurrentData[i].X, trimmedCurrentData[i].Z);
-                        }
-                        rasterScan_lineDisplay.DataSource = lineCurrentData;
+                        double cursorXPos = (double)scan_cursor.Value[0];
+                        double cursorZPos = (double)scan_cursor.Value[2];
+                        Point[] verticalLine = new Point[] { new Point(cursorXPos, cursorZPos)};
+                        Point[][] displayDataSource = new Point[2][];
+                        displayDataSource[0] = lineCurrentData; displayDataSource[1] = verticalLine;
+                        rasterScan_lineDisplay.DataSource = displayDataSource;
                     }
+                    else rasterScan_lineDisplay.DataSource = lineCurrentData;
                 }
             }
         }

@@ -153,7 +153,7 @@ namespace ConfocalControl
 
         private void ContinuousAcquisitionStarting()
         {
-            if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+            if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }
@@ -344,7 +344,6 @@ namespace ConfocalControl
 			                analogBuffer[i].Add(analogRead[i, j]);
 			            }
                     }
-
                 }
             }
         }
@@ -394,7 +393,7 @@ namespace ConfocalControl
                     break;
 
                 case "Analogues":
-                    if (setTextBox != null && setWaveForm != null && (int)Settings["display_channel_index"] >= 0)
+                    if (setTextBox != null && setWaveForm != null)
                     {
                         if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
                         {

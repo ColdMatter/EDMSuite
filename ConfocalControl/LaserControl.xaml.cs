@@ -246,30 +246,56 @@ namespace ConfocalControl
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
 
-                int reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
-
-                switch (reply)
+                if (reply.Count == 0)
                 {
-                    case -1:
-                        MessageBox.Show("empty reply");
-                        break;
-
-                    case 0:
-                        MessageBox.Show("task completed");
-                        break;
-
-                    case 1:
-                        MessageBox.Show("task failed");
-                        break;
-
-                    default:
-                        MessageBox.Show("did not understand reply");
-                        break;
+                    MessageBox.Show("empty reply");
                 }
+                else
+                {
+                    switch ((int)reply["status"])
+                    {
+                        case 0:
+                            MessageBox.Show("tuning software not active");
+                            break;
 
-                wavelengthRead_Button_Click(null, null);
+                        case 1:
+                            MessageBox.Show("no link to wavelength meter or no meter configured");
+                            break;
+
+                        case 2:
+                        case 3:
+                            double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+                            int set_reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
+
+                            switch (set_reply)
+                            {
+                                case -1:
+                                    MessageBox.Show("empty reply");
+                                    break;
+
+                                case 0:
+                                    MessageBox.Show("task completed");
+                                    break;
+
+                                case 1:
+                                    MessageBox.Show("task failed");
+                                    break;
+
+                                default:
+                                    MessageBox.Show("did not understand reply");
+                                    break;
+                            }
+
+                            wavelengthRead_Button_Click(null, null);
+                            break;
+
+                        default:
+                            MessageBox.Show("did not understand reply");
+                            break;
+                    }
+                }
             }
             else MessageBox.Show("not connected");
         }
@@ -289,6 +315,7 @@ namespace ConfocalControl
                     switch ((int)reply["status"])
                     {
                         case 0:
+                            MessageBox.Show("operation successful");
                             wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
                             break;
 
@@ -301,6 +328,7 @@ namespace ConfocalControl
                             break;
                     }
                 }
+                wavelengthRead_Button_Click(null, null);
             }
             else MessageBox.Show("not connected");
         }

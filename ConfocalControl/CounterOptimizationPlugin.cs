@@ -20,7 +20,6 @@ namespace ConfocalControl
     // Uses delegate multicasting to compose and invoke event manager methods in series 
     public delegate void CounterOptimizationDataEventHandler(Point3D[] ptns);
     public delegate void CounterOptimizationFinishedEventHandler();
-    public delegate void OptExceptionEventHandler(DaqException e);
 
     class CounterOptimizationPlugin
     {
@@ -29,7 +28,7 @@ namespace ConfocalControl
         // Bound event managers to class
         public event CounterOptimizationDataEventHandler Data;
         public event CounterOptimizationFinishedEventHandler OptFinished;
-        public event OptExceptionEventHandler DaqProblem;
+        public event DaqExceptionEventHandler DaqProblem;
 
         // Dependencies should refer to this instance only 
         private static CounterOptimizationPlugin controllerInstance;
@@ -99,7 +98,7 @@ namespace ConfocalControl
 
         public void OptimizationStarting(string countChannel)
         {
-            if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning())
+            if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }

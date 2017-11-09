@@ -120,6 +120,9 @@
                 <ni:Plot Label="Plot 2">
                     <ni:LinePlotRenderer Stroke="Blue"/>
                 </ni:Plot>
+                <ni:Plot Label="Plot 1" AdjustVerticalScale="False" AdjustHorizontalScale="False">
+                    <ni:PointPlotRenderer Fill="Black"/>
+                </ni:Plot>
             </ni:Graph.Plots>
         </ni:Graph>
         <Label Content="Scan Settings" HorizontalAlignment="Left" Margin="118,296,0,0" VerticalAlignment="Top"/>

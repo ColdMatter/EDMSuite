@@ -139,7 +139,7 @@ namespace ConfocalControl
 
             // Loop for Y axis
             for (double YNumber = 0;
-                    YNumber < (double)scanSettings["GalvoYRes"];
+                    YNumber < (double)scanSettings["GalvoYRes"] + 1;
                     YNumber++)
             {
                 if (IsSnaked)
@@ -157,7 +157,7 @@ namespace ConfocalControl
 
                 // Loop for X axis
                 for (double _XNumber = 0;
-                        _XNumber < (double)scanSettings["GalvoXRes"];
+                        _XNumber < (double)scanSettings["GalvoXRes"] + 1;
                         _XNumber++)
                 {
                     double XNumber;
@@ -184,7 +184,7 @@ namespace ConfocalControl
         {
             try
             {
-                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }
@@ -336,9 +336,9 @@ namespace ConfocalControl
             // Start trigger task
             triggerWriter.WriteSingleSampleSingleLine(true, true);
 
-            for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"]; YNumber++)
+            for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"] + 1; YNumber++)
             {
-                for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"]; XNumber++)
+                for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"] + 1; XNumber++)
                 {
                     // Read counter data
                     counterLatestData = new List<double[]>();
@@ -391,6 +391,7 @@ namespace ConfocalControl
                 OnLineFinished(dataOutputs);
             }
 
+            triggerWriter.WriteSingleSampleSingleLine(true, false);
             AcquisitionFinishing();
             OnScanFinished();
         }
@@ -433,8 +434,7 @@ namespace ConfocalControl
 
         private bool CheckIfStopping()
         {
-            if (backendState == RasterScanState.stopping) return true;
-            else return false;
+            return backendState == RasterScanState.stopping;
         }
 
         public bool IsRunning()

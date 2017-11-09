@@ -285,7 +285,7 @@ namespace ConfocalControl
             bool IsSnaked = false;
             bool inverted = true;
 
-            // Loop for X axis
+            // Loop for Y axis
             for (double YNumber = 0;
                     YNumber < (double)scanSettings["GalvoYRes"];
                     YNumber++)
