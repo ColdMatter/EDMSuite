@@ -41,10 +41,12 @@ namespace ConfocalControl
     {
         #region Class members
 
-        private PluginSettings settings = PluginSaveLoad.LoadSettings("mainWindow");
+        private PluginSettings settings = new PluginSettings("foo_main");
 
         private void InitialiseSettings()
         {
+            settings = PluginSaveLoad.LoadSettings("mainWindow");
+
             if (settings.Keys.Count != 1)
             {
                 settings["saveFile"] = "file_name";
@@ -57,9 +59,9 @@ namespace ConfocalControl
 
         public MainWindow()
         {
-            InitialiseSettings();
-
             InitializeComponent();
+
+            InitialiseSettings();
 
             try
             {
