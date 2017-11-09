@@ -78,6 +78,8 @@ namespace ConfocalControl
             else MessageBox.Show("already disconnected");
 
             checkConnection_Button_Click(null, null);
+            etalonCheck_Reader.Text = "";
+            wavelength_Read.Text = "";
         }
 
         private void checkConnection_Button_Click(object sender, RoutedEventArgs e)
