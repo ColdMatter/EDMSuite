@@ -43,6 +43,10 @@ namespace ConfocalControl
             checkConnection_Button_Click(null, null);
 
             wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+
+            //SolsTiSPlugin.GetController().Data += wavemeterScanData;
+            //SolsTiSPlugin.GetController().ScanFinished += wavemeterScanFinished;
+            //SolsTiSPlugin.GetController().WavemeterScanProblem += wavemeterScanProblem;
         }
 
         #endregion
@@ -332,6 +336,12 @@ namespace ConfocalControl
             }
             else MessageBox.Show("not connected");
         }
+
+        #endregion
+
+        #region Wavemeter Scan events
+
+
 
         #endregion
 

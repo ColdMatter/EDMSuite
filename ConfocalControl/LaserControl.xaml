@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="ConfocalControl.LaserControl"
-        Title="LaserControl" Height="600" Width="600" Closing="Window_Closing">
+        Title="LaserControl" Height="600" Width="900" Closing="Window_Closing">
     <Grid>
         <Button x:Name="connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="29,41,0,0" VerticalAlignment="Top" Width="75" Click="connect_Button_Click"/>
         <Button x:Name="disconnect_Button" Content="Disconnect" HorizontalAlignment="Left" Margin="29,68,0,0" VerticalAlignment="Top" Width="75" Click="disconnect_Button_Click"/>
@@ -23,5 +23,14 @@
         <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="189,209,0,0" VerticalAlignment="Top"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="50,284,0,0" VerticalAlignment="Top"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,93,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,65,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,37,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label Content="Wavemeter Scan" HorizontalAlignment="Left" Margin="237,11,0,0" VerticalAlignment="Top"/>
+        <Label Content="Start" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top"/>
+        <Label Content="Stop" HorizontalAlignment="Left" Margin="237,64,0,0" VerticalAlignment="Top"/>
+        <Label Content="Res" HorizontalAlignment="Left" Margin="237,92,0,0" VerticalAlignment="Top"/>
+        <ni:Graph HorizontalAlignment="Left" Height="200" Margin="375,13,0,0" VerticalAlignment="Top" Width="500"/>
+        <ni:Switch Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,121,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
     </Grid>
 </Window>

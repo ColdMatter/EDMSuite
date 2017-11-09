@@ -139,7 +139,7 @@ namespace ConfocalControl
 
             // Loop for Y axis
             for (double YNumber = 0;
-                    YNumber < (double)scanSettings["GalvoYRes"] + 1;
+                    YNumber < (double)scanSettings["GalvoYRes"];
                     YNumber++)
             {
                 if (IsSnaked)
@@ -157,7 +157,7 @@ namespace ConfocalControl
 
                 // Loop for X axis
                 for (double _XNumber = 0;
-                        _XNumber < (double)scanSettings["GalvoXRes"] + 1;
+                        _XNumber < (double)scanSettings["GalvoXRes"];
                         _XNumber++)
                 {
                     double XNumber;
@@ -336,9 +336,9 @@ namespace ConfocalControl
             // Start trigger task
             triggerWriter.WriteSingleSampleSingleLine(true, true);
 
-            for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"] + 1; YNumber++)
+            for (int YNumber = 0; YNumber < (double)scanSettings["GalvoYRes"]; YNumber++)
             {
-                for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"] + 1; XNumber++)
+                for (int XNumber = 0; XNumber < (double)scanSettings["GalvoXRes"]; XNumber++)
                 {
                     // Read counter data
                     counterLatestData = new List<double[]>();
