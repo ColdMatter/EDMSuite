@@ -198,7 +198,7 @@ namespace MOTMaster2
                 "tcp://localhost:1172/controller.rem");
 
             if (config.UseMuquans) { muquans = new MuquansController(); }
-            if (Controller.genOptions.WindFreakEnable && !config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"];}
+            if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"];}
             if (config.UseMSquared)
             {
                 CheckMSquaredHardware();

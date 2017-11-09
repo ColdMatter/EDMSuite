@@ -411,7 +411,7 @@ namespace MOTMaster2
                 catch (Exception ex)
                 {
                     ErrorMgr.errorMsg(ex.Message, -5);
-                    btnScan_Click(null, null);
+                    //btnScan_Click(null, null);
                     return;
                 }
                 controller.StopRunning();
