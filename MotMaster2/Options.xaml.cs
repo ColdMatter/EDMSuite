@@ -19,6 +19,18 @@ using UtilsNS;
 
 namespace MOTMaster2
 {
+    public class Modes
+    {
+        public string Scan { get; set; }
+        public List<string> MultiScan { get; set; }
+ 
+        public void Save()
+        {
+            string fileJson = JsonConvert.SerializeObject(this);
+            File.WriteAllText(Utils.configPath + "Defaults.cfg", fileJson);
+        }
+    }
+
     public class GeneralOptions
     {
         public enum SaveOption { save, ask, nosave }

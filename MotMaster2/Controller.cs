@@ -1552,9 +1552,7 @@ namespace MOTMaster2
         {
             if (DCSParams == null) DCSParams = new Dictionary<string, object>();
             DCSParams[laserKey] = p;
-        }
-
-       
+        }      
 
         internal static void UpdateAIValues()
         {
