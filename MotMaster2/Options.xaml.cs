@@ -57,6 +57,7 @@ namespace MOTMaster2
         public double RiseTime { get; set; }
 
         public bool AIEnable { get; set; }
+        public bool WindFreakEnable { get; set; }
 
         public void Save()
         {
@@ -122,6 +123,7 @@ namespace MOTMaster2
             }
 
             Controller.genOptions.AIEnable = aiEnable.IsChecked.Value;
+            Controller.genOptions.WindFreakEnable = windFreakEnable.IsChecked.Value;
             Close();
         }
 
@@ -178,6 +180,8 @@ namespace MOTMaster2
             tbSampleRate.Text = Controller.genOptions.AISampleRate.ToString();
             tbPreTrig.Text = Controller.genOptions.PreTrigSamples.ToString();
             tbRiseTime.Text = Controller.genOptions.RiseTime.ToString();
+
+            windFreakEnable.IsChecked = Controller.genOptions.WindFreakEnable;
        }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -195,6 +199,11 @@ namespace MOTMaster2
             aiRaw.IsEnabled = state;
             aiAverage.IsEnabled = state;
             aiBoth.IsEnabled = state;
+        }
+
+        private void channelAEnable_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
