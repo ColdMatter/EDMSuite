@@ -1204,6 +1204,7 @@ namespace ConfocalControl
             GalvoPairPlugin.GetController().Settings.Save();
             SingleCounterPlugin.GetController().Settings.Save();
             FastMultiChannelRasterScan.GetController().scanSettings.Save();
+            SolsTiSPlugin.GetController().Settings.Save();
         }
 
         private void load_settings_Click(object sender, RoutedEventArgs e)

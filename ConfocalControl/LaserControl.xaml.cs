@@ -195,6 +195,11 @@ namespace ConfocalControl
 
         #region Wavelength events
 
+        private void wavelengthSet_Numeric_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            SolsTiSPlugin.GetController().Settings["wavelength"] = e.NewValue;
+        }
+
         private void wavelengthRead_Button_Click(object sender, RoutedEventArgs e)
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
@@ -239,7 +244,7 @@ namespace ConfocalControl
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                double wavelength = wavelengthSet_Numeric.Value;
+                double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
 
                 int reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
 

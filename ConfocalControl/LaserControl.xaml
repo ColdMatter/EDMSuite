@@ -17,7 +17,7 @@
         <TextBox x:Name="etalonCheck_Reader" HorizontalAlignment="Left" Height="23" Margin="109,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
         <Label Content="Wavelength" HorizontalAlignment="Left" Margin="31,209,0,0" VerticalAlignment="Top"/>
         <Button x:Name="wavelengthSet_Button" Content="Set" HorizontalAlignment="Left" Margin="29,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthSet_Button_Click"/>
-        <ni:NumericTextBoxDouble x:Name="wavelengthSet_Numeric" HorizontalAlignment="Left" Height="23" Margin="29,267,0,0" VerticalAlignment="Top" Width="75" HorizontalContentAlignment="Center"/>
+        <ni:NumericTextBoxDouble x:Name="wavelengthSet_Numeric" HorizontalAlignment="Left" Height="23" Margin="29,267,0,0" VerticalAlignment="Top" Width="75" HorizontalContentAlignment="Center" ValueChanged="wavelengthSet_Numeric_ValueChanged"/>
         <Button x:Name="wavelengthRead_Button" Content="Read" HorizontalAlignment="Left" Margin="109,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthRead_Button_Click"/>
         <Button x:Name="wavelengthStop_Button" Content="Stop Tuning" HorizontalAlignment="Left" Margin="109,267,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthStop_Button_Click"/>
         <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
