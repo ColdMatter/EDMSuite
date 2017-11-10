@@ -718,6 +718,11 @@ namespace ConfocalControl
 
                 if (report == 0)
                 {
+                    DateTime dt3 = DateTime.Now;
+                    double currentWavelength = (double)SolsTiSPlugin.GetController().Solstis.poll_move_wave_t()["wavelength"];
+                    DateTime dt4 = DateTime.Now;
+                    TimeSpan spanGetWave = dt4 - dt3;
+
                     // Start trigger task
                     triggerWriter.WriteSingleSampleSingleLine(true, true);
 

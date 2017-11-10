@@ -379,6 +379,24 @@ namespace ConfocalControl
 
         #region Wavemeter Scan events
 
+        private void wavemeterScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 700 || e.NewValue > 1000) wavemeterScanStart_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["wavemeterScanStart"] = e.NewValue;
+        }
+
+        private void wavemeterScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 700 || e.NewValue > 1000) wavemeterScanStop_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["wavemeterScanStop"] = e.NewValue;
+        }
+
+        private void wavemeterScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) wavemeterScanRes_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["wavemeterScanPoints"] = Convert.ToInt32(e.NewValue);
+        }
+
         private void wavemeterScanProblem(Exception e)
         {
             MessageBox.Show(e.Message);
@@ -390,7 +408,12 @@ namespace ConfocalControl
                    DispatcherPriority.Background,
                    new Action(() =>
                    {
+                       EnableNoneScanCommands();
                        this.wavemeterScan_Switch.Value = false;
+                       this.resonatorScan_Switch.IsEnabled = true;
+                       this.wavemeterScanStart_Set.IsEnabled = true;
+                       this.wavemeterScanStop_Set.IsEnabled = true;
+                       this.wavemeterScanRes_Set.IsEnabled = true;
                    }));
         }
 
@@ -400,7 +423,12 @@ namespace ConfocalControl
                    DispatcherPriority.Background,
                    new Action(() =>
                    {
+                       EnableNoneScanCommands();
                        this.wavemeterScan_Switch.Value = false;
+                       this.resonatorScan_Switch.IsEnabled = true;
+                       this.wavemeterScanStart_Set.IsEnabled = true;
+                       this.wavemeterScanStop_Set.IsEnabled = true;
+                       this.wavemeterScanRes_Set.IsEnabled = true;
                    }));
         }
 
@@ -429,9 +457,29 @@ namespace ConfocalControl
                     return;
                 }
 
+                if (!SolsTiSPlugin.GetController().Solstis.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.wavemeterScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
                 Application.Current.Dispatcher.BeginInvoke(
                    DispatcherPriority.Background,
-                   new Action(() => { this.wavemeterScan_Switch.Value = true; }));
+                   new Action(() => 
+                   {
+                       DissableNoneScanCommands();
+                       this.wavemeterScan_Switch.Value = true;
+                       this.resonatorScan_Switch.IsEnabled = false;
+                       this.wavemeterScanStart_Set.IsEnabled = false;
+                       this.wavemeterScanStop_Set.IsEnabled = false;
+                       this.wavemeterScanRes_Set.IsEnabled = false;
+                   }));
 
                 Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().WavemeterSynchronousStartScan));
                 thread.IsBackground = true;
@@ -442,6 +490,24 @@ namespace ConfocalControl
         #endregion
 
         #region Resonator Scan events
+
+        private void resonatorScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 0 || e.NewValue > 100) resonatorScanStart_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["resonatorScanStart"] = e.NewValue;
+        }
+
+        private void resonatorScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 0 || e.NewValue > 100) resonatorScanStop_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["resonatorScanStop"] = e.NewValue;
+        }
+
+        private void resonatorScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) resonatorScanRes_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["resonatorScanPoints"] = Convert.ToInt32(e.NewValue);
+        }
 
         private void resonatorScanProblem(Exception e)
         {
@@ -454,7 +520,12 @@ namespace ConfocalControl
                    DispatcherPriority.Background,
                    new Action(() =>
                    {
+                       EnableNoneScanCommands();
                        this.resonatorScan_Switch.Value = false;
+                       this.wavemeterScan_Switch.IsEnabled = true;
+                       this.resonatorScanStart_Set.IsEnabled = true;
+                       this.resonatorScanStop_Set.IsEnabled = true;
+                       this.resonatorScanRes_Set.IsEnabled = true;
                    }));
         }
 
@@ -464,7 +535,12 @@ namespace ConfocalControl
                    DispatcherPriority.Background,
                    new Action(() =>
                    {
+                       EnableNoneScanCommands();
                        this.resonatorScan_Switch.Value = false;
+                       this.wavemeterScan_Switch.IsEnabled = true;
+                       this.resonatorScanStart_Set.IsEnabled = true;
+                       this.resonatorScanStop_Set.IsEnabled = true;
+                       this.resonatorScanRes_Set.IsEnabled = true;
                    }));
         }
 
@@ -493,14 +569,62 @@ namespace ConfocalControl
                     return;
                 }
 
+                if (!SolsTiSPlugin.GetController().Solstis.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.resonatorScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
                 Application.Current.Dispatcher.BeginInvoke(
                    DispatcherPriority.Background,
-                   new Action(() => { this.resonatorScan_Switch.Value = true; }));
+                   new Action(() => 
+                   {
+                       DissableNoneScanCommands(); 
+                       this.resonatorScan_Switch.Value = true;
+                       this.wavemeterScan_Switch.IsEnabled = false;
+                       this.resonatorScanStart_Set.IsEnabled = false;
+                       this.resonatorScanStop_Set.IsEnabled = false;
+                       this.resonatorScanRes_Set.IsEnabled = false;
+                   }));
 
                 Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().ResonatorSynchronousStartScan));
                 thread.IsBackground = true;
                 thread.Start();
             }
+        }
+
+        #endregion
+
+        #region Other methods
+
+        private void DissableNoneScanCommands()
+        {
+            this.connect_Button.IsEnabled = false;
+            this.checkConnection_Button.IsEnabled = false;
+            this.ping_Button.IsEnabled = false;
+            this.etalonLock_Button.IsEnabled = false;
+            this.etalonCheck_Button.IsEnabled = false;
+            this.etalonUnLock_Button.IsEnabled = false;
+            this.wavelengthSet_Button.IsEnabled = false;
+            this.wavelengthRead_Button.IsEnabled = false;
+        }
+
+        private void EnableNoneScanCommands()
+        {
+            this.connect_Button.IsEnabled = true;
+            this.checkConnection_Button.IsEnabled = true;
+            this.ping_Button.IsEnabled = true;
+            this.etalonLock_Button.IsEnabled = true;
+            this.etalonCheck_Button.IsEnabled = true;
+            this.etalonUnLock_Button.IsEnabled = true;
+            this.wavelengthSet_Button.IsEnabled = true;
+            this.wavelengthRead_Button.IsEnabled = true;
         }
 
         #endregion
@@ -514,6 +638,7 @@ namespace ConfocalControl
         }
 
         #endregion
+
 
     }
 }

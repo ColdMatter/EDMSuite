@@ -22,9 +22,9 @@
         <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,236,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="189,233,0,0" VerticalAlignment="Top"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="50,308,0,0" VerticalAlignment="Top"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,93,0,0" VerticalAlignment="Top" Width="75"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,65,0,0" VerticalAlignment="Top" Width="75"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,37,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble x:Name="wavemeterScanRes_Set" HorizontalAlignment="Left" Height="23" Margin="277,93,0,0" VerticalAlignment="Top" Width="75" ValueChanged="wavemeterScanRes_Set_ValueChanged" Value="100"/>
+        <ni:NumericTextBoxDouble x:Name="wavemeterScanStop_Set" HorizontalAlignment="Left" Height="23" Margin="277,65,0,0" VerticalAlignment="Top" Width="75" ValueChanged="wavemeterScanStop_Set_ValueChanged" Value="790"/>
+        <ni:NumericTextBoxDouble x:Name="wavemeterScanStart_Set" HorizontalAlignment="Left" Height="23" Margin="277,37,0,0" VerticalAlignment="Top" Width="75" ValueChanged="wavemeterScanStart_Set_ValueChanged" Value="780"/>
         <Label Content="Wavemeter Scan" HorizontalAlignment="Left" Margin="237,11,0,0" VerticalAlignment="Top"/>
         <Label Content="Start" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top"/>
         <Label Content="Stop" HorizontalAlignment="Left" Margin="237,65,0,0" VerticalAlignment="Top"/>
@@ -40,9 +40,9 @@
         <ComboBox HorizontalAlignment="Left" Margin="237,149,0,0" VerticalAlignment="Top" Width="115"/>
         <ComboBox HorizontalAlignment="Left" Margin="237,176,0,0" VerticalAlignment="Top" Width="115"/>
         <Label Content="Resonator Scan" HorizontalAlignment="Left" Margin="237,233,0,0" VerticalAlignment="Top"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,259,0,0" VerticalAlignment="Top" Width="75"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,287,0,0" VerticalAlignment="Top" Width="75"/>
-        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,315,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble x:Name="resonatorScanStart_Set" HorizontalAlignment="Left" Height="23" Margin="277,259,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanStart_Set_ValueChanged" Value="10"/>
+        <ni:NumericTextBoxDouble x:Name="resonatorScanStop_Set" HorizontalAlignment="Left" Height="23" Margin="277,287,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanStop_Set_ValueChanged" Value="90"/>
+        <ni:NumericTextBoxDouble x:Name="resonatorScanRes_Set" HorizontalAlignment="Left" Height="23" Margin="277,315,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanRes_Set_ValueChanged" Value="1000"/>
         <ni:Switch x:Name="resonatorScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,343,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" ClickMode="Press" Click="resonatorScan_Switch_Click"/>
         <ComboBox HorizontalAlignment="Left" Margin="237,371,0,0" VerticalAlignment="Top" Width="115"/>
         <ComboBox HorizontalAlignment="Left" Margin="237,398,0,0" VerticalAlignment="Top" Width="115"/>
