@@ -546,6 +546,26 @@ namespace ConfocalControl
             else binNumber_set.Value = e.OldValue;
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.APD_monitor.DataSource != null)
+            {
+                SingleCounterPlugin.GetController().DeleteHistoricData();
+
+                if (!SingleCounterPlugin.GetController().IsRunning())
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                           DispatcherPriority.Background,
+                           new Action(() =>
+                           {
+                           this.APD_monitor.DataSource = null;
+                           this.APD_hist.DataSource = null;
+                            }
+                   ));
+                }
+            }
+        }
+
         #endregion
 
         #region RasterScan events

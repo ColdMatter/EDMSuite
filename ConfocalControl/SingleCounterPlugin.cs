@@ -421,6 +421,27 @@ namespace ConfocalControl
             if (analogBuffer != null && counterBuffer != null) OnData();
         }
 
+        public void DeleteHistoricData()
+        {
+            int numberOfAnalogs = ((List<string>)Settings["analogueChannels"]).Count;
+            analogBuffer = new List<double>[numberOfAnalogs];
+            latestAnalogs = new double[numberOfAnalogs];
+            for (int i = 0; i < numberOfAnalogs; i++)
+            {
+                analogBuffer[i] = new List<double>();
+                latestAnalogs[i] = 0;
+            }
+
+            int numberOfCounters = ((List<string>)Settings["counterChannels"]).Count;
+            counterBuffer = new List<double>[numberOfCounters];
+            latestCounters = new double[numberOfCounters];
+            for (int i = 0; i < numberOfCounters; i++)
+            {
+                counterBuffer[i] = new List<double>();
+                latestCounters[i] = 0;
+            }
+        }
+
         public void SaveData(string fileName)
         {
             string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);

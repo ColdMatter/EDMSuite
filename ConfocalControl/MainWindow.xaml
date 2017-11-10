@@ -55,6 +55,7 @@
         <ni:Graph x:Name="APD_monitor" HorizontalAlignment="Left" Margin="466,42,0,0" Width="300" Height="200" VerticalAlignment="Top">
             <ni:Graph.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Reset" Click="MenuItem_Click" />
                     <MenuItem Header="Save Data" Click="save_timetrace_Click" />
                 </ContextMenu>
             </ni:Graph.ContextMenu>
