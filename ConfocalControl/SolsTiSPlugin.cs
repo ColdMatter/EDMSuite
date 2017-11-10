@@ -93,7 +93,7 @@ namespace ConfocalControl
                 Settings["wavemeterScanStop"] = 785.0;
                 Settings["wavemeterScanPoints"] = 100;
 
-                Settings["counterChannels"] = new List<string> { "APD0", "APD1" };
+                Settings["counterChannels"] = new List<string> { "APD0" };
                 Settings["analogueChannels"] = new List<string> { };
                 Settings["analogueLowHighs"] = new Dictionary<string, double[]>();
 

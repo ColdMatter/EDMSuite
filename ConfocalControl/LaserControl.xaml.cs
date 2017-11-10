@@ -52,6 +52,10 @@ namespace ConfocalControl
             SolsTiSPlugin.GetController().ResonatorData += resonatorScanData;
             SolsTiSPlugin.GetController().ResonatorScanFinished += resonatorScanFinished;
             SolsTiSPlugin.GetController().ResonatorScanProblem += resonatorScanProblem;
+
+            output_type_box.Items.Add("Counters");
+            output_type_box.Items.Add("Analogues");
+            output_type_box.SelectedIndex = 0;
         }
 
         #endregion
@@ -603,6 +607,68 @@ namespace ConfocalControl
 
         #region Other methods
 
+        private void output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            output_box.Items.Clear();
+            output_box.SelectedIndex = -1;
+
+            switch (output_type_box.SelectedIndex)
+            {
+                case 0:
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["counterChannels"])
+                    {
+                        output_box.Items.Add(input);
+                    }
+                    if (output_box.Items.Count != 0) output_box.SelectedIndex = 0;
+                    break;
+                case 1:
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["analogueChannels"])
+                    {
+                        output_box.Items.Add(input);
+                    }
+                    if (output_box.Items.Count != 0) output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (output_type_box.SelectedIndex)
+            {
+                case 0:
+                    if (output_box.SelectedIndex >= 0)
+                    {
+                        SolsTiSPlugin.GetController().Settings["display_channel_index"] = output_box.SelectedIndex;
+                        SolsTiSPlugin.GetController().RequestWavemeterHistoricData();
+                        SolsTiSPlugin.GetController().RequestResonatorHistoricData();
+                    }
+                    else
+                    {
+                        this.resonatorScan_Display.DataSource = null;
+                        this.wavemeterScan_Display.DataSource = null;
+                    }
+                    break;
+
+                case 1:
+                    if (output_box.SelectedIndex >= 0)
+                    {
+                        SingleCounterPlugin.GetController().Settings["display_channel_index"] = output_box.SelectedIndex;
+                        SingleCounterPlugin.GetController().RequestHistoricData();
+                    }
+                    else
+                    {
+                        this.resonatorScan_Display.DataSource = null;
+                        this.wavemeterScan_Display.DataSource = null;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         private void DissableNoneScanCommands()
         {
             this.connect_Button.IsEnabled = false;
@@ -638,7 +704,6 @@ namespace ConfocalControl
         }
 
         #endregion
-
 
     }
 }
