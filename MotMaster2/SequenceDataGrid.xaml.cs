@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
-
+using System.Windows.Controls.Primitives;
 
 namespace MOTMaster2
 {
@@ -191,7 +191,115 @@ namespace MOTMaster2
             { return; }
 
         }
+        int lastColumnIdx = 0;
+        private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            DependencyObject dep = (DependencyObject)e.Source;
 
+            // iteratively traverse the visual tree
+            while ((dep != null) && !(dep is DataGridCell))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+            //Console.WriteLine(e.GetPosition(sequenceDataGrid).Y.ToString());
+            if (dep == null)
+                return;
+            
+            if (dep is DataGridCell)
+            {
+                DataGridCell cell = dep as DataGridCell;
+                // do something
+
+                DataGridRow r2 = DataGridRow.GetRowContainingElement(cell);
+                int rowindex = r2.GetIndex();
+
+                DataGridColumn c2 = cell.Column;
+                int columnIdx = c2.DisplayIndex;
+                if (lastColumnIdx != columnIdx)
+                {
+                    SetColHeaderBg(lastColumnIdx, Brushes.Silver);
+                    SetColHeaderBg(columnIdx, Brushes.SeaGreen);
+                    lastColumnIdx = columnIdx;
+                }
+                //if (rowindex == columnindex) cell.Background = Brushes.Red;
+                //Console.WriteLine(rowindex.ToString() + " / " + columnindex.ToString());
+            }
+
+            //DataGridCell cell1 = GetCell(2, 2);
+
+        }
+
+        private void SetColHeaderBg(int columnIdx, SolidColorBrush cBrush)
+        {
+            var style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
+            style.Setters.Add(new Setter
+            {
+                Property = BackgroundProperty,
+                Value = cBrush
+            });
+            sequenceDataGrid.Columns[columnIdx].HeaderStyle = style;
+        }
+
+        public DataGridCell GetCell(int row, int column)
+        {
+            DataGridRow rowContainer = GetRow(row);
+
+            if (rowContainer != null)
+            {
+                DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+
+                DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                if (cell == null)
+                {
+                    sequenceDataGrid.ScrollIntoView(rowContainer, sequenceDataGrid.Columns[column]);
+                    cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                }
+                return cell;
+            }
+            return null;
+        }
+
+        public DataGridRow GetRow(int index)
+        {
+            DataGridRow row = (DataGridRow)sequenceDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            if (row == null)
+            {
+                sequenceDataGrid.UpdateLayout();
+                sequenceDataGrid.ScrollIntoView(sequenceDataGrid.Items[index]);
+                row = (DataGridRow)sequenceDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            }
+            return row;
+        }
+
+        public static T GetVisualChild<T>(Visual parent) where T : Visual
+        {
+            T child = default(T);
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null)
+                {
+                    child = GetVisualChild<T>(v);
+                }
+                if (child != null)
+                {
+                    break;
+                }
+            }
+            return child;
+        }
+
+    /*    private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            var element = (UIElement)e.Source;
+
+            int c = Grid.GetColumn(element);
+            int r = Grid.GetRow(element);
+
+            Console.WriteLine(r.ToString() + " / " + c.ToString());
+        }*/
 
     }
 
