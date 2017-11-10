@@ -45,9 +45,13 @@ namespace ConfocalControl
 
             wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
 
-            SolsTiSPlugin.GetController().Data += wavemeterScanData;
-            SolsTiSPlugin.GetController().ScanFinished += wavemeterScanFinished;
+            SolsTiSPlugin.GetController().WavemeterData += wavemeterScanData;
+            SolsTiSPlugin.GetController().WavemeterScanFinished += wavemeterScanFinished;
             SolsTiSPlugin.GetController().WavemeterScanProblem += wavemeterScanProblem;
+
+            SolsTiSPlugin.GetController().ResonatorData += resonatorScanData;
+            SolsTiSPlugin.GetController().ResonatorScanFinished += resonatorScanFinished;
+            SolsTiSPlugin.GetController().ResonatorScanProblem += resonatorScanProblem;
         }
 
         #endregion
@@ -380,7 +384,7 @@ namespace ConfocalControl
             MessageBox.Show(e.Message);
             if (SolsTiSPlugin.GetController().IsRunning())
             {
-                SolsTiSPlugin.GetController().AcquisitionFinishing();
+                SolsTiSPlugin.GetController().WavemeterAcquisitionFinishing();
             }
             Application.Current.Dispatcher.BeginInvoke(
                    DispatcherPriority.Background,
@@ -414,7 +418,7 @@ namespace ConfocalControl
         {
             if (!wavemeterScan_Switch.Value)
             {
-                if (!SolsTiSPlugin.GetController().AcceptableSettings())
+                if (!SolsTiSPlugin.GetController().WavemeterAcceptableSettings())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
                        DispatcherPriority.Background,
@@ -429,10 +433,73 @@ namespace ConfocalControl
                    DispatcherPriority.Background,
                    new Action(() => { this.wavemeterScan_Switch.Value = true; }));
 
-                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().SynchronousStartScan));
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().WavemeterSynchronousStartScan));
                 thread.IsBackground = true;
                 thread.Start();
+            }
+        }
 
+        #endregion
+
+        #region Resonator Scan events
+
+        private void resonatorScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (SolsTiSPlugin.GetController().IsRunning())
+            {
+                SolsTiSPlugin.GetController().ResonatorAcquisitionFinishing();
+            }
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.resonatorScan_Switch.Value = false;
+                   }));
+        }
+
+        private void resonatorScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.resonatorScan_Switch.Value = false;
+                   }));
+        }
+
+        private void resonatorScanData(Point[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.resonatorScan_Display.DataSource = data;
+                       }));
+        }
+
+        private void resonatorScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!resonatorScan_Switch.Value)
+            {
+                if (!SolsTiSPlugin.GetController().ResonatorAcceptableSettings())
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.resonatorScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() => { this.resonatorScan_Switch.Value = true; }));
+
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().ResonatorSynchronousStartScan));
+                thread.IsBackground = true;
+                thread.Start();
             }
         }
 

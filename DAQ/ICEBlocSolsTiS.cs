@@ -133,6 +133,21 @@ namespace DAQ.HAL
             return rslt;
         }
 
+        // 3.11
+        public int tune_resonator(double percentage, bool report)
+        {
+            if (percentage < 0 || percentage > 100) throw new Exception("resonator setting out of range");
+
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            prms.Add("setting", percentage);
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("tune_resonator", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
         // 3.13
         public int etalon_lock(bool request_condition, bool report)
         {

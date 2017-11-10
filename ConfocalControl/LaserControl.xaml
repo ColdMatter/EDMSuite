@@ -10,24 +10,24 @@
         <TextBox x:Name="checkConnection_Reader" HorizontalAlignment="Left" Height="23" Margin="109,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
         <Button x:Name="ping_Button" Content="Ping Test" HorizontalAlignment="Left" Margin="109,68,0,0" VerticalAlignment="Top" Width="75" Click="ping_Button_Click"/>
         <Label Content="TCP Connection" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="Etalon Lock" HorizontalAlignment="Left" Margin="34,110,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="etalonLock_Button" Content="Lock" HorizontalAlignment="Left" Margin="29,141,0,0" VerticalAlignment="Top" Width="75" Click="etalonLock_Button_Click"/>
-        <Button x:Name="etalonUnLock_Button" Content="Unlock" HorizontalAlignment="Left" Margin="29,168,0,0" VerticalAlignment="Top" Width="75" Click="etalonUnLock_Button_Click"/>
-        <Button x:Name="etalonCheck_Button" Content="Check" HorizontalAlignment="Left" Margin="109,141,0,0" VerticalAlignment="Top" Width="75" Click="etalonCheck_Button_Click"/>
-        <TextBox x:Name="etalonCheck_Reader" HorizontalAlignment="Left" Height="23" Margin="109,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
-        <Label Content="Wavelength" HorizontalAlignment="Left" Margin="31,209,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="wavelengthSet_Button" Content="Tune" HorizontalAlignment="Left" Margin="29,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthSet_Button_Click"/>
-        <ni:NumericTextBoxDouble x:Name="wavelengthSet_Numeric" HorizontalAlignment="Left" Height="23" Margin="29,267,0,0" VerticalAlignment="Top" Width="75" HorizontalContentAlignment="Center" ValueChanged="wavelengthSet_Numeric_ValueChanged"/>
-        <Button x:Name="wavelengthRead_Button" Content="Read" HorizontalAlignment="Left" Margin="109,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthRead_Button_Click"/>
-        <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
-        <Label Content="nm" HorizontalAlignment="Left" Margin="189,209,0,0" VerticalAlignment="Top"/>
-        <Label Content="nm" HorizontalAlignment="Left" Margin="50,284,0,0" VerticalAlignment="Top"/>
+        <Label Content="Etalon Lock" HorizontalAlignment="Left" Margin="34,123,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="etalonLock_Button" Content="Lock" HorizontalAlignment="Left" Margin="29,154,0,0" VerticalAlignment="Top" Width="75" Click="etalonLock_Button_Click"/>
+        <Button x:Name="etalonUnLock_Button" Content="Unlock" HorizontalAlignment="Left" Margin="29,181,0,0" VerticalAlignment="Top" Width="75" Click="etalonUnLock_Button_Click"/>
+        <Button x:Name="etalonCheck_Button" Content="Check" HorizontalAlignment="Left" Margin="109,154,0,0" VerticalAlignment="Top" Width="75" Click="etalonCheck_Button_Click"/>
+        <TextBox x:Name="etalonCheck_Reader" HorizontalAlignment="Left" Height="23" Margin="109,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
+        <Label Content="Wavelength" HorizontalAlignment="Left" Margin="31,233,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="wavelengthSet_Button" Content="Tune" HorizontalAlignment="Left" Margin="29,264,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthSet_Button_Click"/>
+        <ni:NumericTextBoxDouble x:Name="wavelengthSet_Numeric" HorizontalAlignment="Left" Height="23" Margin="29,291,0,0" VerticalAlignment="Top" Width="75" HorizontalContentAlignment="Center" ValueChanged="wavelengthSet_Numeric_ValueChanged"/>
+        <Button x:Name="wavelengthRead_Button" Content="Read" HorizontalAlignment="Left" Margin="109,264,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthRead_Button_Click"/>
+        <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,236,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
+        <Label Content="nm" HorizontalAlignment="Left" Margin="189,233,0,0" VerticalAlignment="Top"/>
+        <Label Content="nm" HorizontalAlignment="Left" Margin="50,308,0,0" VerticalAlignment="Top"/>
         <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,93,0,0" VerticalAlignment="Top" Width="75"/>
         <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,65,0,0" VerticalAlignment="Top" Width="75"/>
         <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,37,0,0" VerticalAlignment="Top" Width="75"/>
         <Label Content="Wavemeter Scan" HorizontalAlignment="Left" Margin="237,11,0,0" VerticalAlignment="Top"/>
         <Label Content="Start" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top"/>
-        <Label Content="Stop" HorizontalAlignment="Left" Margin="237,64,0,0" VerticalAlignment="Top"/>
+        <Label Content="Stop" HorizontalAlignment="Left" Margin="237,65,0,0" VerticalAlignment="Top"/>
         <Label Content="Res" HorizontalAlignment="Left" Margin="237,92,0,0" VerticalAlignment="Top"/>
         <ni:Graph x:Name="wavemeterScan_Display" HorizontalAlignment="Left" Height="200" Margin="375,13,0,0" VerticalAlignment="Top" Width="500">
             <ni:Graph.Plots>
@@ -37,5 +37,24 @@
             </ni:Graph.Plots>
         </ni:Graph>
         <ni:Switch x:Name="wavemeterScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,121,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="wavemeterScan_Switch_Click" ClickMode="Press"/>
+        <ComboBox HorizontalAlignment="Left" Margin="237,149,0,0" VerticalAlignment="Top" Width="115"/>
+        <ComboBox HorizontalAlignment="Left" Margin="237,176,0,0" VerticalAlignment="Top" Width="115"/>
+        <Label Content="Resonator Scan" HorizontalAlignment="Left" Margin="237,233,0,0" VerticalAlignment="Top"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,259,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,287,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:NumericTextBoxDouble HorizontalAlignment="Left" Height="23" Margin="277,315,0,0" VerticalAlignment="Top" Width="75"/>
+        <ni:Switch x:Name="resonatorScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,343,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" ClickMode="Press" Click="resonatorScan_Switch_Click"/>
+        <ComboBox HorizontalAlignment="Left" Margin="237,371,0,0" VerticalAlignment="Top" Width="115"/>
+        <ComboBox HorizontalAlignment="Left" Margin="237,398,0,0" VerticalAlignment="Top" Width="115"/>
+        <Label Content="Start" HorizontalAlignment="Left" Margin="237,257,0,0" VerticalAlignment="Top"/>
+        <Label Content="Stop" HorizontalAlignment="Left" Margin="237,286,0,0" VerticalAlignment="Top"/>
+        <Label Content="Res" HorizontalAlignment="Left" Margin="237,313,0,0" VerticalAlignment="Top"/>
+        <ni:Graph x:Name="resonatorScan_Display" HorizontalAlignment="Left" Height="200" Margin="375,236,0,0" VerticalAlignment="Top" Width="500">
+            <ni:Graph.Plots>
+                <ni:Plot Label="Plot 1">
+                    <ni:LinePlotRenderer Stroke="Blue"/>
+                </ni:Plot>
+            </ni:Graph.Plots>
+        </ni:Graph>
     </Grid>
 </Window>
