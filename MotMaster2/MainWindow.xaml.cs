@@ -32,6 +32,7 @@ namespace MOTMaster2
 
         //TODO change this so Controller can access it properly
         RemoteMessaging remoteMsg;
+        Modes modes;
 
         public MainWindow()
         {
@@ -51,6 +52,7 @@ namespace MOTMaster2
             Controller.MotMasterDataEvent += OnDataCreated;
 
             //   ((INotifyPropertyChanged)Controller.sequenceData.Parameters).PropertyChanged += this.InterferometerParams_Changed;
+            OpenDefaultModes();
         }
 
         private void OnDataCreated(object sender, DataEventArgs e)
@@ -85,6 +87,36 @@ namespace MOTMaster2
             }
         }
 
+        private void OpenDefaultModes()
+        {
+            if (File.Exists(Utils.configPath + "Defaults.cfg"))
+            {
+                string fileJson = File.ReadAllText(Utils.configPath + "Defaults.cfg");
+                modes = JsonConvert.DeserializeObject<Modes>(fileJson);
+            }
+            else
+                modes = new Modes();
+            //scan
+            MMscan mms = new MMscan();
+            mms.AsString = modes.Scan;
+            cbParamsScan.Items.Clear();
+            foreach (string param in ParamsArray)
+                cbParamsScan.Items.Add(param);
+            cbParamsScan.Text = mms.sParam;
+            tbFromScan.Text = mms.sFrom.ToString();
+            tbToScan.Text = mms.sTo.ToString();
+            tbByScan.Text = mms.sBy.ToString();
+            //multiScan
+            lstParams.Items.Clear();
+            if (!Utils.isNull(modes.MultiScan)) 
+                foreach (string ss in modes.MultiScan) 
+                {
+                    ListBoxItem lbi = new ListBoxItem();
+                    lbi.Content = ss;
+                    lstParams.Items.Add(lbi);
+                }
+        }
+
         private string[] ParamsArray
         {
             get
@@ -117,6 +149,15 @@ namespace MOTMaster2
         //TODO Rename to reflect loop runs
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
+            try
+            {
+                controller.BuildMMSequence(paramDict);
+            }
+            catch (Exception e)
+            {
+                ErrorMgr.errorMsg("Failed to build sequence:" + e.Message, -1, false);
+                return false;
+            }
             controller.RunStart(paramDict);
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
@@ -384,14 +425,14 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("Error running scan: " + e.Message, -2);
                     break;
                 }
-                lbCurValue.Content = ((double)scanItem).ToString(Constants.LogDataFormat);
+                lbCurValue.Content = ((double)scanItem).ToString(Constants.ScanDataFormat);
                 DoEvents();
                 if (groupRun != GroupRun.scan) break;
                 c++;      
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
             param.Value = defaultValue;
-            lbCurValue.Content = ((double)defaultValue).ToString(Constants.LogDataFormat);
+            lbCurValue.Content = ((double)defaultValue).ToString(Constants.ScanDataFormat);
             controller.AutoLogging = false;
         }
 
@@ -825,6 +866,22 @@ namespace MOTMaster2
             }
             if (Controller.genOptions.saveSequence.Equals(GeneralOptions.SaveOption.save)) Controller.SaveSequenceAsDefault();
             Controller.genOptions.Save();
+            //modes
+            //scan
+            MMscan mms = new MMscan();          
+            mms.sParam = cbParamsScan.Text;
+            mms.sFrom = Convert.ToDouble(tbFromScan.Text);
+            mms.sTo = Convert.ToDouble(tbToScan.Text);
+            mms.sBy = Convert.ToDouble(tbByScan.Text);
+            modes.Scan = mms.AsString;
+            //multiScan
+            if(Utils.isNull(modes.MultiScan)) modes.MultiScan = new List<string>();
+            else modes.MultiScan.Clear();
+            foreach (object obj in lstParams.Items)
+            {
+                if(!Utils.isNull(obj)) modes.MultiScan.Add((string)(obj as ListBoxItem).Content);
+            }
+            modes.Save();
         }
 
         private void EditParameters_Click(object sender, RoutedEventArgs e)
@@ -1013,7 +1070,7 @@ namespace MOTMaster2
                     System.Diagnostics.Process.Start(File.ReadAllText(Utils.configPath + "axel-hub.bat"), "-remote");
                     Thread.Sleep(1000);
                     if(remoteMsg.CheckConnection()) OnActiveComm(remoteMsg.Connected, false);
-                    ErrorMgr.Status("Status:", Brushes.Black.Color);
+                    ErrorMgr.Reset();
                 }
             }                
         }
@@ -1090,11 +1147,12 @@ namespace MOTMaster2
             if (lstParams.SelectedItem == null) return;
             btnMScan.IsEnabled = false;
             MMscan mms = new MMscan();
-            mms.AsString = (string)(lstParams.SelectedItem as ListBoxItem).Content;
+            string ss = (string)((lstParams.SelectedItem as ListBoxItem).Content);
+            mms.AsString = ss;
             cbParamsMScan.Text = mms.sParam;
-            tbFromMScan.Text = mms.sFrom.ToString("G6");
-            tbToMScan.Text = mms.sTo.ToString("G6");
-            tbByMScan.Text = mms.sBy.ToString("G6");
+            tbFromMScan.Text = mms.sFrom.ToString(Constants.ScanDataFormat);
+            tbToMScan.Text = mms.sTo.ToString(Constants.ScanDataFormat);
+            tbByMScan.Text = mms.sBy.ToString(Constants.ScanDataFormat);
             btnMScan.IsEnabled = true;
         }
         string ParamsMScan = null;

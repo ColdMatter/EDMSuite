@@ -131,6 +131,7 @@ namespace MOTMaster2
             }
         }
 
+        //TODO Fix this being called when creating a new sequence step
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
             //Console.WriteLine("654654");
@@ -138,6 +139,8 @@ namespace MOTMaster2
             if (sequenceDataGrid.CurrentColumn != null)
             {
                 string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                //Temporary fix to prevent a false Digital channel being created when add a new sequence step
+                if (channelName == "Name") return;
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
             }

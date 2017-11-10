@@ -20,16 +20,13 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <BulletDecorator Background="Transparent">
+                        <BulletDecorator Margin="10,0,0,0" VerticalAlignment="Center"  HorizontalAlignment="Center" Background="Transparent">
                             <BulletDecorator.Bullet>
-                                <Border x:Name="Border" Width="15" Height="15" CornerRadius="0" Background="#C0C0C0" BorderThickness="1" BorderBrush="#404040">
-                                    <Path Width="7" Height="7" x:Name="CheckMark" SnapsToDevicePixels="False" Stroke="Red" StrokeThickness="2" Data="M 0 0 L 7 7 M 0 7 L 7 0" />
+                                <Border x:Name="Border" Width="30" Height="20" CornerRadius="0" Background="#FFF6F6F6" BorderThickness="1" BorderBrush="#FF717070">
+                                    <Path Width="7" Height="7" x:Name="CheckMark" SnapsToDevicePixels="False" Stroke="Blue" StrokeThickness="2" Data="M 0 0 L 7 7 M 0 7 L 7 0" />
                                 </Border>
                             </BulletDecorator.Bullet>
-                            <ContentPresenter Margin="4,0,0,0"
-      VerticalAlignment="Center"
-      HorizontalAlignment="Left"
-      RecognizesAccessKey="True"/>
+                            <ContentPresenter Margin="14,0,0,0"  VerticalAlignment="Center"  HorizontalAlignment="Center" RecognizesAccessKey="True"/>
                         </BulletDecorator>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="false">
@@ -43,7 +40,7 @@
 
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="#808080" />
+                                <Setter TargetName="Border" Property="Background" Value="Coral" />
 
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">

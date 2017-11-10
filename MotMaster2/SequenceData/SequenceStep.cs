@@ -126,6 +126,10 @@ namespace MOTMaster2.SequenceData
             {
                 foreach (string name in DigitalValueTypes.Keys)
                 {
+                    if (!previousStep.DigitalValueTypes.ContainsKey(name))
+                    {
+                        throw new Exception(string.Format("Step: {0} does not contain channel {1}",previousStep.Name,name));
+                    }
                     if (DigitalValueTypes[name].Value != previousStep.DigitalValueTypes[name].Value) {
                         usedDigitalChannels.Add(name);
                       //  digitalData[name] = !previousStep.GetDigitalData(name);

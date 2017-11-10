@@ -433,6 +433,7 @@ namespace MOTMaster2
 
         internal void StopRunning()
         {
+
             if (!config.Debug)
             {
                 WaitForRunToFinish();
@@ -617,11 +618,9 @@ namespace MOTMaster2
         public void Run(Dictionary<String, Object> dict)
         {
             Stopwatch watch = new Stopwatch();
-            try
-            {
-            sequence = BuildMMSequence(dict);
-            }
-            catch
+
+            //sequence = BuildMMSequence(dict);
+            if (sequence == null)
             {
                 //Exception has been thrown. Will be passed when CheckForRunErrors is called.
                 status = RunningState.stopped;
@@ -672,43 +671,43 @@ namespace MOTMaster2
         }
 
         private static bool InitialiseHardwareAndPattern(MOTMasterSequence sequence)
-                        {
-                            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-                            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
+        {
+            if (config.UseMMScripts) buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+            else buildPattern(sequence, (int)builder.Parameters["PatternLength"]);
             try
             {
                 if (!config.Debug) initializeHardware(sequence);
 
-                        }
+            }
             catch (Exception e)
-                        {
+            {
                 ErrorMgr.errorMsg("Could not initialise hardware:" + e.Message, -2, true);
                 return false;
-                            }
+            }
             return true;
         }
 
-        private static MOTMasterSequence BuildMMSequence(Dictionary<String, Object> dict, string scriptPath = null)
-                            {
-            MOTMasterSequence sequence = new MOTMasterSequence();
+        public void BuildMMSequence(Dictionary<String, Object> dict, string scriptPath = null)
+        {
+           
             if (config.UseMMScripts || sequenceData == null)
-                                {
+            {
                 script = prepareScript(scriptPath, dict);
                 sequence = getSequenceFromScript(script);
-                                }
+            }
             else
-                        {
+            {
 
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     CreateAcquisitionTimeSegments();
-                        }
+                }
                 if (!StaticSequence || BatchNumber == 0) sequence = getSequenceFromSequenceData(dict);
                 if (sequence == null) { throw runThreadException; }
 
-                    }
-            return sequence;
-                }
+            }
+
+        }
             
         /// <summary>
         /// Prepares the hardware that is not controlled using DAQmx voltage patterns. Typically, these are experiment specific.
@@ -1554,9 +1553,7 @@ namespace MOTMaster2
         {
             if (DCSParams == null) DCSParams = new Dictionary<string, object>();
             DCSParams[laserKey] = p;
-        }
-
-       
+        }      
 
         internal static void UpdateAIValues()
         {

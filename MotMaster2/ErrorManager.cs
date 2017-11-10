@@ -65,21 +65,20 @@ namespace ErrorManager
             AutoSave = AutoSave && Directory.Exists(ErrorPath);
             if (Directory.Exists(ErrorPath))
             {
-                ErrorFile = new System.IO.StreamWriter(ErrorPath + "error.rtbLog");
+                ErrorFile = new System.IO.StreamWriter(ErrorPath + "error.log");
                 ErrorFile.AutoFlush = true;
             }                   
         }
 
         private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(
-              DispatcherPriority.Background,
-              new Action(() =>
-              {
-                 lbStatus.Content = "Status:";
-                 lbStatus.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
-                 btnReset.Visibility = Visibility.Hidden;
-              }));
+            Reset();
+        }
+
+        public static void Reset()
+        {
+            Status("Status:", dftForeground);
+            btnReset.Visibility = Visibility.Hidden;
         }
 
         public static void Status(string text, Color Foreground)
@@ -164,7 +163,7 @@ namespace ErrorManager
             }
             string outText = warningText;
             if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;
-            Log(outText, Brushes.DarkOrange.Color);
+            Log(outText, Brushes.Coral.Color); //DarkOrange
             await WriteFileAsync(outText);
         }
 
