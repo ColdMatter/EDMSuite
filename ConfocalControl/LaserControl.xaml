@@ -19,7 +19,6 @@
         <Button x:Name="wavelengthSet_Button" Content="Tune" HorizontalAlignment="Left" Margin="29,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthSet_Button_Click"/>
         <ni:NumericTextBoxDouble x:Name="wavelengthSet_Numeric" HorizontalAlignment="Left" Height="23" Margin="29,267,0,0" VerticalAlignment="Top" Width="75" HorizontalContentAlignment="Center" ValueChanged="wavelengthSet_Numeric_ValueChanged"/>
         <Button x:Name="wavelengthRead_Button" Content="Read" HorizontalAlignment="Left" Margin="109,240,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthRead_Button_Click"/>
-        <Button x:Name="wavelengthStop_Button" Content="Stop Tuning" HorizontalAlignment="Left" Margin="109,267,0,0" VerticalAlignment="Top" Width="75" Click="wavelengthStop_Button_Click"/>
         <TextBox x:Name="wavelength_Read" HorizontalAlignment="Left" Height="23" Margin="109,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" IsReadOnly="True" HorizontalContentAlignment="Center"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="189,209,0,0" VerticalAlignment="Top"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="50,284,0,0" VerticalAlignment="Top"/>
@@ -30,7 +29,13 @@
         <Label Content="Start" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top"/>
         <Label Content="Stop" HorizontalAlignment="Left" Margin="237,64,0,0" VerticalAlignment="Top"/>
         <Label Content="Res" HorizontalAlignment="Left" Margin="237,92,0,0" VerticalAlignment="Top"/>
-        <ni:Graph HorizontalAlignment="Left" Height="200" Margin="375,13,0,0" VerticalAlignment="Top" Width="500"/>
-        <ni:Switch Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,121,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
+        <ni:Graph x:Name="wavemeterScan_Display" HorizontalAlignment="Left" Height="200" Margin="375,13,0,0" VerticalAlignment="Top" Width="500">
+            <ni:Graph.Plots>
+                <ni:Plot Label="Plot 1">
+                    <ni:LinePlotRenderer Stroke="Blue"/>
+                </ni:Plot>
+            </ni:Graph.Plots>
+        </ni:Graph>
+        <ni:Switch x:Name="wavemeterScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,121,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="wavemeterScan_Switch_Click" ClickMode="Press"/>
     </Grid>
 </Window>

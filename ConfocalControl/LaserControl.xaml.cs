@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ConfocalControl
 {
@@ -44,9 +45,9 @@ namespace ConfocalControl
 
             wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
 
-            //SolsTiSPlugin.GetController().Data += wavemeterScanData;
-            //SolsTiSPlugin.GetController().ScanFinished += wavemeterScanFinished;
-            //SolsTiSPlugin.GetController().WavemeterScanProblem += wavemeterScanProblem;
+            SolsTiSPlugin.GetController().Data += wavemeterScanData;
+            SolsTiSPlugin.GetController().ScanFinished += wavemeterScanFinished;
+            SolsTiSPlugin.GetController().WavemeterScanProblem += wavemeterScanProblem;
         }
 
         #endregion
@@ -210,7 +211,7 @@ namespace ConfocalControl
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_move_wave_t();
 
                 if (reply.Count == 0)
                 {
@@ -221,20 +222,16 @@ namespace ConfocalControl
                     switch ((int)reply["status"])
                     {
                         case 0:
-                            MessageBox.Show("tuning software not active");
+                            wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
                             break;
 
                         case 1:
-                            MessageBox.Show("no link to wavelength meter or no meter configured");
+                            MessageBox.Show("tuning in progress");
+                            wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
                             break;
 
                         case 2:
-                            MessageBox.Show("tuning in progress");
-                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
-                            break;
-
-                        case 3:
-                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
+                            MessageBox.Show("tuning operation failed");
                             break;
 
                         default:
@@ -245,103 +242,199 @@ namespace ConfocalControl
             }
             else MessageBox.Show("not connected");
         }
+
+        //private void wavelengthRead_Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (SolsTiSPlugin.GetController().Solstis.Connected)
+        //    {
+        //        Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+
+        //        if (reply.Count == 0)
+        //        {
+        //            MessageBox.Show("empty reply");
+        //        }
+        //        else
+        //        {
+        //            switch ((int)reply["status"])
+        //            {
+        //                case 0:
+        //                    MessageBox.Show("tuning software not active");
+        //                    break;
+
+        //                case 1:
+        //                    MessageBox.Show("no link to wavelength meter or no meter configured");
+        //                    break;
+
+        //                case 2:
+        //                    MessageBox.Show("tuning in progress");
+        //                    wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
+        //                    break;
+
+        //                case 3:
+        //                    wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
+        //                    break;
+
+        //                default:
+        //                    MessageBox.Show("did not understand reply");
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    else MessageBox.Show("not connected");
+        //}
 
         private void wavelengthSet_Button_Click(object sender, RoutedEventArgs e)
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
-
-                if (reply.Count == 0)
+                double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+                int reply = SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
+                switch (reply)
                 {
-                    MessageBox.Show("empty reply");
+                    case -1:
+                        MessageBox.Show("empty reply");
+                        break;
+
+                    case 0:
+                        MessageBox.Show("task completed");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
                 }
-                else
-                {
-                    switch ((int)reply["status"])
-                    {
-                        case 0:
-                            MessageBox.Show("tuning software not active");
-                            break;
 
-                        case 1:
-                            MessageBox.Show("no link to wavelength meter or no meter configured");
-                            break;
-
-                        case 2:
-                        case 3:
-                            double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
-                            int set_reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
-
-                            switch (set_reply)
-                            {
-                                case -1:
-                                    MessageBox.Show("empty reply");
-                                    break;
-
-                                case 0:
-                                    MessageBox.Show("task completed");
-                                    break;
-
-                                case 1:
-                                    MessageBox.Show("task failed");
-                                    break;
-
-                                default:
-                                    MessageBox.Show("did not understand reply");
-                                    break;
-                            }
-
-                            wavelengthRead_Button_Click(null, null);
-                            break;
-
-                        default:
-                            MessageBox.Show("did not understand reply");
-                            break;
-                    }
-                }
-            }
-            else MessageBox.Show("not connected");
-        }
-
-        private void wavelengthStop_Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (SolsTiSPlugin.GetController().Solstis.Connected)
-            {
-                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.stop_wave_m();
-
-                if (reply.Count == 0)
-                {
-                    MessageBox.Show("empty reply");
-                }
-                else
-                {
-                    switch ((int)reply["status"])
-                    {
-                        case 0:
-                            MessageBox.Show("operation successful");
-                            wavelength_Read.Text = ((double)reply["current_wavelength"]).ToString();
-                            break;
-
-                        case 1:
-                            MessageBox.Show("no link to wavelength meter");
-                            break;
-
-                        default:
-                            MessageBox.Show("did not understand reply");
-                            break;
-                    }
-                }
                 wavelengthRead_Button_Click(null, null);
             }
             else MessageBox.Show("not connected");
         }
 
+        //private void wavelengthSet_Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (SolsTiSPlugin.GetController().Solstis.Connected)
+        //    {
+        //        Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+
+        //        if (reply.Count == 0)
+        //        {
+        //            MessageBox.Show("empty reply");
+        //        }
+        //        else
+        //        {
+        //            switch ((int)reply["status"])
+        //            {
+        //                case 0:
+        //                    MessageBox.Show("tuning software not active");
+        //                    break;
+
+        //                case 1:
+        //                    MessageBox.Show("no link to wavelength meter or no meter configured");
+        //                    break;
+
+        //                case 2:
+        //                case 3:
+        //                    double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+        //                    int set_reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
+
+        //                    switch (set_reply)
+        //                    {
+        //                        case -1:
+        //                            MessageBox.Show("empty reply");
+        //                            break;
+
+        //                        case 0:
+        //                            MessageBox.Show("task completed");
+        //                            break;
+
+        //                        case 1:
+        //                            MessageBox.Show("task failed");
+        //                            break;
+
+        //                        default:
+        //                            MessageBox.Show("did not understand reply");
+        //                            break;
+        //                    }
+
+        //                    wavelengthRead_Button_Click(null, null);
+        //                    break;
+
+        //                default:
+        //                    MessageBox.Show("did not understand reply");
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    else MessageBox.Show("not connected");
+        //}
+
         #endregion
 
         #region Wavemeter Scan events
 
+        private void wavemeterScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (SolsTiSPlugin.GetController().IsRunning())
+            {
+                SolsTiSPlugin.GetController().AcquisitionFinishing();
+            }
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.wavemeterScan_Switch.Value = false;
+                   }));
+        }
 
+        private void wavemeterScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.wavemeterScan_Switch.Value = false;
+                   }));
+        }
+
+        private void wavemeterScanData(Point[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.wavemeterScan_Display.DataSource = data;
+                       }));
+        }
+
+        private void wavemeterScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!wavemeterScan_Switch.Value)
+            {
+                if (!SolsTiSPlugin.GetController().AcceptableSettings())
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.wavemeterScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() => { this.wavemeterScan_Switch.Value = true; }));
+
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().SynchronousStartScan));
+                thread.IsBackground = true;
+                thread.Start();
+
+            }
+        }
 
         #endregion
 
@@ -349,6 +442,7 @@ namespace ConfocalControl
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (SolsTiSPlugin.GetController().Solstis.Connected) SolsTiSPlugin.GetController().Solstis.Disconnect();
             windowInstance = null;
         }
 

@@ -215,9 +215,21 @@ namespace DAQ.HAL
                     }
                     else
                     {
-                        //TODO: Fix this so that it casts the JToken into the expected type. For status codes they should all be integers
                         JToken v = value.First;
-                        finalCopy[key] = v.ToObject<int>();
+                        switch (v.Type)
+                        {
+                            case JTokenType.Integer:
+                                finalCopy[key] = v.ToObject<int>();
+                                break;
+
+                            case JTokenType.Float:
+                                finalCopy[key] = v.ToObject<float>();
+                                break;
+
+                            default:
+                                finalCopy[key] = v.ToObject<int>();
+                                break;
+                        }
                     }
 
                 }

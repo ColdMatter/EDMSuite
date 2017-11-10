@@ -82,11 +82,54 @@ namespace DAQ.HAL
             return rslt;
         }
 
+        // 3.3
+        public int lock_wave_m(bool request_condition)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            if (request_condition) prms.Add("operation", "on");
+            else prms.Add("operation", "off");
+
+            Dictionary<string, object> rslt = GenericCommand("etalon_lock", prms);
+            if (rslt.Count == 0) return -1;
+            else return ((int)rslt["status"]);
+        }
+
         // 3.4
         public Dictionary<string, object> stop_wave_m()
         {
             Dictionary<string, object> prms = new Dictionary<string, object>();
             Dictionary<string, object> rslt = GenericCommand("stop_wave_m", prms);
+            return rslt;
+        }
+
+        // 3.5
+        public int move_wave_t(double wavelength, bool report)
+        {
+            if (wavelength < 700 || wavelength > 1000) throw new Exception("wavelength out of range");
+
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            prms.Add("wavelength", wavelength);
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("move_wave_t", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.6
+        public Dictionary<string, object> poll_move_wave_t()
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            Dictionary<string, object> rslt = GenericCommand("poll_move_wave_t", prms);
+            return rslt;
+        }
+
+        // 3.7
+        public Dictionary<string, object> stop_move_wave_t()
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            Dictionary<string, object> rslt = GenericCommand("stop_move_wave_t", prms);
             return rslt;
         }
 

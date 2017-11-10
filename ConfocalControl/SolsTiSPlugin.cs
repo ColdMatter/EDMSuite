@@ -81,12 +81,12 @@ namespace ConfocalControl
             solstis = new ICEBlocSolsTiS(computer_ip);
 
             LoadSettings();
-            if (Settings.Keys.Count != 1)
+            if (Settings.Keys.Count != 9)
             {
                 Settings["wavelength"] = 785.0;
 
-                Settings["wavemeterScanStart"] = 780.0;
-                Settings["wavemeterScanStop"] = 790.0;
+                Settings["wavemeterScanStart"] = 784.0;
+                Settings["wavemeterScanStop"] = 785.0;
                 Settings["wavemeterScanPoints"] = 100;
 
                 Settings["counterChannels"] = new List<string> { "APD0", "APD1" };
@@ -114,37 +114,39 @@ namespace ConfocalControl
 
         private int SetAndLockWavelength(double wavelength)
         {
-            Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+            return SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
 
-            if (reply.Count == 0)
-            {
-                throw new Exception("poll_wave_m: empty reply");
-            }
-            else
-            {
-                switch ((int)reply["status"])
-                {
-                    case 0:
-                        throw new Exception("poll_wave_m: tuning software not active");
+            //Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
 
-                    case 1:
-                        throw new Exception("poll_wave_m: no link to wavelength meter or no meter configured");
+            //if (reply.Count == 0)
+            //{
+            //    throw new Exception("poll_wave_m: empty reply");
+            //}
+            //else
+            //{
+            //    switch ((int)reply["status"])
+            //    {
+            //        case 0:
+            //            throw new Exception("poll_wave_m: tuning software not active");
 
-                    case 2:
-                        throw new Exception("poll_wave_m: tuning in progress");
+            //        case 1:
+            //            throw new Exception("poll_wave_m: no link to wavelength meter or no meter configured");
 
-                    case 3:
-                        return SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
+            //        case 2:
+            //            throw new Exception("poll_wave_m: tuning in progress");
 
-                    default:
-                        throw new Exception("poll_wave_m: did not understand reply");
-                }
-            }
+            //        case 3:
+            //            return SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
+
+            //        default:
+            //            throw new Exception("poll_wave_m: did not understand reply");
+            //    }
+            //}
         }
 
         public bool AcceptableSettings()
         {
-            if ((double)Settings["wavemeterScanStart"] >= (double)Settings["wavemeterScanStop"] || (double)Settings["wavemeterScanPoints"] < 1)
+            if ((double)Settings["wavemeterScanStart"] >= (double)Settings["wavemeterScanStop"] || (int)Settings["wavemeterScanPoints"] < 1)
             {
                 MessageBox.Show("Galvo X settings unacceptable.");
                 return false;
@@ -172,8 +174,8 @@ namespace ConfocalControl
 
         public void SynchronousStartScan()
         {
-            try
-            {
+            //try
+            //{
                 if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
@@ -182,11 +184,11 @@ namespace ConfocalControl
                 backendState = ScanState.running;
                 SynchronousAcquisitionStarting();
                 SynchronousAcquire();
-            }
-            catch (Exception e)
-            {
-                if (WavemeterScanProblem != null) WavemeterScanProblem(e);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    if (WavemeterScanProblem != null) WavemeterScanProblem(e);
+            //}
         }
 
         private void SynchronousAcquisitionStarting()
@@ -322,15 +324,19 @@ namespace ConfocalControl
 
             // Main loop
             for (double i = 0;
-                    i < (double)Settings["wavemeterScanPoints"] + 1;
+                    i < (int)Settings["wavemeterScanPoints"] + 1;
                     i++)
 
             {
                 double currentWavelength = (double)Settings["wavemeterScanStart"] + i * 
                     ((double)Settings["wavemeterScanStop"] - (double)Settings["wavemeterScanStart"]) /
-                    (double)Settings["wavemeterScanPoints"];
+                    (int)Settings["wavemeterScanPoints"];
 
+                DateTime dt1 = DateTime.Now;
                 report = SetAndLockWavelength(currentWavelength);
+                DateTime dt2 = DateTime.Now;
+                TimeSpan span = dt2 - dt1;
+
                 if (report == 0)
                 {
                     // Start trigger task
@@ -358,7 +364,7 @@ namespace ConfocalControl
                     {
                         double[] latestData = counterLatestData[j];
                         double data = latestData[latestData.Length - 1] - latestData[0];
-                        Point pnt = new Point(currentWavelength, data);
+                        Point pnt = new Point(currentWavelength, span.TotalMilliseconds);
                         counterBuffer[j].Add(pnt);
                     }
 
@@ -394,7 +400,7 @@ namespace ConfocalControl
             OnScanFinished();
         }
 
-        private void AcquisitionFinishing()
+        public void AcquisitionFinishing()
         {
             triggerTask.Dispose();
             freqOutTask.Dispose();
@@ -476,7 +482,7 @@ namespace ConfocalControl
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
             lines.Add("Exposure = " + SingleCounterPlugin.GetController().GetExposure().ToString());
-            lines.Add("Lambda start = " + ((double)Settings["wavemeterScanStart"]).ToString() + ", Lambda stop = " + ((double)Settings["wavemeterScanStop"]).ToString() + ", Lambda resolution = " + ((double)Settings["wavemeterScanPoints"]).ToString());
+            lines.Add("Lambda start = " + ((double)Settings["wavemeterScanStart"]).ToString() + ", Lambda stop = " + ((double)Settings["wavemeterScanStop"]).ToString() + ", Lambda resolution = " + ((int)Settings["wavemeterScanPoints"]).ToString());
 
             string descriptionString = "Lambda ";
             foreach (string channel in (List<string>)Settings["counterChannels"])
