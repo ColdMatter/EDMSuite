@@ -116,7 +116,7 @@ namespace MOTMaster2
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {
             var combo = sender as ComboBox;
-            if (sequenceDataGrid.CurrentColumn == null) return;
+            if (sequenceDataGrid.CurrentColumn == null || sequenceDataGrid.CurrentColumn.GetType() != typeof(DataGridComboBoxColumn)) return;
             string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
             if (e.AddedItems != null && e.AddedItems.Count > 0)
             {
@@ -136,11 +136,10 @@ namespace MOTMaster2
         {
             //Console.WriteLine("654654");
             var cell = sender as CheckBox;
-            if (sequenceDataGrid.CurrentColumn != null)
+            if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
             {
                 string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
-                //Temporary fix to prevent a false Digital channel being created when add a new sequence step
-                if (channelName == "Name") return;
+         
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
             }

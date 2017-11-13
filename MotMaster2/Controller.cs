@@ -1247,6 +1247,7 @@ namespace MOTMaster2
         {
             string sequenceJson = File.ReadAllText(path);
             sequenceData = JsonConvert.DeserializeObject<Sequence>(sequenceJson);
+
             //script.Parameters = sequenceData.CreateParameterDictionary();
 
         }

@@ -637,6 +637,8 @@ namespace MOTMaster2
             if (result != true) return;
             string filename = dlg.FileName;
             Controller.LoadSequenceFromPath(filename);
+            this.Title = "MOTMaster 2 - sequence: " + filename; 
+            UpdateSequenceControl();
         }
 
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
