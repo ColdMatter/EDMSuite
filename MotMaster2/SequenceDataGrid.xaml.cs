@@ -65,8 +65,6 @@ namespace MOTMaster2
                 BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() { Source = resource });
                 col.SelectedItemBinding = new Binding("AnalogValueTypes[" + name + "]");
                 dg.Columns.Add(col);
-                
-       
             }
         /*    var dignames = first.DigitalValueTypes.Keys;
             foreach (var name in dignames)
@@ -76,6 +74,9 @@ namespace MOTMaster2
                 dg.Columns.Add(col);
             }*/
             var dignames = first.DigitalValueTypes.Keys;
+         //   Style cellStyle = (Style)this.Resources["DataGridCell"];
+         //   cellStyle.Setters.Add(new EventSetter() { Event = MouseMoveEvent, Handler = new MouseEventHandler(this.sequenceDataGrid_MouseMove) });
+
             Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
             //Style digitalStyle = new Style();
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
@@ -194,6 +195,7 @@ namespace MOTMaster2
         int lastColumnIdx = 0;
         private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
         {
+            
             DependencyObject dep = (DependencyObject)e.Source;
 
             // iteratively traverse the visual tree
@@ -208,36 +210,17 @@ namespace MOTMaster2
             if (dep is DataGridCell)
             {
                 DataGridCell cell = dep as DataGridCell;
-                // do something
-
-                DataGridRow r2 = DataGridRow.GetRowContainingElement(cell);
-                int rowindex = r2.GetIndex();
 
                 DataGridColumn c2 = cell.Column;
                 int columnIdx = c2.DisplayIndex;
                 if (lastColumnIdx != columnIdx)
                 {
-                    SetColHeaderBg(lastColumnIdx, Brushes.Silver);
-                    SetColHeaderBg(columnIdx, Brushes.SeaGreen);
+                    Point pCell = cell.PointToScreen(new Point(0, 0));
+                    Point pGrid = this.PointFromScreen(pCell);
+                    recSelector.Margin = new Thickness(0, pGrid.Y+cell.ActualHeight, 20, 0);
                     lastColumnIdx = columnIdx;
-                }
-                //if (rowindex == columnindex) cell.Background = Brushes.Red;
-                //Console.WriteLine(rowindex.ToString() + " / " + columnindex.ToString());
+                }               
             }
-
-            //DataGridCell cell1 = GetCell(2, 2);
-
-        }
-
-        private void SetColHeaderBg(int columnIdx, SolidColorBrush cBrush)
-        {
-            var style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
-            style.Setters.Add(new Setter
-            {
-                Property = BackgroundProperty,
-                Value = cBrush
-            });
-            sequenceDataGrid.Columns[columnIdx].HeaderStyle = style;
         }
 
         public DataGridCell GetCell(int row, int column)
@@ -248,8 +231,9 @@ namespace MOTMaster2
             {
                 DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
 
-                DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
-                if (cell == null)
+                DataGridCell cell = null;
+                if (presenter != null) cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                if ((cell == null) && (presenter != null))
                 {
                     sequenceDataGrid.ScrollIntoView(rowContainer, sequenceDataGrid.Columns[column]);
                     cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
