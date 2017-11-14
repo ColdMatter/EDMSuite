@@ -1,0 +1,7 @@
+The Axel-hub is opened, but hasn't been switched to remote
+(err:-1) Failed to build sequence:Error building sequence: 
+Error adding digital value. Step: Wait Channel: cameraTTL
+(err:-1) Failed to build sequence:Error building sequence: 
+Error adding digital value. Step: Off Channel: motTTL
+(wrn:-3) Error when releasing hardware: Cannot access a disposed object.
+Object name: 'Task'.

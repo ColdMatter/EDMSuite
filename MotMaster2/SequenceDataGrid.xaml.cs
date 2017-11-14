@@ -102,7 +102,7 @@ namespace MOTMaster2
         private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             var dg = sender as DataGrid;
-            if (dg.CurrentItem.GetType() == null) { return; }
+            if (dg.CurrentItem == null) { return; }
             ObservableCollection<SequenceStep> first = (ObservableCollection<SequenceStep>)dg.ItemsSource;
             SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
             if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
