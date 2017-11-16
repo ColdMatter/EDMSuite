@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
-
+using System.Windows.Controls.Primitives;
 
 namespace MOTMaster2
 {
@@ -65,8 +65,6 @@ namespace MOTMaster2
                 BindingOperations.SetBinding(col, DataGridComboBoxColumn.ItemsSourceProperty, new Binding() { Source = resource });
                 col.SelectedItemBinding = new Binding("AnalogValueTypes[" + name + "]");
                 dg.Columns.Add(col);
-                
-       
             }
         /*    var dignames = first.DigitalValueTypes.Keys;
             foreach (var name in dignames)
@@ -76,6 +74,9 @@ namespace MOTMaster2
                 dg.Columns.Add(col);
             }*/
             var dignames = first.DigitalValueTypes.Keys;
+         //   Style cellStyle = (Style)this.Resources["DataGridCell"];
+         //   cellStyle.Setters.Add(new EventSetter() { Event = MouseMoveEvent, Handler = new MouseEventHandler(this.sequenceDataGrid_MouseMove) });
+
             Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
             //Style digitalStyle = new Style();
             digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
@@ -139,7 +140,7 @@ namespace MOTMaster2
             if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
             {
                 string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
-         
+                if (channelName == "RS232Commands") return;
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
             }
@@ -193,7 +194,98 @@ namespace MOTMaster2
             { return; }
 
         }
+        int lastColumnIdx = 0;
+        private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            
+            DependencyObject dep = (DependencyObject)e.Source;
 
+            // iteratively traverse the visual tree
+            while ((dep != null) && !(dep is DataGridCell))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+            //Console.WriteLine(e.GetPosition(sequenceDataGrid).Y.ToString());
+            if (dep == null)
+                return;
+            
+            if (dep is DataGridCell)
+            {
+                DataGridCell cell = dep as DataGridCell;
+
+                DataGridColumn c2 = cell.Column;
+                int columnIdx = c2.DisplayIndex;
+                if (lastColumnIdx != columnIdx)
+                {
+                    Point pCell = cell.PointToScreen(new Point(0, 0));
+                    Point pGrid = this.PointFromScreen(pCell);
+                    recSelector.Margin = new Thickness(0, pGrid.Y+cell.ActualHeight, 20, 0);
+                    lastColumnIdx = columnIdx;
+                }               
+            }
+        }
+
+        public DataGridCell GetCell(int row, int column)
+        {
+            DataGridRow rowContainer = GetRow(row);
+
+            if (rowContainer != null)
+            {
+                DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+
+                DataGridCell cell = null;
+                if (presenter != null) cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                if ((cell == null) && (presenter != null))
+                {
+                    sequenceDataGrid.ScrollIntoView(rowContainer, sequenceDataGrid.Columns[column]);
+                    cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                }
+                return cell;
+            }
+            return null;
+        }
+
+        public DataGridRow GetRow(int index)
+        {
+            DataGridRow row = (DataGridRow)sequenceDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            if (row == null)
+            {
+                sequenceDataGrid.UpdateLayout();
+                sequenceDataGrid.ScrollIntoView(sequenceDataGrid.Items[index]);
+                row = (DataGridRow)sequenceDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            }
+            return row;
+        }
+
+        public static T GetVisualChild<T>(Visual parent) where T : Visual
+        {
+            T child = default(T);
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null)
+                {
+                    child = GetVisualChild<T>(v);
+                }
+                if (child != null)
+                {
+                    break;
+                }
+            }
+            return child;
+        }
+
+    /*    private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            var element = (UIElement)e.Source;
+
+            int c = Grid.GetColumn(element);
+            int r = Grid.GetRow(element);
+
+            Console.WriteLine(r.ToString() + " / " + c.ToString());
+        }*/
 
     }
 

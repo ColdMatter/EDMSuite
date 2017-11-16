@@ -64,6 +64,8 @@ namespace MOTMaster2
             string fileJson = JsonConvert.SerializeObject(this);
             File.WriteAllText(Utils.configPath + "genOptions.cfg", fileJson);
         }
+
+        public bool SaveMultiScanLoop { get; set; }
     }
 
     /// <summary>

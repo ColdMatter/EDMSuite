@@ -143,7 +143,8 @@ namespace MOTMaster2
                 else
                 {
                     Dictionary<string,double> accDict = ConvertAccelerometerVoltage((double[])segData[name]);
-                    avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                    if (avgDict.Count == 0) avgDict = accDict;
+                    else avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 }
                 if (name == "N2" && fitN2)
                 {

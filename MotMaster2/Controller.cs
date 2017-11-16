@@ -93,6 +93,7 @@ namespace MOTMaster2
         public static AutoFileLogger paramLogger;
 
         public static AutoFileLogger multiScanLogger;
+        private static bool writeColumns;
         public static bool SendDataRemotely { get; set; }
         private bool _AutoLogging;
         public bool AutoLogging
@@ -418,9 +419,10 @@ namespace MOTMaster2
             if (!Utils.isNull(multiScanLogger))
             {
                 var segData = Controller.genOptions.AIEnable ? finalData.prms : null;
-                bool columns = (BatchNumber == 0);
+                //TODO Get this from MainWindow checkbox value
+                bool writeParameters = false;
                 sequenceData.Parameters["ElapsedTime"].Value = logWatch.ElapsedMilliseconds;
-                AppendMultiScan(segData, columns);
+                AppendMultiScan(segData, writeColumns,writeParameters);
             }
             dataJson = null;
             finalData = null;
@@ -700,7 +702,13 @@ namespace MOTMaster2
 
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
+                    if (!sequenceData.Steps.Any(t=>t.GetDigitalData("acquisitionTrigger"))){
+                        Controller.genOptions.AIEnable = false;
+                        ErrorMgr.warningMsg("acquisitionTrigger is not enabled. Setting AIEnable to false.");
+                    }
+                    else{
                     CreateAcquisitionTimeSegments();
+                    }
                 }
                 if (!StaticSequence || BatchNumber == 0) sequence = getSequenceFromSequenceData(dict);
                 if (sequence == null) { throw runThreadException; }
@@ -1309,12 +1317,21 @@ namespace MOTMaster2
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
             dataLogger = new AutoFileLogger(fileTag + ".dta");
             paramLogger = new AutoFileLogger(fileTag + ".prm");
-            multiScanLogger = new AutoFileLogger(fileTag + ".scn");
+            multiScanLogger = new AutoFileLogger(fileTag + ".ahs");
+            writeColumns = true;
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
             dataLogger.log("{\"MMbatch\":[");
             paramLogger.log("{\"MMbatch\":[");
             logWatch = new Stopwatch();
+        }
+        public void RestartMultiScanLogger(string filename)
+        {
+            logWatch = new Stopwatch();
+            multiScanLogger.Enabled = false;
+            string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + filename;
+            multiScanLogger = new AutoFileLogger(fileTag+ ".ahs");
+            writeColumns = true;
         }
         public void StopLogging()
         {
@@ -1412,7 +1429,7 @@ namespace MOTMaster2
             return axelCommand;
         }
 
-        private static void AppendMultiScan(Dictionary<string, object> segData, bool writeColumnNames = false)
+        private static void AppendMultiScan(Dictionary<string, object> segData,bool writeColumnNames = false, bool writeParameters = true)
         {
          string row = "";
             if (segData != null)
@@ -1426,11 +1443,16 @@ namespace MOTMaster2
             Dictionary<string, double> avgDict = (segData == null) ? null : ExpData.GetAverageValues(segData,true);
             if (writeColumnNames)
             {
+                writeColumns = false;
                 multiScanLogger.Enabled = true;
-                foreach (string name in sequenceData.Parameters.Keys)
+                if (writeParameters)
                 {
-                    row += name + "\t";
+                    foreach (string name in sequenceData.Parameters.Keys)
+                    {
+                        row += name + "\t";
+                    }
                 }
+                else { /*string header = "#" + JsonConvert.SerializeObject(initCommmand); multiScanLogger.log(header);*/ row += "ElapsedTime \t"; }
                 if (avgDict != null)
                 {
                     foreach (string name in avgDict.Keys)
@@ -1443,9 +1465,16 @@ namespace MOTMaster2
                 //multiScanLogger.log("\n");
                 row = "";
             }
-            foreach (string name in sequenceData.Parameters.Keys)
+            if (writeParameters)
             {
-                row += sequenceData.Parameters[name].Value.ToString() + "\t";
+                foreach (string name in sequenceData.Parameters.Keys)
+                {
+                    row += sequenceData.Parameters[name].Value.ToString() + "\t";
+                }
+            }
+            else
+            {
+                row += sequenceData.Parameters["ElapsedTime"].Value.ToString() + "\t";
             }
             if (avgDict != null)
             {

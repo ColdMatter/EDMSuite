@@ -1220,6 +1220,9 @@ namespace MOTMaster2
             controller.AutoLogging = Check4Logging();
             Controller.ExpData.grpMME.Clear();
             List<MMscan> mms = new List<MMscan>();
+            int multiCount = lstParams.Items.Count;
+            bool saveEveryLoop = cbSaveAfterLoop.IsChecked.Value;
+            int batchNum = 0;
             foreach (object ms in lstParams.Items)
             {
                 mms.Add(new MMscan());
@@ -1249,10 +1252,14 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
-                    if (!SingleShot()) groupRun = GroupRun.none; 
-                    controller.WaitForRunToFinish();
-                    controller.IncrementBatchNumber();
                 }
+                if (!SingleShot()) groupRun = GroupRun.none; 
+                controller.WaitForRunToFinish();
+                controller.IncrementBatchNumber();
+                //TODO Make a more descriptive dynamic filename
+                if (saveEveryLoop && mms[multiCount - 1].Value == mms[multiCount - 1].sTo) { controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
+                    //HARDCODED Sleep to allow for DCS to update !!!!
+                    Thread.Sleep(3000); }
                 if (groupRun != GroupRun.multiScan) break;
             }
         }
