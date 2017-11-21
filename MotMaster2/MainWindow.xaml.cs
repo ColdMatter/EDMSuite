@@ -1221,7 +1221,8 @@ namespace MOTMaster2
             Controller.ExpData.grpMME.Clear();
             List<MMscan> mms = new List<MMscan>();
             int multiCount = lstParams.Items.Count;
-            bool saveEveryLoop = cbSaveAfterLoop.IsChecked.Value;
+            Controller.WriteSeparateScanFiles = cbSaveAfterLoop.IsChecked.Value;
+
             int batchNum = 0;
             foreach (object ms in lstParams.Items)
             {
@@ -1257,7 +1258,9 @@ namespace MOTMaster2
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
                 //TODO Make a more descriptive dynamic filename
-                if (saveEveryLoop && mms[multiCount - 1].Value == mms[multiCount - 1].sTo) { controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
+                if (cbSaveAfterLoop.IsChecked.Value && mms[multiCount - 1].Value == mms[multiCount - 1].sTo)
+                {
+                    controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
                     //HARDCODED Sleep to allow for DCS to update !!!!
                     Thread.Sleep(3000); }
                 if (groupRun != GroupRun.multiScan) break;
