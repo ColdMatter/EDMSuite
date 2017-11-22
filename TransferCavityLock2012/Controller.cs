@@ -268,7 +268,6 @@ namespace TransferCavityLock2012
         public void SetLaserOutputVoltage(string laserName, double newVoltage)
         {
             SlaveLasers[laserName].VoltageToLaser = newVoltage;
-            SlaveLasers[laserName].SetLaserVoltage(newVoltage); 
             SlaveLasers[laserName].SetLaserVoltage();
         }
 
