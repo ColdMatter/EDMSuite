@@ -1,5 +1,5 @@
 # make division work like you'd expect
-from __future__ import division
+# from __future__ import division
 
 # some generic stuff
 from System.IO import *
@@ -29,7 +29,7 @@ def ScanSingleParameter(script_name, parameter_name, values):
 	directly or with one of convenience functions defined below.
 	"""
 	dic = Dictionary[String, Object]()
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
 		dic[parameter_name] = value

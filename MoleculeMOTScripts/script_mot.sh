@@ -1,1 +1,1 @@
-ipy -i mot_init.py
+../IronPython/ipy -i mot_init.py

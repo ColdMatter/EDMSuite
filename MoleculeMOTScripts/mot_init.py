@@ -19,10 +19,10 @@ class typedproxy(object):
 #sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\ScanMaster\\bin\\Decelerator\\"))
 #clr.AddReferenceToFile("ScanMaster.exe")
 
-sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\MOTMaster\\bin\\CaF\\"))
+sys.path.append(Path.GetFullPath("C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\"))
 clr.AddReferenceToFile("MOTMaster.exe")
 
-sys.path.append(Path.GetFullPath("C:\\Control Programs\\EDMSuite\\MoleculeMOTHardwareControl\\bin\\CaF\\"))
+sys.path.append(Path.GetFullPath("C:\\ControlPrograms\\EDMSuite\\MoleculeMOTHardwareControl\\bin\\CaF\\"))
 clr.AddReferenceToFile("MoleculeMOTHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
