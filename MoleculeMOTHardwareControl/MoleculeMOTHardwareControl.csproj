@@ -108,6 +108,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\GigatronicsTabController.cs" />
     <Compile Include="Controls\SidebandsMonitorTabController.cs" />
     <Compile Include="Controls\SidebandsMonitorTabView.cs">
       <SubType>UserControl</SubType>
@@ -122,6 +123,12 @@
     </Compile>
     <Compile Include="Controls\SourceTabView.Designer.cs">
       <DependentUpon>SourceTabView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GigatronicsTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GigatronicsTabView.Designer.cs">
+      <DependentUpon>GigatronicsTabView.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
@@ -150,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SourceTabView.resx">
       <DependentUpon>SourceTabView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GigatronicsTabView.resx">
+      <DependentUpon>GigatronicsTabView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlWindow.resx">
       <SubType>Designer</SubType>
