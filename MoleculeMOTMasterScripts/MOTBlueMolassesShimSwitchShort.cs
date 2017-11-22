@@ -24,7 +24,7 @@ public class Patterns : MOTMasterScript
         Parameters["FlashPulseDuration"] = 10;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 1000;
+        Parameters["ExpansionTime"] = 100;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesHoldTime"] = 600;
         Parameters["MolassesRampDuration"] = 200;
@@ -102,8 +102,8 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); //pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, molassesRampTime + (int)Parameters["MolassesRampDuration"], (int)Parameters["ExpansionTime"], "v00AOM"); //pulse off the MOT light to release the cloud
+        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
+        p.Pulse(patternStartBeforeQ, molassesRampTime + (int)Parameters["MolassesRampDuration"], (int)Parameters["ExpansionTime"], "v00MOTAOM"); //pulse off the MOT light to release the cloud
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;

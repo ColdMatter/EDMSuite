@@ -42,11 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlueMOT.cs" />
+    <Compile Include="BlueMOTAfterBlueMolasses.cs" />
     <Compile Include="DetuningTemperature.cs" />
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
-    <Compile Include="MicrowaveMagneticTrapLifetimeN0.cs" />
     <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
     <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
     <Compile Include="MicrowavePulseExperimental.cs" />
