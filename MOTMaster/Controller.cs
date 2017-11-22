@@ -98,7 +98,7 @@ namespace MOTMaster
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
+            pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
             apg = new DAQMxAnalogPatternGenerator();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
