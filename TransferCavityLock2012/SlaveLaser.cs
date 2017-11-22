@@ -5,7 +5,6 @@ using System.Text;
 using DAQ.Environment;
 using DAQ.TransferCavityLock2012;
 using NationalInstruments.DAQmx;
-using DAQ.Environment;
 using DAQ.HAL;
 
 namespace TransferCavityLock2012
