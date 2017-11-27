@@ -84,7 +84,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 9);
             AddDigitalOutputChannel("zmaomTTL", hsdioBoard, 0, 10);
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
-            AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
+            AddDigitalOutputChannel("f0MicrowaveTTL", hsdioBoard, 0, 12);
             AddDigitalOutputChannel("mainMicrowaveTTL", hsdioBoard, 0, 13);
             AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
             AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 17);
@@ -138,6 +138,7 @@ namespace DAQ.HAL
             channelMap["ramanTTL"] = "lcTTL";
             channelMap["ramanDDSTrig"] = "msquaredTTL";
             channelMap["shutter"] = "fp1MicrowaveTTL";
+            channelMap["pushaomTTL"] = "f0MicrowaveTTL";
 
             Info.Add("channelMap", channelMap);
         }

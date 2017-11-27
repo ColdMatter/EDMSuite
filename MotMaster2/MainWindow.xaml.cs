@@ -1262,7 +1262,7 @@ namespace MOTMaster2
                 {
                     controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
                     //HARDCODED Sleep to allow for DCS to update !!!!
-                    Thread.Sleep(3000); }
+                    Thread.Sleep(5000); }
                 if (groupRun != GroupRun.multiScan) break;
             }
         }

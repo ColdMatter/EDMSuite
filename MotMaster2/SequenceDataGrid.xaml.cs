@@ -140,7 +140,7 @@ namespace MOTMaster2
             if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
             {
                 string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
-                if (channelName == "RS232Commands") return;
+                if (channelName == "RS232Commands" || channelName == "Enabled") return;
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
             }
