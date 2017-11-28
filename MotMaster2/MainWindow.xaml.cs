@@ -1258,7 +1258,7 @@ namespace MOTMaster2
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
                 //TODO Make a more descriptive dynamic filename
-                if (cbSaveAfterLoop.IsChecked.Value && mms[multiCount - 1].Value == mms[multiCount - 1].sTo)
+                if (cbSaveAfterLoop.IsChecked.Value && (mms[multiCount - 1].Value + mms[multiCount - 1].sBy) > mms[multiCount - 1].sTo)
                 {
                     controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
                     //HARDCODED Sleep to allow for DCS to update !!!!
