@@ -43,7 +43,8 @@ namespace ErrorManager
                 (lbStatus.Parent as StackPanel).Children.Add(btnReset);
                 btnReset.Visibility = Visibility.Hidden;
 
-                btnYes = new Button();
+          /*    No a good way to return the answer, maybe later  
+                btnYes = new Button(); 
                 btnYes.Content = "Yes";
                 btnYes.Width = 25;
                 btnYes.Height = 25;
@@ -57,7 +58,7 @@ namespace ErrorManager
                 btnNo.Height = 25;
                 btnNo.Click += btnReset_Click;
                 (lbStatus.Parent as StackPanel).Children.Add(btnNo);
-                btnNo.Visibility = Visibility.Hidden;
+                btnNo.Visibility = Visibility.Hidden;*/
             }
             rtbLog = _log;           
             ErrorPath = _ErrorPath;
@@ -89,7 +90,6 @@ namespace ErrorManager
               DispatcherPriority.Background,
               new Action(() =>
               {
-                  btnReset.Visibility = Visibility.Visible; 
                   prevText = lbStatus.Content.ToString();
                   lbStatus.Content = text;
               }));
@@ -143,6 +143,7 @@ namespace ErrorManager
             }
             else
             {
+                btnReset.Visibility = Visibility.Visible; 
                 Status("Error: "+errorText, Brushes.Red.Color);
             }
             string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;  
@@ -159,6 +160,7 @@ namespace ErrorManager
             }
             else
             {
+                btnReset.Visibility = Visibility.Visible; 
                 Status("Warning: " + warningText, Brushes.DarkOrange.Color);
             }
             string outText = warningText;

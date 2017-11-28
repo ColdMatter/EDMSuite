@@ -990,12 +990,12 @@ namespace MOTMaster2
             if (btnRemote == null) return;
             if (cbHub.SelectedIndex == 2)
             {
-                btnRemote.Content = "Check comm."; btnRemote.Background = Brushes.LightBlue;
+                btnRemote.Content = "Connect  ?->"; btnRemote.Background = Brushes.AliceBlue;
             }
 
             if (cbHub.SelectedIndex == 3)
             {
-                btnRemote.Content = "Connect"; btnRemote.Background = Brushes.LightBlue;
+                btnRemote.Content = "Connect  ?->"; btnRemote.Background = Brushes.AliceBlue;
             } 
                                
             if (cbHub.SelectedIndex > 1)
@@ -1047,12 +1047,12 @@ namespace MOTMaster2
         {
             if (active) 
             {
-                btnRemote.Content = "Connected"; btnRemote.Background = Utils.ToSolidColorBrush("#FFBEFDD1");
+                btnRemote.Content = "Connected  <->"; btnRemote.Background = Utils.ToSolidColorBrush("#FFBEFDD1");
                 if (!remoteMsg.partnerPresent) ErrorMgr.warningMsg("Conflicting active true status and parner not present");
             }
             else
             {
-                btnRemote.Content = "Disconnected"; btnRemote.Background = Brushes.LightYellow;
+                btnRemote.Content = "Disconnected -X-"; btnRemote.Background = Brushes.LightYellow;
                 if (remoteMsg.partnerPresent) ErrorMgr.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
                 else
                 {
