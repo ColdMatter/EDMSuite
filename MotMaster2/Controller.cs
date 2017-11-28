@@ -94,7 +94,9 @@ namespace MOTMaster2
 
         public static AutoFileLogger multiScanDataLogger;
         public static AutoFileLogger multiScanParamLogger;
+        public static List<string> MultiScanParamNames { get; set; }
         private static bool writeColumnNames;
+        private static bool writeParameters = false;
         public static string MultiScanDataFileName { get; set; }
         public static bool WriteSeparateScanFiles { get; set; }
         public static bool SendDataRemotely { get; set; }
@@ -424,7 +426,7 @@ namespace MOTMaster2
                 var segData = Controller.genOptions.AIEnable ? finalData.prms : null;
                 sequenceData.Parameters["ElapsedTime"].Value = logWatch.ElapsedMilliseconds;
                 AutoFileLogger paramLogger = (WriteSeparateScanFiles) ? multiScanParamLogger : multiScanDataLogger;
-                AppendMultiScan(segData, paramLogger, MultiScanDataFileName, WriteSeparateScanFiles);
+                AppendMultiScan(segData, paramLogger, MultiScanParamNames,MultiScanDataFileName, WriteSeparateScanFiles);
             }
             dataJson = null;
             finalData = null;
@@ -1343,8 +1345,9 @@ namespace MOTMaster2
             string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
             dataLogger = new AutoFileLogger(fileTag + ".dta");
             paramLogger = new AutoFileLogger(fileTag + ".prm");
-            multiScanDataLogger = new AutoFileLogger(fileTag + ".ahs");
+            multiScanDataLogger = new AutoFileLogger(fileTag + "_0.ahs");
             multiScanParamLogger = new AutoFileLogger(fileTag + ".hdr");
+            MultiScanDataFileName = ExpData.ExperimentName + "_" + now + "_0.ahs";
             writeColumnNames = true;
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
@@ -1353,15 +1356,20 @@ namespace MOTMaster2
             dataLogger.log("{\"MMbatch\":[");
             paramLogger.log("{\"MMbatch\":[");
             logWatch = new Stopwatch();
+            writeParameters = true;
         }
-        public void RestartMultiScanLogger(string filename)
+        public void RestartMultiScanLogger()
         {
             logWatch = new Stopwatch();
             multiScanDataLogger.Enabled = false;
-            MultiScanDataFileName = ExpData.ExperimentName + "_" + filename;
+            string[] splitName = MultiScanDataFileName.Split('_');
+            int index = Int32.Parse(splitName[splitName.Length-1].Split('.')[0])+1;
+            splitName[splitName.Length - 1] = index.ToString();
+            MultiScanDataFileName = String.Join("_",splitName);
             string fileTag = motMasterDataPath + "/" + MultiScanDataFileName;
             multiScanDataLogger = new AutoFileLogger(fileTag+ ".ahs");
             multiScanDataLogger.Enabled = true;
+            writeParameters = true;
             //Only flag to write column headings if not writing parameters to a separate file
             //writeColumnNames = !WriteSeparateScanFiles;
         }
@@ -1470,7 +1478,7 @@ namespace MOTMaster2
         /// <param name="separateHeaderFile">If true, the parameter names are written to a separate logger</param>
         /// <param name="dataNames">Names of the data values to be saved</param>
         /// <param name="parameterLogger">Logger object to save the parameter names. By default this will be the same as the one to log the data</param>
-        private static void WriteColumnHeadings(bool separateHeaderFile, IEnumerable<string> dataNames, AutoFileLogger parameterLogger)
+        private static void WriteColumnHeadings(bool separateHeaderFile, IEnumerable<string> dataNames, AutoFileLogger parameterLogger, List<string> multiScanParameters)
         {
             string headerString = "";
             string dataNameString = "";
@@ -1479,7 +1487,11 @@ namespace MOTMaster2
                 if (separateHeaderFile)
                 {
                     headerString = "filename\t";
-                    dataNameString = "ElapsedTime\t";
+                    foreach (string name in multiScanParameters)
+                    {
+                        dataNameString += name + "\t";
+                    }
+                    dataNameString += "ElapsedTime\t";
                 }
                 foreach (string name in sequenceData.Parameters.Keys)
                 {
@@ -1489,7 +1501,14 @@ namespace MOTMaster2
             }
             if (multiScanDataLogger.BufferCount() == 0)
             {
-                if (separateHeaderFile) dataNameString = "ElapsedTime\t";
+                if (separateHeaderFile)
+                {
+                    foreach (string name in multiScanParameters)
+                    {
+                        dataNameString += name + "\t";
+                    }
+                    dataNameString += "ElapsedTime\t";
+                }
                 foreach (string dataName in dataNames)
                 {
                     dataNameString += dataName + "\t";
@@ -1504,14 +1523,18 @@ namespace MOTMaster2
             else { dataNameString.TrimEnd('\t'); dataNameString += "\r"; multiScanDataLogger.log(dataNameString); }
             parameterLogger.log(headerString);
         }
-        private static void WriteMultiScanData(bool separateDataFile, Dictionary<string,double> avgDict, AutoFileLogger parameterLogger, string fileName = "")
+        private static void WriteMultiScanData(bool separateDataFile, Dictionary<string,double> avgDict, AutoFileLogger parameterLogger, List<string> multiScanParameters,string fileName = "")
         {
             string parameterValues = "";
             string dataValues = "";
             if (separateDataFile)
             {
                 parameterValues = fileName + "\t";
-                dataValues = sequenceData.Parameters["ElapsedTime"].Value.ToString()+"\t";
+                foreach (string name in multiScanParameters)
+                {
+                    dataValues += sequenceData.Parameters[name].Value.ToString() + "\t";
+                }
+                dataValues += sequenceData.Parameters["ElapsedTime"].Value.ToString()+"\t";
             }
             foreach (string name in sequenceData.Parameters.Keys)
             {
@@ -1528,10 +1551,10 @@ namespace MOTMaster2
                 parameterValues += "\r";
             }
             else { dataValues.TrimEnd('\t'); dataValues += "\r"; multiScanDataLogger.log(dataValues); }
-            parameterLogger.log(parameterValues);
+            if (writeParameters) { parameterLogger.log(parameterValues); writeParameters = false; } //Only write the parameter values for the first iteration of a single multiscan
         }
 
-        private static void AppendMultiScan(Dictionary<string, object> segData, AutoFileLogger parameterLogger, string fileName = "",bool separateHeaderFile = false)
+        private static void AppendMultiScan(Dictionary<string, object> segData, AutoFileLogger parameterLogger, List<string>multiScanParameters, string fileName = "",bool separateHeaderFile = false)
         {
             bool writeData = segData != null;
             if (writeData)
@@ -1543,11 +1566,11 @@ namespace MOTMaster2
             }
            
             Dictionary<string, double> avgDict = (segData == null) ? null : ExpData.GetAverageValues(segData,true);
-                WriteColumnHeadings(separateHeaderFile, avgDict.Keys, parameterLogger);
+            WriteColumnHeadings(separateHeaderFile, avgDict.Keys, parameterLogger, multiScanParameters);
 
             if (writeData)
             {
-                WriteMultiScanData(separateHeaderFile, avgDict, parameterLogger, fileName);
+                WriteMultiScanData(separateHeaderFile, avgDict, parameterLogger,multiScanParameters, fileName);
             }
         }
             
@@ -1659,6 +1682,7 @@ namespace MOTMaster2
         internal static void SetMultiScanParameters(List<MMscan> mms)
         {
             Controller.sequenceData.ScanningParams = mms;
+            Controller.MultiScanParamNames = mms.Select(t => t.sParam).ToList<string>();
         }
 
         internal static List<MMscan> GetMultiScanParameters()
