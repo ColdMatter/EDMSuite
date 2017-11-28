@@ -77,7 +77,7 @@ namespace MOTMaster2.SequenceData
                 {
                     if (Double.TryParse((string)step.Duration, out duration)) ;
                     else if (Parameters.ContainsKey((string)step.Duration)) duration = Convert.ToDouble(Parameters[(string)step.Duration]);
-                    else throw new Exception(string.Format("Value {0} could not be interpreted for duration of step {1}", step.Duration, step.Name));
+                    else duration = CompileTimeEquation((string)step.Duration);
                 }
                 else duration = (double)step.Duration;
                 if (!step.Enabled || duration - 0.0 < 1e-15) continue;
@@ -389,6 +389,24 @@ namespace MOTMaster2.SequenceData
                 analogPB.AddAnalogValue(analogChannel, analogStartTime, funcValue);
             }
 
+        }
+
+        double CompileTimeEquation(string function)
+        {
+            EqCompiler compiler = new EqCompiler(function, true);
+            compiler.Compile();
+
+            //Checks all variables to use values in parameter dictionary
+            foreach (string variable in compiler.GetVariableList())
+            {
+                if (Parameters.Keys.Contains(variable))
+                {
+                    compiler.SetVariable(variable, (double)Parameters[variable]);
+                }
+                else throw new Exception(string.Format("Variable {0} not found in parameters. Required for duration in step {1}", variable, _sequenceStep.Name));
+            }
+
+            return compiler.Calculate();
         }
     }
 
