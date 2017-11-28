@@ -149,6 +149,15 @@ namespace MOTMaster2
         //TODO Rename to reflect loop runs
         private bool SingleShot(Dictionary<string, object> paramDict) // true if OK
         {
+            try
+            {
+                controller.BuildMMSequence(paramDict);
+            }
+            catch (Exception e)
+            {
+                ErrorMgr.errorMsg("Failed to build sequence:" + e.Message, -1, false);
+                return false;
+            }
             controller.RunStart(paramDict);
             //Would like to use RunStart as this Runs in a new thread
             if (controller.IsRunning())
@@ -443,7 +452,7 @@ namespace MOTMaster2
                 catch (Exception ex)
                 {
                     ErrorMgr.errorMsg(ex.Message, -5);
-                    btnScan_Click(null, null);
+                    //btnScan_Click(null, null);
                     return;
                 }
                 controller.StopRunning();
@@ -628,6 +637,8 @@ namespace MOTMaster2
             if (result != true) return;
             string filename = dlg.FileName;
             Controller.LoadSequenceFromPath(filename);
+            this.Title = "MOTMaster 2 - sequence: " + filename; 
+            UpdateSequenceControl();
         }
 
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
@@ -1209,6 +1220,10 @@ namespace MOTMaster2
             controller.AutoLogging = Check4Logging();
             Controller.ExpData.grpMME.Clear();
             List<MMscan> mms = new List<MMscan>();
+            int multiCount = lstParams.Items.Count;
+            Controller.WriteSeparateScanFiles = cbSaveAfterLoop.IsChecked.Value;
+
+            int batchNum = 0;
             foreach (object ms in lstParams.Items)
             {
                 mms.Add(new MMscan());
@@ -1238,10 +1253,16 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
-                    if (!SingleShot()) groupRun = GroupRun.none; 
-                    controller.WaitForRunToFinish();
-                    controller.IncrementBatchNumber();
                 }
+                if (!SingleShot()) groupRun = GroupRun.none; 
+                controller.WaitForRunToFinish();
+                controller.IncrementBatchNumber();
+                //TODO Make a more descriptive dynamic filename
+                if (cbSaveAfterLoop.IsChecked.Value && mms[multiCount - 1].Value == mms[multiCount - 1].sTo)
+                {
+                    controller.RestartMultiScanLogger("test_" + batchNum.ToString()); batchNum++; 
+                    //HARDCODED Sleep to allow for DCS to update !!!!
+                    Thread.Sleep(5000); }
                 if (groupRun != GroupRun.multiScan) break;
             }
         }

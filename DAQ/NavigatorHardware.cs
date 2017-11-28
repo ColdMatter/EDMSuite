@@ -73,22 +73,22 @@ namespace DAQ.HAL
             //map the digital channels
 
             AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
-            AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1);
+            AddDigitalOutputChannel("lcTTL", hsdioBoard, 0, 1);
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
-            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 15);
+            AddDigitalOutputChannel("msquaredTTL", hsdioBoard, 0, 15);
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
-            AddDigitalOutputChannel("shutter", hsdioBoard, 0, 6);
+            AddDigitalOutputChannel("fp1MicrowaveTTL", hsdioBoard, 0, 4);
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
             AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 8);
             AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 9);
             AddDigitalOutputChannel("zmaomTTL", hsdioBoard, 0, 10);
             AddDigitalOutputChannel("2DaomTTL", hsdioBoard, 0, 11);
-            AddDigitalOutputChannel("pushaomTTL", hsdioBoard, 0, 12);
-            AddDigitalOutputChannel("cameraTTL", hsdioBoard, 0, 13);
+            AddDigitalOutputChannel("f0MicrowaveTTL", hsdioBoard, 0, 12);
+            AddDigitalOutputChannel("mainMicrowaveTTL", hsdioBoard, 0, 13);
             AddDigitalOutputChannel("acquisitionTrigger", hsdioBoard, 0, 14);
             AddDigitalOutputChannel("Digital Test", hsdioBoard, 0, 17);
-            AddDigitalOutputChannel("Analog Trigger", hsdioBoard, 0, 16);
+            AddDigitalOutputChannel("fm1MicrowaveTTL", hsdioBoard, 0, 16);
             AddDigitalOutputChannel("serialPreTrigger", hsdioBoard, 0, 31);
 
             //map the analog output channels
@@ -130,6 +130,17 @@ namespace DAQ.HAL
             AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
             AddCounterChannel("Counter", multiBoard + "/ctr0");
+
+            //Adds a Channel map to convert channel names from old sequences
+            Dictionary<string, string> channelMap = new Dictionary<string, string>();
+            channelMap["cameraTTL"] = "mainMicrowaveTTL";
+            channelMap["Analog Trigger"] = "fm1MicrowaveTTL";
+            channelMap["ramanTTL"] = "lcTTL";
+            channelMap["ramanDDSTrig"] = "msquaredTTL";
+            channelMap["shutter"] = "fp1MicrowaveTTL";
+            channelMap["pushaomTTL"] = "f0MicrowaveTTL";
+
+            Info.Add("channelMap", channelMap);
         }
     }
 }

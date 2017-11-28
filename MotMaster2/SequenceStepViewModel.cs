@@ -18,6 +18,7 @@ using System.Dynamic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using DAQ.Environment;
 
 
 namespace MOTMaster2
@@ -57,7 +58,7 @@ namespace MOTMaster2
             set
             {
                 _selectedDigitalChannel = value;
-                if (PropertyChanged != null)
+                if (PropertyChanged != null && Environs.Hardware.DigitalOutputChannels.ContainsKey(_selectedDigitalChannel.Key))
                     PropertyChanged(this, new PropertyChangedEventArgs("SelectedDigitalChannel"));
             }
         }

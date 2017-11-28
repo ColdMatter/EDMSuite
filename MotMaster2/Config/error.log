@@ -1,0 +1,24 @@
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+(err:-1) Failed to build sequence:Error building sequence: 
+Specified cast is not valid.
+(wrn:-3) Error when releasing hardware: Object reference not set to an instance of an object.
+The Axel-hub is opened, but hasn't been switched to remote
+(err:3) Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.
+(err:-5) Input string was not in a correct format.
+The Axel-hub is opened, but hasn't been switched to remote
+(err:5) Incorrect Value given for Start Time. Either choose a parameter name or enter a number.
+(err:5) Incorrect Value given for Start Time. Either choose a parameter name or enter a number.

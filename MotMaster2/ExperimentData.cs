@@ -69,8 +69,8 @@ namespace MOTMaster2
             {
                 if (!IgnoredSegments.Contains(entry.Key))
                 {
-                    imin = entry.Value.Item1 + riseSamples;
-                    imax = entry.Value.Item2;
+                    imin = entry.Value.Item1 + riseSamples/2;
+                    imax = entry.Value.Item2 - riseSamples/2;
                     double[] data = new double[imax-imin];
                     for (int i = imin; i < imax; i++) data[i-imin] = rawData[1,i];
                     segData[entry.Key] = data;
@@ -143,7 +143,8 @@ namespace MOTMaster2
                 else
                 {
                     Dictionary<string,double> accDict = ConvertAccelerometerVoltage((double[])segData[name]);
-                    avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                    if (avgDict.Count == 0) avgDict = accDict;
+                    else avgDict.Concat(accDict).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 }
                 if (name == "N2" && fitN2)
                 {

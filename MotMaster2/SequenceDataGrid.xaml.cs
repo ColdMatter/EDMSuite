@@ -103,7 +103,7 @@ namespace MOTMaster2
         private void sequenceDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             var dg = sender as DataGrid;
-            if (dg.CurrentItem.GetType() == null) { return; }
+            if (dg.CurrentItem == null) { return; }
             ObservableCollection<SequenceStep> first = (ObservableCollection<SequenceStep>)dg.ItemsSource;
             SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
             if (dg.CurrentItem.GetType() == typeof(SequenceStep)) model.SelectedSequenceStep = (SequenceStep)dg.CurrentItem;
@@ -117,7 +117,7 @@ namespace MOTMaster2
         private void sequenceDataGrid_AnalogValueChanged(object sender, SelectionChangedEventArgs e)
         {
             var combo = sender as ComboBox;
-            if (sequenceDataGrid.CurrentColumn == null) return;
+            if (sequenceDataGrid.CurrentColumn == null || sequenceDataGrid.CurrentColumn.GetType() != typeof(DataGridComboBoxColumn)) return;
             string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
             if (e.AddedItems != null && e.AddedItems.Count > 0)
             {
@@ -132,13 +132,15 @@ namespace MOTMaster2
             }
         }
 
+        //TODO Fix this being called when creating a new sequence step
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
             //Console.WriteLine("654654");
             var cell = sender as CheckBox;
-            if (sequenceDataGrid.CurrentColumn != null)
+            if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
             {
                 string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                if (channelName == "RS232Commands" || channelName == "Enabled") return;
                 SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                 model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
             }

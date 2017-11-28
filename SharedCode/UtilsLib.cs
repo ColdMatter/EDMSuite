@@ -137,6 +137,10 @@ namespace UtilsNS
             buffer[buffer.Count - 1] = lastItem.Substring(0, lastItem.Length - 1);
         }
 
+        public int BufferCount()
+        {
+            return buffer.Count;
+        }
         private void ConsoleLine(string txt)
         {
 #if DEBUG

@@ -35,7 +35,12 @@ namespace MOTMaster2.SequenceData
         
         public SequenceStep()
         {
-
+            Name = "";
+            Description = "";
+            Enabled = true;
+            RS232Commands = false;
+            Duration = 0;
+            Timebase = TimebaseUnits.ms;
             if (analogData == null) analogData = new Dictionary<string, AnalogValueArgs>();
             if (digitalData == null) digitalData = new Dictionary<string, bool>();
             if (usedAnalogChannels == null) usedAnalogChannels = new List<string>();
@@ -55,6 +60,7 @@ namespace MOTMaster2.SequenceData
                 DigitalValueTypes[digital] = new DigitalChannelSelector();
                 digitalData[digital] = false;
             }
+
         }
 
 
@@ -120,6 +126,10 @@ namespace MOTMaster2.SequenceData
             {
                 foreach (string name in DigitalValueTypes.Keys)
                 {
+                    if (!previousStep.DigitalValueTypes.ContainsKey(name))
+                    {
+                        throw new Exception(string.Format("Step: {0} does not contain channel {1}",previousStep.Name,name));
+                    }
                     if (DigitalValueTypes[name].Value != previousStep.DigitalValueTypes[name].Value) {
                         usedDigitalChannels.Add(name);
                       //  digitalData[name] = !previousStep.GetDigitalData(name);
