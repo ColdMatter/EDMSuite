@@ -197,18 +197,21 @@ namespace MOTMaster2
         int lastColumnIdx = 0;
         private void sequenceDataGrid_MouseMove(object sender, MouseEventArgs e)
         {
-            
-            DependencyObject dep = (DependencyObject)e.Source;
-
-            // iteratively traverse the visual tree
-            while ((dep != null) && !(dep is DataGridCell))
+            DependencyObject dep;
+            if (sender is DataGridCell)
             {
-                dep = VisualTreeHelper.GetParent(dep);
+                dep = sender as DataGridCell;
             }
-            //Console.WriteLine(e.GetPosition(sequenceDataGrid).Y.ToString());
-            if (dep == null)
-                return;
-            
+            else
+            {
+                dep = (DependencyObject)e.Source;
+                while ((dep != null) && !(dep is DataGridCell))
+                {  
+                    dep = VisualTreeHelper.GetParent(dep); // iteratively traverse the visual tree
+                }
+                if (dep == null)
+                    return;
+            }
             if (dep is DataGridCell)
             {
                 DataGridCell cell = dep as DataGridCell;
@@ -219,7 +222,7 @@ namespace MOTMaster2
                 {
                     Point pCell = cell.PointToScreen(new Point(0, 0));
                     Point pGrid = this.PointFromScreen(pCell);
-                    recSelector.Margin = new Thickness(0, pGrid.Y+cell.ActualHeight, 20, 0);
+                    recSelector.Margin = new Thickness(0, pGrid.Y+cell.ActualHeight, 18, 0);
                     lastColumnIdx = columnIdx;
                 }               
             }
