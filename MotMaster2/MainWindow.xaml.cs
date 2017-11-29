@@ -1222,7 +1222,7 @@ namespace MOTMaster2
             List<MMscan> mms = new List<MMscan>();
             int multiCount = lstParams.Items.Count;
             Controller.WriteSeparateScanFiles = cbSaveAfterLoop.IsChecked.Value;
-
+            Dictionary<string,object> scanDict = new Dictionary<string,object>();
             int batchNum = 0;
             foreach (object ms in lstParams.Items)
             {
@@ -1249,16 +1249,19 @@ namespace MOTMaster2
                 Thread.Sleep(10);
                 DoEvents();
                 lstValue.Items.Clear();
+                scanDict.Clear();
                 foreach (MMscan ms in mms)
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
+                    scanDict[ms.sParam] = ms.Value;
                 }
+                SetInterferometerParams(scanDict);
                 if (!SingleShot()) groupRun = GroupRun.none; 
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
                 //TODO Make a more descriptive dynamic filename
-                if (cbSaveAfterLoop.IsChecked.Value && mms[multiCount - 1].Value == mms[multiCount - 1].sTo)
+                if (cbSaveAfterLoop.IsChecked.Value && (mms[multiCount - 1].Value + mms[multiCount - 1].sBy)  > mms[multiCount - 1].sTo)
                 {
                     controller.RestartMultiScanLogger();  
                     //HARDCODED Sleep to allow for DCS to update !!!!

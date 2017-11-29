@@ -94,7 +94,6 @@ namespace MOTMaster2
 
         public static AutoFileLogger multiScanDataLogger;
         public static AutoFileLogger multiScanParamLogger;
-        public static List<string> MultiScanParamNames { get; set; }
         private static bool writeColumnNames;
         private static bool writeParameters = false;
         public static string MultiScanDataFileName { get; set; }
@@ -426,7 +425,7 @@ namespace MOTMaster2
                 var segData = Controller.genOptions.AIEnable ? finalData.prms : null;
                 sequenceData.Parameters["ElapsedTime"].Value = logWatch.ElapsedMilliseconds;
                 AutoFileLogger paramLogger = (WriteSeparateScanFiles) ? multiScanParamLogger : multiScanDataLogger;
-                AppendMultiScan(segData, paramLogger, MultiScanParamNames,MultiScanDataFileName, WriteSeparateScanFiles);
+                AppendMultiScan(segData, paramLogger,MultiScanDataFileName, WriteSeparateScanFiles);
             }
             dataJson = null;
             finalData = null;
@@ -751,7 +750,7 @@ namespace MOTMaster2
             if (!Utils.isNull(paramLogger))
             paramLogger.log("{\"MMExec\":" + initJson + "},");
             if (!Utils.isNull(multiScanDataLogger))
-                if (multiScanDataLogger.Enabled)
+                if (multiScanDataLogger.Enabled && !WriteSeparateScanFiles)
                 {
                     BuildMultiScanHeader();
                 }
@@ -1347,7 +1346,7 @@ namespace MOTMaster2
             paramLogger = new AutoFileLogger(fileTag + ".prm");
             multiScanDataLogger = new AutoFileLogger(fileTag + "_0.ahs");
             multiScanParamLogger = new AutoFileLogger(fileTag + ".hdr");
-            MultiScanDataFileName = ExpData.ExperimentName + "_" + now + "_0.ahs";
+            MultiScanDataFileName = ExpData.ExperimentName + "_" + now + "_0";
             writeColumnNames = true;
             dataLogger.Enabled = true;
             paramLogger.Enabled = true;
@@ -1363,7 +1362,7 @@ namespace MOTMaster2
             logWatch = new Stopwatch();
             multiScanDataLogger.Enabled = false;
             string[] splitName = MultiScanDataFileName.Split('_');
-            int index = Int32.Parse(splitName[splitName.Length-1].Split('.')[0])+1;
+            int index = Int32.Parse(splitName[splitName.Length-1])+1;
             splitName[splitName.Length - 1] = index.ToString();
             MultiScanDataFileName = String.Join("_",splitName);
             string fileTag = motMasterDataPath + "/" + MultiScanDataFileName;
@@ -1478,7 +1477,7 @@ namespace MOTMaster2
         /// <param name="separateHeaderFile">If true, the parameter names are written to a separate logger</param>
         /// <param name="dataNames">Names of the data values to be saved</param>
         /// <param name="parameterLogger">Logger object to save the parameter names. By default this will be the same as the one to log the data</param>
-        private static void WriteColumnHeadings(bool separateHeaderFile, IEnumerable<string> dataNames, AutoFileLogger parameterLogger, List<string> multiScanParameters)
+        private static void WriteColumnHeadings(bool separateHeaderFile, IEnumerable<string> dataNames, AutoFileLogger parameterLogger)
         {
             string headerString = "";
             string dataNameString = "";
@@ -1487,9 +1486,9 @@ namespace MOTMaster2
                 if (separateHeaderFile)
                 {
                     headerString = "filename\t";
-                    foreach (string name in multiScanParameters)
+                    foreach (MMscan mms in Controller.sequenceData.ScanningParams)
                     {
-                        dataNameString += name + "\t";
+                        dataNameString += mms.sParam + "\t";
                     }
                     dataNameString += "ElapsedTime\t";
                 }
@@ -1503,9 +1502,9 @@ namespace MOTMaster2
             {
                 if (separateHeaderFile)
                 {
-                    foreach (string name in multiScanParameters)
+                    foreach (MMscan mms in Controller.sequenceData.ScanningParams)
                     {
-                        dataNameString += name + "\t";
+                        dataNameString += mms.sParam + "\t";
                     }
                     dataNameString += "ElapsedTime\t";
                 }
@@ -1523,16 +1522,16 @@ namespace MOTMaster2
             else { dataNameString.TrimEnd('\t'); dataNameString += "\r"; multiScanDataLogger.log(dataNameString); }
             parameterLogger.log(headerString);
         }
-        private static void WriteMultiScanData(bool separateDataFile, Dictionary<string,double> avgDict, AutoFileLogger parameterLogger, List<string> multiScanParameters,string fileName = "")
+        private static void WriteMultiScanData(bool separateDataFile, Dictionary<string,double> avgDict, AutoFileLogger parameterLogger,string fileName = "")
         {
             string parameterValues = "";
             string dataValues = "";
             if (separateDataFile)
             {
                 parameterValues = fileName + "\t";
-                foreach (string name in multiScanParameters)
+                foreach (MMscan mms in Controller.sequenceData.ScanningParams)
                 {
-                    dataValues += sequenceData.Parameters[name].Value.ToString() + "\t";
+                    dataValues += mms.Value.ToString() + "\t";
                 }
                 dataValues += sequenceData.Parameters["ElapsedTime"].Value.ToString()+"\t";
             }
@@ -1554,7 +1553,7 @@ namespace MOTMaster2
             if (writeParameters) { parameterLogger.log(parameterValues); writeParameters = false; } //Only write the parameter values for the first iteration of a single multiscan
         }
 
-        private static void AppendMultiScan(Dictionary<string, object> segData, AutoFileLogger parameterLogger, List<string>multiScanParameters, string fileName = "",bool separateHeaderFile = false)
+        private static void AppendMultiScan(Dictionary<string, object> segData, AutoFileLogger parameterLogger, string fileName = "",bool separateHeaderFile = false)
         {
             bool writeData = segData != null;
             if (writeData)
@@ -1566,11 +1565,11 @@ namespace MOTMaster2
             }
            
             Dictionary<string, double> avgDict = (segData == null) ? null : ExpData.GetAverageValues(segData,true);
-            WriteColumnHeadings(separateHeaderFile, avgDict.Keys, parameterLogger, multiScanParameters);
+            WriteColumnHeadings(separateHeaderFile, avgDict.Keys, parameterLogger);
 
             if (writeData)
             {
-                WriteMultiScanData(separateHeaderFile, avgDict, parameterLogger,multiScanParameters, fileName);
+                WriteMultiScanData(separateHeaderFile, avgDict, parameterLogger, fileName);
             }
         }
             
@@ -1682,7 +1681,6 @@ namespace MOTMaster2
         internal static void SetMultiScanParameters(List<MMscan> mms)
         {
             Controller.sequenceData.ScanningParams = mms;
-            Controller.MultiScanParamNames = mms.Select(t => t.sParam).ToList<string>();
         }
 
         internal static List<MMscan> GetMultiScanParameters()
