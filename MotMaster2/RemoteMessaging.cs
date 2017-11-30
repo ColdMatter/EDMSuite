@@ -368,6 +368,16 @@ namespace MOTMaster2
             return true;
         }
 
+        public bool isFirstValue()
+        {
+            return Math.Abs(sFrom - Value) < (0.01 * sBy);
+        }
+
+        public bool isLastValue()
+        {
+            return (Math.Abs(sTo - Value)) < (0.99 * sBy);
+        }
+
         public MMscan NextInChain = null;
         public bool Next()
         {

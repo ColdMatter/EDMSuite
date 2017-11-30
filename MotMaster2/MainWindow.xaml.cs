@@ -78,12 +78,12 @@ namespace MOTMaster2
             if (!Utils.isNull(Controller.sequenceData))
             {
                 SetInterferometerParams(Controller.sequenceData.Parameters);
-                foreach (MMscan mms in Controller.GetMultiScanParameters())
+            /*    foreach (MMscan mms in Controller.GetMultiScanParameters())
                 {
                     ListBoxItem lbi = new ListBoxItem();
                     lbi.Content = mms.AsString;
                     lstParams.Items.Add(lbi);
-                }
+                }*/
             }
         }
 
@@ -1221,9 +1221,7 @@ namespace MOTMaster2
             Controller.ExpData.grpMME.Clear();
             List<MMscan> mms = new List<MMscan>();
             int multiCount = lstParams.Items.Count;
-            Controller.WriteSeparateScanFiles = cbSaveAfterLoop.IsChecked.Value;
 
-            int batchNum = 0;
             foreach (object ms in lstParams.Items)
             {
                 mms.Add(new MMscan());
@@ -1234,7 +1232,6 @@ namespace MOTMaster2
                 }
             }
             groupRun = GroupRun.multiScan;
-            Controller.SetMultiScanParameters(mms);
             for (int i = 0; i < mms.Count - 1; i++)
             {
                 mms[i].NextInChain = mms[i + 1];
@@ -1243,8 +1240,15 @@ namespace MOTMaster2
             {
                 ms.Value = ms.sFrom;
             }
-
-            while (mms[0].Next())
+            
+            Controller.ExpData.ExperimentName = tbExperimentRun.Text; 
+            if (Controller.ExpData.ExperimentName.Equals("---")) 
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+            tbExperimentRun.Text = Controller.ExpData.ExperimentName;
+            if (cbSaveAfterLoop.IsChecked.Value) 
+                Controller.ExpData.CreateMScanLogger((string)Environs.FileSystem.Paths["DataPath"] + "\\"+Controller.ExpData.ExperimentName, 
+                    Controller.sequenceData, mms);
+            do
             {
                 Thread.Sleep(10);
                 DoEvents();
@@ -1257,14 +1261,18 @@ namespace MOTMaster2
                 if (!SingleShot()) groupRun = GroupRun.none; 
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
-                //TODO Make a more descriptive dynamic filename
-                if (cbSaveAfterLoop.IsChecked.Value && (mms[multiCount - 1].Value + mms[multiCount - 1].sBy) > mms[multiCount - 1].sTo)
+
+                if (cbSaveAfterLoop.IsChecked.Value) 
                 {
-                    controller.RestartMultiScanLogger();  
+                    Controller.ExpData.LogNextShot(mms);
                     //HARDCODED Sleep to allow for DCS to update !!!!
-                    Thread.Sleep(5000); }
+                    if(mms[mms.Count-1].isLastValue()) Thread.Sleep(5000);
+                }
                 if (groupRun != GroupRun.multiScan) break;
             }
+            while (mms[0].Next());
+            tbExperimentRun.Text = "---";
+            Controller.ExpData.StopMScanLogger();
         }
         
         private void btnPlusMScan_Click(object sender, RoutedEventArgs e)
@@ -1327,7 +1335,6 @@ namespace MOTMaster2
                     ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
             }
-            Controller.SetMultiScanParameters(mms);
         }
     }
 }
