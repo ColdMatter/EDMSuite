@@ -84,8 +84,8 @@ namespace MOTMaster2
                     lbi.Content = mms.AsString;
                     lstParams.Items.Add(lbi);
                 }*/
+                }
             }
-        }
 
         private void OpenDefaultModes()
         {
@@ -1240,7 +1240,7 @@ namespace MOTMaster2
             {
                 ms.Value = ms.sFrom;
             }
-            
+
             Controller.ExpData.ExperimentName = tbExperimentRun.Text; 
             if (Controller.ExpData.ExperimentName.Equals("---")) 
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");

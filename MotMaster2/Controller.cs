@@ -409,7 +409,7 @@ namespace MOTMaster2
             }
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
             if (!Utils.isNull(dataLogger))
-                dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)
             {
                 if (MotMasterDataEvent != null) MotMasterDataEvent(sender, new DataEventArgs(dataJson));
@@ -1421,7 +1421,7 @@ namespace MOTMaster2
         }
 
         public void SetMSquaredParameters()
-        {
+            {
             if (!M2DCS.Connected || !M2PLL.Connected)
                 {
                 if (!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
@@ -1462,7 +1462,7 @@ namespace MOTMaster2
             }
             else Console.WriteLine(M2DCS.PrintParametersToConsole());
             
-        }
+            }
 
         private static bool CheckPhaseLock()
         {
@@ -1500,7 +1500,7 @@ namespace MOTMaster2
             ExpData.SampleRate = Controller.genOptions.AISampleRate;
             ExpData.RiseTime = Controller.genOptions.RiseTime;
         }
-     }
+    }
 
     public class DataEventArgs : EventArgs
     {
