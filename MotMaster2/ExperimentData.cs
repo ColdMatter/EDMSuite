@@ -153,7 +153,27 @@ namespace MOTMaster2
                     avgDict[name+"_x1"] = linearParams[1];
                 }
             }
+            double n2 = avgDict["N2_mean"] - avgDict["B2_mean"];
+            double n2std = AddQuadrature(avgDict["N2_std"], avgDict["B2_std"]);
+            double ntot = avgDict["NTot_mean"] - avgDict["BTot_mean"];
+            double ntotstd = AddQuadrature(avgDict["NTot_std"], avgDict["BTot_std"]);
+            avgDict["RN1"] = (ntot - n2) / ntot;
+            avgDict["RN2"] = n2 / ntot;
+            avgDict["RN1_std"] = FractionalAddQuadaruture(ntot - n2, ntot, AddQuadrature(ntotstd, n2std), ntotstd, avgDict["RN1"]);
+            avgDict["RN2_std"] = FractionalAddQuadaruture(n2, ntot, n2std, ntotstd, avgDict["RN2"]);
+
             return avgDict;
+        }
+
+        private double AddQuadrature(double x, double y)
+        {
+            return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+        }
+
+        private double FractionalAddQuadaruture(double x, double y, double sx, double sy, double z)
+        {
+            double lhs = AddQuadrature(x / sx, y / sy);
+            return z * lhs;
         }
         //Useful when starting a new scan
         public void ClearData()

@@ -1104,14 +1104,13 @@ namespace MOTMaster2
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            object control;
             foreach (KeyValuePair<string,object> entry in scanDict)
             {
-                control = MSquaredTab.FindName(entry.Key);
+                NationalInstruments.Controls.NumericTextBoxDouble control = (NationalInstruments.Controls.NumericTextBoxDouble)MSquaredTab.FindName(entry.Key);
                 if (control == null) continue;
-            else
-            {
-                    ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value;
+                else if (Math.Abs(control.Value - (double)entry.Value) > 1e-10)
+                { //Only update them if the value has changed.
+                    control.Value = (double)entry.Value;
                     controller.StoreDCSParameter(entry.Key, entry.Value); 
                 }
                 //TODO fix handling of warnings if ICE-BLocs are not connected
@@ -1213,7 +1212,7 @@ namespace MOTMaster2
             if (lstParams.Items.Count == 0) return;
             if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
             {
-                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yyMMdd_Hmmss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
             Controller.BatchNumber = 0;
@@ -1260,7 +1259,7 @@ namespace MOTMaster2
                 if (!SingleShot()) groupRun = GroupRun.none; 
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
-                //TODO Make a more descriptive dynamic filename
+
                 if (cbSaveAfterLoop.IsChecked.Value && (mms[multiCount - 1].Value + mms[multiCount - 1].sBy) > mms[multiCount - 1].sTo)
                 {
                     controller.RestartMultiScanLogger();  
