@@ -14,183 +14,97 @@ namespace TransferCavityLock2012
     /// It knows how to calculate what voltage to send to the laser based on the fit coefficients from the data,
     /// and it knows how to control the laser (through a helper interface only).
     /// </summary>
-    public class SlaveLaser
+    public class SlaveLaser : Laser
     {
-        public SlaveLaser(string name)
+        public double FSRCalibration { get; set; }
+        private int lockCount;
+        private List<double> oldFrequencyErrors;
+
+        public SlaveLaser(string feedbackChannel, string photoDiode, Cavity cavity)
+            : base(feedbackChannel, photoDiode, cavity)
         {
-            lState = LaserState.FREE;
-            this.Name = name;
-            laser = new DAQMxTCL2012LaserControlHelper(Name);
-            laser.ConfigureSetLaserVoltage(0.0);
         }
 
-        public string Name;
-        private double gain;
-        private int increments = 0;          // for tweaking the laser set point
-        private int decrements = 0;
-        public double SetPointIncrementSize = 0.01;
-
-        
-
-        public Controller controller;
-        private TransferCavityLock2012LaserControllable laser;
-        
-        public enum LaserState
-        {
-            FREE, LOCKING, LOCKED
-        };
-        public LaserState lState = LaserState.FREE;
-
-
-        public void ArmLock()
-        {
-            
-            lState = LaserState.LOCKING;
-            controller.UpdateUIState(Name, lState);
-        }
-        public void Lock()
-        {
-            lState = LaserState.LOCKED;
-            controller.UpdateUIState(Name, lState);
-        }
-        public void DisengageLock()
-        {
-            lState = LaserState.FREE;
-            laser.SetLaserVoltage(VoltageToLaser);  
-            controller.UpdateUIState(Name, lState);
-        }
-        public void DisposeLaserControl()
-        {
-            laser.DisposeLaserTask();
-        }
-        public void SetLaserVoltage()
-        {
-            laser.SetLaserVoltage(VoltageToLaser);
-        }
-
-
-        public double UpperVoltageLimit
+        public int LockCount
         {
             get
             {
-                return ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[Name]).RangeHigh;
+                return lockCount;
             }
         }
 
-        public double LowerVoltageLimit
+        public double VoltageError
         {
             get
             {
-                return ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[Name]).RangeLow;
+                double voltageDifferenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
+                return voltageDifferenceFromMaster - LaserSetPoint;
             }
         }
 
-        private double voltageToLaser;
-        public double VoltageToLaser
+        public double FrequencyError
         {
             get
             {
-                return voltageToLaser;
+                return 1500 * VoltageError / FSRCalibration;
+            }
+        }
+
+        public List<double> OldFrequencyErrors
+        {
+            get
+            {
+                return oldFrequencyErrors;
+            }
+        }
+
+        public override double LaserSetPoint
+        {
+            get
+            {
+                return base.LaserSetPoint;
             }
             set
             {
-                voltageToLaser = value;
+                base.LaserSetPoint = value;
+                ParentCavity.Controller.UpdateSetPointInGUI(ParentCavity.Name, Name, value);
             }
         }
-        public double Gain
+
+        public override void UpdateScan(double[] rampData, double[] scanData)
         {
-            get
+            base.UpdateScan(rampData, scanData);
+            if (lState == LaserState.LOCKING)
             {
-                return gain;
+                double differenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
+                LaserSetPoint = differenceFromMaster;
             }
-            set
+        }
+
+        public override void UpdateLock()
+        {
+            switch (lState)
             {
-                gain = value;
+                case LaserState.LOCKING:
+                    oldFrequencyErrors = new List<double>();
+                    oldFrequencyErrors.Add(FrequencyError);
+                    lockCount = 1;
+                    Lock();
+                    break;
+
+                case LaserState.LOCKED:
+                    CurrentVoltage = CurrentVoltage + Gain * VoltageError;
+                    oldFrequencyErrors.Add(FrequencyError);
+                    if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
+                    {
+                        oldFrequencyErrors.RemoveAt(0);
+                    }
+                    lockCount++;
+                    break;
+
+                case LaserState.FREE:
+                    break;
             }
         }
-
-        private double laserSetPoint;
-        public double LaserSetPoint
-        {
-            get
-            {
-                return laserSetPoint;
-            }
-            set
-            {
-                laserSetPoint = value;
-            }
-        }
-        public void AddSetPointIncrement()
-        {
-            increments++;
-        }
-        public void AddSetPointDecrement()
-        {
-            decrements++;
-        }
-
-        public void CalculateLaserSetPoint(double[] masterFitCoefficients, double[] slaveFitCoefficients)
-        {
-            LaserSetPoint = calculateLaserSetPoint(masterFitCoefficients, slaveFitCoefficients);
-        }
-        public void RefreshLock(double[] masterFitCoefficients, double[] slaveFitCoefficients)
-        {
-            LaserSetPoint = tweakSetPoint(LaserSetPoint); //does nothing if not tweaked
-            double shift = calculateDeviationFromSetPoint(LaserSetPoint, masterFitCoefficients, slaveFitCoefficients);
-            VoltageToLaser = calculateNewVoltageToLaser(VoltageToLaser, shift);
-            if (lState != LaserState.FREE)
-            {
-                SetLaserVoltage(); //Actually sends to Hardware.
-            }
-        }
-       
-        #region privates
-
-
-        private double calculateLaserSetPoint(double[] masterFitCoefficients, double[] slaveFitCoefficients)
-        {
-            return slaveFitCoefficients[1] - masterFitCoefficients[1];
-        }
-
-
-        private double tweakSetPoint(double oldSetPoint)
-        {
-            double newSetPoint = oldSetPoint + SetPointIncrementSize * (increments - decrements);
-            increments = 0;
-            decrements = 0;
-            return newSetPoint;
-        }
-
-
-        public double calculateDeviationFromSetPoint(double laserSetPoint,
-    double[] masterFitCoefficients, double[] slaveFitCoefficients)
-        {
-            double currentPeakSeparation = new double();
-            currentPeakSeparation = slaveFitCoefficients[1] - masterFitCoefficients[1];
-            return currentPeakSeparation - LaserSetPoint;
-
-        }
-
-        private double calculateNewVoltageToLaser(double vtolaser, double measuredVoltageChange)
-        {
-            double newVoltage;
-            if (vtolaser
-                + Gain * measuredVoltageChange > UpperVoltageLimit
-                || vtolaser
-                + Gain * measuredVoltageChange < LowerVoltageLimit)
-            {
-                newVoltage = vtolaser;
-            }
-            else
-            {
-                newVoltage = vtolaser + Gain * measuredVoltageChange; //Feedback 
-            }
-            return newVoltage;
-        }
-
-        #endregion
-
-
-       }
+    }
 }

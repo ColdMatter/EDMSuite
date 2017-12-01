@@ -111,7 +111,6 @@
             this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
             this.setPointIncrementBox.TabIndex = 32;
             this.setPointIncrementBox.Text = "0.01";
-            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
             // 
             // GainTextbox
             // 

@@ -50,12 +50,13 @@ namespace DAQ.HAL
 
             // Channel Declarations
 
+            AddAnalogInputChannel("ramp", tclBoard1Address + "/ai4", AITerminalConfiguration.Rse);
+
             // Hamish
             AddAnalogInputChannel("v00PD", tclBoard1Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v10PD", tclBoard1Address + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("bXPD", tclBoard1Address + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("rampHamish", tclBoard1Address + "/ai4", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
             AddAnalogOutputChannel("v10Lock", tclBoard1Address + "/ao1");
@@ -64,10 +65,9 @@ namespace DAQ.HAL
 
 
             // Carlos
-            AddAnalogInputChannel("v21PD", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("v32PD", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("refPDCarlos", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("rampCarlos", tclBoard2Address + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v21PD", tclBoard1Address + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v32PD", tclBoard1Address + "/ai6", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("refPDCarlos", tclBoard1Address + "/ai7", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("v21Lock", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
@@ -113,42 +113,80 @@ namespace DAQ.HAL
 
 
             // TCL Config
-            TCLConfig tcl1 = new TCLConfig("Hamish");
-            tcl1.AddLaser("v00Lock", "v00PD");
-            tcl1.AddLaser("v10Lock", "v10PD");
-            tcl1.AddLaser("bXLock", "bXPD");
-            tcl1.Trigger = tclBoard1Address + "/PFI0";
-            tcl1.Cavity = "rampHamish";
-            tcl1.MasterLaser = "refPDHamish";
-            tcl1.Ramp = "cavityLockHamish";
-            tcl1.TCPChannel = 1190;
-            tcl1.AddDefaultGain("Master", 1.0);
-            tcl1.AddDefaultGain("v00Lock", 2);
-            tcl1.AddDefaultGain("v10Lock", 0.5);
-            tcl1.AddDefaultGain("bXLock", -2);
-            tcl1.AddFSRCalibration("v00Lock", 3.95); //This is an approximate guess
-            tcl1.AddFSRCalibration("v10Lock", 4.15);
-            tcl1.AddFSRCalibration("bXLock", 3.9);
-            tcl1.DefaultScanPoints = 850;
-            tcl1.PointsToConsiderEitherSideOfPeakInFWHMs = 3;
-            Info.Add("Hamish", tcl1);
+            //TCLConfig tcl1 = new TCLConfig("Hamish");
+            //tcl1.AddLaser("v00Lock", "v00PD");
+            //tcl1.AddLaser("v10Lock", "v10PD");
+            //tcl1.AddLaser("bXLock", "bXPD");
+            //tcl1.Trigger = tclBoard1Address + "/PFI0";
+            //tcl1.Cavity = "rampHamish";
+            //tcl1.MasterLaser = "refPDHamish";
+            //tcl1.Ramp = "cavityLockHamish";
+            //tcl1.TCPChannel = 1190;
+            //tcl1.AddDefaultGain("Master", 1.0);
+            //tcl1.AddDefaultGain("v00Lock", 2);
+            //tcl1.AddDefaultGain("v10Lock", 0.5);
+            //tcl1.AddDefaultGain("bXLock", -2);
+            //tcl1.AddFSRCalibration("v00Lock", 3.95); //This is an approximate guess
+            //tcl1.AddFSRCalibration("v10Lock", 4.15);
+            //tcl1.AddFSRCalibration("bXLock", 3.9);
+            //tcl1.DefaultScanPoints = 850;
+            //tcl1.PointsToConsiderEitherSideOfPeakInFWHMs = 3;
+            //Info.Add("Hamish", tcl1);
 
-            TCLConfig tcl2 = new TCLConfig("Carlos");
-            tcl2.AddLaser("v21Lock", "v21PD");
-            tcl2.AddLaser("v32Lock", "v32PD");
-            tcl2.Trigger = tclBoard2Address + "/PFI0";
-            tcl2.Cavity = "rampCarlos";
-            tcl2.MasterLaser = "refPDCarlos";
-            tcl2.Ramp = "cavityLockCarlos";
-            tcl2.TCPChannel = 1191;
-            tcl2.AddDefaultGain("Master", 1.0);
-            tcl2.AddDefaultGain("v21Lock", -0.4);
-            tcl2.AddDefaultGain("v32Lock", 0.2);
-            tcl2.AddFSRCalibration("v21Lock", 3.7); //This is an approximate guess
-            tcl2.AddFSRCalibration("v32Lock", 3.7);
-            tcl2.DefaultScanPoints = 900;
-            tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 3;
-            Info.Add("Carlos", tcl2);
+            //TCLConfig tcl2 = new TCLConfig("Carlos");
+            //tcl2.AddLaser("v21Lock", "v21PD");
+            //tcl2.AddLaser("v32Lock", "v32PD");
+            //tcl2.Trigger = tclBoard2Address + "/PFI0";
+            //tcl2.Cavity = "rampCarlos";
+            //tcl2.MasterLaser = "refPDCarlos";
+            //tcl2.Ramp = "cavityLockCarlos";
+            //tcl2.TCPChannel = 1191;
+            //tcl2.AddDefaultGain("Master", 1.0);
+            //tcl2.AddDefaultGain("v21Lock", -0.4);
+            //tcl2.AddDefaultGain("v32Lock", 0.2);
+            //tcl2.AddFSRCalibration("v21Lock", 3.7); //This is an approximate guess
+            //tcl2.AddFSRCalibration("v32Lock", 3.7);
+            //tcl2.DefaultScanPoints = 900;
+            //tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 3;
+            //Info.Add("Carlos", tcl2);
+
+            TCLConfig tclConfig = new TCLConfig("Hamish & Carlos");
+            tclConfig.Trigger = tclBoard1Address + "/PFI0";
+            tclConfig.BaseRamp = "ramp";
+            tclConfig.TCPChannel = 1190;
+            tclConfig.DefaultScanPoints = 700;
+            tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
+            tclConfig.AnalogSampleRate = 31000;
+            string hamish = "Hamish";
+            string carlos = "Carlos";
+            
+            tclConfig.AddCavity(hamish);
+            tclConfig.Cavities[hamish].AddSlaveLaser("v00Lock", "v00PD");
+            tclConfig.Cavities[hamish].AddSlaveLaser("v10Lock", "v10PD");
+            tclConfig.Cavities[hamish].AddSlaveLaser("bXLock", "bXPD");
+            tclConfig.Cavities[hamish].MasterLaser = "refPDHamish";
+            tclConfig.Cavities[hamish].RampOffset = "cavityLockHamish";
+            tclConfig.Cavities[hamish].AddDefaultGain("Master", 1.0);
+            tclConfig.Cavities[hamish].AddDefaultGain("v00Lock", 2);
+            tclConfig.Cavities[hamish].AddDefaultGain("v10Lock", 0.5);
+            tclConfig.Cavities[hamish].AddDefaultGain("bXLock", -2);
+            tclConfig.Cavities[hamish].AddFSRCalibration("v00Lock", 3.95); //This is an approximate guess
+            tclConfig.Cavities[hamish].AddFSRCalibration("v10Lock", 4.15);
+            tclConfig.Cavities[hamish].AddFSRCalibration("bXLock", 3.9);
+
+            tclConfig.AddCavity(carlos);
+            tclConfig.Cavities[carlos].AddSlaveLaser("v21Lock", "v21PD");
+            tclConfig.Cavities[carlos].AddSlaveLaser("v32Lock", "v32PD");
+            tclConfig.Cavities[carlos].MasterLaser = "refPDCarlos";
+            tclConfig.Cavities[carlos].RampOffset = "cavityLockCarlos";
+            tclConfig.Cavities[carlos].AddDefaultGain("Master", 1.0);
+            tclConfig.Cavities[carlos].AddDefaultGain("v21Lock", -0.4);
+            tclConfig.Cavities[carlos].AddDefaultGain("v32Lock", 0.2);
+            tclConfig.Cavities[carlos].AddFSRCalibration("v21Lock", 3.7); //This is an approximate guess
+            tclConfig.Cavities[carlos].AddFSRCalibration("v32Lock", 3.7);
+
+            Info.Add("TCLConfig", tclConfig);
+
 
 
             // MOTMaster configuration

@@ -108,9 +108,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cavity.cs" />
     <Compile Include="CavityScanData.cs" />
     <Compile Include="CavityScanFitHelper.cs" />
+    <Compile Include="CavityControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CavityControlPanel.Designer.cs">
+      <DependentUpon>CavityControlPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="Laser.cs" />
+    <Compile Include="LorentzianFit.cs" />
+    <Compile Include="UIHelper.cs" />
+    <Compile Include="ScanData.cs" />
     <Compile Include="ScanParameters.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -128,6 +139,9 @@
     </Compile>
     <Compile Include="MasterLaser.cs" />
     <Compile Include="SlaveLaser.cs" />
+    <EmbeddedResource Include="CavityControlPanel.resx">
+      <DependentUpon>CavityControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LockControlPanel.resx">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </EmbeddedResource>

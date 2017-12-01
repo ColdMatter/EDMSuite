@@ -18,9 +18,14 @@ namespace TransferCavityLock2012
         private double upperVoltageLimit = 10;
         private double lowerVoltageLimit = 0;
 
-        public int Count = 0; 
+        public CavityControlPanel CavityPanel;
+        public Controller Controller;
 
-        public Controller controller;
+        public LockControlPanel()
+        {
+            this.name = "Test";
+            InitializeComponent();
+        }
 
         public LockControlPanel(string name)
         {
@@ -34,115 +39,38 @@ namespace TransferCavityLock2012
             this.upperVoltageLimit = upperVoltageLimit;
             this.lowerVoltageLimit = lowerVoltageLimit;
             InitializeComponent();
-            this.GainTextbox.Text = gain.ToString(); 
+            this.GainTextbox.Text = gain.ToString();
         }
-
-
-        #region ThreadSafe wrappers
-
-        public void SetCheckBox(CheckBox box, bool state)
-        {
-            box.Invoke(new SetCheckDelegate(SetCheckHelper), new object[] { box, state });
-        }
-        private delegate void SetCheckDelegate(CheckBox box, bool state);
-        private void SetCheckHelper(CheckBox box, bool state)
-        {
-            box.Checked = state;
-        }
-
-
-        public void SetTextBox(TextBox box, string text)
-        {
-            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
-        }
-        private delegate void SetTextDelegate(TextBox box, string text);
-        private void SetTextHelper(TextBox box, string text)
-        {
-            box.Text = text;
-        }
-
-        public void SetLED(Led led, bool val)
-        {
-            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
-        }
-        private delegate void SetLedDelegate(Led led, bool val);
-        private void SetLedHelper(Led led, bool val)
-        {
-            led.Value = val;
-        }
-
-        public void EnableControl(Control control, bool enabled)
-        {
-            control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
-        }
-        private delegate void EnableControlDelegate(Control control, bool enabled);
-        private void EnableControlHelper(Control control, bool enabled)
-        {
-            control.Enabled = enabled;
-        }
-
-
-        private delegate void plotScatterGraphDelegate(ScatterPlot plot,
-            double[] x, double[] y);
-        private void plotScatterGraphHelper(ScatterPlot plot,
-            double[] x, double[] y)
-        {
-            lock (this)
-            {
-                plot.ClearData();
-                plot.PlotXY(x, y);
-            }
-        }
-       
-        private void scatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
-        {
-            graph.Invoke(new plotScatterGraphDelegate(plotScatterGraphHelper), new object[] { plot, x, y });
-        }
-
-        private delegate void PlotXYDelegate(double[] x, double[] y);
-       
-        private void PlotXYAppend(Graph graph, ScatterPlot plot, double[] x, double[] y)
-        {
-            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { x, y });
-        }
-
-        private delegate void ClearDataDelegate();
-        private void ClearNIGraph(Graph graph)
-        {
-            graph.Invoke(new ClearDataDelegate(graph.ClearData));
-        }
-
-        #endregion
 
         #region Events
         private void setPointAdjustPlusButton_Click(object sender, EventArgs e)
         {
-            lock (controller.tweakLock)
+            double setPointIncrement = Double.Parse(setPointIncrementBox.Text);
+            lock (Controller.tweakLock)
             {
-                controller.AddSetPointIncrement(name);
+                Controller.AdjustSetPoint(CavityPanel.CavityName, name, setPointIncrement);
             }
         }
 
         private void setPointAdjustMinusButton_Click(object sender, EventArgs e)
         {
-            lock (controller.tweakLock)
+            double setPointIncrement = Double.Parse(setPointIncrementBox.Text);
+            lock (Controller.tweakLock)
             {
-                controller.AddSetPointDecrement(name);
+                Controller.AdjustSetPoint(CavityPanel.CavityName, name, -setPointIncrement);
             }
         }
-
 
         private void lockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
             if (lockEnableCheck.CheckState == CheckState.Checked)
             {
-                controller.EngageLock(name);
+                Controller.EngageLock(CavityPanel.CavityName, name);
             }
             if (lockEnableCheck.CheckState == CheckState.Unchecked)
             {
-                controller.DisengageLock(name);
+                Controller.DisengageLock(CavityPanel.CavityName, name);
             }
-
         }
 
 
@@ -150,7 +78,7 @@ namespace TransferCavityLock2012
         {
             try
             {
-                controller.VoltageToLaserChanged(name, Double.Parse(VoltageToLaserTextBox.Text));
+                Controller.VoltageToSlaveLaserChanged(CavityPanel.CavityName, name, Double.Parse(VoltageToLaserTextBox.Text));
             }
             catch (Exception)
             {
@@ -161,33 +89,23 @@ namespace TransferCavityLock2012
         {
             try
             {
-                controller.GainChanged(name, Double.Parse(GainTextbox.Text));
+                Controller.SlaveGainChanged(CavityPanel.CavityName, name, Double.Parse(GainTextbox.Text));
             }
             catch (Exception)
             {
 
             }
         }
-        private void setPointIncrementBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                controller.SetPointIncrementSize(name, Double.Parse(setPointIncrementBox.Text));
-            }
-            catch { }
-        }
-
 
         private void slErrorResetButton_Click(object sender, EventArgs e)
         {
             ClearErrorGraph();
-            Count = 0; 
         }
 
         private void VoltageTrackBar_Scroll(object sender, EventArgs e)
         {
-            
-            SetLaserVoltage(((((double)VoltageTrackBar.Value) / 1000)*(upperVoltageLimit-lowerVoltageLimit))+lowerVoltageLimit);
+
+            SetLaserVoltage(((((double)VoltageTrackBar.Value) / 1000) * (upperVoltageLimit - lowerVoltageLimit)) + lowerVoltageLimit);
         }
 
         #endregion
@@ -196,68 +114,40 @@ namespace TransferCavityLock2012
 
         public void SetLaserVoltage(double value)
         {
-            SetTextBox(VoltageToLaserTextBox, Convert.ToString(value));
+            UIHelper.SetTextBox(VoltageToLaserTextBox, Convert.ToString(value));
         }
 
-        public void SetGain(double value)
-        {
-            SetTextBox(GainTextbox, Convert.ToString(value));
-        }
-        public double GetGain()
-        {
-            return Double.Parse(GainTextbox.Text);
-        }
-
-        public void SetSetPointIncrementSize(double value)
-        {
-            SetTextBox(setPointIncrementBox, Convert.ToString(value));
-        }
-
-        public double GetLaserSetPoint()
-        {
-            return Double.Parse(LaserSetPointTextBox.Text);
-        }
         public void SetLaserSetPoint(double value)
         {
-            SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
-        }
-        public void SetLaserSD(double value)
-        {
-            SetTextBox(rmsVoltageDeviationTextBox, Convert.ToString(value));
+            UIHelper.SetTextBox(LaserSetPointTextBox, Convert.ToString(value));
         }
 
-        public double GetLaserSD()
+        public void SetLaserSD(double value)
         {
-            return Double.Parse(rmsVoltageDeviationTextBox.Text);
+            UIHelper.SetTextBox(rmsVoltageDeviationTextBox, Convert.ToString(value));
         }
 
         public void DisplayData(double[] cavityData, double[] slaveData)
         {
-            scatterGraphPlot(SlaveLaserIntensityScatterGraph,
+            UIHelper.scatterGraphPlot(SlaveLaserIntensityScatterGraph,
                 SlaveDataPlot, cavityData, slaveData);
         }
         public void DisplayFit(double[] cavityData, double[] slaveData)
         {
-            scatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
+            UIHelper.scatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
         }
 
-         public void AppendToErrorGraph(double[] x, double[] y)
+        public void AppendToErrorGraph(int lockCount, double error)
         {
-            double[] ylist=y;
-            int length = ylist.Length;
-            for (int i = 0; i < length; i++)
-            {
-                ylist[i] = 1500 * y[i] / controller.config.FSRCalibrations[name];
-            };
-            PlotXYAppend(ErrorScatterGraph, ErrorPlot, x, ylist);
+            UIHelper.appendPointToScatterGraph(ErrorScatterGraph, ErrorPlot, lockCount, error);
         }
 
-         public void ClearErrorGraph()
-         {
-             ClearNIGraph(ErrorScatterGraph);
-         }
+        public void ClearErrorGraph()
+        {
+            UIHelper.ClearGraph(ErrorScatterGraph);
+        }
 
-        
+
         #endregion
 
         #region UI state control
@@ -267,7 +157,7 @@ namespace TransferCavityLock2012
             {
                 case SlaveLaser.LaserState.FREE:
                     lockEnableCheck.Enabled = true;
-                    VoltageToLaserTextBox.Enabled = true;    
+                    VoltageToLaserTextBox.Enabled = true;
                     LaserSetPointTextBox.Enabled = false;
                     GainTextbox.Enabled = true;
                     lockedLED.Value = false;
@@ -284,25 +174,9 @@ namespace TransferCavityLock2012
                 case SlaveLaser.LaserState.LOCKED:
                     lockedLED.Value = true;
                     break;
-
             }
         }
 
         #endregion
-
-
-
-        public void AdjustAxesAutoScale(bool state)
-        {
-            ScatterPlot[] plots = {SlaveFitPlot, SlaveDataPlot};
-
-            foreach (ScatterPlot plot in plots)
-            {
-                plot.CanScaleYAxis = state;
-                plot.CanScaleXAxis = state;
-            }
-        }
-   
-     
     }
 }
