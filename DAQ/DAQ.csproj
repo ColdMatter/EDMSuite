@@ -216,6 +216,7 @@
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
+    <Compile Include="TCLSingleCavityConfig.cs" />
     <Compile Include="USBInstrument.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="AnapicoSynth.cs" />

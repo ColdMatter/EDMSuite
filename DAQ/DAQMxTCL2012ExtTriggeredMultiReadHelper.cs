@@ -22,9 +22,6 @@ namespace DAQ.TransferCavityLock2012
 
         private AnalogMultiChannelReader analogReader;
 
-
-        
-
         public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] inputs, string trigger)
         {
             this.analogInputs = inputs;
