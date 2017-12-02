@@ -32,12 +32,16 @@ namespace DAQ.HAL
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
 
             string tclBoard1Name = "tclBoard1";
-            string tclBoard1Address = "/PXI1Slot6";
+            string tclBoard1Address = "/PXI1Slot3";
             Boards.Add(tclBoard1Name, tclBoard1Address);
 
             string tclBoard2Name = "tclBoard2";
             string tclBoard2Address = "/PXI1Slot8";
             Boards.Add(tclBoard2Name, tclBoard2Address);
+
+            string tclBoard3Name = "tclBoard3";
+            string tclBoard3Address = "/PXI1Slot6";
+            Boards.Add(tclBoard3Name, tclBoard3Address);
 
             string usbBoard1Name = "usbBoard1";
             string usbBoard1Address = "/Dev2";
@@ -56,12 +60,14 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v00PD", tclBoard1Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v10PD", tclBoard1Address + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("bXPD", tclBoard1Address + "/ai2", AITerminalConfiguration.Rse);
+            AddDigitalInputChannel("bXLockBlockFlag", tclBoard1Address, 0, 0);
+            AddDigitalInputChannel("v10LockBlockFlag", tclBoard1Address, 0, 1);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
             AddAnalogOutputChannel("v10Lock", tclBoard1Address + "/ao1");
-            AddAnalogOutputChannel("bXLock", tclBoard1Address + "/ao2");
-            AddAnalogOutputChannel("cavityLockHamish", tclBoard1Address + "/ao3");
+            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
+            AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
 
 
             // Carlos
@@ -163,7 +169,9 @@ namespace DAQ.HAL
             tclConfig.AddCavity(hamish);
             tclConfig.Cavities[hamish].AddSlaveLaser("v00Lock", "v00PD");
             tclConfig.Cavities[hamish].AddSlaveLaser("v10Lock", "v10PD");
+            tclConfig.Cavities[hamish].AddLockBlocker("v10Lock", "v10LockBlockFlag");
             tclConfig.Cavities[hamish].AddSlaveLaser("bXLock", "bXPD");
+            tclConfig.Cavities[hamish].AddLockBlocker("bXLock", "bXLockBlockFlag");
             tclConfig.Cavities[hamish].MasterLaser = "refPDHamish";
             tclConfig.Cavities[hamish].RampOffset = "cavityLockHamish";
             tclConfig.Cavities[hamish].AddDefaultGain("Master", 1.0);

@@ -45,6 +45,7 @@ namespace TransferCavityLock2012
 
         public Dictionary<string, Cavity> Cavities; // Stores all the laser classes.
         private Dictionary<string, int> aiChannelsLookup; // All ai channels, including the cavity and the master.
+        private Dictionary<string, int> diChannelsLookup; // All di channels for blocking lock for particular laser
         private ScanParameters scanParameters; // All parameters used by a scan
         TransferCavity2012Lockable tcl;
 
@@ -72,9 +73,9 @@ namespace TransferCavityLock2012
 
         public void Start()
         {
-            initializeAIs();
-
             initializeCavityControl();
+
+            initializeAIs();
 
             defaultScanPoints = config.DefaultScanPoints;
 
@@ -90,27 +91,37 @@ namespace TransferCavityLock2012
         private void initializeAIs()
         {
             Dictionary<string, string> analogs = new Dictionary<string, string>();
+            Dictionary<string, string> digitals = new Dictionary<string, string>();
 
             analogs.Add("baseRamp", config.BaseRamp);
-            foreach (KeyValuePair<string, TCLSingleCavityConfig> entry in config.Cavities)
+            foreach (Cavity cavity in Cavities.Values)
             {
-                string cavityName = entry.Key;
-                TCLSingleCavityConfig cavityConfig = entry.Value;
-                analogs.Add(getUniqueKey(cavityName, cavityConfig.RampOffset), cavityConfig.MasterLaser);
-                foreach (string laser in cavityConfig.SlaveLasers.Keys)
+                analogs.Add(getUniqueKey(cavity.Name, cavity.Master.FeedbackChannel), cavity.Master.PhotoDiodeChannel);
+                foreach (SlaveLaser slaveLaser in cavity.SlaveLasers.Values)
                 {
-                    analogs.Add(getUniqueKey(cavityName, laser), cavityConfig.SlaveLasers[laser]);
+                    analogs.Add(getUniqueKey(cavity.Name, slaveLaser.FeedbackChannel), slaveLaser.PhotoDiodeChannel);
+                    if (slaveLaser.BlockChannel != null)
+                    {
+                        digitals.Add(getUniqueKey(cavity.Name, slaveLaser.FeedbackChannel), slaveLaser.BlockChannel);
+                    }
                 }
             }
 
             List<string> analogChannelsToRead = new List<string>();
+            List<string> digitalChannelsToRead = new List<string>();
             aiChannelsLookup = new Dictionary<string, int>();
+            diChannelsLookup = new Dictionary<string, int>();
             foreach (string s in analogs.Keys)
             {
                 aiChannelsLookup.Add(s, aiChannelsLookup.Count);
                 analogChannelsToRead.Add(analogs[s]);
             }
-            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(analogChannelsToRead.ToArray(), config.Trigger);
+            foreach (string s in digitals.Keys)
+            {
+                diChannelsLookup.Add(s, diChannelsLookup.Count);
+                digitalChannelsToRead.Add(digitals[s]);
+            }
+            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(analogChannelsToRead.ToArray(), digitalChannelsToRead.ToArray(), config.Trigger);
         }
 
         private void initializeCavityControl()
@@ -356,12 +367,12 @@ namespace TransferCavityLock2012
 
         private void initialiseAIHardware(ScanParameters sp)
         {
-            tcl.ConfigureReadAI(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
+            tcl.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
         }
 
-        private double[,] acquireData(ScanParameters sp)
+        private TCLReadData acquireData(ScanParameters sp)
         {
-            return tcl.ReadAI(sp.Steps);
+            return tcl.Read(sp.Steps);
         }
 
         private List<Laser> AllLasers
@@ -469,7 +480,7 @@ namespace TransferCavityLock2012
 
         private void endLoop()
         {
-            tcl.DisposeAITask();
+            tcl.DisposeReadTask();
             foreach (Laser laser in AllLasers)
             {
                 if (laser.lState != Laser.LaserState.FREE)
@@ -483,7 +494,7 @@ namespace TransferCavityLock2012
         private void mainLoop()
         {
             initialiseAIHardware(scanParameters);
-            ScanData scanData = new ScanData(aiChannelsLookup);
+            ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
 
             scanTimes = new List<double>();
             Stopwatch stopWatch = new Stopwatch();
@@ -493,7 +504,7 @@ namespace TransferCavityLock2012
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
-                double[,] rawData = acquireData(scanParameters);
+                TCLReadData rawData = acquireData(scanParameters);
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
 
                 // Fitting
@@ -501,7 +512,8 @@ namespace TransferCavityLock2012
                 foreach (Laser laser in AllLasers)
                 {
                     double[] laserScanData = scanData.GetLaserData(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
-                    laser.UpdateScan(rampData, laserScanData);
+                    bool lockBlocked = scanData.LaserLockBlocked(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
+                    laser.UpdateScan(rampData, laserScanData, lockBlocked);
                 }
 
                 // Locking

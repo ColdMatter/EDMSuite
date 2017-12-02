@@ -30,6 +30,11 @@ namespace DAQ.HAL
             this.calibration = calibration;
         }
 
+        public string Device
+        {
+            get { return '/' + physicalChannel.Split('/')[1]; }
+        }
+
 
 		public AITerminalConfiguration TerminalConfig
 		{

@@ -24,6 +24,7 @@ namespace TransferCavityLock2012
         public Cavity ParentCavity;
         private TransferCavityLock2012LaserControllable laser;
         private double laserSetPoint;
+        protected bool lockBlocked;
 
         public enum LaserState
         {
@@ -95,27 +96,31 @@ namespace TransferCavityLock2012
             get { return lState == LaserState.LOCKED; }
         }
 
-        public virtual void UpdateScan(double[] rampData, double[] scanData)
+        public virtual void UpdateScan(double[] rampData, double[] scanData, bool shouldBlock)
         {
             LatestScanData = scanData;
-            switch (lState)
+            lockBlocked = shouldBlock;
+            if (!lockBlocked)
             {
-                case LaserState.LOCKING:
-                    double background = scanData.Min();
-                    double maximum = scanData.Max();
-                    double amplitude = maximum - background;
-                    double centre = rampData[Array.IndexOf(scanData, maximum)];
-                    double width = (rampData.Max() - rampData.Min()) / 20;
-                    LorentzianFit bestGuessFit = new LorentzianFit(background, amplitude, centre, width);
-                    Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
-                    break;
+                switch (lState)
+                {
+                    case LaserState.LOCKING:
+                        double background = scanData.Min();
+                        double maximum = scanData.Max();
+                        double amplitude = maximum - background;
+                        double centre = rampData[Array.IndexOf(scanData, maximum)];
+                        double width = (rampData.Max() - rampData.Min()) / 20;
+                        LorentzianFit bestGuessFit = new LorentzianFit(background, amplitude, centre, width);
+                        Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
+                        break;
 
-                case LaserState.LOCKED:
-                    Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit);
-                    break;
+                    case LaserState.LOCKED:
+                        Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit);
+                        break;
 
-                case LaserState.FREE:
-                    break;
+                    case LaserState.FREE:
+                        break;
+                }
             }
         }
 
