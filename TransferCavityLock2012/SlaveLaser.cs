@@ -17,6 +17,7 @@ namespace TransferCavityLock2012
     public class SlaveLaser : Laser
     {
         public double FSRCalibration { get; set; }
+        public string BlockChannel { get; set; }
         private int lockCount;
         private List<double> oldFrequencyErrors;
 
@@ -71,9 +72,9 @@ namespace TransferCavityLock2012
             }
         }
 
-        public override void UpdateScan(double[] rampData, double[] scanData)
+        public override void UpdateScan(double[] rampData, double[] scanData, bool shouldBlock)
         {
-            base.UpdateScan(rampData, scanData);
+            base.UpdateScan(rampData, scanData, shouldBlock);
             if (lState == LaserState.LOCKING)
             {
                 double differenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
@@ -83,27 +84,30 @@ namespace TransferCavityLock2012
 
         public override void UpdateLock()
         {
-            switch (lState)
+            if (!lockBlocked)
             {
-                case LaserState.LOCKING:
-                    oldFrequencyErrors = new List<double>();
-                    oldFrequencyErrors.Add(FrequencyError);
-                    lockCount = 1;
-                    Lock();
-                    break;
+                switch (lState)
+                {
+                    case LaserState.LOCKING:
+                        oldFrequencyErrors = new List<double>();
+                        oldFrequencyErrors.Add(FrequencyError);
+                        lockCount = 1;
+                        Lock();
+                        break;
 
-                case LaserState.LOCKED:
-                    CurrentVoltage = CurrentVoltage + Gain * VoltageError;
-                    oldFrequencyErrors.Add(FrequencyError);
-                    if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
-                    {
-                        oldFrequencyErrors.RemoveAt(0);
-                    }
-                    lockCount++;
-                    break;
+                    case LaserState.LOCKED:
+                        CurrentVoltage = CurrentVoltage + Gain * VoltageError;
+                        oldFrequencyErrors.Add(FrequencyError);
+                        if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
+                        {
+                            oldFrequencyErrors.RemoveAt(0);
+                        }
+                        lockCount++;
+                        break;
 
-                case LaserState.FREE:
-                    break;
+                    case LaserState.FREE:
+                        break;
+                }
             }
         }
     }

@@ -30,6 +30,11 @@ namespace DAQ.HAL
 			get { return PatternBuilder32.ChannelFromNIPort(port, line); }
 		}
 
+        public string Device
+        {
+            get { return device; }
+        }
+
 		public void AddToTask(Task task)
 		{
 			task.DIChannels.CreateChannel(

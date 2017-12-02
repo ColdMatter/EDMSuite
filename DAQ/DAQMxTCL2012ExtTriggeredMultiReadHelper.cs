@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using NationalInstruments;
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
@@ -15,18 +16,30 @@ namespace DAQ.TransferCavityLock2012
         //This helper doesn't deal with locking the laser.
 
         private string[] analogInputs;
+        private string[] digitalInputs;
         private string trigger;
 
         private Task readAIsTask;
-        private Dictionary<string, AnalogInputChannel> channels;
+        private Task readDIsTask;
 
         private AnalogMultiChannelReader analogReader;
+        private DigitalMultiChannelReader digitalReader;
 
-        public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] inputs, string trigger)
+        private IAsyncResult digitalResult;
+
+        public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] analogInputs, string trigger)
         {
-            this.analogInputs = inputs;
+            this.analogInputs = analogInputs;
             this.trigger = trigger;
         }
+
+        public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] analogInputs, string[] digitalInputs, string trigger)
+        {
+            this.analogInputs = analogInputs;
+            this.digitalInputs = digitalInputs;
+            this.trigger = trigger;
+        }
+
         public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] inputs)
         {
             this.analogInputs = inputs;
@@ -35,85 +48,111 @@ namespace DAQ.TransferCavityLock2012
 
         #region Methods for configuring the hardware
 
-        //The photodiode inputs have been bundled into one task. We never read one photodiode without reading
-        //the other.
+
+        public void ConfigureHardware(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
+        {
+            ConfigureReadAI(numberOfMeasurements, sampleRate, triggerSense, autostart);
+            if (digitalInputs.Length > 0)
+            {
+                ConfigureReadDI(numberOfMeasurements, sampleRate, triggerSense);
+            }
+        }
+
         public void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart) //AND CAVITY VOLTAGE!!! 
         {
-            //readAIsTask = new Task("readAI");
             readAIsTask = new Task();
 
-            channels = new Dictionary<string, AnalogInputChannel>();
-            foreach (string s in analogInputs)
+            foreach (string inputName in analogInputs)
             {
-                AnalogInputChannel channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[s];
-                channels.Add(s, channel);
+                AnalogInputChannel channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputName];
+                channel.AddToTask(readAIsTask, 0, 10);
             }
 
-            foreach (KeyValuePair<string, AnalogInputChannel> pair in channels)
+            SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
+            DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
+
+            if (!autostart)
             {
-                pair.Value.AddToTask(readAIsTask, 0, 10);
+                readAIsTask.Timing.ConfigureSampleClock("", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
+                readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(trigger, triggerEdge);
             }
 
-            if (autostart == false && triggerSense)
-            {
-                 readAIsTask.Timing.ConfigureSampleClock(
-                    "",
-                    sampleRate,
-                        SampleClockActiveEdge.Rising,
-                    SampleQuantityMode.FiniteSamples, numberOfMeasurements);
-
-                readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                    trigger,
-                    DigitalEdgeStartTriggerEdge.Rising);
-            }
-
-
-             if (autostart == false && triggerSense== false)
-            {
-                 readAIsTask.Timing.ConfigureSampleClock(
-                    "",
-                    sampleRate,
-                        SampleClockActiveEdge.Falling,
-                    SampleQuantityMode.FiniteSamples, numberOfMeasurements);
-
-                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                     trigger,
-                     DigitalEdgeStartTriggerEdge.Falling);
-            }
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
+            //analogReader.SynchronizeCallbacks = true;
         }
-       
+
+        public void ConfigureReadDI(int numberOfMeasurements, double sampleRate, bool triggerSense)
+        {
+            readDIsTask = new Task();
+
+            foreach (string inputName in digitalInputs)
+            {
+                DigitalInputChannel channel = (DigitalInputChannel)Environs.Hardware.DigitalInputChannels[inputName];
+                channel.AddToTask(readDIsTask);
+            }
+
+            SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
+            DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
+
+            string device = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[analogInputs[0]]).Device;
+
+            readDIsTask.Timing.ConfigureSampleClock("", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
+            readDIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(device + "/ai/StartTrigger", triggerEdge);
+
+            readDIsTask.Control(TaskAction.Verify);
+            digitalReader = new DigitalMultiChannelReader(readDIsTask.Stream);
+            //digitalReader.SynchronizeCallbacks = true;
+        }
+
 
         #endregion
 
         #region Methods for controlling hardware
 
-        public double[,] ReadAI(int numberOfMeasurements)
+        public TCLReadData Read(int numberOfMeasurements)
         {
-            double[,] data = new double[analogInputs.Length , numberOfMeasurements];//Cheezy Bugfix
-            try
+            TCLReadData data = new TCLReadData();
+
+            //AsyncCallback digitalCallback = new AsyncCallback(DigitalCallback);
+            //AsyncCallback analogCallback = new AsyncCallback(AnalogCallback);
+            //readDIsTask.Start();
+
+            //readAIsTask.Start();
+
+            if (digitalInputs.Length > 0)
             {
-                data = analogReader.ReadMultiSample(numberOfMeasurements);
-                readAIsTask.WaitUntilDone();
+                digitalResult = digitalReader.BeginReadWaveform(numberOfMeasurements, null, readDIsTask);
             }
-            catch (DaqException e)
+
+            //analogResult = analogReader.BeginReadMultiSample(numberOfMeasurements, null, readAIsTask);
+
+            //if (digitalInputs.Length > 0)
+            //{
+            //    digitalResult.AsyncWaitHandle.WaitOne();
+            //}
+            //analogResult.AsyncWaitHandle.WaitOne();
+            //readAIsTask.WaitUntilDone();
+            //readDIsTask.WaitUntilDone();
+            //Thread.Sleep(5000);
+
+            data.AnalogData = analogReader.ReadMultiSample(numberOfMeasurements);//analogReader.EndReadMultiSample(analogResult);
+            if (digitalInputs.Length > 0)
             {
-                //data = null;
-                System.Diagnostics.Debug.WriteLine(e.Message.ToString());
-                DisposeAITask();
-               // ConfigureReadAI(numberOfMeasurements, false);
+                data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
             }
-            
             return data;
         }
 
-       
-        public void DisposeAITask()
+        private void pointless()
+        { }
+
+        public void DisposeReadTask()
         {
             readAIsTask.Dispose();
+            readDIsTask.Dispose();
         }
-        
+
         #endregion
 
     }

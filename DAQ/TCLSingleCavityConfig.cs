@@ -55,6 +55,12 @@ namespace DAQ.TransferCavityLock2012
             slaveLasers.Add(name, photodiode);
         }
 
+        public Dictionary<string, string> BlockChannels = new Dictionary<string, string>();
+        public void AddLockBlocker(string laserName, string blockFlagChannel)
+        {
+            BlockChannels.Add(laserName, blockFlagChannel);
+        }
+
         public void AddFSRCalibration(string name, double spacingbetweenPeaksInVolts)
         {
             fsrCalibrations.Add(name, spacingbetweenPeaksInVolts);

@@ -26,11 +26,15 @@ namespace TransferCavityLock2012
                 slave.FSRCalibration = config.FSRCalibrations[entry.Key];
                 if (config.DefaultGains.ContainsKey(laser))
                 {
-                    slave.Gain = config.DefaultGains[entry.Key];
+                    slave.Gain = config.DefaultGains[laser];
                 }
                 else
                 {
                     slave.Gain = 0.0;
+                }
+                if (config.BlockChannels.ContainsKey(laser))
+                {
+                    slave.BlockChannel = config.BlockChannels[laser];
                 }
                 SlaveLasers.Add(laser, slave);
             }
