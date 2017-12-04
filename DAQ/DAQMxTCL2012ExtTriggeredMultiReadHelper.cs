@@ -79,7 +79,6 @@ namespace DAQ.TransferCavityLock2012
 
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
-            //analogReader.SynchronizeCallbacks = true;
         }
 
         public void ConfigureReadDI(int numberOfMeasurements, double sampleRate, bool triggerSense)
@@ -102,7 +101,6 @@ namespace DAQ.TransferCavityLock2012
 
             readDIsTask.Control(TaskAction.Verify);
             digitalReader = new DigitalMultiChannelReader(readDIsTask.Stream);
-            //digitalReader.SynchronizeCallbacks = true;
         }
 
 
@@ -114,38 +112,20 @@ namespace DAQ.TransferCavityLock2012
         {
             TCLReadData data = new TCLReadData();
 
-            //AsyncCallback digitalCallback = new AsyncCallback(DigitalCallback);
-            //AsyncCallback analogCallback = new AsyncCallback(AnalogCallback);
-            //readDIsTask.Start();
-
-            //readAIsTask.Start();
-
             if (digitalInputs.Length > 0)
             {
                 digitalResult = digitalReader.BeginReadWaveform(numberOfMeasurements, null, readDIsTask);
             }
 
-            //analogResult = analogReader.BeginReadMultiSample(numberOfMeasurements, null, readAIsTask);
+            data.AnalogData = analogReader.ReadMultiSample(numberOfMeasurements);
 
-            //if (digitalInputs.Length > 0)
-            //{
-            //    digitalResult.AsyncWaitHandle.WaitOne();
-            //}
-            //analogResult.AsyncWaitHandle.WaitOne();
-            //readAIsTask.WaitUntilDone();
-            //readDIsTask.WaitUntilDone();
-            //Thread.Sleep(5000);
-
-            data.AnalogData = analogReader.ReadMultiSample(numberOfMeasurements);//analogReader.EndReadMultiSample(analogResult);
             if (digitalInputs.Length > 0)
             {
                 data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
             }
+
             return data;
         }
-
-        private void pointless()
-        { }
 
         public void DisposeReadTask()
         {
