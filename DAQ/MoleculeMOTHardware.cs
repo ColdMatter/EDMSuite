@@ -162,7 +162,7 @@ namespace DAQ.HAL
             tclConfig.TCPChannel = 1190;
             tclConfig.DefaultScanPoints = 700;
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
-            tclConfig.AnalogSampleRate = 31000;
+            tclConfig.AnalogSampleRate = 62000;
             string hamish = "Hamish";
             string carlos = "Carlos";
             
