@@ -9,6 +9,7 @@ using MOTMaster2.SequenceData;
 using Newtonsoft.Json;
 using DAQ.Analyze;
 using UtilsNS;
+using ErrorManager;
 
 namespace MOTMaster2
 {
@@ -260,9 +261,9 @@ namespace MOTMaster2
                 ss = batchNumber.ToString("000") + "\t"; 
                 for (int i = 0; i < mms.Count-1; i++)
                 {
-                    ss += mms[i].Value.ToString("G7") + "\t";
+                    ss += mms[i].Value.ToString("G7") + '\t';
                 }
-                multiScanParamLogger.log(ss);
+                multiScanParamLogger.log(ss.TrimEnd('\t'));
                 multiScanDataLogger.Enabled = false; // flush
                 string dir = Path.GetDirectoryName(multiScanParamLogger.AutoSaveFileName);
                 multiScanDataLogger.AutoSaveFileName = dir + "\\" + batchNumber.ToString("000") + ".dta";                
@@ -270,25 +271,74 @@ namespace MOTMaster2
                 ss = mms[mms.Count - 1].sParam + "\tTime[ms]\t" ;
                 foreach (var item in avgDict)
                 {
-                    ss += item.Key + "\t";
+                    ss += item.Key + '\t';
                 }
-                multiScanDataLogger.log(ss);
+                multiScanDataLogger.log(ss.TrimEnd('\t'));
                 batchNumber += 1;
             }
-            ss = mms[mms.Count - 1].Value.ToString("G7") + "\t"+ logWatch.ElapsedMilliseconds.ToString() + "\t";
-
+            ss = mms[mms.Count - 1].Value.ToString("G7") + "\t"+ logWatch.ElapsedMilliseconds.ToString() + '\t';
 
             foreach (var item in avgDict)
             {
-                ss += item.Value.ToString("G7") + "\t";
+                ss += item.Value.ToString("G7") + '\t';
             }
-            multiScanDataLogger.log(ss);
+            multiScanDataLogger.log(ss.TrimEnd('\t'));
         }
 
         public void StopMScanLogger() 
         {
             if (!Utils.isNull(multiScanDataLogger)) multiScanDataLogger.Enabled = false;
             if (!Utils.isNull(multiScanParamLogger)) multiScanParamLogger.Enabled = false;
+        }
+
+        public bool ImportMScanFile(string fn, out Dictionary<string, double> prms, out Dictionary<string, List<double>> scans)
+        {
+            bool rslt = true;
+            prms = new Dictionary<string, double>();
+            scans = new Dictionary<string, List<double>>();
+            if (!File.Exists(fn))
+            {
+                ErrorMgr.errorMsg("File <" + fn + "> does not exist.", 1102);
+                return false;
+            }
+            bool paramMode = true;
+            List<string> sn = new List<string>();
+            foreach (string line in File.ReadLines(fn)) 
+            {
+                if (line == "") continue;
+                if (line[0] == '#')
+                {
+                    paramMode = false;
+                    string[] ss = line.Split('\t');
+                    for(int i=1; i<ss.Length; i++) 
+                    {
+                        if (ss[i].Equals("")) continue;
+                        sn.Add(ss[i]);
+                        scans[ss[i]] = new List<double>();
+                    }
+                    continue;
+                }
+                if (paramMode)
+                {
+                    string[] ss = line.Split('=');
+                    prms[ss[0]] = Convert.ToDouble(ss[1]);
+                }
+                else
+                {
+                    string[] ss = line.Split('\t');
+                    if (ss.Length != (sn.Count + 1))
+                    {
+                        rslt = false;
+                        continue;
+                    }
+                    for (int i = 1; i < ss.Length; i++)
+                    {
+                        if (ss[i].Equals("")) continue;
+                        scans[sn[i-1]].Add(Convert.ToDouble(ss[i]));
+                    }
+                }                   
+            }
+            return rslt;
         }
         #endregion
     }

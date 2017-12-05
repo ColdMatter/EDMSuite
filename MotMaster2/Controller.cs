@@ -688,19 +688,19 @@ namespace MOTMaster2
 
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
-                    if (!sequenceData.Steps.Any(t=>t.GetDigitalData("acquisitionTrigger"))){
+                    if (!sequenceData.Steps.Any(t=>t.GetDigitalData("acquisitionTrigger")))
+                    {
                         Controller.genOptions.AIEnable = false;
                         ErrorMgr.warningMsg("acquisitionTrigger is not enabled. Setting AIEnable to false.");
                     }
-                    else{
-                    CreateAcquisitionTimeSegments();
+                    else
+                    {
+                        CreateAcquisitionTimeSegments();
                     }
                 }
                 if (!StaticSequence || BatchNumber == 0) sequence = getSequenceFromSequenceData(dict);
                 if (sequence == null) { throw runThreadException; }
-
             }
-
         }
             
         /// <summary>
@@ -1511,6 +1511,4 @@ namespace MOTMaster2
             Data = data;
         }
     }
-
-
 }

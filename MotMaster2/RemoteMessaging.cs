@@ -401,7 +401,7 @@ namespace MOTMaster2
 
         public string AsString
         {
-            get { return sParam + "\t" + sFrom.ToString("G6") + " .. " + sTo.ToString("G6") + "; " + sBy.ToString("G6"); }
+            get { return sParam + "  \t" + sFrom.ToString("G6") + " .. " + sTo.ToString("G6") + "; " + sBy.ToString("G6"); }
             set 
             {
                 if (value == null) return;
@@ -409,7 +409,7 @@ namespace MOTMaster2
                 {
                     TestInit(); return;
                 }
-                string[] parts = value.Split('\t'); sParam = parts[0];
+                string[] parts = value.Split('\t'); sParam = parts[0].TrimEnd(' ');
                 string ss = parts[1]; int j = ss.IndexOf(".."); if(j == -1) return;
                 parts[0] = ss.Substring(0, j); parts[1] = ss.Substring(j+2);
                 sFrom = Convert.ToDouble(parts[0]);
