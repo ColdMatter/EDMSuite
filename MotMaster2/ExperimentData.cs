@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 using MOTMaster2.SequenceData;
 using Newtonsoft.Json;
 using DAQ.Analyze;
+using UtilsNS;
 
 namespace MOTMaster2
 {
@@ -52,6 +55,12 @@ namespace MOTMaster2
         public int PreTrigSamples { get { return preTrigSamples; } set { preTrigSamples = value; } }
 
         public static double[] TransferFunc { get; set; }
+
+        public static AutoFileLogger multiScanParamLogger;
+        public Stopwatch logWatch;
+        private int batchNumber;
+        public static Dictionary<string, object> lastData;
+        public static AutoFileLogger multiScanDataLogger;
 
         public ExperimentData()
         {
@@ -221,8 +230,88 @@ namespace MOTMaster2
 
             return c;
         }
-
+        #region MultiScan
+        /// <summary>
+        /// MScan subroutines
+        /// </summary>
+        public bool CreateMScanLogger(string dir, Sequence segData, List<MMscan> mms)
+        {
+            if (Directory.Exists(dir))
+            {
+                MessageBox.Show(" Error message: Directory ("+dir+") already exists");
+                return false;
+            }
+            Directory.CreateDirectory(dir);
+            multiScanParamLogger = new AutoFileLogger(dir + "\\header.msn");
+            multiScanParamLogger.Enabled = true; 
+            foreach (string item in segData.Parameters.Keys)
+            {
+                multiScanParamLogger.log(item + '=' + segData.Parameters[item].Value.ToString());
+            }
+            string ss = "\n#.dta\t";
+            for (int i = 0; i < mms.Count-1; i++)
+            {
+                ss += mms[i].sParam + "\t";
+            }
+            multiScanParamLogger.log(ss);
+            batchNumber = 1;
+            multiScanDataLogger = new AutoFileLogger(dir + "\\1.dta");
+            if (Utils.isNull(logWatch)) logWatch = new Stopwatch();
+            else logWatch.Reset();
+            logWatch.Start();
+            return true;
         }
+
+        public void LogNextShot(List<MMscan> mms)
+        {
+            bool writeData = lastData != null;
+            if (writeData)
+            {
+                foreach (var item in lastData.Where(kvp => kvp.Value.GetType() != typeof(double[])).ToList())
+                {
+                    lastData.Remove(item.Key);
+                }
+            }
+            Dictionary<string, double> avgDict = (lastData == null) ? null : GetAverageValues(lastData, true);
+            if (Utils.isNull(avgDict)) return;
+            string ss;
+            if (mms[mms.Count-1].isFirstValue())
+            {
+                ss = batchNumber.ToString("000") + "\t"; 
+                for (int i = 0; i < mms.Count-1; i++)
+                {
+                    ss += mms[i].Value.ToString("G7") + "\t";
+                }
+                multiScanParamLogger.log(ss);
+                multiScanDataLogger.Enabled = false; // flush
+                string dir = Path.GetDirectoryName(multiScanParamLogger.AutoSaveFileName);
+                multiScanDataLogger.AutoSaveFileName = dir + "\\" + batchNumber.ToString("000") + ".dta";                
+                multiScanDataLogger.Enabled = true;
+                ss = mms[mms.Count - 1].sParam + "\tTime[ms]\t" ;
+                foreach (var item in avgDict)
+                {
+                    ss += item.Key + "\t";
+                }
+                multiScanDataLogger.log(ss);
+                batchNumber += 1;
+            }
+            ss = mms[mms.Count - 1].Value.ToString("G7") + "\t"+ logWatch.ElapsedMilliseconds.ToString() + "\t";
+
+
+            foreach (var item in avgDict)
+            {
+                ss += item.Value.ToString("G7") + "\t";
+            }
+            multiScanDataLogger.log(ss);
+        }
+
+        public void StopMScanLogger() 
+        {
+            if (!Utils.isNull(multiScanDataLogger)) multiScanDataLogger.Enabled = false;
+            if (!Utils.isNull(multiScanParamLogger)) multiScanParamLogger.Enabled = false;
+        }
+        #endregion
+    }
 
     /// <summary>
     /// Data from a single experiment shot
@@ -245,6 +334,8 @@ namespace MOTMaster2
             analogSegments = null;
         }
     }
+
+
 
 
 }
