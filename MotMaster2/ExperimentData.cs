@@ -298,7 +298,7 @@ namespace MOTMaster2
             scans = new Dictionary<string, List<double>>();
             if (!File.Exists(fn))
             {
-                ErrorMgr.errorMsg("File <" + fn + "> does not exist.", 1102);
+                ErrorMng.errorMsg("File <" + fn + "> does not exist.", 1102);
                 return false;
             }
             bool paramMode = true;

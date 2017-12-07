@@ -15,7 +15,7 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
-        <Button x:Name="btnOK" Content="OK" Height="20" Margin="0,0,24.286,10.429" Click="OK_Click" FontWeight="Bold" HorizontalAlignment="Right" Width="85" VerticalAlignment="Bottom" Grid.Row="1"/>
-        <Button x:Name="btnCancel" Content="Cancel" Height="20" Margin="0,0,124.286,10.429" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Grid.Row="1"/>
+        <Button x:Name="btnOK" Content="OK" Height="24" Margin="0,0,24.286,0" Click="OK_Click" FontWeight="Bold" HorizontalAlignment="Right" Width="85" VerticalAlignment="Center" Grid.Row="1" Background="#FFF2F1F1"/>
+        <Button x:Name="btnCancel" Content="Cancel" Height="24" Margin="0,0,124.286,0" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Width="80" Grid.Row="1" Background="#FFF2F1F1"/>
     </Grid>
 </Window>

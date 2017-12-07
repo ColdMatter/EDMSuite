@@ -18,6 +18,14 @@ namespace MOTMaster2.SequenceData
         public ObservableCollection<SequenceStep> Steps { get; set; }
         [JsonConverter(typeof(DictionaryConverter))]
         public ObservableDictionary<string,Parameter> Parameters { get; set; }
+        public List<string> ScanableParams()
+        {
+            List<string> ls = new List<string>();
+            if (Parameters == null) return ls;
+            foreach (KeyValuePair<string, object> entry in Parameters)
+                if(Parameters[entry.Key].IsScannable()) ls.Add(entry.Key);
+            return ls;
+        } 
 
         public List<MMscan> ScanningParams { get; set; }
         public Dictionary<string,object> CreateParameterDictionary()

@@ -97,7 +97,7 @@
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="WindFreak Config" Grid.Row="3" Margin="10,0,0,0">
-                        <Grid Margin="0,0,-33,119">
+                        <Grid Margin="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="95"/>
                                 <ColumnDefinition Width="207"/>
@@ -107,8 +107,8 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="90"/>
                             </Grid.RowDefinitions>
-                            <Label Content="Enable" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Margin="0,4,0,2" Width="80"/>
-                            <CheckBox x:Name="windFreakEnable" Grid.Row="0" HorizontalAlignment="Center" Height="14" Margin="74,10,0,8" VerticalAlignment="Center" Width="22"/>
+
+                            <CheckBox x:Name="windFreakEnable" Grid.Row="0" HorizontalAlignment="Left" Height="14" Margin="5,0,0,0" VerticalAlignment="Center" Width="88" Content="Enabled"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -156,7 +156,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button x:Name="btnOK" Content="OK" HorizontalAlignment="Right" Margin="0,10.429,17.143,10.286" VerticalAlignment="Center" Width="90" Click="OKButton_Click" Grid.Row="1" Height="25" FontWeight="Bold"/>
-        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,10.429,127.143,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25" RenderTransformOrigin="0.502,0.5" Click="btnCancel_Click"/>
+        <Button x:Name="btnOK" Content="OK" HorizontalAlignment="Right" Margin="0,10.429,17.143,10.286" VerticalAlignment="Center" Width="90" Click="OKButton_Click" Grid.Row="1" Height="25" FontWeight="Bold" Background="#FFEEEDED"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,10.429,127.143,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25" RenderTransformOrigin="0.502,0.5" Click="btnCancel_Click" Background="#FFEEEDED"/>
     </Grid>
 </Window>

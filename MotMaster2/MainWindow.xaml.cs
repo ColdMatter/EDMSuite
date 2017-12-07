@@ -41,7 +41,7 @@ namespace MOTMaster2
             Controller.OnRunStatus += new Controller.RunStatusHandler(OnRunStatus);
             InitializeComponent();
             InitVisuals();
-            ErrorMgr.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
+            ErrorMng.Initialize(ref lbStatus, ref tbLogger, (string)Environs.FileSystem.Paths["configPath"]);
 
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Send);
             dispatcherTimer.Tick += dispatcherTimer_Tick;
@@ -117,13 +117,16 @@ namespace MOTMaster2
                 }
         }
 
-        private string[] ParamsArray
+        private string[] ParamsArray  // only the scanables
         {
             get
             {
                 string[] pa = { "param1", "param2", "param3" };
                 if (Controller.sequenceData != null)
+                {
+                    //pa = Controller.sequenceData.ScanableParams().ToArray();
                     pa = Controller.sequenceData.Parameters.Keys.ToArray();
+                }                    
                 return pa;
             }
         }
@@ -155,7 +158,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                ErrorMgr.errorMsg("Failed to build sequence:" + e.Message, -1, false);
+                ErrorMng.errorMsg("Failed to build sequence:" + e.Message, -1, false);
                 return false;
             }
             controller.RunStart(paramDict);
@@ -223,7 +226,7 @@ namespace MOTMaster2
             controller.AutoLogging = Check4Logging();
             if ((Iters == 0) || (Iters < -1))
             {
-                ErrorMgr.errorMsg("Invalid <Iteration Number> value.", 2, true);
+                ErrorMng.errorMsg("Invalid <Iteration Number> value.", 2, true);
                 if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
                 return;
             }
@@ -265,7 +268,7 @@ namespace MOTMaster2
                     DoEvents();
                     j += 1;
                 }
-                if (j == 10) ErrorMgr.Log("Time-out at wait4adjust loop", Brushes.DarkOrange.Color);
+                if (j == 10) ErrorMng.Log("Time-out at wait4adjust loop", Brushes.DarkOrange.Color);
                 controller.WaitForRunToFinish();
             }
             controller.AutoLogging = false;
@@ -288,7 +291,7 @@ namespace MOTMaster2
                 }
                 catch (Exception ex)
                 {
-                    ErrorMgr.errorMsg(ex.Message, -5);
+                    ErrorMng.errorMsg(ex.Message, -5);
                 }
                 if (!btnRun.Content.Equals("Run")) btnRun_Click(null, null);
                 return;
@@ -337,7 +340,7 @@ namespace MOTMaster2
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
         {
             string parameter = prm;
-            if (!Controller.sequenceData.Parameters.ContainsKey(prm)) { ErrorMgr.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
+            if (!Controller.sequenceData.Parameters.ContainsKey(prm)) { ErrorMng.errorMsg(string.Format("Parameter {0} not found in sequence", prm), 100, true); return; }
             Parameter param = Controller.sequenceData.Parameters[prm];
             //Sets the sequence to static if we know the scan parameter does not modify the sequence
             Controller.StaticSequence = !param.SequenceVariable;
@@ -372,7 +375,7 @@ namespace MOTMaster2
                 scanLength = (toScanI - fromScanI) / byScanI + 1;
                 if (scanLength < 0)
                 {
-                    ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
+                    ErrorMng.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
                 scanArray = new object[scanLength];
@@ -395,7 +398,7 @@ namespace MOTMaster2
                 scanLength = (int)((toScanD - fromScanD) / byScanD) + 1;
                 if (scanLength < 0)
                 {
-                    ErrorMgr.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
+                    ErrorMng.errorMsg("Incorrect looping parameters. <From> value must be smaller than <To> value if it increases per shot.",3,true);
                     return;
                 }
                 scanArray = new object[scanLength];
@@ -422,7 +425,7 @@ namespace MOTMaster2
                 }
                 catch (Exception e)
                 {
-                    ErrorMgr.errorMsg("Error running scan: " + e.Message, -2);
+                    ErrorMng.errorMsg("Error running scan: " + e.Message, -2);
                     break;
                 }
                 lbCurValue.Content = ((double)scanItem).ToString(Constants.ScanDataFormat);
@@ -451,7 +454,7 @@ namespace MOTMaster2
                 }
                 catch (Exception ex)
                 {
-                    ErrorMgr.errorMsg(ex.Message, -5);
+                    ErrorMng.errorMsg(ex.Message, -5);
                     //btnScan_Click(null, null);
                     return;
                 }
@@ -578,7 +581,7 @@ namespace MOTMaster2
                         foreach (string key in LoadedParameters.Keys)
                             Controller.script.Parameters[key] = LoadedParameters[key];
                     else
-                        ErrorMgr.warningMsg("You have tried to load parameters without loading a script");
+                        ErrorMng.warningMsg("You have tried to load parameters without loading a script");
                 }
             }
         }
@@ -602,7 +605,7 @@ namespace MOTMaster2
                 File.WriteAllText(filename, json);
             }
             else
-                ErrorMgr.warningMsg("You have tried to save parmaters before loading a script");
+                ErrorMng.warningMsg("You have tried to save parmaters before loading a script");
         }
 
         private void SaveSequence_Click(object sender, RoutedEventArgs e)
@@ -624,7 +627,7 @@ namespace MOTMaster2
                 Controller.SaveSequenceToPath(filename);
             }
             else
-                ErrorMgr.warningMsg("You have tried to save a Sequence before loading a script", -1, true);
+                ErrorMng.warningMsg("You have tried to save a Sequence before loading a script", -1, true);
 
         }
         private void LoadSequence_Click(object sender, RoutedEventArgs e)
@@ -774,7 +777,7 @@ namespace MOTMaster2
         private void Log(string txt, Color? clr = null)
         {
             if (!chkLog.IsChecked.Value) return;
-            ErrorMgr.Log(txt, clr);
+            ErrorMng.Log(txt, clr);
         }
 
         private void setProperty_Click(object sender, RoutedEventArgs e)
@@ -804,11 +807,11 @@ namespace MOTMaster2
                 try
                 {
                     if (SequenceParser.CheckMuquans(value)) continue;
-                    else ErrorMgr.errorMsg(string.Format("Incorrect format for {0} serial command", item.Name), 4);
+                    else ErrorMng.errorMsg(string.Format("Incorrect format for {0} serial command", item.Name), 4);
                 }
                 catch (Exception e)
                 {
-                    ErrorMgr.errorMsg("Couldn't parse serial commands. " + e.Message, 4, false);
+                    ErrorMng.errorMsg("Couldn't parse serial commands. " + e.Message, 4, false);
                     return false;
                 }
 
@@ -828,7 +831,7 @@ namespace MOTMaster2
                 {
                     if (sqnParser.CheckFunction(analogItem.Value)) continue;
                 }
-                ErrorMgr.errorMsg(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name), 5, true);
+                ErrorMng.errorMsg(string.Format("Incorrect Value given for {0}. Either choose a parameter name or enter a number.", analogItem.Name), 5, true);
                 return false;
 
             }
@@ -1031,8 +1034,8 @@ namespace MOTMaster2
             if (cbHub.SelectedIndex == 2)
             {
                 remoteMsg.CheckConnection(true); 
-                //{ ErrorMgr.simpleMsg("Connected to Axel-hub"); }
-                //else ErrorMgr.errorMsg("Connection to Axel-hub failed !", 666);
+                //{ ErrorMng.simpleMsg("Connected to Axel-hub"); }
+                //else ErrorMng.errorMsg("Connection to Axel-hub failed !", 666);
             }
             if (cbHub.SelectedIndex == 3)
             {
@@ -1066,20 +1069,20 @@ namespace MOTMaster2
             if (active) 
             {
                 btnRemote.Content = "Connected  <->"; btnRemote.Background = Utils.ToSolidColorBrush("#FFBEFDD1");
-                if (!remoteMsg.partnerPresent) ErrorMgr.warningMsg("Conflicting active true status and parner not present");
+                if (!remoteMsg.partnerPresent) ErrorMng.warningMsg("Conflicting active true status and parner not present");
             }
             else
             {
                 btnRemote.Content = "Disconnected -X-"; btnRemote.Background = Brushes.LightYellow;
-                if (remoteMsg.partnerPresent) ErrorMgr.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
+                if (remoteMsg.partnerPresent) ErrorMng.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
                 else
                 {
                     if (!File.Exists(Utils.configPath + "axel-hub.bat") || !forced) return;
-                    ErrorMgr.Status("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
+                    ErrorMng.Status("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
                     System.Diagnostics.Process.Start(File.ReadAllText(Utils.configPath + "axel-hub.bat"), "-remote");
                     Thread.Sleep(1000);
                     if(remoteMsg.CheckConnection()) OnActiveComm(remoteMsg.Connected, false);
-                    ErrorMgr.Reset();
+                    ErrorMng.Reset();
                 }
             }                
         }
@@ -1098,7 +1101,7 @@ namespace MOTMaster2
 
         private void chkVerbatim_Checked(object sender, RoutedEventArgs e)
         {
-            ErrorMgr.Verbatim = chkVerbatim.IsChecked.Value;
+            ErrorMng.Verbatim = chkVerbatim.IsChecked.Value;
         }
 
         private void nbPower1_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
@@ -1181,7 +1184,7 @@ namespace MOTMaster2
             }
             catch (FormatException)
             {
-                ErrorMgr.errorMsg("Unable to convert to a Double.",1008);
+                ErrorMng.errorMsg("Unable to convert to a Double.",1008);
             }               
             (lstParams.SelectedItem as ListBoxItem).Content = mms.AsString;
         }
@@ -1208,7 +1211,7 @@ namespace MOTMaster2
                         mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
                         if (!mms[mms.Count - 1].Check())
                         {
-                            ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                            ErrorMng.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                         }
                     }
                     realMultiScan(ref mms);
@@ -1239,7 +1242,7 @@ namespace MOTMaster2
             Controller.BatchNumber = 0;
             controller.AutoLogging = Check4Logging();
             Controller.ExpData.grpMME.Clear();
-            int multiCount = mms.Count;
+            //int multiCount = mms.Count;
             groupRun = GroupRun.multiScan;
             for (int i = 0; i < mms.Count - 1; i++)
             {
@@ -1338,7 +1341,7 @@ namespace MOTMaster2
                 mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
                 if (!mms[mms.Count - 1].Check())
                 {
-                    ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                    ErrorMng.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
             }
         }

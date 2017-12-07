@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using dotMath;
+using UtilsNS;
 
 namespace MOTMaster2.SequenceData
 {
@@ -18,21 +19,18 @@ namespace MOTMaster2.SequenceData
         {
             get 
             { 
-                if (IsScannable) return _value;
+                if (IsScannable()) return _value;
                 else return CompileParameter(Description);
             }
             set {_value = value;}
         }
         public string Description { get; set; }
         public bool IsHidden { get; set; }
-        public bool IsScannable 
-        { 
-            get 
-            {
-                if (Description == "" || Description == null) return true;
-                return !Description[0].Equals('=');
-            } 
-        }
+        public bool IsScannable() 
+        {
+            if (Description == "" || Description == null) return true;
+            return !Description[0].Equals('=');
+        } 
         //Flags if the variable is used to modify a sequence
         public bool SequenceVariable { get; set; }
 
@@ -100,6 +98,8 @@ namespace MOTMaster2.SequenceData
 
         private double CompileParameter(string function)
         {
+            if (Utils.isNull(Controller.sequenceData)) return Double.NaN;
+            if (Utils.isNull(Controller.sequenceData.Parameters)) return Double.NaN;
             string func = function.TrimStart('=');
             EqCompiler compiler = new EqCompiler(func, true);
             compiler.Compile();

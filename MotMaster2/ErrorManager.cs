@@ -13,7 +13,7 @@ using UtilsNS;
 
 namespace ErrorManager
 {
-    public static class ErrorMgr
+    public static class ErrorMng
     {
         private static Label lbStatus;
         private static Button btnReset, btnYes, btnNo;
