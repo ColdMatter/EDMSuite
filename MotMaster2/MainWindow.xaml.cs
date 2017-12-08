@@ -531,7 +531,11 @@ namespace MOTMaster2
                     cbParamsMScan.Items.Clear();
                     foreach (string param in ParamsArray)
                         cbParamsMScan.Items.Add(param);
-                    if (lstParams.Items.Count > 0) lstParams.SelectedIndex = 0;
+                    if (lstParams.Items.Count > 0)
+                    {
+                        lstParams.SelectedIndex = 0;
+                        lstParams_MouseUp(null, null);
+                    }
                     gl = 170;
                 }
                 if (tcMain.SelectedIndex == 3) // manual
@@ -1156,6 +1160,7 @@ namespace MOTMaster2
             tbByMScan.Text = mms.sBy.ToString(Constants.ScanDataFormat);
             btnMScan.IsEnabled = true;
         }
+
         string ParamsMScan = null;
         private void tbFromMScan_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -1192,7 +1197,17 @@ namespace MOTMaster2
                     scanBox.Content = "Cancel";
                     scanBox.Background = Brushes.Coral;
                     Controller.ExpData.grpMME.Clear();
-                    StartMultiScan();
+                    List<MMscan> mms = new List<MMscan>();
+                    foreach (object ms in lstParams.Items)
+                    {
+                        mms.Add(new MMscan());
+                        mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
+                        if (!mms[mms.Count - 1].Check())
+                        {
+                            ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
+                        }
+                    }
+                    realMultiScan(ref mms);
                     if(groupRun == GroupRun.multiScan) btnMScan_Click(scanBox, null);
                     break;
                 case "Cancel":
@@ -1207,29 +1222,20 @@ namespace MOTMaster2
             }
         }
 
-        private void StartMultiScan()
+        private void realMultiScan(ref List<MMscan> mms)
         {
             if (lstParams.Items.Count == 0) return;
+            Controller.ExpData.ExperimentName = tbExperimentRun.Text;
             if ((String.IsNullOrEmpty(Controller.ExpData.ExperimentName) || Controller.ExpData.ExperimentName.Equals("---")))
             {
-                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yyMMdd_Hmmss");
+                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
+            Dictionary<string, object> scanDict = new Dictionary<string, object>();
             Controller.BatchNumber = 0;
             controller.AutoLogging = Check4Logging();
             Controller.ExpData.grpMME.Clear();
-            List<MMscan> mms = new List<MMscan>();
-            int multiCount = lstParams.Items.Count;
-
-            foreach (object ms in lstParams.Items)
-            {
-                mms.Add(new MMscan());
-                mms[mms.Count - 1].AsString = (string)(ms as ListBoxItem).Content;
-                if (!mms[mms.Count - 1].Check())
-                {
-                    ErrorMgr.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
-                }
-            }
+            int multiCount = mms.Count;
             groupRun = GroupRun.multiScan;
             for (int i = 0; i < mms.Count - 1; i++)
             {
@@ -1239,11 +1245,6 @@ namespace MOTMaster2
             {
                 ms.Value = ms.sFrom;
             }
-
-            Controller.ExpData.ExperimentName = tbExperimentRun.Text; 
-            if (Controller.ExpData.ExperimentName.Equals("---")) 
-                Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
-            tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             if (cbSaveAfterLoop.IsChecked.Value) 
                 Controller.ExpData.CreateMScanLogger((string)Environs.FileSystem.Paths["DataPath"] + "\\"+Controller.ExpData.ExperimentName, 
                     Controller.sequenceData, mms);
@@ -1256,8 +1257,10 @@ namespace MOTMaster2
                 {
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
+                    scanDict[ms.sParam] = ms.Value;
                 }
-                if (!SingleShot()) groupRun = GroupRun.none; 
+                SetInterferometerParams(scanDict);
+                if (!SingleShot(scanDict)) groupRun = GroupRun.none; 
                 controller.WaitForRunToFinish();
                 controller.IncrementBatchNumber();
 

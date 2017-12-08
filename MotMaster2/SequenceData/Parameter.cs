@@ -16,12 +16,23 @@ namespace MOTMaster2.SequenceData
         private object _value;
         public object Value 
         {
-        get { if (Description == "" || Description == null) return _value;
-            else return CompileParameter(Description);}
-        set {_value = value;}
+            get 
+            { 
+                if (IsScannable) return _value;
+                else return CompileParameter(Description);
+            }
+            set {_value = value;}
         }
         public string Description { get; set; }
         public bool IsHidden { get; set; }
+        public bool IsScannable 
+        { 
+            get 
+            {
+                if (Description == "" || Description == null) return true;
+                return !Description[0].Equals('=');
+            } 
+        }
         //Flags if the variable is used to modify a sequence
         public bool SequenceVariable { get; set; }
 
@@ -73,7 +84,6 @@ namespace MOTMaster2.SequenceData
             return base.Equals(obj);
         }
 
-
         public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
             if (value is int || value is double || value is string) return new Parameter("", "", value);
@@ -90,7 +100,8 @@ namespace MOTMaster2.SequenceData
 
         private double CompileParameter(string function)
         {
-            EqCompiler compiler = new EqCompiler(function, true);
+            string func = function.TrimStart('=');
+            EqCompiler compiler = new EqCompiler(func, true);
             compiler.Compile();
 
             //Checks all variables to use values in parameter dictionary
@@ -102,7 +113,6 @@ namespace MOTMaster2.SequenceData
                 }
                 else throw new Exception(string.Format("Variable {0} not found in parameters.", variable));
             }
-
             return compiler.Calculate();
         }
     }

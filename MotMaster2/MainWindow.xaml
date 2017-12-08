@@ -98,10 +98,10 @@
                         <Label Content="From:" HorizontalAlignment="Left" Height="26" Margin="11,64,0,-17.429" VerticalAlignment="Top" Width="41" Grid.Column="4"/>
                         <TextBox x:Name="tbFromMScan" HorizontalAlignment="Left" Height="26" Margin="52,59,0,-12.429" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" Text="0" FontSize="14" Grid.Column="4" TextChanged="tbFromMScan_TextChanged"/>
                         <Label Content="To:" HorizontalAlignment="Left" Height="26" Margin="11,70,0,-23.429" VerticalAlignment="Center" Width="29" Grid.Column="4"/>
-                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="150,31,0,15.571" VerticalAlignment="Center" Width="28" RenderTransformOrigin="-2.969,1.396" Grid.Column="4"/>
+                        <Label Content="By:" HorizontalAlignment="Left" Height="26" Margin="130,31,0,15.571" VerticalAlignment="Center" Width="28" RenderTransformOrigin="-2.969,1.396" Grid.Column="4"/>
                         <Button x:Name="btnMScan" Content="Multi Scan" HorizontalAlignment="Left" Height="33" Margin="135,64,0,-24.429" VerticalAlignment="Center" Width="85" FontWeight="Bold" Background="#FFF9E76B" Grid.Column="4" Click="btnMScan_Click"/>
                         <TextBox x:Name="tbToMScan" HorizontalAlignment="Left" Height="26" Margin="52,70,0,-23.429" TextWrapping="Wrap" VerticalAlignment="Center" Width="73" Text="100" FontSize="14" Grid.Column="4" TextChanged="tbFromMScan_TextChanged"/>
-                        <TextBox x:Name="tbByMScan" HorizontalAlignment="Left" Height="26" Margin="183,31,0,15.571" TextWrapping="Wrap" VerticalAlignment="Center" Width="37" Text="1" FontSize="14" Grid.Column="4" TextChanged="tbFromMScan_TextChanged"/>
+                        <TextBox x:Name="tbByMScan" HorizontalAlignment="Left" Height="26" Margin="163,31,0,15.571" TextWrapping="Wrap" VerticalAlignment="Center" Width="57" Text="1" FontSize="14" Grid.Column="4" TextChanged="tbFromMScan_TextChanged"/>
                         <CheckBox x:Name="cbSaveAfterLoop" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4.857,7,0,0" Width="129" Content="Save Lowest Loop" FontSize="13" Height="16"/>
                         <ListBox x:Name="lstParams" Margin="0,0,0.286,-0.429" Grid.Column="1" MouseUp="lstParams_MouseUp" FontSize="13" DataContextChanged="lstParams_DataContextChanged" Grid.ColumnSpan="2">
                         </ListBox>
