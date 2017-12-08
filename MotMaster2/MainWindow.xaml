@@ -111,7 +111,7 @@
                             <CheckBox Content="Photo-diode"/>
                         </ListBox>
                         <StackPanel Margin="0,0,0,-0.429">
-                            <Button x:Name="btnPlusMScan" Content="+" Height="22" Margin="3,3,3,0" FontSize="16" FontWeight="Bold" Click="btnPlusMScan_Click"/>
+                            <Button x:Name="btnPlusMScan" Content="+" Height="22" Margin="3,3,3,0" FontSize="16" FontWeight="Bold" Click="btnPlusMScan_Click" RenderTransformOrigin="0.527,0.526"/>
                             <Button x:Name="btnMinusMScan" Content="-" Height="22" Margin="3,3,3,0" FontSize="18" FontWeight="Bold" Click="btnMinusMScan_Click"/>
                             <Button x:Name="btnUpMScan" Content="Up" Height="22" Margin="3,7,3,0" Click="btnUpMScan_Click"/>
                             <Button x:Name="btnDownMScan" Content="Dwn" Height="22" Margin="3,3,3,0" FontSize="11" Click="btnDownMScan_Click"/>
@@ -220,7 +220,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Measurements" Width="120" Height="25" FontSize="13">
+                <TabItem Header="Measurements" Width="120" Height="25" FontSize="13" Visibility="Collapsed">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="117.143"/>

@@ -229,7 +229,7 @@ namespace MOTMaster2.SequenceData
             }
             catch (Exception e)
             {
-                ErrorManager.ErrorMgr.errorMsg("Could not add analog input channels. Are accelerometer and photodiode channels defined in hardware class?", -4);
+                ErrorManager.ErrorMng.errorMsg("Could not add analog input channels. Are accelerometer and photodiode channels defined in hardware class?", -4);
             }
             mmaiConfig.SampleRate = Controller.ExpData.SampleRate;
             mmaiConfig.Samples = Controller.ExpData.NSamples;

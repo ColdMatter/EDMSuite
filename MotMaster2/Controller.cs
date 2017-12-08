@@ -232,7 +232,7 @@ namespace MOTMaster2
             catch
             {
                 //Set to popup to avoid Exception called when it can't write to a Log
-                ErrorMgr.warningMsg("Could not set MSquared Parameters", -1, true);
+                ErrorMng.warningMsg("Could not set MSquared Parameters", -1, true);
             }
         }
 
@@ -340,7 +340,7 @@ namespace MOTMaster2
         }
             catch (Exception e)
             {
-                ErrorMgr.warningMsg("Error when releasing hardware: " + e.Message, -3, false);
+                ErrorMng.warningMsg("Error when releasing hardware: " + e.Message, -3, false);
             }
         }
 
@@ -621,7 +621,7 @@ namespace MOTMaster2
                 if (StaticSequence) hardwareError = !InitialiseHardwareAndPattern(sequence);
                 InitialiseData(this);
             }
-           // if (hardwareError && !config.Debug) ErrorMgr.errorMsg(runThreadException.Message, -5);
+           // if (hardwareError && !config.Debug) ErrorMng.errorMsg(runThreadException.Message, -5);
             PrepareNonDAQHardware();
 
             if (!StaticSequence)
@@ -669,7 +669,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                ErrorMgr.errorMsg("Could not initialise hardware:" + e.Message, -2, true);
+                ErrorMng.errorMsg("Could not initialise hardware:" + e.Message, -2, true);
                 return false;
             }
             return true;
@@ -691,7 +691,7 @@ namespace MOTMaster2
                     if (!sequenceData.Steps.Any(t=>t.GetDigitalData("acquisitionTrigger")))
                     {
                         Controller.genOptions.AIEnable = false;
-                        ErrorMgr.warningMsg("acquisitionTrigger is not enabled. Setting AIEnable to false.");
+                        ErrorMng.warningMsg("acquisitionTrigger is not enabled. Setting AIEnable to false.");
                     }
                     else
                     {
@@ -753,7 +753,7 @@ namespace MOTMaster2
                             }
                             catch (DataNotArrivedFromHardwareControllerException)
                             {
-                    ErrorMgr.warningMsg("No Data Arrived from Hardware Controller", -10, true);
+                    ErrorMng.warningMsg("No Data Arrived from Hardware Controller", -10, true);
                             }
 
                             Dictionary<String, Object> report = new Dictionary<string, object>();
@@ -1422,7 +1422,7 @@ namespace MOTMaster2
             {
             if (!M2DCS.Connected || !M2PLL.Connected)
                 {
-                if (!config.Debug) ErrorMgr.warningMsg("Not connected to ICE-BLOCs");
+                if (!config.Debug) ErrorMng.warningMsg("Not connected to ICE-BLOCs");
                 }
 
             try
@@ -1434,7 +1434,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                ErrorMgr.warningMsg("Failed to set phase lock." + e.Message);
+                ErrorMng.warningMsg("Failed to set phase lock." + e.Message);
             }
 
 
@@ -1459,7 +1459,7 @@ namespace MOTMaster2
             if (!config.Debug && (Controller.genOptions.m2Comm == GeneralOptions.M2CommOption.on) && updateDCS)
             {
                 try { M2DCS.UpdateSequenceParameters(); M2DCS.StartFPGA(); Thread.Sleep(2500); }
-                catch (Exception e) { ErrorMgr.warningMsg("Failed to update DCS paramaters. " + e.Message); }
+                catch (Exception e) { ErrorMng.warningMsg("Failed to update DCS paramaters. " + e.Message); }
             }
             else Console.WriteLine(M2DCS.PrintParametersToConsole());
             
@@ -1471,7 +1471,7 @@ namespace MOTMaster2
             {
                 DAQ.HAL.ICEBlocPLL.Lock_Status lockStatus = new DAQ.HAL.ICEBlocPLL.Lock_Status();
                 bool locked = M2PLL.main_lock_status(out lockStatus);
-                //if (!locked) ErrorMgr.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
+                //if (!locked) ErrorMng.errorMsg("PLL lock is not engaged - currently " + lockStatus.ToString(),10,false);
                 return locked;
             }
             else return true;
