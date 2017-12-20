@@ -5,7 +5,7 @@
         x:Class="MOTMaster2.MainWindow"
         xmlns:controls="clr-namespace:MOTMaster2"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Name="frmMain" 
-        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico" SourceInitialized="frmMain_SourceInitialized">
+        Title="MOTMaster2" Height="840.714" Width="742.786" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico" SourceInitialized="frmMain_SourceInitialized" PreviewKeyDown="frmMain_PreviewKeyDown">
     <Window.Resources>
         <controls:Controller x:Key="controller"/>
     </Window.Resources>
@@ -23,13 +23,14 @@
             <Menu Margin="0,0,-0.143,0" Background="#FFFFFDFD">
                 <Menu Height="20" Width="110" Grid.Row="0">
                     <MenuItem Header="File" Margin="0">
-                        <MenuItem Header="Open Sequence..." Click="LoadSequence_Click"/>
-                        <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click"/>
-                        <MenuItem Header="Load Cicero Sequence" Click="LoadCicero_Click"/>
+                        <MenuItem Header="_Open Sequence..." Click="LoadSequence_Click" InputGestureText="Ctrl+O"/>
+
+                        <MenuItem Header="Save Sequence As..."  Click="SaveSequence_Click" InputGestureText="Ctrl+S"/>
+                        <MenuItem Header="Load Cicero Sequence..." Click="LoadCicero_Click" InputGestureText="Ctrl+L"/>
                     </MenuItem>
                     <MenuItem Header="Edit">
-                        <MenuItem Header="Sequence Parameters" Click="EditParameters_Click"/>
-                        <MenuItem Header="Options / File System" Click="EditOptions_Click"/>
+                        <MenuItem Header="Sequence Parameters..." Click="EditParameters_Click" InputGestureText="F4"/>
+                        <MenuItem Header="Options / File System..." Click="EditOptions_Click"/>
                     </MenuItem>
                     <MenuItem Header="Help">
                         <MenuItem Header=" About..." Click="About_Click"/>

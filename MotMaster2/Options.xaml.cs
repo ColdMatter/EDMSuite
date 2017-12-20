@@ -76,7 +76,7 @@ namespace MOTMaster2
         public OptionWindow()
         {
             InitializeComponent();
-
+            
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem);
             hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             LoadJsonToTreeView(hardwareTreeView, hardwareJson);

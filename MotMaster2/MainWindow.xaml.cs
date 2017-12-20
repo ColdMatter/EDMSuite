@@ -16,6 +16,7 @@ using System.Diagnostics;
 using ErrorManager;
 using UtilsNS;
 using System.ComponentModel;
+using System.Windows.Input;
 
 
 namespace MOTMaster2
@@ -100,7 +101,7 @@ namespace MOTMaster2
             MMscan mms = new MMscan();
             mms.AsString = modes.Scan;
             cbParamsScan.Items.Clear();
-            foreach (string param in ParamsArray)
+            foreach (string param in Controller.sequenceData.ScannableParams())
                 cbParamsScan.Items.Add(param);
             cbParamsScan.Text = mms.sParam;
             tbFromScan.Text = mms.sFrom.ToString();
@@ -115,20 +116,6 @@ namespace MOTMaster2
                     lbi.Content = ss;
                     lstParams.Items.Add(lbi);
                 }
-        }
-
-        private string[] ParamsArray  // only the scanables
-        {
-            get
-            {
-                string[] pa = { "param1", "param2", "param3" };
-                if (Controller.sequenceData != null)
-                {
-                    //pa = Controller.sequenceData.ScanableParams().ToArray();
-                    pa = Controller.sequenceData.Parameters.Keys.ToArray();
-                }                    
-                return pa;
-            }
         }
 
         public enum GroupRun { none, repeat, scan, multiScan };
@@ -525,14 +512,14 @@ namespace MOTMaster2
                     int selIdx = cbParamsScan.SelectedIndex;
                     if (selIdx == -1) selIdx = 0;
                     cbParamsScan.Items.Clear();
-                    foreach (string param in ParamsArray)
+                    foreach (string param in Controller.sequenceData.ScannableParams())
                         cbParamsScan.Items.Add(param);
                     cbParamsScan.SelectedIndex = selIdx;
                 }
                 if (tcMain.SelectedIndex == 2) // multi-scan
                 {
                     cbParamsMScan.Items.Clear();
-                    foreach (string param in ParamsArray)
+                    foreach (string param in Controller.sequenceData.ScannableParams())
                         cbParamsMScan.Items.Add(param);
                     if (lstParams.Items.Count > 0)
                     {
@@ -546,7 +533,7 @@ namespace MOTMaster2
                     int selIdx = cbParamsManual.SelectedIndex;
                     if (selIdx == -1) selIdx = 0;
                     cbParamsManual.Items.Clear();
-                    foreach (string param in ParamsArray)
+                    foreach (string param in Controller.sequenceData.ScannableParams())
                         cbParamsManual.Items.Add(param);
                     //cbParamsManual.Text = ParamsArray[0];
                     cbParamsManual.SelectedIndex = selIdx;
@@ -628,7 +615,6 @@ namespace MOTMaster2
             }
             else
                 ErrorMng.warningMsg("You have tried to save a Sequence before loading a script", -1, true);
-
         }
         private void LoadSequence_Click(object sender, RoutedEventArgs e)
         {
@@ -700,11 +686,11 @@ namespace MOTMaster2
         private void EditOptions_Click(object sender, RoutedEventArgs e)
         {
             OptionWindow optionsWindow = new OptionWindow();
-            optionsWindow.Show();
+            optionsWindow.ShowDialog();
         }
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("MOTMaster v1.2\n by Jimmy Stammers and Teodor Krastev\n for Imperial College, London, UK");
+            MessageBox.Show("\tMOTMaster v1.3\n\n by Jimmy Stammers and Teodor Krastev\n for Imperial College, London, UK");
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
@@ -896,7 +882,7 @@ namespace MOTMaster2
         private void EditParameters_Click(object sender, RoutedEventArgs e)
         {
             ParametersWindow paramWindow = new ParametersWindow();
-            paramWindow.Show();
+            paramWindow.ShowDialog();
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -1339,6 +1325,26 @@ namespace MOTMaster2
                 {
                     ErrorMng.errorMsg("scan values -> " + (string)(ms as ListBoxItem).Content, 1007); return;
                 }
+            }
+        }
+
+        private void frmMain_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.O && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                LoadSequence_Click(sender, e);
+            }
+            if (e.Key == Key.S && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                SaveSequence_Click(sender, e);
+            }
+            if (e.Key == Key.L && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                LoadCicero_Click(sender, e);
+            }
+            if (e.Key == Key.F4)
+            {
+                EditParameters_Click(sender, e);
             }
         }
     }

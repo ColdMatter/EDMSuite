@@ -9,6 +9,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using dotMath;
 
 namespace MOTMaster2.SequenceData
 {
@@ -18,15 +19,40 @@ namespace MOTMaster2.SequenceData
         public ObservableCollection<SequenceStep> Steps { get; set; }
         [JsonConverter(typeof(DictionaryConverter))]
         public ObservableDictionary<string,Parameter> Parameters { get; set; }
-        public List<string> ScanableParams()
+
+        // for all names Controller.sequenceData.Parameters.Keys
+        public List<string> ScannableParams(bool scannables = true) // scanables = false is for all non-scanables (derivative) params
         {
             List<string> ls = new List<string>();
             if (Parameters == null) return ls;
-            foreach (KeyValuePair<string, object> entry in Parameters)
-                if(Parameters[entry.Key].IsScannable()) ls.Add(entry.Key);
+            foreach (KeyValuePair<string, Parameter> entry in Parameters)
+                if (scannables)
+                {
+                    if (entry.Value.IsScannable()) ls.Add(entry.Key);
+                }
+                else
+                {
+                    if (!entry.Value.IsScannable()) ls.Add(entry.Key);
+                }
             return ls;
-        } 
-
+        }
+        public List<string> DependableParams(string param) // the list of non-scan parameters dependable on "param" 
+        {
+            List<string> ls = new List<string>();
+            if (!Parameters.Keys.Contains(param)) return ls;
+            if (!Parameters[param].IsScannable()) return ls;
+            List<string> lt = ScannableParams(false);
+            foreach(string prm in lt)
+            {
+                string func = Parameters[prm].Description.TrimStart('=');
+                EqCompiler compiler = new EqCompiler(func, true);
+                compiler.Compile();
+                List<string> vl = compiler.GetVariableList().ToList();
+                if (vl.IndexOf(param) > -1) ls.Add(prm);
+            }
+            return ls;
+        }
+     
         public List<MMscan> ScanningParams { get; set; }
         public Dictionary<string,object> CreateParameterDictionary()
         {

@@ -65,8 +65,7 @@ namespace MOTMaster2
 
         public ExperimentData()
         {
-           
-           
+                      
         }
 
         public Dictionary<string, double[]> SegmentShot(double[,] rawData)
