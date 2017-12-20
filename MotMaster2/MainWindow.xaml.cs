@@ -840,7 +840,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-            ErrorMgr.warningMsg(Utils.dataPath, 123); return;
+            ErrorMng.warningMsg(Utils.dataPath, 123); return;
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             Button btn = sender as Button;
             switch (btn.Name)
