@@ -89,5 +89,19 @@ namespace MOTMaster2
             }
         }
 
+        private void frmParameters_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key == Key.F4) || (e.Key == Key.Return))
+            {
+                OK_Click(sender, e);
+            }
+            if (e.Key == Key.Escape)
+            {
+                Cancel_Click(sender, e);
+            }
+        
+
+        }
+
     }
 }

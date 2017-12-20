@@ -128,10 +128,12 @@ namespace MOTMaster2.SequenceData
                 int digitalSample = digitalSampleTimes[index];
                 double currentTime = currentTimes[index];
                 double timeMultiplier = 0.0;
-                if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
-                else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
-                else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
-
+                switch(step.Timebase) 
+                {
+                    case TimebaseUnits.ms: timeMultiplier = 1.0; break;
+                    case TimebaseUnits.us: timeMultiplier = 0.001; break;
+                    case TimebaseUnits.s: timeMultiplier = 1000.0; break;
+                }
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
                     try

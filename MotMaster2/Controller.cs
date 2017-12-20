@@ -125,7 +125,8 @@ namespace MOTMaster2
         private static WindfreakSynth microSynth;
         //public string ExperimentRunTag { get; set; }
         public static MMscan ScanParam { get; set; }
-        public static int numInterations;
+
+        public static int numInterations { get; set; }
         private static MuquansController muquans = null;
         public static ICEBlocDCS M2DCS;
         public static ICEBlocPLL M2PLL;

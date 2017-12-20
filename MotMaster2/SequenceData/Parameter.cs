@@ -112,6 +112,8 @@ namespace MOTMaster2.SequenceData
                     compiler.SetVariable(variable, Convert.ToDouble(Controller.sequenceData.Parameters[variable].Value));
                 }
                 else throw new Exception(string.Format("Variable {0} not found in parameters.", variable));
+                if(!Controller.sequenceData.Parameters[variable].IsScannable())
+                    throw new Exception(string.Format("Variable {0} is derivative (non-scannable) - not allowed!", variable));
             }
             return compiler.Calculate();
         }
