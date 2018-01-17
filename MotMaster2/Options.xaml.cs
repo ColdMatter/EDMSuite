@@ -44,7 +44,7 @@ namespace MOTMaster2
         public enum M2CommOption { on, off}
         public M2CommOption m2Comm;
 
-        public enum AISaveOption { rawData,average,both}
+        public enum AISaveOption { rawData, average, both}
         public AISaveOption aiSaveMode;
 
         public bool AxelHubLogger { get; set; }
@@ -202,12 +202,7 @@ namespace MOTMaster2
             aiAverage.IsEnabled = state;
             aiBoth.IsEnabled = state;
         }
-
-        private void channelAEnable_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-    }
+     }
 
     public sealed class MethodToValueConverter : IValueConverter
     {

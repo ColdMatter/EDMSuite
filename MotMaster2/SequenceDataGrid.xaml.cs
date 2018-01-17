@@ -16,6 +16,7 @@ using MOTMaster2.SequenceData;
 using System.Dynamic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
+using ErrorManager;
 
 namespace MOTMaster2
 {
@@ -79,9 +80,9 @@ namespace MOTMaster2
 
             Style digitalStyle = (Style)this.Resources["BackgroundCheckBoxStyle"];
             //Style digitalStyle = new Style();
-            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.CheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.ClickEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
 
-            digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
+            //digitalStyle.Setters.Add(new EventSetter() { Event = CheckBox.UncheckedEvent, Handler = new RoutedEventHandler(this.sequenceDataGrid_chkDigitalChecked) });
             Brush[] colours = new Brush[] { new SolidColorBrush(Colors.Red), new SolidColorBrush(Colors.Orange), new SolidColorBrush(Colors.Yellow), new SolidColorBrush(Colors.Green), new SolidColorBrush(Colors.Blue) };
             int i = 0;
             foreach (var name in dignames)
@@ -110,6 +111,26 @@ namespace MOTMaster2
             if (Controller.sequenceData != null) Controller.sequenceData.Steps = first;
         }
 
+  /*      private void sequenceDataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0)
+            {
+                var dg = sender as DataGrid;  if (dg.CurrentItem == null) { return; }
+                //var cell = dg.CurrentItem as DataGridCell; if (cell == null) { return; }
+                if (lastDataGridCellInfo == sequenceDataGrid.CurrentCell)
+                {
+                    if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
+                    {
+                        string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                        if (channelName == "RS232Commands" || channelName == "Enabled") return;
+                        SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
+                        //lastCheckBox.IsChecked = model.SelectedDigitalChannel.Value.Value;
+                        ErrorMng.simpleMsg(lastCheckBoxValue.ToString() + " : " + lastCheckBox.IsChecked.ToString() + " / " + model.SelectedDigitalChannel.Value.Value.ToString());
+                            //= new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(lastCheckBox.IsChecked.Value));
+                    }                    
+                }
+            }
+        }*/
         private void sequenceDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
             //Controller ctrl;
@@ -132,17 +153,28 @@ namespace MOTMaster2
             }
         }
 
+        CheckBox lastCheckBox; bool lastCheckBoxValue;
+        DataGridCellInfo lastDataGridCellInfo;
         //TODO Fix this being called when creating a new sequence step
         private void sequenceDataGrid_chkDigitalChecked(object sender, RoutedEventArgs e)
         {
             //Console.WriteLine("654654");
-            var cell = sender as CheckBox;
-            if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn))
+            Mouse.OverrideCursor = Cursors.Wait;
+            try 
+            { 
+                var cell = sender as CheckBox; lastCheckBox = cell; lastDataGridCellInfo = sequenceDataGrid.CurrentCell; lastCheckBoxValue = cell.IsChecked.Value;
+
+                if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn) && cell != null)
+                {
+                    string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+                    if (channelName == "RS232Commands" || channelName == "Enabled") return;
+                    SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
+                    model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
+                }
+            }
+            finally
             {
-                string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
-                if (channelName == "RS232Commands" || channelName == "Enabled") return;
-                SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
-                model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
+                Mouse.OverrideCursor = null;
             }
            // if (cell.IsChecked.Value) cell.Background = new SolidColorBrush(Colors.Red);
             //else cell.Background = new SolidColorBrush(Colors.Black);
