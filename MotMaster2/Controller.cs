@@ -1301,16 +1301,13 @@ namespace MOTMaster2
         #region Saving and Processing Experiment Data
         public void StartLogging()
         {
-            string now = DateTime.Now.ToString("yyMMdd_hhmmss");
-            string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName + "_" + now;
+            string fileTag = motMasterDataPath + "/" + ExpData.ExperimentName;
+            if (!genOptions.BriefData)
+            {
             dataLogger = new AutoFileLogger(fileTag + ".dta");
             paramLogger = new AutoFileLogger(fileTag + ".prm");
-            writeColumnNames = true;
-            dataLogger.Enabled = true;
-            paramLogger.Enabled = true;
-            dataLogger.log("{\"MMbatch\":[");
-            paramLogger.log("{\"MMbatch\":[");
-            writeParameters = true;
+            }
+           
         }
  
         public void StopLogging()
@@ -1328,6 +1325,7 @@ namespace MOTMaster2
             paramLogger.log("]\n}");
             paramLogger.Enabled = false;
             }
+        
         }
         /// <summary>
         /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
@@ -1414,7 +1412,7 @@ namespace MOTMaster2
             var rawData = config.Debug ? ExpData.GenerateFakeData() : aip.GetAnalogData();
             MMexec finalData = ConvertDataToAxelHub(rawData);
             string dataJson = JsonConvert.SerializeObject(finalData, Formatting.Indented);
-            dataLogger.log("{\"MMExec\":" + dataJson + "},");
+            if (!genOptions.BriefData) dataLogger.log("{\"MMExec\":" + dataJson + "},");
             if (SendDataRemotely)
             {
                 if (MotMasterDataEvent != null) MotMasterDataEvent(this, new DataEventArgs(dataJson));
@@ -1442,17 +1440,20 @@ namespace MOTMaster2
 
 
             //Updates DCS if parameters have been modified
-            bool updateDCS = false;
+            bool updateDCS = DCSParams.ContainsKey("IntTime1") || DCSParams.ContainsKey("IntTime2");
+            if (updateDCS && !DCSParams.ContainsKey("IntTime1")) DCSParams["IntTime1"] = Convert.ToDouble(sequenceData.Parameters["IntTime1"].Value);
+            else if (updateDCS && !DCSParams.ContainsKey("IntTime2")) DCSParams["IntTime2"] = Convert.ToDouble(sequenceData.Parameters["IntTime2"].Value);
             if (DCSParams.Any(kvp => kvp.Key.Contains("VelPulse"))) { DCSParams["VelPulseEnabled"] = true; updateDCS = true; }
             if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse1"))) { DCSParams["Pulse1Enabled"] = true; updateDCS = true; }
             if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse2"))) { DCSParams["Pulse2Enabled"] = true; updateDCS = true; }
             if (DCSParams.Any(kvp => kvp.Key.Contains("Pulse3"))) { DCSParams["Pulse3Enabled"] = true; updateDCS = true; }
 
+
             if (Utils.Get(DCSParams, "VelPulseEnabled") != null) M2DCS.ConfigurePulse("X", 0, Utils.Get(DCSParams, "VelPulseDuration"), Utils.Get(DCSParams, "VelPulsePower"), 1e-6, Utils.Get(DCSParams, "VelPulsePhase"), (bool)Utils.Get(DCSParams, "VelPulseEnabled"));
             if (Utils.Get(DCSParams, "Pulse1Enabled") != null) M2DCS.ConfigurePulse("X", 1, Utils.Get(DCSParams, "Pulse1Duration"), Utils.Get(DCSParams, "Pulse1Power"), 1e-6, Utils.Get(DCSParams, "Pulse1Phase"), (bool)Utils.Get(DCSParams, "Pulse1Enabled"));
             if (Utils.Get(DCSParams, "IntTime1") != null) M2DCS.ConfigureIntTime(1, (double)DCSParams["IntTime1"]);
             if (Utils.Get(DCSParams, "Pulse2Enabled") != null) M2DCS.ConfigurePulse("X", 2, Utils.Get(DCSParams, "Pulse2Duration"), Utils.Get(DCSParams, "Pulse2Power"), 1e-6, Utils.Get(DCSParams, "Pulse2Phase"), (bool)Utils.Get(DCSParams, "Pulse2Enabled"));
-            if (Utils.Get(DCSParams, "IntTime2") != null) M2DCS.ConfigureIntTime(2, (double)DCSParams["IntTime2"]);
+            if (Utils.Get(DCSParams, "IntTime2") != null) { M2DCS.ConfigureIntTime(2, (double)DCSParams["IntTime2"]); M2DCS.ConfigureIntTime(3, (double)DCSParams["IntTime2"]); }
             if (Utils.Get(DCSParams, "Pulse3Enabled") != null) M2DCS.ConfigurePulse("X", 3, Utils.Get(DCSParams, "Pulse3Duration"), Utils.Get(DCSParams, "Pulse3Power"), 1e-6, Utils.Get(DCSParams, "Pulse3Phase"), (bool)Utils.Get(DCSParams, "Pulse3Enabled"));
             DCSParams.Clear();
             //TODO Send this to MainWindow Log

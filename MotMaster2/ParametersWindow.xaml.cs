@@ -29,7 +29,8 @@ namespace MOTMaster2
             _sequenceParameters = new ObservableCollection<Parameter>();
             foreach (Parameter p in Controller.sequenceData.Parameters.Values)
             {
-                if (!p.IsHidden) _sequenceParameters.Add(p.Copy());
+                //if (!p.IsHidden) _sequenceParameters.Add(p.Copy());
+                _sequenceParameters.Add(p.Copy());
             }
 
             parameterGrid.ItemsSource = _sequenceParameters;

@@ -826,10 +826,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-           /* Dictionary<string, double> prms;
-            Dictionary<string, List<double>> scans;
-            Controller.ExpData.ImportMScanFile(@"E:\header.mn", out prms, out scans);
-            return;*/
+            ErrorMng.warningMsg(Utils.dataPath, 123); return;
             // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
             Button btn = sender as Button;
             switch (btn.Name)
@@ -1100,14 +1097,13 @@ namespace MOTMaster2
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)
         {
-            object control;
             foreach (KeyValuePair<string,object> entry in scanDict)
             {
-                control = MSquaredTab.FindName(entry.Key);
+                NationalInstruments.Controls.NumericTextBoxDouble control = (NationalInstruments.Controls.NumericTextBoxDouble)MSquaredTab.FindName(entry.Key);
                 if (control == null) continue;
-                else
-                {
-                    ((NationalInstruments.Controls.NumericTextBoxDouble)control).Value = (double)entry.Value;
+                else if (Math.Abs(control.Value - (double)entry.Value) > 1e-10)
+                { //Only update them if the value has changed.
+                    control.Value = (double)entry.Value;
                     controller.StoreDCSParameter(entry.Key, entry.Value); 
                 }
                 //TODO fix handling of warnings if ICE-BLocs are not connected
@@ -1251,7 +1247,7 @@ namespace MOTMaster2
                     lstValue.Items.Add(ms.Value.ToString("G6"));
                     Controller.SetParameter(ms.sParam, ms.Value);
                     scanDict[ms.sParam] = ms.Value;
-                }                
+                }
                 SetInterferometerParams(scanDict);
                 if (!SingleShot(scanDict)) groupRun = GroupRun.none; 
                 controller.WaitForRunToFinish();
