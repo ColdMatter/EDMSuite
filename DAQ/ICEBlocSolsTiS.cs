@@ -31,7 +31,7 @@ namespace DAQ.HAL
                 my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
             }
             
-            M2_ip_address = "192.168.1.222";
+            M2_ip_address = "192.168.1.223";
         }
 
         #endregion
@@ -168,6 +168,47 @@ namespace DAQ.HAL
             Dictionary<string, object> prms = new Dictionary<string, object>();
             Dictionary<string, object> rslt = GenericCommand("etalon_lock_status", prms);
             return rslt;
+        }
+
+        // 3.19
+        public int monitor_a(int signal, bool report)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            prms.Add("signal", signal);
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("monitor_a", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.32
+        public int fast_scan_start(string scan, double width, double time, bool report)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            prms.Add("scan", scan);
+            prms.Add("width", width);
+            prms.Add("time", time);
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("fast_scan_start", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.34
+        public int fast_scan_stop(string scan, bool report)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            prms.Add("scan", scan);
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("fast_scan_stop", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
         }
 
         #endregion

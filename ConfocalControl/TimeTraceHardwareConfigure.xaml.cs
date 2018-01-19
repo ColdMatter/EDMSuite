@@ -31,10 +31,10 @@ namespace ConfocalControl
         {
             InitializeComponent();
 
-            analogHighLowsIncluded = (Dictionary<string, double[]>)SingleCounterPlugin.GetController().Settings["analogueLowHighs"];
+            analogHighLowsIncluded = (Dictionary<string, double[]>)TimeTracePlugin.GetController().Settings["analogueLowHighs"];
 
             List<string> includedAnalogInputChannelsKeys = new List<string>();
-            foreach (string key in (List<string>)SingleCounterPlugin.GetController().Settings["analogueChannels"])
+            foreach (string key in (List<string>)TimeTracePlugin.GetController().Settings["analogueChannels"])
             {
                 includedAnalogInputChannelsKeys.Add(key);
 
@@ -59,7 +59,7 @@ namespace ConfocalControl
             }
 
             List<string> includedCounterChannelsKeys = new List<string>();
-            foreach (string key in (List<string>)SingleCounterPlugin.GetController().Settings["counterChannels"])
+            foreach (string key in (List<string>)TimeTracePlugin.GetController().Settings["counterChannels"])
             {
                 includedCounterChannelsKeys.Add(key);
             }
@@ -165,15 +165,15 @@ namespace ConfocalControl
             {
                 new_analog.Add(key);
             }
-            SingleCounterPlugin.GetController().Settings["analogueChannels"] = new_analog;
-            SingleCounterPlugin.GetController().Settings["analogueLowHighs"] = analogHighLowsIncluded;
+            TimeTracePlugin.GetController().Settings["analogueChannels"] = new_analog;
+            TimeTracePlugin.GetController().Settings["analogueLowHighs"] = analogHighLowsIncluded;
 
             List<string> new_counters = new List<string>();
             foreach (string key in counters_included.Items)
             {
                 new_counters.Add(key);
             }
-            SingleCounterPlugin.GetController().Settings["counterChannels"] = new_counters;
+            TimeTracePlugin.GetController().Settings["counterChannels"] = new_counters;
 
             this.Close();
         }

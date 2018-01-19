@@ -117,12 +117,11 @@
     <Compile Include="LaserControl.xaml.cs">
       <DependentUpon>LaserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MultiChannelRasterScan.cs" />
     <Compile Include="PluginSettings.cs" />
     <Compile Include="RasterScanHardwareConfigure.xaml.cs">
       <DependentUpon>RasterScanHardwareConfigure.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SingleCounterPlugin.cs" />
+    <Compile Include="TimeTracePlugin.cs" />
     <Compile Include="SolsTiSPlugin.cs" />
     <Compile Include="TimeTraceHardwareConfigure.xaml.cs">
       <DependentUpon>TimeTraceHardwareConfigure.xaml</DependentUpon>

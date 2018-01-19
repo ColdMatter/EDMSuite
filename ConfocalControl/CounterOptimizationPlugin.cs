@@ -83,7 +83,7 @@ namespace ConfocalControl
 
         private void CalculateParameters()
         {
-            double _sampleRate = (double)SingleCounterPlugin.GetController().Settings["sampleRate"];
+            double _sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
             if (_sampleRate * MINNUMBEROFSAMPLES >= TRUESAMPLERATE)
             {
                 pointsPerExposure = MINNUMBEROFSAMPLES;
@@ -98,7 +98,7 @@ namespace ConfocalControl
 
         public void OptimizationStarting(string countChannel)
         {
-            if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
+            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }

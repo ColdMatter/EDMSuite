@@ -30,6 +30,11 @@
         <Label Content="Stop" HorizontalAlignment="Left" Margin="237,65,0,0" VerticalAlignment="Top"/>
         <Label Content="Res" HorizontalAlignment="Left" Margin="237,92,0,0" VerticalAlignment="Top"/>
         <ni:Graph x:Name="wavemeterScan_Display" HorizontalAlignment="Left" Height="200" Margin="388,13,0,0" VerticalAlignment="Top" Width="500">
+            <ni:Graph.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Save Data" Click="save_wavemeterScan_Click" />
+                </ContextMenu>
+            </ni:Graph.ContextMenu>
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 1">
                     <ni:LinePlotRenderer Stroke="Blue"/>
@@ -37,17 +42,20 @@
             </ni:Graph.Plots>
         </ni:Graph>
         <ni:Switch x:Name="wavemeterScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,121,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="wavemeterScan_Switch_Click" ClickMode="Press"/>
-        <Label Content="Resonator Scan" HorizontalAlignment="Left" Margin="237,239,0,0" VerticalAlignment="Top"/>
-        <ni:NumericTextBoxDouble x:Name="resonatorScanStart_Set" HorizontalAlignment="Left" Height="23" Margin="277,265,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanStart_Set_ValueChanged" Value="10"/>
-        <ni:NumericTextBoxDouble x:Name="resonatorScanStop_Set" HorizontalAlignment="Left" Height="23" Margin="277,293,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanStop_Set_ValueChanged" Value="90"/>
-        <ni:NumericTextBoxDouble x:Name="resonatorScanRes_Set" HorizontalAlignment="Left" Height="23" Margin="277,321,0,0" VerticalAlignment="Top" Width="75" ValueChanged="resonatorScanRes_Set_ValueChanged" Value="1000"/>
-        <ni:Switch x:Name="resonatorScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,349,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" ClickMode="Press" Click="resonatorScan_Switch_Click"/>
-        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="532,220,0,0" VerticalAlignment="Top" Width="115" SelectionChanged="output_type_box_SelectionChanged"/>
-        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="652,220,0,0" VerticalAlignment="Top" Width="115" SelectionChanged="output_box_SelectionChanged"/>
-        <Label Content="Start" HorizontalAlignment="Left" Margin="237,263,0,0" VerticalAlignment="Top"/>
-        <Label Content="Stop" HorizontalAlignment="Left" Margin="237,292,0,0" VerticalAlignment="Top"/>
-        <Label Content="Res" HorizontalAlignment="Left" Margin="237,319,0,0" VerticalAlignment="Top"/>
-        <ni:Graph x:Name="resonatorScan_Display" HorizontalAlignment="Left" Height="200" Margin="388,242,0,0" VerticalAlignment="Top" Width="500">
+        <Label Content="Fast Scan" HorizontalAlignment="Left" Margin="237,239,0,0" VerticalAlignment="Top"/>
+        <ni:NumericTextBoxDouble x:Name="fastScanWidth_Set" HorizontalAlignment="Left" Height="23" Margin="277,293,0,0" VerticalAlignment="Top" Width="75" ValueChanged="fastScanWidth_Set_ValueChanged" Value="90"/>
+        <ni:NumericTextBoxDouble x:Name="fastScanTime_Set" HorizontalAlignment="Left" Height="23" Margin="277,321,0,0" VerticalAlignment="Top" Width="75" ValueChanged="fastScanTime_Set_ValueChanged" Value="1000"/>
+        <ni:Switch x:Name="fastScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="252,349,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" ClickMode="Press" Click="fastScan_Switch_Click"/>
+        <ComboBox x:Name="output_type_box" HorizontalAlignment="Left" Margin="252,149,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="output_type_box_SelectionChanged"/>
+        <ComboBox x:Name="output_box" HorizontalAlignment="Left" Margin="252,176,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="output_box_SelectionChanged"/>
+        <Label Content="Width" HorizontalAlignment="Left" Margin="237,292,0,0" VerticalAlignment="Top"/>
+        <Label Content="Time" HorizontalAlignment="Left" Margin="237,319,0,0" VerticalAlignment="Top"/>
+        <ni:Graph x:Name="fastScan_Display" HorizontalAlignment="Left" Height="200" Margin="388,242,0,0" VerticalAlignment="Top" Width="500">
+            <ni:Graph.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Save Data" Click="save_fastScan_Click" />
+                </ContextMenu>
+            </ni:Graph.ContextMenu>
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 1">
                     <ni:LinePlotRenderer Stroke="Blue"/>
@@ -56,9 +64,9 @@
         </ni:Graph>
         <Label Content="nm" HorizontalAlignment="Left" Margin="349,36,0,0" VerticalAlignment="Top"/>
         <Label Content="nm" HorizontalAlignment="Left" Margin="349,64,0,0" VerticalAlignment="Top"/>
-        <Label Content="%" HorizontalAlignment="Left" Margin="351,263,0,0" VerticalAlignment="Top"/>
-        <Label Content="%" HorizontalAlignment="Left" Margin="351,292,0,0" VerticalAlignment="Top"/>
+        <Label Content="GHz" HorizontalAlignment="Left" Margin="349,292,0,0" VerticalAlignment="Top"/>
         <Label Content="Points" HorizontalAlignment="Left" Margin="349,92,0,0" VerticalAlignment="Top"/>
-        <Label Content="Points" HorizontalAlignment="Left" Margin="349,320,0,0" VerticalAlignment="Top"/>
+        <Label Content="sec" HorizontalAlignment="Left" Margin="349,320,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="fastScanType_ComboBox" HorizontalAlignment="Left" Margin="252,265,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="fastScanType_ComboBox_SelectionChanged"/>
     </Grid>
 </Window>

@@ -47,9 +47,9 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler WavemeterScanFinished;
         public event SpectraScanExceptionEventHandler WavemeterScanProblem;
 
-        public event SpectraScanDataEventHandler ResonatorData;
-        public event MultiChannelScanFinishedEventHandler ResonatorScanFinished;
-        public event SpectraScanExceptionEventHandler ResonatorScanProblem;
+        public event SpectraScanDataEventHandler FastData;
+        public event MultiChannelScanFinishedEventHandler FastScanFinished;
+        public event SpectraScanExceptionEventHandler FastScanProblem;
 
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
@@ -58,8 +58,11 @@ namespace ConfocalControl
         private double sampleRate;
 
         // Keep track of data
-        private List<Point>[] analogBuffer;
-        private List<Point>[] counterBuffer;
+        private List<Point>[] wavemeterAnalogBuffer;
+        private List<Point>[] wavemeterCounterBuffer;
+        private List<Point>[] fastAnalogBuffer;
+        private List<Point>[] fastCounterBuffer;
+        private double[] fastLatestCounters;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -69,6 +72,8 @@ namespace ConfocalControl
         private List<CounterSingleChannelReader> counterReaders;
         private Task analoguesTask;
         private AnalogMultiChannelReader analoguesReader;
+        private Task voltageTask;
+        private AnalogSingleChannelReader voltageReader;
 
         #endregion
 
@@ -85,7 +90,7 @@ namespace ConfocalControl
             solstis = new ICEBlocSolsTiS(computer_ip);
 
             LoadSettings();
-            if (Settings.Keys.Count != 12)
+            if (Settings.Keys.Count != 17)
             {
                 Settings["wavelength"] = 785.0;
 
@@ -97,12 +102,19 @@ namespace ConfocalControl
                 Settings["analogueChannels"] = new List<string> { };
                 Settings["analogueLowHighs"] = new Dictionary<string, double[]>();
 
-                Settings["resonatorScanStart"] = 10.0;
-                Settings["resonatorScanStop"] = 90.0;
-                Settings["resonatorScanPoints"] = 100;
+                Settings["fastScanWidth"] = (double)50;
+                Settings["fastScanTime"] = (double)100;
+                Settings["fastScanType"] = "etalon_single";
 
-                Settings["channel_type"] = "Counters";
-                Settings["display_channel_index"] = 0;
+                Settings["wavemeter_channel_type"] = "Counters";
+                Settings["wavemeter_display_channel_index"] = 0;
+                
+                Settings["displayType"] = "Time"; 
+                Settings["fast_channel_type"] = "Counters";
+                Settings["fast_display_channel_index"] = 0;
+                Settings["fastVoltageChannel"] = "AI2";
+                Settings["fastVoltageLowHigh"] = new double[] { 0, 5 };
+
                 return;
             }
 
@@ -110,10 +122,12 @@ namespace ConfocalControl
             freqOutTask = null;
             counterTasks = null;
             analoguesTask = null;
+            voltageTask = null;
 
             triggerWriter = null;
             counterReaders = null;
             analoguesReader = null;
+            voltageReader = null;
         }
 
         #endregion
@@ -122,7 +136,7 @@ namespace ConfocalControl
 
         private void CalculateParameters()
         {
-            double _sampleRate = (double)SingleCounterPlugin.GetController().Settings["sampleRate"];
+            double _sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
             if (_sampleRate * MINNUMBEROFSAMPLES >= TRUESAMPLERATE)
             {
                 pointsPerExposure = MINNUMBEROFSAMPLES;
@@ -145,40 +159,20 @@ namespace ConfocalControl
             return backendState == ScanState.stopping;
         }
 
+        public void StopAcquisition()
+        {
+            backendState = ScanState.stopping;
+        }
+
         #endregion
 
         #region Wavemeter Scan
 
         private int SetAndLockWavelength(double wavelength)
         {
-            return SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
+            //return SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
 
-            //Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
-
-            //if (reply.Count == 0)
-            //{
-            //    throw new Exception("poll_wave_m: empty reply");
-            //}
-            //else
-            //{
-            //    switch ((int)reply["status"])
-            //    {
-            //        case 0:
-            //            throw new Exception("poll_wave_m: tuning software not active");
-
-            //        case 1:
-            //            throw new Exception("poll_wave_m: no link to wavelength meter or no meter configured");
-
-            //        case 2:
-            //            throw new Exception("poll_wave_m: tuning in progress");
-
-            //        case 3:
-            //            return SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
-
-            //        default:
-            //            throw new Exception("poll_wave_m: did not understand reply");
-            //    }
-            //}
+            return SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
         }
 
         public bool WavemeterAcceptableSettings()
@@ -196,9 +190,9 @@ namespace ConfocalControl
 
         public void WavemeterSynchronousStartScan()
         {
-            //try
-            //{
-                if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+            try
+            {
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }
@@ -206,24 +200,24 @@ namespace ConfocalControl
                 backendState = ScanState.running;
                 WavemeterSynchronousAcquisitionStarting();
                 WavemeterSynchronousAcquire();
-            //}
-            //catch (Exception e)
-            //{
-            //    if (WavemeterScanProblem != null) WavemeterScanProblem(e);
-            //}
+            }
+            catch (Exception e)
+            {
+                if (WavemeterScanProblem != null) WavemeterScanProblem(e);
+            }
         }
 
         private void WavemeterSynchronousAcquisitionStarting()
         {
-            analogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
+            wavemeterAnalogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
             for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
             {
-                analogBuffer[i] = new List<Point>();
+                wavemeterAnalogBuffer[i] = new List<Point>();
             }
-            counterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
+            wavemeterCounterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
             for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
             {
-                counterBuffer[i] = new List<Point>();
+                wavemeterCounterBuffer[i] = new List<Point>();
             }
 
             // Define sample rate 
@@ -309,8 +303,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)Settings["analogueChannels"])[i];
 
-                double inputRangeLow = ((List<double[]>)Settings["analogueLowHighs"])[i][0];
-                double inputRangeHigh = ((List<double[]>)Settings["analogueLowHighs"])[i][1];
+                double inputRangeLow = 0;
+                double inputRangeHigh = 1;
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
@@ -386,8 +380,8 @@ namespace ConfocalControl
                     {
                         double[] latestData = counterLatestData[j];
                         double data = latestData[latestData.Length - 1] - latestData[0];
-                        Point pnt = new Point(currentWavelength, span.TotalMilliseconds);
-                        counterBuffer[j].Add(pnt);
+                        Point pnt = new Point(currentWavelength, data);
+                        wavemeterCounterBuffer[j].Add(pnt);
                     }
 
                     // Store analogue data
@@ -402,7 +396,7 @@ namespace ConfocalControl
                             }
                             double average = sum / (analogLatestData.GetLength(1) - 1);
                             Point pnt = new Point(currentWavelength, average);
-                            analogBuffer[j].Add(pnt);
+                            wavemeterAnalogBuffer[j].Add(pnt);
                         }
                     }
 
@@ -413,6 +407,7 @@ namespace ConfocalControl
                     {
                         // Quit plugins
                         WavemeterAcquisitionFinishing();
+                        WavemeterOnScanFinished();
                         return;
                     }
                 }
@@ -446,14 +441,14 @@ namespace ConfocalControl
 
         private void WavemeterOnData()
         {
-            switch ((string)Settings["channel_type"])
+            switch ((string)Settings["wavemeter_channel_type"])
             {
                 case "Counters":
                     if (WavemeterData != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
+                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
                         {
-                            WavemeterData(counterBuffer[(int)Settings["display_channel_index"]].ToArray());
+                            WavemeterData(wavemeterCounterBuffer[(int)Settings["wavemeter_display_channel_index"]].ToArray());
                         }
                         else WavemeterData(null);
                     }
@@ -462,9 +457,9 @@ namespace ConfocalControl
                 case "Analogues":
                     if (WavemeterData != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
+                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
                         {
-                            WavemeterData(analogBuffer[(int)Settings["display_channel_index"]].ToArray());
+                            WavemeterData(wavemeterAnalogBuffer[(int)Settings["wavemeter_display_channel_index"]].ToArray());
                         }
                         else WavemeterData(null);
                     }
@@ -484,7 +479,7 @@ namespace ConfocalControl
 
         public void RequestWavemeterHistoricData()
         {
-            if (analogBuffer != null && counterBuffer != null) WavemeterOnData();
+            if (wavemeterAnalogBuffer != null && wavemeterCounterBuffer != null) WavemeterOnData();
         }
 
         public void SaveWavemeterData(string fileName, bool automatic)
@@ -493,7 +488,7 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + SingleCounterPlugin.GetController().GetExposure().ToString());
+            lines.Add("Exposure = " + TimeTracePlugin.GetController().GetExposure().ToString());
             lines.Add("Lambda start = " + ((double)Settings["wavemeterScanStart"]).ToString() + ", Lambda stop = " + ((double)Settings["wavemeterScanStop"]).ToString() + ", Lambda resolution = " + ((int)Settings["wavemeterScanPoints"]).ToString());
 
             string descriptionString = "Lambda ";
@@ -507,14 +502,14 @@ namespace ConfocalControl
             }
             lines.Add(descriptionString);
 
-            for (int i = 0; i < counterBuffer[0].Count; i++)
+            for (int i = 0; i < wavemeterCounterBuffer[0].Count; i++)
             {
-                string line = counterBuffer[0][i].X.ToString() + " ";
-                foreach (List<Point> counterData in counterBuffer)
+                string line = wavemeterCounterBuffer[0][i].X.ToString() + " ";
+                foreach (List<Point> counterData in wavemeterCounterBuffer)
                 {
                     line = line + counterData[i].Y.ToString() + " ";
                 }
-                foreach (List<Point> analogData in analogBuffer)
+                foreach (List<Point> analogData in wavemeterAnalogBuffer)
                 {
                     line = line + analogData[i].Y.ToString() + " ";
                 }
@@ -537,13 +532,13 @@ namespace ConfocalControl
 
         #endregion
 
-        #region Resonator Scan
+        #region Fast Scan
 
-        public bool ResonatorAcceptableSettings()
+        public bool FastScanAcceptableSettings()
         {
-            if ((double)Settings["resonatorScanStart"] >= (double)Settings["resonatorScanStop"] || (int)Settings["resonatorScanPoints"] < 1)
+            if ((double)Settings["fastScanWidth"] <= 0.01 || (double)Settings["fastScanTime"] <= 0.01 || (double)Settings["fastScanTime"] >= 10000)
             {
-                MessageBox.Show("Resonator scan settings unacceptable.");
+                MessageBox.Show("FastScan settings unacceptable.");
                 return false;
             }
             else
@@ -552,53 +547,45 @@ namespace ConfocalControl
             }
         }
 
-        public void ResonatorSynchronousStartScan()
+        public void FastSynchronousStartScan()
         {
-            //try
-            //{
-            if (IsRunning() || SingleCounterPlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+            try
             {
-                throw new DaqException("Counter already running");
-            }
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Counter already running");
+                }
 
-            backendState = ScanState.running;
-            ResonatorSynchronousAcquisitionStarting();
-            ResonatorSynchronousAcquire();
-            //}
-            //catch (Exception e)
-            //{
-            //    if (ResonatorScanProblem != null) ResonatorScanProblem(e);
-            //}
+                backendState = ScanState.running;
+
+                FastSynchronousAcquisitionStarting();
+                FastSynchronousAcquire();
+            }
+            catch (Exception e)
+            {
+                if (FastScanProblem != null) FastScanProblem(e);
+            }
         }
 
-        private void ResonatorSynchronousAcquisitionStarting()
+        private void FastSynchronousAcquisitionStarting()
         {
-            analogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
+            // Initialise containers
+            fastAnalogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
             for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
             {
-                analogBuffer[i] = new List<Point>();
+                fastAnalogBuffer[i] = new List<Point>();
             }
-            counterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
+            fastCounterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
+            fastLatestCounters = new double[((List<string>)Settings["counterChannels"]).Count];
             for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
             {
-                counterBuffer[i] = new List<Point>();
+                fastCounterBuffer[i] = new List<Point>();
+                fastLatestCounters[i] = 0;
             }
 
             // Define sample rate 
-            CalculateParameters();
-
-            // Set up trigger task
-            triggerTask = new Task("pause trigger task");
-
-            // Digital output
-            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["StartTrigger"]).AddToTask(triggerTask);
-
-            triggerTask.Control(TaskAction.Verify);
-
-            DaqStream triggerStream = triggerTask.Stream;
-            triggerWriter = new DigitalSingleChannelWriter(triggerStream);
-
-            triggerWriter.WriteSingleSampleSingleLine(true, false);
+            pointsPerExposure = 1;
+            sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
 
             // Set up clock task
             freqOutTask = new Task("sample clock task");
@@ -613,18 +600,38 @@ namespace ConfocalControl
                 sampleRate,
                 0.5);
 
-            freqOutTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                (string)Environs.Hardware.GetInfo("StartTriggerReader"),
-                DigitalEdgeStartTriggerEdge.Rising);
 
-            freqOutTask.Triggers.StartTrigger.Retriggerable = true;
-
-
-            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, pointsPerExposure + 1);
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
 
             freqOutTask.Control(TaskAction.Verify);
 
-            freqOutTask.Start();
+            // Set up voltage sampling tasks
+            voltageTask = new Task("voltage sampler");
+
+            string voltageChannelName = (string)Settings["fastVoltageChannel"];
+
+            double voltageInputRangeLow = ((double[])Settings["fastVoltageLowHigh"])[0];
+            double voltageInputRangeHigh = ((double[])Settings["fastVoltageLowHigh"])[1];
+
+            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[voltageChannelName]).AddToTask(
+                voltageTask,
+                voltageInputRangeLow,
+                voltageInputRangeHigh
+                );
+
+            voltageTask.Timing.ConfigureSampleClock(
+                (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                sampleRate,
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.ContinuousSamples);
+
+            voltageTask.Control(TaskAction.Verify);
+
+            DaqStream voltageStream = voltageTask.Stream;
+            voltageReader = new AnalogSingleChannelReader(voltageStream);
+
+            // Start tasks
+            voltageTask.Start();
 
             // Set up edge-counting tasks
             counterTasks = new List<Task>();
@@ -667,8 +674,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)Settings["analogueChannels"])[i];
 
-                double inputRangeLow = ((List<double[]>)Settings["analogueLowHighs"])[i][0];
-                double inputRangeHigh = ((List<double[]>)Settings["analogueLowHighs"])[i][1];
+                double inputRangeLow = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][1];
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
@@ -693,142 +700,180 @@ namespace ConfocalControl
                 // Start tasks
                 analoguesTask.Start();
             }
+
+            // Change laser output signal and etalon lock
+            switch ((string)Settings["fastScanType"])
+            {
+                case "etalon_continuous":
+                    SolsTiSPlugin.GetController().Solstis.monitor_a(2, true);
+                    
+                    int reply = SolsTiSPlugin.GetController().Solstis.etalon_lock(false, true);
+
+                    switch (reply)
+                    {
+                        case -1:
+                            throw new Exception("empty reply");
+
+                        case 0:
+                            break;
+
+                        case 1:
+                            throw new Exception("task failed");
+
+                        default:
+                            throw new Exception("did not understand etalon reply");
+                    }
+
+                    break;
+
+                case "resonator_continuous":
+                    SolsTiSPlugin.GetController().Solstis.monitor_a(6, true);
+                    break;
+
+                default:
+                    throw new Exception("Did not understand scan type");
+            }
         }
 
-        private void ResonatorSynchronousAcquire()
-        // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
+        private void FastSynchronousAcquire()
         {
-            // Go to start of scan
-            int report = SolsTiSPlugin.GetController().Solstis.tune_resonator((double)Settings["resonatorScanStart"], true);
-            if (report == 1) throw new Exception("tune_resonator: task failed");
+            Thread thread = new Thread(new ThreadStart(StartLaserFastScan));
+            thread.IsBackground = true;
+            thread.Start();
+            freqOutTask.Start();
 
-            // Main loop
-            for (double i = 0;
-                    i < (int)Settings["resonatorScanPoints"] + 1;
-                    i++)
+            while (backendState == ScanState.running)
             {
-                double currentPercentage = (double)Settings["resonatorScanStart"] + i *
-                    ((double)Settings["resonatorScanStop"] - (double)Settings["resonatorScanStart"]) /
-                    (int)Settings["resonatorScanPoints"];
+                AcquireContinuous();
+                FastOnData();
+                Thread.Sleep(10);
+            }
 
-                DateTime dt1 = DateTime.Now;
-                report = SolsTiSPlugin.GetController().Solstis.tune_resonator(currentPercentage, true);
-                DateTime dt2 = DateTime.Now;
-                TimeSpan spanSet = dt2 - dt1;
+            FastOnScanFinished();
+        }
 
-                if (report == 0)
+        private void StartLaserFastScan()
+        {
+            int reply = SolsTiSPlugin.GetController().Solstis.fast_scan_start((string)Settings["fastScanType"], (double)Settings["fastScanWidth"], (double)Settings["fastScanTime"], false);
+
+            switch (reply)
+            {
+                case -1:
+                    throw new Exception("empty reply");
+
+                case 0:
+                    break;
+
+                case 1:
+                    throw new Exception("Failed, scan width too great for current tuning position.");
+
+                case 4:
+                    throw new Exception("Invalid scan type.");
+
+                case 5:
+                    throw new Exception("Time > 10000 seconds.");
+
+                default:
+                    throw new Exception("did not understand etalon reply");
+            }
+        }
+
+        private void AcquireContinuous()
+        {
+            // Read voltage data
+            double[] voltageRead = voltageReader.ReadMultiSample(-1);
+
+            if (voltageRead.Length > 0)
+            {
+                // Read counter data
+                for (int i = 0; i < fastCounterBuffer.Length; i++)
                 {
-                    DateTime dt3 = DateTime.Now;
-                    double currentWavelength = (double)SolsTiSPlugin.GetController().Solstis.poll_move_wave_t()["wavelength"];
-                    DateTime dt4 = DateTime.Now;
-                    TimeSpan spanGetWave = dt4 - dt3;
+                    double[] counterRead = counterReaders[i].ReadMultiSampleDouble(voltageRead.Length);
 
-                    // Start trigger task
-                    triggerWriter.WriteSingleSampleSingleLine(true, true);
-
-                    // Read counter data
-                    List<double[]> counterLatestData = new List<double[]>();
-                    foreach (CounterSingleChannelReader counterReader in counterReaders)
+                    if (counterRead.Length > 0)
                     {
-                        counterLatestData.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
-                    }
+                        Point[] dataRead = new Point[counterRead.Length];
+                        dataRead[0] = new Point(voltageRead[0], counterRead[0] - fastLatestCounters[i]);
+                        fastLatestCounters[i] = counterRead[counterRead.Length - 1];
 
-                    // Read analogue data
-                    double[,] analogLatestData = null;
-                    if (((List<string>)Settings["analogueChannels"]).Count != 0)
-                    {
-                        analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
-                    }
-
-                    // re-init the trigger 
-                    triggerWriter.WriteSingleSampleSingleLine(true, false);
-
-                    // Store counter data
-                    for (int j = 0; j < counterLatestData.Count; j++)
-                    {
-                        double[] latestData = counterLatestData[j];
-                        double data = latestData[latestData.Length - 1] - latestData[0];
-                        Point pnt = new Point(currentPercentage, spanSet.TotalMilliseconds);
-                        counterBuffer[j].Add(pnt);
-                    }
-
-                    // Store analogue data
-                    if (((List<string>)Settings["analogueChannels"]).Count != 0)
-                    {
-                        for (int j = 0; j < analogLatestData.GetLength(0); j++)
+                        if (counterRead.Length > 1)
                         {
-                            double sum = 0;
-                            for (int k = 0; k < analogLatestData.GetLength(1) - 1; k++)
+                            for (int j = 1; j < counterRead.Length; j++)
                             {
-                                sum = sum + analogLatestData[j, k];
+                                dataRead[j] = new Point(voltageRead[j], counterRead[j] - counterRead[j - 1]);
                             }
-                            double average = sum / (analogLatestData.GetLength(1) - 1);
-                            Point pnt = new Point(currentPercentage, average);
-                            analogBuffer[j].Add(pnt);
                         }
+
+                        fastCounterBuffer[i].AddRange(dataRead);
                     }
+                }
 
-                    ResonatorOnData();
+                // Read analogue data
+                if (((List<string>)Settings["analogueChannels"]).Count != 0)
+                {
+                    double[,] analogRead = analoguesReader.ReadMultiSample(voltageRead.Length);
 
-                    // Check if scan exit.
-                    if (CheckIfStopping())
+                    for (int i = 0; i < analogRead.GetLength(0); i++)
                     {
-                        // Quit plugins
-                        ResonatorAcquisitionFinishing();
-                        return;
+                        if (analogRead.GetLength(1) > 0)
+                        {
+                            for (int j = 0; j < analogRead.GetLength(1); j++)
+                            {
+                                fastAnalogBuffer[i].Add(new Point(voltageRead[j], analogRead[i, j]));
+                            }
+                        }
                     }
                 }
             }
-
-            ResonatorAcquisitionFinishing();
-            ResonatorOnScanFinished();
         }
 
-        public void ResonatorAcquisitionFinishing()
+        public void FastAcquisitionFinishing()
         {
-            triggerTask.Dispose();
+            SolsTiSPlugin.GetController().Solstis.fast_scan_stop((string)Settings["fastScanType"], false);
+
             freqOutTask.Dispose();
             foreach (Task counterTask in counterTasks)
             {
                 counterTask.Dispose();
             }
             analoguesTask.Dispose();
+            voltageTask.Dispose();
 
-            triggerTask = null;
             freqOutTask = null;
             counterTasks = null;
             analoguesTask = null;
+            voltageTask = null;
 
-            triggerWriter = null;
             counterReaders = null;
             analoguesReader = null;
+            voltageReader = null;
 
             backendState = ScanState.stopped;
         }
 
-        private void ResonatorOnData()
+        private void FastOnData()
         {
-            switch ((string)Settings["channel_type"])
+            switch ((string)Settings["fast_channel_type"])
             {
                 case "Counters":
-                    if (ResonatorData != null)
+                    if (FastData != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
+                        if ((int)Settings["fast_display_channel_index"] >= 0 && (int)Settings["fast_display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
                         {
-                            ResonatorData(counterBuffer[(int)Settings["display_channel_index"]].ToArray());
+                            FastData(fastCounterBuffer[(int)Settings["fast_display_channel_index"]].Skip(1).ToArray());
                         }
-                        else ResonatorData(null);
+                        else FastData(null);
                     }
                     break;
 
                 case "Analogues":
-                    if (ResonatorData != null)
+                    if (FastData != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
+                        if ((int)Settings["fast_display_channel_index"] >= 0 && (int)Settings["fast_display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
                         {
-                            ResonatorData(analogBuffer[(int)Settings["display_channel_index"]].ToArray());
+                            FastData(fastAnalogBuffer[(int)Settings["fast_display_channel_index"]].Skip(1).ToArray());
                         }
-                        else ResonatorData(null);
+                        else FastData(null);
                     }
                     break;
 
@@ -837,28 +882,27 @@ namespace ConfocalControl
             }
         }
 
-        private void ResonatorOnScanFinished()
+        private void FastOnScanFinished()
         {
-            if (ResonatorScanFinished != null) ResonatorScanFinished();
-            int report = SolsTiSPlugin.GetController().Solstis.tune_resonator((double)Settings["resonatorScanStart"], true);
-            if (report == 1) throw new Exception("tune_resonator: task failed");
+            FastAcquisitionFinishing();
+            if (FastScanFinished != null) FastScanFinished();
         }
 
-        public void RequestResonatorHistoricData()
+        public void RequestFastHistoricData()
         {
-            if (analogBuffer != null && counterBuffer != null) WavemeterOnData();
+            if (fastAnalogBuffer != null && fastCounterBuffer != null) FastOnData();
         }
 
-        public void SaveResonatorData(string fileName, bool automatic)
+        public void SaveFastData(string fileName, bool automatic)
         {
             string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + SingleCounterPlugin.GetController().GetExposure().ToString());
-            lines.Add("Percentage start = " + ((double)Settings["wavemeterScanStart"]).ToString() + ", Percentage stop = " + ((double)Settings["wavemeterScanStop"]).ToString() + ", Resolution = " + ((int)Settings["wavemeterScanPoints"]).ToString());
+            lines.Add("Exposure = " + TimeTracePlugin.GetController().GetExposure().ToString());
+            lines.Add("Width = " + ((double)Settings["fastScanWidth"]).ToString() + ", Time = " + ((double)Settings["fastScanTime"]).ToString());
 
-            string descriptionString = "Lambda ";
+            string descriptionString = "Voltage ";
             foreach (string channel in (List<string>)Settings["counterChannels"])
             {
                 descriptionString = descriptionString + channel + " ";
@@ -869,14 +913,14 @@ namespace ConfocalControl
             }
             lines.Add(descriptionString);
 
-            for (int i = 0; i < counterBuffer[0].Count; i++)
+            for (int i = 0; i < fastCounterBuffer[0].Count; i++)
             {
-                string line = counterBuffer[0][i].X.ToString() + " ";
-                foreach (List<Point> counterData in counterBuffer)
+                string line = fastCounterBuffer[0][i].X.ToString() + " ";
+                foreach (List<Point> counterData in fastCounterBuffer)
                 {
                     line = line + counterData[i].Y.ToString() + " ";
                 }
-                foreach (List<Point> analogData in analogBuffer)
+                foreach (List<Point> analogData in fastAnalogBuffer)
                 {
                     line = line + analogData[i].Y.ToString() + " ";
                 }

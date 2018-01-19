@@ -20,7 +20,7 @@ namespace ConfocalControl
     public delegate void SetWaveFormHandler(double[] values, Point[] hist);
     public delegate void DaqExceptionEventHandler(DaqException e);
 
-    public class SingleCounterPlugin
+    public class TimeTracePlugin
     {
         #region Class members
 
@@ -49,13 +49,13 @@ namespace ConfocalControl
         public event DaqExceptionEventHandler DaqProblem;
 
         // Refer to only one instance of singlecounter 
-        private static SingleCounterPlugin controllerInstance;
+        private static TimeTracePlugin controllerInstance;
 
-        public static SingleCounterPlugin GetController()
+        public static TimeTracePlugin GetController()
         {
             if (controllerInstance == null)
             {
-                controllerInstance = new SingleCounterPlugin();
+                controllerInstance = new TimeTracePlugin();
             }
             return controllerInstance;
         }
@@ -76,8 +76,9 @@ namespace ConfocalControl
                 Settings["bufferSize"] = (int)10000;
 
                 Settings["counterChannels"] = new List<string> { "APD0", "APD1" };
-                Settings["analogueChannels"] = new List<string> { };
+                Settings["analogueChannels"] = new List<string> { "AI2" };
                 Settings["analogueLowHighs"] = new Dictionary<string, double[]>();
+                ((Dictionary<string, double[]>)Settings["analogueLowHighs"])["AI2"] = new double[] { -5, 5 }; 
 
                 Settings["channel_type"] = "Counters";
                 Settings["display_channel_index"] = 0;
@@ -87,7 +88,7 @@ namespace ConfocalControl
             }
         }
 
-        public SingleCounterPlugin() 
+        public TimeTracePlugin() 
         {
             InitialiseSettings();
             setTextBox = null;
@@ -418,7 +419,7 @@ namespace ConfocalControl
 
         public void RequestHistoricData()
         {
-            if (analogBuffer != null && counterBuffer != null) OnData();
+            if (analogBuffer != null && counterBuffer != null && !IsRunning()) OnData();
         }
 
         public void DeleteHistoricData()
