@@ -892,8 +892,8 @@ namespace ConfocalControl
                 double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
                 double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
                 double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-                double hres = hRange / hGridPoints;
-                double vres = vRange / vGridPoints;
+                double hres = hRange / (hGridPoints - 1);
+                double vres = vRange / (vGridPoints - 1);
 
                 if (galvo_x_scan_pos != null && galvo_y_scan_pos != null)
                 {

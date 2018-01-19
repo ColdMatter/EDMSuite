@@ -158,7 +158,7 @@ namespace ConfocalControl
                 double currentGalvoYpoint = (double)scanSettings["GalvoYStart"] + YNumber *
                         ((double)scanSettings["GalvoYEnd"] -
                         (double)scanSettings["GalvoYStart"]) /
-                        ((double)scanSettings["GalvoYRes"]);
+                        ((double)scanSettings["GalvoYRes"] - 1);
 
                 // Loop for X axis
                 for (double _XNumber = 0;
@@ -173,7 +173,7 @@ namespace ConfocalControl
                     double currentGalvoXpoint = (double)scanSettings["GalvoXStart"] + XNumber *
                     ((double)scanSettings["GalvoXEnd"] -
                     (double)scanSettings["GalvoXStart"]) /
-                    ((double)scanSettings["GalvoXRes"]);
+                    ((double)scanSettings["GalvoXRes"] - 1);
 
                     for (int n = 0; n < (pointsPerExposure+1); n++)
                     {
@@ -652,8 +652,8 @@ namespace ConfocalControl
                     double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
                     double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
                     double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-                    double hres = hRange / (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"];
-                    double vres = vRange / (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"];
+                    double hres = hRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"] - 1);
+                    double vres = vRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] - 1);
 
                     if (numberCounterChannels != 0)
                     {
