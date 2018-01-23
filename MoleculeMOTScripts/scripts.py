@@ -72,28 +72,35 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 def ScanSingleParameter2(script_name, parameter_name, values):
 	ScanMultipleParameters(script_name, [parameter_name], [values])
 	
-def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, channel='A'):
+def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, channel):
 	lowest_freq = centre_freq - freq_range/2
 	spacing = freq_range/(num_steps - 1)
 	values = [lowest_freq + spacing * x for x in range(0, num_steps)]
 	shuffle(values)
-	channel_bool = channel == 'B'
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
-		hc.tabs["Windfreak Synthesizer"].SetFrequency(value, channel_bool)
+		if channel=='G':
+			hc.tabs['Gigatronics Synthesizer'].SetFrequency(value)
+		elif channel=='WA':
+			hc.tabs['Windfreak Synthesizer'].SetFrequency(value, False)
+		elif channel=='WB':
+			hc.tabs['Windfreak Synthesizer'].SetFrequency(value, True)
 		mm.Go()
 		end = time.time()
 		print '{0} : {1} seconds'.format(value, int(round(end-start)))
 	print 'Finished'
 	
-def ScanMicrowaveAmplitude(script_name, values, channel='A'):
-	channel_bool = channel == 'B'
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+def ScanMicrowaveAmplitude(script_name, values, channel):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
-		hc.tabs["Windfreak Synthesizer"].SetAmplitude(value, channel_bool)
-		time.sleep(5)
+		if channel=='G':
+			hc.tabs['Gigatronics Synthesizer'].SetAmplitude(value)
+		elif channel=='WA':
+			hc.tabs['Windfreak Synthesizer'].SetAmplitude(value, False)
+		elif channel=='WB':
+			hc.tabs['Windfreak Synthesizer'].SetAmplitude(value, True)
 		mm.Go()
 		end = time.time()
 		print '{0} : {1} seconds'.format(value, int(round(end-start)))
