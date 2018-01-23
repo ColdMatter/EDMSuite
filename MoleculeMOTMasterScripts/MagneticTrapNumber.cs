@@ -23,7 +23,7 @@ public class Patterns : MOTMasterScript
         Parameters["FlashPulseDuration"] = 10;
 
         Parameters["MagTrapStartTime"] = 8000;
-        Parameters["MagTrapDuration"] = 4000;
+        Parameters["MagTrapDuration"] = 8000;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;

@@ -24,13 +24,13 @@ public class Patterns : MOTMasterScript
 
         Parameters["BlueMOTSwitchTime"] = 5500; 
         Parameters["BlueMOTSwitchDelay"] = 1;
-        Parameters["BlueMOTSwitchDuration"] = 2;
+        Parameters["BlueMOTSwitchDuration"] = 100;
         Parameters["v0FrequencyBlueMOTValue"] = 20.0;
-        Parameters["MOTCoilsBlueMOTCurrentValue"] = 0.45;
+        Parameters["MOTCoilsBlueMOTCurrentValue"] = 0.65;
 
         // Camera
         Parameters["Frame0Trigger"] = 3000;
-        Parameters["Frame1Trigger"] = 6500;
+        Parameters["Frame1Trigger"] = 6300;
         Parameters["Frame0TriggerDuration"] = 10;
 
         //PMT
@@ -75,7 +75,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 4000;
         Parameters["v0IntensityRampDuration"] = 400;
         Parameters["v0IntensityRampStartValue"] = 5.8;
-        Parameters["v0IntensityRampEndValue"] = 9.33;//8.465;
+        Parameters["v0IntensityRampEndValue"] = 8.465;//9.33;
 
         // v0 Light Frequency
         Parameters["v0FrequencyMOTValue"] = 0.0;
@@ -141,7 +141,7 @@ public class Patterns : MOTMasterScript
 
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogPulse("MOTCoilsCurrent", blueMOTSwitchTime, (int)Parameters["BlueMOTSwitchDuration"], 0.0, (double)Parameters["MOTCoilsBlueMOTCurrentValue"]);
+        p.AddAnalogPulse("MOTCoilsCurrent", currentDirectionSwitchTime, (int)Parameters["BlueMOTSwitchDuration"], 0.0, (double)Parameters["MOTCoilsBlueMOTCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", motCoilsSwitchOffTime, 0.0);
 
         // Shim Fields

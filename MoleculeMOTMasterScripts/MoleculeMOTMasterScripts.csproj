@@ -84,6 +84,11 @@
     <Compile Include="PMTtest.cs" />
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RabiFlopsFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyFreeSpaceNoRecapture.cs" />
+    <Compile Include="RamseySpectroscopySpinEchoFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyTrap.cs" />
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
     <Compile Include="ScatteringRate.cs" />

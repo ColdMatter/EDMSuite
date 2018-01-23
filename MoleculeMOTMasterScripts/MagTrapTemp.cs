@@ -27,7 +27,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 0;
         Parameters["MagTrapDuration"] = 5000;
-        Parameters["ExpansionTime"] = 50;
+        Parameters["ExpansionTime"] = 0;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -71,7 +71,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.16;
+        Parameters["zShimLoadCurrent"] = -6.82;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -110,10 +110,9 @@ public class Patterns : MOTMasterScript
         int imageTime = magTrapEndTime + (int)Parameters["ExpansionTime"];
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.AddEdge("v00Shutter", 0, true);
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); // pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, magTrapStartTime, imageTime - magTrapStartTime, "v00AOM"); // turn off the MOT light for magnetic trap
-        p.Pulse(patternStartBeforeQ, 1, 35000, "bXShutter"); // Close BX shutter during magnetic trap (note it takes at least 30ms to do anything so turning off at 1 is fine)
+        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
+        p.Pulse(patternStartBeforeQ, magTrapStartTime, imageTime - magTrapStartTime, "v00MOTAOM"); // turn off the MOT light for magnetic trap
+        //p.Pulse(patternStartBeforeQ, 1, 35000, "bXSlowingShutter"); // Close BX shutter during magnetic trap (note it takes at least 30ms to do anything so turning off at 1 is fine)
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
         return p;

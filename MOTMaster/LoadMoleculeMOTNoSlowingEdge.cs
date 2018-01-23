@@ -47,8 +47,8 @@ namespace MOTMaster.SnippetLibrary
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"], 1000, (double)parameters["PokeDetuningValue"]);
-            //p.AddAnalogValue("slowingChirp", 5000, (double)parameters["PokeDetuningValue"]);
-            p.AddLinearRamp("slowingChirp", 1500, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
+            p.AddAnalogValue("slowingChirp", 5000, (double)parameters["PokeDetuningValue"]);
+            p.AddLinearRamp("slowingChirp", 9000, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
 
            
         

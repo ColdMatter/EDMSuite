@@ -28,9 +28,10 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 10;
-        Parameters["MicrowaveSecondPulseDuration"] = 4;
+        Parameters["MicrowavePulseDuration"] = 8;
+        Parameters["RamseyPulseDuration"] = 2;
         Parameters["MagneticTrapDuration"] = 2000;
+        Parameters["RamseyTime"] = 30;
         Parameters["MOTWaitBeforeImage"] = 0;
         Parameters["xShimZeemanSplitValue"] = 0.0;
 
@@ -115,14 +116,16 @@ public class Patterns : MOTMasterScript
         int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int magTrapStartTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
-        int microwaveSecondPulseTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
-        int motRecaptureTime = microwaveSecondPulseTime + (int)Parameters["MicrowaveSecondPulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
+        int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"] + (int)Parameters["RamseyTime"];
+        int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
 
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA"); //now linked to B channel
-        p.Pulse(patternStartBeforeQ, microwaveSecondPulseTime, (int)Parameters["MicrowaveSecondPulseDuration"], "microwaveB"); // now linked to gigatronics
+        p.Pulse(patternStartBeforeQ, firstRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveB"); // now linked to gigatronics
+        p.Pulse(patternStartBeforeQ, secondRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveB"); // now linked to gigatronics
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, microwavePulseTime, motRecaptureTime - microwavePulseTime, "v00MOTAOM"); // turn off the MOT light for microwave pulse
@@ -147,8 +150,9 @@ public class Patterns : MOTMasterScript
         int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int magTrapStartTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
-        int microwaveSecondPulseTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
-        int motRecaptureTime = microwaveSecondPulseTime + (int)Parameters["MicrowaveSecondPulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagneticTrapDuration"];
+        int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"] + (int)Parameters["RamseyTime"];
+        int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         // Add Analog Channels
@@ -168,10 +172,9 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", magTrapStartTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", microwaveSecondPulseTime, (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], 0.0);
 
+        // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
