@@ -39,6 +39,7 @@ namespace MoleculeMOTHardwareControl.Controls
             synth.Connect();
             synth.Frequency = freq;
             synth.Disconnect();
+            castView.UpdateFrequency(freq);
         }
 
         public void SetAmplitude(double amp)
@@ -46,6 +47,7 @@ namespace MoleculeMOTHardwareControl.Controls
             synth.Connect();
             synth.Amplitude = amp;
             synth.Disconnect();
+            castView.UpdateAmplitude(amp);
         }
 
         public void SetOutput(bool state)
@@ -53,6 +55,7 @@ namespace MoleculeMOTHardwareControl.Controls
             synth.Connect();
             synth.Enabled = state;
             synth.Disconnect();
+            castView.UpdateOutput(state);
         }
 
         public void SyncSettings()
