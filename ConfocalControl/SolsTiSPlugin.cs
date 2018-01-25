@@ -18,6 +18,7 @@ namespace ConfocalControl
 
     public class SolsTiSPlugin
     {
+
         #region Class members
 
         // Dependencies should refer to this instance only 
@@ -32,8 +33,14 @@ namespace ConfocalControl
         }
 
         // Define Opt state
-        private enum ScanState { stopped, running, stopping };
-        private ScanState backendState = ScanState.stopped;
+        private enum SolsTisState { stopped, running, stopping };
+        private SolsTisState backendState = SolsTisState.stopped;
+        private enum WavemeterScanState { stopped, running, stopping };
+        private WavemeterScanState wavemeterState = WavemeterScanState.stopped;
+        private enum FastScanState { stopped, running, stopping };
+        private FastScanState fastState = FastScanState.stopped;
+        private enum TeraScanState { stopped, running, stopping };
+        private TeraScanState teraState = TeraScanState.stopped;
 
         // Settings
         public PluginSettings Settings { get; set; }
@@ -51,6 +58,10 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler FastScanFinished;
         public event SpectraScanExceptionEventHandler FastScanProblem;
 
+        public event SpectraScanDataEventHandler TeraData;
+        public event MultiChannelScanFinishedEventHandler TeraScanFinished;
+        public event SpectraScanExceptionEventHandler TeraScanProblem;
+
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
@@ -63,6 +74,7 @@ namespace ConfocalControl
         private List<Point>[] fastAnalogBuffer;
         private List<Point>[] fastCounterBuffer;
         private double[] fastLatestCounters;
+        private List<Point> teraScanWavelengthBuffer;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -90,7 +102,7 @@ namespace ConfocalControl
             solstis = new ICEBlocSolsTiS(computer_ip);
 
             LoadSettings();
-            if (Settings.Keys.Count != 17)
+            if (Settings.Keys.Count != 22)
             {
                 Settings["wavelength"] = 785.0;
 
@@ -114,6 +126,12 @@ namespace ConfocalControl
                 Settings["fast_display_channel_index"] = 0;
                 Settings["fastVoltageChannel"] = "AI2";
                 Settings["fastVoltageLowHigh"] = new double[] { 0, 5 };
+
+                Settings["TeraScanType"] = "fine";
+                Settings["TeraScanStart"] = (double)743.0;
+                Settings["TeraScanStop"] = (double)745.0;
+                Settings["TeraScanRate"] = 10;
+                Settings["TeraScanUnits"] = "GHz/s";
 
                 return;
             }
@@ -151,17 +169,27 @@ namespace ConfocalControl
 
         public bool IsRunning()
         {
-            return backendState == ScanState.running;
+            return backendState == SolsTisState.running;
+        }
+
+        public bool WavemeterScanIsRunning()
+        {
+            return wavemeterState == WavemeterScanState.running;
+        }
+
+        public bool FastScanIsRunning()
+        {
+            return fastState == FastScanState.running;
         }
 
         private bool CheckIfStopping()
         {
-            return backendState == ScanState.stopping;
+            return backendState == SolsTisState.stopping;
         }
 
         public void StopAcquisition()
         {
-            backendState = ScanState.stopping;
+            backendState = SolsTisState.stopping;
         }
 
         #endregion
@@ -170,8 +198,6 @@ namespace ConfocalControl
 
         private int SetAndLockWavelength(double wavelength)
         {
-            //return SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
-
             return SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
         }
 
@@ -197,7 +223,8 @@ namespace ConfocalControl
                     throw new DaqException("Counter already running");
                 }
 
-                backendState = ScanState.running;
+                wavemeterState = WavemeterScanState.running;
+                backendState = SolsTisState.running;
                 WavemeterSynchronousAcquisitionStarting();
                 WavemeterSynchronousAcquire();
             }
@@ -340,18 +367,15 @@ namespace ConfocalControl
 
             // Main loop
             for (double i = 0;
-                    i < (int)Settings["wavemeterScanPoints"] + 1;
+                    i < (int)Settings["wavemeterScanPoints"];
                     i++)
 
             {
                 double currentWavelength = (double)Settings["wavemeterScanStart"] + i * 
                     ((double)Settings["wavemeterScanStop"] - (double)Settings["wavemeterScanStart"]) /
-                    (int)Settings["wavemeterScanPoints"];
+                    ((int)Settings["wavemeterScanPoints"] - 1);
 
-                DateTime dt1 = DateTime.Now;
                 report = SetAndLockWavelength(currentWavelength);
-                DateTime dt2 = DateTime.Now;
-                TimeSpan span = dt2 - dt1;
 
                 if (report == 0)
                 {
@@ -405,6 +429,9 @@ namespace ConfocalControl
                     // Check if scan exit.
                     if (CheckIfStopping())
                     {
+                        wavemeterState = WavemeterScanState.stopping;
+                        report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
+                        if (report == 1) throw new Exception("set_wave_m end: task failed");
                         // Quit plugins
                         WavemeterAcquisitionFinishing();
                         WavemeterOnScanFinished();
@@ -436,7 +463,8 @@ namespace ConfocalControl
             counterReaders = null;
             analoguesReader = null;
 
-            backendState = ScanState.stopped;
+            wavemeterState = WavemeterScanState.stopped;
+            backendState = SolsTisState.stopped;
         }
 
         private void WavemeterOnData()
@@ -473,8 +501,6 @@ namespace ConfocalControl
         private void WavemeterOnScanFinished()
         {
             if (WavemeterScanFinished != null) WavemeterScanFinished();
-            int report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
-            if (report == 1) throw new Exception("set_wave_m end: task failed");
         }
 
         public void RequestWavemeterHistoricData()
@@ -556,7 +582,8 @@ namespace ConfocalControl
                     throw new DaqException("Counter already running");
                 }
 
-                backendState = ScanState.running;
+                fastState = FastScanState.running;
+                backendState = SolsTisState.running;
 
                 FastSynchronousAcquisitionStarting();
                 FastSynchronousAcquire();
@@ -706,24 +733,6 @@ namespace ConfocalControl
             {
                 case "etalon_continuous":
                     SolsTiSPlugin.GetController().Solstis.monitor_a(2, true);
-                    
-                    int reply = SolsTiSPlugin.GetController().Solstis.etalon_lock(false, true);
-
-                    switch (reply)
-                    {
-                        case -1:
-                            throw new Exception("empty reply");
-
-                        case 0:
-                            break;
-
-                        case 1:
-                            throw new Exception("task failed");
-
-                        default:
-                            throw new Exception("did not understand etalon reply");
-                    }
-
                     break;
 
                 case "resonator_continuous":
@@ -742,7 +751,7 @@ namespace ConfocalControl
             thread.Start();
             freqOutTask.Start();
 
-            while (backendState == ScanState.running)
+            while (backendState == SolsTisState.running)
             {
                 AcquireContinuous();
                 FastOnData();
@@ -754,7 +763,7 @@ namespace ConfocalControl
 
         private void StartLaserFastScan()
         {
-            int reply = SolsTiSPlugin.GetController().Solstis.fast_scan_start((string)Settings["fastScanType"], (double)Settings["fastScanWidth"], (double)Settings["fastScanTime"], false);
+            int reply = SolsTiSPlugin.GetController().Solstis.fast_scan_start((string)Settings["fastScanType"], (double)Settings["fastScanWidth"], (double)Settings["fastScanTime"], true);
 
             switch (reply)
             {
@@ -767,15 +776,12 @@ namespace ConfocalControl
                 case 1:
                     throw new Exception("Failed, scan width too great for current tuning position.");
 
-                case 4:
-                    throw new Exception("Invalid scan type.");
-
-                case 5:
-                    throw new Exception("Time > 10000 seconds.");
-
                 default:
                     throw new Exception("did not understand etalon reply");
             }
+
+            // backendState = SolsTisState.stopping;
+            // fastState = FastScanState.stopping;
         }
 
         private void AcquireContinuous()
@@ -848,7 +854,8 @@ namespace ConfocalControl
             analoguesReader = null;
             voltageReader = null;
 
-            backendState = ScanState.stopped;
+            fastState = FastScanState.stopped;
+            backendState = SolsTisState.stopped;
         }
 
         private void FastOnData()
@@ -944,6 +951,77 @@ namespace ConfocalControl
 
         #endregion
 
+        #region TeraScan
+
+        public bool TeraScanAcceptableSettings()
+        {
+            return true;
+        }
+
+        public void StartTeraScan()
+        {
+            try
+            {
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Counter already running");
+                }
+
+                teraState = TeraScanState.running;
+                backendState = SolsTisState.running;
+
+                TeraScanConfigure();
+                // TeraScanAcquisitionStarting();
+                TeraScanSynchronousAcquire();
+            }
+            catch (Exception e)
+            {
+                if (TeraScanProblem != null) TeraScanProblem(e);
+            }
+        }
+
+        public void TeraScanConfigure()
+        {
+            SolsTiSPlugin.GetController().Solstis.terascan_output("start", 0, 50, "on");
+
+            string scanType = (string)Settings["TeraScanType"];
+            double startLambda = (double)Settings["TeraScanStart"];
+            double stopLambda = (double)Settings["TeraScanStop"];
+            int scanRate = (int)Settings["TeraScanRate"];
+            string scanUnits = (string)Settings["TeraScanUnits"];
+            SolsTiSPlugin.GetController().Solstis.scan_stitch_initialise(scanType, startLambda, stopLambda, scanRate, scanUnits);
+        }
+
+        public void TeraScanAcquisitionStarting()
+        {
+            return;
+        }
+
+        public void TeraScanSynchronousAcquire()
+        {
+            SolsTiSPlugin.GetController().Solstis.scan_stitch_op("fine", "start", false);
+
+            Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.ReceiveCustomMessage("automatic_output");
+            double wavelength = (double)reply["wavelength"];
+            string status = (string)reply["status"];
+            MessageBox.Show(status);
+            MessageBox.Show(Convert.ToString(wavelength));
+
+            SolsTiSPlugin.GetController().Solstis.terascan_continue();
+
+        }
+
+        #endregion
+
     }
 
+    public class TeraScanDataHolder
+    {
+
+    }
+
+    public class SegmentDataHolder 
+    {
+
+    }
 }

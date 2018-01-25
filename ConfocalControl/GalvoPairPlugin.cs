@@ -268,13 +268,6 @@ namespace ConfocalControl
             _galvoYwriter.EndWrite(ar);
         }
 
-        public void SetMultiGalvoSetpoints(double[,] data)
-        {
-            return;
-        }
-
-        #endregion
-
         public void MultiWriterAcquisitionStarting(string clockSignalSource, double clockRate)
         {
             if (IsRunning())
@@ -285,7 +278,7 @@ namespace ConfocalControl
             _galvoXControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoXControl"]];
             _galvoYControlChannel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[(string)Settings["GalvoYControl"]];
 
-            _galvosTask = new Task("galvo X analog set");
+            _galvosTask = new Task("galvos analog set");
 
             _galvoXControlChannel.AddToTask(_galvosTask, XRangeLow, XRangeHigh);
             _galvoYControlChannel.AddToTask(_galvosTask, YRangeLow, YRangeHigh);
@@ -317,5 +310,8 @@ namespace ConfocalControl
         {
             _galvosWriter.WriteMultiSample(true, data);
         }
+
+        #endregion
+
     }
 }

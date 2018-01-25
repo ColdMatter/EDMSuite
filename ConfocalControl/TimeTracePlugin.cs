@@ -43,6 +43,11 @@ namespace ConfocalControl
         private double[] latestAnalogs;
         private double[] latestCounters;
 
+        // Keep track of latest settings
+        private double historicSampleRate;
+        private List<string> historicCounterChannels;
+        private List<string> historicAnalogueChannels;
+
         // Bound event managers to class
         public event SetTextBoxHandler setTextBox;
         public event SetWaveFormHandler setWaveForm;
@@ -154,11 +159,18 @@ namespace ConfocalControl
 
         private void ContinuousAcquisitionStarting()
         {
+            // Check if other parts of the software are running
             if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }
 
+            // Update historic settings
+            historicSampleRate = (double)Settings["sampleRate"];
+            historicCounterChannels = (List<string>)Settings["counterChannels"];
+            historicAnalogueChannels = (List<string>)Settings["analogueChannels"];
+
+            // Reset buffers
             int numberOfAnalogs = ((List<string>)Settings["analogueChannels"]).Count;
             analogBuffer = new List<double>[numberOfAnalogs];
             latestAnalogs = new double[numberOfAnalogs];
@@ -449,14 +461,14 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + GetExposure().ToString()); lines.Add("");
+            lines.Add("Exposure = " + (1 / historicSampleRate).ToString()); lines.Add("");
 
             string descriptionString = "";
-            foreach (string channel in (List<string>)Settings["counterChannels"])
+            foreach (string channel in historicCounterChannels)
             {
                 descriptionString = descriptionString + channel + " ";
             }
-            foreach (string channel in (List<string>)Settings["analogueChannels"])
+            foreach (string channel in historicAnalogueChannels )
             {
                 descriptionString = descriptionString + channel + " ";
             }

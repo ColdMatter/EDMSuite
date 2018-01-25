@@ -31,7 +31,7 @@ namespace DAQ.HAL
                 my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
             }
             
-            M2_ip_address = "192.168.1.223";
+            M2_ip_address = "192.168.1.222";
         }
 
         #endregion
@@ -183,6 +183,138 @@ namespace DAQ.HAL
             else return ((int)rslt["status"]);
         }
 
+        // 3.27
+        public int scan_stitch_initialise(string type, double start, double stop, int rate, string units)
+        {
+            if (start < 700 || start > 1000) throw new Exception("wavelength out of range");
+            if (stop < 700 || stop > 1000) throw new Exception("wavelength out of range");
+
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            switch (type)
+            {
+                case "medium":
+                    prms.Add("scan", type);
+                    prms.Add("start", start);
+                    prms.Add("stop", stop); 
+                    switch (units)
+                    {
+                        case "GHz/s":
+                            if (rate == 100 || rate == 50 || rate == 20 || rate == 15 || rate == 10 || rate == 5 || rate == 2 || rate == 1) 
+                            {
+                                prms.Add("rate", rate);
+                            }
+                            else throw new Exception("Tera scan rate not accepted");
+                            prms.Add("units", units);
+                            break;
+                        default:
+                            throw new Exception("Cannot understand tera scan rate");
+                    }
+                    break;
+                case "fine":
+                    prms.Add("scan", type);
+                    prms.Add("start", start);
+                    prms.Add("stop", stop); 
+                    switch (units)
+                    {
+                        case "GHz/s":
+                            if (rate == 20 || rate == 15 || rate == 10 || rate == 5 || rate == 2 || rate == 1) 
+                            {
+                                prms.Add("rate", rate);
+                            }
+                            else throw new Exception("Tera scan rate not accepted");
+                            prms.Add("units", units);
+                            break;
+                        case "MHz/s":
+                            if (rate == 500 || rate == 200 || rate == 100 || rate == 50 || rate == 20 || rate == 15 || rate == 10 || rate == 5 || rate == 2 || rate == 1) 
+                            {
+                                prms.Add("rate", rate);
+                            }
+                            else throw new Exception("Tera scan rate not accepted");
+                            prms.Add("units", units);
+                            break;
+                        default:
+                            throw new Exception("Cannot understand tera scan rate");
+                    }
+                    break;
+                default:
+                    throw new Exception("Cannot understand tera scan type");
+            }
+
+            Dictionary<string, object> rslt = GenericCommand("scan_stitch_initialise", prms);
+            if (rslt.Count == 0) return -1;
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.28
+        public int scan_stitch_op(string type, string op, bool report)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            switch (type)
+            {
+                case "medium":
+                    prms.Add("scan", type);
+                    break;
+                case "fine":
+                    prms.Add("scan", type);
+                    break;
+                default:
+                    throw new Exception("Cannot understand tera scan type");
+            }
+            switch (op)
+            {
+                case "start":
+                    prms.Add("operation", op);
+                    break;
+                case "stop":
+                    prms.Add("operation", op);
+                    break;
+                default:
+                    throw new Exception("Cannot understand tera scan operation");
+            }
+            if (report) prms.Add("report", "finished");
+
+            Dictionary<string, object> rslt = GenericCommand("scan_stitch_op", prms, report);
+            if (rslt.Count == 0) return -1;
+            if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.31
+        public int terascan_output(string op, int delay, int update, string pause)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            switch (op)
+            {
+                case "start":
+                    prms.Add("operation", op);
+                    break;
+                case "stop":
+                    prms.Add("operation", op);
+                    break;
+                default:
+                    throw new Exception("Cannot understand automatic output operation");
+            }
+            if (delay < 0 || delay > 1000) throw new Exception("Automatic output delay out of bounds");
+            else prms.Add("delay", delay);
+            if (update < 0 || update > 50) throw new Exception("Automatic output update rate out of bounds");
+            else prms.Add("update", update);
+            switch (pause)
+            {
+                case "on":
+                    prms.Add("pause", pause);
+                    break;
+                case "off":
+                    prms.Add("pause", pause);
+                    break;
+                default:
+                    throw new Exception("Cannot understand automatic output operation");
+            }
+
+            Dictionary<string, object> rslt = GenericCommand("terascan_output", prms);
+            if (rslt.Count == 0) return -1;
+            else return ((int)rslt["status"]);
+        }
+
         // 3.32
         public int fast_scan_start(string scan, double width, double time, bool report)
         {
@@ -208,6 +340,15 @@ namespace DAQ.HAL
             Dictionary<string, object> rslt = GenericCommand("fast_scan_stop", prms, report);
             if (rslt.Count == 0) return -1;
             if (report) return ((int)rslt["report"]);
+            else return ((int)rslt["status"]);
+        }
+
+        // 3.39
+        public int terascan_continue()
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            Dictionary<string, object> rslt = GenericCommand("terascan_continue", prms);
+            if (rslt.Count == 0) return -1;
             else return ((int)rslt["status"]);
         }
 

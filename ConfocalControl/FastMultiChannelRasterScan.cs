@@ -21,6 +21,7 @@ namespace ConfocalControl
 
     class FastMultiChannelRasterScan
     {
+
         #region Class members
 
         // Dependencies should refer to this instance only 
@@ -59,6 +60,17 @@ namespace ConfocalControl
         private double[,] analogLatestData;
         private MultiChannelData dataOutputs;
         public MultiChannelData dataOutputHistory { get { return dataOutputs; } }
+
+        // Keep track of latest settings
+        private double historicSampleRate;
+        private double historicXStart;
+        private double historicXStop;
+        private double historicXRes;
+        private double historicYStart;
+        private double historicYStop;
+        private double historicYRes;
+        private List<string> historicCounterChannels;
+        private List<string> historicAnalogueChannels;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -209,6 +221,17 @@ namespace ConfocalControl
 
         private void SynchronousAcquisitionStarting()
         {
+            // Update historic settings
+            historicSampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+            historicXStart = (double)scanSettings["GalvoXStart"];
+            historicXStop = (double)scanSettings["GalvoXEnd"];
+            historicYStart = (double)scanSettings["GalvoYStart"];
+            historicYStop = (double)scanSettings["GalvoYEnd"];
+            historicXRes = (double)scanSettings["GalvoXRes"];
+            historicYRes = (double)scanSettings["GalvoYRes"];
+            historicCounterChannels = (List<string>)scanSettings["counterChannels"];
+            historicAnalogueChannels = (List<string>)scanSettings["analogueChannels"];
+
             // Move to the start of the scan.
             GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
             GalvoPairPlugin.GetController().SetGalvoXSetpointAndWait(
@@ -490,17 +513,17 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + TimeTracePlugin.GetController().GetExposure().ToString());
-            lines.Add("X start = " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)scanSettings["GalvoXRes"]).ToString());
-            lines.Add("Y start = " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("Exposure = " + (1 / historicSampleRate).ToString());
+            lines.Add("X start = " + historicXStart.ToString() + ", X stop = " + historicXStop.ToString() + ", X resolution = " + historicXRes.ToString());
+            lines.Add("Y start = " + historicYStart.ToString() + ", Y stop = " + historicYStop.ToString() + ", Y resolution = " + historicYRes.ToString().ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
-            foreach (string channel in (List<string>)scanSettings["counterChannels"])
+            foreach (string channel in historicCounterChannels)
             {
                 descriptionString = descriptionString + " " + channel;
             }
-            foreach (string channel in (List<string>)scanSettings["analogueChannels"])
+            foreach (string channel in historicAnalogueChannels)
             {
                 descriptionString = descriptionString + " " + channel;
             }
@@ -525,17 +548,17 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + TimeTracePlugin.GetController().GetExposure().ToString());
-            lines.Add("X start = " + ((double)scanSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)scanSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)scanSettings["GalvoXRes"]).ToString());
-            lines.Add("Y start = " + ((double)scanSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)scanSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)scanSettings["GalvoYRes"]).ToString());
+            lines.Add("Exposure = " + (1 / historicSampleRate).ToString());
+            lines.Add("X start = " + historicXStart.ToString() + ", X stop = " + historicXStop.ToString() + ", X resolution = " + historicXRes.ToString());
+            lines.Add("Y start = " + historicYStart.ToString() + ", Y stop = " + historicYStop.ToString() + ", Y resolution = " + historicYRes.ToString().ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
-            foreach (string channel in (List<string>)scanSettings["counterChannels"])
+            foreach (string channel in historicCounterChannels)
             {
                 descriptionString = descriptionString + " " + channel;
             }
-            foreach (string channel in (List<string>)scanSettings["analogueChannels"])
+            foreach (string channel in historicAnalogueChannels)
             {
                 descriptionString = descriptionString + " " + channel;
             }
@@ -567,17 +590,31 @@ namespace ConfocalControl
 
     public class MultiChannelData
     {
-        private int numberCounterChannels;
-        private int numberAnalogChannels;
-        private List<Point3D>[] counterDataStore;
-        private Point3D[][] counterStoreConverted;
-        private List<Point3D>[] analogDataStore;
-        private Point3D[][] analogStoreConverted;
+        protected int numberCounterChannels;
+        protected int numberAnalogChannels;
+        protected List<Point3D>[] counterDataStore;
+        protected Point3D[][] counterStoreConverted;
+        protected List<Point3D>[] analogDataStore;
+        protected Point3D[][] analogStoreConverted;
+
+        private double hStart;
+        private double vStart;
+        private double hRange;
+        private double vRange;
+        private double hres;
+        private double vres;
 
         public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
         {
             numberCounterChannels = number_of_counter_channels;
             numberAnalogChannels = number_of_analog_channels;
+
+            hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
+            vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
+            hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
+            vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
+            hres = hRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"] - 1);
+            vres = vRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] - 1);
 
             counterDataStore = new List<Point3D>[number_of_counter_channels];
             for (int i = 0; i < number_of_counter_channels; i++)
@@ -601,7 +638,7 @@ namespace ConfocalControl
             else return counterStoreConverted[counter_channel_number];
         }
 
-        private void SetCounterData(List<Point3D>[] counterStore)
+        protected void SetCounterData(List<Point3D>[] counterStore)
         {
             counterDataStore = counterStore;
         }
@@ -618,7 +655,7 @@ namespace ConfocalControl
             else return analogStoreConverted[analog_channel_number];
         }
 
-        private void SetAnalogueData(List<Point3D>[] analogStore)
+        protected void SetAnalogueData(List<Point3D>[] analogStore)
         {
             analogDataStore = analogStore;
         }
@@ -647,13 +684,6 @@ namespace ConfocalControl
                 for (int i = 0; i < count; i++)
                 {
                     double[] transposedData = new double[2 + numberCounterChannels + numberAnalogChannels];
-
-                    double hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
-                    double vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
-                    double hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
-                    double vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-                    double hres = hRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"] - 1);
-                    double vres = vRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] - 1);
 
                     if (numberCounterChannels != 0)
                     {

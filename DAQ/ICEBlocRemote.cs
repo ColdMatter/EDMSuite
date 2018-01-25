@@ -33,7 +33,7 @@ namespace DAQ.HAL
 
         protected ICEBlocRemote()
         {
-            M2_ip_address = "192.168.1.223";
+            M2_ip_address = "192.168.1.222";
             M2_ip_port = 23232;
         }
 
@@ -104,6 +104,17 @@ namespace DAQ.HAL
                 Console.WriteLine("SocketException: {0}", e);
                 return "";
             }
+        }
+
+        public Dictionary<string, object> ReceiveCustomMessage(string command)
+        {
+            string msgReport = "";
+            while (msgReport == "")
+            {
+                msgReport = Receive();
+            }
+            Dictionary<string, object> reportDict = ConvertCustomMessageToDictionary(command, msgReport);
+            return reportDict;
         }
 
         public void Connect()
@@ -246,6 +257,69 @@ namespace DAQ.HAL
             }
             return finalCopy;
         }
+
+        private Dictionary<string, object> ConvertCustomMessageToDictionary(string command, string msgIn)
+        {
+            Dictionary<string, object> rslt = JsonConvert.DeserializeObject<Dictionary<string, object>>(msgIn);
+            JObject j0 = (JObject)rslt["message"];
+            bool ok = j0.GetValue("op").ToObject<string>().Equals(command);
+            int[] j = j0.GetValue("transmission_id").ToObject<int[]>();
+            ok = ok && j[0].Equals(transmission_id);
+            /*if (!ok)
+            {
+                //rslt.Clear();
+                return rslt;
+            }
+            */
+            Dictionary<string, object> final = j0.GetValue("parameters").ToObject<Dictionary<string, object>>();
+            Dictionary<string, object> finalCopy = new Dictionary<string, object>(final);
+            foreach (string key in final.Keys)
+            {
+                if (final[key].GetType().Name == "JArray")
+                {
+                    JArray value = (JArray)final[key];
+                    if (value.First.GetType() == typeof(Int32))
+                    {
+                        finalCopy[key] = (int)value.First;
+                    }
+                    else if (value.First.GetType() == typeof(Double))
+                    {
+                        finalCopy[key] = (double)value.First;
+                    }
+                    else
+                    {
+                        JToken v = value.First;
+                        switch (v.Type)
+                        {
+                            case JTokenType.Integer:
+                                finalCopy[key] = v.ToObject<int>();
+                                break;
+
+                            case JTokenType.Float:
+                                finalCopy[key] = v.ToObject<float>();
+                                break;
+
+                            default:
+                                finalCopy[key] = v.ToObject<int>();
+                                break;
+                        }
+                    }
+
+                }
+                if (final[key].GetType().Name == "Int32[]")
+                {
+                    int[] ia = (int[])final[key];
+                    finalCopy[key] = ia[0];
+                }
+                if (final[key].GetType().Name == "Double[]")
+                {
+                    double[] da = (double[])final[key];
+                    finalCopy[key] = da[0];
+                }
+            }
+            return finalCopy;
+        }
+
         protected Dictionary<string, object> GenericCommand(string command, Dictionary<string, object> prms)
         {
             return GenericCommand(command, prms, false);

@@ -117,6 +117,9 @@
     <Compile Include="LaserControl.xaml.cs">
       <DependentUpon>LaserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LaserHardwareConfigure.xaml.cs">
+      <DependentUpon>LaserHardwareConfigure.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PluginSettings.cs" />
     <Compile Include="RasterScanHardwareConfigure.xaml.cs">
       <DependentUpon>RasterScanHardwareConfigure.xaml</DependentUpon>
@@ -131,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LaserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LaserHardwareConfigure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

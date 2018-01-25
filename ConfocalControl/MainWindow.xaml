@@ -18,7 +18,7 @@
                 </MenuItem>
                 <MenuItem Header="_Laser Control">
                     <MenuItem x:Name="solstis_MenuItem" Header="_Bay0 SolsTiS" Click="solstis_MenuItem_Click"/>
-                    <MenuItem Header="_Bay1 Ti:Sapph"/>
+                    <MenuItem Header="_Bay0 DFG"/>
                 </MenuItem>
             </Menu>
             <StackPanel></StackPanel>
@@ -65,6 +65,7 @@
                 </ni:Plot>
             </ni:Graph.Plots>
         </ni:Graph>
+        <ni:GraphInteractionPalette HorizontalAlignment="Left" Height="20" Width="140" Margin="617,26,0,0" Graph="{Binding ElementName=APD_monitor}"/>
         <Label Content="Exposure (s)" HorizontalAlignment="Left" Margin="336,243,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
         <ni:Graph x:Name="APD_hist" HorizontalAlignment="Left" Margin="771,42,0,0" RenderTransformOrigin="0.5,0.5" Width="300" Height="200" VerticalAlignment="Top">
             <ni:Graph.RenderTransform>

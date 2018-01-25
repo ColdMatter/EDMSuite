@@ -20,6 +20,7 @@ namespace ConfocalControl
     /// </summary>
     public partial class LaserControl : Window
     {
+
         #region Window members
 
         // Dependencies should refer to this instance only 
@@ -44,6 +45,11 @@ namespace ConfocalControl
             checkConnection_Button_Click(null, null);
 
             wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+            wavemeterScanStart_Set.Value = (double)SolsTiSPlugin.GetController().Settings["wavemeterScanStart"];
+            wavemeterScanStop_Set.Value = (double)SolsTiSPlugin.GetController().Settings["wavemeterScanStop"];
+            wavemeterScanRes_Set.Value = (int)SolsTiSPlugin.GetController().Settings["wavemeterScanPoints"];
+            fastScanWidth_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanWidth"];
+            fastScanTime_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanTime"];
 
             SolsTiSPlugin.GetController().WavemeterData += wavemeterScanData;
             SolsTiSPlugin.GetController().WavemeterScanFinished += wavemeterScanFinished;
@@ -59,7 +65,10 @@ namespace ConfocalControl
 
             fastScanType_ComboBox.Items.Add("etalon_continuous");
             fastScanType_ComboBox.Items.Add("resonator_continuous");
-            fastScanType_ComboBox.SelectedIndex = 0;
+            fastScanType_ComboBox.SelectedItem = (string)SolsTiSPlugin.GetController().Settings["fastScanType"];
+            fastScan_output_type_box.Items.Add("Counters");
+            fastScan_output_type_box.Items.Add("Analogues");
+            fastScan_output_type_box.SelectedIndex = 0;
         }
 
         #endregion
@@ -222,42 +231,6 @@ namespace ConfocalControl
             SolsTiSPlugin.GetController().Settings["wavelength"] = e.NewValue;
         }
 
-        //private void wavelengthRead_Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (SolsTiSPlugin.GetController().Solstis.Connected)
-        //    {
-        //        Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_move_wave_t();
-
-        //        if (reply.Count == 0)
-        //        {
-        //            MessageBox.Show("empty reply");
-        //        }
-        //        else
-        //        {
-        //            switch ((int)reply["status"])
-        //            {
-        //                case 0:
-        //                    wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
-        //                    break;
-
-        //                case 1:
-        //                    MessageBox.Show("tuning in progress");
-        //                    wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
-        //                    break;
-
-        //                case 2:
-        //                    MessageBox.Show("tuning operation failed");
-        //                    break;
-
-        //                default:
-        //                    MessageBox.Show("did not understand reply");
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //    else MessageBox.Show("not connected");
-        //}
-
         private void wavelengthRead_Button_Click(object sender, RoutedEventArgs e)
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
@@ -298,90 +271,33 @@ namespace ConfocalControl
             else MessageBox.Show("not connected");
         }
 
-        //private void wavelengthSet_Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (SolsTiSPlugin.GetController().Solstis.Connected)
-        //    {
-        //        double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
-        //        int reply = SolsTiSPlugin.GetController().Solstis.move_wave_t(wavelength, true);
-        //        switch (reply)
-        //        {
-        //            case -1:
-        //                MessageBox.Show("empty reply");
-        //                break;
-
-        //            case 0:
-        //                MessageBox.Show("task completed");
-        //                break;
-
-        //            case 1:
-        //                MessageBox.Show("task failed");
-        //                break;
-
-        //            default:
-        //                MessageBox.Show("did not understand reply");
-        //                break;
-        //        }
-
-        //        wavelengthRead_Button_Click(null, null);
-        //    }
-        //    else MessageBox.Show("not connected");
-        //}
-
         private void wavelengthSet_Button_Click(object sender, RoutedEventArgs e)
         {
             if (SolsTiSPlugin.GetController().Solstis.Connected)
             {
-                Dictionary<string, object> reply = SolsTiSPlugin.GetController().Solstis.poll_wave_m();
+                double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+                int set_reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
 
-                if (reply.Count == 0)
+                switch (set_reply)
                 {
-                    MessageBox.Show("empty reply");
+                    case -1:
+                        MessageBox.Show("empty reply");
+                        break;
+
+                    case 0:
+                        MessageBox.Show("task completed");
+                        break;
+
+                    case 1:
+                        MessageBox.Show("task failed");
+                        break;
+
+                    default:
+                        MessageBox.Show("did not understand reply");
+                        break;
                 }
-                else
-                {
-                    switch ((int)reply["status"])
-                    {
-                        case 0:
-                            MessageBox.Show("tuning software not active");
-                            break;
 
-                        case 1:
-                            MessageBox.Show("no link to wavelength meter or no meter configured");
-                            break;
-
-                        case 2:
-                        case 3:
-                            double wavelength = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
-                            int set_reply = SolsTiSPlugin.GetController().Solstis.set_wave_m(wavelength, true);
-
-                            switch (set_reply)
-                            {
-                                case -1:
-                                    MessageBox.Show("empty reply");
-                                    break;
-
-                                case 0:
-                                    MessageBox.Show("task completed");
-                                    break;
-
-                                case 1:
-                                    MessageBox.Show("task failed");
-                                    break;
-
-                                default:
-                                    MessageBox.Show("did not understand reply");
-                                    break;
-                            }
-
-                            wavelengthRead_Button_Click(null, null);
-                            break;
-
-                        default:
-                            MessageBox.Show("did not understand reply");
-                            break;
-                    }
-                }
+                wavelengthRead_Button_Click(null, null);
             }
             else MessageBox.Show("not connected");
         }
@@ -411,7 +327,7 @@ namespace ConfocalControl
         private void wavemeterScanProblem(Exception e)
         {
             MessageBox.Show(e.Message);
-            if (SolsTiSPlugin.GetController().IsRunning())
+            if (SolsTiSPlugin.GetController().IsRunning() && SolsTiSPlugin.GetController().WavemeterScanIsRunning())
             {
                 SolsTiSPlugin.GetController().WavemeterAcquisitionFinishing();
             }
@@ -542,11 +458,10 @@ namespace ConfocalControl
                     if (output_box.SelectedIndex >= 0)
                     {
                         SolsTiSPlugin.GetController().Settings["wavemeter_display_channel_index"] = output_box.SelectedIndex;
-                        SolsTiSPlugin.GetController().RequestWavemeterHistoricData();
+                        if (!SolsTiSPlugin.GetController().WavemeterScanIsRunning())  SolsTiSPlugin.GetController().RequestWavemeterHistoricData();
                     }
                     else
                     {
-                        this.fastScan_Display.DataSource = null;
                         this.wavemeterScan_Display.DataSource = null;
                     }
                     break;
@@ -555,11 +470,10 @@ namespace ConfocalControl
                     if (output_box.SelectedIndex >= 0)
                     {
                         SolsTiSPlugin.GetController().Settings["wavemeter_display_channel_index"] = output_box.SelectedIndex;
-                        SolsTiSPlugin.GetController().RequestWavemeterHistoricData();
+                        if (!SolsTiSPlugin.GetController().WavemeterScanIsRunning()) SolsTiSPlugin.GetController().RequestWavemeterHistoricData();
                     }
                     else
                     {
-                        this.fastScan_Display.DataSource = null;
                         this.wavemeterScan_Display.DataSource = null;
                     }
                     break;
@@ -600,10 +514,71 @@ namespace ConfocalControl
             else SolsTiSPlugin.GetController().Settings["fastScanTime"] = e.NewValue;
         }
 
+        private void fastScan_output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            fastScan_output_box.Items.Clear();
+            fastScan_output_box.SelectedIndex = -1;
+
+            switch (fastScan_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    SolsTiSPlugin.GetController().Settings["fast_channel_type"] = "Counters";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["counterChannels"])
+                    {
+                        fastScan_output_box.Items.Add(input);
+                    }
+                    if (fastScan_output_box.Items.Count != 0) fastScan_output_box.SelectedIndex = 0;
+                    break;
+                case 1:
+                    SolsTiSPlugin.GetController().Settings["fast_channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["analogueChannels"])
+                    {
+                        fastScan_output_box.Items.Add(input);
+                    }
+                    if (fastScan_output_box.Items.Count != 0) fastScan_output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void fastScan_output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (fastScan_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    if (fastScan_output_box.SelectedIndex >= 0)
+                    {
+                        SolsTiSPlugin.GetController().Settings["fast_display_channel_index"] = fastScan_output_box.SelectedIndex;
+                        if (!SolsTiSPlugin.GetController().FastScanIsRunning()) SolsTiSPlugin.GetController().RequestFastHistoricData();
+                    }
+                    else
+                    {
+                        this.fastScan_Display.DataSource = null;
+                    }
+                    break;
+
+                case 1:
+                    if (fastScan_output_box.SelectedIndex >= 0)
+                    {
+                        SolsTiSPlugin.GetController().Settings["fast_display_channel_index"] = fastScan_output_box.SelectedIndex;
+                        if (!SolsTiSPlugin.GetController().FastScanIsRunning()) SolsTiSPlugin.GetController().RequestFastHistoricData();
+                    }
+                    else
+                    {
+                        this.fastScan_Display.DataSource = null;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         private void fastScanProblem(Exception e)
         {
             MessageBox.Show(e.Message);
-            if (SolsTiSPlugin.GetController().IsRunning())
+            if (SolsTiSPlugin.GetController().IsRunning() && SolsTiSPlugin.GetController().FastScanIsRunning())
             {
                 SolsTiSPlugin.GetController().FastAcquisitionFinishing();
             }
@@ -689,6 +664,15 @@ namespace ConfocalControl
 
         #endregion
 
+        #region Tera Scan events
+
+        private void teraScan_configure_Button_Click(object sender, RoutedEventArgs e)
+        {
+            SolsTiSPlugin.GetController().TeraScanConfigure();
+        }
+
+        #endregion
+
         #region Other methods
 
         private void DissableNoneScanCommands()
@@ -713,6 +697,29 @@ namespace ConfocalControl
             this.etalonUnLock_Button.IsEnabled = true;
             this.wavelengthSet_Button.IsEnabled = true;
             this.wavelengthRead_Button.IsEnabled = true;
+        }
+
+        private void change_settings_Button_Click(object sender, RoutedEventArgs e)
+        {
+            LaserHardwareConfigure window = new LaserHardwareConfigure();
+            window.ShowDialog();
+        }
+
+        private void save_settings_Button_Click(object sender, RoutedEventArgs e)
+        {
+            SolsTiSPlugin.GetController().Settings.Save();
+        }
+
+        private void load_settings_Button_Click(object sender, RoutedEventArgs e)
+        {
+            SolsTiSPlugin.GetController().LoadSettings();
+            wavelengthSet_Numeric.Value = (double)SolsTiSPlugin.GetController().Settings["wavelength"];
+            wavemeterScanStart_Set.Value = (double)SolsTiSPlugin.GetController().Settings["wavemeterScanStart"];
+            wavemeterScanStop_Set.Value = (double)SolsTiSPlugin.GetController().Settings["wavemeterScanStop"];
+            wavemeterScanRes_Set.Value = (int)SolsTiSPlugin.GetController().Settings["wavemeterScanPoints"];
+            fastScanType_ComboBox.SelectedItem = (string)SolsTiSPlugin.GetController().Settings["fastScanType"];
+            fastScanWidth_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanWidth"];
+            fastScanTime_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanTime"];
         }
 
         #endregion
