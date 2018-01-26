@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,17 +61,6 @@ namespace ConfocalControl
         private double[,] analogLatestData;
         private MultiChannelData dataOutputs;
         public MultiChannelData dataOutputHistory { get { return dataOutputs; } }
-
-        // Keep track of latest settings
-        private double historicSampleRate;
-        private double historicXStart;
-        private double historicXStop;
-        private double historicXRes;
-        private double historicYStart;
-        private double historicYStop;
-        private double historicYRes;
-        private List<string> historicCounterChannels;
-        private List<string> historicAnalogueChannels;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -221,16 +211,6 @@ namespace ConfocalControl
 
         private void SynchronousAcquisitionStarting()
         {
-            // Update historic settings
-            historicSampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
-            historicXStart = (double)scanSettings["GalvoXStart"];
-            historicXStop = (double)scanSettings["GalvoXEnd"];
-            historicYStart = (double)scanSettings["GalvoYStart"];
-            historicYStop = (double)scanSettings["GalvoYEnd"];
-            historicXRes = (double)scanSettings["GalvoXRes"];
-            historicYRes = (double)scanSettings["GalvoYRes"];
-            historicCounterChannels = (List<string>)scanSettings["counterChannels"];
-            historicAnalogueChannels = (List<string>)scanSettings["analogueChannels"];
 
             // Move to the start of the scan.
             GalvoPairPlugin.GetController().MoveOnlyAcquisitionStarting();
@@ -513,17 +493,17 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + (1 / historicSampleRate).ToString());
-            lines.Add("X start = " + historicXStart.ToString() + ", X stop = " + historicXStop.ToString() + ", X resolution = " + historicXRes.ToString());
-            lines.Add("Y start = " + historicYStart.ToString() + ", Y stop = " + historicYStop.ToString() + ", Y resolution = " + historicYRes.ToString().ToString());
+            lines.Add("Exposure = " + (1 / (double)dataOutputs.historicSettings["sampleRate"]).ToString());
+            lines.Add("X start = " + ((double)dataOutputs.historicSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)dataOutputs.historicSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)dataOutputs.historicSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start = " + ((double)dataOutputs.historicSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)dataOutputs.historicSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)dataOutputs.historicSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
-            foreach (string channel in historicCounterChannels)
+            foreach (string channel in (List<string>)dataOutputs.historicSettings["counterChannels"])
             {
                 descriptionString = descriptionString + " " + channel;
             }
-            foreach (string channel in historicAnalogueChannels)
+            foreach (string channel in (List<string>)dataOutputs.historicSettings["analogueChannels"])
             {
                 descriptionString = descriptionString + " " + channel;
             }
@@ -548,17 +528,17 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + (1 / historicSampleRate).ToString());
-            lines.Add("X start = " + historicXStart.ToString() + ", X stop = " + historicXStop.ToString() + ", X resolution = " + historicXRes.ToString());
-            lines.Add("Y start = " + historicYStart.ToString() + ", Y stop = " + historicYStop.ToString() + ", Y resolution = " + historicYRes.ToString().ToString());
+            lines.Add("Exposure = " + (1 / (double)dataOutputs.historicSettings["sampleRate"]).ToString());
+            lines.Add("X start = " + ((double)dataOutputs.historicSettings["GalvoXStart"]).ToString() + ", X stop = " + ((double)dataOutputs.historicSettings["GalvoXEnd"]).ToString() + ", X resolution = " + ((double)dataOutputs.historicSettings["GalvoXRes"]).ToString());
+            lines.Add("Y start = " + ((double)dataOutputs.historicSettings["GalvoYStart"]).ToString() + ", Y stop = " + ((double)dataOutputs.historicSettings["GalvoYEnd"]).ToString() + ", Y resolution = " + ((double)dataOutputs.historicSettings["GalvoYRes"]).ToString());
             lines.Add("");
 
             string descriptionString = "X Y";
-            foreach (string channel in historicCounterChannels)
+            foreach (string channel in (List<string>)dataOutputs.historicSettings["counterChannels"])
             {
                 descriptionString = descriptionString + " " + channel;
             }
-            foreach (string channel in historicAnalogueChannels)
+            foreach (string channel in (List<string>)dataOutputs.historicSettings["analogueChannels"])
             {
                 descriptionString = descriptionString + " " + channel;
             }
@@ -597,24 +577,20 @@ namespace ConfocalControl
         protected List<Point3D>[] analogDataStore;
         protected Point3D[][] analogStoreConverted;
 
-        private double hStart;
-        private double vStart;
-        private double hRange;
-        private double vRange;
-        private double hres;
-        private double vres;
+        private Hashtable settings;
+        public Hashtable historicSettings { get { return settings; } }
 
         public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
         {
             numberCounterChannels = number_of_counter_channels;
             numberAnalogChannels = number_of_analog_channels;
 
-            hStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXStart"];
-            vStart = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYStart"];
-            hRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXEnd"] - hStart;
-            vRange = (double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYEnd"] - vStart;
-            hres = hRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoXRes"] - 1);
-            vres = vRange / ((double)FastMultiChannelRasterScan.GetController().scanSettings["GalvoYRes"] - 1);
+            settings = new Hashtable();
+            foreach (string key in FastMultiChannelRasterScan.GetController().scanSettings.Keys)
+            {
+                settings[key] = FastMultiChannelRasterScan.GetController().scanSettings[key];
+            }
+            settings["sampleRate"] = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
 
             counterDataStore = new List<Point3D>[number_of_counter_channels];
             for (int i = 0; i < number_of_counter_channels; i++)
@@ -675,6 +651,13 @@ namespace ConfocalControl
 
         public List<double[]> TransposeData()
         {
+            double hStart = (double)settings["GalvoXStart"];
+            double vStart = (double)settings["GalvoYStart"];
+            double hRange = (double)settings["GalvoXEnd"] - hStart;
+            double vRange = (double)settings["GalvoYEnd"] - vStart;
+            double hres = hRange / ((double)settings["GalvoXRes"] - 1);
+            double vres = vRange / ((double)settings["GalvoYRes"] - 1);
+
             List<double[]> returnList = new List<double[]>();
 
             int count = Count();
@@ -690,7 +673,7 @@ namespace ConfocalControl
                         double xVal = GetCounterData(0)[i].X - 1;
                         double yVal = GetCounterData(0)[i].Y - 1;
 
-                        transposedData[0] = hStart + hres * xVal; transposedData[1] = vStart + vres * yVal;
+                        transposedData[0] = (double)settings["GalvoXStart"] + hres * xVal; transposedData[1] = vStart + vres * yVal;
                     }
                     else
                     {
