@@ -73,14 +73,20 @@
         <Button x:Name="save_settings_Button" Content="Save settings" HorizontalAlignment="Left" Margin="29,404,0,0" VerticalAlignment="Top" Width="75" Click="save_settings_Button_Click"/>
         <Button x:Name="change_settings_Button" Content="Acquisition settings" HorizontalAlignment="Left" Margin="29,377,0,0" VerticalAlignment="Top" Width="155" Click="change_settings_Button_Click"/>
         <Button x:Name="load_settings_Button" Content="Load settings" HorizontalAlignment="Left" Margin="109,404,0,0" VerticalAlignment="Top" Width="75" Click="load_settings_Button_Click"/>
-        <ni:Graph x:Name="teraScan_Display" HorizontalAlignment="Left" Height="200" Margin="185,469,0,0" VerticalAlignment="Top" Width="703"/>
+        <ni:Graph x:Name="teraScan_Display" HorizontalAlignment="Left" Height="200" Margin="185,469,0,0" VerticalAlignment="Top" Width="703">
+            <ni:Graph.Plots>
+                <ni:Plot Label="Plot 1">
+                    <ni:PointPlotRenderer Fill="Blue"/>
+                </ni:Plot>
+            </ni:Graph.Plots>
+        </ni:Graph>
         <Label Content="TeraScan" HorizontalAlignment="Left" Margin="29,490,0,0" VerticalAlignment="Top"/>
-        <ni:Switch x:Name="teraScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="29,548,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
+        <ni:Switch x:Name="teraScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="29,548,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="teraScan_Switch_Click" ClickMode="Press"/>
         <Button x:Name="teraScan_configure_Button" Content="Configure" HorizontalAlignment="Left" Margin="29,521,0,0" VerticalAlignment="Top" Width="103" Click="teraScan_configure_Button_Click"/>
-        <ComboBox HorizontalAlignment="Left" Margin="29,576,0,0" VerticalAlignment="Top" Width="103"/>
-        <ComboBox HorizontalAlignment="Left" Margin="29,603,0,0" VerticalAlignment="Top" Width="103"/>
+        <ComboBox x:Name="teraScan_output_type_box" HorizontalAlignment="Left" Margin="29,576,0,0" VerticalAlignment="Top" Width="103" SelectionChanged="teraScan_output_type_box_SelectionChanged"/>
+        <ComboBox x:Name="teraScan_output_box" HorizontalAlignment="Left" Margin="29,603,0,0" VerticalAlignment="Top" Width="103" SelectionChanged="teraScan_output_box_SelectionChanged"/>
         <ni:GraphInteractionPalette HorizontalAlignment="Left" Height="20" Margin="748,213,0,0" VerticalAlignment="Top" Width="140" Graph="{Binding ElementName=wavemeterScan_Display}"/>
         <ni:GraphInteractionPalette HorizontalAlignment="Left" Height="20" Margin="748,442,0,0" VerticalAlignment="Top" Width="140" Graph="{Binding ElementName=fastScan_Display}"/>
-        <ni:GraphInteractionPalette HorizontalAlignment="Left" Height="20" Margin="748,669,0,0" VerticalAlignment="Top" Width="140" Graph="{Binding ElementName=teraScan_Displayy}"/>
+        <ni:GraphInteractionPalette HorizontalAlignment="Left" Height="20" Margin="748,669,0,0" VerticalAlignment="Top" Width="140" Graph="{Binding ElementName=teraScan_Display}"/>
     </Grid>
 </Window>

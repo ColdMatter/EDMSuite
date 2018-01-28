@@ -201,14 +201,12 @@ namespace DAQ.HAL
             Dictionary<string, object> rslt = JsonConvert.DeserializeObject<Dictionary<string, object>>(msgIn);
             JObject j0 = (JObject)rslt["message"];
             bool ok = j0.GetValue("op").ToObject<string>().Equals(command + "_reply");
-            int[] j = j0.GetValue("transmission_id").ToObject<int[]>();
-            ok = ok && j[0].Equals(transmission_id);
-            /*if (!ok)
-            {
-                //rslt.Clear();
-                return rslt;
-            }
-            */
+            //int[] j = j0.GetValue("transmission_id").ToObject<int[]>();
+            //ok = ok && j[0].Equals(transmission_id);
+            //if (!ok)
+            //{
+            //    throw new Exception("Reply does not match message.");
+            //}
             Dictionary<string, object> final = j0.GetValue("parameters").ToObject<Dictionary<string, object>>();
             Dictionary<string, object> finalCopy = new Dictionary<string, object>(final);
             foreach (string key in final.Keys)

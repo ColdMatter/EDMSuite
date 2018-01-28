@@ -279,6 +279,24 @@ namespace DAQ.HAL
             else return ((int)rslt["status"]);
         }
 
+        // 3.29
+        public Dictionary<string, object> scan_stitch_status(string type)
+        {
+            Dictionary<string, object> prms = new Dictionary<string, object>();
+            switch (type)
+            {
+                case "medium":
+                    prms.Add("scan", type);
+                    break;
+                case "fine":
+                    prms.Add("scan", type);
+                    break;
+                default:
+                    throw new Exception("Cannot understand tera scan type");
+            }
+            return GenericCommand("scan_stitch_status", prms);
+        }
+
         // 3.31
         public int terascan_output(string op, int delay, int update, string pause)
         {

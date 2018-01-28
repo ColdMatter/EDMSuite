@@ -197,7 +197,8 @@ namespace ConfocalControl
                 }
 
                 dataOutputs = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
-                                                    ((List<string>)scanSettings["analogueChannels"]).Count);
+                                                    ((List<string>)scanSettings["analogueChannels"]).Count,
+                                                     scanSettings);
 
                 backendState = RasterScanState.running;
                 SynchronousAcquisitionStarting();
@@ -577,7 +578,7 @@ namespace ConfocalControl
         protected List<Point3D>[] analogDataStore;
         protected Point3D[][] analogStoreConverted;
 
-        private Hashtable settings;
+        protected Hashtable settings;
         public Hashtable historicSettings { get { return settings; } }
 
         public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels)
@@ -585,10 +586,31 @@ namespace ConfocalControl
             numberCounterChannels = number_of_counter_channels;
             numberAnalogChannels = number_of_analog_channels;
 
-            settings = new Hashtable();
-            foreach (string key in FastMultiChannelRasterScan.GetController().scanSettings.Keys)
+            counterDataStore = new List<Point3D>[number_of_counter_channels];
+            for (int i = 0; i < number_of_counter_channels; i++)
             {
-                settings[key] = FastMultiChannelRasterScan.GetController().scanSettings[key];
+                counterDataStore[i] = new List<Point3D>();
+            }
+
+            analogDataStore = new List<Point3D>[number_of_analog_channels];
+            for (int i = 0; i < number_of_analog_channels; i++)
+            {
+                analogDataStore[i] = new List<Point3D>();
+            }
+
+            counterStoreConverted = new Point3D[number_of_counter_channels][];
+            analogStoreConverted = new Point3D[number_of_analog_channels][];
+        }
+
+        public MultiChannelData(int number_of_counter_channels, int number_of_analog_channels, PluginSettings currentSettings)
+        {
+            numberCounterChannels = number_of_counter_channels;
+            numberAnalogChannels = number_of_analog_channels;
+
+            settings = new Hashtable();
+            foreach (string key in currentSettings.Keys)
+            {
+                settings[key] = currentSettings[key];
             }
             settings["sampleRate"] = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
 

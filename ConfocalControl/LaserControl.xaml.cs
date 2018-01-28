@@ -59,6 +59,10 @@ namespace ConfocalControl
             SolsTiSPlugin.GetController().FastScanFinished += fastScanFinished;
             SolsTiSPlugin.GetController().FastScanProblem += fastScanProblem;
 
+            SolsTiSPlugin.GetController().TeraData += teraScanData;
+            SolsTiSPlugin.GetController().TeraScanFinished += teraScanFinished;
+            SolsTiSPlugin.GetController().TeraScanProblem += teraScanProblem;
+
             output_type_box.Items.Add("Counters");
             output_type_box.Items.Add("Analogues");
             output_type_box.SelectedIndex = 0;
@@ -69,6 +73,11 @@ namespace ConfocalControl
             fastScan_output_type_box.Items.Add("Counters");
             fastScan_output_type_box.Items.Add("Analogues");
             fastScan_output_type_box.SelectedIndex = 0;
+
+            teraScan_output_type_box.Items.Add("Lambda");
+            teraScan_output_type_box.Items.Add("Counters");
+            teraScan_output_type_box.Items.Add("Analogues");
+            teraScan_output_type_box.SelectedIndex = 0;
         }
 
         #endregion
@@ -613,6 +622,20 @@ namespace ConfocalControl
         {
             if (!fastScan_Switch.Value)
             {
+                bool ready = false;
+
+                if (!ready)
+                {
+                    MessageBox.Show("Not ready yet.");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.fastScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
                 if (!SolsTiSPlugin.GetController().FastScanAcceptableSettings())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
@@ -666,9 +689,137 @@ namespace ConfocalControl
 
         #region Tera Scan events
 
+        private void teraScan_output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            teraScan_output_box.Items.Clear();
+            teraScan_output_box.SelectedIndex = -1;
+
+            switch (teraScan_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    SolsTiSPlugin.GetController().Settings["tera_channel_type"] = "Lambda";
+                    break;
+                case 1:
+                    SolsTiSPlugin.GetController().Settings["tera_channel_type"] = "Counters";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["counterChannels"])
+                    {
+                        teraScan_output_box.Items.Add(input);
+                    }
+                    if (teraScan_output_box.Items.Count != 0) teraScan_output_box.SelectedIndex = 0;
+                    break;
+                case 2:
+                    SolsTiSPlugin.GetController().Settings["tera_channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().Settings["analogueChannels"])
+                    {
+                        teraScan_output_box.Items.Add(input);
+                    }
+                    if (teraScan_output_box.Items.Count != 0) teraScan_output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void teraScan_output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SolsTiSPlugin.GetController().Settings["tera_display_channel_index"] = teraScan_output_box.SelectedIndex;
+            if (!SolsTiSPlugin.GetController().TeraScanIsRunning()) SolsTiSPlugin.GetController().RequestTeraHistoricData();
+        }
+
+        private void teraScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (SolsTiSPlugin.GetController().IsRunning() && SolsTiSPlugin.GetController().TeraScanIsRunning())
+            {
+                if (SolsTiSPlugin.GetController().TeraSegmentIsRunning())
+                {
+                    SolsTiSPlugin.GetController().TeraScanSegmentAcquisitionEnd();
+                }
+                SolsTiSPlugin.GetController().TeraScanAcquisitionStopping();
+            }
+        }
+
+        private void teraScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       EnableNoneScanCommands();
+                       this.teraScan_Switch.Value = false;
+
+                       this.fastScan_Switch.IsEnabled = true;
+                       this.wavemeterScan_Switch.IsEnabled = true;
+                       this.teraScan_configure_Button.IsEnabled = true;
+                   }));
+        }
+
+        private void teraScanData(Point[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.teraScan_Display.DataSource = data;
+                       }));
+        }
+
         private void teraScan_configure_Button_Click(object sender, RoutedEventArgs e)
         {
-            SolsTiSPlugin.GetController().TeraScanConfigure();
+            return;
+        }
+
+        private void teraScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!teraScan_Switch.Value)
+            {
+                if (!SolsTiSPlugin.GetController().TeraScanAcceptableSettings())
+                {
+                    MessageBox.Show("TeraScan parameters unacceptable");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.teraScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                if (!SolsTiSPlugin.GetController().Solstis.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.teraScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() => 
+                   {
+                       DissableNoneScanCommands(); 
+                       this.fastScan_Switch.IsEnabled = false;
+                       this.wavemeterScan_Switch.IsEnabled = false;
+                       this.teraScan_configure_Button.IsEnabled = false;
+
+                   }));
+
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().StartTeraScan));
+                thread.IsBackground = true;
+                thread.Start();
+            }
+
+            else
+            {
+                if (SolsTiSPlugin.GetController().IsRunning())
+                {
+                    SolsTiSPlugin.GetController().StopAcquisition();
+                }
+            }
         }
 
         #endregion
