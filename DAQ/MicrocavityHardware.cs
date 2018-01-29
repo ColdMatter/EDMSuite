@@ -66,6 +66,9 @@ namespace DAQ.HAL
             AddAnalogInputChannel("uCavityVoltage", daqBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("TiSapphMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("QuartzRefCavity", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("noiseMicrophone", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            Info.Add("zeroed1","ai7_dummy1");
+            Info.Add("zeroed2", "ai7_dummy2");
 
             AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("tclpdTiSapph", TCLBoard + "/ai2", AITerminalConfiguration.Differential);
@@ -126,7 +129,7 @@ namespace DAQ.HAL
             //Commented out for debugging to get ScanMaster to compile
             //RemotingHelper.ConnectMicrocavityHardwareControl();
 
-            RemotingHelper.ConnectScanMaster();
+            //RemotingHelper.ConnectScanMaster();
 
             // ask the remoting system for access to TCL2012
             Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");

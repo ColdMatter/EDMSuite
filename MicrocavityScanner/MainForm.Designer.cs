@@ -48,6 +48,11 @@
             this.intensityYAxis1 = new NationalInstruments.UI.IntensityYAxis();
             this.SuperScanCont = new System.Windows.Forms.GroupBox();
             this.FastAxis = new System.Windows.Forms.GroupBox();
+            this.butFastNudgePos = new System.Windows.Forms.Button();
+            this.butFastNudgeNeg = new System.Windows.Forms.Button();
+            this.FastNudgeStep = new System.Windows.Forms.TextBox();
+            this.labFastPos = new System.Windows.Forms.Label();
+            this.FastPos = new System.Windows.Forms.TextBox();
             this.FastAxisRes = new System.Windows.Forms.TextBox();
             this.FastAxisResLabel = new System.Windows.Forms.Label();
             this.FastAxisEndVoltLabel = new System.Windows.Forms.Label();
@@ -58,6 +63,11 @@
             this.FastAxisStartLabel = new System.Windows.Forms.Label();
             this.FastAxisSelectCombo = new System.Windows.Forms.ComboBox();
             this.SlowAxisCont = new System.Windows.Forms.GroupBox();
+            this.butSlowNudgePos = new System.Windows.Forms.Button();
+            this.butSlowNudgeNeg = new System.Windows.Forms.Button();
+            this.SlowNudgeStep = new System.Windows.Forms.TextBox();
+            this.labSlowPos = new System.Windows.Forms.Label();
+            this.SlowPos = new System.Windows.Forms.TextBox();
             this.SlowAxisRes = new System.Windows.Forms.TextBox();
             this.SlowAxisResLabel = new System.Windows.Forms.Label();
             this.SlowAxisEndVoltLabel = new System.Windows.Forms.Label();
@@ -108,7 +118,7 @@
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -221,6 +231,11 @@
             // 
             // FastAxis
             // 
+            this.FastAxis.Controls.Add(this.butFastNudgePos);
+            this.FastAxis.Controls.Add(this.butFastNudgeNeg);
+            this.FastAxis.Controls.Add(this.FastNudgeStep);
+            this.FastAxis.Controls.Add(this.labFastPos);
+            this.FastAxis.Controls.Add(this.FastPos);
             this.FastAxis.Controls.Add(this.FastAxisRes);
             this.FastAxis.Controls.Add(this.FastAxisResLabel);
             this.FastAxis.Controls.Add(this.FastAxisEndVoltLabel);
@@ -232,10 +247,58 @@
             this.FastAxis.Controls.Add(this.FastAxisSelectCombo);
             this.FastAxis.Location = new System.Drawing.Point(8, 27);
             this.FastAxis.Name = "FastAxis";
-            this.FastAxis.Size = new System.Drawing.Size(200, 128);
+            this.FastAxis.Size = new System.Drawing.Size(200, 153);
             this.FastAxis.TabIndex = 5;
             this.FastAxis.TabStop = false;
             this.FastAxis.Text = "Fast Axis";
+            // 
+            // butFastNudgePos
+            // 
+            this.butFastNudgePos.Location = new System.Drawing.Point(162, 123);
+            this.butFastNudgePos.Name = "butFastNudgePos";
+            this.butFastNudgePos.Size = new System.Drawing.Size(23, 21);
+            this.butFastNudgePos.TabIndex = 18;
+            this.butFastNudgePos.Text = "+";
+            this.butFastNudgePos.UseVisualStyleBackColor = true;
+            this.butFastNudgePos.Click += new System.EventHandler(this.butFastNudgePos_Click);
+            // 
+            // butFastNudgeNeg
+            // 
+            this.butFastNudgeNeg.Location = new System.Drawing.Point(99, 124);
+            this.butFastNudgeNeg.Name = "butFastNudgeNeg";
+            this.butFastNudgeNeg.Size = new System.Drawing.Size(23, 21);
+            this.butFastNudgeNeg.TabIndex = 17;
+            this.butFastNudgeNeg.Text = "-";
+            this.butFastNudgeNeg.UseVisualStyleBackColor = true;
+            this.butFastNudgeNeg.Click += new System.EventHandler(this.butFastNudgeNeg_Click);
+            // 
+            // FastNudgeStep
+            // 
+            this.FastNudgeStep.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "FastAxisStepBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.FastNudgeStep.Location = new System.Drawing.Point(123, 124);
+            this.FastNudgeStep.Name = "FastNudgeStep";
+            this.FastNudgeStep.Size = new System.Drawing.Size(39, 20);
+            this.FastNudgeStep.TabIndex = 16;
+            this.FastNudgeStep.Text = global::MicrocavityScanner.Properties.Settings.Default.FastAxisStepBind;
+            this.FastNudgeStep.TextChanged += new System.EventHandler(this.FastNudgeStep_TextChanged);
+            // 
+            // labFastPos
+            // 
+            this.labFastPos.AutoSize = true;
+            this.labFastPos.Location = new System.Drawing.Point(103, 82);
+            this.labFastPos.Name = "labFastPos";
+            this.labFastPos.Size = new System.Drawing.Size(44, 13);
+            this.labFastPos.TabIndex = 15;
+            this.labFastPos.Text = "Position";
+            this.labFastPos.Click += new System.EventHandler(this.label1_Click_3);
+            // 
+            // FastPos
+            // 
+            this.FastPos.Location = new System.Drawing.Point(106, 98);
+            this.FastPos.Name = "FastPos";
+            this.FastPos.Size = new System.Drawing.Size(71, 20);
+            this.FastPos.TabIndex = 14;
+            this.FastPos.Text = "0";
             // 
             // FastAxisRes
             // 
@@ -319,7 +382,9 @@
             this.FastAxisSelectCombo.FormattingEnabled = true;
             this.FastAxisSelectCombo.Items.AddRange(new object[] {
             "tclECDLControl",
-            "tclTiSapphControl"});
+            "tclTiSapphControl",
+            "Analog AO0",
+            "Analog AO1"});
             this.FastAxisSelectCombo.Location = new System.Drawing.Point(9, 19);
             this.FastAxisSelectCombo.Name = "FastAxisSelectCombo";
             this.FastAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
@@ -328,6 +393,11 @@
             // 
             // SlowAxisCont
             // 
+            this.SlowAxisCont.Controls.Add(this.butSlowNudgePos);
+            this.SlowAxisCont.Controls.Add(this.butSlowNudgeNeg);
+            this.SlowAxisCont.Controls.Add(this.SlowNudgeStep);
+            this.SlowAxisCont.Controls.Add(this.labSlowPos);
+            this.SlowAxisCont.Controls.Add(this.SlowPos);
             this.SlowAxisCont.Controls.Add(this.SlowAxisRes);
             this.SlowAxisCont.Controls.Add(this.SlowAxisResLabel);
             this.SlowAxisCont.Controls.Add(this.SlowAxisEndVoltLabel);
@@ -337,13 +407,60 @@
             this.SlowAxisCont.Controls.Add(this.SlowAxisStart);
             this.SlowAxisCont.Controls.Add(this.SlowAxisStartLabel);
             this.SlowAxisCont.Controls.Add(this.SlowAxisSelectCombo);
-            this.SlowAxisCont.Location = new System.Drawing.Point(8, 161);
+            this.SlowAxisCont.Location = new System.Drawing.Point(8, 184);
             this.SlowAxisCont.Name = "SlowAxisCont";
-            this.SlowAxisCont.Size = new System.Drawing.Size(200, 128);
+            this.SlowAxisCont.Size = new System.Drawing.Size(200, 156);
             this.SlowAxisCont.TabIndex = 6;
             this.SlowAxisCont.TabStop = false;
             this.SlowAxisCont.Text = "Slow Axis";
             this.SlowAxisCont.Enter += new System.EventHandler(this.groupBox1_Enter_1);
+            // 
+            // butSlowNudgePos
+            // 
+            this.butSlowNudgePos.Location = new System.Drawing.Point(162, 123);
+            this.butSlowNudgePos.Name = "butSlowNudgePos";
+            this.butSlowNudgePos.Size = new System.Drawing.Size(23, 21);
+            this.butSlowNudgePos.TabIndex = 23;
+            this.butSlowNudgePos.Text = "+";
+            this.butSlowNudgePos.UseVisualStyleBackColor = true;
+            this.butSlowNudgePos.Click += new System.EventHandler(this.butSlowNudgePos_Click);
+            // 
+            // butSlowNudgeNeg
+            // 
+            this.butSlowNudgeNeg.Location = new System.Drawing.Point(99, 124);
+            this.butSlowNudgeNeg.Name = "butSlowNudgeNeg";
+            this.butSlowNudgeNeg.Size = new System.Drawing.Size(23, 21);
+            this.butSlowNudgeNeg.TabIndex = 22;
+            this.butSlowNudgeNeg.Text = "-";
+            this.butSlowNudgeNeg.UseVisualStyleBackColor = true;
+            this.butSlowNudgeNeg.Click += new System.EventHandler(this.butSlowNudgeNeg_Click);
+            // 
+            // SlowNudgeStep
+            // 
+            this.SlowNudgeStep.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MicrocavityScanner.Properties.Settings.Default, "SlowAxisStepBind", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SlowNudgeStep.Location = new System.Drawing.Point(122, 124);
+            this.SlowNudgeStep.Name = "SlowNudgeStep";
+            this.SlowNudgeStep.Size = new System.Drawing.Size(39, 20);
+            this.SlowNudgeStep.TabIndex = 21;
+            this.SlowNudgeStep.Text = global::MicrocavityScanner.Properties.Settings.Default.SlowAxisStepBind;
+            this.SlowNudgeStep.TextChanged += new System.EventHandler(this.SlowNudgeStep_TextChanged);
+            // 
+            // labSlowPos
+            // 
+            this.labSlowPos.AutoSize = true;
+            this.labSlowPos.Location = new System.Drawing.Point(103, 82);
+            this.labSlowPos.Name = "labSlowPos";
+            this.labSlowPos.Size = new System.Drawing.Size(44, 13);
+            this.labSlowPos.TabIndex = 20;
+            this.labSlowPos.Text = "Position";
+            // 
+            // SlowPos
+            // 
+            this.SlowPos.Location = new System.Drawing.Point(106, 98);
+            this.SlowPos.Name = "SlowPos";
+            this.SlowPos.Size = new System.Drawing.Size(71, 20);
+            this.SlowPos.TabIndex = 19;
+            this.SlowPos.Text = "0";
             // 
             // SlowAxisRes
             // 
@@ -425,7 +542,9 @@
             this.SlowAxisSelectCombo.FormattingEnabled = true;
             this.SlowAxisSelectCombo.Items.AddRange(new object[] {
             "tclECDLControl",
-            "tclTiSapphControl"});
+            "tclTiSapphControl",
+            "Analog AO0",
+            "Analog AO1"});
             this.SlowAxisSelectCombo.Location = new System.Drawing.Point(4, 19);
             this.SlowAxisSelectCombo.Name = "SlowAxisSelectCombo";
             this.SlowAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
@@ -437,7 +556,7 @@
             this.TimingCont.Controls.Add(this.ExposureUnitsLabel);
             this.TimingCont.Controls.Add(this.Exposure);
             this.TimingCont.Controls.Add(this.ExposureLabel);
-            this.TimingCont.Location = new System.Drawing.Point(8, 295);
+            this.TimingCont.Location = new System.Drawing.Point(8, 343);
             this.TimingCont.Name = "TimingCont";
             this.TimingCont.Size = new System.Drawing.Size(200, 60);
             this.TimingCont.TabIndex = 7;
@@ -491,7 +610,7 @@
             // linkAxesCheck
             // 
             this.linkAxesCheck.AutoSize = true;
-            this.linkAxesCheck.Location = new System.Drawing.Point(16, 365);
+            this.linkAxesCheck.Location = new System.Drawing.Point(16, 407);
             this.linkAxesCheck.Name = "linkAxesCheck";
             this.linkAxesCheck.Size = new System.Drawing.Size(72, 17);
             this.linkAxesCheck.TabIndex = 9;
@@ -583,6 +702,16 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel1;
         private System.Windows.Forms.CheckBox linkAxesCheck;
+        private System.Windows.Forms.Label labFastPos;
+        private System.Windows.Forms.TextBox FastPos;
+        private System.Windows.Forms.Button butFastNudgePos;
+        private System.Windows.Forms.Button butFastNudgeNeg;
+        private System.Windows.Forms.TextBox FastNudgeStep;
+        private System.Windows.Forms.Button butSlowNudgePos;
+        private System.Windows.Forms.Button butSlowNudgeNeg;
+        private System.Windows.Forms.TextBox SlowNudgeStep;
+        private System.Windows.Forms.Label labSlowPos;
+        private System.Windows.Forms.TextBox SlowPos;
     }
 }
 

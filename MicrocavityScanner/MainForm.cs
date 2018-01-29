@@ -73,11 +73,15 @@ namespace MicrocavityScanner.GUI
                 controller.scanSettings.Add("FastAxisStart", Convert.ToDouble(FastAxisStart.Text));
                 controller.scanSettings.Add("FastAxisEnd", Convert.ToDouble(FastAxisEnd.Text));
                 controller.scanSettings.Add("FastAxisRes", Convert.ToDouble(FastAxisRes.Text));
+                controller.scanSettings.Add("FastAxisPos", Convert.ToDouble(FastPos.Text));
+                controller.scanSettings.Add("FastAxisStep", Convert.ToDouble(FastNudgeStep.Text));
                 //controller.laserSettings.Add("SlowLaser", SlowAxisSelectCombo.Text);
                 controller.scanSettings.Add("SlowAxisStart", Convert.ToDouble(SlowAxisStart.Text));
                 controller.scanSettings.Add("SlowAxisEnd", Convert.ToDouble(SlowAxisEnd.Text));
                 controller.scanSettings.Add("SlowAxisRes", Convert.ToDouble(SlowAxisRes.Text));
                 controller.scanSettings.Add("Exposure", Convert.ToDouble(Exposure.Text));
+                controller.scanSettings.Add("SlowAxisPos", Convert.ToDouble(SlowPos.Text));
+                controller.scanSettings.Add("SlowAxisStep", Convert.ToDouble(SlowNudgeStep.Text));
             }
             catch (Exception err)
             {
@@ -274,9 +278,9 @@ namespace MicrocavityScanner.GUI
                 controller.scanSettings["FastAxisEnd"]);
 
             int history;
-            if (controller.scanSettings["FastAxisRes"] > 1000)
+            if (controller.scanSettings["FastAxisRes"] > 2000)
             {
-                history = 1000;
+                history = 2000;
             }
             else
             {
@@ -289,6 +293,17 @@ namespace MicrocavityScanner.GUI
             //SetIntGraphYAxisRange(SuperScanGraph, controller.scanSettings["SlowAxisStart"],
             //    controller.scanSettings["SlowAxisEnd"]);
 
+        }
+
+        public void UpdatePositionEx(double[] position)
+        {
+            UpdatePositionHelper(position);
+        }
+
+        public void UpdatePosition(double[] position)
+        {
+            FastPos.Text = (string)Convert.ToString(position[0]);
+            SlowPos.Text = (string)Convert.ToString(position[1]);
         }
 
         public void UpdateGraphs(ScanPoint point)
@@ -414,6 +429,13 @@ namespace MicrocavityScanner.GUI
         //}
 
         // UI delegates and thread-safe helpers
+
+        private delegate void UpdatePositionDelegate(double[] position);
+        private void UpdatePositionHelper(double[] position)
+        {
+            this.Invoke(new UpdatePositionDelegate(UpdatePosition), position);
+        }
+
         private delegate void ClearDataDelegate();
         private void ClearNIGraph(Graph graph)
         {
@@ -509,6 +531,67 @@ namespace MicrocavityScanner.GUI
             try
             {
                 controller.LinkAxes = linkAxesCheck.Checked;
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("There has been an error in applying the settings:" + err.Message,
+                    "Settings Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void label1_Click_3(object sender, EventArgs e)
+        {
+
+        }
+
+        private void butFastNudgePos_Click(object sender, EventArgs e)
+        {
+            controller.JogAxes("FastLaser", controller.Scanitor.fastLaserValue + controller.scanSettings["FastAxisStep"]);
+        }
+
+        private void butFastNudgeNeg_Click(object sender, EventArgs e)
+        {
+            controller.JogAxes("FastLaser", controller.Scanitor.fastLaserValue - controller.scanSettings["FastAxisStep"]);
+
+        }
+
+        private void butSlowNudgePos_Click(object sender, EventArgs e)
+        {
+            controller.JogAxes("SlowLaser", controller.Scanitor.slowLaserValue + controller.scanSettings["SlowAxisStep"]);
+
+        }
+
+        private void butSlowNudgeNeg_Click(object sender, EventArgs e)
+        {
+            controller.JogAxes("SlowLaser", controller.Scanitor.slowLaserValue - controller.scanSettings["SlowAxisStep"]);
+        }
+
+        private void FastNudgeStep_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (FastNudgeStep.Text != "")
+                {
+                    controller.scanSettings["FastAxisStep"] = Convert.ToDouble(FastNudgeStep.Text);
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("There has been an error in applying the settings:" + err.Message,
+                    "Settings Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SlowNudgeStep_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SlowNudgeStep.Text != "")
+                {
+                    controller.scanSettings["SlowAxisStep"] = Convert.ToDouble(SlowNudgeStep.Text);
+                }
             }
             catch (Exception err)
             {

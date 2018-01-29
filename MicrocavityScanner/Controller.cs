@@ -23,7 +23,7 @@ namespace MicrocavityScanner
     {
         #region Class members
         private TransferCavityLock2012.Controller tclController;
-        private ScanMaster.Controller smController;
+        //private ScanMaster.Controller smController;
         public ScanSerializer serializer = new ScanSerializer();
         public enum AppState { stopped, running, starting };
         private MainForm mainForm;
@@ -45,6 +45,8 @@ namespace MicrocavityScanner
 
         private static Controller controllerInstance;
         public AppState appState = AppState.stopped;
+
+        
         
         #endregion
 
@@ -62,6 +64,8 @@ namespace MicrocavityScanner
             }
             return controllerInstance;
         }
+
+        
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -82,12 +86,17 @@ namespace MicrocavityScanner
             scanitor.Data += new DataEventHandler(DataHandler);
             scanitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
             scanitor.GUIUpdate += new GUIUpdateEventHandler(GUIUpdateHandler);
+            scanitor.PosUpdate += new PosUpdateEventHandler(PosUpdateHandler);
 
             mainForm = new MainForm(this);
             mainForm.Show();
 
+            scanitor.Initialise();
+
             // run the main event loop
             Application.Run(mainForm);
+
+            
 
         }
         // When the main window gets told to shut, it calls this function.
@@ -147,10 +156,7 @@ namespace MicrocavityScanner
 
         public void SaveData()
         {
-            //smController = (ScanMaster.Controller)(Activator.GetObject(typeof(ScanMaster.Controller), "tcp://localhost:1170/controller.rem"));
-            //scanitor.smController.SaveData();
-
-            // saves a zip file containing each scan, plus the average
+            // saves a zip file containing each scan
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "zipped xml data file|*.zip";
             saveFileDialog1.Title = "Save scan data";
@@ -178,7 +184,7 @@ namespace MicrocavityScanner
                 Scan sc = serializer.DeserializeScanAsBinary(tempPath + "\\scan_" + k.ToString());
                 serializer.AppendToZip(sc, "scan_" + k.ToString() + ".xml");
             }
-            serializer.AppendToZip(DataStore.AverageScan, "average.xml");
+            //serializer.AppendToZip(DataStore.AverageScan, "average.xml");
             serializer.CloseZip();
             fs.Close();
             //Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
@@ -259,6 +265,19 @@ namespace MicrocavityScanner
 
                 // hint to the GC that now might be a good time
                 GC.Collect();
+            }
+        }
+
+        public void JogAxes(string output, double newpoint)
+        {
+            scanitor.JogTo(output, newpoint);
+        }
+
+        private void PosUpdateHandler(object sender, UpdatePosArgs e)
+        {
+            lock (this)
+            {
+                mainForm.UpdatePositionEx(e.position);
             }
         }
 

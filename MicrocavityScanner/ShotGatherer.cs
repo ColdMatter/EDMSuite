@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 using NationalInstruments.DAQmx;
@@ -10,7 +11,8 @@ using DAQ.HAL;
 using Data;
 using ScanMaster.Acquire.Plugin;
 
-namespace ScanMaster.Acquire.Plugins
+namespace MicrocavityScanner.Acquire
+
 {
 	/// <summary>
 	/// A plugin to capture time-resolved data by buffered event counting and simultaneous analog inputs.
@@ -39,61 +41,56 @@ namespace ScanMaster.Acquire.Plugins
     /// is significantly faster. This is at the expense of NOT being able to be used in conjunction with the 
     /// switch plugins.
 	/// </summary>
-	[Serializable]
-	public class FastMultiInputShotGathererPlugin : ShotGathererPlugin
+	public class ShotGatherer
 	{
-		[NonSerialized]
+		
 		private Task countingTask;
-        [NonSerialized]
+        
         private DaqStream countStream;
-		[NonSerialized]
+		
 		private Task freqOutTask1;
-        [NonSerialized]
+        
         private Task freqOutTask2;
-		[NonSerialized]
+		
         private Task shotGateTask;
-        [NonSerialized]
+       
         private Task flagTask;
-        [NonSerialized]
+   
 		private CounterReader countReader;
-        [NonSerialized]
+
         private Task inputTask;
-        [NonSerialized]
+ 
         private AnalogMultiChannelReader reader;
-        [NonSerialized]
+    
         private DigitalSingleChannelWriter flagWriter;
-        [NonSerialized]
+     
 		private double[] latestData;
-        [NonSerialized]
+   
         private double[,] latestAnalogData;
 
-        public void PreInitialiseSettings()
-        {
-            PluginSettings settings = new PluginSettings();
-        }
+        public Dictionary<string, object> settings = new Dictionary<string, object>();
 
-        protected override void InitialiseSettings()
+        public void InitialiseSettings(double exp)
 		{
-			settings["triggerActive"] = false;
+            settings["triggerActive"] = false;
             //settings["pointsPerScan"] = 1000;
-            settings["analogChannel"] = "uCavityReflectionECDL,uCavityReflectionTiSapph";
+            //the analog channels read a terminated channel first to eliminate crosstalk
+            settings["analogChannel"] = "noiseMicrophone,TiSapphMonitor";
+            settings["dummyChannel"] = "zeroed1,zeroed2";
             settings["preArm"] = true;
             settings["channel"] = "uCavityReflectionAPD";
             settings["gateLength"] = 100;
             settings["sampleRate"] = 1000;
             settings["gateStartTime"] = 10;
+            settings["inputRangeLow"] = -10.0;
+            settings["inputRangeHigh"] = 10.0;
+            settings["clockPeriod"] = 1;
             int gatecheck = (int)settings["gateLength"];
-        }
-
-        public void ReInitialiseSettings(double exp)
-        {
-            InitialiseSettings();
             settings["gateLength"] = ((int)Convert.ToInt64(exp * 0.001 
-                * 1000));
-            
+                * 1000)); 
         }
 
-		public override void AcquisitionStarting()
+		public void AcquisitionStarting()
 		{
             //set up a shot gate pulse
             shotGateTask = new Task("gate for pause trigger for counterTask");
@@ -205,12 +202,19 @@ namespace ScanMaster.Acquire.Plugins
             string channelList = (string)settings["analogChannel"];
             string[] channels = channelList.Split(new char[] { ',' });
 
-            foreach (string channel in channels)
-                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+            string dummyList = (string)settings["dummyChannel"];
+            string[] dummys = dummyList.Split(new char[] { ',' });
+
+            for (int i = 0; i < channels.Length; i++)
+            {
+                //foreach (string channel in channels)
+                inputTask.AddGlobalChannel((string)Environs.Hardware.GetInfo(dummys[i]));
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channels[i]]).AddToTask(
                     inputTask,
                     (double)settings["inputRangeLow"],
                     (double)settings["inputRangeHigh"]
                     );
+            }
 
             // internal clock, finite acquisition
             inputTask.Timing.ConfigureSampleClock(
@@ -233,15 +237,15 @@ namespace ScanMaster.Acquire.Plugins
             reader = new AnalogMultiChannelReader(inputTask.Stream);
 		}
 
-		public override void ScanStarting()
+		public void ScanStarting()
 		{
 		}
 
-		public override void ScanFinished()
+		public void ScanFinished()
 		{
 		}
 
-		public override void AcquisitionFinished()
+		public void AcquisitionFinished()
 		{
 			countingTask.Dispose();
 
@@ -250,7 +254,7 @@ namespace ScanMaster.Acquire.Plugins
 
             try
             {
-                if (config.switchPlugin.State)
+                if (false)
                 {
                     freqOutTask1.Stop();
                 }
@@ -271,7 +275,7 @@ namespace ScanMaster.Acquire.Plugins
             shotGateTask.Dispose();
 		}
 
-        public override void PreArm() //The Arm and Wait is divided into PreArm, ArmAndWait
+        public void PreArm() //The Arm and Wait is divided into PreArm, ArmAndWait
             //and PostArm this means that only the acquisiton is inside the shot loop.
         {
             lock (this)
@@ -287,7 +291,7 @@ namespace ScanMaster.Acquire.Plugins
                 // Which output task runs depends on the switch-state. 
                 try
                 {
-                    if (config.switchPlugin.State)
+                    if (false)
                     {
                         freqOutTask1.Start();
                     }
@@ -306,7 +310,7 @@ namespace ScanMaster.Acquire.Plugins
             }
         }
 
-		public override void ArmAndWait()
+		public void ArmAndWait()
 		{
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start(); 
@@ -333,7 +337,7 @@ namespace ScanMaster.Acquire.Plugins
 			}
 		}
 
-        public override void PostArm()
+        public void PostArm()
         {
             lock(this)
             {
@@ -343,7 +347,7 @@ namespace ScanMaster.Acquire.Plugins
                 // stop the sample clock
                 try
                 {
-                    if (config.switchPlugin.State)
+                    if (false)
                     {
                         freqOutTask1.Stop();
                     }
@@ -365,7 +369,7 @@ namespace ScanMaster.Acquire.Plugins
             }
         }
 
-		public override Shot Shot
+		public Shot Shot
 		{
 			get 
 			{
@@ -379,15 +383,17 @@ namespace ScanMaster.Acquire.Plugins
 					{
 						t.Data = latestData;
 						s.TOFs.Add(t);
-                        for (int i = 0; i < inputTask.AIChannels.Count; i++)
+                        //the 2i is becuase the reader reads zeroed channel first and I don't want
+                        //to keep those points
+                        for (int i = 0; 2*i+1 < inputTask.AIChannels.Count; i++)
                         {
                             TOF tt = new TOF();
                             tt.ClockPeriod = (int)settings["clockPeriod"];
                             tt.GateStartTime = (int)settings["gateStartTime"];
-                            tt.Calibration = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputTask.AIChannels[i].VirtualName]).Calibration;
+                            tt.Calibration = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputTask.AIChannels[2*i+1].VirtualName]).Calibration;
                             double[] tmp = new double[(int)settings["gateLength"]];
                             for (int j = 0; j < (int)settings["gateLength"]; j++)
-                                tmp[j] = latestAnalogData[i, j];
+                                tmp[j] = latestAnalogData[2*i+1, j];
                             tt.Data = tmp;
                             s.TOFs.Add(tt);
                         }

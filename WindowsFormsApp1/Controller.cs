@@ -141,7 +141,7 @@ namespace PaddlePolStabiliser
             serialController.Write("PH\x0D");
             Thread.Sleep(50);
             string status = serialController.Read();
-            string statusbits = Convert.ToString(Convert.ToInt32(status.Substring(0,8), 16), 2);
+            string statusbits = Convert.ToString(Convert.ToInt32(status.Substring(0, 8), 16), 2);
             return statusbits;
         }
 
