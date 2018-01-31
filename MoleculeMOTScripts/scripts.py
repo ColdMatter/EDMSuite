@@ -47,7 +47,7 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 	Can be used directly or with one of convenience functions defined below.
 	"""
 	dic = Dictionary[String, Object]()
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	if not all(isinstance(item, list) for item in values):
 		raise ValueError('Values must be a list of lists (even if only single valued!).')
 	num_params = len(parameter_names)
