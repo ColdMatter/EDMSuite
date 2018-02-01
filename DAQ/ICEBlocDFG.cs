@@ -10,26 +10,12 @@ namespace DAQ.HAL
 {
     public class ICEBlocDFG : ICEBlocRemote
     {
-        #region Class members
-
-        private new string my_ip_address;
-        private new byte[] my_byte_ip_address;
-
-        #endregion
 
         #region Initialization
 
-        public ICEBlocDFG(string computer_ip_address)
+        public ICEBlocDFG()
             : base("192.168.1.223")
-        {
-            my_ip_address = computer_ip_address;
-            string[] ip_split = my_ip_address.Split('.');
-            my_byte_ip_address = new byte[ip_split.Length];
-            for (int i = 0; i < ip_split.Length; i++)
-            {
-                my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
-            }
-        }
+        { }
 
         #endregion
 

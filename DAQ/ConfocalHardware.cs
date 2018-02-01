@@ -52,6 +52,7 @@ namespace DAQ.HAL
 
                     // IP
                     Info.Add("IPAdress", "192.168.1.23");
+                    Info.Add("Port", 23232);
 
                     break;
 
@@ -87,6 +88,7 @@ namespace DAQ.HAL
 
                     // IP
                     Info.Add("IPAdress", "192.168.1.24");
+                    Info.Add("Port", 24242);
 
                     break;
 

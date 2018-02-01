@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Collections;
+using DAQ.Environment;
 
 namespace DAQ.HAL
 {
@@ -24,8 +25,8 @@ namespace DAQ.HAL
         TcpClient socket;
         NetworkStream stream;
         bool logFlag = true;
-        protected string my_ip_address = "192.168.1.23";
-        protected byte[] my_byte_ip_address = { 192, 168, 1, 23 };
+        protected string my_ip_address;
+        protected byte[] my_byte_ip_address;
         protected string M2_ip_address { get; set; }
         protected int M2_ip_port { get; set; }
         string lastMessage = "";
@@ -33,14 +34,28 @@ namespace DAQ.HAL
 
         protected ICEBlocRemote()
         {
+            my_ip_address = (string)Environs.Hardware.GetInfo("IPAdress");
+            string[] ip_split = my_ip_address.Split('.');
+            my_byte_ip_address = new byte[ip_split.Length];
+            for (int i = 0; i < ip_split.Length; i++)
+            {
+                my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
+            }
             M2_ip_address = "192.168.1.222";
-            M2_ip_port = 23232;
+            M2_ip_port = (int)Environs.Hardware.GetInfo("Port");
         }
 
         protected ICEBlocRemote(string laser_ip_address)
         {
+            my_ip_address = (string)Environs.Hardware.GetInfo("IPAdress");
+            string[] ip_split = my_ip_address.Split('.');
+            my_byte_ip_address = new byte[ip_split.Length];
+            for (int i = 0; i < ip_split.Length; i++)
+            {
+                my_byte_ip_address[i] = Convert.ToByte(ip_split[i]);
+            }
             M2_ip_address = laser_ip_address;
-            M2_ip_port = 23232;
+            M2_ip_port = (int)Environs.Hardware.GetInfo("Port");
         }
 
         public bool Connected

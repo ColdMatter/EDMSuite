@@ -78,8 +78,7 @@ namespace ConfocalControl
 
         public DFGPlugin()
         {
-            string computer_ip = (string)Environs.Hardware.GetInfo("IPAdress");
-            dfg = new ICEBlocDFG(computer_ip);
+            dfg = new ICEBlocDFG();
 
             LoadSettings();
             if (Settings.Keys.Count != 9)

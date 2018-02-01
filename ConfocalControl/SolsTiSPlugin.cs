@@ -108,8 +108,7 @@ namespace ConfocalControl
 
         public SolsTiSPlugin()
         {
-            string computer_ip = (string)Environs.Hardware.GetInfo("IPAdress");
-            solstis = new ICEBlocSolsTiS(computer_ip);
+            solstis = new ICEBlocSolsTiS();
 
             LoadSettings();
             if (Settings.Keys.Count != 25)
