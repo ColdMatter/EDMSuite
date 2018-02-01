@@ -340,7 +340,7 @@ namespace ConfocalControl
             {
                 case 0:
                     TimeTracePlugin.GetController().Settings["channel_type"] = "Counters";
-                    foreach (string input in (List<string>)TimeTracePlugin.GetController().Settings["counterChannels"])
+                    foreach (string input in TimeTracePlugin.GetController().historicCounterChannels)
                     {
                         output_box_TimeTrace.Items.Add(input);
                     }
@@ -349,7 +349,7 @@ namespace ConfocalControl
 
                 case 1:
                     TimeTracePlugin.GetController().Settings["channel_type"] = "Analogues";
-                    foreach (string input in (List<string>)TimeTracePlugin.GetController().Settings["analogueChannels"])
+                    foreach (string input in TimeTracePlugin.GetController().historicAnalogueChannels)
                     {
                         output_box_TimeTrace.Items.Add(input);
                     }
@@ -495,6 +495,7 @@ namespace ConfocalControl
                 Thread thread = new Thread(new ThreadStart(TimeTracePlugin.GetController().ContinuousAcquisition));
                 thread.IsBackground = true;
                 thread.Start();
+                output_type_box_TimeTrace_SelectionChanged(null, null);
 
             }
             else
@@ -578,14 +579,14 @@ namespace ConfocalControl
             switch (output_type_box.SelectedIndex)
             {
                 case 0:
-                    foreach (string input in (List<string>)FastMultiChannelRasterScan.GetController().scanSettings["counterChannels"])
+                    foreach (string input in (List<string>)FastMultiChannelRasterScan.GetController().dataOutputHistory.historicSettings["counterChannels"])
                     {
                         output_box.Items.Add(input);
                     }
                     if (output_box.Items.Count != 0) output_box.SelectedIndex = 0;
                     break;
                 case 1:
-                    foreach (string input in (List<string>)FastMultiChannelRasterScan.GetController().scanSettings["analogueChannels"])
+                    foreach (string input in (List<string>)FastMultiChannelRasterScan.GetController().dataOutputHistory.historicSettings["analogueChannels"])
                     {
                         output_box.Items.Add(input);
                     }
@@ -747,6 +748,7 @@ namespace ConfocalControl
                 thread = new Thread(new ThreadStart(FastMultiChannelRasterScan.GetController().SynchronousStartScan));
                 thread.IsBackground = true;
                 thread.Start();
+                output_type_box_SelectionChanged(null, null);
             }
             else
             {
@@ -1267,7 +1269,6 @@ namespace ConfocalControl
 
         private void rasterScan_hardware_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            rasterScan_display.DataSource = null;
             RasterScanHardwareConfigure window = new RasterScanHardwareConfigure();
             window.ShowDialog();
         }
@@ -1286,6 +1287,12 @@ namespace ConfocalControl
         {
             LaserControl.GetWindow().Show();
             LaserControl.GetWindow().Activate();
+        }
+
+        private void DFG_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            DFGControl.GetWindow().Show();
+            DFGControl.GetWindow().Activate();
         }
 
         #endregion 

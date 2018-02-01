@@ -97,6 +97,10 @@ namespace ConfocalControl
                 scanSettings["analogueChannels"] = new List<string> { };
                 scanSettings["analogueLowHighs"] = new Dictionary<string, double[]>();
             }
+
+            dataOutputs = new MultiChannelData(((List<string>)scanSettings["counterChannels"]).Count,
+                                    ((List<string>)scanSettings["analogueChannels"]).Count,
+                                     scanSettings);
         }
 
         public FastMultiChannelRasterScan()
@@ -191,7 +195,7 @@ namespace ConfocalControl
         {
             try
             {
-                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }

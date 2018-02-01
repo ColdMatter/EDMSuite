@@ -50,6 +50,9 @@ namespace DAQ.HAL
                     AddCounterChannel("SampleClock", daqBoard + "/ctr3");
                     Info.Add("SampleClockReader", "/dev1/PFI15");
 
+                    // IP
+                    Info.Add("IPAdress", "192.168.1.23");
+
                     break;
 
                 case "RoomTConfocal":
@@ -81,6 +84,9 @@ namespace DAQ.HAL
                     // sample clock
                     AddCounterChannel("SampleClock", daqBoard + "/ctr3");
                     Info.Add("SampleClockReader", "/dev1/PFI15");
+
+                    // IP
+                    Info.Add("IPAdress", "192.168.1.24");
 
                     break;
 

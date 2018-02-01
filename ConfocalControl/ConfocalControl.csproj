@@ -110,6 +110,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CounterOptimizationPlugin.cs" />
+    <Compile Include="DFGControl.xaml.cs">
+      <DependentUpon>DFGControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DFGHardwareConfigure.xaml.cs">
+      <DependentUpon>DFGHardwareConfigure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DFGPlugin.cs" />
     <Compile Include="FastMultiChannelRasterScan.cs" />
     <Compile Include="HardwareConfigure.xaml.cs">
       <DependentUpon>HardwareConfigure.xaml</DependentUpon>
@@ -121,14 +128,30 @@
       <DependentUpon>LaserHardwareConfigure.xaml</DependentUpon>
     </Compile>
     <Compile Include="PluginSettings.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RasterScanHardwareConfigure.xaml.cs">
       <DependentUpon>RasterScanHardwareConfigure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TeraScanConfigure.xaml.cs">
+      <DependentUpon>TeraScanConfigure.xaml</DependentUpon>
     </Compile>
     <Compile Include="TimeTracePlugin.cs" />
     <Compile Include="SolsTiSPlugin.cs" />
     <Compile Include="TimeTraceHardwareConfigure.xaml.cs">
       <DependentUpon>TimeTraceHardwareConfigure.xaml</DependentUpon>
     </Compile>
+    <Page Include="DFGControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DFGHardwareConfigure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HardwareConfigure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,6 +181,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TeraScanConfigure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TimeTraceHardwareConfigure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,11 +193,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -203,9 +225,6 @@
     <Resource Include="confocal_app_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.1">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5.1 %28x86 and x64%29</ProductName>
@@ -221,6 +240,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />

@@ -37,10 +37,10 @@ namespace DAQ.HAL
             M2_ip_port = 23232;
         }
 
-        protected ICEBlocRemote(string ip_address)
+        protected ICEBlocRemote(string laser_ip_address)
         {
-            my_ip_address = ip_address;
-            my_byte_ip_address = ip_address.Split('.').Cast<byte>().ToArray();
+            M2_ip_address = laser_ip_address;
+            M2_ip_port = 23232;
         }
 
         public bool Connected

@@ -98,7 +98,7 @@ namespace ConfocalControl
 
         public void OptimizationStarting(string countChannel)
         {
-            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
+            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }

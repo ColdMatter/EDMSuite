@@ -45,8 +45,8 @@ namespace ConfocalControl
 
         // Keep track of latest settings
         private double historicSampleRate;
-        private List<string> historicCounterChannels;
-        private List<string> historicAnalogueChannels;
+        public List<string> historicCounterChannels;
+        public List<string> historicAnalogueChannels;
 
         // Bound event managers to class
         public event SetTextBoxHandler setTextBox;
@@ -89,8 +89,10 @@ namespace ConfocalControl
                 Settings["display_channel_index"] = 0;
 
                 Settings["binNumber"] = (int)20;
-                return;
             }
+
+            historicCounterChannels = new List<string>((List<string>)Settings["counterChannels"]);
+            historicAnalogueChannels = new List<string>((List<string>)Settings["analogueChannels"]);
         }
 
         public TimeTracePlugin() 
@@ -160,7 +162,7 @@ namespace ConfocalControl
         private void ContinuousAcquisitionStarting()
         {
             // Check if other parts of the software are running
-            if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
+            if (IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }
@@ -395,7 +397,7 @@ namespace ConfocalControl
                 case "Counters":
                     if (setTextBox != null && setWaveForm != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
+                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicCounterChannels.Count)
                         {
                             double[] dataWaveform = counterBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
                             if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1] * (double)Settings["sampleRate"]);
@@ -408,7 +410,7 @@ namespace ConfocalControl
                 case "Analogues":
                     if (setTextBox != null && setWaveForm != null)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
+                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicAnalogueChannels.Count)
                         {
                             double[] dataWaveform = analogBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
                             if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1]);

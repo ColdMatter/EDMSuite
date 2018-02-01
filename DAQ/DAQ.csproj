@@ -213,6 +213,7 @@
     <Compile Include="ConfocalHardware.cs" />
     <Compile Include="DecelerationHardware.cs" />
     <Compile Include="EnvironsHelper.cs" />
+    <Compile Include="ICEBlocDFG.cs" />
     <Compile Include="ICEBlocRemote.cs" />
     <Compile Include="ICEBlocSolsTiS.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />

@@ -1,8 +1,8 @@
-﻿<Window x:Class="ConfocalControl.RasterScanHardwareConfigure"
+﻿<Window x:Class="ConfocalControl.DFGHardwareConfigure"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
-        Title="Raster Scan Configure" Height="500" Width="400" Icon="confocal_app_icon.ico">
+        Title="DFG Configure" Height="500" Width="400" Icon="confocal_app_icon.ico">
     <Grid>
         <ListBox x:Name="analog_not_included" HorizontalAlignment="Left" Height="100" Margin="112,52,0,0" VerticalAlignment="Top" Width="100"/>
         <ListBox x:Name="analog_included" HorizontalAlignment="Left" Height="100" Margin="248,52,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="analog_included_SelectionChanged"/>
@@ -18,7 +18,6 @@
         <Button x:Name="remove_counters" Content="Remove" HorizontalAlignment="Left" Margin="261,367,0,0" VerticalAlignment="Top" Width="75" Click="remove_counters_Click"/>
         <Button x:Name="ok_Button" Content="OK" HorizontalAlignment="Left" Margin="153,424,0,0" VerticalAlignment="Top" Width="75" Click="ok_Button_Click"/>
         <Button x:Name="cancel_Button" Content="Cancel" HorizontalAlignment="Left" Margin="233,424,0,0" VerticalAlignment="Top" Width="75" Click="cancel_Button_Click"/>
-
         <ni:NumericTextBoxDouble x:Name="analogLow_input" HorizontalAlignment="Left" Height="23" Margin="110,178,0,0" VerticalAlignment="Top" Width="50"/>
         <ni:NumericTextBoxDouble x:Name="analogHigh_input" HorizontalAlignment="Left" Height="23" Margin="165,178,0,0" VerticalAlignment="Top" Width="50"/>
         <TextBox x:Name="analogLow_reader" HorizontalAlignment="Left" Height="23" Margin="245,178,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" IsReadOnly="True"/>
@@ -27,6 +26,5 @@
         <Label Content="High" HorizontalAlignment="Left" Margin="165,152,0,0" VerticalAlignment="Top"/>
         <Label Content="Low" HorizontalAlignment="Left" Margin="252,152,0,0" VerticalAlignment="Top"/>
         <Label Content="High" HorizontalAlignment="Left" Margin="302,152,0,0" VerticalAlignment="Top"/>
-
     </Grid>
 </Window>

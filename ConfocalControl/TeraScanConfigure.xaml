@@ -1,0 +1,31 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="ConfocalControl.TeraScanConfigure"
+        Title="TeraScan Configure" Height="350" Width="450" Icon="confocal_app_icon.ico">
+    <Grid>
+
+        <ni:NumericTextBoxDouble x:Name="teraScanStart_Numeric" HorizontalAlignment="Left" Height="23" Margin="87,86,0,0" VerticalAlignment="Top" Width="100" ValueChanged="teraScanStart_Numeric_ValueChanged"/>
+        <ni:NumericTextBoxDouble x:Name="teraScanStop_Numeric" HorizontalAlignment="Left" Height="23" Margin="87,114,0,0" VerticalAlignment="Top" Width="100" ValueChanged="teraScanStop_Numeric_ValueChanged"/>
+        <Label Content="Start" HorizontalAlignment="Left" Margin="38,85,0,0" VerticalAlignment="Top"/>
+        <Label Content="Stop" HorizontalAlignment="Left" Margin="38,113,0,0" VerticalAlignment="Top"/>
+        <Label Content="nm" HorizontalAlignment="Left" Margin="192,85,0,0" VerticalAlignment="Top"/>
+        <Label Content="nm" HorizontalAlignment="Left" Margin="192,113,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="teraScanType_ComboBox" HorizontalAlignment="Left" Margin="181,33,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="teraScanType_ComboBox_SelectionChanged"/>
+        <Label Content="Type" HorizontalAlignment="Left" Margin="141,29,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="teraScanUnits_ComboBox" HorizontalAlignment="Left" Margin="300,87,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="teraScanUnits_ComboBox_SelectionChanged"/>
+        <ComboBox x:Name="teraScanRate_ComboBox" HorizontalAlignment="Left" Margin="300,114,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="teraScanRate_ComboBox_SelectionChanged"/>
+        <Label Content="Rate" HorizontalAlignment="Left" Margin="249,113,0,0" VerticalAlignment="Top"/>
+        <Label Content="Units" HorizontalAlignment="Left" Margin="249,85,0,0" VerticalAlignment="Top"/>
+        <Label Content="Appoximate scan time:" HorizontalAlignment="Left" Margin="123,166,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scanTimeHours_Label" Content="???" HorizontalAlignment="Left" Margin="258,166,0,0" VerticalAlignment="Top"/>
+        <Label Content="hrs" HorizontalAlignment="Left" Margin="289,166,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scanTimeMins_Label" Content="???" HorizontalAlignment="Left" Margin="258,192,0,0" VerticalAlignment="Top"/>
+        <Label Content="mins" HorizontalAlignment="Left" Margin="289,192,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scanTimeSec_Label" Content="???" HorizontalAlignment="Left" Margin="258,218,0,0" VerticalAlignment="Top"/>
+        <Label Content="secs" HorizontalAlignment="Left" Margin="289,218,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="save_Button" Content="Save" HorizontalAlignment="Left" Margin="146,265,0,0" VerticalAlignment="Top" Width="75" Click="save_Button_Click"/>
+        <Button x:Name="cancel_Button" Content="Cancel" HorizontalAlignment="Left" Margin="226,265,0,0" VerticalAlignment="Top" Width="75" Click="cancel_Button_Click"/>
+
+    </Grid>
+</Window>

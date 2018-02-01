@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ using DAQ.HAL;
 namespace ConfocalControl
 {
     public delegate void SpectraScanDataEventHandler(Point[] data);
+    public delegate void TeraTotalOnlyDataEventHandler(double[] data);
+    public delegate void TeraSpectraScanDataEventHandler(double[] dataTotal, double[] dataSegment);
     public delegate void SpectraScanExceptionEventHandler(Exception e);
 
     public class SolsTiSPlugin
@@ -60,7 +63,9 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler FastScanFinished;
         public event SpectraScanExceptionEventHandler FastScanProblem;
 
-        public event SpectraScanDataEventHandler TeraData;
+        public event TeraSpectraScanDataEventHandler TeraData;
+        public event TeraTotalOnlyDataEventHandler TeraTotalOnlyData;
+        public event MultiChannelScanFinishedEventHandler TeraSegmentScanFinished;
         public event MultiChannelScanFinishedEventHandler TeraScanFinished;
         public event SpectraScanExceptionEventHandler TeraScanProblem;
 
@@ -73,11 +78,12 @@ namespace ConfocalControl
         // Keep track of data
         private List<Point>[] wavemeterAnalogBuffer;
         private List<Point>[] wavemeterCounterBuffer;
+        public Hashtable wavemeterHistoricSettings;
         private List<Point>[] fastAnalogBuffer;
         private List<Point>[] fastCounterBuffer;
         private double[] fastLatestCounters;
         private TeraScanDataHolder teraScanBuffer;
-        private SegmentDataHolder segmentData;
+        public TeraScanDataHolder teraScanBufferAccess { get { return teraScanBuffer; } }
         private double teraLatestLambda;
 
         // Keep track of tasks
@@ -102,11 +108,11 @@ namespace ConfocalControl
 
         public SolsTiSPlugin()
         {
-            string computer_ip = "192.168.1.23";
+            string computer_ip = (string)Environs.Hardware.GetInfo("IPAdress");
             solstis = new ICEBlocSolsTiS(computer_ip);
 
             LoadSettings();
-            if (Settings.Keys.Count != 24)
+            if (Settings.Keys.Count != 25)
             {
                 Settings["wavelength"] = 785.0;
 
@@ -133,14 +139,19 @@ namespace ConfocalControl
 
                 Settings["TeraScanType"] = "fine";
                 Settings["TeraScanStart"] = (double)743.0;
-                Settings["TeraScanStop"] = (double)743.05;
+                Settings["TeraScanStop"] = (double)743.5;
                 Settings["TeraScanRate"] = 500;
                 Settings["TeraScanUnits"] = "MHz/s";
                 Settings["tera_channel_type"] = "Lambda";
                 Settings["tera_display_channel_index"] = 0;
-
-                return;
+                Settings["tera_display_current_segment"] = true;
             }
+
+            wavemeterHistoricSettings = new Hashtable();
+            wavemeterHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+            wavemeterHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
 
             triggerTask = null;
             freqOutTask = null;
@@ -234,13 +245,19 @@ namespace ConfocalControl
         {
             try
             {
-                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }
 
                 wavemeterState = WavemeterScanState.running;
                 backendState = SolsTisState.running;
+                wavemeterHistoricSettings["wavemeterScanStart"] = (double)Settings["wavemeterScanStart"];
+                wavemeterHistoricSettings["wavemeterScanStop"] = (double)Settings["wavemeterScanStop"];
+                wavemeterHistoricSettings["wavemeterScanPoints"] = (int)Settings["wavemeterScanPoints"];
+                wavemeterHistoricSettings["exposure"] = TimeTracePlugin.GetController().GetExposure();
+                wavemeterHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+                wavemeterHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
                 WavemeterSynchronousAcquisitionStarting();
                 WavemeterSynchronousAcquire();
             }
@@ -346,8 +363,8 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)Settings["analogueChannels"])[i];
 
-                double inputRangeLow = 0;
-                double inputRangeHigh = 1;
+                double inputRangeLow = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][1];
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
@@ -490,7 +507,7 @@ namespace ConfocalControl
                 case "Counters":
                     if (WavemeterData != null)
                     {
-                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)Settings["counterChannels"]).Count)
+                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)wavemeterHistoricSettings["counterChannels"]).Count)
                         {
                             WavemeterData(wavemeterCounterBuffer[(int)Settings["wavemeter_display_channel_index"]].ToArray());
                         }
@@ -501,7 +518,7 @@ namespace ConfocalControl
                 case "Analogues":
                     if (WavemeterData != null)
                     {
-                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)Settings["analogueChannels"]).Count)
+                        if ((int)Settings["wavemeter_display_channel_index"] >= 0 && (int)Settings["wavemeter_display_channel_index"] < ((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count)
                         {
                             WavemeterData(wavemeterAnalogBuffer[(int)Settings["wavemeter_display_channel_index"]].ToArray());
                         }
@@ -530,15 +547,15 @@ namespace ConfocalControl
 
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
-            lines.Add("Exposure = " + TimeTracePlugin.GetController().GetExposure().ToString());
-            lines.Add("Lambda start = " + ((double)Settings["wavemeterScanStart"]).ToString() + ", Lambda stop = " + ((double)Settings["wavemeterScanStop"]).ToString() + ", Lambda resolution = " + ((int)Settings["wavemeterScanPoints"]).ToString());
+            lines.Add("Exposure = " + ((double)wavemeterHistoricSettings["exposure"]).ToString());
+            lines.Add("Lambda start = " + ((double)wavemeterHistoricSettings["wavemeterScanStart"]).ToString() + ", Lambda stop = " + ((double)wavemeterHistoricSettings["wavemeterScanStop"]).ToString() + ", Lambda resolution = " + ((int)wavemeterHistoricSettings["wavemeterScanPoints"]).ToString());
 
             string descriptionString = "Lambda ";
-            foreach (string channel in (List<string>)Settings["counterChannels"])
+            foreach (string channel in (List<string>)wavemeterHistoricSettings["counterChannels"])
             {
                 descriptionString = descriptionString + channel + " ";
             }
-            foreach (string channel in (List<string>)Settings["analogueChannels"])
+            foreach (string channel in (List<string>)wavemeterHistoricSettings["analogueChannels"])
             {
                 descriptionString = descriptionString + channel + " ";
             }
@@ -593,7 +610,7 @@ namespace ConfocalControl
         {
             try
             {
-                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
                 {
                     throw new DaqException("Counter already running");
                 }
@@ -977,7 +994,7 @@ namespace ConfocalControl
         {
             //try
             //{
-            //    if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning())
+            //    if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
             //    {
             //        throw new DaqException("Counter already running");
             //    }
@@ -986,7 +1003,7 @@ namespace ConfocalControl
                 backendState = SolsTisState.running;
 
                 TeraScanInitialise();
-                teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count);
+                teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
                 TeraScanAcquisitionStarting();
                 while (backendState == SolsTisState.running  && teraState == TeraScanState.running)
                 {
@@ -1014,6 +1031,13 @@ namespace ConfocalControl
         private void TeraScanAcquisitionStarting()
         {
             int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "start", false);
+            switch (reply)
+            {
+                case 0:
+                    return;
+                default:
+                    throw new Exception("Couldn't start tera scan");
+            }
         }
 
         public void TeraScanAcquisitionStopping()
@@ -1137,54 +1161,46 @@ namespace ConfocalControl
         {
             freqOutTask.Start();
 
-            int dataIndex = teraScanBuffer.currentDataIndex;
             while (backendState == SolsTisState.running &&  teraSegmentState == TeraScanSegmentState.running)
             {
-                int dataIndexStart = dataIndex;
-
                 // Read first counter
                 double[] counterRead = counterReaders[0].ReadMultiSampleDouble(-1);
                 int dataReadLength = counterRead.Length;
 
                 if (dataReadLength > 0)
                 {
-                    Point dataLambda = new Point(dataIndex, teraLatestLambda);
-                    segmentData.AddtoWavelengthData(dataLambda);
-                    Point dataRead = new Point(dataIndex, counterRead[0] - segmentData.latestCounters[0]);
-                    segmentData.AddtoCounterData(0, dataRead);
-                    dataIndex++;
-                    segmentData.latestCounters[0] = counterRead[counterRead.Length - 1];
+                    double dataLambda = teraLatestLambda;
+                    teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                    double dataRead = counterRead[0] - teraScanBuffer.latestCounters[0];
+                    teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
+                    teraScanBuffer.latestCounters[0] = counterRead[counterRead.Length - 1];
 
                     if (dataReadLength > 1)
                     {
                         for (int j = 1; j < counterRead.Length; j++)
                         {
-                            dataLambda = new Point(dataIndex, teraLatestLambda);
-                            segmentData.AddtoWavelengthData(dataLambda);
-                            dataRead = new Point(dataIndex, counterRead[j] - counterRead[j - 1]);
-                            segmentData.AddtoCounterData(0, dataRead);
-                            dataIndex++;
+                            dataLambda = teraLatestLambda;
+                            teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                            dataRead = counterRead[j] - counterRead[j - 1];
+                            teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
                         }
                     }
 
                     // Read other counter data
                     for (int i = 1; i < teraScanBuffer.numberCounterChannels; i++)
                     {
-                        int _dataIndex = dataIndexStart;
                         counterRead = counterReaders[i].ReadMultiSampleDouble(dataReadLength);
 
-                        dataRead = new Point(_dataIndex, counterRead[0] - segmentData.latestCounters[i]);
-                        segmentData.AddtoCounterData(i, dataRead);
-                        _dataIndex++;
-                        segmentData.latestCounters[i] = counterRead[counterRead.Length - 1];
+                        dataRead = counterRead[0] - teraScanBuffer.latestCounters[i];
+                        teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
+                        teraScanBuffer.latestCounters[i] = counterRead[counterRead.Length - 1];
 
                         if (counterRead.Length > 1)
                         {
                             for (int j = 1; j < counterRead.Length; j++)
                             {
-                                dataRead = new Point(_dataIndex++, counterRead[j] - counterRead[j - 1]);
-                                segmentData.AddtoCounterData(i, dataRead);
-                                _dataIndex++;
+                                dataRead = counterRead[j] - counterRead[j - 1];
+                                teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
                             }
                         }
                     }
@@ -1196,11 +1212,9 @@ namespace ConfocalControl
 
                         for (int i = 0; i < analogRead.GetLength(0); i++)
                         {
-                            int _dataIndex = dataIndexStart;
                             for (int j = 0; j < analogRead.GetLength(1); j++)
                             {
-                                segmentData.AddtoAnalogueData(i, new Point(_dataIndex, analogRead[i, j]));
-                                _dataIndex++;
+                                teraScanBuffer.AddAnalogueDataToCurrentSegment(i, analogRead[i, j]);
                             }
                         }
                     }
@@ -1210,7 +1224,6 @@ namespace ConfocalControl
             }
 
             freqOutTask.Stop();
-            teraScanBuffer.AddSegment(segmentData);
         }
 
         public void TeraScanSegmentAcquisitionEnd()
@@ -1270,7 +1283,7 @@ namespace ConfocalControl
         {
             Dictionary<string, object> autoOutput = Solstis.ReceiveCustomMessage("automatic_output");
             teraLatestLambda = -1;
-            segmentData = new SegmentDataHolder(teraScanBuffer.numberCounterChannels, teraScanBuffer.numberAnalogChannels);
+            teraScanBuffer.AddNewSegment();
             TeraScanSegmentAcquisitionStarting();
             teraSegmentState = TeraScanSegmentState.running;
             Thread thread = new Thread(new ThreadStart(TeraScanSegmentLaserStart));
@@ -1279,37 +1292,55 @@ namespace ConfocalControl
             while (teraLatestLambda < 0) { Thread.Sleep(1); }
             TeraScanSegmentAcquisitionStart();
             TeraScanSegmentAcquisitionEnd();
+            if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }
         }
 
         private void TeraScanOnData()
         {
-            if (TeraData != null)
+            if (TeraData != null && TeraTotalOnlyData != null)
             {
-                List<Point> totalData;
                 int index;
                 switch ((string)Settings["tera_channel_type"])
                 {
                     case "Counters":
                         index = (int)Settings["tera_display_channel_index"];
-                        totalData = new List<Point>(teraScanBuffer.GetCounterData(index).Count + segmentData.GetCounterData(index).Count);
-                        totalData.AddRange(teraScanBuffer.GetCounterData(index));
-                        totalData.AddRange(segmentData.GetCounterData(index));
-                        TeraData(totalData.ToArray());
+                        if (index >= 0 && index < ((List<string>)Settings["counterChannels"]).Count)
+                        {
+                            double[] totalDataCount = teraScanBuffer.GetCounterData(index).ToArray();
+                            double[] segDataCount = teraScanBuffer.GetCurrentSegment().GetCounterData(index).ToArray();
+
+                            if ((bool)Settings["tera_display_current_segment"])
+                            {
+                                TeraData(totalDataCount, segDataCount);
+                            }
+                            else { TeraTotalOnlyData(totalDataCount); }
+                        }
+                        else { TeraData(null, null); }
                         break;
 
                     case "Analogues":
                         index = (int)Settings["tera_display_channel_index"];
-                        totalData = new List<Point>(teraScanBuffer.GetAnalogueData(index).Count + segmentData.GetAnalogueData(index).Count);
-                        totalData.AddRange(teraScanBuffer.GetAnalogueData(index));
-                        totalData.AddRange(segmentData.GetAnalogueData(index));
-                        TeraData(totalData.ToArray());
+                        if (index >= 0 && index < ((List<string>)Settings["analogueChannels"]).Count)
+                        {
+                            double[] totalDataAnalog = teraScanBuffer.GetAnalogueData(index).ToArray();
+                            double[] segDataAnalog = teraScanBuffer.GetCurrentSegment().GetAnalogueData(index).ToArray();
+                            if ((bool)Settings["tera_display_current_segment"])
+                            {
+                                TeraData(totalDataAnalog, segDataAnalog);
+                            }
+                            else { TeraTotalOnlyData(totalDataAnalog); }
+                        }
+                        else { TeraData(null, null); }
                         break;
 
                     case "Lambda":
-                        totalData = new List<Point>(teraScanBuffer.GetLambdaData().Count + segmentData.GetWavelengthData().Count);
-                        totalData.AddRange(teraScanBuffer.GetLambdaData());
-                        totalData.AddRange(segmentData.GetWavelengthData());
-                        TeraData(totalData.ToArray());
+                        double[] totalDataLambda = teraScanBuffer.GetLambdaData().ToArray();
+                        double[] segDataLambda = teraScanBuffer.GetCurrentSegment().GetWavelengthData().ToArray();
+                        if ((bool)Settings["tera_display_current_segment"])
+                        {
+                            TeraData(totalDataLambda, segDataLambda);
+                        }
+                        else { TeraTotalOnlyData(totalDataLambda); }
                         break;
                     default:
                         throw new Exception("Did not understand data type");
@@ -1319,9 +1350,47 @@ namespace ConfocalControl
 
         public void RequestTeraHistoricData()
         {
-            if (teraScanBuffer != null && segmentData != null)
+            if (teraScanBuffer != null && TeraTotalOnlyData != null)
             {
-                TeraScanOnData();
+                int index;
+                switch ((string)Settings["tera_channel_type"])
+                {
+                    case "Counters":
+                        index = (int)Settings["tera_display_channel_index"];
+                        if (index >= 0 && index < ((List<string>)teraScanBuffer.historicSettings["counterChannels"]).Count)
+                        {
+                            if ((bool)Settings["tera_display_current_segment"])
+                            {
+                                TeraData(teraScanBuffer.GetCounterData(index).ToArray(), null);
+                            }
+                            else { TeraTotalOnlyData(teraScanBuffer.GetCounterData(index).ToArray()); } 
+                        }
+                        else { TeraData(null, null); }
+                        break;
+
+                    case "Analogues":
+                        index = (int)Settings["tera_display_channel_index"];
+                        if (index >= 0 && index < ((List<string>)teraScanBuffer.historicSettings["analogueChannels"]).Count)
+                        {
+                            if ((bool)Settings["tera_display_current_segment"])
+                            {
+                                TeraData(teraScanBuffer.GetAnalogueData(index).ToArray(), null);
+                            }
+                            else { TeraTotalOnlyData(teraScanBuffer.GetAnalogueData(index).ToArray()); }
+                        }
+                        else { TeraData(null, null); }
+                        break;
+
+                    case "Lambda":
+                        if ((bool)Settings["tera_display_current_segment"])
+                        {
+                            TeraData(teraScanBuffer.GetLambdaData().ToArray(), null);
+                        }
+                        else { TeraTotalOnlyData(teraScanBuffer.GetLambdaData().ToArray()); }
+                        break;
+                    default:
+                        throw new Exception("Did not understand data type");
+                }
             }
         }
 
@@ -1333,55 +1402,55 @@ namespace ConfocalControl
     {
         protected int numberCounterChannels;
         protected int numberAnalogChannels;
-        protected List<Point>[] counterDataStore;
-        protected List<Point>[] analogDataStore;
+        protected List<double>[] counterDataStore;
+        protected List<double>[] analogDataStore;
 
         public MultiChannelLineDataStore(int number_of_counter_channels, int number_of_analog_channels)
         {
             numberCounterChannels = number_of_counter_channels;
             numberAnalogChannels = number_of_analog_channels;
 
-            counterDataStore = new List<Point>[number_of_counter_channels];
+            counterDataStore = new List<double>[number_of_counter_channels];
             for (int i = 0; i < number_of_counter_channels; i++)
             {
-                counterDataStore[i] = new List<Point>();
+                counterDataStore[i] = new List<double>();
             }
 
-            analogDataStore = new List<Point>[number_of_analog_channels];
+            analogDataStore = new List<double>[number_of_analog_channels];
             for (int i = 0; i < number_of_analog_channels; i++)
             {
-                analogDataStore[i] = new List<Point>();
+                analogDataStore[i] = new List<double>();
             }
         }
 
-        public List<Point> GetCounterData(int counter_channel_number)
+        public List<double> GetCounterData(int counter_channel_number)
         {
             if (counter_channel_number >= numberCounterChannels) return null;
             else return counterDataStore[counter_channel_number];
         }
 
-        protected void SetCounterData(List<Point>[] counterStore)
+        protected void SetCounterData(List<double>[] counterStore)
         {
             counterDataStore = counterStore;
         }
 
-        public void AddtoCounterData(int counter_channel_number, Point pnt)
+        public void AddtoCounterData(int counter_channel_number, double pnt)
         {
             counterDataStore[counter_channel_number].Add(pnt);
         }
 
-        public List<Point> GetAnalogueData(int analog_channel_number)
+        public List<double> GetAnalogueData(int analog_channel_number)
         {
             if (analog_channel_number >= numberAnalogChannels) return null;
             else return analogDataStore[analog_channel_number];
         }
 
-        protected void SetAnalogueData(List<Point>[] analogStore)
+        protected void SetAnalogueData(List<double>[] analogStore)
         {
             analogDataStore = analogStore;
         }
 
-        public void AddtoAnalogueData(int analog_channel_number, Point pnt)
+        public void AddtoAnalogueData(int analog_channel_number, double pnt)
         {
             analogDataStore[analog_channel_number].Add(pnt);
         }
@@ -1396,31 +1465,25 @@ namespace ConfocalControl
 
     public class SegmentDataHolder : MultiChannelLineDataStore
     {
-        private List<Point> wavelengthDataStore;
-        public double[] latestCounters { get; set; }
+        private List<double> wavelengthDataStore;
 
         public SegmentDataHolder(int number_of_counter_channels, int number_of_analog_channels)
             : base(number_of_counter_channels, number_of_analog_channels)
         {
-            wavelengthDataStore = new List<Point>();
-            latestCounters = new double[number_of_counter_channels];
-            for (int i = 0; i < numberCounterChannels; i++)
-            {
-                latestCounters[i] = 0;
-            }
+            wavelengthDataStore = new List<double>();
         }
 
-        public List<Point> GetWavelengthData()
+        public List<double> GetWavelengthData()
         {
             return wavelengthDataStore;
         }
 
-        protected void SetWavelengthData(List<Point> wavelengthStore)
+        protected void SetWavelengthData(List<double> wavelengthStore)
         {
             wavelengthDataStore = wavelengthStore;
         }
 
-        public void AddtoWavelengthData(Point pnt)
+        public void AddtoWavelengthData(double pnt)
         {
             wavelengthDataStore.Add(pnt);
         }
@@ -1433,58 +1496,95 @@ namespace ConfocalControl
         private int _numberAnalogChannels;
         public int numberAnalogChannels { get {return _numberAnalogChannels; } }
         private List<SegmentDataHolder> segments;
-        public int currentDataIndex;
-        private List<Point> historicLambdaData;
-        private List<Point>[] historicCounterData;
-        private List<Point>[] historicAnalogueData;
+        private int currentIndex;
+        public int currentSegmentIndex { get { return currentIndex; } }
+        public double[] latestCounters;
+        private List<double> historicLambdaData;
+        private List<double>[] historicCounterData;
+        private List<double>[] historicAnalogueData;
+        protected Hashtable settings;
+        public Hashtable historicSettings { get { return settings; } }
 
-        public TeraScanDataHolder(int number_of_counter_channels, int number_of_analog_channels)
+        public TeraScanDataHolder(int number_of_counter_channels, int number_of_analog_channels, PluginSettings currentSettings)
         {
             _numberCounterChannels = number_of_counter_channels;
             _numberAnalogChannels = number_of_analog_channels;
             segments = new List<SegmentDataHolder>();
-            currentDataIndex = 0;
-            historicLambdaData = new List<Point>();
-            historicCounterData = new List<Point>[_numberCounterChannels];
+            currentIndex = -1;
+            historicLambdaData = new List<double>();
+            historicCounterData = new List<double>[_numberCounterChannels];
             for (int i = 0; i < _numberCounterChannels; i++)
             {
-                historicCounterData[i] = new List<Point>();
+                historicCounterData[i] = new List<double>();
             }
-            historicAnalogueData = new List<Point>[_numberAnalogChannels];
+            historicAnalogueData = new List<double>[_numberAnalogChannels];
             for (int i = 0; i < _numberAnalogChannels; i++)
             {
-                historicAnalogueData[i] = new List<Point>();
+                historicAnalogueData[i] = new List<double>();
             }
+            settings = new Hashtable();
+            foreach (string key in currentSettings.Keys)
+            {
+                settings[key] = currentSettings[key];
+            }
+            settings["sampleRate"] = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
         }
 
-        public void AddSegment(SegmentDataHolder segment)
+        public SegmentDataHolder GetSegment(int index)
         {
-            segments.Add(segment);
-            historicLambdaData.AddRange(segment.GetWavelengthData());
-            for (int i = 0; i < _numberCounterChannels; i++)
-			{
-			    historicCounterData[i].AddRange(segment.GetCounterData(i));
-			}
-            for (int i = 0; i < _numberAnalogChannels; i++)
-			{
-			    historicAnalogueData[i].AddRange(segment.GetAnalogueData(i));
-			}
-            currentDataIndex += segment.GetWavelengthData().Count + Convert.ToInt32((double)TimeTracePlugin.GetController().Settings["sampleRate"]);
+            return segments[index];
         }
 
-        public List<Point> GetLambdaData()
+        public SegmentDataHolder GetCurrentSegment()
+        {
+            return segments[currentIndex];
+        }
+
+        public void AddNewSegment()
+        {
+            SegmentDataHolder segment = new SegmentDataHolder(_numberCounterChannels, _numberAnalogChannels);
+            segments.Add(segment);
+            currentIndex++;
+            latestCounters = new double[_numberCounterChannels];
+            for (int i = 0; i < numberCounterChannels; i++)
+            {
+                latestCounters[i] = 0;
+            }
+        }
+
+        public void AddLambdaDataToCurrentSegment(double pnt)
+        {
+            segments[currentIndex].AddtoWavelengthData(pnt);
+            historicLambdaData.Add(pnt);
+        }
+
+        public List<double> GetLambdaData()
         {
             return historicLambdaData;
         }
 
-        public List<Point> GetCounterData(int index)
+        public void AddCounterDataToCurrentSegment(int counter_channel_number, double pnt)
         {
-            return historicCounterData[index];
+            segments[currentIndex].AddtoCounterData(counter_channel_number, pnt);
+            historicCounterData[counter_channel_number].Add(pnt);
         }
 
-        public List<Point> GetAnalogueData(int index)
+        public List<double> GetCounterData(int index)
         {
-            return historicAnalogueData[index];
+            if (index >= 0 && index < _numberCounterChannels) { return historicCounterData[index]; }
+            else { return null; }
+        }
+
+        public void AddAnalogueDataToCurrentSegment(int analog_channel_number, double pnt)
+        {
+            segments[currentIndex].AddtoAnalogueData(analog_channel_number, pnt);
+            historicAnalogueData[analog_channel_number].Add(pnt);
+        }
+
+        public List<double> GetAnalogueData(int index)
+        {
+            if (index >= 0 && index < _numberAnalogChannels) { return historicAnalogueData[index]; }
+            else { return null; }
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ConfocalControl.HardwareConfigure"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="HardwareConfigure" Height="300" Width="300">
+        Title="Galvo Configure" Height="300" Width="300" Icon="confocal_app_icon.ico">
     <Grid HorizontalAlignment="Left" Width="292" Height="270" VerticalAlignment="Top">
         <Button x:Name="close_button" Content="OK" HorizontalAlignment="Left" Margin="71,210,0,0" VerticalAlignment="Top" Width="75" Click="ok_Click"/>
         <Button x:Name="cancel_button" Content="Cancel" HorizontalAlignment="Left" Margin="151,210,0,0" VerticalAlignment="Top" Width="75" Click="cancel_button_Click"/>
