@@ -134,7 +134,8 @@ namespace SirCachealot
             foreach (string dcName in demodulationConfigs)
             {
                 DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig(dcName, b);
-                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlockNL(b, dc);
+                //DemodulatedBlock dBlock = blockDemodulator.DemodulateBlockNL(b, dc);
+                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
                 blockStore.AddDBlock(dBlock);
             }
         }
