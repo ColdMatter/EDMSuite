@@ -22,7 +22,7 @@ namespace TransferCavityLock2012
 
             if(config.Length==0)
             { 
-              cg = "DefaultCavity";
+                cg = "DefaultCavity";
             }
             else
             {

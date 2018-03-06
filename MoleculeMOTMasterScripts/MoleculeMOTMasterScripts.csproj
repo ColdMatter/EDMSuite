@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoleculeMOTMasterScripts</RootNamespace>
     <AssemblyName>MoleculeMOTMasterScripts</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,16 +42,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlueMolassesSteps.cs" />
+    <Compile Include="BlueMOT.cs" />
+    <Compile Include="BlueMOTAfterBlueMolasses.cs" />
     <Compile Include="DetuningTemperature.cs" />
-    <Compile Include="forEach.cs" />
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
+    <Compile Include="MagTrapTemp.cs" />
+    <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
+    <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
+    <Compile Include="MicrowavePulseExperimental.cs" />
+    <Compile Include="MicrowavePulseExperimental2.cs" />
+    <Compile Include="MicrowavePulseMagneticTrapF2.cs" />
+    <Compile Include="MicrowaveSpectroscopy.cs" />
+    <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
     <Compile Include="MOTBasicBField.cs" />
     <Compile Include="MOTBasic.cs" />
-    <Compile Include="MOTBasicExperimental.cs" />
     <Compile Include="MOTBasicExperimental2.cs" />
     <Compile Include="MOTBlueMolasses.cs" />
     <Compile Include="MOTBlueMolassesNumber.cs" />
@@ -64,6 +70,7 @@
     <Compile Include="MOTBlueMolassesShimSwitchRamp.cs" />
     <Compile Include="MOTBlueMolassesShimSwitchShort.cs" />
     <Compile Include="MOTFreqScan.cs" />
+    <Compile Include="MOTLifetime.cs" />
     <Compile Include="MOTMagTrapLifetime.cs" />
     <Compile Include="MOTOscillation.cs" />
     <Compile Include="MOTOscillationExperimental.cs" />
@@ -71,13 +78,23 @@
     <Compile Include="MOTRampIntensity.cs" />
     <Compile Include="MOTRampIntensityB.cs" />
     <Compile Include="MOTRampIntensityNumber.cs" />
+    <Compile Include="MOTTemperature.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="PMTtest.cs" />
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RabiFlopsFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyFreeSpaceNoRecapture.cs" />
+    <Compile Include="RamseySpectroscopySpinEchoFreeSpace.cs" />
+    <Compile Include="RamseySpectroscopyTrap.cs" />
+    <Compile Include="RAP.cs" />
+    <Compile Include="RAPScanMicrowaves.cs" />
     <Compile Include="ScatteringRate.cs" />
+    <Compile Include="ShutterTest.cs" />
+    <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

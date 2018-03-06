@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTSwitchOffTime"] = 6300;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesDuration"] = 200;
-        Parameters["v0F0PumpDuration"] = 400;
+        Parameters["v0F0PumpDuration"] = 100;
         Parameters["MOTPictureTriggerTime"] = 3000;
         Parameters["MagTrapDuration"] = 5000;
 
@@ -63,7 +63,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.21
-        Parameters["MOTCoilsCurrentMagTrapValue"] = 2.0;
+        Parameters["MOTCoilsCurrentMagTrapValue"] = 1.5;
         Parameters["MOTCoilsCurrentImagingValue"] = 0.65;
         Parameters["magRampDuration"] = 1;
 
@@ -72,7 +72,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.16;
+        Parameters["zShimLoadCurrent"] = -6.82;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -89,8 +89,8 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyF0PumpValue"] = 0.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         // v0 pumping EOM
-        Parameters["v0EOMMOTValue"] = 5.48;
-        Parameters["v0EOMPumpValue"] = 5.48; //5.80
+        Parameters["v0EOMMOTValue"] = 5.45;
+        Parameters["v0EOMPumpValue"] = 3.5; //3.5
 
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
@@ -165,12 +165,12 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", molassesStartTime + 100, 7.24);
         p.AddAnalogValue("v00Intensity", molassesStartTime + 150, 7.54);
         p.AddAnalogValue("v00Intensity", v0F0PumpStartTime, (double)Parameters["v0IntensityF0PumpValue"]);
-        p.AddAnalogValue("v00Intensity", imageTime, (double)Parameters["v0IntensityImageValue"]);
+        p.AddAnalogValue("v00Intensity", magTrapStartTime, (double)Parameters["v0IntensityImageValue"]);
 
         // v0 EOM
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["v0EOMMOTValue"]);
         p.AddAnalogValue("v00EOMAmp", v0F0PumpStartTime, (double)Parameters["v0EOMPumpValue"]);
-        p.AddAnalogValue("v00EOMAmp", imageTime, (double)Parameters["v0EOMMOTValue"]);
+        p.AddAnalogValue("v00EOMAmp", magTrapStartTime, (double)Parameters["v0EOMMOTValue"]);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyMOTValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
@@ -189,8 +189,6 @@ public class Patterns : MOTMasterScript
             imageTime,
             ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyMOTValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]
         );
-
-        p.SwitchAllOffAtEndOfPattern();
         return p;
     }
 

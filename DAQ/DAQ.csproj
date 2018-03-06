@@ -113,6 +113,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|AnyCPU'">
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
@@ -193,6 +195,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EnvironsHelper.cs" />
+    <Compile Include="MoleculeMOTHardware.cs" />
+    <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
     <Compile Include="USBInstrument.cs" />
@@ -259,9 +263,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataFaker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DecelerationHardware.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DigitalInputChannel.cs">
@@ -359,6 +360,7 @@
     <Compile Include="Voltmeter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WindfreakSynth.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>

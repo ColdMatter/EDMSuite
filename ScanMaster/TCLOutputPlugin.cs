@@ -126,6 +126,7 @@ namespace ScanMaster.Acquire.Plugins
                 break;
             case "voltage":
                 tclController.SetLaserOutputVoltage((string)settings["channel"], v);
+                tclController.RefreshVoltageOnUI((string)settings["channel"]);
                 break;
             }
             Thread.Sleep(waitTime);

@@ -153,9 +153,10 @@ namespace EDMBlockHead
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
             this.statusText.ReadOnly = true;
-            this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.statusText.Size = new System.Drawing.Size(541, 736);
             this.statusText.TabIndex = 0;
+            this.statusText.WordWrap = false;
             // 
             // label1
             // 
