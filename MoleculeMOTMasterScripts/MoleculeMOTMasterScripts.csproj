@@ -92,6 +92,8 @@
     <Compile Include="RamseySpectroscopyTrap.cs" />
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
+    <Compile Include="RbMOTLoadingRate.cs" />
+    <Compile Include="RbMOTTemp.cs" />
     <Compile Include="ScatteringRate.cs" />
     <Compile Include="ShutterTest.cs" />
     <Compile Include="stateSpectroscopy.cs" />

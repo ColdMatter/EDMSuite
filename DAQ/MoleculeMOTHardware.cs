@@ -83,12 +83,14 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("microwaveA", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("microwaveB", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("cameraTrigger", digitalPatternBoardAddress, 0, 7);
+            AddDigitalOutputChannel("cameraTrigger2", digitalPatternBoardAddress, 1, 7);
             AddDigitalOutputChannel("aoPatternTrigger", digitalPatternBoardAddress, 1, 0);
             AddDigitalOutputChannel("v00MOTShutter", digitalPatternBoardAddress, 1, 1);
             AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress, 1, 2);
             AddDigitalOutputChannel("tclBlock", digitalPatternBoardAddress, 1, 3);
             AddDigitalOutputChannel("topCoilDirection", digitalPatternBoardAddress, 1, 4);
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
+            AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
 
 
             // Analog Pattern
