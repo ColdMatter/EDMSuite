@@ -30,7 +30,7 @@ public class Patterns : MOTMasterScript
 
         p.Pulse(0, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.
         p.Pulse(0, motSwitchOffTime, (int)Parameters["ExpansionTime"], "rbCoolingAOM");
-        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger2");
 
 
         return p;

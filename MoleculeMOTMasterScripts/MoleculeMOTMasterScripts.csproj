@@ -74,6 +74,7 @@
     <Compile Include="MOTMagTrapLifetime.cs" />
     <Compile Include="MOTOscillation.cs" />
     <Compile Include="MOTOscillationExperimental.cs" />
+    <Compile Include="MOTOverlap.cs" />
     <Compile Include="MOTRampBField.cs" />
     <Compile Include="MOTRampIntensity.cs" />
     <Compile Include="MOTRampIntensityB.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="OverlapMagTrap.cs" />
     <Compile Include="PMTtest.cs" />
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

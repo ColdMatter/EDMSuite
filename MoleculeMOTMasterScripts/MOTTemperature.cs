@@ -24,7 +24,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["CompressionSettleTime"] = 0;
         Parameters["IntensityRampSettleTime"] = 0;
-        Parameters["ExpansionTime"] = 300;
+        Parameters["ExpansionTime"] = 6000;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -58,7 +58,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsRampStartTime"] = 4000;
         Parameters["MOTCoilsRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentLoadValue"] = 0.65;
-        Parameters["MOTCoilsCurrentEndValue"] = 1.5;
+        Parameters["MOTCoilsCurrentEndValue"] = 0.65;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0; //1.7
@@ -73,7 +73,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 500;
         Parameters["v0IntensityRampStartValue"] = 5.8;
-        Parameters["v0IntensityRampEndValue"] = 5.8; //8.465;
+        Parameters["v0IntensityRampEndValue"] = 8.465;
         Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
@@ -137,7 +137,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOnTime"], (double)Parameters["MOTCoilsCurrentLoadValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", bRampStartTime, bRampEndTime - bRampStartTime, (double)Parameters["MOTCoilsCurrentEndValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motSwitchOffTime, 0.0);
+        //p.AddAnalogValue("MOTCoilsCurrent", motSwitchOffTime, 0.0);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
