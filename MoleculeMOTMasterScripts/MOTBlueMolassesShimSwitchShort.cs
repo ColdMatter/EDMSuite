@@ -103,8 +103,8 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, molassesRampTime + (int)Parameters["MolassesRampDuration"], (int)Parameters["ExpansionTime"], "v00MOTAOM"); //pulse off the MOT light to release the cloud
-        p.Pulse(patternStartBeforeQ, cameraTriggerTime + 300, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, releaseTime, (int)Parameters["ExpansionTime"], "v00MOTAOM"); //pulse off the MOT light to release the cloud
+        p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
     }
@@ -152,7 +152,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 8.09);
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
-        //F=0
+        // F=0
         p.AddAnalogValue("v00EOMAmp", 0, 5.65);
 
         // v0 Frequency Ramp
