@@ -50,6 +50,8 @@
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.currentTemperature = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.holdButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -66,6 +68,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tableLayoutPanel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -230,8 +233,8 @@
             // 
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Controls.Add(this.cycleButton, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.groupBox1, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel7, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 331);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -245,9 +248,9 @@
             // 
             this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cycleButton.Enabled = false;
-            this.cycleButton.Location = new System.Drawing.Point(33, 96);
+            this.cycleButton.Location = new System.Drawing.Point(3, 14);
             this.cycleButton.Name = "cycleButton";
-            this.cycleButton.Size = new System.Drawing.Size(75, 44);
+            this.cycleButton.Size = new System.Drawing.Size(61, 44);
             this.cycleButton.TabIndex = 2;
             this.cycleButton.Text = "Cycle Source";
             this.cycleButton.UseVisualStyleBackColor = true;
@@ -326,6 +329,32 @@
             this.currentTemperature.Size = new System.Drawing.Size(100, 20);
             this.currentTemperature.TabIndex = 0;
             // 
+            // tableLayoutPanel7
+            // 
+            this.tableLayoutPanel7.ColumnCount = 2;
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.Controls.Add(this.holdButton, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.cycleButton, 0, 0);
+            this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 82);
+            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+            this.tableLayoutPanel7.RowCount = 1;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(135, 73);
+            this.tableLayoutPanel7.TabIndex = 4;
+            // 
+            // holdButton
+            // 
+            this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.holdButton.Enabled = false;
+            this.holdButton.Location = new System.Drawing.Point(70, 14);
+            this.holdButton.Name = "holdButton";
+            this.holdButton.Size = new System.Drawing.Size(61, 44);
+            this.holdButton.TabIndex = 3;
+            this.holdButton.Text = "Hold Source";
+            this.holdButton.UseVisualStyleBackColor = true;
+            this.holdButton.Click += new System.EventHandler(this.toggleHolding);
+            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,6 +378,7 @@
             this.tableLayoutPanel6.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tableLayoutPanel7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -377,6 +407,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox currentTemperature;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+        private System.Windows.Forms.Button holdButton;
 
     }
 }
