@@ -96,7 +96,7 @@ namespace DAQ.TransferCavityLock2012
 
             string device = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[analogInputs[0]]).Device;
 
-            readDIsTask.Timing.ConfigureSampleClock("", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
+            readDIsTask.Timing.ConfigureSampleClock(device + "/ai/SampleClock", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
             readDIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(device + "/ai/StartTrigger", triggerEdge);
 
             readDIsTask.Control(TaskAction.Verify);
@@ -121,6 +121,7 @@ namespace DAQ.TransferCavityLock2012
 
             if (digitalInputs.Length > 0)
             {
+                readDIsTask.WaitUntilDone();
                 data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
             }
 

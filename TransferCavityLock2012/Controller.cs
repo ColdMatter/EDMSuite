@@ -383,7 +383,6 @@ namespace TransferCavityLock2012
                 List<Laser> lasers = new List<Laser>();
                 foreach (Cavity cavity in Cavities.Values)
                 {
-                    Laser[] someLasers = cavity.GetAllLasers();
                     lasers.AddRange(cavity.GetAllLasers());
                 }
                 return lasers;
