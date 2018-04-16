@@ -98,6 +98,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("topCoilDirection", digitalPatternBoardAddress, 1, 4);
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
+            AddDigitalOutputChannel("v00Sidebands", digitalPatternBoardAddress, 2, 0);
+            AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
 
 
             // Analog Pattern
