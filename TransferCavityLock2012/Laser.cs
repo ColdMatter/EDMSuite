@@ -104,24 +104,40 @@ namespace TransferCavityLock2012
             {
                 switch (lState)
                 {
-                    case LaserState.LOCKING:
-                        double background = scanData.Min();
-                        double maximum = scanData.Max();
-                        double amplitude = maximum - background;
-                        double centre = rampData[Array.IndexOf(scanData, maximum)];
-                        double width = (rampData.Max() - rampData.Min()) / 20;
-                        LorentzianFit bestGuessFit = new LorentzianFit(background, amplitude, centre, width);
-                        Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
-                        break;
 
                     case LaserState.LOCKED:
-                        Fit = CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit);
+                        LorentzianFit newFit = FitWithPreviousAsBestGuess(rampData, scanData);
+                        if (newFit.Width < 0.001) // Sometimes fit seems to break and give a tiny width, in this case fall back to safe defaults
+                        {
+                            newFit = FitUsingDataForBestGuess(rampData, scanData);
+                        }
+                        Fit = newFit;
+                        break;
+
+                    case LaserState.LOCKING:
+                        Fit = FitUsingDataForBestGuess(rampData, scanData);
                         break;
 
                     case LaserState.FREE:
                         break;
                 }
             }
+        }
+
+        protected LorentzianFit FitWithPreviousAsBestGuess(double[] rampData, double[] scanData)
+        {
+            return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit);
+        }
+
+        protected LorentzianFit FitUsingDataForBestGuess(double[] rampData, double[] scanData)
+        {
+            double background = scanData.Min();
+            double maximum = scanData.Max();
+            double amplitude = maximum - background;
+            double centre = rampData[Array.IndexOf(scanData, maximum)];
+            double width = (rampData.Max() - rampData.Min()) / 20;
+            LorentzianFit bestGuessFit = new LorentzianFit(background, amplitude, centre, width);
+            return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
         }
 
         public abstract void UpdateLock();

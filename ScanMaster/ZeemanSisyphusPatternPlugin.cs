@@ -29,7 +29,7 @@ namespace ScanMaster.Acquire.Plugins
         protected override void InitialiseCustomSettings()
         {
             
-            settings["pmtTrigger"] = 20000;
+            settings["cameraTrigger"] = 20000;
             settings["padStart"] = 0;
             settings["flashlampPulseLength"] = 100;
             settings["flashlampPulseInterval"] = 500000;
@@ -53,7 +53,7 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["valveToQ"],
                 (int)settings["flashToQ"],
                 (int)settings["flashlampPulseLength"],
-                (int)settings["pmtTrigger"],
+                (int)settings["cameraTrigger"],
                 (bool)config.switchPlugin.Settings["switchActive"]
                 );
 

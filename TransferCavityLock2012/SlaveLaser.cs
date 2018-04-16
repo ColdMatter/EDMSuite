@@ -75,7 +75,7 @@ namespace TransferCavityLock2012
         public override void UpdateScan(double[] rampData, double[] scanData, bool shouldBlock)
         {
             base.UpdateScan(rampData, scanData, shouldBlock);
-            if (lState == LaserState.LOCKING)
+            if (lState == LaserState.LOCKING && !lockBlocked)
             {
                 double differenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
                 LaserSetPoint = differenceFromMaster;

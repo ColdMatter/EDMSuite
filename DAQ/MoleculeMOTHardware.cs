@@ -61,7 +61,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v10PD", tclBoard1Address + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("bXPD", tclBoard1Address + "/ai2", AITerminalConfiguration.Rse);
             AddDigitalInputChannel("bXLockBlockFlag", tclBoard1Address, 0, 0);
-            AddDigitalInputChannel("v10LockBlockFlag", tclBoard1Address, 0, 1);
+            AddDigitalInputChannel("v00LockBlockFlag", tclBoard1Address, 0, 1);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
@@ -93,7 +93,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("aoPatternTrigger", digitalPatternBoardAddress, 1, 0);
             AddDigitalOutputChannel("v00MOTShutter", digitalPatternBoardAddress, 1, 1);
             AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress, 1, 2);
-            AddDigitalOutputChannel("tclBlock", digitalPatternBoardAddress, 1, 3);
+            AddDigitalOutputChannel("bXLockBlock", digitalPatternBoardAddress, 1, 3);
+            AddDigitalOutputChannel("v00LockBlock", digitalPatternBoardAddress, 2, 1);
             AddDigitalOutputChannel("topCoilDirection", digitalPatternBoardAddress, 1, 4);
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
@@ -110,6 +111,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
             AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
+            AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
 
 
             // Source
@@ -168,8 +170,8 @@ namespace DAQ.HAL
             
             tclConfig.AddCavity(hamish);
             tclConfig.Cavities[hamish].AddSlaveLaser("v00Lock", "v00PD");
+            tclConfig.Cavities[hamish].AddLockBlocker("v00Lock", "v00LockBlockFlag");
             tclConfig.Cavities[hamish].AddSlaveLaser("v10Lock", "v10PD");
-            tclConfig.Cavities[hamish].AddLockBlocker("v10Lock", "v10LockBlockFlag");
             tclConfig.Cavities[hamish].AddSlaveLaser("bXLock", "bXPD");
             tclConfig.Cavities[hamish].AddLockBlocker("bXLock", "bXLockBlockFlag");
             tclConfig.Cavities[hamish].MasterLaser = "refPDHamish";

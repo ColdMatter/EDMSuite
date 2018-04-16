@@ -239,7 +239,7 @@
             this.MasterGainTextBox.Name = "MasterGainTextBox";
             this.MasterGainTextBox.Size = new System.Drawing.Size(57, 20);
             this.MasterGainTextBox.TabIndex = 58;
-            this.MasterGainTextBox.Text = "0";
+            this.MasterGainTextBox.Text = "1";
             this.MasterGainTextBox.TextChanged += new System.EventHandler(this.MasterGainTextBox_TextChanged);
             // 
             // label1

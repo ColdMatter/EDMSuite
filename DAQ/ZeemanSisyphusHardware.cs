@@ -29,12 +29,11 @@ namespace DAQ.HAL
 
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 2, 6);
-            AddDigitalOutputChannel("daqTrigger", digitalPatternBoardAddress, 2, 4);//connect to daq board PFI 0
-            AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("pmtTrigger", digitalPatternBoardAddress, 2, 5);
+            AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 2, 4);//connect to daq board PFI 0
+            AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
             AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
-            AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 0, 4);
-            //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 3);
+           // AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 4);
+           // AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 3, 3);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 2);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 1);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 0);
@@ -61,6 +60,7 @@ namespace DAQ.HAL
             // ScanMaster configuration
             Info.Add("PGType", "dedicated");
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
+            Info.Add("analogTrigger0", analogPatternBoardAddress + "/PFI0");
 
             Info.Add("defaultTOFRange", new double[] { 4000, 12000 }); // these entries are the two ends of the range for the upper TOF graph
             Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph

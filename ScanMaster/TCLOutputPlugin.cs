@@ -36,6 +36,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["cavity"] = "Hamish";
             settings["computer"] = hostName;
             settings["scannedParameter"] = "setpoint";
+            settings["TCLConfig"] = "TCLConfig";
         }
 
 
@@ -73,17 +74,17 @@ namespace ScanMaster.Acquire.Plugins
 
             EnvironsHelper eHelper = new EnvironsHelper(computer);
 
-            string tcpChannel = ((TCLConfig)eHelper.Hardware.GetInfo(settings["cavity"])).TCPChannel.ToString();
+            string tcpChannel = ((TCLConfig)eHelper.Hardware.GetInfo(settings["TCLConfig"])).TCPChannel.ToString();
 
             tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://"+ name + ":" + tcpChannel + "/controller.rem"));
 
             scanParameter = 0;
 
-            initialVoltage = tclController.GetLaserVoltage((string)settings["channel"]);
-            initialSetPoint = tclController.GetLaserSetpoint((string)settings["channel"]);
+            initialVoltage = tclController.GetLaserVoltage((string)settings["cavity"],(string)settings["channel"]);
+            initialSetPoint = tclController.GetLaserSetpoint((string)settings["cavity"], (string)settings["channel"]);
             if (scannedParameter == "voltage")
             {
-                tclController.UnlockLaser((string)settings["channel"]);
+                tclController.UnlockLaser((string)settings["cavity"], (string)settings["channel"]);
             }
             setV((double)settings["start"], 200, scannedParameter);
         }
@@ -103,7 +104,7 @@ namespace ScanMaster.Acquire.Plugins
         {
             setV(initialVoltage, 200, "voltage");
             setV(initialSetPoint, 200, "setpoint");
-            tclController.LockLaser((string)settings["channel"]);
+            tclController.LockLaser((string)settings["cavity"], (string)settings["channel"]);
         }
 
         [XmlIgnore]
@@ -122,11 +123,11 @@ namespace ScanMaster.Acquire.Plugins
             switch (scannedOutput)
             {
             case "setpoint":
-                tclController.SetLaserSetpoint((string)settings["channel"], v);
+                    tclController.SetLaserSetpoint((string)settings["cavity"], (string)settings["channel"], v);
                 break;
             case "voltage":
-                tclController.SetLaserOutputVoltage((string)settings["channel"], v);
-                tclController.RefreshVoltageOnUI((string)settings["channel"]);
+                tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], v);
+                tclController.RefreshVoltageOnUI((string)settings["cavity"], (string)settings["channel"]);
                 break;
             }
             Thread.Sleep(waitTime);
