@@ -126,6 +126,7 @@ namespace MOTMaster2
 
             Controller.genOptions.AIEnable = aiEnable.IsChecked.Value;
             Controller.genOptions.WindFreakEnable = windFreakEnable.IsChecked.Value;
+            Controller.genOptions.Save();
             Close();
         }
 

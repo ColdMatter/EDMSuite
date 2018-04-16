@@ -157,6 +157,9 @@
     <Compile Include="dotMath\Parser.cs" />
     <Compile Include="ErrorManager.cs" />
     <Compile Include="ExperimentData.cs" />
+    <Compile Include="MetaData.xaml.cs">
+      <DependentUpon>MetaData.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MetaData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

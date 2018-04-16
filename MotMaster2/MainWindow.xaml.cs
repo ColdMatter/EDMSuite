@@ -629,9 +629,10 @@ namespace MOTMaster2
             // Process open file dialog box results
             if (result != true) return;
             string filename = dlg.FileName;
-            Controller.LoadSequenceFromPath(filename);
-            this.Title = "MOTMaster 2 - sequence: " + filename; 
+            this.Title = "MOTMaster 2 - sequence loading...";
+            Controller.LoadSequenceFromPath(filename);            
             UpdateSequenceControl();
+            this.Title = "MOTMaster 2 - sequence: " + filename; 
         }
 
         private void LoadCicero_Click(object sender, RoutedEventArgs e)
@@ -826,8 +827,7 @@ namespace MOTMaster2
 
         private void buildBtn_Click(object sender, RoutedEventArgs e)
         {
-            ErrorMng.warningMsg(Utils.dataPath, 123); return;
-            // if (controller.script == null || Controller.sequenceData == null) { MessageBox.Show("No script loaded!"); return; }
+           // MetaDataWindow metaDataWindow = new MetaDataWindow(); metaDataWindow.ShowDialog(); return;
             Button btn = sender as Button;
             switch (btn.Name)
             {

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace UtilsNS
 {
@@ -76,6 +77,7 @@ namespace UtilsNS
         }
 
         public static string basePath = Directory.GetParent(Directory.GetParent(Environment.GetCommandLineArgs()[0]).Parent.FullName).FullName;
+
         public static string configPath { get { return basePath + "\\Config\\"; } }
         public static string dataPath { get { return basePath + "\\Data\\"; } }
 
@@ -272,4 +274,5 @@ namespace UtilsNS
         // very long task to be marked
     }
      */
+
 }

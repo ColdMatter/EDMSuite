@@ -1213,14 +1213,14 @@ namespace MOTMaster2
             else sequenceData = new Sequence();
 
             if (!sequenceData.Parameters.ContainsKey("ElapsedTime")) sequenceData.Parameters["ElapsedTime"] = new Parameter("ElapsedTime", "", 0.0, true, false);
-            if (Environs.Hardware.ContainsInfo("channelMap")) RenameOldChannels((Dictionary<string, string>)Environs.Hardware.GetInfo("channelMap"));
+            //if (Environs.Hardware.ContainsInfo("channelMap")) RenameOldChannels((Dictionary<string, string>)Environs.Hardware.GetInfo("channelMap"));
         }
 
         public static void LoadSequenceFromPath(string path)
         {
             string sequenceJson = File.ReadAllText(path);
             sequenceData = JsonConvert.DeserializeObject<Sequence>(sequenceJson);
-            RenameOldChannels((Dictionary<string, string>)Environs.Hardware.GetInfo("channelMap"));
+            //RenameOldChannels((Dictionary<string, string>)Environs.Hardware.GetInfo("channelMap"));
             //script.Parameters = sequenceData.CreateParameterDictionary();
 
         }
@@ -1328,7 +1328,8 @@ namespace MOTMaster2
         
         }
         /// <summary>
-        /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
+        /// Creates the time segments required for the ExpData class. Assumes that there is a digital channel named acquisitionTrigger 
+        /// and this is set high during the acquistion time. Any step that should not be saved during this time should be labelled using "DNS"
         /// </summary>
         public static void CreateAcquisitionTimeSegments()
         {
@@ -1341,9 +1342,9 @@ namespace MOTMaster2
             ExpData.IgnoredSegments = ignoredSegments;
             try
             {
-            ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
+                ExpData.InterferometerStepName = sequenceData.Steps.Where(t => (t.Description.Contains("Interferometer") && t.GetDigitalData("acquisitionTrigger"))).Select(t => t.Name).First();
             }
-            catch
+            catch 
             {
                 ExpData.InterferometerStepName = null;
             }

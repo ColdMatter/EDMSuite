@@ -52,6 +52,71 @@ namespace DAQ.HAL
 			get {return counterChannels;}
 		}
 
+        public string showDigitalName(String name)
+        {
+            string res = "";
+            foreach (DigitalOutputChannel chn in digitalOutputChannels.Values)
+            {
+                if (chn.Name.Equals(name))
+                {
+                    if (chn.ShowAs.Equals("")) res = chn.Name;
+                    else res = chn.ShowAs;
+                    break;
+                }
+            }
+            if (!res.Equals("")) return res;
+            foreach (DigitalInputChannel chn in digitalInputChannels.Values)
+            {
+                if (chn.Name.Equals(name))
+                {
+                    if (chn.ShowAs.Equals("")) res = chn.Name;
+                    else res = chn.ShowAs;
+                    break;
+                }
+            }
+            return res;
+        }
+
+        public string showAnalogName(String name) 
+        {
+            string res = "";
+            foreach (AnalogOutputChannel chn in analogOutputChannels.Values)
+            {
+                if (chn.Name.Equals(name))
+                {
+                    if (chn.ShowAs.Equals("")) res = chn.Name;
+                    else res = chn.ShowAs;
+                    break;
+                }
+            }
+            if (!res.Equals("")) return res;
+            foreach (AnalogInputChannel chn in analogInputChannels.Values)
+            {
+                if (chn.Name.Equals(name))
+                {
+                    if (chn.ShowAs.Equals("")) res = chn.Name;
+                    else res = chn.ShowAs;
+                    break;
+                }
+            }
+            return res;
+        }
+
+        public string showCounterName(String name) 
+        {
+            string res = "";
+            foreach (CounterChannel chn in counterChannels.Values)
+            {
+                if (chn.Name.Equals(name))
+                {
+                    if (chn.ShowAs.Equals("")) res = chn.Name;
+                    else res = chn.ShowAs;
+                    break;
+                }
+            }
+            return res;
+        }
+
 		protected YAGLaser yag;
 		public YAGLaser YAG
 		{
@@ -92,7 +157,7 @@ namespace DAQ.HAL
 			AITerminalConfiguration terminalConfig
 			)
 		{
-			analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig));
+			analogInputChannels.Add(name.Split('/')[0], new AnalogInputChannel(name, physicalChannel, terminalConfig));
 		}
 
         protected void AddAnalogInputChannel(
@@ -102,33 +167,33 @@ namespace DAQ.HAL
             Double config
             )
         {
-            analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig, config));
+            analogInputChannels.Add(name.Split('/')[0], new AnalogInputChannel(name, physicalChannel, terminalConfig, config));
         }
 
 		protected void AddAnalogOutputChannel(String name, String physicalChannel)
 		{
-			analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel));
+			analogOutputChannels.Add(name.Split('/')[0], new AnalogOutputChannel(name, physicalChannel));
 		}
 
         protected void AddAnalogOutputChannel(String name, String physicalChannel,
                                                     double rangeLow, double rangeHigh)
         {
-            analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel, rangeLow, rangeHigh));
+            analogOutputChannels.Add(name.Split('/')[0], new AnalogOutputChannel(name, physicalChannel, rangeLow, rangeHigh));
         }
         
         protected void AddDigitalOutputChannel(String name, string device, int port, int line)
 		{
-			digitalOutputChannels.Add(name, new DigitalOutputChannel(name, device, port, line));
+			digitalOutputChannels.Add(name.Split('/')[0], new DigitalOutputChannel(name, device, port, line));
 		}
 
         protected void AddDigitalInputChannel(String name, string device, int port, int line)
         {
-            digitalInputChannels.Add(name, new DigitalInputChannel(name, device, port, line));
+            digitalInputChannels.Add(name.Split('/')[0], new DigitalInputChannel(name, device, port, line));
         }
 
 		protected void AddCounterChannel(String name, string physicalChannel)
 		{
-			counterChannels.Add(name, new CounterChannel(name, physicalChannel));
+			counterChannels.Add(name.Split('/')[0], new CounterChannel(name, physicalChannel));
 		}
 
         protected void AddCalibration(String channelName, Calibration calibration)

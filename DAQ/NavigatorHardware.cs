@@ -72,13 +72,13 @@ namespace DAQ.HAL
             
             //map the digital channels
 
-            AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
-            AddDigitalOutputChannel("lcTTL", hsdioBoard, 0, 1);
+            AddDigitalOutputChannel("motTTL/myMotTTL", hsdioBoard, 0, 0);
+            AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1); // from lcTTL
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
-            AddDigitalOutputChannel("msquaredTTL", hsdioBoard, 0, 15);
+            AddDigitalOutputChannel("ramanDDSTrig", hsdioBoard, 0, 15); // from msquaredTTL
             AddDigitalOutputChannel("aomDDSTrig", hsdioBoard, 0, 5);
-            AddDigitalOutputChannel("fp1MicrowaveTTL", hsdioBoard, 0, 4);
+            AddDigitalOutputChannel("shutter", hsdioBoard, 0, 4); // from fp1MicrowaveTTL
             AddDigitalOutputChannel("xaomTTL", hsdioBoard, 0, 7);
             AddDigitalOutputChannel("yaomTTL", hsdioBoard, 0, 8);
             AddDigitalOutputChannel("zpaomTTL", hsdioBoard, 0, 9);
@@ -132,12 +132,12 @@ namespace DAQ.HAL
             AddCounterChannel("Counter", multiBoard + "/ctr0");
 
             //Adds a Channel map to convert channel names from old sequences
-            Dictionary<string, string> channelMap = new Dictionary<string, string>();
+            Dictionary<string, string> channelMap = new Dictionary<string, string>(); // channelMap["old_name"] = "new_name";
             channelMap["cameraTTL"] = "mainMicrowaveTTL";
             channelMap["Analog Trigger"] = "fm1MicrowaveTTL";
-            channelMap["ramanTTL"] = "lcTTL";
-            channelMap["ramanDDSTrig"] = "msquaredTTL";
-            channelMap["shutter"] = "fp1MicrowaveTTL";
+          //  channelMap["ramanTTL"] = "lcTTL";
+          //  channelMap["ramanDDSTrig"] = "msquaredTTL";
+          //  channelMap["shutter"] = "fp1MicrowaveTTL";
             channelMap["pushaomTTL"] = "f0MicrowaveTTL";
 
             Info.Add("channelMap", channelMap);

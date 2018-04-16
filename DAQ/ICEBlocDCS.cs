@@ -33,24 +33,26 @@ namespace DAQ.HAL
             else Strobe1 += corr;
             Count += 1;
         }
-        private double strobe1;
+        private double _strobe1;
         public double Strobe1 // even count in case of double strobe
         {
-            get { return strobe1; }
+            get { return _strobe1; }
             set 
             { 
-                strobe1 = value;
+                _strobe1 = value;
                 ProcStrobe(DoubleStrobe, value, Count);
+                Count += 1;
             }
         }
-        private double strobe2;
+        private double _strobe2;
         public double Strobe2 // even count in case of double strobe
         {
-            get { return strobe2; }
+            get { return _strobe2; }
             set
             {
-                strobe2 = value;
+                _strobe2 = value;
                 ProcStrobe(DoubleStrobe, value, Count);
+                Count += 1;
             }
         }
     }

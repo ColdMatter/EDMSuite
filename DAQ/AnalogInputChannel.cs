@@ -16,7 +16,7 @@ namespace DAQ.HAL
 
 		public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig) 
 		{
-			this.name = name;
+            this.nameIt(name);
 			this.physicalChannel = physicalChannel;
 			this.terminalConfig = terminalConfig;
             this.calibration = 1;
@@ -24,12 +24,11 @@ namespace DAQ.HAL
 
         public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig, Double calibration)
         {
-            this.name = name;
+            this.nameIt(name);
             this.physicalChannel = physicalChannel;
             this.terminalConfig = terminalConfig;
             this.calibration = calibration;
         }
-
 
 		public AITerminalConfiguration TerminalConfig
 		{
