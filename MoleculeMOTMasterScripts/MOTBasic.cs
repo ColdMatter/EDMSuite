@@ -21,6 +21,8 @@ public class Patterns : MOTMasterScript
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
+        Parameters["HeliumShutterToQ"] = 100;
+        Parameters["HeliumShutterDuration"] = 1550;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
@@ -127,7 +129,7 @@ public class Patterns : MOTMasterScript
        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.7);
+        p.AddAnalogValue("v00EOMAmp", 0, 5.3);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
