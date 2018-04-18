@@ -90,28 +90,29 @@ namespace ConfocalControl
 
         private void connect_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!SolsTiSPlugin.GetController().Solstis.Connected)
-            {
-                try
-                {
-                    SolsTiSPlugin.GetController().Solstis.Connect();
-                    string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
-                    MessageBox.Show(reply);
-                    etalonCheck_Button_Click(null, null);
-                    wavelengthRead_Button_Click(null, null);
+            MessageBox.Show("Hello");
+            //if (!SolsTiSPlugin.GetController().Solstis.Connected)
+            //{
+            //    try
+            //    {
+            //        SolsTiSPlugin.GetController().Solstis.Connect();
+            //        string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
+            //        MessageBox.Show(reply);
+            //        etalonCheck_Button_Click(null, null);
+            //        wavelengthRead_Button_Click(null, null);
 
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message);
-                }
-            }
-            else
-            {
-                MessageBox.Show("already connected");
-            }
+            //    }
+            //    catch (Exception exception)
+            //    {
+            //        MessageBox.Show(exception.Message);
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("already connected");
+            //}
 
-            checkConnection_Button_Click(null, null);
+            //checkConnection_Button_Click(null, null);
         }
 
         private void disconnect_Button_Click(object sender, RoutedEventArgs e)
