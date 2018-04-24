@@ -72,7 +72,7 @@ namespace DAQ.HAL
             
             //map the digital channels
 
-            AddDigitalOutputChannel("motTTL/myMotTTL", hsdioBoard, 0, 0);
+            AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1); // from lcTTL
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
