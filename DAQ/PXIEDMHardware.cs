@@ -184,7 +184,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("middlePenningGauge", analogIn + "/ai4", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);

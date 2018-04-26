@@ -182,6 +182,7 @@
     <Compile Include="OldCode\IAccumulator.cs" />
     <Compile Include="OldCode\IField.cs" />
     <Compile Include="OldCode\IVectorSpace.cs" />
+    <Compile Include="PressureMonitorDataLog.cs" />
     <Compile Include="TCLDataLog.cs" />
     <Compile Include="TOFAccumulator.cs" />
     <Compile Include="TOFChannel.cs" />
