@@ -58,6 +58,7 @@ namespace EDMHardwareControl
         private static double northOffset = 0;
         private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = 0.01;
+        private static double pressureMonitorMeasurementTime = 0.01;
 
         
         #endregion
@@ -67,7 +68,7 @@ namespace EDMHardwareControl
         // hardware
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
         Synth redSynth = (Synth)Environs.Hardware.Instruments["red"];
-        ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
+        //ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
         SerialAgilent53131A rfCounter2 = (SerialAgilent53131A)Environs.Hardware.Instruments["rfCounter2"];
@@ -76,6 +77,7 @@ namespace EDMHardwareControl
         SerialMotorControllerBCD probePolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["probePolControl"];
         SerialMotorControllerBCD pumpPolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["pumpPolControl"];
         AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapico"];
+        RfPulseGenerator rfAWG = (RfPulseGenerator)Environs.Hardware.Instruments["rfPulseGenerator"];
 
         
         
@@ -88,6 +90,7 @@ namespace EDMHardwareControl
         //    new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["southLeakage"], southSlope, southOffset, currentMonitorMeasurementTime);
         LeakageMonitor northLeakageMonitor = new LeakageMonitor("northLeakage", northVolt2FreqSlope, northFreq2AmpSlope, northOffset);
         LeakageMonitor southLeakageMonitor = new LeakageMonitor("southLeakage", southVolt2FreqSlope, southFreq2AmpSlope, southOffset);
+        LeyboldPTR225Gauge pressureMonitor = new LeyboldPTR225Gauge("Middle Penning gauge", "middlePenningGauge");
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
         //Task steppingBBiasAnalogOutputTask;
@@ -171,6 +174,11 @@ namespace EDMHardwareControl
             CreateDigitalTask("eSwitching");
             CreateDigitalTask("patternTTL");
             CreateDigitalTask("mwSwitching");
+
+            CreateDigitalTask("rfAmpBlanking");
+            CreateDigitalTask("rfHWTrigger0");
+
+            CreateDigitalTask("cleanUpBeamAOMSwitch");
 
             // digitial input tasks
 
@@ -411,7 +419,16 @@ namespace EDMHardwareControl
             public double vco155Amp;
             public double vco161Freq;
             public double vco30Freq;
-            public double vco155Freq; 
+            public double vco155Freq;
+            public double anapicoCWFreq;
+            public double pumpmwDwellOnTime;
+            public double pumpmwDwellOffTime;
+            public double bottomProbemwDwellOnTime;
+            public double bottomProbemwDwellOffTime;
+            public double topProbemwDwellOnTime;
+            public double topProbemwDwellOffTime;
+            public double anapicof0Freq;
+            public double anapicof1Freq;
 
         }
 
@@ -477,8 +494,16 @@ namespace EDMHardwareControl
             dataStore.vco30Amp = VCO30AmpVoltage;
             dataStore.vco161Freq = VCO161FreqVoltage;
             dataStore.vco155Freq = VCO155FreqVoltage;
-            dataStore.vco30Freq = VCO30FreqVoltage; 
-
+            dataStore.vco30Freq = VCO30FreqVoltage;
+            dataStore.anapicoCWFreq = AnapicoCWFrequency;
+            dataStore.anapicof0Freq = AnapicoFrequency0;
+            dataStore.anapicof1Freq = AnapicoFrequency0;
+            dataStore.pumpmwDwellOnTime = AnapicoPumpMWDwellOnTime;
+            dataStore.pumpmwDwellOffTime = AnapicoPumpMWDwellOffTime;
+            dataStore.bottomProbemwDwellOnTime = AnapicoBottomProbeMWDwellOnTime;
+            dataStore.bottomProbemwDwellOffTime = AnapicoBottomProbeMWDwellOffTime;
+            dataStore.topProbemwDwellOnTime = AnapicoTopProbeMWDwellOnTime;
+            dataStore.topProbemwDwellOffTime = AnapicoTopProbeMWDwellOffTime;
 
 
             // serialize it
@@ -554,7 +579,16 @@ namespace EDMHardwareControl
                 VCO30AmpVoltage = dataStore.vco30Amp;
                 VCO161FreqVoltage = dataStore.vco161Freq;
                 VCO155FreqVoltage = dataStore.vco155Freq;
-                VCO30FreqVoltage = dataStore.vco30Freq; 
+                VCO30FreqVoltage = dataStore.vco30Freq;
+                AnapicoCWFrequency = dataStore.anapicoCWFreq;
+                AnapicoFrequency0 = dataStore.anapicof0Freq;
+                AnapicoFrequency1 = dataStore.anapicof1Freq;
+                AnapicoPumpMWDwellOnTime = dataStore.pumpmwDwellOnTime;
+                AnapicoPumpMWDwellOffTime = dataStore.pumpmwDwellOffTime;
+                AnapicoBottomProbeMWDwellOnTime = dataStore.bottomProbemwDwellOnTime;
+                AnapicoBottomProbeMWDwellOffTime = dataStore.bottomProbemwDwellOffTime;
+                AnapicoTopProbeMWDwellOnTime = dataStore.topProbemwDwellOnTime;
+                AnapicoTopProbeMWDwellOffTime = dataStore.topProbemwDwellOffTime;
 
             }
             catch (Exception)
@@ -2595,7 +2629,9 @@ namespace EDMHardwareControl
         public void StartLoggingCurrent()
         {
             serializer = new JSONSerializer();
-            serializer.StartLogFile((String)Environs.FileSystem.Paths["scanMasterDataPath"] +
+            string initialDataDir = Environs.FileSystem.GetDataDirectory(
+                                                (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            serializer.StartLogFile(initialDataDir +
                 Environs.FileSystem.GenerateNextDataFileName() + ".json");
             serializer.StartProcessingData();
         }
@@ -2959,18 +2995,43 @@ namespace EDMHardwareControl
 
         public void EnableGreenSynth(bool enable)
         {
-            greenSynth.Connect();
-            if (enable)
+            try
             {
-                greenSynth.Frequency = GreenSynthOnFrequency;
-                greenSynth.Amplitude = GreenSynthOnAmplitude;
-                greenSynth.DCFM = GreenSynthDCFM;
+                greenSynth.Connect();
             }
-            else
+            catch (Exception e)
             {
-                greenSynth.Amplitude = greenSynthOffAmplitude;
+                MessageBox.Show("Connect error: " + e.Message);
             }
-            greenSynth.Disconnect();
+
+            try
+            {
+                if (enable)
+                {
+                    greenSynth.Frequency = GreenSynthOnFrequency;
+                    greenSynth.Amplitude = GreenSynthOnAmplitude;
+                    greenSynth.DCFM = GreenSynthDCFM;
+                }
+                else
+                {
+                    greenSynth.Amplitude = greenSynthOffAmplitude;
+                }
+            }
+
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while setting parameters: " + e.Message);
+            }
+
+            try
+            {
+                greenSynth.Disconnect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Disconnect error: " + e.Message);
+            }
+            
         }
 
 
@@ -3476,6 +3537,16 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf2FMOutputTask, rf2FMVoltage);
         }
 
+        internal void SetRFHWTrigger0(bool enable)
+        {
+            SetDigitalLine("rfHWTrigger0", enable);
+        }
+
+        internal void SetRFBlanking(bool enable)
+        {
+            SetDigitalLine("rfAmpBlanking", enable);
+        }
+
         
         public void UpdateVCO161AmpVoltage(double pztVoltage)
         {
@@ -3915,7 +3986,7 @@ namespace EDMHardwareControl
                 SwitchingMw = true;
 
                 MwSwitchState = newMwSwitchState;
-                //Thread.Sleep((int)(170)); //Here I put in the 164ms delay time (of the Anapico switching) by hand. 
+                Thread.Sleep((int)(100)); //Here I put in the 100ms delay time (of the Anapico switching) by hand. 
             }
 
             MwSwitchDone();
@@ -3928,6 +3999,129 @@ namespace EDMHardwareControl
             window.EnableControl(window.listSweepEnabledCheckBox, true);
             window.EnableControl(window.anapicoEnabledCheckBox, true);
         }
+
+        #region Pressure monitor
+
+        private double lastPressure;
+        private Queue<double> pressureSamples = new Queue<double>();
+        public void UpdatePressureMonitor()
+        {
+            //sample the pressure
+            lastPressure = pressureMonitor.Pressure;
+
+            //add samples to Queues for averaging
+            pressureSamples.Enqueue(lastPressure);
+
+            //drop samples when array is larger than the moving average sample length
+            while (pressureSamples.Count > pressureMovingAverageSampleLength)
+            {
+                pressureSamples.Dequeue();
+            }
+
+            //average samples
+            double avgPressure = pressureSamples.Average();
+            string avgPressureExpForm = avgPressure.ToString("E");
+
+            //update text boxes
+            window.SetTextBox(window.pressureMonitorTextBox, (avgPressureExpForm).ToString());
+        }
+
+        public void PlotLastPressure()
+        {
+            //sample the pressure
+            lastPressure = pressureMonitor.Pressure;
+
+            //plot the most recent samples
+            window.PlotYAppend(window.pressureGraph, window.pressurePlot,
+                        new double[] { lastPressure });
+        }
+
+        public void ClearPressureMonitorAv()
+        {
+            pressureSamples.Clear();
+        }
+
+
+        private JSONSerializer pressureDataSerializer;
+        public void StartLoggingPressure()
+        {
+            pressureDataSerializer = new JSONSerializer();
+            string initialDataDir = Environs.FileSystem.GetDataDirectory(
+                                                (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
+            pressureDataSerializer.StartLogFile(initialDataDir +
+                Environs.FileSystem.GenerateNextDataFileName() + ".json");
+            pressureDataSerializer.StartProcessingData();
+        }
+        public void StopLoggingPressure()
+        {
+            pressureDataSerializer.EndLogFile();
+        }
+
+        private Thread pressureMonitorPollThread;
+        private int pressureMonitorPollPeriod = 100;
+        private Object pressureMonitorLock;
+        private bool pressureMonitorFlag;
+        private int pressureMovingAverageSampleLength = 10;
+        private int pressureMonitorLogPeriod = 15 * 60 * 1000;
+        private int pressureLoggingRate;
+        internal void StartPressureMonitorPoll()
+        {
+            pressureMonitorPollThread = new Thread(new ThreadStart(pressureMonitorPollWorker));
+            window.EnableControl(window.startPressureMonitorPollButton, false);
+            window.EnableControl(window.stopPressureMonitorPollButton, true);
+            pressureMonitorPollPeriod = Int32.Parse(window.pressureMonitorPollPeriodTextBox.Text);
+            pressureMovingAverageSampleLength = Int32.Parse(window.pressureMonitorSampleLengthTextBox.Text);
+            pressureMonitorLogPeriod = Int32.Parse(window.pressureMonitorLogPeriodTextBox.Text) * 1000; // Convert from minutes to milliseconds
+            pressureLoggingRate = pressureMonitorLogPeriod / pressureMonitorPollPeriod;
+            pressureSamples.Clear();
+            pressureMonitorLock = new Object();
+            pressureMonitorFlag = false;
+            pressureMonitorPollThread.Start();
+        }
+
+        internal void StopPressureMonitorPoll()
+        {
+            lock (pressureMonitorLock)
+            {
+                pressureMonitorFlag = true;
+            }
+        }
+        private void pressureMonitorPollWorker()
+        {
+            int count = 0;
+
+            for (; ; )
+            {
+                Thread.Sleep(pressureMonitorPollPeriod);
+                ++count;
+                lock (pressureMonitorLock)
+                {
+                    UpdatePressureMonitor();
+                    if (count == pressureLoggingRate)
+                    {
+                        PlotLastPressure();
+
+                        if (window.logPressureDataCheckBox.Checked)
+                        {
+                            pressureDataSerializer.AddData(new PressureMonitorDataLog(DateTime.Now,
+                                pressureMonitorPollPeriod,
+                                lastPressure));
+                        }
+
+                        count = 0;
+                    }
+                    if (pressureMonitorFlag)
+                    {
+                        pressureMonitorFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startPressureMonitorPollButton, true);
+            window.EnableControl(window.stopPressureMonitorPollButton, false);
+        }
+
+        #endregion
 
         #endregion
 

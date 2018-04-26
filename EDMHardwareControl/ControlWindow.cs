@@ -536,6 +536,27 @@ namespace EDMHardwareControl
         public TextBox pumpMWDwellOffTextBox;
         public TextBox pumpMWDwellOnTextBox;
         private Label label120;
+        private GroupBox pressureMonitorGroupBox;
+        public CheckBox logPressureDataCheckBox;
+        private Button clearPressureMonitorButton;
+        private Label label153;
+        public TextBox pressureMonitorSampleLengthTextBox;
+        private Label label157;
+        public Button stopPressureMonitorPollButton;
+        private Legend legend2;
+        private LegendItem pressurePlotLegend;
+        public WaveformPlot pressurePlot;
+        private XAxis xAxis2;
+        private YAxis yAxis2;
+        private Label label161;
+        public TextBox pressureMonitorPollPeriodTextBox;
+        public Button startPressureMonitorPollButton;
+        public WaveformGraph pressureGraph;
+        public TextBox pressureMonitorTextBox;
+        private Button updatePressureMonitorButton;
+        private Label label165;
+        private Label label121;
+        public TextBox pressureMonitorLogPeriodTextBox;
 
  
 
@@ -875,6 +896,7 @@ namespace EDMHardwareControl
             this.tabPage13 = new System.Windows.Forms.TabPage();
             this.label93 = new System.Windows.Forms.Label();
             this.anapicofreqcontrol = new System.Windows.Forms.GroupBox();
+            this.label120 = new System.Windows.Forms.Label();
             this.label118 = new System.Windows.Forms.Label();
             this.topProbeMWf1Indicator = new NationalInstruments.UI.WindowsForms.Led();
             this.label119 = new System.Windows.Forms.Label();
@@ -1082,7 +1104,27 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.label120 = new System.Windows.Forms.Label();
+            this.pressureMonitorGroupBox = new System.Windows.Forms.GroupBox();
+            this.logPressureDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.clearPressureMonitorButton = new System.Windows.Forms.Button();
+            this.label153 = new System.Windows.Forms.Label();
+            this.pressureMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label157 = new System.Windows.Forms.Label();
+            this.stopPressureMonitorPollButton = new System.Windows.Forms.Button();
+            this.legend2 = new NationalInstruments.UI.WindowsForms.Legend();
+            this.pressurePlotLegend = new NationalInstruments.UI.LegendItem();
+            this.pressurePlot = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.label161 = new System.Windows.Forms.Label();
+            this.pressureMonitorPollPeriodTextBox = new System.Windows.Forms.TextBox();
+            this.startPressureMonitorPollButton = new System.Windows.Forms.Button();
+            this.pressureGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.pressureMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.updatePressureMonitorButton = new System.Windows.Forms.Button();
+            this.label165 = new System.Windows.Forms.Label();
+            this.label121 = new System.Windows.Forms.Label();
+            this.pressureMonitorLogPeriodTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1168,6 +1210,9 @@ namespace EDMHardwareControl
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.pressureMonitorGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pressureGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -4255,6 +4300,14 @@ namespace EDMHardwareControl
             this.anapicofreqcontrol.TabStop = false;
             this.anapicofreqcontrol.Text = "Anapico Frequency Control";
             // 
+            // label120
+            // 
+            this.label120.Location = new System.Drawing.Point(31, 110);
+            this.label120.Name = "label120";
+            this.label120.Size = new System.Drawing.Size(320, 23);
+            this.label120.TabIndex = 73;
+            this.label120.Text = " (1 is checked, correponding to f0 in bottom probe, f1 in top probe)";
+            // 
             // label118
             // 
             this.label118.Location = new System.Drawing.Point(186, 205);
@@ -5900,6 +5953,7 @@ namespace EDMHardwareControl
             // tabPage9
             // 
             this.tabPage9.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage9.Controls.Add(this.pressureMonitorGroupBox);
             this.tabPage9.Controls.Add(this.switchScanTTLSwitch);
             this.tabPage9.Controls.Add(this.label97);
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
@@ -6260,13 +6314,212 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
-            // label120
+            // pressureMonitorGroupBox
             // 
-            this.label120.Location = new System.Drawing.Point(31, 110);
-            this.label120.Name = "label120";
-            this.label120.Size = new System.Drawing.Size(320, 23);
-            this.label120.TabIndex = 73;
-            this.label120.Text = " (1 is checked, correponding to f0 in bottom probe, f1 in top probe)";
+            this.pressureMonitorGroupBox.Controls.Add(this.label121);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorLogPeriodTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.logPressureDataCheckBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.clearPressureMonitorButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.label153);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorSampleLengthTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.label157);
+            this.pressureMonitorGroupBox.Controls.Add(this.stopPressureMonitorPollButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.legend2);
+            this.pressureMonitorGroupBox.Controls.Add(this.label161);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorPollPeriodTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.startPressureMonitorPollButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureGraph);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.updatePressureMonitorButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.label165);
+            this.pressureMonitorGroupBox.Location = new System.Drawing.Point(18, 150);
+            this.pressureMonitorGroupBox.Name = "pressureMonitorGroupBox";
+            this.pressureMonitorGroupBox.Size = new System.Drawing.Size(660, 274);
+            this.pressureMonitorGroupBox.TabIndex = 45;
+            this.pressureMonitorGroupBox.TabStop = false;
+            this.pressureMonitorGroupBox.Text = "Pressure monitor";
+            // 
+            // logPressureDataCheckBox
+            // 
+            this.logPressureDataCheckBox.AutoSize = true;
+            this.logPressureDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logPressureDataCheckBox.Name = "logPressureDataCheckBox";
+            this.logPressureDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.logPressureDataCheckBox.TabIndex = 75;
+            this.logPressureDataCheckBox.Text = "Log data";
+            this.logPressureDataCheckBox.UseVisualStyleBackColor = true;
+            this.logPressureDataCheckBox.CheckedChanged += new System.EventHandler(this.logPressureDataCheckBox_CheckedChanged);
+            // 
+            // clearPressureMonitorButton
+            // 
+            this.clearPressureMonitorButton.Location = new System.Drawing.Point(68, 66);
+            this.clearPressureMonitorButton.Name = "clearPressureMonitorButton";
+            this.clearPressureMonitorButton.Size = new System.Drawing.Size(39, 23);
+            this.clearPressureMonitorButton.TabIndex = 74;
+            this.clearPressureMonitorButton.Text = "Clear";
+            this.clearPressureMonitorButton.UseVisualStyleBackColor = true;
+            this.clearPressureMonitorButton.Click += new System.EventHandler(this.clearPressureMonitorButton_Click);
+            // 
+            // label153
+            // 
+            this.label153.Location = new System.Drawing.Point(211, 22);
+            this.label153.Name = "label153";
+            this.label153.Size = new System.Drawing.Size(47, 23);
+            this.label153.TabIndex = 69;
+            this.label153.Text = "samples";
+            // 
+            // pressureMonitorSampleLengthTextBox
+            // 
+            this.pressureMonitorSampleLengthTextBox.Location = new System.Drawing.Point(170, 19);
+            this.pressureMonitorSampleLengthTextBox.Name = "pressureMonitorSampleLengthTextBox";
+            this.pressureMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
+            this.pressureMonitorSampleLengthTextBox.TabIndex = 67;
+            this.pressureMonitorSampleLengthTextBox.Text = "20";
+            // 
+            // label157
+            // 
+            this.label157.Location = new System.Drawing.Point(122, 22);
+            this.label157.Name = "label157";
+            this.label157.Size = new System.Drawing.Size(47, 23);
+            this.label157.TabIndex = 68;
+            this.label157.Text = "Average";
+            // 
+            // stopPressureMonitorPollButton
+            // 
+            this.stopPressureMonitorPollButton.Enabled = false;
+            this.stopPressureMonitorPollButton.Location = new System.Drawing.Point(211, 76);
+            this.stopPressureMonitorPollButton.Name = "stopPressureMonitorPollButton";
+            this.stopPressureMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopPressureMonitorPollButton.TabIndex = 55;
+            this.stopPressureMonitorPollButton.Text = "Stop poll";
+            this.stopPressureMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopPressureMonitorPollButton.Click += new System.EventHandler(this.stopPressureMonitorPollButton_Click);
+            // 
+            // legend2
+            // 
+            this.legend2.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
+            this.pressurePlotLegend});
+            this.legend2.ItemSize = new System.Drawing.Size(12, 12);
+            this.legend2.Location = new System.Drawing.Point(440, 83);
+            this.legend2.Name = "legend2";
+            this.legend2.Size = new System.Drawing.Size(144, 22);
+            this.legend2.TabIndex = 59;
+            // 
+            // pressurePlotLegend
+            // 
+            this.pressurePlotLegend.Source = this.pressurePlot;
+            this.pressurePlotLegend.Text = "Middle Penning gauge";
+            // 
+            // pressurePlot
+            // 
+            this.pressurePlot.AntiAliased = true;
+            this.pressurePlot.HistoryCapacity = 10000;
+            this.pressurePlot.LineColor = System.Drawing.Color.Crimson;
+            this.pressurePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.pressurePlot.LineWidth = 2F;
+            this.pressurePlot.XAxis = this.xAxis2;
+            this.pressurePlot.YAxis = this.yAxis2;
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
+            // 
+            // yAxis2
+            // 
+            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.OriginLineVisible = true;
+            this.yAxis2.Range = new NationalInstruments.UI.Range(5E-07D, 1E-05D);
+            // 
+            // label161
+            // 
+            this.label161.Location = new System.Drawing.Point(123, 50);
+            this.label161.Name = "label161";
+            this.label161.Size = new System.Drawing.Size(81, 23);
+            this.label161.TabIndex = 56;
+            this.label161.Text = "Poll period (ms)";
+            // 
+            // pressureMonitorPollPeriodTextBox
+            // 
+            this.pressureMonitorPollPeriodTextBox.Location = new System.Drawing.Point(210, 47);
+            this.pressureMonitorPollPeriodTextBox.Name = "pressureMonitorPollPeriodTextBox";
+            this.pressureMonitorPollPeriodTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pressureMonitorPollPeriodTextBox.TabIndex = 0;
+            this.pressureMonitorPollPeriodTextBox.Text = "100";
+            // 
+            // startPressureMonitorPollButton
+            // 
+            this.startPressureMonitorPollButton.Location = new System.Drawing.Point(125, 76);
+            this.startPressureMonitorPollButton.Name = "startPressureMonitorPollButton";
+            this.startPressureMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startPressureMonitorPollButton.TabIndex = 53;
+            this.startPressureMonitorPollButton.Text = "Start poll";
+            this.startPressureMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startPressureMonitorPollButton.Click += new System.EventHandler(this.startPressureMonitorPollButton_Click);
+            // 
+            // pressureGraph
+            // 
+            this.pressureGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.pressureGraph.Location = new System.Drawing.Point(9, 114);
+            this.pressureGraph.Name = "pressureGraph";
+            this.pressureGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.pressurePlot});
+            this.pressureGraph.Size = new System.Drawing.Size(645, 153);
+            this.pressureGraph.TabIndex = 45;
+            this.pressureGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.pressureGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // pressureMonitorTextBox
+            // 
+            this.pressureMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.pressureMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pressureMonitorTextBox.Location = new System.Drawing.Point(10, 39);
+            this.pressureMonitorTextBox.Name = "pressureMonitorTextBox";
+            this.pressureMonitorTextBox.ReadOnly = true;
+            this.pressureMonitorTextBox.Size = new System.Drawing.Size(89, 20);
+            this.pressureMonitorTextBox.TabIndex = 42;
+            this.pressureMonitorTextBox.Text = "0";
+            // 
+            // updatePressureMonitorButton
+            // 
+            this.updatePressureMonitorButton.Location = new System.Drawing.Point(9, 66);
+            this.updatePressureMonitorButton.Name = "updatePressureMonitorButton";
+            this.updatePressureMonitorButton.Size = new System.Drawing.Size(53, 23);
+            this.updatePressureMonitorButton.TabIndex = 40;
+            this.updatePressureMonitorButton.Text = "Update";
+            this.updatePressureMonitorButton.Click += new System.EventHandler(this.updatePressureMonitorButton_Click);
+            // 
+            // label165
+            // 
+            this.label165.Location = new System.Drawing.Point(10, 21);
+            this.label165.Name = "label165";
+            this.label165.Size = new System.Drawing.Size(89, 23);
+            this.label165.TabIndex = 36;
+            this.label165.Text = "Pressure (mbar)";
+            // 
+            // label121
+            // 
+            this.label121.Location = new System.Drawing.Point(440, 21);
+            this.label121.Name = "label121";
+            this.label121.Size = new System.Drawing.Size(129, 23);
+            this.label121.TabIndex = 77;
+            this.label121.Text = "Log + display period (min)";
+            // 
+            // pressureMonitorLogPeriodTextBox
+            // 
+            this.pressureMonitorLogPeriodTextBox.Location = new System.Drawing.Point(575, 18);
+            this.pressureMonitorLogPeriodTextBox.Name = "pressureMonitorLogPeriodTextBox";
+            this.pressureMonitorLogPeriodTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pressureMonitorLogPeriodTextBox.TabIndex = 76;
+            this.pressureMonitorLogPeriodTextBox.Text = "15";
             // 
             // ControlWindow
             // 
@@ -6405,6 +6658,10 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.pressureMonitorGroupBox.ResumeLayout(false);
+            this.pressureMonitorGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pressureGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7206,6 +7463,38 @@ namespace EDMHardwareControl
        private void getCurrentListButton_Click(object sender, EventArgs e)
        {
            controller.GetAnapicoCurrentList();
+       }
+
+       private void updatePressureMonitorButton_Click(object sender, EventArgs e)
+       {
+           controller.UpdatePressureMonitor();
+       }
+
+       private void clearPressureMonitorButton_Click(object sender, EventArgs e)
+       {
+           controller.ClearPressureMonitorAv();
+       }
+
+       private void startPressureMonitorPollButton_Click(object sender, EventArgs e)
+       {
+           controller.StartPressureMonitorPoll();
+       }
+
+       private void stopPressureMonitorPollButton_Click(object sender, EventArgs e)
+       {
+           controller.StopPressureMonitorPoll();
+       }
+
+       private void logPressureDataCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           if (logPressureDataCheckBox.Checked)
+           {
+               controller.StartLoggingPressure();
+           }
+           else
+           {
+               controller.StopLoggingPressure();
+           }
        }
 
 

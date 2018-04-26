@@ -115,12 +115,16 @@
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.DAQmx, Version=17.1.45.99, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -143,11 +147,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\DAQ\DAQ.csproj">
-      <Name>DAQ</Name>
-      <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
