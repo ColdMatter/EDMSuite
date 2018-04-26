@@ -103,7 +103,14 @@ namespace TransferCavityLock2012
             {
                 SlaveLasers.Add(s, new SlaveLaser(s));
                 SlaveLasers[s].controller = this;
-                SlaveLasers[s].Gain = config.DefaultGains[s];
+                if (config.DefaultGains.ContainsKey(s))
+                {
+                    SlaveLasers[s].Gain = config.DefaultGains[s];
+                }
+                else
+                {
+                    SlaveLasers[s].Gain = 0;
+                }
             }
         }
 
@@ -261,7 +268,6 @@ namespace TransferCavityLock2012
         public void SetLaserOutputVoltage(string laserName, double newVoltage)
         {
             SlaveLasers[laserName].VoltageToLaser = newVoltage;
-            SlaveLasers[laserName].SetLaserVoltage(newVoltage); 
             SlaveLasers[laserName].SetLaserVoltage();
         }
 

@@ -11,6 +11,14 @@ namespace DAQ.HAL
     /// </summary>
     public class RS232Instrument : Instrument
     {
+        // These are overrideable by child classes
+        protected int BaudRate = 9600;
+        protected short DataBits = 8;
+        protected StopBitType StopBit = StopBitType.One;
+        protected Parity ParitySetting = Parity.None;
+        protected FlowControlTypes FlowControl = FlowControlTypes.None;
+        protected byte TerminationCharacter = 0xa;
+        
         protected SerialSession serial;
         protected string address;
         protected bool connected = false;
@@ -31,10 +39,13 @@ namespace DAQ.HAL
                 if (!Environs.Debug)
                 {
                     serial = new SerialSession(address);
-                    serial.BaudRate = 9600;
-                    serial.DataBits = 8;
-                    serial.StopBits = StopBitType.One;
+                    serial.BaudRate = BaudRate;
+                    serial.DataBits = DataBits;
+                    serial.StopBits = StopBit;
+                    serial.Parity = ParitySetting;
+                    serial.FlowControl = FlowControl; 
                     serial.ReadTermination = method;
+                    serial.TerminationCharacter = TerminationCharacter;
                 }
                 connected = true;
             }
@@ -58,6 +69,13 @@ namespace DAQ.HAL
             if (!connected) Connect();
             if (!Environs.Debug) serial.Write(command);
             Disconnect();
+        }
+
+        protected void Write(string command, bool stayOpen)
+        {
+            if (!connected) Connect();
+            if (!Environs.Debug) serial.Write(command);
+            if (!stayOpen) Disconnect();
         }
 
         protected string Query(string q)

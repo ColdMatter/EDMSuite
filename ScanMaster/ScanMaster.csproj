@@ -176,7 +176,7 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\DecelerationHardwareControl\MoleculeMOTHardwareControl.csproj" Condition=" '$(Configuration)' == 'Decelerator' ">
+    <ProjectReference Include="..\MoleculeMOTHardwareControl\MoleculeMOTHardwareControl.csproj" Condition=" '$(Configuration)' == 'Decelerator' ">
       <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
       <Name>MoleculeMOTHardwareControl</Name>
     </ProjectReference>

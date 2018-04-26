@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -15,7 +15,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -79,15 +79,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|AnyCPU'">
     <OutputPath>bin\CaF\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.DAQmx, Version=16.1.45.70, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -98,9 +105,31 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\GigatronicsTabController.cs" />
+    <Compile Include="Controls\SidebandsMonitorTabController.cs" />
+    <Compile Include="Controls\SidebandsMonitorTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SidebandsMonitorTabView.Designer.cs">
+      <DependentUpon>SidebandsMonitorTabView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="Controls\SourceTabController.cs" />
+    <Compile Include="Controls\SourceTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SourceTabView.Designer.cs">
+      <DependentUpon>SourceTabView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GigatronicsTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GigatronicsTabView.Designer.cs">
+      <DependentUpon>GigatronicsTabView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +138,29 @@
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controls\GenericController.cs" />
+    <Compile Include="Controls\GenericView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GenericView.Designer.cs">
+      <DependentUpon>GenericView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WindfreakTabController.cs" />
+    <Compile Include="Controls\WindfreakTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WindfreakTabView.Designer.cs">
+      <DependentUpon>WindfreakTabView.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Controls\SidebandsMonitorTabView.resx">
+      <DependentUpon>SidebandsMonitorTabView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SourceTabView.resx">
+      <DependentUpon>SourceTabView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GigatronicsTabView.resx">
+      <DependentUpon>GigatronicsTabView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ControlWindow.cs</DependentUpon>
@@ -124,6 +176,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Controls\GenericView.resx">
+      <DependentUpon>GenericView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WindfreakTabView.resx">
+      <DependentUpon>WindfreakTabView.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -140,6 +198,9 @@
       <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

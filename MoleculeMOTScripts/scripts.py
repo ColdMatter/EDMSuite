@@ -1,4 +1,7 @@
-# Import a whole load of stuff
+# make division work like you'd expect
+# from __future__ import division
+
+# some generic stuff
 from System.IO import *
 from System.Drawing import *
 from System.Runtime.Remoting import *
@@ -7,12 +10,14 @@ from System.Windows.Forms import *
 from System.Xml.Serialization import *
 from System import *
 from System.Collections.Generic import Dictionary
+import time
+import itertools
+from random import shuffle
 
+# specific EDMSuite stuff
 from DAQ.Environment import *
 from DAQ import *
 from MOTMaster import *
-import time
-import itertools
 
 def run_script():
 	return 0
@@ -24,7 +29,7 @@ def ScanSingleParameter(script_name, parameter_name, values):
 	directly or with one of convenience functions defined below.
 	"""
 	dic = Dictionary[String, Object]()
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
 		dic[parameter_name] = value
@@ -42,7 +47,7 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 	Can be used directly or with one of convenience functions defined below.
 	"""
 	dic = Dictionary[String, Object]()
-	mm.SetScriptPath('C:\\Control Programs\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	if not all(isinstance(item, list) for item in values):
 		raise ValueError('Values must be a list of lists (even if only single valued!).')
 	num_params = len(parameter_names)
@@ -63,6 +68,43 @@ def ScanMultipleParameters(script_name, parameter_names, values):
 		print row_format.format(i, str(int(round(iter_end-iter_start))) + ' s', *combination)
 	end = time.time()
 	print 'Finished, total time was {} s.'.format(int(round(end-start)))
+	
+def ScanSingleParameter2(script_name, parameter_name, values):
+	ScanMultipleParameters(script_name, [parameter_name], [values])
+	
+def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, channel):
+	lowest_freq = centre_freq - freq_range/2
+	spacing = freq_range/(num_steps - 1)
+	values = [lowest_freq + spacing * x for x in range(0, num_steps)]
+	shuffle(values)
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		start = time.time()
+		if channel=='G':
+			hc.tabs['Gigatronics Synthesizer'].SetFrequency(value)
+		elif channel=='WA':
+			hc.tabs['Windfreak Synthesizer'].SetFrequency(value, False)
+		elif channel=='WB':
+			hc.tabs['Windfreak Synthesizer'].SetFrequency(value, True)
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} seconds'.format(value, int(round(end-start)))
+	print 'Finished'
+	
+def ScanMicrowaveAmplitude(script_name, values, channel):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		start = time.time()
+		if channel=='G':
+			hc.tabs['Gigatronics Synthesizer'].SetAmplitude(value)
+		elif channel=='WA':
+			hc.tabs['Windfreak Synthesizer'].SetAmplitude(value, False)
+		elif channel=='WB':
+			hc.tabs['Windfreak Synthesizer'].SetAmplitude(value, True)
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} seconds'.format(value, int(round(end-start)))
+	print 'Finished'
 
 def ScanExpansionTime(values=[50, 650, 150, 750, 550, 350, 250, 450, 800]):
 	script_name = 'MOTBlueMolassesShimSwitch'
@@ -76,6 +118,14 @@ def ScanExpansionTimeHot(values=[50, 260, 180, 140, 300, 220, 100]):
 	script_name = 'MOTRampIntensity'
 	parameter_name = 'ExpansionTime'
 	return ScanSingleParameter(script_name, parameter_name, values)
+	
+
+	
+def ScanMolassesHoldTime(values=[500,1000]):
+	script_name = 'MOTBlueMolassesLifetime'
+	parameter_name = 'MolassesHoldTime'
+	return ScanSingleParameter(script_name, parameter_name, values)
+	
 	
 def ScanOscillationTime(values=[0, 1200, 500, 900, 200, 1000, 300, 700, 400, 100, 600, 1100, 800, 1300]):
 	script_name = 'MOTOscillation'
