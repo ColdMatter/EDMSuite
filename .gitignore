@@ -1,6 +1,7 @@
 bin
 obj
 *.suo
+*.csproj
 *.csproj.user
 *.licx
 *.lnk
