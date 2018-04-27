@@ -205,6 +205,7 @@
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="RfAWGConfig.cs" />
     <Compile Include="RfPulseGenerator.cs" />
+    <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
     <Compile Include="USBInstrument.cs" />

@@ -85,8 +85,8 @@ namespace DAQ.HAL
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
-            Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
-            Instruments.Add("red", new HP3325BSynth("GPIB0::12::INSTR"));
+            //Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
+            Instruments.Add("red", new SRSDS345Synth("GPIB0::19::INSTR"));
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));

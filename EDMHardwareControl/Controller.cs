@@ -4056,7 +4056,7 @@ namespace EDMHardwareControl
         private Object pressureMonitorLock;
         private bool pressureMonitorFlag;
         private int pressureMovingAverageSampleLength = 10;
-        private int pressureMonitorLogPeriod = 15 * 60 * 1000;
+        private int pressureMonitorLogPeriod = 1000;
         private int pressureLoggingRate;
         internal void StartPressureMonitorPoll()
         {
@@ -4065,7 +4065,7 @@ namespace EDMHardwareControl
             window.EnableControl(window.stopPressureMonitorPollButton, true);
             pressureMonitorPollPeriod = Int32.Parse(window.pressureMonitorPollPeriodTextBox.Text);
             pressureMovingAverageSampleLength = Int32.Parse(window.pressureMonitorSampleLengthTextBox.Text);
-            pressureMonitorLogPeriod = Int32.Parse(window.pressureMonitorLogPeriodTextBox.Text) * 1000; // Convert from minutes to milliseconds
+            pressureMonitorLogPeriod = Int32.Parse(window.pressureMonitorLogPeriodTextBox.Text) * 1000; // Convert from seconds to milliseconds
             pressureLoggingRate = pressureMonitorLogPeriod / pressureMonitorPollPeriod;
             pressureSamples.Clear();
             pressureMonitorLock = new Object();
