@@ -491,7 +491,7 @@ namespace EDMHardwareControl
             dataStore.vco30Freq = VCO30FreqVoltage;
             dataStore.anapicoCWFreq = AnapicoCWFrequency;
             dataStore.anapicof0Freq = AnapicoFrequency0;
-            dataStore.anapicof1Freq = AnapicoFrequency0;
+            dataStore.anapicof1Freq = AnapicoFrequency1;
             dataStore.pumpmwDwellOnTime = AnapicoPumpMWDwellOnTime;
             dataStore.pumpmwDwellOffTime = AnapicoPumpMWDwellOffTime;
             dataStore.bottomProbemwDwellOnTime = AnapicoBottomProbeMWDwellOnTime;
@@ -1480,7 +1480,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.pumpMWDwellOnTextBox, value.ToString());
+                window.SetTextBox(window.pumpMWDwellOnTextBox, value.ToString("E2"));
             }
         }
 
@@ -1492,7 +1492,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.pumpMWDwellOffTextBox, value.ToString());
+                window.SetTextBox(window.pumpMWDwellOffTextBox, value.ToString("E2"));
             }
         }
 
@@ -1504,7 +1504,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.pumpMWDwellOnTextBox, value.ToString());
+                window.SetTextBox(window.bottomProbeMWDwellOnTextBox, value.ToString("E2"));
             }
         }
 
@@ -1516,7 +1516,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.bottomProbeMWDwellOffTextBox, value.ToString());
+                window.SetTextBox(window.bottomProbeMWDwellOffTextBox, value.ToString("E2"));
             }
         }
 
@@ -1528,7 +1528,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.topProbeMWDwellOnTextBox, value.ToString());
+                window.SetTextBox(window.topProbeMWDwellOnTextBox, value.ToString("E2"));
             }
         }
 
@@ -1540,7 +1540,7 @@ namespace EDMHardwareControl
             }
             set
             {
-                window.SetTextBox(window.topProbeMWDwellOffTextBox, value.ToString());
+                window.SetTextBox(window.topProbeMWDwellOffTextBox, value.ToString("E2"));
             }
         }
 
@@ -3812,9 +3812,9 @@ namespace EDMHardwareControl
                 anapico.Connect();
                 if (trueState)
                 {
-                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
-                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
-                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString("E") + ";" + AnapicoBottomProbeMWDwellOffTime.ToString("E") + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString("E") + ";" + AnapicoTopProbeMWDwellOffTime.ToString("E") + "\r\n";
 
                     int numBytes = list.Length;
 
