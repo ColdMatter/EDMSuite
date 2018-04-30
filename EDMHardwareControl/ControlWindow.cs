@@ -557,6 +557,13 @@ namespace EDMHardwareControl
         private Label label165;
         private Label label121;
         public TextBox pressureMonitorLogPeriodTextBox;
+        private TabPage rfAWGTab;
+        private GroupBox groupBox26;
+        public CheckBox rfAWGContinuousGenerationCheckBox;
+        private Label label151;
+        public TextBox rfAWGOnAmpTextBox;
+        private Label label158;
+        public TextBox rfAWGOnFreqTextBox;
 
  
 
@@ -1110,6 +1117,13 @@ namespace EDMHardwareControl
             this.stopI2ErrorSigPollButton = new System.Windows.Forms.Button();
             this.label80 = new System.Windows.Forms.Label();
             this.startI2ErrorSigPollButton = new System.Windows.Forms.Button();
+            this.rfAWGTab = new System.Windows.Forms.TabPage();
+            this.groupBox26 = new System.Windows.Forms.GroupBox();
+            this.rfAWGContinuousGenerationCheckBox = new System.Windows.Forms.CheckBox();
+            this.label151 = new System.Windows.Forms.Label();
+            this.rfAWGOnAmpTextBox = new System.Windows.Forms.TextBox();
+            this.label158 = new System.Windows.Forms.Label();
+            this.rfAWGOnFreqTextBox = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -1212,6 +1226,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2BiasVoltageTrackBar)).BeginInit();
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
+            this.rfAWGTab.SuspendLayout();
+            this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1646,6 +1662,7 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage9);
             this.tabControl.Controls.Add(this.tabPage7);
             this.tabControl.Controls.Add(this.tabPage10);
+            this.tabControl.Controls.Add(this.rfAWGTab);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -6383,6 +6400,72 @@ namespace EDMHardwareControl
             this.startI2ErrorSigPollButton.UseVisualStyleBackColor = true;
             this.startI2ErrorSigPollButton.Click += new System.EventHandler(this.startI2ErrorSigPollButton_Click);
             // 
+            // rfAWGTab
+            // 
+            this.rfAWGTab.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.rfAWGTab.Controls.Add(this.groupBox26);
+            this.rfAWGTab.Location = new System.Drawing.Point(4, 22);
+            this.rfAWGTab.Name = "rfAWGTab";
+            this.rfAWGTab.Padding = new System.Windows.Forms.Padding(3);
+            this.rfAWGTab.Size = new System.Drawing.Size(697, 575);
+            this.rfAWGTab.TabIndex = 11;
+            this.rfAWGTab.Text = "Rf AWG";
+            // 
+            // groupBox26
+            // 
+            this.groupBox26.Controls.Add(this.rfAWGContinuousGenerationCheckBox);
+            this.groupBox26.Controls.Add(this.label151);
+            this.groupBox26.Controls.Add(this.rfAWGOnAmpTextBox);
+            this.groupBox26.Controls.Add(this.label158);
+            this.groupBox26.Controls.Add(this.rfAWGOnFreqTextBox);
+            this.groupBox26.Location = new System.Drawing.Point(20, 19);
+            this.groupBox26.Name = "groupBox26";
+            this.groupBox26.Size = new System.Drawing.Size(254, 118);
+            this.groupBox26.TabIndex = 22;
+            this.groupBox26.TabStop = false;
+            this.groupBox26.Text = "Continuous generation control";
+            // 
+            // rfAWGContinuousGenerationCheckBox
+            // 
+            this.rfAWGContinuousGenerationCheckBox.Location = new System.Drawing.Point(9, 82);
+            this.rfAWGContinuousGenerationCheckBox.Name = "rfAWGContinuousGenerationCheckBox";
+            this.rfAWGContinuousGenerationCheckBox.Size = new System.Drawing.Size(169, 24);
+            this.rfAWGContinuousGenerationCheckBox.TabIndex = 18;
+            this.rfAWGContinuousGenerationCheckBox.Text = "Continuous generation";
+            this.rfAWGContinuousGenerationCheckBox.CheckedChanged += new System.EventHandler(this.rfAWGContinuousGenerationCheckBox_CheckedChanged);
+            // 
+            // label151
+            // 
+            this.label151.Location = new System.Drawing.Point(6, 56);
+            this.label151.Name = "label151";
+            this.label151.Size = new System.Drawing.Size(122, 23);
+            this.label151.TabIndex = 13;
+            this.label151.Text = "rf rms power (dBm)";
+            // 
+            // rfAWGOnAmpTextBox
+            // 
+            this.rfAWGOnAmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGOnAmpTextBox.Name = "rfAWGOnAmpTextBox";
+            this.rfAWGOnAmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGOnAmpTextBox.TabIndex = 1;
+            this.rfAWGOnAmpTextBox.Text = "-6";
+            // 
+            // label158
+            // 
+            this.label158.Location = new System.Drawing.Point(6, 24);
+            this.label158.Name = "label158";
+            this.label158.Size = new System.Drawing.Size(122, 23);
+            this.label158.TabIndex = 11;
+            this.label158.Text = "rf frequency (MHz)";
+            // 
+            // rfAWGOnFreqTextBox
+            // 
+            this.rfAWGOnFreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGOnFreqTextBox.Name = "rfAWGOnFreqTextBox";
+            this.rfAWGOnFreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGOnFreqTextBox.TabIndex = 0;
+            this.rfAWGOnFreqTextBox.Text = "170.800";
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -6660,6 +6743,9 @@ namespace EDMHardwareControl
             this.groupBox37.ResumeLayout(false);
             this.groupBox37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
+            this.rfAWGTab.ResumeLayout(false);
+            this.groupBox26.ResumeLayout(false);
+            this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -7495,6 +7581,11 @@ namespace EDMHardwareControl
            {
                controller.StopLoggingPressure();
            }
+       }
+
+       private void rfAWGContinuousGenerationCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           controller.EnableRfAWGContinuousGeneration(rfAWGContinuousGenerationCheckBox.Checked);
        }
 
 

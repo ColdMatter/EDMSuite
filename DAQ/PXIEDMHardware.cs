@@ -16,7 +16,7 @@ namespace DAQ.HAL
     /// </summary>
     public class PXIEDMHardware : DAQ.HAL.Hardware
     {
-                public override void ConnectApplications()
+       public override void ConnectApplications()
        {
            //RemotingHelper.ConnectEDMHardwareControl();
            //RemotingHelper.ConnectPhaseLock();
@@ -32,7 +32,6 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("rfPulseGenerator", "PXI1Slot4");
             Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");
             Boards.Add("counter", "/PXI1Slot16");
@@ -45,7 +44,7 @@ namespace DAQ.HAL
             Boards.Add("usbDAQ4", "/Dev5");
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
-            string rfPulseGenerator = (string)Boards["rfPulseGenerator"];
+            string rfAWG = (string)Boards["rfAWG"];
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
             string counterBoard = (string)Boards["counter"];
@@ -97,7 +96,7 @@ namespace DAQ.HAL
             Instruments.Add("probePolControl", new SerialMotorControllerBCD("ASRL8::INSTR"));
             Instruments.Add("pumpPolControl", new SerialMotorControllerBCD("ASRL11::INSTR"));
             Instruments.Add("anapico", new AnapicoSynth("USB0::1003::45055::321-028100000-0168::0::INSTR"));
-
+            Instruments.Add("rfAWG", new NIPXI5670("PXI1Slot4"));
 
             // map the digital channels
             // these channels are generally switched by the pattern generator

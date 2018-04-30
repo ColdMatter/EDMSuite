@@ -65,7 +65,7 @@ namespace TriggeredShapedPulses
             topRfChoice = 1;
             botRfChoice = 1;
 
-            string resourceName = (String)Environs.Hardware.Boards["rfPulseGenerator"]; 
+            string resourceName = (String)Environs.Hardware.Boards["rfAWG"]; 
             double ArbPreFilterGain = -2;
             int waveformRepeatCount = 1;
 

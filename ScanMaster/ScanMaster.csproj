@@ -200,6 +200,8 @@
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
+    <Compile Include="NIRfsgFrequencyOutputPlugin.cs" />
+    <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

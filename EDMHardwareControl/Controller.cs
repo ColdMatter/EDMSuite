@@ -36,6 +36,8 @@ namespace EDMHardwareControl
         #region Constants
         private const double greenSynthOffAmplitude = -130.0;
         private const double redSynthOffFrequency = 36.0;
+        private const double rfAWGOffAmplitude = -130.0;
+        private const double rfAWGOffFrequency = 36.0;
         private const int eDischargeTime = 5000;
         private const int eBleedTime = 1000;
         private const int eWaitTime = 500;
@@ -77,9 +79,7 @@ namespace EDMHardwareControl
         SerialMotorControllerBCD probePolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["probePolControl"];
         SerialMotorControllerBCD pumpPolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["pumpPolControl"];
         AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapico"];
-        RfPulseGenerator rfAWG = (RfPulseGenerator)Environs.Hardware.Instruments["rfPulseGenerator"];
-
-        
+        NIPXI5670 rfAWG = (NIPXI5670)Environs.Hardware.Instruments["rfAWG"];
         
 
         Hashtable digitalTasks = new Hashtable();
@@ -264,8 +264,7 @@ namespace EDMHardwareControl
         {
             StoreParameters();
             /*ReturnPolarizersToZero();*/
-            
-            
+            rfAWG.Disconnect(); //End the ni-rfsg session
         }
 
         private Task CreateAnalogInputTask(string channel)
@@ -4113,6 +4112,93 @@ namespace EDMHardwareControl
             }
             window.EnableControl(window.startPressureMonitorPollButton, true);
             window.EnableControl(window.stopPressureMonitorPollButton, false);
+        }
+
+        #endregion
+
+        #region Rf AWG Controls
+
+        public double RfAWGOnFrequency
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGOnFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGOnFreqTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGOnAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGOnAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGOnAmpTextBox, value.ToString());
+            }
+        }
+
+        public bool RfAWGEnabled
+        {
+            get
+            {
+                return window.rfAWGContinuousGenerationCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.rfAWGContinuousGenerationCheckBox, value);
+            }
+        }
+
+        public void EnableRfAWGContinuousGeneration(bool enable)
+        {
+            if (enable)
+            {
+                try
+                {
+                    rfAWG.Connect();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Error while connecting: " + e.Message);
+                }
+
+                try
+                {
+                    rfAWG.Frequency = RfAWGOnFrequency;
+                    rfAWG.Amplitude = RfAWGOnAmplitude;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Error while setting parameters: " + e.Message);
+                }
+
+                try
+                {
+                    rfAWG.StartGeneration();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Error while starting generation: " + e.Message);
+                }
+            }
+
+            else
+            {
+                try
+                {
+                    rfAWG.Disconnect();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Stop error: " + e.Message);
+                }
+            }
+
         }
 
         #endregion
