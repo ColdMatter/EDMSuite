@@ -143,7 +143,9 @@ namespace MOTMaster2
         {
             var combo = sender as ComboBox;
             if (sequenceDataGrid.CurrentColumn == null || sequenceDataGrid.CurrentColumn.GetType() != typeof(DataGridComboBoxColumn)) return;
-            string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
+            string channelName1 = (string)sequenceDataGrid.CurrentColumn.Header; 
+            string channelName = Environs.Hardware.nameFromAnalogShowAs(channelName1);
+
             if (e.AddedItems != null && e.AddedItems.Count > 0)
             {
                 AnalogChannelSelector c = (AnalogChannelSelector)e.AddedItems[0];
@@ -170,8 +172,10 @@ namespace MOTMaster2
 
                 if (sequenceDataGrid.CurrentColumn != null && sequenceDataGrid.CurrentColumn.GetType() == typeof(DataGridCheckBoxColumn) && cell != null)
                 {
-                    string channelName = (string)sequenceDataGrid.CurrentColumn.Header;
-                    if (channelName == "RS232Commands" || channelName == "Enabled") return;
+                    string channelName1 = (string)sequenceDataGrid.CurrentColumn.Header;
+                    string channelName = Environs.Hardware.nameFromDigitalShowAs(channelName1);
+
+                    if (channelName1 == "RS232Commands" || channelName1 == "Enabled") return;
                     SequenceStepViewModel model = (SequenceStepViewModel)sequenceDataGrid.DataContext;
                     model.SelectedDigitalChannel = new KeyValuePair<string, DigitalChannelSelector>(channelName, new DigitalChannelSelector(cell.IsChecked.Value));
                 }

@@ -157,6 +157,9 @@
     <Compile Include="dotMath\Parser.cs" />
     <Compile Include="ErrorManager.cs" />
     <Compile Include="ExperimentData.cs" />
+    <Compile Include="GaussImage\GaussImage.xaml.cs">
+      <DependentUpon>GaussImage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MetaData.xaml.cs">
       <DependentUpon>MetaData.xaml</DependentUpon>
     </Compile>
@@ -186,6 +189,10 @@
       <DependentUpon>SequenceDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="SequenceStepViewModel.cs" />
+    <Page Include="GaussImage\GaussImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

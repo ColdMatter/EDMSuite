@@ -17,7 +17,7 @@ namespace DAQ.HAL
 
 		public DigitalInputChannel( string name, string device, int port, int line )
 		{
-			this.name = name;
+            this.nameIt(name);
 			this.device = device;
 			this.port = port;
 			this.line = line;

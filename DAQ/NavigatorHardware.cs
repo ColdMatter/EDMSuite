@@ -71,8 +71,10 @@ namespace DAQ.HAL
 
             
             //map the digital channels
+            //complex names (name/showAs) 
+            //for analog, digital and counter channels 
 
-            AddDigitalOutputChannel("motTTL", hsdioBoard, 0, 0);
+            AddDigitalOutputChannel("motTTL/myMotTTL", hsdioBoard, 0, 0); // 
             AddDigitalOutputChannel("ramanTTL", hsdioBoard, 0, 1); // from lcTTL
             AddDigitalOutputChannel("mphiTTL", hsdioBoard, 0, 2);
             AddDigitalOutputChannel("slaveDDSTrig", hsdioBoard, 0, 3);
@@ -119,15 +121,15 @@ namespace DAQ.HAL
            // AddAnalogOutputChannel("analogTest", aoBoard + "/ao24", -10, 10);
 
             //map the analog input channels
-            AddAnalogInputChannel("accelerometer", aiBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("photodiode", aiBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("accelerometer", aiBoard + "/ai0", AITerminalConfiguration.Differential, -3, 3);
+            AddAnalogInputChannel("photodiode", aiBoard + "/ai1", AITerminalConfiguration.Differential, -10, 10);
             AddAnalogInputChannel("fibrePD", aiBoard + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("forwardRamanPD", multiBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("backwardRamanPD", multiBoard + "/ai1", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("motPD", multiBoard + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("slave0Error", multiBoard + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("forwardRamanPD", multiBoard + "/ai0", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("backwardRamanPD", multiBoard + "/ai1", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("motPD", multiBoard + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("slave0Error", multiBoard + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("slave1Error", multiBoard + "/ai4", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("slave2Error", multiBoard + "/ai5", AITerminalConfiguration.Differential);
 
             AddCounterChannel("Counter", multiBoard + "/ctr0");
 

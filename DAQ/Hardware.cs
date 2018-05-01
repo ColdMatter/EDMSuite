@@ -77,7 +77,31 @@ namespace DAQ.HAL
             return res;
         }
 
-        public string showAnalogName(String name) 
+        public string nameFromDigitalShowAs(String showAs)
+        {
+            string res = "";
+            foreach (DigitalOutputChannel chn in digitalOutputChannels.Values)
+            {
+                if (chn.ShowAs.Equals(showAs))
+                {
+                    res = chn.Name;
+                    break;
+                }
+            }
+            if (!res.Equals("")) return res;
+            foreach (DigitalInputChannel chn in digitalInputChannels.Values)
+            {
+                if (chn.ShowAs.Equals(showAs))
+                {
+                    res = chn.Name;
+                    break;
+                }
+            }
+            if (res.Equals("")) res = showAs; // default is set to showAs
+            return res;
+        }
+
+        public string showAnalogName(String name)
         {
             string res = "";
             foreach (AnalogOutputChannel chn in analogOutputChannels.Values)
@@ -102,6 +126,30 @@ namespace DAQ.HAL
             return res;
         }
 
+        public string nameFromAnalogShowAs(String showAs) 
+        {
+            string res = "";
+            foreach (AnalogOutputChannel chn in analogOutputChannels.Values)
+            {
+                if (chn.ShowAs.Equals(showAs))
+                {
+                    res = chn.Name;
+                    break;
+                }
+            }
+            if (!res.Equals("")) return res;
+            foreach (AnalogInputChannel chn in analogInputChannels.Values)
+            {
+                if (chn.ShowAs.Equals(showAs))
+                {
+                    res = chn.Name;
+                    break;
+                }
+            }
+            if (res.Equals("")) res = showAs;
+            return res;
+        }
+
         public string showCounterName(String name) 
         {
             string res = "";
@@ -117,7 +165,21 @@ namespace DAQ.HAL
             return res;
         }
 
-		protected YAGLaser yag;
+        public string nameFromCounterShowAs(String showAs)
+        {
+            string res = "";
+            foreach (CounterChannel chn in counterChannels.Values)
+            {
+                if (chn.ShowAs.Equals(showAs))
+                {
+                    res = chn.Name;
+                    break;
+                }
+            }
+            return res;
+        }
+        
+        protected YAGLaser yag;
 		public YAGLaser YAG
 		{
 			get {return yag;}
@@ -169,6 +231,17 @@ namespace DAQ.HAL
         {
             analogInputChannels.Add(name.Split('/')[0], new AnalogInputChannel(name, physicalChannel, terminalConfig, config));
         }
+        protected void AddAnalogInputChannel(
+            String name,
+            String physicalChannel,
+            AITerminalConfiguration terminalConfig,
+            Double inputRangeLow,
+            Double inputRangeHigh
+            )
+        {
+            analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig, inputRangeLow, inputRangeHigh));
+        }
+
 
 		protected void AddAnalogOutputChannel(String name, String physicalChannel)
 		{
