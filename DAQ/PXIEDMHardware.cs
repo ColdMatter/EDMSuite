@@ -34,6 +34,7 @@ namespace DAQ.HAL
             // add the boards
             Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");
+            Boards.Add("doBoard", "/PXI1Slot11");
             Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2");
             // this drives the rf attenuators
@@ -54,6 +55,7 @@ namespace DAQ.HAL
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbDAQ3 = (string)Boards["usbDAQ3"];
             string usbDAQ4 = (string)Boards["usbDAQ4"];
+            string doBoard = (string)Boards["doBoard"];
             //string tclBoardPump = (string)Boards["tclBoardPump"];
             //string tclBoardProbe = (string)Boards["tclBoardProbe"];
 
@@ -131,7 +133,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("mwSelectBottomProbeChannel", pgBoard, 2, 4);
             AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
             
-            
+            // rf awg test
+            AddDigitalOutputChannel("rfAWGTestTrigger", doBoard, 0, 1);
 
             // these channel are usually software switched - they are on the AO board
             AddDigitalOutputChannel("b", aoBoard, 0, 0);

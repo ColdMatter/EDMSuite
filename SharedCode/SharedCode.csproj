@@ -177,6 +177,7 @@
   <ItemGroup>
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
+    <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
     <Compile Include="OldCode\IAccumulator.cs" />

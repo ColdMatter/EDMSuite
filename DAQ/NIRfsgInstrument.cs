@@ -21,6 +21,9 @@ namespace DAQ.HAL
 		private string _resourceName;
         private double _frequency;
         private double _amplitude;
+        private double[] _iData;
+        private double[] _qData;
+        private RfsgGenerationStatus _generating;
 
 		public NIRfsgInstrument(String address)
 		{
@@ -51,11 +54,36 @@ namespace DAQ.HAL
             }
         }
 
-        public bool Enabled
+        public double[] IData
         {
+            get
+            {
+                return _iData;
+            }
             set
             {
-                if (!value) this._frequency = 36 * 1000000;
+                this._iData = value;
+            }
+        }
+
+        public double[] QData
+        {
+            get
+            {
+                return _qData;
+            }
+            set
+            {
+                this._qData = value;
+            }
+        }
+
+        public bool GenerationComplete
+        {
+            get
+            {
+                if (_rfsgSession != null && _generating == RfsgGenerationStatus.Complete) return true;
+                else return false;
             }
         }
 
@@ -108,6 +136,37 @@ namespace DAQ.HAL
             }
         }
 
+        public void StartPulsedGeneration()
+        {
+            if (!Environs.Debug)
+            {
+                // Configure the instrument
+                _rfsgSession.RF.Configure(_frequency, _amplitude);
+                _rfsgSession.Arb.GenerationMode = RfsgWaveformGenerationMode.ArbitraryWaveform;
+                _rfsgSession.Arb.IQRate = 100e6;
+
+                // Enable finite generation
+                _rfsgSession.Arb.IsWaveformRepeatCountFinite = true;
+                _rfsgSession.Arb.WaveformRepeatCount = 1;
+
+                // Configure signal bandwidth to its max value
+                _rfsgSession.Arb.SignalBandwidth = 20e6;
+
+                // Configure power level type to Peak Power
+                _rfsgSession.RF.PowerLevelType = RfsgRFPowerLevelType.PeakPower;
+
+                // Configure trigger
+                _rfsgSession.Triggers.StartTrigger.DigitalEdge.Configure(RfsgDigitalEdgeStartTriggerSource.Pfi0, RfsgTriggerEdge.RisingEdge);
+
+                // Write the waveform
+                _rfsgSession.Arb.ClearAllWaveforms();
+                _rfsgSession.Arb.WriteWaveform("", _iData, _qData);
+
+                // Initiate generation
+                _rfsgSession.Initiate();
+            }
+        }
+
         public void UpdateGeneration()
         {
             if (!Environs.Debug)
@@ -119,6 +178,14 @@ namespace DAQ.HAL
 
                 // Initiate Generation 
                 _rfsgSession.Initiate();
+            }
+        }
+
+        public void CheckGeneration()
+        {
+            if (!Environs.Debug)
+            {
+                _generating = _rfsgSession.CheckGenerationStatus();
             }
         }
 

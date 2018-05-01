@@ -23,8 +23,8 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.CheckBox eOnCheck;
 		public System.Windows.Forms.CheckBox ePolarityCheck;
 		public System.Windows.Forms.CheckBox eBleedCheck;
-		public System.Windows.Forms.Button switchEButton;
-        private System.ComponentModel.Container components = null;
+        public System.Windows.Forms.Button switchEButton;
+        private IContainer components;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Label label1;
         public System.Windows.Forms.CheckBox greenOnCheck;
@@ -564,6 +564,35 @@ namespace EDMHardwareControl
         public TextBox rfAWGOnAmpTextBox;
         private Label label158;
         public TextBox rfAWGOnFreqTextBox;
+        private GroupBox groupBox27;
+        private GroupBox groupBox30;
+        private Label label171;
+        public TextBox rfAWGPhaseOffsetTextBox;
+        private GroupBox groupBox29;
+        private Label label159;
+        public TextBox rfAWGRf2CentreTimeTextBox;
+        private Label label164;
+        public TextBox rfAWGRf2PulseLengthTextBox;
+        private Label label166;
+        public TextBox rfAWGRf2AmpTextBox;
+        private Label label167;
+        public TextBox rfAWGRf2FreqTextBox;
+        private GroupBox groupBox28;
+        private Label label122;
+        public TextBox rfAWGRf1CentreTimeTextBox;
+        private Label label163;
+        public TextBox rfAWGRf1PulseLengthTextBox;
+        private Label label160;
+        public TextBox rfAWGRf1AmpTextBox;
+        private Label label162;
+        public TextBox rfAWGRf1FreqTextBox;
+        public CheckBox rfAWGPulsedGenerationCheckBox;
+        public Timer rfsgStatusTimer;
+        private Label label168;
+        public TextBox rfAWGWaveformLengthTextBox;
+        private GroupBox groupBox31;
+        private Label label173;
+        public TextBox rfAWGCarrierFreqTextBox;
 
  
 
@@ -596,6 +625,7 @@ namespace EDMHardwareControl
 		/// </summary>
 		private void InitializeComponent()
 		{
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label78 = new System.Windows.Forms.Label();
@@ -1118,6 +1148,34 @@ namespace EDMHardwareControl
             this.label80 = new System.Windows.Forms.Label();
             this.startI2ErrorSigPollButton = new System.Windows.Forms.Button();
             this.rfAWGTab = new System.Windows.Forms.TabPage();
+            this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.label173 = new System.Windows.Forms.Label();
+            this.label168 = new System.Windows.Forms.Label();
+            this.rfAWGWaveformLengthTextBox = new System.Windows.Forms.TextBox();
+            this.rfAWGCarrierFreqTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.label171 = new System.Windows.Forms.Label();
+            this.rfAWGPhaseOffsetTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.label159 = new System.Windows.Forms.Label();
+            this.rfAWGRf2CentreTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label164 = new System.Windows.Forms.Label();
+            this.rfAWGRf2PulseLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label166 = new System.Windows.Forms.Label();
+            this.rfAWGRf2AmpTextBox = new System.Windows.Forms.TextBox();
+            this.label167 = new System.Windows.Forms.Label();
+            this.rfAWGRf2FreqTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.label122 = new System.Windows.Forms.Label();
+            this.rfAWGRf1CentreTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label163 = new System.Windows.Forms.Label();
+            this.rfAWGRf1PulseLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label160 = new System.Windows.Forms.Label();
+            this.rfAWGRf1AmpTextBox = new System.Windows.Forms.TextBox();
+            this.label162 = new System.Windows.Forms.Label();
+            this.rfAWGRf1FreqTextBox = new System.Windows.Forms.TextBox();
+            this.rfAWGPulsedGenerationCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.rfAWGContinuousGenerationCheckBox = new System.Windows.Forms.CheckBox();
             this.label151 = new System.Windows.Forms.Label();
@@ -1139,6 +1197,7 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1227,6 +1286,11 @@ namespace EDMHardwareControl
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
             this.rfAWGTab.SuspendLayout();
+            this.groupBox27.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.groupBox30.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            this.groupBox28.SuspendLayout();
             this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -6403,6 +6467,7 @@ namespace EDMHardwareControl
             // rfAWGTab
             // 
             this.rfAWGTab.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.rfAWGTab.Controls.Add(this.groupBox27);
             this.rfAWGTab.Controls.Add(this.groupBox26);
             this.rfAWGTab.Location = new System.Drawing.Point(4, 22);
             this.rfAWGTab.Name = "rfAWGTab";
@@ -6410,6 +6475,263 @@ namespace EDMHardwareControl
             this.rfAWGTab.Size = new System.Drawing.Size(697, 575);
             this.rfAWGTab.TabIndex = 11;
             this.rfAWGTab.Text = "Rf AWG";
+            // 
+            // groupBox27
+            // 
+            this.groupBox27.Controls.Add(this.groupBox31);
+            this.groupBox27.Controls.Add(this.groupBox30);
+            this.groupBox27.Controls.Add(this.groupBox29);
+            this.groupBox27.Controls.Add(this.groupBox28);
+            this.groupBox27.Controls.Add(this.rfAWGPulsedGenerationCheckBox);
+            this.groupBox27.Location = new System.Drawing.Point(20, 143);
+            this.groupBox27.Name = "groupBox27";
+            this.groupBox27.Size = new System.Drawing.Size(533, 306);
+            this.groupBox27.TabIndex = 23;
+            this.groupBox27.TabStop = false;
+            this.groupBox27.Text = "Pulsed rf control";
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.Controls.Add(this.label173);
+            this.groupBox31.Controls.Add(this.label168);
+            this.groupBox31.Controls.Add(this.rfAWGWaveformLengthTextBox);
+            this.groupBox31.Controls.Add(this.rfAWGCarrierFreqTextBox);
+            this.groupBox31.Location = new System.Drawing.Point(9, 213);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(254, 86);
+            this.groupBox31.TabIndex = 24;
+            this.groupBox31.TabStop = false;
+            this.groupBox31.Text = "misc control";
+            // 
+            // label173
+            // 
+            this.label173.Location = new System.Drawing.Point(6, 24);
+            this.label173.Name = "label173";
+            this.label173.Size = new System.Drawing.Size(143, 23);
+            this.label173.TabIndex = 11;
+            this.label173.Text = "carrier frequency (MHz)";
+            // 
+            // label168
+            // 
+            this.label168.Location = new System.Drawing.Point(6, 56);
+            this.label168.Name = "label168";
+            this.label168.Size = new System.Drawing.Size(122, 23);
+            this.label168.TabIndex = 13;
+            this.label168.Text = "waveform length (us)";
+            // 
+            // rfAWGWaveformLengthTextBox
+            // 
+            this.rfAWGWaveformLengthTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGWaveformLengthTextBox.Name = "rfAWGWaveformLengthTextBox";
+            this.rfAWGWaveformLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGWaveformLengthTextBox.TabIndex = 12;
+            this.rfAWGWaveformLengthTextBox.Text = "2500";
+            // 
+            // rfAWGCarrierFreqTextBox
+            // 
+            this.rfAWGCarrierFreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGCarrierFreqTextBox.Name = "rfAWGCarrierFreqTextBox";
+            this.rfAWGCarrierFreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGCarrierFreqTextBox.TabIndex = 0;
+            this.rfAWGCarrierFreqTextBox.Text = "170.800";
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.label171);
+            this.groupBox30.Controls.Add(this.rfAWGPhaseOffsetTextBox);
+            this.groupBox30.Location = new System.Drawing.Point(269, 213);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(254, 86);
+            this.groupBox30.TabIndex = 25;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = "relative phase control";
+            // 
+            // label171
+            // 
+            this.label171.Location = new System.Drawing.Point(6, 24);
+            this.label171.Name = "label171";
+            this.label171.Size = new System.Drawing.Size(122, 23);
+            this.label171.TabIndex = 11;
+            this.label171.Text = "phase offset";
+            // 
+            // rfAWGPhaseOffsetTextBox
+            // 
+            this.rfAWGPhaseOffsetTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGPhaseOffsetTextBox.Name = "rfAWGPhaseOffsetTextBox";
+            this.rfAWGPhaseOffsetTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGPhaseOffsetTextBox.TabIndex = 0;
+            this.rfAWGPhaseOffsetTextBox.Text = "0";
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.Controls.Add(this.label159);
+            this.groupBox29.Controls.Add(this.rfAWGRf2CentreTimeTextBox);
+            this.groupBox29.Controls.Add(this.label164);
+            this.groupBox29.Controls.Add(this.rfAWGRf2PulseLengthTextBox);
+            this.groupBox29.Controls.Add(this.label166);
+            this.groupBox29.Controls.Add(this.rfAWGRf2AmpTextBox);
+            this.groupBox29.Controls.Add(this.label167);
+            this.groupBox29.Controls.Add(this.rfAWGRf2FreqTextBox);
+            this.groupBox29.Location = new System.Drawing.Point(269, 49);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(254, 158);
+            this.groupBox29.TabIndex = 24;
+            this.groupBox29.TabStop = false;
+            this.groupBox29.Text = "rf2 control";
+            // 
+            // label159
+            // 
+            this.label159.Location = new System.Drawing.Point(6, 125);
+            this.label159.Name = "label159";
+            this.label159.Size = new System.Drawing.Size(122, 23);
+            this.label159.TabIndex = 17;
+            this.label159.Text = "centre time (us)";
+            // 
+            // rfAWGRf2CentreTimeTextBox
+            // 
+            this.rfAWGRf2CentreTimeTextBox.Location = new System.Drawing.Point(168, 122);
+            this.rfAWGRf2CentreTimeTextBox.Name = "rfAWGRf2CentreTimeTextBox";
+            this.rfAWGRf2CentreTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2CentreTimeTextBox.TabIndex = 16;
+            this.rfAWGRf2CentreTimeTextBox.Text = "1700";
+            // 
+            // label164
+            // 
+            this.label164.Location = new System.Drawing.Point(6, 89);
+            this.label164.Name = "label164";
+            this.label164.Size = new System.Drawing.Size(122, 23);
+            this.label164.TabIndex = 15;
+            this.label164.Text = "pulse length (us)";
+            // 
+            // rfAWGRf2PulseLengthTextBox
+            // 
+            this.rfAWGRf2PulseLengthTextBox.Location = new System.Drawing.Point(168, 86);
+            this.rfAWGRf2PulseLengthTextBox.Name = "rfAWGRf2PulseLengthTextBox";
+            this.rfAWGRf2PulseLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2PulseLengthTextBox.TabIndex = 14;
+            this.rfAWGRf2PulseLengthTextBox.Text = "10";
+            // 
+            // label166
+            // 
+            this.label166.Location = new System.Drawing.Point(6, 56);
+            this.label166.Name = "label166";
+            this.label166.Size = new System.Drawing.Size(122, 23);
+            this.label166.TabIndex = 13;
+            this.label166.Text = "rms power (dBm)";
+            // 
+            // rfAWGRf2AmpTextBox
+            // 
+            this.rfAWGRf2AmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGRf2AmpTextBox.Name = "rfAWGRf2AmpTextBox";
+            this.rfAWGRf2AmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2AmpTextBox.TabIndex = 1;
+            this.rfAWGRf2AmpTextBox.Text = "-6";
+            // 
+            // label167
+            // 
+            this.label167.Location = new System.Drawing.Point(6, 24);
+            this.label167.Name = "label167";
+            this.label167.Size = new System.Drawing.Size(122, 23);
+            this.label167.TabIndex = 11;
+            this.label167.Text = "frequency (MHz)";
+            // 
+            // rfAWGRf2FreqTextBox
+            // 
+            this.rfAWGRf2FreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGRf2FreqTextBox.Name = "rfAWGRf2FreqTextBox";
+            this.rfAWGRf2FreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2FreqTextBox.TabIndex = 0;
+            this.rfAWGRf2FreqTextBox.Text = "170.800";
+            // 
+            // groupBox28
+            // 
+            this.groupBox28.Controls.Add(this.label122);
+            this.groupBox28.Controls.Add(this.rfAWGRf1CentreTimeTextBox);
+            this.groupBox28.Controls.Add(this.label163);
+            this.groupBox28.Controls.Add(this.rfAWGRf1PulseLengthTextBox);
+            this.groupBox28.Controls.Add(this.label160);
+            this.groupBox28.Controls.Add(this.rfAWGRf1AmpTextBox);
+            this.groupBox28.Controls.Add(this.label162);
+            this.groupBox28.Controls.Add(this.rfAWGRf1FreqTextBox);
+            this.groupBox28.Location = new System.Drawing.Point(9, 49);
+            this.groupBox28.Name = "groupBox28";
+            this.groupBox28.Size = new System.Drawing.Size(254, 158);
+            this.groupBox28.TabIndex = 23;
+            this.groupBox28.TabStop = false;
+            this.groupBox28.Text = "rf1 control";
+            // 
+            // label122
+            // 
+            this.label122.Location = new System.Drawing.Point(6, 125);
+            this.label122.Name = "label122";
+            this.label122.Size = new System.Drawing.Size(122, 23);
+            this.label122.TabIndex = 17;
+            this.label122.Text = "centre time (us)";
+            // 
+            // rfAWGRf1CentreTimeTextBox
+            // 
+            this.rfAWGRf1CentreTimeTextBox.Location = new System.Drawing.Point(168, 122);
+            this.rfAWGRf1CentreTimeTextBox.Name = "rfAWGRf1CentreTimeTextBox";
+            this.rfAWGRf1CentreTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1CentreTimeTextBox.TabIndex = 16;
+            this.rfAWGRf1CentreTimeTextBox.Text = "900";
+            // 
+            // label163
+            // 
+            this.label163.Location = new System.Drawing.Point(6, 89);
+            this.label163.Name = "label163";
+            this.label163.Size = new System.Drawing.Size(122, 23);
+            this.label163.TabIndex = 15;
+            this.label163.Text = "pulse length (us)";
+            // 
+            // rfAWGRf1PulseLengthTextBox
+            // 
+            this.rfAWGRf1PulseLengthTextBox.Location = new System.Drawing.Point(168, 86);
+            this.rfAWGRf1PulseLengthTextBox.Name = "rfAWGRf1PulseLengthTextBox";
+            this.rfAWGRf1PulseLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1PulseLengthTextBox.TabIndex = 14;
+            this.rfAWGRf1PulseLengthTextBox.Text = "10";
+            // 
+            // label160
+            // 
+            this.label160.Location = new System.Drawing.Point(6, 56);
+            this.label160.Name = "label160";
+            this.label160.Size = new System.Drawing.Size(122, 23);
+            this.label160.TabIndex = 13;
+            this.label160.Text = "rms power (dBm)";
+            // 
+            // rfAWGRf1AmpTextBox
+            // 
+            this.rfAWGRf1AmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGRf1AmpTextBox.Name = "rfAWGRf1AmpTextBox";
+            this.rfAWGRf1AmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1AmpTextBox.TabIndex = 1;
+            this.rfAWGRf1AmpTextBox.Text = "-6";
+            // 
+            // label162
+            // 
+            this.label162.Location = new System.Drawing.Point(6, 24);
+            this.label162.Name = "label162";
+            this.label162.Size = new System.Drawing.Size(122, 23);
+            this.label162.TabIndex = 11;
+            this.label162.Text = "frequency (MHz)";
+            // 
+            // rfAWGRf1FreqTextBox
+            // 
+            this.rfAWGRf1FreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGRf1FreqTextBox.Name = "rfAWGRf1FreqTextBox";
+            this.rfAWGRf1FreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1FreqTextBox.TabIndex = 0;
+            this.rfAWGRf1FreqTextBox.Text = "170.800";
+            // 
+            // rfAWGPulsedGenerationCheckBox
+            // 
+            this.rfAWGPulsedGenerationCheckBox.Location = new System.Drawing.Point(9, 19);
+            this.rfAWGPulsedGenerationCheckBox.Name = "rfAWGPulsedGenerationCheckBox";
+            this.rfAWGPulsedGenerationCheckBox.Size = new System.Drawing.Size(254, 24);
+            this.rfAWGPulsedGenerationCheckBox.TabIndex = 18;
+            this.rfAWGPulsedGenerationCheckBox.Text = "Pulsed generation (on trigger)";
+            this.rfAWGPulsedGenerationCheckBox.CheckedChanged += new System.EventHandler(this.rfAWGPulsedGenerationCheckBox_CheckedChanged);
             // 
             // groupBox26
             // 
@@ -6604,6 +6926,11 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
+            // rfsgStatusTimer
+            // 
+            this.rfsgStatusTimer.Interval = 1;
+            this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -6744,6 +7071,15 @@ namespace EDMHardwareControl
             this.groupBox37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
             this.rfAWGTab.ResumeLayout(false);
+            this.groupBox27.ResumeLayout(false);
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox31.PerformLayout();
+            this.groupBox30.ResumeLayout(false);
+            this.groupBox30.PerformLayout();
+            this.groupBox29.ResumeLayout(false);
+            this.groupBox29.PerformLayout();
+            this.groupBox28.ResumeLayout(false);
+            this.groupBox28.PerformLayout();
             this.groupBox26.ResumeLayout(false);
             this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -7586,6 +7922,24 @@ namespace EDMHardwareControl
        private void rfAWGContinuousGenerationCheckBox_CheckedChanged(object sender, EventArgs e)
        {
            controller.EnableRfAWGContinuousGeneration(rfAWGContinuousGenerationCheckBox.Checked);
+       }
+
+       private void rfsgStatusTimer_Tick(object sender, EventArgs e)
+       {
+           controller.CheckRfAWGPulsedGeneration();
+       }
+
+       private void rfAWGPulsedGenerationCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           if (rfAWGPulsedGenerationCheckBox.Checked)
+           {
+               controller.ConnectRfAWG();
+               controller.EnableRfAWGPulsedGeneration();
+           }
+           else
+           {
+               controller.DisableRfAWGPulsedGeneration();
+           }
        }
 
 

@@ -60,7 +60,6 @@ namespace EDMHardwareControl
         private static double northOffset = 0;
         private static double southOffset = 0;
         private static double currentMonitorMeasurementTime = 0.01;
-        private static double pressureMonitorMeasurementTime = 0.01;
 
         
         #endregion
@@ -4116,7 +4115,7 @@ namespace EDMHardwareControl
 
         #endregion
 
-        #region Rf AWG Controls
+        #region Rf AWG Continuous Generation Controls
 
         public double RfAWGOnFrequency
         {
@@ -4142,7 +4141,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public bool RfAWGEnabled
+        public bool RfAWGContinuousGenerationEnabled
         {
             get
             {
@@ -4199,6 +4198,263 @@ namespace EDMHardwareControl
                 }
             }
 
+        }
+
+        #endregion
+
+        #region Rf AWG Pulsed Generation Controls
+
+        public double RfAWGRf1Frequency
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGRf1FreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf1FreqTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGRf2Frequency
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGRf2FreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf2FreqTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGRf1Amplitude
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGRf1AmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf1AmpTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGRf2Amplitude
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGRf2AmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf2AmpTextBox, value.ToString());
+            }
+        }
+
+        public int RfAWGRf1PulseLength
+        {
+            get
+            {
+                return Int32.Parse(window.rfAWGRf1PulseLengthTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf1PulseLengthTextBox, value.ToString());
+            }
+        }
+
+        public int RfAWGRf2PulseLength
+        {
+            get
+            {
+                return Int32.Parse(window.rfAWGRf2PulseLengthTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf2PulseLengthTextBox, value.ToString());
+            }
+        }
+
+        public int RfAWGRf1CentreTime
+        {
+            get
+            {
+                return Int32.Parse(window.rfAWGRf1CentreTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf1CentreTimeTextBox, value.ToString());
+            }
+        }
+
+        public int RfAWGRf2CentreTime
+        {
+            get
+            {
+                return Int32.Parse(window.rfAWGRf2CentreTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGRf2CentreTimeTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGCarrierFrequency
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGCarrierFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGCarrierFreqTextBox, value.ToString());
+            }
+        }
+
+        public int RfAWGWaveformLength
+        {
+            get
+            {
+                return Int32.Parse(window.rfAWGWaveformLengthTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGWaveformLengthTextBox, value.ToString());
+            }
+        }
+
+        public double RfAWGPhaseOffset
+        {
+            get
+            {
+                return Double.Parse(window.rfAWGPhaseOffsetTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.rfAWGPhaseOffsetTextBox, value.ToString());
+            }
+        }
+
+        public bool RfAWGPulsedGenerationEnabled
+        {
+            get
+            {
+                return window.rfAWGPulsedGenerationCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.rfAWGPulsedGenerationCheckBox, value);
+            }
+        }
+
+        public void ConnectRfAWG()
+        {
+            try
+            {
+                rfAWG.Connect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while connecting: " + e.Message);
+            }
+        }
+
+        public void EnableRfAWGPulsedGeneration()
+        {
+            IQData iqData = GenerateIQData();
+
+            try
+            {
+                rfAWG.Frequency = RfAWGCarrierFrequency;
+                rfAWG.Amplitude = RfAWGRf1Amplitude > RfAWGRf2Amplitude ? RfAWGRf1Amplitude : RfAWGRf2Amplitude;
+                rfAWG.IData = iqData.IData;
+                rfAWG.QData = iqData.QData;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while setting parameters: " + e.Message);
+            }
+
+            try
+            {
+                rfAWG.StartPulsedGeneration();
+                window.rfsgStatusTimer.Enabled = true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while starting generation: " + e.Message);
+            }
+        }
+
+        public void DisableRfAWGPulsedGeneration()
+        {
+            try
+            {
+                window.rfsgStatusTimer.Enabled = false;
+                rfAWG.Disconnect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while disconnecting from rfsg: " + e.Message);
+            }
+        }
+
+        private IQData GenerateIQData()
+        {
+            double rf1FreqDiff = 1e6 * (RfAWGRf1Frequency - RfAWGCarrierFrequency);
+            double rf2FreqDiff = 1e6 * (RfAWGRf2Frequency - RfAWGCarrierFrequency);
+            double phaseOffset = RfAWGPhaseOffset;
+            bool rf1MorePower = RfAWGRf1Amplitude > RfAWGRf2Amplitude;
+            double scaledAmp = ScaledAmp(RfAWGRf1Amplitude, RfAWGRf2Amplitude);
+            double rf1Amp = rf1MorePower ? 1 : scaledAmp;
+            double rf2Amp = rf1MorePower ? scaledAmp : 1;
+
+            // Always use IQ rate of 100MS/s, so a single time unit is 10ns
+            // Input units are in us
+            const int MICROSECOND_TO_TIME_UNIT = 100;
+            int length = RfAWGWaveformLength * MICROSECOND_TO_TIME_UNIT;
+            int rf1StartTime = (RfAWGRf1CentreTime - (RfAWGRf1PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
+            int rf1EndTime = rf1StartTime + (RfAWGRf1PulseLength * MICROSECOND_TO_TIME_UNIT);
+            int rf2StartTime = (RfAWGRf2CentreTime - (RfAWGRf2PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
+            int rf2EndTime = rf2StartTime + (RfAWGRf2PulseLength * MICROSECOND_TO_TIME_UNIT);
+
+            IQData iqData = new IQData(length);
+            double iDataPoint = 0.0;
+            double qDataPoint = 0.0;
+
+            for (int i = rf1StartTime; i < rf1EndTime; i++)
+            {
+                iDataPoint = rf1Amp * Math.Cos(2 * Math.PI * rf1FreqDiff * i / 1e8);
+                qDataPoint = rf1Amp * Math.Sin(2 * Math.PI * rf1FreqDiff * i / 1e8);
+                iqData.WriteIQData(i, iDataPoint, qDataPoint);
+            }
+
+            for (int i = rf2StartTime; i < rf2EndTime; i++)
+            {
+                iDataPoint = rf2Amp * Math.Cos(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
+                qDataPoint = rf2Amp * Math.Sin(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
+                iqData.WriteIQData(i, iDataPoint, qDataPoint);
+            }
+
+            return iqData;
+
+        }
+        private double ScaledAmp(double rf1Amp, double rf2Amp)
+        {
+            double ampDiff = rf1Amp > rf2Amp ? rf2Amp - rf1Amp : rf1Amp - rf2Amp;
+            return Math.Pow(10, ampDiff / 20);
+        }
+
+        public void CheckRfAWGPulsedGeneration()
+        {
+            rfAWG.CheckGeneration();
+            if (rfAWG.GenerationComplete)
+            {
+                rfAWG.StopGeneration();
+                window.rfsgStatusTimer.Enabled = false;
+                EnableRfAWGPulsedGeneration();
+            }
         }
 
         #endregion
