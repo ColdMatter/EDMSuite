@@ -104,11 +104,6 @@ namespace ConfocalControl
             freqOutTask = null;
             counterReaders = null;
             analoguesReader = null;
-
-            analogBuffer = null;
-            counterBuffer = null;
-            latestAnalogs = null;
-            latestCounters = null;
         }
 
         public double GetExposure()

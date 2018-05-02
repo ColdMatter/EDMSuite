@@ -107,9 +107,6 @@ namespace ConfocalControl
         {
             InitialiseSettings();
 
-            counterLatestData = null;
-            analogLatestData = null;
-
             triggerTask = null;
             freqOutTask = null;
             counterTasks = null;
@@ -429,9 +426,6 @@ namespace ConfocalControl
                 counterTask.Dispose();
             }
             analoguesTask.Dispose();
-
-            counterLatestData = null;
-            analogLatestData = null;
 
             triggerTask = null;
             freqOutTask = null;

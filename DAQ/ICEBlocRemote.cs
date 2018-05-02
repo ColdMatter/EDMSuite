@@ -121,15 +121,36 @@ namespace DAQ.HAL
             }
         }
 
-        public Dictionary<string, object> ReceiveCustomMessage(string command)
+        public void EmptyBuffer()
+        {
+            while (stream.DataAvailable)
+            {
+                Receive();
+            }
+        }
+
+        public Dictionary<string, object> ReceiveCustomMessage(string command, bool checkIfDataAvailable)
         {
             string msgReport = "";
-            while (msgReport == "")
+            if (checkIfDataAvailable)
             {
-                msgReport = Receive();
+                if (stream.DataAvailable)
+	            {
+                    msgReport = Receive();
+                    Dictionary<string, object> reportDict = ConvertCustomMessageToDictionary(command, msgReport);
+                    return reportDict;
+	            }
+                else
+                {
+                    return new Dictionary<string, object>();
+                }
             }
-            Dictionary<string, object> reportDict = ConvertCustomMessageToDictionary(command, msgReport);
-            return reportDict;
+            else
+	        {
+                msgReport = Receive();
+                Dictionary<string, object> reportDict = ConvertCustomMessageToDictionary(command, msgReport);
+                return reportDict;
+	        }
         }
 
         public void Connect()
@@ -208,8 +229,59 @@ namespace DAQ.HAL
                 return reportDict;
             }
             return replyDict;
-
         }
+
+        protected Dictionary<string, object> GenericCommandNoReportReply(string command, Dictionary<string, object> prms)
+        {
+            if (!Connected) new Exception("no connection to M2 to be tested");
+            transmission_id++;
+            string msgOut = @"{""message"":{""transmission_id"":[" + transmission_id.ToString();
+
+            int[] iArr = new int[1]; double[] dArr = new double[1];
+            string msg;
+            if (prms.Count == 0)
+            {
+                msg = msgOut + @"],""op"":""" + command + @"""}}";
+            }
+            else
+            {
+                Dictionary<string, object> prmsCopy = ConvertToNumericArrays(prms);
+                string strPrms = JsonConvert.SerializeObject(prmsCopy);
+                msg = msgOut + @"],""op"":""" + command + @""",""parameters"":" + strPrms + "}}";
+            }
+            // the point of everything is here
+            Send(msg);
+            string msgIn = Receive();
+            Dictionary<string, object> replyDict = ConvertMessageToDictionary(command, msgIn);
+            if (replyDict.ContainsKey("protocol_error"))
+            {
+                throw new Exception("Failed to send command: " + command);
+            }
+            return replyDict;
+        }
+
+        protected void GenericCommandNoReply(string command, Dictionary<string, object> prms)
+        {
+            if (!Connected) new Exception("no connection to M2 to be tested");
+            transmission_id++;
+            string msgOut = @"{""message"":{""transmission_id"":[" + transmission_id.ToString();
+
+            int[] iArr = new int[1]; double[] dArr = new double[1];
+            string msg;
+            if (prms.Count == 0)
+            {
+                msg = msgOut + @"],""op"":""" + command + @"""}}";
+            }
+            else
+            {
+                Dictionary<string, object> prmsCopy = ConvertToNumericArrays(prms);
+                string strPrms = JsonConvert.SerializeObject(prmsCopy);
+                msg = msgOut + @"],""op"":""" + command + @""",""parameters"":" + strPrms + "}}";
+            }
+            // the point of everything is here
+            Send(msg);
+        }
+
 
         private Dictionary<string, object> ConvertMessageToDictionary(string command, string msgIn)
         {

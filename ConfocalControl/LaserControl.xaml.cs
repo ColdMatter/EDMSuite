@@ -61,6 +61,7 @@ namespace ConfocalControl
 
             SolsTiSPlugin.GetController().TeraData += teraScanData;
             SolsTiSPlugin.GetController().TeraTotalOnlyData += teraScanTotalOnlyData;
+            SolsTiSPlugin.GetController().TeraSegmentOnlyData += teraScanSegmentOnlyData;
             SolsTiSPlugin.GetController().TeraSegmentScanFinished += teraScanSegmentFinished;
             SolsTiSPlugin.GetController().TeraScanFinished += teraScanFinished;
             SolsTiSPlugin.GetController().TeraScanProblem += teraScanProblem;
@@ -761,6 +762,31 @@ namespace ConfocalControl
                        this.wavemeterScan_Switch.IsEnabled = true;
                        this.teraScan_configure_Button.IsEnabled = true;
                    }));
+
+            MessageBoxResult result = MessageBox.Show("Restart TeraScan from " + SolsTiSPlugin.GetController().latestLambda + "nm to " + SolsTiSPlugin.GetController().Settings["TeraScanStop"] + "nm?", "Repeat TeraScan", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.teraScan_Switch.Value = true;
+
+                       DissableNoneScanCommands();
+                       this.fastScan_Switch.IsEnabled = false;
+                       this.wavemeterScan_Switch.IsEnabled = false;
+                       this.teraScan_configure_Button.IsEnabled = false;
+
+                       this.teraScan_segmentDisplay_ComboBox.Items.Clear();
+                       this.teraScan_segmentDisplay_ComboBox.Items.Add("Current");
+                       this.teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
+                   }));
+
+                SolsTiSPlugin.GetController().Settings["TeraScanStart"] = SolsTiSPlugin.GetController().latestLambda;
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().ResumeTeraScan));
+                thread.IsBackground = true;
+                thread.Start();
+            }
         }
 
         private void teraScanData(double[] data, double[] dataSeg)
@@ -781,6 +807,16 @@ namespace ConfocalControl
                        new Action(() =>
                        {
                            this.teraScan_Display.DataSource = data;
+                       }));
+        }
+
+        private void teraScanSegmentOnlyData(double[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.segmentScanDisplay.DataSource = data;
                        }));
         }
 
@@ -868,39 +904,7 @@ namespace ConfocalControl
             else
             {
                 SolsTiSPlugin.GetController().Settings["tera_display_current_segment"] = false;
-                SegmentDataHolder segment = SolsTiSPlugin.GetController().teraScanBufferAccess.GetSegment(displayIndex - 1);
-                Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
-                       new Action(() =>
-                       {
-                            int index;
-                            switch ((string)SolsTiSPlugin.GetController().Settings["tera_channel_type"])
-                            {
-                                case "Counters":
-                                    index = (int)SolsTiSPlugin.GetController().Settings["tera_display_channel_index"];
-                                    if (index >= 0 && index < ((List<string>)SolsTiSPlugin.GetController().Settings["counterChannels"]).Count)
-                                    {
-                                        this.segmentScanDisplay.DataSource = segment.GetCounterData(index).ToArray();
-                                    }
-                                    else {this.segmentScanDisplay.DataSource = null;}
-                                    break;
-
-                                case "Analogues":
-                                    index = (int)SolsTiSPlugin.GetController().Settings["tera_display_channel_index"];
-                                    if (index >= 0 && index < ((List<string>)SolsTiSPlugin.GetController().Settings["analogueChannels"]).Count)
-                                    {
-                                        this.segmentScanDisplay.DataSource = segment.GetAnalogueData(index).ToArray();
-                                    }
-                                    else {this.segmentScanDisplay.DataSource = null;}
-                                    break;
-
-                                case "Lambda":
-                                    this.segmentScanDisplay.DataSource = segment.GetWavelengthData().ToArray();
-                                    break;
-                                default:
-                                    throw new Exception("Did not understand data type");
-                            }
-                       }));
+                SolsTiSPlugin.GetController().RequestSegmentData(displayIndex - 1);
             }
         }
 
@@ -972,6 +976,14 @@ namespace ConfocalControl
             if (this.fastScan_Display.DataSource != null)
             {
                 SolsTiSPlugin.GetController().SaveFastData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_fastScan.txt", false);
+            }
+        }
+
+        private void teraScan_save_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.teraScan_Display.DataSource != null)
+            {
+                SolsTiSPlugin.GetController().SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan.txt", false);
             }
         }
 

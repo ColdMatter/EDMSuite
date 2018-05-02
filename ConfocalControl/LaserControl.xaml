@@ -75,6 +75,11 @@
         <Button x:Name="load_settings_Button" Content="Load settings" HorizontalAlignment="Left" Margin="109,404,0,0" VerticalAlignment="Top" Width="75" Click="load_settings_Button_Click"/>
         <ni:Graph x:Name="teraScan_Display" HorizontalAlignment="Left" Height="200" Margin="488,475,0,0" VerticalAlignment="Top" Width="400
                   ">
+            <ni:Graph.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="teraScan_save_MenuItem" Header="Save Data" Click="teraScan_save_MenuItem_Click"/>
+                </ContextMenu>
+            </ni:Graph.ContextMenu>
             <ni:Graph.Plots>
                 <ni:Plot Label="Plot 1">
                     <ni:LinePlotRenderer Stroke="Blue"/>

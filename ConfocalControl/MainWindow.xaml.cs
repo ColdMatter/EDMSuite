@@ -398,44 +398,25 @@ namespace ConfocalControl
 
         public void singleCounter_setTextBox(double value)
         {
-            // If on a different thread 
-            if (Application.Current.Dispatcher.CheckAccess())
-            {
-                single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
-            }
-
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                        {
-                            this.single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
-                        }
-                ));
-            }
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                    {
+                        this.single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
+                    }
+            ));
         }
 
         public void singleCounter_setWaveForm(double[] values, Point[] histData)
         {
-            // If on a different thread 
-            if (Application.Current.Dispatcher.CheckAccess())
-            {
-                APD_monitor.DataSource = values;
-                APD_hist.DataSource = histData;
-            }
-
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        this.APD_monitor.DataSource = values;
-                        this.APD_hist.DataSource = histData;
-                    }
-                ));
-            }
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                {
+                    this.APD_monitor.DataSource = values;
+                    this.APD_hist.DataSource = histData;
+                }
+            ));
         }
 
         public void singleCounter_problemHandler(DaqException e)

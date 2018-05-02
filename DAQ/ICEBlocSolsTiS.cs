@@ -227,7 +227,7 @@ namespace DAQ.HAL
         }
 
         // 3.28
-        public int scan_stitch_op(string type, string op, bool report)
+        public int scan_stitch_op(string type, string op, bool report, bool wait)
         {
             Dictionary<string, object> prms = new Dictionary<string, object>();
             switch (type)
@@ -252,12 +252,41 @@ namespace DAQ.HAL
                 default:
                     throw new Exception("Cannot understand tera scan operation");
             }
-            if (report) prms.Add("report", "finished");
 
-            Dictionary<string, object> rslt = GenericCommand("scan_stitch_op", prms, report);
-            if (rslt.Count == 0) return -1;
-            if (report) return ((int)rslt["report"]);
-            else return ((int)rslt["status"]);
+            if (report)
+            {
+                prms.Add("report", "finished");
+
+                if (wait)
+                {
+                    Dictionary<string, object> rslt = GenericCommand("scan_stitch_op", prms, report);
+                    if (rslt.Count == 0) return -1;
+                    if (report) return ((int)rslt["report"]);
+                    else return ((int)rslt["status"]);
+                }
+                else
+                {
+                    Dictionary<string, object> rslt = GenericCommandNoReportReply("scan_stitch_op", prms);
+                    if (rslt.Count == 0) return -1;
+                    else return ((int)rslt["status"]);
+                }
+            }
+
+            else
+            {
+                if (wait)
+                {
+                    Dictionary<string, object> rslt = GenericCommand("scan_stitch_op", prms, report);
+                    if (rslt.Count == 0) return -1;
+                    if (report) return ((int)rslt["report"]);
+                    else return ((int)rslt["status"]);
+                }
+                else
+                {
+                    GenericCommandNoReply("scan_stitch_op", prms);
+                    return 0;
+                }
+            }
         }
 
         // 3.29
