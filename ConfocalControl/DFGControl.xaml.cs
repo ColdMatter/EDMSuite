@@ -55,6 +55,12 @@ namespace ConfocalControl
             output_type_box.Items.Add("Counters");
             output_type_box.Items.Add("Analogues");
             output_type_box.SelectedIndex = 0;
+
+            tripletScanStart_Set.Value = (double)DFGPlugin.GetController().Settings["tripletStart"];
+            tripletScanStop_Set.Value = (double)DFGPlugin.GetController().Settings["tripletStop"];
+            tripletScanRes_Set.Value = (int)DFGPlugin.GetController().Settings["tripletScanPoints"];
+            tripletScanInt_Set.Value = (double)DFGPlugin.GetController().Settings["tripletInt"];
+            tripletScanRate_Set.Value = (double)DFGPlugin.GetController().Settings["tripletRate"];
         }
 
         #endregion
@@ -164,10 +170,10 @@ namespace ConfocalControl
             else DFGPlugin.GetController().Settings["wavemeterScanStop"] = e.NewValue;
         }
 
-        private void wavemeterScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        private void wavemeterScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<int> e)
         {
-            if (e.NewValue <= 0) wavemeterScanRes_Set.Value = e.OldValue;
-            else DFGPlugin.GetController().Settings["wavemeterScanPoints"] = Convert.ToInt32(e.NewValue);
+            if (e.NewValue <= 1) wavemeterScanRes_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["wavemeterScanPoints"] = e.NewValue;
         }
 
         private void wavemeterScanProblem(Exception e)
@@ -329,6 +335,41 @@ namespace ConfocalControl
 
         #endregion
 
+        #region Triplet events
+
+        private void tripletScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 1100 || e.NewValue > 1650) tripletScanStart_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["tripletStart"] = e.NewValue;
+        }
+
+        private void tripletScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 1100 || e.NewValue > 1650) tripletScanStop_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["tripletStop"] = e.NewValue;
+
+        }
+
+        private void tripletScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<int> e)
+        {
+            if (e.NewValue <= 1) tripletScanRes_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["tripletScanPoints"] = e.NewValue;
+        }
+
+        private void tripletScanInt_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) tripletScanInt_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["tripletInt"] = e.NewValue;
+        }
+
+        private void tripletScanRate_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) tripletScanRate_Set.Value = e.OldValue;
+            else DFGPlugin.GetController().Settings["tripletRate"] = e.NewValue;
+        }
+
+        #endregion
+
         #region Other methods
 
         private void DissableNoneScanCommands()
@@ -361,10 +402,17 @@ namespace ConfocalControl
         private void load_settings_Button_Click(object sender, RoutedEventArgs e)
         {
             DFGPlugin.GetController().LoadSettings();
+
             wavelengthSet_Numeric.Value = (double)DFGPlugin.GetController().Settings["wavelength"];
             wavemeterScanStart_Set.Value = (double)DFGPlugin.GetController().Settings["wavemeterScanStart"];
             wavemeterScanStop_Set.Value = (double)DFGPlugin.GetController().Settings["wavemeterScanStop"];
             wavemeterScanRes_Set.Value = (int)DFGPlugin.GetController().Settings["wavemeterScanPoints"];
+
+            tripletScanStart_Set.Value = (double)DFGPlugin.GetController().Settings["tripletStart"];
+            tripletScanStop_Set.Value = (double)DFGPlugin.GetController().Settings["tripletStop"];
+            tripletScanRes_Set.Value = (int)DFGPlugin.GetController().Settings["tripletScanPoints"];
+            tripletScanInt_Set.Value = (double)DFGPlugin.GetController().Settings["tripletInt"];
+            tripletScanRate_Set.Value = (double)DFGPlugin.GetController().Settings["tripletRate"];
         }
 
         #endregion
@@ -390,5 +438,6 @@ namespace ConfocalControl
         }
 
         #endregion
+
     }
 }

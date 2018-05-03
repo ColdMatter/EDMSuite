@@ -248,7 +248,7 @@ namespace ConfocalControl
             {
                 if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
                 {
-                    throw new DaqException("Counter already running");
+                    throw new DaqException("Daq already running");
                 }
 
                 wavemeterState = WavemeterScanState.running;
@@ -613,7 +613,7 @@ namespace ConfocalControl
             {
                 if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
                 {
-                    throw new DaqException("Counter already running");
+                    throw new DaqException("Daq already running");
                 }
 
                 fastState = FastScanState.running;

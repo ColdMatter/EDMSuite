@@ -34,6 +34,8 @@ namespace ConfocalControl
         private DFGState backendState = DFGState.stopped;
         private enum WavemeterScanState { stopped, running, stopping };
         private WavemeterScanState wavemeterState = WavemeterScanState.stopped;
+        private enum TripletScanState { stopped, running, stopping };
+        private TripletScanState tripletState = TripletScanState.stopped;
 
         // Settings
         public PluginSettings Settings { get; set; }
@@ -53,10 +55,13 @@ namespace ConfocalControl
         private int pointsPerExposure;
         private double sampleRate;
 
-        // Keep track of data
+        // Keep track of data for wavemeter scan
         private List<Point>[] wavemeterAnalogBuffer;
         private List<Point>[] wavemeterCounterBuffer;
         public Hashtable wavemeterHistoricSettings;
+
+        // Keep track of data for triplet search
+        public Hashtable tripletHistoricSettings;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -81,13 +86,13 @@ namespace ConfocalControl
             dfg = new ICEBlocDFG();
 
             LoadSettings();
-            if (Settings.Keys.Count != 9)
+            if (Settings.Keys.Count != 16)
             {
                 Settings["wavelength"] = 1200.0;
 
                 Settings["wavemeterScanStart"] = 1200.0;
                 Settings["wavemeterScanStop"] = 1300.0;
-                Settings["wavemeterScanPoints"] = 100;
+                Settings["wavemeterScanPoints"] = 101;
 
                 Settings["counterChannels"] = new List<string> { "APD0" };
                 Settings["analogueChannels"] = new List<string> { };
@@ -95,11 +100,24 @@ namespace ConfocalControl
 
                 Settings["wavemeter_channel_type"] = "Counters";
                 Settings["wavemeter_display_channel_index"] = 0;
+
+                Settings["tripletStart"] = 1200.0;
+                Settings["tripletStop"] = 1300.0;
+                Settings["tripletScanPoints"] = 101;
+                Settings["tripletInt"] = 2000.0;
+                Settings["tripletRate"] = 10000.0;
+
+                Settings["triplet_channel_type"] = "Counters";
+                Settings["triplet_display_channel_index"] = 0;
             }
 
             wavemeterHistoricSettings = new Hashtable();
             wavemeterHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
             wavemeterHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+
+            tripletHistoricSettings = new Hashtable();
+            tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+            tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
 
             triggerTask = null;
             freqOutTask = null;
@@ -140,6 +158,11 @@ namespace ConfocalControl
             return wavemeterState == WavemeterScanState.running;
         }
 
+        public bool TripletScanIsRunning()
+        {
+            return tripletState == TripletScanState.running;
+        }
+
         private bool CheckIfStopping()
         {
             return backendState == DFGState.stopping;
@@ -178,7 +201,7 @@ namespace ConfocalControl
             {
                 if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
                 {
-                    throw new DaqException("Counter already running");
+                    throw new DaqException("Daq already running");
                 }
 
                 wavemeterState = WavemeterScanState.running;
@@ -521,5 +544,49 @@ namespace ConfocalControl
 
         #endregion
 
+        #region
+
+        public bool TripletAcceptableSettings()
+        {
+            if ((double)Settings["tripletStart"] >= (double)Settings["tripletStop"] || (int)Settings["tripletScanPoints"] < 1 || (double)Settings["tripletInt"] <= 0 || (double)Settings["tripletRate"] <= 0)
+            {
+                MessageBox.Show("Triplet scan settings unacceptable.");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void TripletStartScan()
+        {
+            try
+            {
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || SolsTiSPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Daq already running");
+                }
+
+                tripletState = TripletScanState.running;
+                backendState = DFGState.running;
+                tripletHistoricSettings["tripletStart"] = (double)Settings["tripletStart"];
+                tripletHistoricSettings["tripletStop"] = (double)Settings["tripletStop"];
+                tripletHistoricSettings["tripletScanPoints"] = (int)Settings["tripletScanPoints"];
+                tripletHistoricSettings["tripletInt"] = (double)Settings["tripletInt"];
+                tripletHistoricSettings["tripletRate"] = (double)Settings["tripletRate"];
+                tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+                tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+
+                TripletAcquisitionStarting();
+                TripletAcquire();
+            }
+            catch (Exception e)
+            {
+                if (TripletScanProblem != null) TripletScanProblem(e);
+            }
+        }
+
+        #endregion
     }
 }
