@@ -133,21 +133,6 @@ namespace ConfocalControl
 
         #region Shared functions
 
-        private void CalculateParameters()
-        {
-            double _sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
-            if (_sampleRate * MINNUMBEROFSAMPLES >= TRUESAMPLERATE)
-            {
-                pointsPerExposure = MINNUMBEROFSAMPLES;
-                sampleRate = _sampleRate * pointsPerExposure;
-            }
-            else
-            {
-                pointsPerExposure = Convert.ToInt32(TRUESAMPLERATE / _sampleRate);
-                sampleRate = _sampleRate * pointsPerExposure;
-            }
-        }
-
         public bool IsRunning()
         {
             return backendState == DFGState.running;
@@ -173,13 +158,28 @@ namespace ConfocalControl
             backendState = DFGState.stopping;
         }
 
+        private int SetAndLockWavelength(double wavelength)
+        {
+            return dfg.wavelength("mir", wavelength, true);
+        }
+
         #endregion
 
         #region Wavemeter Scan
 
-        private int SetAndLockWavelength(double wavelength)
+        private void CalculateParameters()
         {
-            return dfg.wavelength("mir", wavelength, true);
+            double _sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+            if (_sampleRate * MINNUMBEROFSAMPLES >= TRUESAMPLERATE)
+            {
+                pointsPerExposure = MINNUMBEROFSAMPLES;
+                sampleRate = _sampleRate * pointsPerExposure;
+            }
+            else
+            {
+                pointsPerExposure = Convert.ToInt32(TRUESAMPLERATE / _sampleRate);
+                sampleRate = _sampleRate * pointsPerExposure;
+            }
         }
 
         public bool WavemeterAcceptableSettings()
@@ -212,6 +212,7 @@ namespace ConfocalControl
                 wavemeterHistoricSettings["exposure"] = TimeTracePlugin.GetController().GetExposure();
                 wavemeterHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
                 wavemeterHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+                wavemeterHistoricSettings["analogueLowHighs"] = (Dictionary<string, double[]>)Settings["analogueLowHighs"];
                 WavemeterSynchronousAcquisitionStarting();
                 WavemeterSynchronousAcquire();
             }
@@ -223,13 +224,13 @@ namespace ConfocalControl
 
         private void WavemeterSynchronousAcquisitionStarting()
         {
-            wavemeterAnalogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
-            for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
+            wavemeterAnalogBuffer = new List<Point>[((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count];
+            for (int i = 0; i < ((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count; i++)
             {
                 wavemeterAnalogBuffer[i] = new List<Point>();
             }
-            wavemeterCounterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
-            for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
+            wavemeterCounterBuffer = new List<Point>[((List<string>)wavemeterHistoricSettings["counterChannels"]).Count];
+            for (int i = 0; i < ((List<string>)wavemeterHistoricSettings["counterChannels"]).Count; i++)
             {
                 wavemeterCounterBuffer[i] = new List<Point>();
             }
@@ -280,9 +281,9 @@ namespace ConfocalControl
             counterTasks = new List<Task>();
             counterReaders = new List<CounterSingleChannelReader>();
 
-            for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
+            for (int i = 0; i < ((List<string>)wavemeterHistoricSettings["counterChannels"]).Count; i++)
             {
-                string channelName = ((List<string>)Settings["counterChannels"])[i];
+                string channelName = ((List<string>)wavemeterHistoricSettings["counterChannels"])[i];
 
                 counterTasks.Add(new Task("buffered edge counters " + channelName));
 
@@ -313,12 +314,12 @@ namespace ConfocalControl
             // Set up analogue sampling tasks
             analoguesTask = new Task("analogue sampler");
 
-            for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
+            for (int i = 0; i < ((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count; i++)
             {
-                string channelName = ((List<string>)Settings["analogueChannels"])[i];
+                string channelName = ((List<string>)wavemeterHistoricSettings["analogueChannels"])[i];
 
-                double inputRangeLow = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][0];
-                double inputRangeHigh = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][1];
+                double inputRangeLow = ((Dictionary<string, double[]>)wavemeterHistoricSettings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)wavemeterHistoricSettings["analogueLowHighs"])[channelName][1];
 
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
                     analoguesTask,
@@ -327,7 +328,7 @@ namespace ConfocalControl
                     );
             }
 
-            if (((List<string>)Settings["analogueChannels"]).Count != 0)
+            if (((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count != 0)
             {
                 analoguesTask.Timing.ConfigureSampleClock(
                     (string)Environs.Hardware.GetInfo("SampleClockReader"),
@@ -349,17 +350,17 @@ namespace ConfocalControl
         // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
         {
             // Go to start of scan
-            int report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
+            int report = SetAndLockWavelength((double)wavemeterHistoricSettings["wavemeterScanStart"]);
             if (report == 1) throw new Exception("set_wave_m start: task failed");
 
             // Main loop
             for (double i = 0;
-                    i < (int)Settings["wavemeterScanPoints"];
+                    i < (int)wavemeterHistoricSettings["wavemeterScanPoints"];
                     i++)
             {
-                double currentWavelength = (double)Settings["wavemeterScanStart"] + i *
-                    ((double)Settings["wavemeterScanStop"] - (double)Settings["wavemeterScanStart"]) /
-                    ((int)Settings["wavemeterScanPoints"] - 1);
+                double currentWavelength = (double)wavemeterHistoricSettings["wavemeterScanStart"] + i *
+                    ((double)wavemeterHistoricSettings["wavemeterScanStop"] - (double)wavemeterHistoricSettings["wavemeterScanStart"]) /
+                    ((int)wavemeterHistoricSettings["wavemeterScanPoints"] - 1);
 
                 report = SetAndLockWavelength(currentWavelength);
 
@@ -377,7 +378,7 @@ namespace ConfocalControl
 
                     // Read analogue data
                     double[,] analogLatestData = null;
-                    if (((List<string>)Settings["analogueChannels"]).Count != 0)
+                    if (((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count != 0)
                     {
                         analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
                     }
@@ -395,7 +396,7 @@ namespace ConfocalControl
                     }
 
                     // Store analogue data
-                    if (((List<string>)Settings["analogueChannels"]).Count != 0)
+                    if (((List<string>)wavemeterHistoricSettings["analogueChannels"]).Count != 0)
                     {
                         for (int j = 0; j < analogLatestData.GetLength(0); j++)
                         {
@@ -416,7 +417,7 @@ namespace ConfocalControl
                     if (CheckIfStopping())
                     {
                         wavemeterState = WavemeterScanState.stopping;
-                        report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
+                        report = SetAndLockWavelength((double)wavemeterHistoricSettings["wavemeterScanStart"]);
                         if (report == 1) throw new Exception("set_wave_m end: task failed");
                         // Quit plugins
                         WavemeterAcquisitionFinishing();
@@ -577,7 +578,7 @@ namespace ConfocalControl
                 tripletHistoricSettings["tripletRate"] = (double)Settings["tripletRate"];
                 tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
                 tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
-
+                tripletHistoricSettings["analogueLowHighs"] = (Dictionary<string, double[]>)Settings["analogueLowHighs"];
                 TripletAcquisitionStarting();
                 TripletAcquire();
             }
@@ -585,6 +586,206 @@ namespace ConfocalControl
             {
                 if (TripletScanProblem != null) TripletScanProblem(e);
             }
+        }
+
+        private void TripletAcquisitionStarting()
+        {
+            pointsPerExposure = Convert.ToInt32((double)tripletHistoricSettings["tripletRate"] * (double)tripletHistoricSettings["tripletInt"]);
+            sampleRate = (double)tripletHistoricSettings["tripletRate"];
+
+            // Set up trigger task
+            triggerTask = new Task("pause trigger task");
+
+            // Digital output
+            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["StartTrigger"]).AddToTask(triggerTask);
+
+            triggerTask.Control(TaskAction.Verify);
+
+            DaqStream triggerStream = triggerTask.Stream;
+            triggerWriter = new DigitalSingleChannelWriter(triggerStream);
+
+            triggerWriter.WriteSingleSampleSingleLine(true, false);
+
+            // Set up clock task
+            freqOutTask = new Task("sample clock task");
+
+            // Finite pulse train
+            freqOutTask.COChannels.CreatePulseChannelFrequency(
+                ((CounterChannel)Environs.Hardware.CounterChannels["SampleClock"]).PhysicalChannel,
+                "photon counter clocking signal",
+                COPulseFrequencyUnits.Hertz,
+                COPulseIdleState.Low,
+                0,
+                sampleRate,
+                0.5);
+
+            freqOutTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("StartTriggerReader"),
+                DigitalEdgeStartTriggerEdge.Rising);
+
+            freqOutTask.Triggers.StartTrigger.Retriggerable = true;
+
+
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, pointsPerExposure + 1);
+
+            freqOutTask.Control(TaskAction.Verify);
+
+            freqOutTask.Start();
+
+            // Set up edge-counting tasks
+            counterTasks = new List<Task>();
+            counterReaders = new List<CounterSingleChannelReader>();
+
+            for (int i = 0; i < ((List<string>)tripletHistoricSettings["counterChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)tripletHistoricSettings["counterChannels"])[i];
+
+                counterTasks.Add(new Task("buffered edge counters " + channelName));
+
+                // Count upwards on rising edges starting from zero
+                counterTasks[i].CIChannels.CreateCountEdgesChannel(
+                    ((CounterChannel)Environs.Hardware.CounterChannels[channelName]).PhysicalChannel,
+                    "edge counter " + channelName,
+                    CICountEdgesActiveEdge.Rising,
+                    0,
+                    CICountEdgesCountDirection.Up);
+
+                // Take one sample within a window determined by sample rate using clock task
+                counterTasks[i].Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                counterTasks[i].Control(TaskAction.Verify);
+
+                DaqStream counterStream = counterTasks[i].Stream;
+                counterReaders.Add(new CounterSingleChannelReader(counterStream));
+
+                // Start tasks
+                counterTasks[i].Start();
+            }
+
+            // Set up analogue sampling tasks
+            analoguesTask = new Task("analogue sampler");
+
+            for (int i = 0; i < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)tripletHistoricSettings["analogueChannels"])[i];
+
+                double inputRangeLow = ((Dictionary<string, double[]>)tripletHistoricSettings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)tripletHistoricSettings["analogueLowHighs"])[channelName][1];
+
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
+                    analoguesTask,
+                    inputRangeLow,
+                    inputRangeHigh
+                    );
+            }
+
+            if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+            {
+                analoguesTask.Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                analoguesTask.Control(TaskAction.Verify);
+
+                DaqStream analogStream = analoguesTask.Stream;
+                analoguesReader = new AnalogMultiChannelReader(analogStream);
+
+                // Start tasks
+                analoguesTask.Start();
+            }
+        }
+
+        private void TripletAcquire()
+        // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
+        {
+            // Go to start of scan
+            int report = SetAndLockWavelength((double)tripletHistoricSettings["tripletStart"]);
+            if (report == 1) throw new Exception("set_wave_m start: task failed");
+
+            // Main loop
+            for (double i = 0;
+                    i < (int)tripletHistoricSettings["tripletScanPoints"];
+                    i++)
+            {
+                double currentWavelength = (double)tripletHistoricSettings["tripletStart"] + i *
+                    ((double)tripletHistoricSettings["tripletStop"] - (double)tripletHistoricSettings["tripletStart"]) /
+                    ((int)tripletHistoricSettings["tripletScanPoints"] - 1);
+
+                report = SetAndLockWavelength(currentWavelength);
+
+                if (report == 0)
+                {
+                    // Start trigger task
+                    triggerWriter.WriteSingleSampleSingleLine(true, true);
+
+                    // Read counter data
+                    List<double[]> counterLatestData = new List<double[]>();
+                    foreach (CounterSingleChannelReader counterReader in counterReaders)
+                    {
+                        counterLatestData.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
+                    }
+
+                    // Read analogue data
+                    double[,] analogLatestData = null;
+                    if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                    {
+                        analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
+                    }
+
+                    // re-init the trigger 
+                    triggerWriter.WriteSingleSampleSingleLine(true, false);
+
+                    // Store counter data
+                    for (int j = 0; j < counterLatestData.Count; j++)
+                    {
+                        double[] latestData = counterLatestData[j];
+                        double data = latestData[latestData.Length - 1] - latestData[0];
+                        Point pnt = new Point(currentWavelength, data);
+                        CounterBuffer[j].Add(pnt);
+                    }
+
+                    // Store analogue data
+                    if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                    {
+                        for (int j = 0; j < analogLatestData.GetLength(0); j++)
+                        {
+                            double sum = 0;
+                            for (int k = 0; k < analogLatestData.GetLength(1) - 1; k++)
+                            {
+                                sum = sum + analogLatestData[j, k];
+                            }
+                            double average = sum / (analogLatestData.GetLength(1) - 1);
+                            Point pnt = new Point(currentWavelength, average);
+                            AnalogBuffer[j].Add(pnt);
+                        }
+                    }
+
+                    TripletOnData();
+
+                    // Check if scan exit.
+                    if (CheckIfStopping())
+                    {
+                        CHANGE
+                        wavemeterState = WavemeterScanState.stopping;
+                        report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
+                        if (report == 1) throw new Exception("set_wave_m end: task failed");
+                        // Quit plugins
+                        WavemeterAcquisitionFinishing();
+                        WavemeterOnScanFinished();
+                        return;
+                    }
+                }
+            }
+
+            CHANGE
+            WavemeterAcquisitionFinishing();
+            WavemeterOnScanFinished();
         }
 
         #endregion
