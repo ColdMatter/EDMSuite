@@ -17,7 +17,8 @@ namespace ScanMaster.Acquire.Plugin
     XmlInclude(typeof(NIRfsgAmplitudeOutputPlugin)),
     XmlInclude(typeof(NIRfsgFrequencyOutputPlugin)),
     XmlInclude(typeof(PGOutputPlugin)),
-    XmlInclude(typeof(TCLOutputPlugin))
+    XmlInclude(typeof(TCLOutputPlugin)),
+    XmlInclude(typeof(HardwareControllerOutputPlugin))
 #if DECELERATOR
     ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif

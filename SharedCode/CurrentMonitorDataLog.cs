@@ -14,6 +14,8 @@ namespace Data
         public double SouthOffset { get; set; }
         public double NorthCurrent { get; set; }
         public double SouthCurrent { get; set; }
+        public bool IsESwitching { get; set; }
+        public bool EFieldPolarity { get; set; }
 
         public CurrentMonitorDataLog() { }
         public CurrentMonitorDataLog(CurrentMonitorDataLog log)
@@ -27,8 +29,10 @@ namespace Data
             SouthOffset = log.SouthOffset;
             NorthCurrent = log.NorthCurrent;
             SouthCurrent = log.SouthCurrent;
+            IsESwitching = log.IsESwitching;
+            EFieldPolarity = log.EFieldPolarity;
         }
-        public CurrentMonitorDataLog(DateTime timeStamp, int lp, double nv2fs, double sv2fs, double f2cs, double no, double so, double nc, double sc)
+        public CurrentMonitorDataLog(DateTime timeStamp, int lp, double nv2fs, double sv2fs, double f2cs, double no, double so, double nc, double sc, bool switchingState, bool eFieldPol)
             : base(timeStamp)
         {
             PollPeriod = lp;
@@ -39,6 +43,8 @@ namespace Data
             SouthOffset = so;
             NorthCurrent = nc;
             SouthCurrent = sc;
+            IsESwitching = switchingState;
+            EFieldPolarity = eFieldPol;
         }
 
         public override string ToString()
@@ -51,7 +57,9 @@ namespace Data
                 " \"NorthOffset\" : " + NorthOffset.ToString() + ",\r\n" +
                 " \"SouthOffset\" : " + SouthOffset.ToString() + ",\r\n" +
                 " \"NorthCurrent\" : " + NorthCurrent.ToString() + ",\r\n" +
-                " \"SouthCurrent\" : " + SouthCurrent.ToString();
+                " \"SouthCurrent\" : " + SouthCurrent.ToString() + ",\r\n" +
+                " \"ESwitching\" : " + "\"" + IsESwitching.ToString() + "\"" + ",\r\n" +
+                " \"EFieldPolarity\" : " + "\"" + EFieldPolarity.ToString() + "\"";
         }
     }
 }

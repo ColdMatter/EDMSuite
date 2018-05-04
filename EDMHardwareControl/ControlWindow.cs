@@ -593,6 +593,8 @@ namespace EDMHardwareControl
         private GroupBox groupBox31;
         private Label label173;
         public TextBox rfAWGCarrierFreqTextBox;
+        private Button rfAWGTestButton;
+        public TextBox rfAWGTestTextBox;
 
  
 
@@ -1149,6 +1151,7 @@ namespace EDMHardwareControl
             this.startI2ErrorSigPollButton = new System.Windows.Forms.Button();
             this.rfAWGTab = new System.Windows.Forms.TabPage();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.rfAWGTestButton = new System.Windows.Forms.Button();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
             this.label173 = new System.Windows.Forms.Label();
             this.label168 = new System.Windows.Forms.Label();
@@ -1198,6 +1201,7 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
+            this.rfAWGTestTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -6478,6 +6482,8 @@ namespace EDMHardwareControl
             // 
             // groupBox27
             // 
+            this.groupBox27.Controls.Add(this.rfAWGTestTextBox);
+            this.groupBox27.Controls.Add(this.rfAWGTestButton);
             this.groupBox27.Controls.Add(this.groupBox31);
             this.groupBox27.Controls.Add(this.groupBox30);
             this.groupBox27.Controls.Add(this.groupBox29);
@@ -6489,6 +6495,16 @@ namespace EDMHardwareControl
             this.groupBox27.TabIndex = 23;
             this.groupBox27.TabStop = false;
             this.groupBox27.Text = "Pulsed rf control";
+            // 
+            // rfAWGTestButton
+            // 
+            this.rfAWGTestButton.Location = new System.Drawing.Point(437, 20);
+            this.rfAWGTestButton.Name = "rfAWGTestButton";
+            this.rfAWGTestButton.Size = new System.Drawing.Size(75, 23);
+            this.rfAWGTestButton.TabIndex = 24;
+            this.rfAWGTestButton.Text = "Test!";
+            this.rfAWGTestButton.UseVisualStyleBackColor = true;
+            this.rfAWGTestButton.Click += new System.EventHandler(this.rfAWGTestButton_Click);
             // 
             // groupBox31
             // 
@@ -6931,6 +6947,14 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
+            // rfAWGTestTextBox
+            // 
+            this.rfAWGTestTextBox.Location = new System.Drawing.Point(367, 19);
+            this.rfAWGTestTextBox.Name = "rfAWGTestTextBox";
+            this.rfAWGTestTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGTestTextBox.TabIndex = 12;
+            this.rfAWGTestTextBox.Text = "0";
+            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -7072,6 +7096,7 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
             this.rfAWGTab.ResumeLayout(false);
             this.groupBox27.ResumeLayout(false);
+            this.groupBox27.PerformLayout();
             this.groupBox31.ResumeLayout(false);
             this.groupBox31.PerformLayout();
             this.groupBox30.ResumeLayout(false);
@@ -7940,6 +7965,12 @@ namespace EDMHardwareControl
            {
                controller.DisableRfAWGPulsedGeneration();
            }
+       }
+
+       private void rfAWGTestButton_Click(object sender, EventArgs e)
+       {
+           controller.ConnectRfAWG();
+           controller.EnableRfAWGPulsedGeneration();
        }
 
 

@@ -20,6 +20,8 @@ using DAQ.HAL;
 using DAQ.Environment;
 using Data;
 
+using System.Diagnostics;
+
 namespace EDMHardwareControl
 {
     /// <summary>
@@ -2676,7 +2678,9 @@ namespace EDMHardwareControl
                             northOffset,
                             southOffset,
                             lastNorthCurrent,
-                            lastSouthCurrent));
+                            lastSouthCurrent,
+                            switchingEfield,
+                            window.ePolarityCheck.Checked));
                     }
                     if(iMonitorFlag)
                     {
@@ -4387,6 +4391,13 @@ namespace EDMHardwareControl
             }
         }
 
+        public void UpdateRfAWGPulsedGeneration()
+        {
+            rfAWG.StopGeneration();
+            window.rfsgStatusTimer.Enabled = false;
+            EnableRfAWGPulsedGeneration();
+        }
+
         public void DisableRfAWGPulsedGeneration()
         {
             try
@@ -4402,41 +4413,46 @@ namespace EDMHardwareControl
 
         private IQData GenerateIQData()
         {
-            double rf1FreqDiff = 1e6 * (RfAWGRf1Frequency - RfAWGCarrierFrequency);
-            double rf2FreqDiff = 1e6 * (RfAWGRf2Frequency - RfAWGCarrierFrequency);
-            double phaseOffset = RfAWGPhaseOffset;
-            bool rf1MorePower = RfAWGRf1Amplitude > RfAWGRf2Amplitude;
-            double scaledAmp = ScaledAmp(RfAWGRf1Amplitude, RfAWGRf2Amplitude);
-            double rf1Amp = rf1MorePower ? 1 : scaledAmp;
-            double rf2Amp = rf1MorePower ? scaledAmp : 1;
-
-            // Always use IQ rate of 100MS/s, so a single time unit is 10ns
-            // Input units are in us
-            const int MICROSECOND_TO_TIME_UNIT = 100;
-            int length = RfAWGWaveformLength * MICROSECOND_TO_TIME_UNIT;
-            int rf1StartTime = (RfAWGRf1CentreTime - (RfAWGRf1PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
-            int rf1EndTime = rf1StartTime + (RfAWGRf1PulseLength * MICROSECOND_TO_TIME_UNIT);
-            int rf2StartTime = (RfAWGRf2CentreTime - (RfAWGRf2PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
-            int rf2EndTime = rf2StartTime + (RfAWGRf2PulseLength * MICROSECOND_TO_TIME_UNIT);
-
-            IQData iqData = new IQData(length);
-            double iDataPoint = 0.0;
-            double qDataPoint = 0.0;
-
-            for (int i = rf1StartTime; i < rf1EndTime; i++)
+            IQData iqData;
+            object locker = new object();
+            lock (locker)
             {
-                iDataPoint = rf1Amp * Math.Cos(2 * Math.PI * rf1FreqDiff * i / 1e8);
-                qDataPoint = rf1Amp * Math.Sin(2 * Math.PI * rf1FreqDiff * i / 1e8);
-                iqData.WriteIQData(i, iDataPoint, qDataPoint);
-            }
+                double rf1FreqDiff = 1e6 * (RfAWGRf1Frequency - RfAWGCarrierFrequency);
+                double rf2FreqDiff = 1e6 * (RfAWGRf2Frequency - RfAWGCarrierFrequency);
+                double phaseOffset = RfAWGPhaseOffset;
+                bool rf1MorePower = RfAWGRf1Amplitude > RfAWGRf2Amplitude;
+                double scaledAmp = ScaledAmp(RfAWGRf1Amplitude, RfAWGRf2Amplitude);
+                double rf1Amp = rf1MorePower ? 1 : scaledAmp;
+                double rf2Amp = rf1MorePower ? scaledAmp : 1;
 
-            for (int i = rf2StartTime; i < rf2EndTime; i++)
-            {
-                iDataPoint = rf2Amp * Math.Cos(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
-                qDataPoint = rf2Amp * Math.Sin(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
-                iqData.WriteIQData(i, iDataPoint, qDataPoint);
-            }
+                // Always use IQ rate of 100MS/s, so a single time unit is 10ns
+                // Input units are in us
+                const int MICROSECOND_TO_TIME_UNIT = 100;
+                int length = RfAWGWaveformLength * MICROSECOND_TO_TIME_UNIT;
+                int rf1StartTime = (RfAWGRf1CentreTime - (RfAWGRf1PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
+                int rf1EndTime = rf1StartTime + (RfAWGRf1PulseLength * MICROSECOND_TO_TIME_UNIT);
+                int rf2StartTime = (RfAWGRf2CentreTime - (RfAWGRf2PulseLength / 2)) * MICROSECOND_TO_TIME_UNIT;
+                int rf2EndTime = rf2StartTime + (RfAWGRf2PulseLength * MICROSECOND_TO_TIME_UNIT);
 
+                iqData = new IQData(length);
+                double iDataPoint = 0.0;
+                double qDataPoint = 0.0;
+
+                for (int i = rf1StartTime; i < rf1EndTime; i++)
+                {
+                    iDataPoint = rf1Amp * Math.Cos(2 * Math.PI * rf1FreqDiff * i / 1e8);
+                    qDataPoint = rf1Amp * Math.Sin(2 * Math.PI * rf1FreqDiff * i / 1e8);
+                    iqData.WriteIQData(i, iDataPoint, qDataPoint);
+                }
+
+                for (int i = rf2StartTime; i < rf2EndTime; i++)
+                {
+                    iDataPoint = rf2Amp * Math.Cos(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
+                    qDataPoint = rf2Amp * Math.Sin(2 * Math.PI * rf2FreqDiff * i / 1e8 + phaseOffset);
+                    iqData.WriteIQData(i, iDataPoint, qDataPoint);
+                }
+            }
+            
             return iqData;
 
         }
@@ -4451,9 +4467,13 @@ namespace EDMHardwareControl
             rfAWG.CheckGeneration();
             if (rfAWG.GenerationComplete)
             {
+                var sw = new Stopwatch();
+                sw.Start();
                 rfAWG.StopGeneration();
                 window.rfsgStatusTimer.Enabled = false;
                 EnableRfAWGPulsedGeneration();
+                sw.Stop();
+                window.SetTextBox(window.rfAWGTestTextBox, sw.ElapsedMilliseconds.ToString());
             }
         }
 
