@@ -45,9 +45,12 @@ namespace ConfocalControl
         public ICEBlocDFG DFG { get { return dfg; } }
 
         // Bound event managers to class
+        // Wavemeter scan
         public event SpectraScanDataEventHandler WavemeterData;
         public event MultiChannelScanFinishedEventHandler WavemeterScanFinished;
         public event SpectraScanExceptionEventHandler WavemeterScanProblem;
+        // Triplet search
+        public event TeraSingleDataEventHandler TripletData;
 
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
@@ -61,6 +64,8 @@ namespace ConfocalControl
         public Hashtable wavemeterHistoricSettings;
 
         // Keep track of data for triplet search
+        private double[,] tripletAnalogBuffer;
+        private List<double[]> tripletCounterBuffer;
         public Hashtable tripletHistoricSettings;
 
         // Keep track of tasks
@@ -545,7 +550,7 @@ namespace ConfocalControl
 
         #endregion
 
-        #region
+        #region Triplet Scan
 
         public bool TripletAcceptableSettings()
         {
@@ -725,48 +730,26 @@ namespace ConfocalControl
                     triggerWriter.WriteSingleSampleSingleLine(true, true);
 
                     // Read counter data
-                    List<double[]> counterLatestData = new List<double[]>();
+                    tripletCounterBuffer = new List<double[]>();
                     foreach (CounterSingleChannelReader counterReader in counterReaders)
                     {
-                        counterLatestData.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
+                        tripletCounterBuffer.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
                     }
 
                     // Read analogue data
-                    double[,] analogLatestData = null;
                     if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
                     {
-                        analogLatestData = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
+                        tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
                     }
 
                     // re-init the trigger 
                     triggerWriter.WriteSingleSampleSingleLine(true, false);
 
-                    // Store counter data
-                    for (int j = 0; j < counterLatestData.Count; j++)
-                    {
-                        double[] latestData = counterLatestData[j];
-                        double data = latestData[latestData.Length - 1] - latestData[0];
-                        Point pnt = new Point(currentWavelength, data);
-                        CounterBuffer[j].Add(pnt);
-                    }
-
-                    // Store analogue data
-                    if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
-                    {
-                        for (int j = 0; j < analogLatestData.GetLength(0); j++)
-                        {
-                            double sum = 0;
-                            for (int k = 0; k < analogLatestData.GetLength(1) - 1; k++)
-                            {
-                                sum = sum + analogLatestData[j, k];
-                            }
-                            double average = sum / (analogLatestData.GetLength(1) - 1);
-                            Point pnt = new Point(currentWavelength, average);
-                            AnalogBuffer[j].Add(pnt);
-                        }
-                    }
-
+                    // Broadcast
                     TripletOnData();
+
+                    // Save data
+                    TripletSaveData();
 
                     // Check if scan exit.
                     if (CheckIfStopping())
@@ -786,6 +769,79 @@ namespace ConfocalControl
             CHANGE
             WavemeterAcquisitionFinishing();
             WavemeterOnScanFinished();
+        }
+
+        private void TripletOnData()
+        {
+            switch ((string)Settings["triplet_channel_type"])
+            {
+                case "Counters":
+                    if (TripletData != null)
+                    {
+                        if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["counterChannels"]).Count)
+                        {
+                            TripletData(tripletCounterBuffer[(int)Settings["triplet_display_channel_index"]].ToArray());
+                        }
+                        else TripletData(null);
+                    }
+                    break;
+
+                case "Analogues":
+                    if (TripletData != null)
+                    {
+                        if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count)
+                        {
+                            int row_size = tripletAnalogBuffer.GetLength(1);
+                            TripletData(tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray();
+                        }
+                        else TripletData(null);
+                    }
+                    break;
+
+                default:
+                    throw new Exception("Did not understand data type");
+            }
+        }
+
+        private void TripletSaveData(double currentWavelength)
+        {
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+
+            NEWDIRECTORY
+
+            List<string> lines = new List<string>();
+            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
+            lines.Add("Rate = " + ((double)tripletHistoricSettings["tripletRate"]).ToString() + ", Int = " + ((double)tripletHistoricSettings["tripletInt"]).ToString());
+            lines.Add("Lambda start = " + ((double)tripletHistoricSettings["tripletStart"]).ToString() + ", Lambda stop = " + ((double)tripletHistoricSettings["tripletStop"]).ToString() + ", Lambda resolution = " + ((int)tripletHistoricSettings["tripletScanPoints"]).ToString());
+            lines.Add("Current lambda = " + currentWavelength.ToString());
+
+            string descriptionString = "Lambda ";
+            foreach (string channel in (List<string>)tripletHistoricSettings["counterChannels"])
+            {
+                descriptionString = descriptionString + channel + " ";
+            }
+            foreach (string channel in (List<string>)tripletHistoricSettings["analogueChannels"])
+            {
+                descriptionString = descriptionString + channel + " ";
+            }
+            lines.Add(descriptionString);
+
+            for (int i = 0; i < tripletCounterBuffer[0].Length; i++)
+            {
+                string line = tripletCounterBuffer[0][i].ToString() + " ";
+                foreach (double[] counterData in tripletCounterBuffer)
+                {
+                    line = line + counterData[i].ToString() + " ";
+                }
+                int column_size = tripletAnalogBuffer.GetLength(0);
+                for (int j = 0; j < column_size; j++)
+			    {
+			        line = line + tripletAnalogBuffer[j,i].ToString() + " ";
+			    }
+                lines.Add(line);
+            }
+
+            System.IO.File.WriteAllLines(directory + fileName, lines.ToArray());
         }
 
         #endregion
