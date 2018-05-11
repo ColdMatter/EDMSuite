@@ -2513,6 +2513,15 @@ namespace EDMHardwareControl
             window.SetTextBox(window.cMinusVMonitorTextBox, CMinusMonitorVoltage.ToString());
         }
 
+        public double LastNorthCurrent
+        {
+            get { return northLeakageMonitor.GetCurrent(); }
+        }
+
+        public double LastSouthCurrent
+        {
+            get { return southLeakageMonitor.GetCurrent(); }
+        }
 
         private double lastNorthCurrent;
         private double lastSouthCurrent;
@@ -2655,10 +2664,7 @@ namespace EDMHardwareControl
 
         internal void StopIMonitorPoll()
         {
-            lock (iMonitorLock)
-            {
-                iMonitorFlag = true;
-            }
+            iMonitorFlag = true;
         }
         private void IMonitorPollWorker()
         {
@@ -4077,10 +4083,7 @@ namespace EDMHardwareControl
 
         internal void StopPressureMonitorPoll()
         {
-            lock (pressureMonitorLock)
-            {
-                pressureMonitorFlag = true;
-            }
+            pressureMonitorFlag = true;
         }
         private void pressureMonitorPollWorker()
         {

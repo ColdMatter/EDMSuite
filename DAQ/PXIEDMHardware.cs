@@ -35,6 +35,7 @@ namespace DAQ.HAL
             Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");
             Boards.Add("doBoard", "/PXI1Slot11");
+            Boards.Add("analogIn2", "/PXI1Slot17");
             Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2");
             // this drives the rf attenuators
@@ -48,6 +49,7 @@ namespace DAQ.HAL
             string rfAWG = (string)Boards["rfAWG"];
             string pgBoard = (string)Boards["pg"];
             string daqBoard = (string)Boards["daq"];
+            string analogIn2 = (string)Boards["analogIn2"];
             string counterBoard = (string)Boards["counter"];
             string aoBoard = (string)Boards["aoBoard"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
@@ -60,7 +62,7 @@ namespace DAQ.HAL
             //string tclBoardProbe = (string)Boards["tclBoardProbe"];
 
             // add things to the info
-            // the analog triggersf
+            // the analog triggers
             Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
             Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
 
@@ -186,13 +188,24 @@ namespace DAQ.HAL
             AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("middlePenningGauge", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("middlePenningGauge", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinB0_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinB0_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
+
+            AddAnalogInputChannel("quSpinEV_Y", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEV_Z", analogIn2 + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEW_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEW_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEX_Y", analogIn2 + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
             AddAnalogOutputChannel("bScan", aoBoard + "/ao2");

@@ -37,6 +37,7 @@ namespace EDMBlockHead.Acquire
 		// daq variables
 		ArrayList switchedChannels;
 		ScannedAnalogInputCollection inputs;
+        ScannedAnalogInputCollection magInputs;
 		Task inputTask;
         Task singlePointInputTask;
  		AnalogMultiChannelReader inputReader;
@@ -464,6 +465,199 @@ namespace EDMBlockHead.Acquire
 
         }
 
+        public void AcquireMagData()
+        {
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
+
+            scanMaster = new ScanMaster.Controller();
+            phaseLock = new EDMPhaseLock.MainForm();
+            hardwareController = new EDMHardwareControl.Controller();
+
+            // map modulations to physical channels
+            MapChannels();
+
+            // map the analog inputs
+            MapMagInputs();
+
+            Block b = new Block();
+            b.Config = config;
+            b.SetTimeStamp();
+            foreach (ScannedAnalogInput channel in magInputs.Channels)
+            {
+                b.detectors.Add(channel.Channel.Name);
+            }
+
+            try
+            {
+                // get things going
+                MagAcquisitionStarting();
+
+                // enter the main loop
+                for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
+                {
+                    // set the switch states and impose the appropriate wait times
+                    ThrowSwitches(point);
+
+                    // take a point
+                    Shot s;
+                    EDMPoint p;
+                    if (Environs.Debug)
+                    {
+                        // just stuff a made up shot in
+                        //Thread.Sleep(10);
+                        s = DataFaker.GetFakeShot(1900, 50, 10, 3, 3);
+                        ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
+                        p = new EDMPoint();
+                        p.Shot = s;
+                        //Thread.Sleep(20);
+                    }
+                    else
+                    {
+                        // everything should be ready now so start the analog
+                        // input task (it will wait for a trigger)
+                        inputTask.Start();
+
+                        // get the raw data
+                        double[,] analogData = inputReader.ReadMultiSample(magInputs.GateLength);
+                        inputTask.Stop();
+
+
+                        // extract the data for each scanned channel and put it in a TOF
+                        s = new Shot();
+                        for (int i = 0; i < magInputs.Channels.Count; i++)
+                        {
+                            // extract the raw data
+                            double[] rawData = new double[magInputs.GateLength];
+                            for (int q = 0; q < magInputs.GateLength; q++) rawData[q] = analogData[i, q];
+
+                            ScannedAnalogInput ipt = (ScannedAnalogInput)magInputs.Channels[i];
+                            // reduce the data
+                            double[] data = ipt.Reduce(rawData);
+                            TOF t = new TOF();
+                            t.Calibration = ipt.Calibration;
+                            // the 1000000 is because clock period is in microseconds;
+                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(magInputs.RawSampleRate);
+                            t.GateStartTime = magInputs.GateStartTime;
+                            // this is a bit confusing. The chop is measured in points, so the gate
+                            // has to be adjusted by the number of points times the clock period!
+                            if (ipt.ReductionMode == DataReductionMode.Chop)
+                                t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
+                            t.Data = data;
+                            // the 1000000 is because clock period is in microseconds;
+                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(magInputs.RawSampleRate);
+
+                            s.TOFs.Add(t);
+                        }
+
+                        p = new EDMPoint();
+                        p.Shot = s;
+
+                    }
+                    // do the "SinglePointData" (i.e. things that are measured once per point)
+                    // We'll save the leakage monitor until right at the end.
+                    // keep an eye on what the phase lock is doing
+                    p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+                    p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    // scan the analog inputs
+                    double[] spd;
+                    // fake some data if we're in debug mode
+                    if (Environs.Debug)
+                    {
+                        spd = new double[7];
+                        spd[0] = 1;
+                        spd[1] = 2;
+                        spd[2] = 3;
+                        spd[3] = 4;
+                        spd[4] = 5;
+                        spd[5] = 6;
+                        spd[6] = 7;
+                    }
+                    else
+                    {
+                        singlePointInputTask.Start();
+                        spd = singlePointInputReader.ReadSingleSample();
+                        singlePointInputTask.Stop();
+                    }
+                    p.SinglePointData.Add("ProbePD", spd[0]);
+                    p.SinglePointData.Add("PumpPD", spd[1]);
+                    p.SinglePointData.Add("MiniFlux1", spd[2]);
+                    p.SinglePointData.Add("MiniFlux2", spd[3]);
+                    p.SinglePointData.Add("MiniFlux3", spd[4]);
+                    //p.SinglePointData.Add("CplusV", spd[5]);
+                    //p.SinglePointData.Add("CminusV", spd[6]);
+
+                    //hardwareController.UpdateVMonitor();
+                    //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
+                    //hardwareController.UpdateLaserPhotodiodes();
+                    //p.SinglePointData.Add("ProbePD", hardwareController.ProbePDVoltage);
+                    //p.SinglePointData.Add("PumpPD", hardwareController.PumpPDVoltage);
+                    //hardwareController.UpdateMiniFluxgates();
+                    //p.SinglePointData.Add("MiniFlux1", hardwareController.MiniFlux1Voltage);
+                    //p.SinglePointData.Add("MiniFlux2", hardwareController.MiniFlux2Voltage);
+                    //p.SinglePointData.Add("MiniFlux3", hardwareController.MiniFlux3Voltage);
+                    hardwareController.ReadIMonitor();
+                    p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
+                    p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                    //hardwareController.UpdatePiMonitor();
+                    //p.SinglePointData.Add("piMonitor", hardwareController.PiFlipMonVoltage);
+                    //p.SinglePointData.Add("CminusV", hardwareController.CMinusMonitorVoltage);
+
+                    // Hopefully the leakage monitors will have finished reading by now.
+                    // We join them, read out the data, and then launch another asynchronous
+                    // acquisition. [If this is the first shot of the block, the leakage monitor
+                    // measurement will have been launched in AcquisitionStarting() ].
+                    //hardwareController.WaitForIMonitorAsync();
+                    //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent); 
+                    //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                    //hardwareController.UpdateIMonitorAsync();
+
+                    // randomise the Ramsey phase
+                    // TODO: check whether the .NET rng is good enough
+                    // TODO: reference where this number comes from
+                    //double d = 2.3814 * (new Random().NextDouble());
+                    //hardwareController.SetScramblerVoltage(d);
+
+                    b.Points.Add(p);
+
+                    // update the front end
+                    Controller.GetController().GotPoint(point, p);
+
+                    if (CheckIfStopping())
+                    {
+                        // release hardware
+                        AcquisitionStopping();
+                        // signal anybody waiting on the lock that we're done
+                        Monitor.Pulse(MonitorLockObject);
+                        Monitor.Exit(MonitorLockObject);
+                        return;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // try and stop the experiment gracefully
+                try
+                {
+                    AcquisitionStopping();
+                }
+                catch (Exception) { }				// about the best that can be done at this stage
+                Monitor.Pulse(MonitorLockObject);
+                Monitor.Exit(MonitorLockObject);
+                throw e;
+            }
+
+            AcquisitionStopping();
+
+            // hand the new block back to the controller
+            Controller.GetController().AcquisitionFinished(b);
+
+            // signal anybody waiting on the lock that we're done
+            Monitor.Pulse(MonitorLockObject);
+            Monitor.Exit(MonitorLockObject);
+
+        }
+
 		private void MapChannels()
 		{
 			switchedChannels = new ArrayList();
@@ -645,32 +839,135 @@ namespace EDMBlockHead.Acquire
             battery.Calibration = 1;
             inputs.Channels.Add(battery);
 
+            //ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
+            //rfCurrent.ReductionMode = DataReductionMode.Average;
+            //rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
+            //rfCurrent.AverageEvery = 10; //Bandwidth of the ammeter is aprox 12kHz
+            //rfCurrent.LowLimit = -10;
+            //rfCurrent.HighLimit = 10;
+            //inputs.Channels.Add(rfCurrent);
 
-            ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
-            rfCurrent.ReductionMode = DataReductionMode.Average;
-            rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
-            rfCurrent.AverageEvery = 10; //Bandwidth of the ammeter is aprox 12kHz
-            rfCurrent.LowLimit = -10;
-            rfCurrent.HighLimit = 10;
-            inputs.Channels.Add(rfCurrent);
+            //ScannedAnalogInput reflectedrf1Amplitude = new ScannedAnalogInput();
+            //reflectedrf1Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf1Amplitude"];
+            //reflectedrf1Amplitude.ReductionMode = DataReductionMode.Chop;
+            //reflectedrf1Amplitude.ChopStart = 30;
+            //reflectedrf1Amplitude.ChopLength = 130;
+            //reflectedrf1Amplitude.LowLimit = -10;
+            //reflectedrf1Amplitude.HighLimit = 1;
+            //inputs.Channels.Add(reflectedrf1Amplitude);
 
-            ScannedAnalogInput reflectedrf1Amplitude = new ScannedAnalogInput();
-            reflectedrf1Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf1Amplitude"];
-            reflectedrf1Amplitude.ReductionMode = DataReductionMode.Chop;
-            reflectedrf1Amplitude.ChopStart = 30;
-            reflectedrf1Amplitude.ChopLength = 130;
-            reflectedrf1Amplitude.LowLimit = -10;
-            reflectedrf1Amplitude.HighLimit = 1;
-            inputs.Channels.Add(reflectedrf1Amplitude);
+            //ScannedAnalogInput reflectedrf2Amplitude = new ScannedAnalogInput();
+            //reflectedrf2Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf2Amplitude"];
+            //reflectedrf2Amplitude.ReductionMode = DataReductionMode.Chop;
+            //reflectedrf2Amplitude.ChopStart = 30;
+            //reflectedrf2Amplitude.ChopLength = 130;
+            //reflectedrf2Amplitude.LowLimit = -10;
+            //reflectedrf2Amplitude.HighLimit = 1;
+            //inputs.Channels.Add(reflectedrf2Amplitude);
+        }
 
-            ScannedAnalogInput reflectedrf2Amplitude = new ScannedAnalogInput();
-            reflectedrf2Amplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrf2Amplitude"];
-            reflectedrf2Amplitude.ReductionMode = DataReductionMode.Chop;
-            reflectedrf2Amplitude.ChopStart = 30;
-            reflectedrf2Amplitude.ChopLength = 130;
-            reflectedrf2Amplitude.LowLimit = -10;
-            reflectedrf2Amplitude.HighLimit = 1;
-            inputs.Channels.Add(reflectedrf2Amplitude);
+        // This version for magnetometer data taking with the QuSpins
+        public void MapMagInputs()
+        {
+            magInputs = new ScannedAnalogInputCollection();
+            magInputs.RawSampleRate = 100000;
+            magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
+            magInputs.GateLength = 280;
+            //magInputs.GateLength = 1000;
+            // NOTE: this long version is for null runs, don't set it so long that the shots overlap!
+            // Comment the following line out if you're not null running.
+            //magInputs.GateLength = 3000;
+
+            ScannedAnalogInput b0y = new ScannedAnalogInput();
+            b0y.ReductionMode = DataReductionMode.Average;
+            b0y.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinB0_Y"];
+            b0y.AverageEvery = 20;
+            b0y.LowLimit = -10;
+            b0y.HighLimit = 10;
+            b0y.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(b0y);
+
+            ScannedAnalogInput b0z = new ScannedAnalogInput();
+            b0z.ReductionMode = DataReductionMode.Average;
+            b0z.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinB0_Z"];
+            b0z.AverageEvery = 20;
+            b0z.LowLimit = -10;
+            b0z.HighLimit = 10;
+            b0z.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(b0z);
+
+            ScannedAnalogInput evy = new ScannedAnalogInput();
+            evy.ReductionMode = DataReductionMode.Average;
+            evy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEV_Y"];
+            evy.AverageEvery = 20;
+            evy.LowLimit = -10;
+            evy.HighLimit = 10;
+            evy.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(evy);
+
+            ScannedAnalogInput evz = new ScannedAnalogInput();
+            evz.ReductionMode = DataReductionMode.Average;
+            evz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEV_Z"];
+            evz.AverageEvery = 20;
+            evz.LowLimit = -10;
+            evz.HighLimit = 10;
+            evz.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(evz);
+
+            ScannedAnalogInput ewy = new ScannedAnalogInput();
+            ewy.ReductionMode = DataReductionMode.Average;
+            ewy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEW_Y"];
+            ewy.AverageEvery = 20;
+            ewy.LowLimit = -10;
+            ewy.HighLimit = 10;
+            ewy.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(ewy);
+
+            ScannedAnalogInput ewz = new ScannedAnalogInput();
+            ewz.ReductionMode = DataReductionMode.Average;
+            ewz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEW_Z"];
+            ewz.AverageEvery = 20;
+            ewz.LowLimit = -10;
+            ewz.HighLimit = 10;
+            ewz.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(ewz);
+
+            ScannedAnalogInput exy = new ScannedAnalogInput();
+            exy.ReductionMode = DataReductionMode.Average;
+            exy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEX_Y"];
+            exy.AverageEvery = 20;
+            exy.LowLimit = -10;
+            exy.HighLimit = 10;
+            exy.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(exy);
+
+            ScannedAnalogInput exz = new ScannedAnalogInput();
+            exz.ReductionMode = DataReductionMode.Average;
+            exz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEX_Z"];
+            exz.AverageEvery = 20;
+            exz.LowLimit = -10;
+            exz.HighLimit = 10;
+            exz.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(exz);
+
+            ScannedAnalogInput euy = new ScannedAnalogInput();
+            euy.ReductionMode = DataReductionMode.Average;
+            euy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEU_Y"];
+            euy.AverageEvery = 20;
+            euy.LowLimit = -10;
+            euy.HighLimit = 10;
+            euy.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(euy);
+
+            ScannedAnalogInput euz = new ScannedAnalogInput();
+            euz.ReductionMode = DataReductionMode.Average;
+            euz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinEU_Z"];
+            euz.AverageEvery = 20;
+            euz.LowLimit = -10;
+            euz.HighLimit = 10;
+            euz.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(euz);
+
         }
 
         ///* THIS VERSION FOR He/Kr */
@@ -822,6 +1119,51 @@ namespace EDMBlockHead.Acquire
             // Start the first asynchronous acquisition
             //hardwareController.UpdateIMonitorAsync();
 		}
+
+        // configure hardware for magnetic field data taking
+        private void MagAcquisitionStarting()
+        {
+            // iterate through the channels and ready them
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionStarting();
+
+            // copy running parameters into the BlockConfig
+            StuffConfig();
+
+            // prepare the inputs
+            inputTask = new Task("BlockHead magnetometer analog input");
+
+            foreach (ScannedAnalogInput i in magInputs.Channels)
+                i.Channel.AddToTask(
+                    inputTask,
+                    i.LowLimit,
+                    i.HighLimit
+                    );
+
+            inputTask.Timing.ConfigureSampleClock(
+                "",
+                magInputs.RawSampleRate,
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples,
+                magInputs.GateLength * magInputs.Channels.Count
+                );
+
+            inputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("analogTrigger0"),
+                DigitalEdgeStartTriggerEdge.Rising
+                );
+
+            if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
+            inputReader = new AnalogMultiChannelReader(inputTask.Stream);
+
+            ConfigureSinglePointAnalogInputs();
+
+            // set the leakage monitor measurement time to 5ms.
+            // With this setting it actually takes 26ms total to acquire two channels.
+            //hardwareController.LeakageMonitorMeasurementTime = 0.005;
+            hardwareController.ReconfigureIMonitors();
+            // Start the first asynchronous acquisition
+            //hardwareController.UpdateIMonitorAsync();
+        }
 
 		// If you want to store any information in the BlockConfig this is the place to do it.
 		// This function is called at the start of every block.
