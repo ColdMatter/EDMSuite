@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.IO;
 using Microsoft.Win32;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
+using DSPLib;
 
 namespace ConfocalControl
 {
@@ -51,6 +54,9 @@ namespace ConfocalControl
         public event SpectraScanExceptionEventHandler WavemeterScanProblem;
         // Triplet search
         public event TeraSingleDataEventHandler TripletData;
+        public event TeraSingleDataEventHandler TripletDFTData;
+        public event MultiChannelScanFinishedEventHandler TripletScanFinished;
+        public event SpectraScanExceptionEventHandler TripletScanProblem;
 
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
@@ -64,6 +70,7 @@ namespace ConfocalControl
         public Hashtable wavemeterHistoricSettings;
 
         // Keep track of data for triplet search
+        private string tripletFolder;
         private double[,] tripletAnalogBuffer;
         private List<double[]> tripletCounterBuffer;
         public Hashtable tripletHistoricSettings;
@@ -576,6 +583,7 @@ namespace ConfocalControl
 
                 tripletState = TripletScanState.running;
                 backendState = DFGState.running;
+
                 tripletHistoricSettings["tripletStart"] = (double)Settings["tripletStart"];
                 tripletHistoricSettings["tripletStop"] = (double)Settings["tripletStop"];
                 tripletHistoricSettings["tripletScanPoints"] = (int)Settings["tripletScanPoints"];
@@ -584,6 +592,14 @@ namespace ConfocalControl
                 tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
                 tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
                 tripletHistoricSettings["analogueLowHighs"] = (Dictionary<string, double[]>)Settings["analogueLowHighs"];
+
+                string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+                String hour = DateTime.Now.ToString("hh", DateTimeFormatInfo.InvariantInfo);
+                String minutes = DateTime.Now.ToString("mm", DateTimeFormatInfo.InvariantInfo);
+                String seconds = DateTime.Now.ToString("ss", DateTimeFormatInfo.InvariantInfo);
+                tripletFolder = directory + hour + "-" + minutes + "-" + seconds + "\\";
+                if (!Directory.Exists(tripletFolder)) Directory.CreateDirectory(tripletFolder);
+
                 TripletAcquisitionStarting();
                 TripletAcquire();
             }
@@ -749,26 +765,58 @@ namespace ConfocalControl
                     TripletOnData();
 
                     // Save data
-                    TripletSaveData();
+                    TripletSaveData(currentWavelength);
+
+                    // DFT
+                    IM HERE
+                    UInt32 length = UInt32(tripletAnalogBuffer.GetLength(1));
+                    DFT dft = new DFT();
+                    dft.Initialize(Convert.ToInt32(tripletAnalogBuffer.GetLength(1)));
 
                     // Check if scan exit.
                     if (CheckIfStopping())
                     {
-                        CHANGE
-                        wavemeterState = WavemeterScanState.stopping;
-                        report = SetAndLockWavelength((double)Settings["wavemeterScanStart"]);
+                        tripletState = TripletScanState.stopping;
+                        report = SetAndLockWavelength((double)Settings["tripletStart"]);
                         if (report == 1) throw new Exception("set_wave_m end: task failed");
                         // Quit plugins
-                        WavemeterAcquisitionFinishing();
-                        WavemeterOnScanFinished();
+                        TripletAcquisitionFinishing();
+                        TripletOnScanFinished();
                         return;
                     }
                 }
             }
 
-            CHANGE
-            WavemeterAcquisitionFinishing();
-            WavemeterOnScanFinished();
+            TripletAcquisitionFinishing();
+            TripletOnScanFinished();
+        }
+
+        public void TripletAcquisitionFinishing()
+        {
+            triggerTask.Dispose();
+            freqOutTask.Dispose();
+            foreach (Task counterTask in counterTasks)
+            {
+                counterTask.Dispose();
+            }
+            analoguesTask.Dispose();
+
+            triggerTask = null;
+            freqOutTask = null;
+            counterTasks = null;
+            analoguesTask = null;
+
+            triggerWriter = null;
+            counterReaders = null;
+            analoguesReader = null;
+
+            tripletState = TripletScanState.stopped;
+            backendState = DFGState.stopped;
+        }
+
+        public void RequestTripletHistoricData()
+        {
+            if (tripletAnalogBuffer != null && tripletCounterBuffer != null) TripletOnData();
         }
 
         private void TripletOnData()
@@ -792,7 +840,7 @@ namespace ConfocalControl
                         if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count)
                         {
                             int row_size = tripletAnalogBuffer.GetLength(1);
-                            TripletData(tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray();
+                            TripletData(tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray());
                         }
                         else TripletData(null);
                     }
@@ -805,10 +853,6 @@ namespace ConfocalControl
 
         private void TripletSaveData(double currentWavelength)
         {
-            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
-
-            NEWDIRECTORY
-
             List<string> lines = new List<string>();
             lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
             lines.Add("Rate = " + ((double)tripletHistoricSettings["tripletRate"]).ToString() + ", Int = " + ((double)tripletHistoricSettings["tripletInt"]).ToString());
@@ -841,7 +885,14 @@ namespace ConfocalControl
                 lines.Add(line);
             }
 
-            System.IO.File.WriteAllLines(directory + fileName, lines.ToArray());
+            string fileName = DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_triplet_search_lambda_" + currentWavelength.ToString() + ".txt";
+
+            System.IO.File.WriteAllLines(tripletFolder + fileName, lines.ToArray());
+        }
+
+        private void TripletOnScanFinished()
+        {
+            if (TripletScanFinished != null) TripletScanFinished();
         }
 
         #endregion

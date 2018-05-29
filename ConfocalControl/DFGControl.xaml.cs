@@ -61,6 +61,11 @@ namespace ConfocalControl
             tripletScanRes_Set.Value = (int)DFGPlugin.GetController().Settings["tripletScanPoints"];
             tripletScanInt_Set.Value = (double)DFGPlugin.GetController().Settings["tripletInt"];
             tripletScanRate_Set.Value = (double)DFGPlugin.GetController().Settings["tripletRate"];
+
+            DFGPlugin.GetController().TripletScanProblem += tripletScanProblem;
+            DFGPlugin.GetController().TripletScanFinished += tripletScanFinished;
+            DFGPlugin.GetController().TripletData += tripletScanData;
+            DFGPlugin.GetController().TripletDFTData += tripletDFTData;
         }
 
         #endregion
@@ -366,6 +371,51 @@ namespace ConfocalControl
         {
             if (e.NewValue <= 0) tripletScanRate_Set.Value = e.OldValue;
             else DFGPlugin.GetController().Settings["tripletRate"] = e.NewValue;
+        }
+
+        private void tripletScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (DFGPlugin.GetController().IsRunning() && DFGPlugin.GetController().TripletScanIsRunning())
+            {
+                DFGPlugin.GetController().TripletAcquisitionFinishing();
+            }
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.tripletScan_Switch.Value = false;
+                   }));
+        }
+
+        private void tripletScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.tripletScan_Switch.Value = false;
+                   }));
+        }
+
+        private void tripletScanData(double[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Display.DataSource = data;
+                       }));
+        }
+
+        private void tripletDFTData(double[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScanDFT_Display.DataSource = data;
+                       }));
         }
 
         #endregion

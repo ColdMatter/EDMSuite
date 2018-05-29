@@ -92,6 +92,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -117,6 +118,7 @@
       <DependentUpon>DFGHardwareConfigure.xaml</DependentUpon>
     </Compile>
     <Compile Include="DFGPlugin.cs" />
+    <Compile Include="DSPLib.cs" />
     <Compile Include="FastMultiChannelRasterScan.cs" />
     <Compile Include="HardwareConfigure.xaml.cs">
       <DependentUpon>HardwareConfigure.xaml</DependentUpon>

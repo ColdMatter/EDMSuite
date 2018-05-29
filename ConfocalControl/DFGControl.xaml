@@ -50,9 +50,9 @@
         <Label Content="Res" HorizontalAlignment="Left" Margin="21,369,0,0" VerticalAlignment="Top"/>
         <Label Content="Int" HorizontalAlignment="Left" Margin="21,397,0,0" VerticalAlignment="Top"/>
         <Label Content="Rate" HorizontalAlignment="Left" Margin="21,425,0,0" VerticalAlignment="Top"/>
-        <ni:Graph HorizontalAlignment="Left" Height="245" Margin="181,288,0,0" VerticalAlignment="Top" Width="350"/>
-        <ni:Graph HorizontalAlignment="Left" Height="245" Margin="538,288,0,0" VerticalAlignment="Top" Width="350"/>
-        <ni:Switch Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="36,456,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
+        <ni:Graph x:Name="tripletScan_Display" HorizontalAlignment="Left" Height="245" Margin="181,288,0,0" VerticalAlignment="Top" Width="350"/>
+        <ni:Graph x:Name="tripletScanDFT_Display" HorizontalAlignment="Left" Height="245" Margin="538,288,0,0" VerticalAlignment="Top" Width="350"/>
+        <ni:Switch x:Name="tripletScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="36,456,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
         <ComboBox HorizontalAlignment="Left" Margin="21,484,0,0" VerticalAlignment="Top" Width="115"/>
         <ComboBox HorizontalAlignment="Left" Margin="21,511,0,0" VerticalAlignment="Top" Width="115"/>
     </Grid>
