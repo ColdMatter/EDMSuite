@@ -66,6 +66,10 @@ namespace ConfocalControl
             DFGPlugin.GetController().TripletScanFinished += tripletScanFinished;
             DFGPlugin.GetController().TripletData += tripletScanData;
             DFGPlugin.GetController().TripletDFTData += tripletDFTData;
+
+            triplet_output_type_box.Items.Add("Counters");
+            triplet_output_type_box.Items.Add("Analogues");
+            triplet_output_type_box.SelectedIndex = 0;
         }
 
         #endregion
@@ -340,7 +344,7 @@ namespace ConfocalControl
 
         #endregion
 
-        #region Triplet events
+        #region Triplet Scan events
 
         private void tripletScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
@@ -416,6 +420,117 @@ namespace ConfocalControl
                        {
                            this.tripletScanDFT_Display.DataSource = data;
                        }));
+        }
+
+        private void tripletScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!tripletScan_Switch.Value)
+            {
+                if (!DFGPlugin.GetController().TripletAcceptableSettings())
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                if (!DFGPlugin.GetController().DFG.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       DissableNoneScanCommands();
+                       this.tripletScan_Switch.Value = true;
+                   }));
+
+                Thread thread = new Thread(new ThreadStart(DFGPlugin.GetController().TripletStartScan));
+                thread.IsBackground = true;
+                thread.Start();
+                triplet_output_type_box_SelectionChanged(null, null);
+            }
+
+            else
+            {
+                if (DFGPlugin.GetController().IsRunning())
+                {
+                    DFGPlugin.GetController().StopAcquisition();
+                }
+            }
+        }
+
+        private void triplet_output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            triplet_output_box.Items.Clear();
+            triplet_output_box.SelectedIndex = -1;
+
+            switch (triplet_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    DFGPlugin.GetController().Settings["triplet_channel_type"] = "Counters";
+                    foreach (string input in (List<string>)DFGPlugin.GetController().tripletHistoricSettings["counterChannels"])
+                    {
+                        triplet_output_box.Items.Add(input);
+                    }
+                    if (triplet_output_box.Items.Count != 0) triplet_output_box.SelectedIndex = 0;
+                    break;
+                case 1:
+                    DFGPlugin.GetController().Settings["triplet_channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)DFGPlugin.GetController().tripletHistoricSettings["analogueChannels"])
+                    {
+                        triplet_output_box.Items.Add(input);
+                    }
+                    if (triplet_output_box.Items.Count != 0) triplet_output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void triplet_output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (triplet_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    if (triplet_output_box.SelectedIndex >= 0)
+                    {
+                        DFGPlugin.GetController().Settings["triplet_display_channel_index"] = triplet_output_box.SelectedIndex;
+                        DFGPlugin.GetController().RequestTripletHistoricData();
+                    }
+                    else
+                    {
+                        this.tripletScan_Display.DataSource = null;
+                    }
+                    break;
+
+                case 1:
+                    if (triplet_output_box.SelectedIndex >= 0)
+                    {
+                        DFGPlugin.GetController().Settings["triplet_display_channel_index"] = triplet_output_box.SelectedIndex;
+                        DFGPlugin.GetController().RequestTripletHistoricData();
+                    }
+                    else
+                    {
+                        this.tripletScan_Display.DataSource = null;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion

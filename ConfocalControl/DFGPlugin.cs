@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
@@ -767,12 +768,6 @@ namespace ConfocalControl
                     // Save data
                     TripletSaveData(currentWavelength);
 
-                    // DFT
-                    IM HERE
-                    UInt32 length = UInt32(tripletAnalogBuffer.GetLength(1));
-                    DFT dft = new DFT();
-                    dft.Initialize(Convert.ToInt32(tripletAnalogBuffer.GetLength(1)));
-
                     // Check if scan exit.
                     if (CheckIfStopping())
                     {
@@ -828,7 +823,16 @@ namespace ConfocalControl
                     {
                         if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["counterChannels"]).Count)
                         {
-                            TripletData(tripletCounterBuffer[(int)Settings["triplet_display_channel_index"]].ToArray());
+                            double[] selectedData = tripletCounterBuffer[(int)Settings["triplet_display_channel_index"]].ToArray();
+
+                            TripletData(selectedData);
+
+                            UInt32 length = (uint)tripletAnalogBuffer.GetLength(1);
+                            DFT dft = new DFT();
+                            dft.Initialize(length);
+                            Complex[] cSpectrum = dft.Execute(selectedData);
+                            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
+                            TripletDFTData(lmSpectrum);
                         }
                         else TripletData(null);
                     }
@@ -840,7 +844,16 @@ namespace ConfocalControl
                         if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count)
                         {
                             int row_size = tripletAnalogBuffer.GetLength(1);
-                            TripletData(tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray());
+                            double[] selectedData = tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray();
+
+                            TripletData(selectedData);
+
+                            UInt32 length = (uint)tripletAnalogBuffer.GetLength(1);
+                            DFT dft = new DFT();
+                            dft.Initialize(length);
+                            Complex[] cSpectrum = dft.Execute(selectedData);
+                            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
+                            TripletDFTData(lmSpectrum);
                         }
                         else TripletData(null);
                     }

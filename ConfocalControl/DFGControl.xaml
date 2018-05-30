@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
-        Title="DFG Control" Height="750" Width="915" Closing="Window_Closing" Icon="confocal_app_icon.ico">
+        Title="DFG Control" Height="600" Width="915" Closing="Window_Closing" Icon="confocal_app_icon.ico">
     <Grid>
         <Button x:Name="connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="29,41,0,0" VerticalAlignment="Top" Width="75" Click="connect_Button_Click"/>
         <Button x:Name="disconnect_Button" Content="Disconnect" HorizontalAlignment="Left" Margin="29,68,0,0" VerticalAlignment="Top" Width="75" Click="disconnect_Button_Click"/>
@@ -52,8 +52,8 @@
         <Label Content="Rate" HorizontalAlignment="Left" Margin="21,425,0,0" VerticalAlignment="Top"/>
         <ni:Graph x:Name="tripletScan_Display" HorizontalAlignment="Left" Height="245" Margin="181,288,0,0" VerticalAlignment="Top" Width="350"/>
         <ni:Graph x:Name="tripletScanDFT_Display" HorizontalAlignment="Left" Height="245" Margin="538,288,0,0" VerticalAlignment="Top" Width="350"/>
-        <ni:Switch x:Name="tripletScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="36,456,0,0" TrueContent="On" VerticalAlignment="Top" Width="100"/>
-        <ComboBox HorizontalAlignment="Left" Margin="21,484,0,0" VerticalAlignment="Top" Width="115"/>
-        <ComboBox HorizontalAlignment="Left" Margin="21,511,0,0" VerticalAlignment="Top" Width="115"/>
+        <ni:Switch x:Name="tripletScan_Switch" Content="Switch" FalseContent="Off" HorizontalAlignment="Left" Height="23" Margin="36,456,0,0" TrueContent="On" VerticalAlignment="Top" Width="100" Click="tripletScan_Switch_Click" ClickMode="Press"/>
+        <ComboBox x:Name="triplet_output_type_box" HorizontalAlignment="Left" Margin="21,484,0,0" VerticalAlignment="Top" Width="115" SelectionChanged="triplet_output_type_box_SelectionChanged"/>
+        <ComboBox x:Name="triplet_output_box" HorizontalAlignment="Left" Margin="21,511,0,0" VerticalAlignment="Top" Width="115" SelectionChanged="triplet_output_box_SelectionChanged"/>
     </Grid>
 </Window>
