@@ -117,7 +117,7 @@ namespace ConfocalControl
                 Settings["tripletStart"] = 1200.0;
                 Settings["tripletStop"] = 1300.0;
                 Settings["tripletScanPoints"] = 101;
-                Settings["tripletInt"] = 2000.0;
+                Settings["tripletInt"] = 2.0;
                 Settings["tripletRate"] = 10000.0;
 
                 Settings["triplet_channel_type"] = "Counters";
@@ -595,7 +595,7 @@ namespace ConfocalControl
                 tripletHistoricSettings["analogueLowHighs"] = (Dictionary<string, double[]>)Settings["analogueLowHighs"];
 
                 string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
-                String hour = DateTime.Now.ToString("hh", DateTimeFormatInfo.InvariantInfo);
+                String hour = DateTime.Now.ToString("HH", DateTimeFormatInfo.InvariantInfo);
                 String minutes = DateTime.Now.ToString("mm", DateTimeFormatInfo.InvariantInfo);
                 String seconds = DateTime.Now.ToString("ss", DateTimeFormatInfo.InvariantInfo);
                 tripletFolder = directory + hour + "-" + minutes + "-" + seconds + "\\";
@@ -655,6 +655,7 @@ namespace ConfocalControl
             freqOutTask.Start();
 
             // Set up edge-counting tasks
+            Task counterTask;
             counterTasks = new List<Task>();
             counterReaders = new List<CounterSingleChannelReader>();
 
@@ -662,7 +663,9 @@ namespace ConfocalControl
             {
                 string channelName = ((List<string>)tripletHistoricSettings["counterChannels"])[i];
 
-                counterTasks.Add(new Task("buffered edge counters " + channelName));
+                counterTask = new Task("buffered edge counters " + channelName);
+                counterTask.Stream.Timeout = Convert.ToInt32((double)tripletHistoricSettings["tripletInt"] * 2000);
+                counterTasks.Add(counterTask);
 
                 // Count upwards on rising edges starting from zero
                 counterTasks[i].CIChannels.CreateCountEdgesChannel(
@@ -690,6 +693,7 @@ namespace ConfocalControl
 
             // Set up analogue sampling tasks
             analoguesTask = new Task("analogue sampler");
+            analoguesTask.Stream.Timeout = Convert.ToInt32((double)tripletHistoricSettings["tripletInt"] * 2000);
 
             for (int i = 0; i < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count; i++)
             {
@@ -748,15 +752,24 @@ namespace ConfocalControl
 
                     // Read counter data
                     tripletCounterBuffer = new List<double[]>();
+                    double[] fooCounter;
+                    double[] latestTripletData;
                     foreach (CounterSingleChannelReader counterReader in counterReaders)
                     {
-                        tripletCounterBuffer.Add(counterReader.ReadMultiSampleDouble(pointsPerExposure + 1));
+                        fooCounter = counterReader.ReadMultiSampleDouble(pointsPerExposure + 1);
+                        latestTripletData = new double[fooCounter.Length - 1];
+                        for (int j = 0; j < latestTripletData.Length; j++)
+                        {
+                            latestTripletData[j] = fooCounter[j + 1] - fooCounter[j];
+                        }
+                        tripletCounterBuffer.Add(latestTripletData);
                     }
 
                     // Read analogue data
                     if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
                     {
-                        tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure + 1);
+                        tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure);
+                        analoguesReader.ReadMultiSample(1);
                     }
 
                     // re-init the trigger 
@@ -827,7 +840,7 @@ namespace ConfocalControl
 
                             TripletData(selectedData);
 
-                            UInt32 length = (uint)tripletAnalogBuffer.GetLength(1);
+                            UInt32 length = (uint)selectedData.Length;
                             DFT dft = new DFT();
                             dft.Initialize(length);
                             Complex[] cSpectrum = dft.Execute(selectedData);
@@ -848,7 +861,7 @@ namespace ConfocalControl
 
                             TripletData(selectedData);
 
-                            UInt32 length = (uint)tripletAnalogBuffer.GetLength(1);
+                            UInt32 length = (uint)selectedData.Length;
                             DFT dft = new DFT();
                             dft.Initialize(length);
                             Complex[] cSpectrum = dft.Execute(selectedData);
@@ -872,7 +885,7 @@ namespace ConfocalControl
             lines.Add("Lambda start = " + ((double)tripletHistoricSettings["tripletStart"]).ToString() + ", Lambda stop = " + ((double)tripletHistoricSettings["tripletStop"]).ToString() + ", Lambda resolution = " + ((int)tripletHistoricSettings["tripletScanPoints"]).ToString());
             lines.Add("Current lambda = " + currentWavelength.ToString());
 
-            string descriptionString = "Lambda ";
+            string descriptionString = "";
             foreach (string channel in (List<string>)tripletHistoricSettings["counterChannels"])
             {
                 descriptionString = descriptionString + channel + " ";
@@ -885,16 +898,19 @@ namespace ConfocalControl
 
             for (int i = 0; i < tripletCounterBuffer[0].Length; i++)
             {
-                string line = tripletCounterBuffer[0][i].ToString() + " ";
+                string line = "";
                 foreach (double[] counterData in tripletCounterBuffer)
                 {
                     line = line + counterData[i].ToString() + " ";
                 }
-                int column_size = tripletAnalogBuffer.GetLength(0);
-                for (int j = 0; j < column_size; j++)
-			    {
-			        line = line + tripletAnalogBuffer[j,i].ToString() + " ";
-			    }
+                if (tripletAnalogBuffer != null)
+                {
+                    int column_size = tripletAnalogBuffer.GetLength(0);
+                    for (int j = 0; j < column_size; j++)
+                    {
+                        line = line + tripletAnalogBuffer[j, i].ToString() + " ";
+                    }
+                }
                 lines.Add(line);
             }
 

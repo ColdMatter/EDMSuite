@@ -83,6 +83,21 @@ namespace ConfocalControl
             teraScan_output_type_box.SelectedIndex = 0;
             teraScan_segmentDisplay_ComboBox.Items.Add("Current");
             teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
+
+            tripletScanStart_Set.Value = (double)SolsTiSPlugin.GetController().Settings["tripletStart"];
+            tripletScanStop_Set.Value = (double)SolsTiSPlugin.GetController().Settings["tripletStop"];
+            tripletScanRes_Set.Value = (int)SolsTiSPlugin.GetController().Settings["tripletScanPoints"];
+            tripletScanInt_Set.Value = (double)SolsTiSPlugin.GetController().Settings["tripletInt"];
+            tripletScanRate_Set.Value = (double)SolsTiSPlugin.GetController().Settings["tripletRate"];
+
+            SolsTiSPlugin.GetController().TripletScanProblem += tripletScanProblem;
+            SolsTiSPlugin.GetController().TripletScanFinished += tripletScanFinished;
+            SolsTiSPlugin.GetController().TripletData += tripletScanData;
+            SolsTiSPlugin.GetController().TripletDFTData += tripletDFTData;
+
+            triplet_output_type_box.Items.Add("Counters");
+            triplet_output_type_box.Items.Add("Analogues");
+            triplet_output_type_box.SelectedIndex = 0;
         }
 
         #endregion
@@ -905,6 +920,196 @@ namespace ConfocalControl
             {
                 SolsTiSPlugin.GetController().Settings["tera_display_current_segment"] = false;
                 SolsTiSPlugin.GetController().RequestSegmentData(displayIndex - 1);
+            }
+        }
+
+        #endregion
+
+        #region Triplet Scan events
+
+        private void tripletScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 700 || e.NewValue > 1000) tripletScanStart_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["tripletStart"] = e.NewValue;
+        }
+
+        private void tripletScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue < 700 || e.NewValue > 1000) tripletScanStop_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["tripletStop"] = e.NewValue;
+
+        }
+
+        private void tripletScanRes_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<int> e)
+        {
+            if (e.NewValue <= 1) tripletScanRes_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["tripletScanPoints"] = e.NewValue;
+        }
+
+        private void tripletScanInt_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) tripletScanInt_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["tripletInt"] = e.NewValue;
+        }
+
+        private void tripletScanRate_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
+        {
+            if (e.NewValue <= 0) tripletScanRate_Set.Value = e.OldValue;
+            else SolsTiSPlugin.GetController().Settings["tripletRate"] = e.NewValue;
+        }
+
+        private void tripletScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (SolsTiSPlugin.GetController().IsRunning() && SolsTiSPlugin.GetController().TripletScanIsRunning())
+            {
+                SolsTiSPlugin.GetController().TripletAcquisitionFinishing();
+            }
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.tripletScan_Switch.Value = false;
+                   }));
+        }
+
+        private void tripletScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.tripletScan_Switch.Value = false;
+                   }));
+        }
+
+        private void tripletScanData(double[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Display.DataSource = data;
+                       }));
+        }
+
+        private void tripletDFTData(double[] data)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScanDFT_Display.DataSource = data;
+                       }));
+        }
+
+        private void tripletScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!tripletScan_Switch.Value)
+            {
+                if (!SolsTiSPlugin.GetController().TripletAcceptableSettings())
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                if (!SolsTiSPlugin.GetController().Solstis.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           this.tripletScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.tripletScan_Switch.Value = true;
+                   }));
+
+                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().TripletStartScan));
+                thread.IsBackground = true;
+                thread.Start();
+                triplet_output_type_box_SelectionChanged(null, null);
+            }
+
+            else
+            {
+                if (SolsTiSPlugin.GetController().IsRunning())
+                {
+                    SolsTiSPlugin.GetController().StopAcquisition();
+                }
+            }
+        }
+
+        private void triplet_output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            triplet_output_box.Items.Clear();
+            triplet_output_box.SelectedIndex = -1;
+
+            switch (triplet_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    SolsTiSPlugin.GetController().Settings["triplet_channel_type"] = "Counters";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().tripletHistoricSettings["counterChannels"])
+                    {
+                        triplet_output_box.Items.Add(input);
+                    }
+                    if (triplet_output_box.Items.Count != 0) triplet_output_box.SelectedIndex = 0;
+                    break;
+                case 1:
+                    SolsTiSPlugin.GetController().Settings["triplet_channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)SolsTiSPlugin.GetController().tripletHistoricSettings["analogueChannels"])
+                    {
+                        triplet_output_box.Items.Add(input);
+                    }
+                    if (triplet_output_box.Items.Count != 0) triplet_output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void triplet_output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (triplet_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    if (triplet_output_box.SelectedIndex >= 0)
+                    {
+                        SolsTiSPlugin.GetController().Settings["triplet_display_channel_index"] = triplet_output_box.SelectedIndex;
+                        SolsTiSPlugin.GetController().RequestTripletHistoricData();
+                    }
+                    else
+                    {
+                        this.tripletScan_Display.DataSource = null;
+                    }
+                    break;
+
+                case 1:
+                    if (triplet_output_box.SelectedIndex >= 0)
+                    {
+                        SolsTiSPlugin.GetController().Settings["triplet_display_channel_index"] = triplet_output_box.SelectedIndex;
+                        SolsTiSPlugin.GetController().RequestTripletHistoricData();
+                    }
+                    else
+                    {
+                        this.tripletScan_Display.DataSource = null;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 

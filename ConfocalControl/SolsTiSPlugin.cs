@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Numerics;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.IO;
 using Microsoft.Win32;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
 using DAQ.HAL;
+using DSPLib;
 
 namespace ConfocalControl
 {
@@ -46,6 +50,8 @@ namespace ConfocalControl
         private TeraScanState teraState = TeraScanState.stopped;
         private enum TeraScanSegmentState { stopped, running, stopping, unfinished};
         private TeraScanSegmentState teraSegmentState = TeraScanSegmentState.stopped;
+        private enum TripletScanState { stopped, running, stopping };
+        private TripletScanState tripletState = TripletScanState.stopped;
 
         // Settings
         public PluginSettings Settings { get; set; }
@@ -70,6 +76,11 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler TeraScanFinished;
         public event SpectraScanExceptionEventHandler TeraScanProblem;
 
+        public event TeraSingleDataEventHandler TripletData;
+        public event TeraSingleDataEventHandler TripletDFTData;
+        public event MultiChannelScanFinishedEventHandler TripletScanFinished;
+        public event SpectraScanExceptionEventHandler TripletScanProblem;
+
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
@@ -87,6 +98,11 @@ namespace ConfocalControl
         public TeraScanDataHolder teraScanBufferAccess { get { return teraScanBuffer; } }
         private double teraLatestLambda;
         public double latestLambda { get { return teraLatestLambda; } }
+        // Keep track of data for triplet search
+        private string tripletFolder;
+        private double[,] tripletAnalogBuffer;
+        private List<double[]> tripletCounterBuffer;
+        public Hashtable tripletHistoricSettings;
 
         // Keep track of tasks
         private Task triggerTask;
@@ -113,13 +129,13 @@ namespace ConfocalControl
             solstis = new ICEBlocSolsTiS();
 
             LoadSettings();
-            if (Settings.Keys.Count != 25)
+            if (Settings.Keys.Count != 32)
             {
                 Settings["wavelength"] = 785.0;
 
                 Settings["wavemeterScanStart"] = 784.0;
                 Settings["wavemeterScanStop"] = 785.0;
-                Settings["wavemeterScanPoints"] = 100;
+                Settings["wavemeterScanPoints"] = 101;
 
                 Settings["counterChannels"] = new List<string> { "APD0" };
                 Settings["analogueChannels"] = new List<string> { };
@@ -146,6 +162,15 @@ namespace ConfocalControl
                 Settings["tera_channel_type"] = "Lambda";
                 Settings["tera_display_channel_index"] = 0;
                 Settings["tera_display_current_segment"] = true;
+
+                Settings["tripletStart"] = 784.0;
+                Settings["tripletStop"] = 785.0;
+                Settings["tripletScanPoints"] = 101;
+                Settings["tripletInt"] = 2.0;
+                Settings["tripletRate"] = 1000.0;
+
+                Settings["triplet_channel_type"] = "Counters";
+                Settings["triplet_display_channel_index"] = 0;
             }
 
             wavemeterHistoricSettings = new Hashtable();
@@ -153,6 +178,10 @@ namespace ConfocalControl
             wavemeterHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
 
             teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
+
+            tripletHistoricSettings = new Hashtable();
+            tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+            tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
 
             triggerTask = null;
             freqOutTask = null;
@@ -208,6 +237,11 @@ namespace ConfocalControl
         public bool TeraSegmentIsRunning()
         {
             return teraSegmentState == TeraScanSegmentState.running;
+        }
+
+        public bool TripletScanIsRunning()
+        {
+            return tripletState == TripletScanState.running;
         }
 
         private bool CheckIfStopping()
@@ -1548,6 +1582,374 @@ namespace ConfocalControl
                     System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
                 }
             }
+        }
+
+        #endregion
+
+        #region Triplet Scan
+
+        public bool TripletAcceptableSettings()
+        {
+            if ((double)Settings["tripletStart"] >= (double)Settings["tripletStop"] || (int)Settings["tripletScanPoints"] < 1 || (double)Settings["tripletInt"] <= 0 || (double)Settings["tripletRate"] <= 0)
+            {
+                MessageBox.Show("Triplet scan settings unacceptable.");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void TripletStartScan()
+        {
+            //try
+            //{
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Daq already running");
+                }
+
+                tripletState = TripletScanState.running;
+                backendState = SolsTisState.running;
+
+                tripletHistoricSettings["tripletStart"] = (double)Settings["tripletStart"];
+                tripletHistoricSettings["tripletStop"] = (double)Settings["tripletStop"];
+                tripletHistoricSettings["tripletScanPoints"] = (int)Settings["tripletScanPoints"];
+                tripletHistoricSettings["tripletInt"] = (double)Settings["tripletInt"];
+                tripletHistoricSettings["tripletRate"] = (double)Settings["tripletRate"];
+                tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
+                tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+                tripletHistoricSettings["analogueLowHighs"] = (Dictionary<string, double[]>)Settings["analogueLowHighs"];
+
+                string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+                String hour = DateTime.Now.ToString("HH", DateTimeFormatInfo.InvariantInfo);
+                String minutes = DateTime.Now.ToString("mm", DateTimeFormatInfo.InvariantInfo);
+                String seconds = DateTime.Now.ToString("ss", DateTimeFormatInfo.InvariantInfo);
+                tripletFolder = directory + hour + "-" + minutes + "-" + seconds + "\\";
+                if (!Directory.Exists(tripletFolder)) Directory.CreateDirectory(tripletFolder);
+
+                TripletAcquisitionStarting();
+                TripletAcquire();
+            //}
+            //catch (Exception e)
+            //{
+            //    if (TripletScanProblem != null) TripletScanProblem(e);
+            //}
+        }
+
+        private void TripletAcquisitionStarting()
+        {
+            pointsPerExposure = Convert.ToInt32((double)tripletHistoricSettings["tripletRate"] * (double)tripletHistoricSettings["tripletInt"]);
+            sampleRate = (double)tripletHistoricSettings["tripletRate"];
+
+            // Set up trigger task
+            triggerTask = new Task("pause trigger task");
+
+            // Digital output
+            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["StartTrigger"]).AddToTask(triggerTask);
+
+            triggerTask.Control(TaskAction.Verify);
+
+            DaqStream triggerStream = triggerTask.Stream;
+            triggerWriter = new DigitalSingleChannelWriter(triggerStream);
+
+            triggerWriter.WriteSingleSampleSingleLine(true, false);
+
+            // Set up clock task
+            freqOutTask = new Task("sample clock task");
+
+            // Finite pulse train
+            freqOutTask.COChannels.CreatePulseChannelFrequency(
+                ((CounterChannel)Environs.Hardware.CounterChannels["SampleClock"]).PhysicalChannel,
+                "photon counter clocking signal",
+                COPulseFrequencyUnits.Hertz,
+                COPulseIdleState.Low,
+                0,
+                sampleRate,
+                0.5);
+
+            freqOutTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("StartTriggerReader"),
+                DigitalEdgeStartTriggerEdge.Rising);
+
+            freqOutTask.Triggers.StartTrigger.Retriggerable = true;
+
+
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, pointsPerExposure + 1);
+
+            freqOutTask.Control(TaskAction.Verify);
+
+            freqOutTask.Start();
+
+            // Set up edge-counting tasks
+            Task counterTask;
+            counterTasks = new List<Task>();
+            counterReaders = new List<CounterSingleChannelReader>();
+
+            for (int i = 0; i < ((List<string>)tripletHistoricSettings["counterChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)tripletHistoricSettings["counterChannels"])[i];
+
+                counterTask = new Task("buffered edge counters " + channelName);
+                counterTask.Stream.Timeout = Convert.ToInt32((double)tripletHistoricSettings["tripletInt"] * 2000);
+                counterTasks.Add(counterTask);
+
+                // Count upwards on rising edges starting from zero
+                counterTasks[i].CIChannels.CreateCountEdgesChannel(
+                    ((CounterChannel)Environs.Hardware.CounterChannels[channelName]).PhysicalChannel,
+                    "edge counter " + channelName,
+                    CICountEdgesActiveEdge.Rising,
+                    0,
+                    CICountEdgesCountDirection.Up);
+
+                // Take one sample within a window determined by sample rate using clock task
+                counterTasks[i].Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                counterTasks[i].Control(TaskAction.Verify);
+
+                DaqStream counterStream = counterTasks[i].Stream;
+                counterReaders.Add(new CounterSingleChannelReader(counterStream));
+
+                // Start tasks
+                counterTasks[i].Start();
+            }
+
+            // Set up analogue sampling tasks
+            analoguesTask = new Task("analogue sampler");
+            analoguesTask.Stream.Timeout = Convert.ToInt32((double)tripletHistoricSettings["tripletInt"] * 2000);
+
+            for (int i = 0; i < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)tripletHistoricSettings["analogueChannels"])[i];
+
+                double inputRangeLow = ((Dictionary<string, double[]>)tripletHistoricSettings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)tripletHistoricSettings["analogueLowHighs"])[channelName][1];
+
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
+                    analoguesTask,
+                    inputRangeLow,
+                    inputRangeHigh
+                    );
+            }
+
+            if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+            {
+                analoguesTask.Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                analoguesTask.Control(TaskAction.Verify);
+
+                DaqStream analogStream = analoguesTask.Stream;
+                analoguesReader = new AnalogMultiChannelReader(analogStream);
+
+                // Start tasks
+                analoguesTask.Start();
+            }
+        }
+
+        private void TripletAcquire()
+        // Main method for looping over scan parameters, aquiring scan outputs and connecting to controller for display
+        {
+            // Go to start of scan
+            int report = SetAndLockWavelength((double)tripletHistoricSettings["tripletStart"]);
+            if (report == 1) throw new Exception("set_wave_m start: task failed");
+
+            // Main loop
+            for (double i = 0;
+                    i < (int)tripletHistoricSettings["tripletScanPoints"];
+                    i++)
+            {
+                double currentWavelength = (double)tripletHistoricSettings["tripletStart"] + i *
+                    ((double)tripletHistoricSettings["tripletStop"] - (double)tripletHistoricSettings["tripletStart"]) /
+                    ((int)tripletHistoricSettings["tripletScanPoints"] - 1);
+
+                report = SetAndLockWavelength(currentWavelength);
+
+                if (report == 0)
+                {
+                    // Start trigger task
+                    triggerWriter.WriteSingleSampleSingleLine(true, true);
+
+                    // Read counter data
+                    tripletCounterBuffer = new List<double[]>();
+                    double[] fooCounter;
+                    double[] latestTripletData;
+                    foreach (CounterSingleChannelReader counterReader in counterReaders)
+                    {
+                        fooCounter = counterReader.ReadMultiSampleDouble(pointsPerExposure + 1);
+                        latestTripletData = new double[fooCounter.Length-1];
+                        for (int j = 0; j < latestTripletData.Length; j++)
+                        {
+                            latestTripletData[j] = fooCounter[j + 1] - fooCounter[j];
+                        }
+                        tripletCounterBuffer.Add(latestTripletData);
+                    }
+
+                    // Read analogue data
+                    if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                    {
+                        tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure);
+                        analoguesReader.ReadMultiSample(1);
+                    }
+
+                    // re-init the trigger 
+                    triggerWriter.WriteSingleSampleSingleLine(true, false);
+
+                    // Broadcast
+                    TripletOnData();
+
+                    // Save data
+                    TripletSaveData(currentWavelength);
+
+                    // Check if scan exit.
+                    if (CheckIfStopping())
+                    {
+                        tripletState = TripletScanState.stopping;
+                        report = SetAndLockWavelength((double)Settings["tripletStart"]);
+                        if (report == 1) throw new Exception("set_wave_m end: task failed");
+                        // Quit plugins
+                        TripletAcquisitionFinishing();
+                        TripletOnScanFinished();
+                        return;
+                    }
+                }
+            }
+
+            TripletAcquisitionFinishing();
+            TripletOnScanFinished();
+        }
+
+        public void TripletAcquisitionFinishing()
+        {
+            triggerTask.Dispose();
+            freqOutTask.Dispose();
+            foreach (Task counterTask in counterTasks)
+            {
+                counterTask.Dispose();
+            }
+            analoguesTask.Dispose();
+
+            triggerTask = null;
+            freqOutTask = null;
+            counterTasks = null;
+            analoguesTask = null;
+
+            triggerWriter = null;
+            counterReaders = null;
+            analoguesReader = null;
+
+            tripletState = TripletScanState.stopped;
+            backendState = SolsTisState.stopped;
+        }
+
+        public void RequestTripletHistoricData()
+        {
+            if (tripletAnalogBuffer != null && tripletCounterBuffer != null) TripletOnData();
+        }
+
+        private void TripletOnData()
+        {
+            switch ((string)Settings["triplet_channel_type"])
+            {
+                case "Counters":
+                    if (TripletData != null)
+                    {
+                        if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["counterChannels"]).Count)
+                        {
+                            double[] selectedData = tripletCounterBuffer[(int)Settings["triplet_display_channel_index"]].ToArray();
+
+                            TripletData(selectedData);
+
+                            UInt32 length = (uint)selectedData.Length;
+                            DFT dft = new DFT();
+                            dft.Initialize(length);
+                            Complex[] cSpectrum = dft.Execute(selectedData);
+                            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
+                            TripletDFTData(lmSpectrum);
+                        }
+                        else TripletData(null);
+                    }
+                    break;
+
+                case "Analogues":
+                    if (TripletData != null)
+                    {
+                        if ((int)Settings["triplet_display_channel_index"] >= 0 && (int)Settings["triplet_display_channel_index"] < ((List<string>)tripletHistoricSettings["analogueChannels"]).Count)
+                        {
+                            int row_size = tripletAnalogBuffer.GetLength(1);
+                            double[] selectedData = tripletAnalogBuffer.Cast<double>().Skip((int)Settings["triplet_display_channel_index"] * row_size).Take(row_size).ToArray();
+
+                            TripletData(selectedData);
+
+                            UInt32 length = (uint)selectedData.Length;
+                            DFT dft = new DFT();
+                            dft.Initialize(length);
+                            Complex[] cSpectrum = dft.Execute(selectedData);
+                            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
+                            TripletDFTData(lmSpectrum);
+                        }
+                        else TripletData(null);
+                    }
+                    break;
+
+                default:
+                    throw new Exception("Did not understand data type");
+            }
+        }
+
+        private void TripletSaveData(double currentWavelength)
+        {
+            List<string> lines = new List<string>();
+            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
+            lines.Add("Rate = " + ((double)tripletHistoricSettings["tripletRate"]).ToString() + ", Int = " + ((double)tripletHistoricSettings["tripletInt"]).ToString());
+            lines.Add("Lambda start = " + ((double)tripletHistoricSettings["tripletStart"]).ToString() + ", Lambda stop = " + ((double)tripletHistoricSettings["tripletStop"]).ToString() + ", Lambda resolution = " + ((int)tripletHistoricSettings["tripletScanPoints"]).ToString());
+            lines.Add("Current lambda = " + currentWavelength.ToString());
+
+            string descriptionString = "";
+            foreach (string channel in (List<string>)tripletHistoricSettings["counterChannels"])
+            {
+                descriptionString = descriptionString + channel + " ";
+            }
+            foreach (string channel in (List<string>)tripletHistoricSettings["analogueChannels"])
+            {
+                descriptionString = descriptionString + channel + " ";
+            }
+            lines.Add(descriptionString);
+
+            for (int i = 0; i < tripletCounterBuffer[0].Length; i++)
+            {
+                string line = "";
+                foreach (double[] counterData in tripletCounterBuffer)
+                {
+                    line = line + counterData[i].ToString() + " ";
+                }
+                if (tripletAnalogBuffer != null)
+                {
+                    int column_size = tripletAnalogBuffer.GetLength(0);
+                    for (int j = 0; j < column_size; j++)
+                    {
+                        line = line + tripletAnalogBuffer[j, i].ToString() + " ";
+                    }
+                }
+                lines.Add(line);
+            }
+
+            string fileName = DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_triplet_search_lambda_" + currentWavelength.ToString() + ".txt";
+
+            System.IO.File.WriteAllLines(tripletFolder + fileName, lines.ToArray());
+        }
+
+        private void TripletOnScanFinished()
+        {
+            if (TripletScanFinished != null) TripletScanFinished();
         }
 
         #endregion
