@@ -750,26 +750,124 @@ namespace ConfocalControl
                     // Start trigger task
                     triggerWriter.WriteSingleSampleSingleLine(true, true);
 
-                    // Read counter data
-                    tripletCounterBuffer = new List<double[]>();
-                    double[] fooCounter;
-                    double[] latestTripletData;
-                    foreach (CounterSingleChannelReader counterReader in counterReaders)
+                    if (pointsPerExposure <= 5000)
                     {
-                        fooCounter = counterReader.ReadMultiSampleDouble(pointsPerExposure + 1);
-                        latestTripletData = new double[fooCounter.Length - 1];
-                        for (int j = 0; j < latestTripletData.Length; j++)
+                        // Read counter data
+                        tripletCounterBuffer = new List<double[]>();
+                        double[] fooCounter;
+                        double[] latestTripletCounterData;
+                        foreach (CounterSingleChannelReader counterReader in counterReaders)
                         {
-                            latestTripletData[j] = fooCounter[j + 1] - fooCounter[j];
+                            fooCounter = counterReader.ReadMultiSampleDouble(pointsPerExposure + 1);
+                            latestTripletCounterData = new double[fooCounter.Length - 1];
+                            for (int j = 0; j < latestTripletCounterData.Length; j++)
+                            {
+                                latestTripletCounterData[j] = fooCounter[j + 1] - fooCounter[j];
+                            }
+                            tripletCounterBuffer.Add(latestTripletCounterData);
                         }
-                        tripletCounterBuffer.Add(latestTripletData);
+
+                        // Read analogue data
+                        if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                        {
+                            tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure);
+                            analoguesReader.ReadMultiSample(1);
+                        }
                     }
 
-                    // Read analogue data
-                    if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                    else
                     {
-                        tripletAnalogBuffer = analoguesReader.ReadMultiSample(pointsPerExposure);
-                        analoguesReader.ReadMultiSample(1);
+                        // Set up stores
+                        tripletCounterBuffer = new List<double[]>();
+                        double[] fooCounter;
+                        foreach (CounterSingleChannelReader counterReader in counterReaders)
+                        {
+                            tripletCounterBuffer.Add(new double[pointsPerExposure]);
+                        }
+                        tripletAnalogBuffer = new double[((List<string>)tripletHistoricSettings["analogueChannels"]).Count, pointsPerExposure];
+                        double[,] fooAnalogue;
+
+                        int remainder = pointsPerExposure % 1000;
+                        int quotient = pointsPerExposure / 1000;
+                        int shift = 0;
+                        for (int m = 0; m < quotient; m++)
+                        {
+                            // Read counter data
+                            for (int n = 0; n < counterReaders.Count; n++)
+                            {
+                                if (m == 0)
+                                {
+                                    fooCounter = counterReaders[n].ReadMultiSampleDouble(1000 + 1);
+                                    for (int j = 0; j < (fooCounter.Length - 1); j++)
+                                    {
+                                        tripletCounterBuffer[n][shift + j] = fooCounter[j + 1] - fooCounter[j];
+                                    }
+                                }
+                                else
+                                {
+                                    fooCounter = counterReaders[n].ReadMultiSampleDouble(1000);
+                                    for (int j = 0; j < fooCounter.Length; j++)
+                                    {
+                                        if (j == 0)
+                                        {
+                                            tripletCounterBuffer[n][shift] = fooCounter[0] - tripletCounterBuffer[n][shift - 1];
+                                        }
+                                        else
+                                        {
+                                            tripletCounterBuffer[n][shift + j] = fooCounter[j] - fooCounter[j - 1];
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Read analogue data
+                            if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                            {
+                                fooAnalogue = analoguesReader.ReadMultiSample(1000);
+
+                                for (int n = 0; n < fooAnalogue.GetLength(0); n++)
+                                {
+                                    for (int j = 0; j < fooAnalogue.GetLength(1); j++)
+                                    {
+                                        tripletAnalogBuffer[n, shift + j] = fooAnalogue[n, j];
+                                    }
+                                }
+                            }
+
+                            shift += 1000;
+                        }
+
+                        // Read remainder counter data
+                        for (int n = 0; n < counterReaders.Count; n++)
+                        {
+                            fooCounter = counterReaders[n].ReadMultiSampleDouble(remainder);
+                            for (int j = 0; j < fooCounter.Length; j++)
+                            {
+                                if (j == 0)
+                                {
+                                    tripletCounterBuffer[n][shift] = fooCounter[0] - tripletCounterBuffer[n][shift - 1];
+                                }
+                                else
+                                {
+                                    tripletCounterBuffer[n][shift + j] = fooCounter[j] - fooCounter[j - 1];
+                                }
+                            }
+                        }
+
+                        // Read remainder analogue data
+                        if (((List<string>)tripletHistoricSettings["analogueChannels"]).Count != 0)
+                        {
+                            fooAnalogue = analoguesReader.ReadMultiSample(remainder);
+
+                            for (int n = 0; n < fooAnalogue.GetLength(0); n++)
+                            {
+                                for (int j = 0; j < fooAnalogue.GetLength(1); j++)
+                                {
+                                    tripletAnalogBuffer[n, shift + j] = fooAnalogue[n, j];
+                                }
+                            }
+                            analoguesReader.ReadMultiSample(1);
+                        }
                     }
 
                     // re-init the trigger 

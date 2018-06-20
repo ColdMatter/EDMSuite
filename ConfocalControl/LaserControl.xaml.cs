@@ -257,7 +257,7 @@ namespace ConfocalControl
 
         private void wavelengthSet_Numeric_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000) wavemeterScanStart_Set.Value = e.OldValue;
+            if (e.NewValue < 700 || e.NewValue > 1030) wavemeterScanStart_Set.Value = e.OldValue;
             else SolsTiSPlugin.GetController().Settings["wavelength"] = e.NewValue;
         }
 
@@ -338,13 +338,13 @@ namespace ConfocalControl
 
         private void wavemeterScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000) wavemeterScanStart_Set.Value = e.OldValue;
+            if (e.NewValue < 700 || e.NewValue > 1030) wavemeterScanStart_Set.Value = e.OldValue;
             else SolsTiSPlugin.GetController().Settings["wavemeterScanStart"] = e.NewValue;
         }
 
         private void wavemeterScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000) wavemeterScanStop_Set.Value = e.OldValue;
+            if (e.NewValue < 700 || e.NewValue > 1030) wavemeterScanStop_Set.Value = e.OldValue;
             else SolsTiSPlugin.GetController().Settings["wavemeterScanStop"] = e.NewValue;
         }
 
@@ -929,13 +929,13 @@ namespace ConfocalControl
 
         private void tripletScanStart_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000) tripletScanStart_Set.Value = e.OldValue;
+            if (e.NewValue < 700 || e.NewValue > 1030) tripletScanStart_Set.Value = e.OldValue;
             else SolsTiSPlugin.GetController().Settings["tripletStart"] = e.NewValue;
         }
 
         private void tripletScanStop_Set_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000) tripletScanStop_Set.Value = e.OldValue;
+            if (e.NewValue < 700 || e.NewValue > 1030) tripletScanStop_Set.Value = e.OldValue;
             else SolsTiSPlugin.GetController().Settings["tripletStop"] = e.NewValue;
 
         }
@@ -999,7 +999,7 @@ namespace ConfocalControl
                        DispatcherPriority.Background,
                        new Action(() =>
                        {
-                           this.tripletScanDFT_Display.DataSource = data;
+                           this.tripletScanDFT_Display.DataSource = data.Skip(1).ToArray();
                        }));
         }
 

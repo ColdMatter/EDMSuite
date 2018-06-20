@@ -418,7 +418,7 @@ namespace ConfocalControl
                        DispatcherPriority.Background,
                        new Action(() =>
                        {
-                           this.tripletScanDFT_Display.DataSource = data;
+                           this.tripletScanDFT_Display.DataSource = data.Skip(1).ToArray();
                        }));
         }
 

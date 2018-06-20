@@ -43,7 +43,7 @@ namespace DAQ.HAL
         // 3.1
         public int set_wave_m(double wavelength, bool report)
         {
-            if (wavelength < 700 || wavelength > 1000) throw new Exception("wavelength out of range");
+            if (wavelength < 700 || wavelength > 1030) throw new Exception("wavelength out of range");
 
             Dictionary<string, object> prms = new Dictionary<string, object>();
             prms.Add("wavelength", wavelength);
@@ -86,7 +86,7 @@ namespace DAQ.HAL
         // 3.5
         public int move_wave_t(double wavelength, bool report)
         {
-            if (wavelength < 700 || wavelength > 1000) throw new Exception("wavelength out of range");
+            if (wavelength < 700 || wavelength > 1030) throw new Exception("wavelength out of range");
 
             Dictionary<string, object> prms = new Dictionary<string, object>();
             prms.Add("wavelength", wavelength);
@@ -167,8 +167,8 @@ namespace DAQ.HAL
         // 3.27
         public int scan_stitch_initialise(string type, double start, double stop, int rate, string units)
         {
-            if (start < 700 || start > 1000) throw new Exception("wavelength out of range");
-            if (stop < 700 || stop > 1000) throw new Exception("wavelength out of range");
+            if (start < 700 || start > 1030) throw new Exception("wavelength out of range");
+            if (stop < 700 || stop > 1030) throw new Exception("wavelength out of range");
 
             Dictionary<string, object> prms = new Dictionary<string, object>();
             switch (type)

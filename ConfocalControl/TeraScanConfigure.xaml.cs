@@ -144,7 +144,7 @@ namespace ConfocalControl
 
         private void teraScanStart_Numeric_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000)
+            if (e.NewValue < 700 || e.NewValue > 1030)
             {
                 teraScanStart_Numeric.Value = e.OldValue;
                 return;
@@ -154,7 +154,7 @@ namespace ConfocalControl
 
         private void teraScanStop_Numeric_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
         {
-            if (e.NewValue < 700 || e.NewValue > 1000)
+            if (e.NewValue < 700 || e.NewValue > 1030)
             {
                 teraScanStop_Numeric.Value = e.OldValue;
                 return;
