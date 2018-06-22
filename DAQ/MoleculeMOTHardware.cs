@@ -100,6 +100,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("v00Sidebands", digitalPatternBoardAddress, 2, 0);
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
+            AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
+            AddDigitalOutputChannel("rbCoolingShutter", digitalPatternBoardAddress, 2, 4);
+            AddDigitalOutputChannel("rbOpticalPumpingShutter", digitalPatternBoardAddress, 2, 5);
 
 
             // Analog Pattern
@@ -114,6 +117,8 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
+            AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23");
+            AddAnalogOutputChannel("rbCoolingFrequency", analogPatternBoardAddress + "/ao24");
 
 
             // Source
@@ -164,7 +169,7 @@ namespace DAQ.HAL
             tclConfig.Trigger = tclBoard1Address + "/PFI0";
             tclConfig.BaseRamp = "ramp";
             tclConfig.TCPChannel = 1190;
-            tclConfig.DefaultScanPoints = 700;
+            tclConfig.DefaultScanPoints = 1000;
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfig.AnalogSampleRate = 62000;
             string hamish = "Hamish";
@@ -192,8 +197,8 @@ namespace DAQ.HAL
             tclConfig.Cavities[carlos].MasterLaser = "refPDCarlos";
             tclConfig.Cavities[carlos].RampOffset = "cavityLockCarlos";
             tclConfig.Cavities[carlos].AddDefaultGain("Master", 1.0);
-            tclConfig.Cavities[carlos].AddDefaultGain("v21Lock", -0.4);
-            tclConfig.Cavities[carlos].AddDefaultGain("v32Lock", 0.2);
+            tclConfig.Cavities[carlos].AddDefaultGain("v21Lock", -0.2);
+            tclConfig.Cavities[carlos].AddDefaultGain("v32Lock", 1.0);
             tclConfig.Cavities[carlos].AddFSRCalibration("v21Lock", 3.7); //This is an approximate guess
             tclConfig.Cavities[carlos].AddFSRCalibration("v32Lock", 3.7);
 
@@ -220,7 +225,8 @@ namespace DAQ.HAL
 
             // Instruments
             Instruments.Add("windfreak", new WindfreakSynth("ASRL8::INSTR"));
-            Instruments.Add("gigatronics", new Gigatronics7100Synth("GPIB0::19::INSTR"));
+            Instruments.Add("gigatronics 1", new Gigatronics7100Synth("GPIB0::19::INSTR"));
+            Instruments.Add("gigatronics 2", new Gigatronics7100Synth("GPIB0::6::INSTR"));
 
 
             // Calibrations
