@@ -38,6 +38,21 @@ def ScanSingleParameter(script_name, parameter_name, values):
 		print '{0} : {1} seconds'.format(value, int(round(end-start)))
 	print 'Finished'
 	return 0
+
+def ScanMultipleParametersList(script_name, parameter_names, value_tuples):
+	dic = Dictionary[String, Object]()
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	row_format = '{:<3} {:<8}' + ' {:<20}' * len(parameter_names)
+	print row_format.format('N', 'Time', *parameter_names)
+	for value_tuple in value_tuples:
+		start = time.time()
+		for i in range(len(parameter_names)):
+			dic[parameter_names[i]] = value_tuple[i]
+		mm.Go(dic)
+		end = time.time()
+		print row_format.format(i, str(int(round(end-start))) + ' s', *value_tuple)
+	print 'Finished'
+	return 0
 	
 def ScanMultipleParameters(script_name, parameter_names, values):
 	"""
@@ -80,8 +95,10 @@ def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, chan
 	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
-		if channel=='G':
-			hc.tabs['Gigatronics Synthesizer'].SetFrequency(value)
+		if channel=='G1':
+			hc.tabs['Gigatronics Synthesizer 1'].SetFrequency(value)
+		elif channel=='G2':
+			hc.tabs['Gigatronics Synthesizer 2'].SetFrequency(value)
 		elif channel=='WA':
 			hc.tabs['Windfreak Synthesizer'].SetFrequency(value, False)
 		elif channel=='WB':
@@ -95,8 +112,10 @@ def ScanMicrowaveAmplitude(script_name, values, channel):
 	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
 	for value in values:
 		start = time.time()
-		if channel=='G':
-			hc.tabs['Gigatronics Synthesizer'].SetAmplitude(value)
+		if channel=='G1':
+			hc.tabs['Gigatronics Synthesizer 1'].SetAmplitude(value)
+		elif channel=='G2':
+			hc.tabs['Gigatronics Synthesizer 2'].SetAmplitude(value)
 		elif channel=='WA':
 			hc.tabs['Windfreak Synthesizer'].SetAmplitude(value, False)
 		elif channel=='WB':

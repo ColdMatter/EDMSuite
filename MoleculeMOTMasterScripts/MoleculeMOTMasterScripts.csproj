@@ -53,7 +53,11 @@
   <ItemGroup>
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
+    <Compile Include="F2MF2Levitation.cs" />
+    <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
+    <Compile Include="DualSpeciesMagTrap.cs" />
+    <Compile Include="DualSpeciesMagTrapTemp.cs" />
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
@@ -103,11 +107,14 @@
     <Compile Include="RamseySpectroscopyTrap.cs" />
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
+    <Compile Include="RbMagTrap.cs" />
     <Compile Include="RbMOTLoadingRate.cs" />
     <Compile Include="RbMOTTemp.cs" />
     <Compile Include="ScatteringRate.cs" />
     <Compile Include="ShutterTest.cs" />
     <Compile Include="SingleFrequencyMolasses.cs" />
+    <Compile Include="SingleFrequencyMolassesLevitate.cs" />
+    <Compile Include="SingleFrequencyMolassesMWLevitate.cs" />
     <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>
   <ItemGroup>
