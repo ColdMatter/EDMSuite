@@ -34,7 +34,7 @@ namespace TransferCavityLock2012
             }
         }
 
-        public double VoltageError
+        public override double VoltageError
         {
             get
             {
@@ -72,41 +72,29 @@ namespace TransferCavityLock2012
             }
         }
 
-        public override void UpdateScan(double[] rampData, double[] scanData, bool shouldBlock)
+        protected override void Lock()
         {
-            base.UpdateScan(rampData, scanData, shouldBlock);
-            if (lState == LaserState.LOCKING && !lockBlocked)
-            {
-                double differenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
-                LaserSetPoint = differenceFromMaster;
-            }
+            base.Lock();
+            // Set the initial lock point
+            LaserSetPoint = Fit.Centre - ParentCavity.Master.Fit.Centre;
+            // Initialise error tracking
+            oldFrequencyErrors = new List<double>();
+            lockCount = 0;
         }
 
         public override void UpdateLock()
         {
             if (!lockBlocked)
             {
-                switch (lState)
+                base.UpdateLock();
+                if (lState == LaserState.LOCKED)
                 {
-                    case LaserState.LOCKING:
-                        oldFrequencyErrors = new List<double>();
-                        oldFrequencyErrors.Add(FrequencyError);
-                        lockCount = 1;
-                        Lock();
-                        break;
-
-                    case LaserState.LOCKED:
-                        CurrentVoltage = CurrentVoltage + Gain * VoltageError;
-                        oldFrequencyErrors.Add(FrequencyError);
-                        if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
-                        {
-                            oldFrequencyErrors.RemoveAt(0);
-                        }
-                        lockCount++;
-                        break;
-
-                    case LaserState.FREE:
-                        break;
+                    oldFrequencyErrors.Add(FrequencyError);
+                    if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
+                    {
+                        oldFrequencyErrors.RemoveAt(0);
+                    }
+                    lockCount++;
                 }
             }
         }

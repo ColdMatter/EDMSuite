@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,14 +33,24 @@ namespace TransferCavityLock2012
             box.Text = text;
         }
 
-        public static void SetLED(Led led, bool val)
+        public static void SetLEDState(Led led, bool val)
         {
-            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+            led.Invoke(new SetLedStateDelegate(SetLedStateHelper), new object[] { led, val });
         }
-        private delegate void SetLedDelegate(Led led, bool val);
-        private static void SetLedHelper(Led led, bool val)
+        private delegate void SetLedStateDelegate(Led led, bool val);
+        private static void SetLedStateHelper(Led led, bool val)
         {
             led.Value = val;
+        }
+
+        public static void SetLEDColor(Led led, Color color)
+        {
+            led.Invoke(new SetLedColorDelegate(SetLedColorHelper), new object[] { led, color });
+        }
+        private delegate void SetLedColorDelegate(Led led, Color color);
+        private static void SetLedColorHelper(Led led, Color color)
+        {
+            led.OnColor = color;
         }
 
         public static void EnableControl(Control control, bool enabled)

@@ -76,12 +76,18 @@ namespace TransferCavityLock2012
 
         private void VoltageToLaserChanged(object sender, EventArgs e)
         {
-            try
+            double number;
+            System.Globalization.NumberStyles numberStyle = System.Globalization.NumberStyles.Number; // Determines what formats are allowed for numbers
+            if (Double.TryParse(VoltageToLaserTextBox.Text, numberStyle, System.Globalization.CultureInfo.InvariantCulture, out number))
             {
-                Controller.VoltageToSlaveLaserChanged(CavityPanel.CavityName, name, Double.Parse(VoltageToLaserTextBox.Text));
+                Controller.VoltageToSlaveLaserChanged(CavityPanel.CavityName, name, number);
             }
-            catch (Exception)
+            else
             {
+                Controller.ShowDialog(
+                    "Invalid entry",
+                    "Couldn't convert '" + VoltageToLaserTextBox.Text + "' to a double."
+                );
             }
         }
 
@@ -115,6 +121,13 @@ namespace TransferCavityLock2012
         public void SetLaserVoltage(double value)
         {
             UIHelper.SetTextBox(VoltageToLaserTextBox, Convert.ToString(value));
+        }
+
+        public void SetOperatingLED(bool locked, bool normalOperatingRange)
+        {
+            UIHelper.SetLEDState(lockedLED, locked);
+            Color color = normalOperatingRange ? Color.Lime : Color.DarkOrange;
+            UIHelper.SetLEDColor(lockedLED, color);
         }
 
         public void SetLaserSetPoint(double value)

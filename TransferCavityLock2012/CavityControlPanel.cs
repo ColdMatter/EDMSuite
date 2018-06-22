@@ -22,10 +22,11 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public CavityControlPanel(string name)
+        public CavityControlPanel(string name, double gain)
         {
             CavityName = name;
             InitializeComponent();
+            this.MasterGainTextBox.Text = gain.ToString();
         }
 
         public void AddSlaveLaserPanel(SlaveLaser sl)

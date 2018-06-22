@@ -1,12 +1,11 @@
-﻿using System;
+﻿using DAQ.Environment;
+using DAQ.HAL;
+using DAQ.TransferCavityLock2012;
+using NationalInstruments.DAQmx;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DAQ.Environment;
-using DAQ.TransferCavityLock2012;
-using NationalInstruments.DAQmx;
-using DAQ.Environment;
-using DAQ.HAL;
 
 namespace TransferCavityLock2012
 {
@@ -23,7 +22,6 @@ namespace TransferCavityLock2012
         public String PhotoDiodeChannel;
         public Cavity ParentCavity;
         private TransferCavityLock2012LaserControllable laser;
-        private double laserSetPoint;
         protected bool lockBlocked;
 
         public enum LaserState
@@ -33,6 +31,7 @@ namespace TransferCavityLock2012
         public LaserState lState = LaserState.FREE;
 
         public virtual double LaserSetPoint { get; set; }
+        public abstract double VoltageError { get; }
 
         public double UpperVoltageLimit
         {
@@ -57,16 +56,27 @@ namespace TransferCavityLock2012
             {
                 return currentVoltage;
             }
+
             set
             {
-                currentVoltage = value;
-                laser.SetLaserVoltage(value);
+                if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so TCL doesn't crash
+                {
+                    currentVoltage = LowerVoltageLimit;
+                }
+                else if (value > UpperVoltageLimit)
+                {
+                    currentVoltage = UpperVoltageLimit;
+                }
+                else
+                {
+                    currentVoltage = value;
+                }
+                laser.SetLaserVoltage(currentVoltage);
             }
         }
 
         public Laser(string feedbackChannel, string photoDiode, Cavity cavity)
         {
-            lState = LaserState.FREE;
             laser = new DAQMxTCL2012LaserControlHelper(feedbackChannel);
             lState = LaserState.FREE;
             Name = feedbackChannel;
@@ -81,7 +91,7 @@ namespace TransferCavityLock2012
             lState = LaserState.LOCKING;
         }
 
-        protected void Lock()
+        protected virtual void Lock()
         {
             lState = LaserState.LOCKED;
         }
@@ -107,7 +117,10 @@ namespace TransferCavityLock2012
 
                     case LaserState.LOCKED:
                         LorentzianFit newFit = FitWithPreviousAsBestGuess(rampData, scanData);
-                        if (newFit.Width < 0.001) // Sometimes fit seems to break and give a tiny width, in this case fall back to safe defaults
+                        double dataPeakCentre = rampData[Array.IndexOf(scanData, scanData.Max())];
+                        bool fitTooNarrow = newFit.Width < 0.001; // Sometimes fit seems to break and give a tiny width
+                        bool fitTooFarFromMax = Math.Abs(newFit.Centre - dataPeakCentre)/newFit.Width > 1;
+                        if (fitTooNarrow || fitTooFarFromMax) 
                         {
                             newFit = FitUsingDataForBestGuess(rampData, scanData);
                         }
@@ -116,6 +129,7 @@ namespace TransferCavityLock2012
 
                     case LaserState.LOCKING:
                         Fit = FitUsingDataForBestGuess(rampData, scanData);
+                        Lock();
                         break;
 
                     case LaserState.FREE:
@@ -140,7 +154,13 @@ namespace TransferCavityLock2012
             return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
         }
 
-        public abstract void UpdateLock();
+        public virtual void UpdateLock()
+        {
+            if (lState == LaserState.LOCKED)
+            {
+                CurrentVoltage = CurrentVoltage + Gain * VoltageError;
+            }
+        }
 
         public void DisposeLaserControl()
         {
