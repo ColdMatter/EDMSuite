@@ -190,24 +190,35 @@ namespace TransferCavityLock2012
             ui.UpdateUIState(TCLState);
         }
 
+        public void ShowDialog(string title, string message)
+        {
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
         #region Passing Events from UIs to the correct slave laser class.
-        /// <summary>
-        /// These are events triggered by one of the LockControlPanels. 
-        /// Example: User changes the voltage to be sent to the slave laser.
-        /// The UI will call VoltageToLaserChanged. Each LockControlPanel knows which laser it corresponds to. so the "name" argument tells
-        /// the controller which SlaveLaser class it needs to send the command to!
-        /// </summary>
-        /// <param name="slaveName"></param>
-        /// <param name="voltage"></param>
-        /// 
+
+        private void changeLaserVoltage(Laser laser, double voltage)
+        {
+            try
+            {
+                laser.CurrentVoltage = voltage;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                double value = (double)ex.ActualValue;
+                // If its below lower voltage limit, set to lower limit other wise must be above so set to upper limit
+                laser.CurrentVoltage = value < laser.LowerVoltageLimit ? laser.LowerVoltageLimit : laser.UpperVoltageLimit;
+            }
+        }
+
         internal void VoltageToMasterLaserChanged(string cavityName, double voltage)
         {
-            Cavities[cavityName].Master.CurrentVoltage = voltage;
+            changeLaserVoltage(Cavities[cavityName].Master, voltage);
         }
 
         internal void VoltageToSlaveLaserChanged(string cavityName, string slaveName, double voltage)
         {
-            Cavities[cavityName].SlaveLasers[slaveName].CurrentVoltage = voltage;
+            changeLaserVoltage(Cavities[cavityName].SlaveLasers[slaveName], voltage);
         }
 
         internal void MasterGainChanged(string cavityName, double g)
@@ -438,10 +449,12 @@ namespace TransferCavityLock2012
             {
                 double[] fitPoints = CavityScanFitHelper.CreatePointsFromFit(rampData, laser.Fit);
                 ui.DisplaySlaveData(laser.ParentCavity.Name, laser.Name, rampData, laserScanData, fitPoints);
-                if (laser.IsLocked)
+                if (laser.LockCount > 0)
                 {
-                    double voltageToLaser = laser.CurrentVoltage;
-                    ui.SetLaserVoltageTextBox(laser.ParentCavity.Name, laser.Name, voltageToLaser);
+                    ui.SetLaserVoltageTextBox(laser.ParentCavity.Name, laser.Name, laser.CurrentVoltage);
+                    bool laserInNormalOperatingRange = laser.CurrentVoltage <= laser.UpperVoltageLimit && laser.CurrentVoltage >= laser.LowerVoltageLimit;
+                    bool laserIsLocked = laser.lState == Laser.LaserState.LOCKED;
+                    ui.SetLaserOperatingLED(laser.ParentCavity.Name, laser.Name, laserIsLocked, laserInNormalOperatingRange);
                     List<double> errorList = laser.OldFrequencyErrors;
                     double standardDev = Math.Sqrt(errorList.Average(x => x * x));
                     ui.SetLaserSDTextBox(laser.ParentCavity.Name, laser.Name, standardDev);

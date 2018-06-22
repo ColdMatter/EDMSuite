@@ -52,6 +52,10 @@ namespace DAQ.TransferCavityLock2012
 
         public void AddSlaveLaser(string name, string photodiode)
         {
+            if (name == "Master")
+            {
+                throw new ArgumentException("Master is a reserved name, you must name your slave laser something else.");
+            }
             slaveLasers.Add(name, photodiode);
         }
 

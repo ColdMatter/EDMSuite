@@ -18,6 +18,14 @@ namespace TransferCavityLock2012
         {
             Name = config.Name;
             Master = new MasterLaser(config.RampOffset, config.MasterLaser, this);
+            if (config.DefaultGains.ContainsKey("Master"))
+            {
+                Master.Gain = config.DefaultGains["Master"];
+            }
+            else
+            {
+                Master.Gain = 1.0;
+            }
             SlaveLasers = new Dictionary<string, SlaveLaser>();
             foreach (KeyValuePair<string, string> entry in config.SlaveLasers)
             {

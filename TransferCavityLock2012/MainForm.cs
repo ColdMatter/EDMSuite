@@ -43,7 +43,7 @@ namespace TransferCavityLock2012
         {
             string title = cavity.Name;
             TabPage newTab = new TabPage(title);
-            CavityControlPanel panel = new CavityControlPanel(cavity.Name);
+            CavityControlPanel panel = new CavityControlPanel(cavity.Name, cavity.Master.Gain);
             panel.controller = this.controller;
             foreach (KeyValuePair<string, SlaveLaser> entry in cavity.SlaveLasers)
             {
@@ -183,6 +183,11 @@ namespace TransferCavityLock2012
         public void SetLaserVoltageTextBox(string cavityName, string slaveName, double value)
         {
             CavityPanels[cavityName].SlaveLaserPanels[slaveName].SetLaserVoltage(value);
+        }
+
+        public void SetLaserOperatingLED(string cavityName, string slaveName, bool locked, bool normalOperatingRange)
+        {
+            CavityPanels[cavityName].SlaveLaserPanels[slaveName].SetOperatingLED(locked, normalOperatingRange);
         }
 
         public void SetLaserSetPoint(string cavityName, string slaveName, double value)

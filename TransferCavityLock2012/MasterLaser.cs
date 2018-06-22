@@ -16,21 +16,11 @@ namespace TransferCavityLock2012
         {
         }
 
-        public override void UpdateLock()
+        public override double VoltageError
         {
-            switch (lState)
-            {
-                case LaserState.LOCKING:
-                    CurrentVoltage = CurrentVoltage - Gain * (LaserSetPoint - Fit.Centre);
-                    Lock();
-                    break;
-
-                case LaserState.LOCKED:
-                    CurrentVoltage = CurrentVoltage - Gain * (LaserSetPoint - Fit.Centre);
-                    break;
-
-                case LaserState.FREE:
-                    break;
+            get 
+            { 
+                return Fit.Centre - LaserSetPoint; 
             }
         }
     }
