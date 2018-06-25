@@ -452,7 +452,7 @@ namespace TransferCavityLock2012
                 if (laser.LockCount > 0)
                 {
                     ui.SetLaserVoltageTextBox(laser.ParentCavity.Name, laser.Name, laser.CurrentVoltage);
-                    bool laserInNormalOperatingRange = laser.CurrentVoltage <= laser.UpperVoltageLimit && laser.CurrentVoltage >= laser.LowerVoltageLimit;
+                    bool laserInNormalOperatingRange = laser.CurrentVoltage < laser.UpperVoltageLimit && laser.CurrentVoltage > laser.LowerVoltageLimit;
                     bool laserIsLocked = laser.lState == Laser.LaserState.LOCKED;
                     ui.SetLaserOperatingLED(laser.ParentCavity.Name, laser.Name, laserIsLocked, laserInNormalOperatingRange);
                     List<double> errorList = laser.OldFrequencyErrors;
