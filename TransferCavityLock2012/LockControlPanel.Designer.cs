@@ -162,6 +162,7 @@
             // lockEnableCheck
             // 
             this.lockEnableCheck.AutoSize = true;
+            this.lockEnableCheck.Enabled = false;
             this.lockEnableCheck.Location = new System.Drawing.Point(254, 17);
             this.lockEnableCheck.Name = "lockEnableCheck";
             this.lockEnableCheck.Size = new System.Drawing.Size(50, 17);

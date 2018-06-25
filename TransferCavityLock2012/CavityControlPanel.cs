@@ -103,21 +103,25 @@ namespace TransferCavityLock2012
         {
             switch (state)
             {
-                case SlaveLaser.LaserState.FREE:
+                case Laser.LaserState.FREE:
                     MasterSetPointTextBox.Enabled = true;
                     MasterGainTextBox.Enabled = true;
                     SummedVoltageTextBox.Enabled = true;
                     CavLockVoltageTrackBar.Enabled = true;
                     break;
 
-                case SlaveLaser.LaserState.LOCKING:
+                case Laser.LaserState.LOCKING:
                     MasterSetPointTextBox.Enabled = false;
                     MasterGainTextBox.Enabled = false;
                     SummedVoltageTextBox.Enabled = false;
                     CavLockVoltageTrackBar.Enabled = false;
+                    foreach (LockControlPanel slavePanel in SlaveLaserPanels.Values)
+                    {
+                        slavePanel.EnableLocking();
+                    }
                     break;
 
-                case SlaveLaser.LaserState.LOCKED:
+                case Laser.LaserState.LOCKED:
                     break;
             }
         }
