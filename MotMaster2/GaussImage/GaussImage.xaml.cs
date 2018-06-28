@@ -357,7 +357,7 @@ namespace MOTMaster2
     }
      
     #region internal table of DataGrid data
-    public struct iRecord
+    public struct iRecord // one row in the file/results table
     {
         public bool Use { set; get; }
         public string Param { set; get; }       
