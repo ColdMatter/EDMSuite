@@ -34,6 +34,7 @@ namespace MOTMaster2.SequenceData
                 {
                     if (!entry.Value.IsScannable()) ls.Add(entry.Key);
                 }
+            ls.Sort();
             return ls;
         }
         public List<string> DependableParams(string param) // the list of non-scan parameters dependable on "param" 

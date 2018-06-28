@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MOTMaster2.SequenceData;
 using System.Collections.ObjectModel;
+using UtilsNS;
 
 namespace MOTMaster2
 {
@@ -32,7 +33,6 @@ namespace MOTMaster2
                 //if (!p.IsHidden) _sequenceParameters.Add(p.Copy());
                 _sequenceParameters.Add(p.Copy());
             }
-
             parameterGrid.ItemsSource = _sequenceParameters;
             parameterGrid.DataContext = this;
         }
@@ -42,7 +42,10 @@ namespace MOTMaster2
             //TODO Remove parameters from SequenceData which have been removed from _sequenceParameters
             foreach (Parameter p in _sequenceParameters)
             {
-                Controller.sequenceData.Parameters[p.Name] = p;
+                Parameter p1 = p.Copy();
+                if (Utils.isNumeric(p1.Value))
+                    p1.Value = Convert.ToDouble(p.Value);
+                Controller.sequenceData.Parameters[p.Name] = p1;
             }
             this.Close();
         }
@@ -91,17 +94,16 @@ namespace MOTMaster2
         }
 
         private void frmParameters_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
+        {            
             if ((e.Key == Key.F4) || (e.Key == Key.Return))
             {
-                OK_Click(sender, e);
+                btnOK.Focus();
+                OK_Click(sender, null);
             }
             if (e.Key == Key.Escape)
             {
-                Cancel_Click(sender, e);
-            }
-        
-
+                Cancel_Click(sender, null);
+            }      
         }
 
     }

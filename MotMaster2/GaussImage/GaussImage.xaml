@@ -3,76 +3,134 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="MOTMaster2.GaussImage" 
-             mc:Ignorable="d" 
+             xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="MOTMaster2.GaussImage"              
+             mc:Ignorable="d"
+                         
              d:DesignHeight="600" d:DesignWidth="900">
-    <Grid x:Name="gridMain" Margin="0,0,0,0" Background="#FFFBFBFB">
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+    <Grid x:Name="gridMain" Margin="0,0,0,0" Background="#FFFFFFFF">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="500"/>
             <ColumnDefinition Width="8*"/>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="gridLeft" Margin="0">
+        <Grid x:Name="gridLeft" Margin="0" SizeChanged="gridLeft_SizeChanged">
             <Grid.RowDefinitions>
-                <RowDefinition Height="13*"/>
+                <RowDefinition Height="350"/>
                 <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
             <Grid x:Name="gridLeftTop" Margin="0" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="290*"/>
-                    <RowDefinition Height="99*"/>
+                    <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="16*"/>
                 </Grid.ColumnDefinitions>
                 <Image Margin="0,0,0,0.286" Grid.Row="0" Grid.Column="1"/>
-                <ni:Graph Margin="-96,96,225,92.286" RenderTransformOrigin="0.5,0.5" Interactions="Pan, Zoom" Grid.ColumnSpan="2">
-                    <ni:Graph.Axes>
-                        <ni:AxisDouble Orientation="Horizontal" Visibility="Collapsed"/>
-                        <ni:AxisDouble Orientation="Vertical" Visibility="Collapsed"/>
-                    </ni:Graph.Axes>
-                    <ni:Graph.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="90"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </ni:Graph.RenderTransform>
-                </ni:Graph>
-                <ni:Graph Grid.Column="1" Margin="0,290,0,-0.286" Grid.RowSpan="2">
+                <ni:Graph x:Name="graphY" Margin="0" RenderTransformOrigin="0.5,0.5" Interactions="Pan, Zoom">
+                    <ni:Graph.Plots>
+                        <ni:Plot Label="Vertical dist. data">
+                            <ni:PointPlotRenderer Fill="#FF0987F1" Stroke="#FF409FF7" Size="3,3" Shape="Plus"/>
+                        </ni:Plot>
+                        <ni:Plot Label="Vertical dist. fit">
+                            <ni:LinePlotRenderer Stroke="Maroon"/>
+                        </ni:Plot>
+                    </ni:Graph.Plots>
                     <ni:Graph.Axes>
                         <ni:AxisDouble Orientation="Horizontal" Visibility="Collapsed"/>
                         <ni:AxisDouble Orientation="Vertical" Visibility="Collapsed"/>
                     </ni:Graph.Axes>
                 </ni:Graph>
-                <Image Grid.Column="1" Margin="0"/>
+                <ni:Graph x:Name="graphX" Grid.Column="1" Margin="0" Grid.Row="1">
+                    <ni:Graph.Plots>
+                        <ni:Plot Label="Horizontal dist. data">
+                            <ni:PointPlotRenderer Shape="Plus" Stroke="#FF57D203" Size="3,3" Fill="#FF86FB86"/>
+                        </ni:Plot>
+                        <ni:Plot Label="Horizontal dist. fit">
+                            <ni:LinePlotRenderer Stroke="#FF80000A"/>
+                        </ni:Plot>
+                    </ni:Graph.Plots>
+                    <ni:Graph.Axes>
+                        <ni:AxisDouble Orientation="Horizontal" Visibility="Collapsed"/>
+                        <ni:AxisDouble Orientation="Vertical" Visibility="Collapsed"/>
+                    </ni:Graph.Axes>
+                </ni:Graph>
+                <Image x:Name="image1" Grid.Column="1" Margin="0" Stretch="Fill"/>
+                <ni:KnobDouble x:Name="kdUpperLimit" Margin="32,2,0,32" Range="1, 100, System.Double" Value="70" Grid.Row="1" Background="#FFE3FBB4" ValueChanged="kdUpperLimit_ValueChanged" MechanicalAction="SwitchWhenReleased">
+                    <ni:KnobDouble.Scale>
+                        <ni:NumericScale OverridesDefaultStyle="True" Visibility="Collapsed" Label="876"/>
+                    </ni:KnobDouble.Scale>
+                </ni:KnobDouble>
+                <Label x:Name="lbUpperLimit" Content="70%" HorizontalAlignment="Left" Margin="0" Grid.Row="1" VerticalAlignment="Top" FontWeight="Bold"/>
+                <ComboBox x:Name="cbColorScheme" HorizontalAlignment="Left" Margin="3,0,0,0" Grid.Row="1" VerticalAlignment="Bottom" Width="95" SelectedIndex="0" SelectionChanged="cbColorScheme_SelectionChanged">
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                            <GradientStop Color="#FFFFFDFD" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+                    <ComboBoxItem Content="Black/White"/>
+                    <ComboBoxItem Content="Color 1"/>
+                </ComboBox>
+                <CheckBox x:Name="chkAutoUpperLimit" Content="Auto" HorizontalAlignment="Left" Margin="3,60.286,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="chkAutoUpperLimit_Checked" Unchecked="chkAutoUpperLimit_Checked"/>
             </Grid>
             <Grid x:Name="gridLeftBottom" Margin="0" Grid.Row="1">
-                <Button Content="Process" HorizontalAlignment="Right" Margin="280,10,10,0" VerticalAlignment="Top" Width="130" Height="30" Background="#FFD7EFE8" FontSize="16"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button x:Name="btnProcess" Content="Process" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="130" Height="30" Background="#FFD7EFE8" FontSize="16" Click="btnProcess_Click"/>
+                <GroupBox Header="Visual update" HorizontalAlignment="Left" Margin="0,5,0,0.143" Width="170">
+                    <Grid>
+                        <CheckBox x:Name="chkImageUpdate" Content="Image" HorizontalAlignment="Left" Margin="0,3,0,0" IsChecked="True" Checked="chkImageUpdate_Checked" Unchecked="chkImageUpdate_Checked"/>
+                        <CheckBox x:Name="chkDistUpdate" Content="Distributions" HorizontalAlignment="Left" Margin="63,3,0,0" IsChecked="True" Checked="chkImageUpdate_Checked" Unchecked="chkImageUpdate_Checked"/>
+                    </Grid>
+                </GroupBox>
+                <CheckBox x:Name="chkFitAsShown" Content="Fit As Shown" HorizontalAlignment="Left" Margin="210,23,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                <Button x:Name="btnClear" Content="X" HorizontalAlignment="Left" Margin="175,17,0,0" VerticalAlignment="Top" Width="30" Height="28" Background="#FFFCFBFB" FontSize="18" FontWeight="Bold" Foreground="#FFC40303" Click="btnClear_Click"/>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="16*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListBox x:Name="lbCurrentResults" Margin="0,5,0,0.286" Grid.Column="0"/>
+                    <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
+                    <TabControl x:Name="tcModes" Margin="5,5,0,0" Grid.Column="1" FontWeight="Bold">
+                        <TabItem Header=" General " FontWeight="Normal" Background="#FFFAF6F6">
+                            <Grid Background="#FFFFFEFE">
+                                <CheckBox x:Name="chkLinearFit" Content="Linear Fit at End Series (Process or Scan)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Temperature" FontWeight="Normal">
+                            <Grid Background="#FFFFFEFE">
+                                <Label x:Name="lbTimeStep" Content="Time step [ms]" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <ni:NumericTextBoxDouble x:Name="ntbTimeStep" HorizontalAlignment="Left" Height="23" Margin="103,13,0,0" VerticalAlignment="Top" Width="69" Value="1" Interval="0.1"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+
+
             </Grid>
         </Grid>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0" Width="5"/>
-        <Grid x:Name="gridRight" Grid.Column="1" Margin="0">
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
+        <Grid x:Name="gridRight" Grid.Column="1" Margin="7,0,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="13*"/>
-                <RowDefinition Height="9*"/>
+                <RowDefinition Height="335*"/>
+                <RowDefinition Height="246*"/>
             </Grid.RowDefinitions>
-            <GridSplitter x:Name="splitRight" Grid.Row="1" VerticalAlignment="Top" Margin="0,5,0,0" Height="5" HorizontalAlignment="Stretch"/>
-            <Grid x:Name="gridRightTop" Margin="0" Grid.Row="0">
+            <GridSplitter x:Name="splitRight" Grid.Row="1" VerticalAlignment="Top" Margin="0,0,0,0" Height="5" HorizontalAlignment="Stretch"/>
+            <Grid x:Name="gridRightTop" Margin="0,0,0,0.286" Grid.Row="0" Grid.RowSpan="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="29*"/>
-                    <RowDefinition Height="26*"/>
+                    <RowDefinition Height="29"/>
+                    <RowDefinition Height="26"/>
                     <RowDefinition Height="334*"/>
                 </Grid.RowDefinitions>
-                <Label Content="Directory" Margin="5,0,90,0"/>
-                <Button x:Name="btnSelect" Content="Select" HorizontalAlignment="Right" Margin="0" Width="88" Background="#FFF8F8EF" FontSize="14"/>
-                <ListBox Margin="0" Grid.Row="2"/>
-                <Label Content="/Images" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" FontWeight="Bold"/>
-                <ComboBox x:Name="cbExtraDirectory" HorizontalAlignment="Left" Margin="5,0,0,2" Width="110" IsReadOnly="True" Grid.Row="1" Visibility="Hidden">
+                <Label x:Name="lbSelectedDir" Content="Directory" Margin="5,0,90,0"/>
+                <Button x:Name="btnSelect" Content="Select" HorizontalAlignment="Right" Margin="0" Width="88" Background="#FFF8F8EF" FontSize="14" Click="btnSelect_Click" FontWeight="Bold"/>
+                <Label x:Name="lbImages" Content="Images" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" FontWeight="Bold"/>
+                <ComboBox x:Name="cbExtraDirectory" HorizontalAlignment="Left" Margin="5,0,0,2" Width="110" IsReadOnly="True" Grid.Row="1" Visibility="Hidden" SelectionChanged="cbExtraDirectory_SelectionChanged">
                     <ComboBox.Background>
                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                             <GradientStop Color="#FFF0F0F0" Offset="0"/>
@@ -80,12 +138,42 @@
                         </LinearGradientBrush>
                     </ComboBox.Background>
                 </ComboBox>
-                <RadioButton x:Name="rbOnline" Content="Online" HorizontalAlignment="Left" Margin="130,8,0,0" Grid.Row="1" VerticalAlignment="Top" IsChecked="True"/>
-                <RadioButton x:Name="rbOffline" Content="Offline" HorizontalAlignment="Left" Margin="190,8,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                <RadioButton x:Name="rbOnline" Content="Online" HorizontalAlignment="Left" Margin="130,8,0,0" Grid.Row="1" VerticalAlignment="Top" IsChecked="True" Checked="rbOnline_Checked"/>
+                <RadioButton x:Name="rbOffline" Content="Offline" HorizontalAlignment="Left" Margin="190,8,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="rbOnline_Checked"/>
+                 <Button x:Name="btnArchive" Content="Archive" HorizontalAlignment="Left" Margin="263,3,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Background="#FFF7FCEF" Click="btnArchive_Click"/>
+                <Label x:Name="lbInfo" Content="Info:" HorizontalAlignment="Left" Margin="350,-3,0,0" Grid.Row="1" VerticalAlignment="Center" Height="26" FontWeight="Bold" Background="White" Foreground="#FF930202"/>
+                <Grid Grid.Row="2">
+                <DataGrid x:Name="dgTable" Margin="0" SelectionChanged="dgTable_SelectionChanged" MouseDoubleClick="dgTable_MouseDoubleClick" Background="White" HorizontalGridLinesBrush="#FF032AAB" VerticalGridLinesBrush="#FF7CC7B0">
+
+                </DataGrid>
+                </Grid>
             </Grid>
-            <Grid x:Name="gridRightBottom" Margin="0" Grid.Row="1">
-                <ni:Graph x:Name="graphRslt" Margin="0,24,0,0" Interactions="Pan, Zoom"/>
-                <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Height="24" Margin="0" VerticalAlignment="Top"/>
+            <Grid x:Name="gridRightBottom" Margin="0,5,0,0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="106*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <ni:Graph x:Name="graphRslt" Margin="0,24,0.286,0.286" Interactions="Pan, Zoom">
+                    <ni:Graph.Plots>
+                        <ni:Plot Label="Dev.X">
+                            <ni:PointPlotRenderer Fill="#FF8EEC8E" Stroke="#FF209209" Size="6,6"/>
+                        </ni:Plot>
+                        <ni:Plot Label="Dev.Y">
+                            <ni:PointPlotRenderer Fill="#FF00B9FE" Stroke="#FF055B95" Size="6,6"/>
+                        </ni:Plot>
+                        <ni:Plot Label="Lin.X">
+                            <ni:LinePlotRenderer Stroke="#FF029C06" StrokeThickness="1.5"/>
+                        </ni:Plot>
+                        <ni:Plot Label="Lin.Y">
+                            <ni:LinePlotRenderer Stroke="#FF064EBF" StrokeThickness="1.5"/>
+                        </ni:Plot>
+                    </ni:Graph.Plots>
+                </ni:Graph>
+                <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Height="24" Margin="0,2,0.286,0" VerticalAlignment="Top" Grid.Column="0" Graph="{Binding ElementName=graphRslt}">                
+                </ni:GraphInteractionPalette>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
+                <ListBox x:Name="lbDevResults" Margin="5,0,0.143,0.286" Grid.Column="1"/>
+                <Button x:Name="btnClearGraph" Grid.ColumnSpan="1" Content="X" HorizontalAlignment="Left" Margin="200,2,0,0" VerticalAlignment="Top" Width="22" FontWeight="Bold" Foreground="#FFF90303" Background="White" Height="22" Click="btnClearGraph_Click"/>
             </Grid>
         </Grid>
     </Grid>

@@ -34,6 +34,7 @@ namespace MOTMaster2
         //TODO change this so Controller can access it properly
         RemoteMessaging remoteMsg;
         Modes modes;
+        bool TheosComputer = false;
 
         public MainWindow()
         {
@@ -51,9 +52,16 @@ namespace MOTMaster2
             this.sequenceControl.ChangedAnalogChannelCell += new SequenceDataGrid.ChangedAnalogChannelCellHandler(this.sequenceData_AnalogValuesChanged);
             this.sequenceControl.ChangedRS232Cell += new SequenceDataGrid.ChangedRS232CellHandler(this.sequenceData_RS232Changed);
             Controller.MotMasterDataEvent += OnDataCreated;
+            OnStartScan += GaussImage1.StartScanEvent;
+            OnNextScanVal += GaussImage1.NextScanValEvent;
 
             //   ((INotifyPropertyChanged)Controller.sequenceData.Parameters).PropertyChanged += this.InterferometerParams_Changed;
             OpenDefaultModes();
+            TheosComputer = (string)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"] == "DESKTOP-U334RMA";
+            if (TheosComputer) // Theo's computer
+            {
+                tiImageProcess.Visibility = System.Windows.Visibility.Visible; tcVisual.SelectedIndex = 2; cbHub.SelectedIndex = 3;
+            }
         }
 
         private void OnDataCreated(object sender, DataEventArgs e)
@@ -69,7 +77,7 @@ namespace MOTMaster2
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
                                                   new Action(delegate { }));
             //Not needed for repeat run. Might be needed for scan
-               // controller.WaitForRunToFinish(); 
+            // controller.WaitForRunToFinish(); 
         }
 
         public void InitVisuals()
@@ -100,6 +108,7 @@ namespace MOTMaster2
             //scan
             MMscan mms = new MMscan();
             mms.AsString = modes.Scan;
+            //List<string> 
             cbParamsScan.Items.Clear();
             foreach (string param in Controller.sequenceData.ScannableParams())
                 cbParamsScan.Items.Add(param);
@@ -145,7 +154,7 @@ namespace MOTMaster2
             }
             catch (Exception e)
             {
-                ErrorMng.errorMsg("Failed to build sequence:" + e.Message, -1, false);
+                ErrorMng.errorMsg("Failed to build sequence:" + e.Message +" IN " + e.Source, -1, false);
                 return false;
             }
             controller.RunStart(paramDict);
@@ -235,11 +244,12 @@ namespace MOTMaster2
                 Controller.ExpData.ExperimentName = DateTime.Now.ToString("yy-MM-dd_H-mm-ss");
                 tbExperimentRun.Text = Controller.ExpData.ExperimentName;
             }
-            
+            StartScanEvent(true, false, null); 
             for (int i = 0; i < numInterations; i++)
             {
                 if (groupRun != GroupRun.repeat) break; //False if runThread was stopped elsewhere
                 //Console.WriteLine("#: " + i.ToString());
+                NextScanValEvent(Convert.ToDouble(i));
                 Controller.BatchNumber = i;
                 if (!SingleShot()) groupRun = GroupRun.none;               
                 if (Iters == -1) progBar.Value = i % 100;
@@ -258,6 +268,7 @@ namespace MOTMaster2
                 if (j == 10) ErrorMng.Log("Time-out at wait4adjust loop", Brushes.DarkOrange.Color);
                 controller.WaitForRunToFinish();
             }
+            StartScanEvent(false, false, null); 
             controller.AutoLogging = false;
         }
 
@@ -292,6 +303,7 @@ namespace MOTMaster2
                 groupRun = GroupRun.none;
                 controller.StopRunning();
                 lbCurNumb.Content = "";
+                StartScanEvent(false, false, null); 
                 // End repeat
             }
 
@@ -322,6 +334,27 @@ namespace MOTMaster2
                 case 3: return Controller.genOptions.MatematicaLogger;
                 default: return false;
             }            
+        }
+
+        public delegate void StartScanHandler(bool _start, bool _scanMode, MMscan _mmscan); // when _scanMode == none then cancel
+        public event StartScanHandler OnStartScan;
+
+        protected void StartScanEvent(bool _start, bool _scanMode, MMscan _mmscan)
+        {
+            if (cbHub.SelectedIndex != 3) return;
+            if (Utils.isNull(GaussImage1)) return;
+            if (!GaussImage1.LineMode) return;
+            if (OnStartScan != null) OnStartScan(_start, _scanMode, _mmscan);
+        }
+        public delegate void NextScanValHandler(double val);
+        public event NextScanValHandler OnNextScanVal;
+
+        protected void NextScanValEvent(double val)
+        {
+            if (cbHub.SelectedIndex != 3) return;
+            if (Utils.isNull(GaussImage1)) return;
+            if (!GaussImage1.LineMode) return;
+            if (OnNextScanVal != null) OnNextScanVal(val);
         }
 
         private void realScan(string prm, string fromScanS, string toScanS, string byScanS, string Hub = "none", int cmdId = -1)
@@ -397,12 +430,14 @@ namespace MOTMaster2
                 }
             }
             int c = 0;
-            Controller.ScanParam = scanParam;
+            Controller.ScanParam = scanParam.Clone();
             groupRun = GroupRun.scan;
+            StartScanEvent(true, true, scanParam); 
             foreach (object scanItem in scanArray)
             {
                 Controller.BatchNumber = c;
                 param.Value = scanItem;
+                NextScanValEvent(Convert.ToDouble(scanItem)); // call gaussImage before the body of the loop
                 scanDict[parameter] = scanItem;
                 progBar.Value = (scanItem != null && scanItem is double) ? (double)scanItem : Convert.ToDouble((int)scanItem);
                 SetInterferometerParams(scanDict);
@@ -421,6 +456,7 @@ namespace MOTMaster2
                 c++;      
             }
             if (!btnScan.Content.Equals("Scan")) btnScan_Click(null, null);
+            StartScanEvent(false, true, scanParam); 
             param.Value = defaultValue;
             lbCurValue.Content = ((double)defaultValue).ToString(Constants.ScanDataFormat);
             controller.AutoLogging = false;
@@ -446,6 +482,7 @@ namespace MOTMaster2
                     return;
                 }
                 controller.StopRunning();
+                StartScanEvent(false, true, null);
                 btnScan.Content = "Scan";
                 btnScan.Background = brush;
                 groupRun = GroupRun.none;
@@ -459,6 +496,7 @@ namespace MOTMaster2
                 btnScan.Background = brush;
                 groupRun = GroupRun.none;
                 controller.StopRunning();
+                StartScanEvent(false, true, null);
             }
 
             if (btnScan.Content.Equals("Abort Remote"))
@@ -468,6 +506,7 @@ namespace MOTMaster2
                 btnScan.Background = brush;
                 groupRun = GroupRun.none;
                 controller.StopRunning();
+                StartScanEvent(false, true, null);
                 //Send Remote Message to AxelHub
                 if (!Utils.isNull(sender))
                 {
@@ -989,20 +1028,25 @@ namespace MOTMaster2
             if (remoteMsg != null)
             {
                 remoteMsg.Enabled = (cbHub.SelectedIndex == 2);
-                Controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 3);
+                Controller.SendDataRemotely = (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 4);
             }
             if (btnRemote == null) return;
-            if (cbHub.SelectedIndex == 2)
+            if ((cbHub.SelectedIndex == 2) || (cbHub.SelectedIndex == 4))
             {
                 btnRemote.Content = "Connect  ?->"; btnRemote.Background = Brushes.AliceBlue;
             }
-
-            if (cbHub.SelectedIndex == 3)
+            if (cbHub.SelectedIndex == 3) 
             {
-                btnRemote.Content = "Connect  ?->"; btnRemote.Background = Brushes.AliceBlue;
-            } 
-                               
-            if (cbHub.SelectedIndex > 1)
+                tiImageProcess.Visibility = System.Windows.Visibility.Visible;
+                tcVisual.SelectedIndex = 2;
+            }
+            else
+            {
+                tiImageProcess.Visibility = System.Windows.Visibility.Hidden;
+                tcVisual.SelectedIndex = 0;
+            }
+
+            if (cbHub.SelectedIndex == 2 || cbHub.SelectedIndex == 4) 
             {
                 btnRemote.Visibility = System.Windows.Visibility.Visible;
             }
@@ -1014,13 +1058,13 @@ namespace MOTMaster2
 
         private async void btnRemote_Click(object sender, RoutedEventArgs e)
         {
-            if (cbHub.SelectedIndex == 2)
+            if (cbHub.SelectedIndex == 2) // Axel-hub
             {
                 remoteMsg.CheckConnection(true); 
                 //{ ErrorMng.simpleMsg("Connected to Axel-hub"); }
                 //else ErrorMng.errorMsg("Connection to Axel-hub failed !", 666);
             }
-            if (cbHub.SelectedIndex == 3)
+            if (cbHub.SelectedIndex == 3) // Mathematica
             {
                 if (btnRemote.Content.Equals("Connect"))
                 {
@@ -1057,14 +1101,19 @@ namespace MOTMaster2
             else
             {
                 btnRemote.Content = "Disconnected -X-"; btnRemote.Background = Brushes.LightYellow;
-                if (remoteMsg.partnerPresent) ErrorMng.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
+                if (remoteMsg.partnerPresent) 
+                {
+                    //if (!remoteMsg.CheckConnection()) 
+                        ErrorMng.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
+                }
                 else
                 {
                     if (!File.Exists(Utils.configPath + "axel-hub.bat") || !forced) return;
                     ErrorMng.Status("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
                     System.Diagnostics.Process.Start(File.ReadAllText(Utils.configPath + "axel-hub.bat"), "-remote");
                     Thread.Sleep(1000);
-                    if(remoteMsg.CheckConnection()) OnActiveComm(remoteMsg.Connected, false);
+                    if(remoteMsg.CheckConnection()) 
+                        OnActiveComm(remoteMsg.Connected, false);
                     ErrorMng.Reset();
                 }
             }                

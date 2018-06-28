@@ -5,7 +5,8 @@
         x:Class="MOTMaster2.MainWindow"
         xmlns:controls="clr-namespace:MOTMaster2"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Name="frmMain" 
-        Title="MOTMaster2" Height="875.714" Width="807.768" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico" SourceInitialized="frmMain_SourceInitialized" PreviewKeyDown="frmMain_PreviewKeyDown">
+
+    Title="MOTMaster2" Height="875.714" Width="807.768" ResizeMode="CanResizeWithGrip" Closing="frmMain_Closing" Icon="3axis.ico" SourceInitialized="frmMain_SourceInitialized" PreviewKeyDown="frmMain_PreviewKeyDown" WindowState="Maximized">
     <Window.Resources>
         <controls:Controller x:Key="controller"/>
     </Window.Resources>
@@ -54,6 +55,7 @@
                 <ComboBoxItem Content="None"/>
                 <ComboBoxItem Content="Local"/>
                 <ComboBoxItem Content="Axel-hub"/>
+                <ComboBoxItem Content="Image Process"/>
                 <ComboBoxItem Content="Mathematica"/>
             </ComboBox>
             <Label Content="Hub" HorizontalAlignment="Left" Margin="348,0,0,0" VerticalAlignment="Center" FontSize="13" Height="26"/>
@@ -225,17 +227,6 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Measurements" Width="120" Height="25" FontSize="13" Visibility="Collapsed">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="117.143"/>
-                            <RowDefinition Height="186*"/>
-                            <RowDefinition Height="247*"/>
-                        </Grid.RowDefinitions>
-
-                        <!--<GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0"/>-->
-                    </Grid>
-                </TabItem>
                 <TabItem x:Name="MSquaredTab" Header="Laser Pulses" Width="110" Height="25" FontSize="13">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -286,6 +277,18 @@
                         <Button Name="m2updateBtn" Content="Update" Margin="297,39.143,0,0" Grid.Row="1" Click="m2updateBtn_Click" Background="#FFD7EFE8" HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="85"/>
                     </Grid>
                 </TabItem>
+                <TabItem x:Name="tiImageProcess" Header="Image Process" Width="120" Height="25" FontSize="13" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="71*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <controls:GaussImage x:Name="GaussImage1" Grid.Column="0"/>
+                        <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="0" Background="#FFE9F9E6"/>
+                    </Grid>
+                </TabItem>
+                
+                
 
 
 

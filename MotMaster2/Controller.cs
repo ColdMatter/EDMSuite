@@ -198,7 +198,7 @@ namespace MOTMaster2
                 "tcp://localhost:1172/controller.rem");
 
             if (config.UseMuquans) { muquans = new MuquansController(); }
-            if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"];}
+            if (!config.Debug) { microSynth = (WindfreakSynth)Environs.Hardware.Instruments["microwaveSynth"]; }
             if (config.UseMSquared)
             {
                 CheckMSquaredHardware();
@@ -424,9 +424,8 @@ namespace MOTMaster2
         }
 
 
-        internal void StopRunning()
+        internal void StopRunning(bool force = false)
         {
-
             if (!config.Debug)
             {
                 WaitForRunToFinish();
@@ -435,13 +434,13 @@ namespace MOTMaster2
                     WaitForRunToFinish();
                     if (!hardwareError) releaseHardware();
                 }
-                try { if (StaticSequence) releaseHardware(); }
+                try { if (force || StaticSequence) releaseHardware(); }
                 catch { }
                 muquans.DisposeAll();               
             }
             StaticSequence = false; //Set this here in case we want to scan after
             status = RunningState.stopped;
-            //ClearPatterns();
+            if (force) ClearPatterns();
         }
 
         internal bool CheckForRunErrors()
@@ -677,8 +676,7 @@ namespace MOTMaster2
         }
 
         public void BuildMMSequence(Dictionary<String, Object> dict, string scriptPath = null)
-        {
-           
+        {           
             if (config.UseMMScripts || sequenceData == null)
             {
                 script = prepareScript(scriptPath, dict);
@@ -686,7 +684,6 @@ namespace MOTMaster2
             }
             else
             {
-
                 if (Controller.genOptions.AIEnable || config.Debug)
                 {
                     if (!sequenceData.Steps.Any(t=>t.GetDigitalData("acquisitionTrigger")))

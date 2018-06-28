@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Controls;
 
@@ -14,9 +15,35 @@ namespace UtilsNS
 {
     public static class Utils
     {
+        /*public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame)f).Continue = false;
+
+            return null;
+        }
+        public static void DoEvents()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
+                                                  new Action(delegate { }));
+        }
+*/
+
         public static bool isNull(System.Object o)
         {
             return object.ReferenceEquals(null, o);
+        }
+        public static bool isNumeric(System.Object o)
+        {
+            double test;
+            return double.TryParse(Convert.ToString(o), out test);
         }
 
         public static double EnsureRange(double Value, double MinValue, double MaxValue)
