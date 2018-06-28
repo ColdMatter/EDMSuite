@@ -379,7 +379,7 @@ namespace MOTMaster2
     }
     public class DataBank
     {
-        public ObservableCollection<iRecord> iRecords;
+        public ObservableCollection<iRecord> iRecords; // the whole table data as model
         private string tablePrec = "G6";
         System.Windows.Controls.DataGrid dg;
         public DataBank(System.Windows.Controls.DataGrid DG)
