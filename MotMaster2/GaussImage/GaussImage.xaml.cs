@@ -440,7 +440,7 @@ namespace MOTMaster2
             return j;
         }
 
-        public List<string> Filenames()
+        public List<string> Filenames() // list of files in SelectedDir
         {
             List<string> ls = new List<string>();
             for (int i = 0; i < iRecords.Count; i++) ls.Add(iRecords[i].Filename);
@@ -604,7 +604,7 @@ namespace MOTMaster2
             );
         }
         ScanMode scanMode = ScanMode.none; baseMMscan mmscan; 
-        int procStage = 0; // 0 -> before anything; 1 -> new value; 2 -> file in; 3 -> start proc; 4 = 0 -> end proc
+        int procStage = 0; // 0 -> before anything; 1 -> new value; 2 -> file in; 3 -> start proc; 0 -> end proc
 
         public void StartScanEvent(bool _start, bool _scanMode, MMscan _mmscan)
         {
