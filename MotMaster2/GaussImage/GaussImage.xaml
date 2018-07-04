@@ -6,7 +6,7 @@
              xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation" x:Class="MOTMaster2.GaussImage"              
              mc:Ignorable="d"
                          
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="600">
     <Grid x:Name="gridMain" Margin="0,0,0,0" Background="#FFFFFFFF">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"/>
@@ -100,6 +100,12 @@
                         <TabItem Header=" General " FontWeight="Normal" Background="#FFFAF6F6">
                             <Grid Background="#FFFFFEFE">
                                 <CheckBox x:Name="chkLinearFit" Content="Linear Fit at End Series (Process or Scan)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                                <CheckBox x:Name="chkSecondaryChart" Content="Secondary Chart -&gt; " HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.484,-0.644" Checked="chkSecondaryChart_Checked" Unchecked="chkSecondaryChart_Checked" IsChecked="True"/>
+                                <ComboBox x:Name="cbSecondChart" HorizontalAlignment="Left" Margin="144,38,0,0" VerticalAlignment="Top" Width="95" SelectedIndex="1">
+                                    <ComboBoxItem Content="Amplitude"/>
+                                    <ComboBoxItem Content="Center"/>
+                                    <ComboBoxItem Content="Residuals"/>
+                                </ComboBox>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Temperature" FontWeight="Normal">
@@ -118,7 +124,7 @@
         <Grid x:Name="gridRight" Grid.Column="1" Margin="7,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="335*"/>
-                <RowDefinition Height="246*"/>
+                <RowDefinition Height="346*"/>
             </Grid.RowDefinitions>
             <GridSplitter x:Name="splitRight" Grid.Row="1" VerticalAlignment="Top" Margin="0,0,0,0" Height="5" HorizontalAlignment="Stretch"/>
             <Grid x:Name="gridRightTop" Margin="0,0,0,0.286" Grid.Row="0" Grid.RowSpan="1">
@@ -127,7 +133,7 @@
                     <RowDefinition Height="26"/>
                     <RowDefinition Height="334*"/>
                 </Grid.RowDefinitions>
-                <Label x:Name="lbSelectedDir" Content="Directory" Margin="5,0,90,0"/>
+                <Label x:Name="lbSelectedDir" Content="Experiment Directory (please, select experiment folder)" Margin="5,0,90,0"/>
                 <Button x:Name="btnSelect" Content="Select" HorizontalAlignment="Right" Margin="0" Width="88" Background="#FFF8F8EF" FontSize="14" Click="btnSelect_Click" FontWeight="Bold"/>
                 <Label x:Name="lbImages" Content="Images" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" FontWeight="Bold"/>
                 <ComboBox x:Name="cbExtraDirectory" HorizontalAlignment="Left" Margin="5,0,0,2" Width="110" IsReadOnly="True" Grid.Row="1" Visibility="Hidden" SelectionChanged="cbExtraDirectory_SelectionChanged">
@@ -140,40 +146,82 @@
                 </ComboBox>
                 <RadioButton x:Name="rbOnline" Content="Online" HorizontalAlignment="Left" Margin="130,8,0,0" Grid.Row="1" VerticalAlignment="Top" IsChecked="True" Checked="rbOnline_Checked"/>
                 <RadioButton x:Name="rbOffline" Content="Offline" HorizontalAlignment="Left" Margin="190,8,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="rbOnline_Checked"/>
-                 <Button x:Name="btnArchive" Content="Archive" HorizontalAlignment="Left" Margin="263,3,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Background="#FFF7FCEF" Click="btnArchive_Click"/>
-                <Label x:Name="lbInfo" Content="Info:" HorizontalAlignment="Left" Margin="350,-3,0,0" Grid.Row="1" VerticalAlignment="Center" Height="26" FontWeight="Bold" Background="White" Foreground="#FF930202"/>
+                <Button x:Name="btnArchive" Content="Archive" HorizontalAlignment="Left" Margin="263,3,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Background="#FFF7FCEF" Click="btnArchive_Click"/>
+                <Button x:Name="btnCopy" Content="Copy" HorizontalAlignment="Left" Margin="346,3,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Background="#FFEFFBFC" Click="btnCopy_Click"/>
+                <Label x:Name="lbInfo" Content="Info:" HorizontalAlignment="Left" Margin="400,-3,0,0" Grid.Row="1" VerticalAlignment="Center" Height="26" FontWeight="Bold" Background="White" Foreground="#FF930202"/>
                 <Grid Grid.Row="2">
-                <DataGrid x:Name="dgTable" Margin="0" SelectionChanged="dgTable_SelectionChanged" MouseDoubleClick="dgTable_MouseDoubleClick" Background="White" HorizontalGridLinesBrush="#FF032AAB" VerticalGridLinesBrush="#FF7CC7B0">
+                    <DataGrid x:Name="dgTable" Margin="0" SelectionChanged="dgTable_SelectionChanged" MouseDoubleClick="dgTable_MouseDoubleClick" Background="White" HorizontalGridLinesBrush="#FF032AAB" VerticalGridLinesBrush="#FF7CC7B0">
 
-                </DataGrid>
+                    </DataGrid>
                 </Grid>
             </Grid>
-            <Grid x:Name="gridRightBottom" Margin="0,5,0,0" Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="106*"/>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
-                <ni:Graph x:Name="graphRslt" Margin="0,24,0.286,0.286" Interactions="Pan, Zoom">
-                    <ni:Graph.Plots>
-                        <ni:Plot Label="Dev.X">
-                            <ni:PointPlotRenderer Fill="#FF8EEC8E" Stroke="#FF209209" Size="6,6"/>
-                        </ni:Plot>
-                        <ni:Plot Label="Dev.Y">
-                            <ni:PointPlotRenderer Fill="#FF00B9FE" Stroke="#FF055B95" Size="6,6"/>
-                        </ni:Plot>
-                        <ni:Plot Label="Lin.X">
-                            <ni:LinePlotRenderer Stroke="#FF029C06" StrokeThickness="1.5"/>
-                        </ni:Plot>
-                        <ni:Plot Label="Lin.Y">
-                            <ni:LinePlotRenderer Stroke="#FF064EBF" StrokeThickness="1.5"/>
-                        </ni:Plot>
-                    </ni:Graph.Plots>
-                </ni:Graph>
-                <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Height="24" Margin="0,2,0.286,0" VerticalAlignment="Top" Grid.Column="0" Graph="{Binding ElementName=graphRslt}">                
-                </ni:GraphInteractionPalette>
-                <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
-                <ListBox x:Name="lbDevResults" Margin="5,0,0.143,0.286" Grid.Column="1"/>
-                <Button x:Name="btnClearGraph" Grid.ColumnSpan="1" Content="X" HorizontalAlignment="Left" Margin="200,2,0,0" VerticalAlignment="Top" Width="22" FontWeight="Bold" Foreground="#FFF90303" Background="White" Height="22" Click="btnClearGraph_Click"/>
+            <Grid x:Name="gridGraph" Margin="0,5,0,0" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200*"/>
+                    <RowDefinition Height="200*"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="gridRightCentre" Margin="0,5,0,0" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="106*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <ni:Graph x:Name="graphRslt0" Margin="0,24,0.286,0.286" Interactions="Pan, Zoom" PreferIndexData="False">
+                        <ni:Graph.SelectionFill>
+                            <SolidColorBrush Color="#FFFAFDD9" Opacity="0.5"/>
+                        </ni:Graph.SelectionFill>
+                        <ni:Graph.Plots>
+                            <ni:Plot Label="Dev.X">
+                                <ni:PointPlotRenderer Fill="#FF8EEC8E" Stroke="#FF209209" Size="6,6"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Dev.Y">
+                                <ni:PointPlotRenderer Fill="#FF00B9FE" Stroke="#FF055B95" Size="6,6"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Lin.X">
+                                <ni:LinePlotRenderer Stroke="#FF029C06" StrokeThickness="1.5"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Lin.Y">
+                                <ni:LinePlotRenderer Stroke="#FF064EBF" StrokeThickness="1.5"/>
+                            </ni:Plot>
+                        </ni:Graph.Plots>
+                    </ni:Graph>
+                    <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Height="24" Margin="0,2,0.286,0" Graph="{Binding ElementName=graphRslt0}" VerticalAlignment="Top" Grid.Column="0">
+
+                    </ni:GraphInteractionPalette>
+                    <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
+                    <ListBox x:Name="lbDevResults0" Margin="5,0,0.143,0.286" Grid.Column="1"/>
+                </Grid>
+
+                <Grid x:Name="gridRightBottom" Margin="0,5,0,0" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="106*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <ni:Graph x:Name="graphRslt" Margin="0,24,0.286,0.286" Interactions="Pan, Zoom">
+                        <ni:Graph.SelectionFill>
+                            <SolidColorBrush Color="#FFFEFFEC" Opacity="0.5"/>
+                        </ni:Graph.SelectionFill>
+                        <ni:Graph.Plots>
+                            <ni:Plot Label="Dev.X">
+                                <ni:PointPlotRenderer Fill="#FF8EEC8E" Stroke="#FF209209" Size="6,6"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Dev.Y">
+                                <ni:PointPlotRenderer Fill="#FF00B9FE" Stroke="#FF055B95" Size="6,6"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Lin.X">
+                                <ni:LinePlotRenderer Stroke="#FF029C06" StrokeThickness="1.5"/>
+                            </ni:Plot>
+                            <ni:Plot Label="Lin.Y">
+                                <ni:LinePlotRenderer Stroke="#FF064EBF" StrokeThickness="1.5"/>
+                            </ni:Plot>
+                        </ni:Graph.Plots>
+                    </ni:Graph>
+                    <ni:GraphInteractionPalette HorizontalAlignment="Stretch" Height="24" Margin="0,2,0.286,0" VerticalAlignment="Top" Grid.Column="0" Graph="{Binding ElementName=graphRslt}">
+                    </ni:GraphInteractionPalette>
+                    <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="5" />
+                    <ListBox x:Name="lbDevResults" Margin="5,0,0.143,0.286" Grid.Column="1"/>
+                    <Button x:Name="btnClearGraph" Grid.ColumnSpan="1" Content="X" HorizontalAlignment="Left" Margin="200,2,0,0" VerticalAlignment="Top" Width="22" FontWeight="Bold" Foreground="#FFF90303" Background="White" Height="22" Click="btnClearGraph_Click"/>
+                    <Label Content="stdDev(X/Y)" HorizontalAlignment="Left" Margin="240,0,0,0" VerticalAlignment="Top"/>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

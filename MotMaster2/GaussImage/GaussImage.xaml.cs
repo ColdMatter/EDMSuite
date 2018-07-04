@@ -401,16 +401,24 @@ namespace MOTMaster2
             iRecords.RemoveAt(idx + 1);   
         }
 
+        public string GetAsString(bool inclHeader = true)
+        {
+            string ss = "TO BE DONE";
+            return ss;
+        } 
+
         public List<bool> checks() // actual check values from the table
         {
             List<bool> ls = new List<bool>();
 
             IEnumerable lst = dg.ItemsSource as IEnumerable;
-            DataGridColumn dgc = dg.Columns[0];
+            DataGridCheckBoxColumn dgc = dg.Columns[0] as DataGridCheckBoxColumn;
             foreach (var row in lst)
             {
-                System.Windows.Controls.CheckBox chk = ((System.Windows.Controls.CheckBox)dg.Columns[0].GetCellContent(row));
-                ls.Add(chk.IsChecked.Value);            
+                FrameworkElement fe = dg.Columns[0].GetCellContent(row);
+                System.Windows.Controls.CheckBox chk = (System.Windows.Controls.CheckBox)fe;
+                if (Utils.isNull(chk)) ls.Add(false); // !!! WHY (to deal later)
+                else ls.Add(chk.IsChecked.Value);            
             }
             return ls;
         } 
@@ -522,23 +530,23 @@ namespace MOTMaster2
                 _ProcessingMode = value;
             }
         }
-
+        private string ExpDirInit = "Experiment Directory (please, select experiment folder)";
         public string ParentDir
         {
             get
             {
                 string sd = Convert.ToString(lbSelectedDir.Content);
-                if (sd.Equals("Directory")) return "";
+                if (sd.Equals(ExpDirInit)) return "";
                 return sd.Split('=')[1].TrimStart();
             }
-            set { lbSelectedDir.Content = "Directory = " + value; }
+            set { lbSelectedDir.Content = "Experiment Directory = " + value; }
         }
         public string SelectedDir
         {
             get 
             { 
                 string sd = Convert.ToString(lbSelectedDir.Content);  
-                if(sd.Equals("Directory")) return "";
+                if(sd.Equals(ExpDirInit)) return "";
                 sd = sd.Split('=')[1].TrimStart();
                 if (LineMode) return sd + "Images";
                 else
@@ -554,8 +562,9 @@ namespace MOTMaster2
             }
         }
 
-        List<Point> devX = new List<Point>();
-        List<Point> devY = new List<Point>();
+        List<Point> devX = new List<Point>(); List<Point> devY = new List<Point>();
+        List<Point> devX0 = new List<Point>(); List<Point> devY0 = new List<Point>();
+
 
         FileSystemWatcher watcher;
 
@@ -611,8 +620,12 @@ namespace MOTMaster2
             if(!_start) 
             {
                 procStage = 0;
-                if (chkLinearFit.IsChecked.Value && tcModes.SelectedIndex == 0 && scanMode == ScanMode.scan) 
-                    LinearFit(devX, devY);
+                if (chkLinearFit.IsChecked.Value && tcModes.SelectedIndex == 0 && scanMode == ScanMode.scan)
+                {
+                    LinearFit(devX, devY, ref graphRslt, ref lbDevResults);
+                    LinearFit(devX0, devY0, ref graphRslt0, ref lbDevResults0);
+                }
+                    
                 scanMode = ScanMode.none;
                 lbInfo.Content = "Info:";
                 return;
@@ -667,6 +680,7 @@ namespace MOTMaster2
         {
             InitializeComponent();
 
+            lbSelectedDir.Content = ExpDirInit;
             gImage = new GImage(""); // something funny ?
             gImage.autoUpperLimit = chkAutoUpperLimit.IsChecked.Value;
             gImage.upperLimit = (int)kdUpperLimit.Value;
@@ -740,9 +754,10 @@ namespace MOTMaster2
                 ErrorMng.warningMsg("Not such directory: " + ip);
                 return;
             }
-            string[] entries = Directory.GetFiles(ip, "*.sis", SearchOption.TopDirectoryOnly);
+            string[] entries = Directory.GetFiles(ip, "*.sis", SearchOption.TopDirectoryOnly);            
             if (newFile.Equals("")) 
-            {           
+            {
+                lbInfo.Content = "Info:";           
                 dBank.Clear();
                 if (File.Exists(ip + "\\scan.json")) // scan 
                 {
@@ -759,7 +774,7 @@ namespace MOTMaster2
                 }
                 else // repeat
                 {
-                    lbInfo.Content = "Info:  mode -> repeat;  " + entries.Length.ToString() + " files";
+                    if (!LineMode) lbInfo.Content = "Info:  mode -> repeat;  " + entries.Length.ToString() + " files";
                     mmscan = null;
                     for (int i = 0; i < entries.Length; i++)
                     {
@@ -833,6 +848,10 @@ namespace MOTMaster2
         }
         private void dgTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //dgTable_MouseDoubleClick(sender, null); 
+        }
+        private void dgTable_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
             System.Windows.Controls.DataGrid dataGrid = sender as System.Windows.Controls.DataGrid;
             int j = dataGrid.SelectedIndex; 
             if (j == -1) return;
@@ -840,10 +859,6 @@ namespace MOTMaster2
             gImage.LoadImage(SelectedDir+"\\"+ls[j]);
             if (chkFitAsShown.IsChecked.Value && !ProcessingMode) distStats();
             else lbCurrentResults.Items.Clear();
-        }
-        private void dgTable_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            dgTable_SelectionChanged(sender, null); 
         }
 
         private void kdUpperLimit_ValueChanged(object sender, NationalInstruments.Controls.ValueChangedEventArgs<double> e)
@@ -882,6 +897,7 @@ namespace MOTMaster2
         {
             gImage.Clear();
             lbCurrentResults.Items.Clear();
+            btnProcess.IsEnabled = true;
         }
 
         public Dictionary<string, double> distStats()
@@ -935,23 +951,25 @@ namespace MOTMaster2
             return dict;
         }
 
-        private Dictionary<string, double> LinearFit(List<Point> dvX, List<Point> dvY)
+        private Dictionary<string, double> LinearFit(List<Point> dvX, List<Point> dvY, 
+                                                 ref NationalInstruments.Controls.Graph graphR, ref System.Windows.Controls.ListBox lbResults)
         {
             Dictionary<string, double> sts = new Dictionary<string, double>();
+            if (dvX.Count == 0 || dvY.Count == 0) return sts;
             double[] xs; double[] ys; double a,b,res;
 
             gImage.ExtractXY(dvX,out xs,out ys);
             CurveFit.LinearFit(xs, ys, FitMethod.Bisquare,out a, out b, out res);
             List<Point> lx = new List<Point>();
             lx.Add(new Point(xs[0], a * xs[0] + b)); lx.Add(new Point(xs[xs.Length - 1], a * xs[xs.Length - 1] + b));
-            graphRslt.Data[2] = lx;
+            graphR.Data[2] = lx;
             sts["slope.X"] = a; sts["intercept.X"] = b; sts["residue.X"] = res;
 
             gImage.ExtractXY(dvY, out xs, out ys);
             CurveFit.LinearFit(xs, ys, FitMethod.Bisquare, out a, out b, out res);
             List<Point> ly = new List<Point>();
             ly.Add(new Point(xs[0], a * xs[0] + b)); ly.Add(new Point(xs[xs.Length - 1], a * xs[xs.Length - 1] + b));
-            graphRslt.Data[3] = ly;
+            graphR.Data[3] = ly;
             sts["slope.Y"] = a; sts["intercept.Y"] = b; sts["residue.Y"] = res;
 
             ListBoxItem lba; int j = 0;
@@ -961,23 +979,23 @@ namespace MOTMaster2
                 ListBoxItem lbi = new ListBoxItem(); lbi.Content = item.Key + " = " + item.Value.ToString("G7");
                 if (j == 4)
                 {
-                    lba = new ListBoxItem(); lba.Content = "--------------------"; lbDevResults.Items.Add(lba);
+                    lba = new ListBoxItem(); lba.Content = "--------------------"; lbResults.Items.Add(lba);
                 }
                 if (j < 4) lbi.Foreground = Brushes.DarkGreen;
                 else lbi.Foreground = Brushes.Navy;
-                lbDevResults.Items.Add(lbi);
+                lbResults.Items.Add(lbi);
             }
             return sts;
         }
 
         private void getStats(int i, double val = double.NaN)
-        {
-            
+        {            
             Dictionary<string, double> sts = null;
             
             Dispatcher.Invoke(new Action(() =>
             {
-                dgTable.SelectedIndex = i; 
+                dgTable.SelectedIndex = i;
+                dgTable_MouseDoubleClick(dgTable, null); 
                 sts = distStats();
                 dBank.AddStat(dBank.iRecords[i].Filename, sts);
                
@@ -994,6 +1012,27 @@ namespace MOTMaster2
             }
             
             graphRslt.Data[0] = devX; graphRslt.Data[1] = devY;
+
+            string ss = "";
+            switch (cbSecondChart.SelectedIndex)
+            {
+                case 0: ss = "ampl";
+                    break;
+                case 1: ss = "center";
+                    break;
+                case 2: ss = "res";
+                    break;
+            }
+            if (val == double.NaN) // repeat
+            {
+                devX0.Add(new Point(i, sts[ss+".X"])); devY0.Add(new Point(i, sts[ss+".Y"]));
+            }
+            else
+            {
+                devX0.Add(new Point(val, sts[ss+".X"])); devY0.Add(new Point(val, sts[ss+".Y"]));
+            }
+
+            graphRslt0.Data[0] = devX0; graphRslt0.Data[1] = devY0;
         }
 
         private void btnProcess_Click(object sender, RoutedEventArgs e)
@@ -1001,13 +1040,18 @@ namespace MOTMaster2
             ProcessingMode = true;
             btnClearGraph_Click(null, null);
             List<string> ls = dBank.Filenames();
+            List<bool> checks = dBank.checks();
             
             for (int i = 0; i < dBank.iRecords.Count; i++)
             {
                 double d = Convert.ToDouble(dBank.iRecords[i].Param);
-                getStats(i, d);
+                if(checks[i]) getStats(i, d);
             }
-            if (chkLinearFit.IsChecked.Value && tcModes.SelectedIndex == 0) LinearFit(devX, devY);
+            if (chkLinearFit.IsChecked.Value && tcModes.SelectedIndex == 0) 
+            {
+                LinearFit(devX, devY, ref graphRslt, ref lbDevResults);
+                LinearFit(devX0, devY0, ref graphRslt0, ref lbDevResults0);
+            }
             ProcessingMode = false;      
         }
 
@@ -1016,7 +1060,12 @@ namespace MOTMaster2
             devX.Clear(); devY.Clear();
             for (int i = 0; i < 4; i++)
                 graphRslt.Data[i] = null;
-            lbDevResults.Items.Clear();            
+            lbDevResults.Items.Clear();
+
+            devX0.Clear(); devY0.Clear();
+            for (int i = 0; i < 4; i++)
+                graphRslt0.Data[i] = null;
+            lbDevResults0.Items.Clear();            
         }
 
         public string NextAvailFolder(string mask)
@@ -1046,6 +1095,26 @@ namespace MOTMaster2
             Thread.Sleep(200);
             UpdateDirectories(ParentDir);
             UpdateFileList();
+        }
+
+        private void chkSecondaryChart_Checked(object sender, RoutedEventArgs e)
+        {            
+            if (Utils.isNull(gridGraph)) return;
+            if (chkSecondaryChart.IsChecked.Value)
+            {
+                gridGraph.RowDefinitions[0].Height = new GridLength(200, GridUnitType.Star);
+                gridRightCentre.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                gridGraph.RowDefinitions[0].Height = new GridLength(0, GridUnitType.Star);
+                gridRightCentre.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+
+        private void btnCopy_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(dBank.GetAsString());
         }
     }
 }

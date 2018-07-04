@@ -941,7 +941,7 @@ namespace MOTMaster2
             }
         }
 
-        public bool Interpreter(string json)
+        public bool Interpreter(string json) // deal with incomming commands
         {
             //if (messenger != null) messenger.Send("<" + json + ">");
             //return true;
