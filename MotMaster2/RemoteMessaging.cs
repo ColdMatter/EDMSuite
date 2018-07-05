@@ -47,11 +47,17 @@ namespace MOTMaster2
         }
 
         public bool Enabled = true;
+        public bool Connected { get; private set; }
+        public bool partnerPresent { 
+            get 
+            { IntPtr hTargetWnd = NativeMethod.FindWindow(null, partner);
+            return (hTargetWnd != IntPtr.Zero);
+            } }
 
         public RemoteMessaging(string Partner)
         {
             partner = Partner;
-            windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+            windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle; 
             HwndSource hwndSource = HwndSource.FromHwnd(windowHandle);
             hwndSource.AddHook(new HwndSourceHook(WndProc));
 
@@ -91,14 +97,15 @@ namespace MOTMaster2
             else return false;
         }
 
-        public delegate void ActiveCommHandler(bool active);
+        public delegate void ActiveCommHandler(bool active, bool forced);
         public event ActiveCommHandler ActiveComm;
-        protected void OnActiveComm(bool active)
+        protected void OnActiveComm(bool active, bool forced)
         {
-            if (ActiveComm != null) ActiveComm(active);
+            Connected = active;
+            if (ActiveComm != null) ActiveComm(active, forced);
         }
 
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) // receive
         {
             if ((msg == WM_COPYDATA) && Enabled)
             {
@@ -116,7 +123,8 @@ namespace MOTMaster2
                         {
                             case ("ping"):
                                 handled = sendCommand("pong");
-                                OnActiveComm(handled);
+                                if (lastConnection != handled) OnActiveComm(handled, false); // fire only if the state has been changed
+                                lastConnection = handled; Connected = handled;
                                 break;
                             case ("pong"):
                                 handled = true;
@@ -210,7 +218,7 @@ namespace MOTMaster2
         }
 
         private bool lastConnection = false;
-        public bool CheckConnection()
+        public bool CheckConnection(bool forced = false)
         {
             bool back = sendCommand("ping");
             if (back)
@@ -222,8 +230,8 @@ namespace MOTMaster2
                 }
             }
             back = back && (lastRcvMsg.Equals("pong"));
-            if (lastConnection != back) OnActiveComm(back); // fire only if the state has been changed
-            lastConnection = back;
+            if ((lastConnection != back) || forced) OnActiveComm(back, forced); // fire only if the state has been changed
+            lastConnection = back; Connected = back;
             return back;
         }
 

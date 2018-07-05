@@ -966,8 +966,9 @@ namespace MOTMaster2
         {
             if (cbHub.SelectedIndex == 2)
             {
-                if (remoteMsg.CheckConnection()) { ErrorMgr.simpleMsg("Connected to Axel-hub"); }
-                else ErrorMgr.errorMsg("Connection to Axel-hub failed !", 666);
+                remoteMsg.CheckConnection(true); 
+                //{ ErrorMgr.simpleMsg("Connected to Axel-hub"); }
+                //else ErrorMgr.errorMsg("Connection to Axel-hub failed !", 666);
             }
             if (cbHub.SelectedIndex == 3)
             {
@@ -996,15 +997,26 @@ namespace MOTMaster2
                 }
             }
         }
-        private void OnActiveComm(bool active)
+        private void OnActiveComm(bool active, bool forced)
         {
             if (active) 
             {
                 btnRemote.Content = "Connected"; btnRemote.Background = Utils.ToSolidColorBrush("#FFBEFDD1");
+                if (!remoteMsg.partnerPresent) ErrorMgr.warningMsg("Conflicting active true status and parner not present");
             }
             else
             {
                 btnRemote.Content = "Disconnected"; btnRemote.Background = Brushes.LightYellow;
+                if (remoteMsg.partnerPresent) ErrorMgr.warningMsg("The Axel-hub is opened, but hasn't been switched to remote");
+                else
+                {
+                    if (!File.Exists(Utils.configPath + "axel-hub.bat") || !forced) return;
+                    ErrorMgr.StatusLine("Status:Axel-hub - not found! ...starting it", Brushes.DarkGreen.Color);
+                    System.Diagnostics.Process.Start(File.ReadAllText(Utils.configPath + "axel-hub.bat"), "-remote");
+                    Thread.Sleep(1000);
+                    if(remoteMsg.CheckConnection()) OnActiveComm(remoteMsg.Connected, false);
+                    ErrorMgr.StatusLine("Status:", Brushes.Black.Color);
+                }
             }                
         }
         private void frmMain_SourceInitialized(object sender, EventArgs e)
@@ -1014,7 +1026,6 @@ namespace MOTMaster2
             remoteMsg.ActiveComm += OnActiveComm;
             remoteMsg.OnReceive += Interpreter;
         }
-
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
@@ -1032,7 +1043,6 @@ namespace MOTMaster2
             string laserKey = (string)type.GetProperty("Name").GetValue(sender);
             Controller.sequenceData.Parameters[laserKey].Value = type.GetProperty("Value").GetValue(sender);
             controller.StoreDCSParameter(laserKey, type.GetProperty("Value").GetValue(sender));
-
         }
 
         private void SetInterferometerParams(Dictionary<string, object> scanDict)

@@ -84,7 +84,7 @@ namespace ErrorManager
 
         public static void StatusLine(string text, Color Foreground)
         {
-            if (status == null) return;
+            if ((status == null) || (Application.Current == null)) return;
             status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
             Application.Current.Dispatcher.BeginInvoke(
               DispatcherPriority.Background,
@@ -98,7 +98,7 @@ namespace ErrorManager
 
         public static void AppendLog(string text, Color? clr = null)
         {
-            if (log == null) return;
+            if ((log == null) || (Application.Current == null)) return;
             string printOut = text;
             if ((Verbatim) || (text.Length < 81)) printOut = text;
             else printOut = text.Substring(0, 80) + "..."; 
@@ -127,7 +127,6 @@ namespace ErrorManager
 
         private async static Task WriteFileAsync(string txt)
         {
-
             if (AutoSave) await ErrorFile.WriteLineAsync(txt);
             else return;
         }
@@ -165,7 +164,7 @@ namespace ErrorManager
             }
             string outText = warningText;
             if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;
-            AppendLog(outText, Brushes.Green.Color);
+            AppendLog(outText, Brushes.DarkOrange.Color);
             await WriteFileAsync(outText);
         }
 

@@ -37,4 +37,6 @@ packages/*
 
 *.tmp_proj
 
+*.vsp
+*.cfg
 .vscode/*
