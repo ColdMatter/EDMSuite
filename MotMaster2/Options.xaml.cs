@@ -19,6 +19,18 @@ using UtilsNS;
 
 namespace MOTMaster2
 {
+    public class Modes
+    {
+        public string Scan { get; set; }
+        public List<string> MultiScan { get; set; }
+ 
+        public void Save()
+        {
+            string fileJson = JsonConvert.SerializeObject(this);
+            File.WriteAllText(Utils.configPath + "Defaults.cfg", fileJson);
+        }
+    }
+
     public class GeneralOptions
     {
         public enum SaveOption { save, ask, nosave }
@@ -32,7 +44,7 @@ namespace MOTMaster2
         public enum M2CommOption { on, off}
         public M2CommOption m2Comm;
 
-        public enum AISaveOption { rawData,average,both}
+        public enum AISaveOption { rawData, average, both}
         public AISaveOption aiSaveMode;
 
         public bool AxelHubLogger { get; set; }
@@ -45,12 +57,15 @@ namespace MOTMaster2
         public double RiseTime { get; set; }
 
         public bool AIEnable { get; set; }
+        public bool WindFreakEnable { get; set; }
 
         public void Save()
         {
             string fileJson = JsonConvert.SerializeObject(this);
             File.WriteAllText(Utils.configPath + "genOptions.cfg", fileJson);
         }
+
+        public bool SaveMultiScanLoop { get; set; }
     }
 
     /// <summary>
@@ -61,7 +76,7 @@ namespace MOTMaster2
         public OptionWindow()
         {
             InitializeComponent();
-
+            
             string fileJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.FileSystem);
             hardwareJson = JsonConvert.SerializeObject(DAQ.Environment.Environs.Hardware, Formatting.Indented);
             LoadJsonToTreeView(hardwareTreeView, hardwareJson);
@@ -110,6 +125,8 @@ namespace MOTMaster2
             }
 
             Controller.genOptions.AIEnable = aiEnable.IsChecked.Value;
+            Controller.genOptions.WindFreakEnable = windFreakEnable.IsChecked.Value;
+            Controller.genOptions.Save();
             Close();
         }
 
@@ -166,6 +183,8 @@ namespace MOTMaster2
             tbSampleRate.Text = Controller.genOptions.AISampleRate.ToString();
             tbPreTrig.Text = Controller.genOptions.PreTrigSamples.ToString();
             tbRiseTime.Text = Controller.genOptions.RiseTime.ToString();
+
+            windFreakEnable.IsChecked = Controller.genOptions.WindFreakEnable;
        }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -184,7 +203,7 @@ namespace MOTMaster2
             aiAverage.IsEnabled = state;
             aiBoth.IsEnabled = state;
         }
-    }
+     }
 
     public sealed class MethodToValueConverter : IValueConverter
     {

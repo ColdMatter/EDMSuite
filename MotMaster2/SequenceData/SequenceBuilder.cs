@@ -77,7 +77,7 @@ namespace MOTMaster2.SequenceData
                 {
                     if (Double.TryParse((string)step.Duration, out duration)) ;
                     else if (Parameters.ContainsKey((string)step.Duration)) duration = Convert.ToDouble(Parameters[(string)step.Duration]);
-                    else throw new Exception(string.Format("Value {0} could not be interpreted for duration of step {1}", step.Duration, step.Name));
+                    else duration = CompileTimeEquation((string)step.Duration);
                 }
                 else duration = (double)step.Duration;
                 if (!step.Enabled || duration - 0.0 < 1e-15) continue;
@@ -128,10 +128,12 @@ namespace MOTMaster2.SequenceData
                 int digitalSample = digitalSampleTimes[index];
                 double currentTime = currentTimes[index];
                 double timeMultiplier = 0.0;
-                if (step.Timebase == TimebaseUnits.ms) timeMultiplier = 1.0;
-                else if (step.Timebase == TimebaseUnits.us) timeMultiplier = 0.001;
-                else if (step.Timebase == TimebaseUnits.s) timeMultiplier = 1000.0;
-
+                switch(step.Timebase) 
+                {
+                    case TimebaseUnits.ms: timeMultiplier = 1.0; break;
+                    case TimebaseUnits.us: timeMultiplier = 0.001; break;
+                    case TimebaseUnits.s: timeMultiplier = 1000.0; break;
+                }
                 foreach (string analogChannel in step.GetUsedAnalogChannels())
                 {
                     try
@@ -229,7 +231,7 @@ namespace MOTMaster2.SequenceData
             }
             catch (Exception e)
             {
-                ErrorManager.ErrorMgr.errorMsg("Could not add analog input channels. Are accelerometer and photodiode channels defined in hardware class?", -4);
+                ErrorManager.ErrorMng.errorMsg("Could not add analog input channels. Are accelerometer and photodiode channels defined in hardware class?", -4);
             }
             mmaiConfig.SampleRate = Controller.ExpData.SampleRate;
             mmaiConfig.Samples = Controller.ExpData.NSamples;
@@ -389,6 +391,24 @@ namespace MOTMaster2.SequenceData
                 analogPB.AddAnalogValue(analogChannel, analogStartTime, funcValue);
             }
 
+        }
+
+        double CompileTimeEquation(string function)
+        {
+            EqCompiler compiler = new EqCompiler(function, true);
+            compiler.Compile();
+
+            //Checks all variables to use values in parameter dictionary
+            foreach (string variable in compiler.GetVariableList())
+            {
+                if (Parameters.Keys.Contains(variable))
+                {
+                    compiler.SetVariable(variable, (double)Parameters[variable]);
+                }
+                else throw new Exception(string.Format("Variable {0} not found in parameters. Required for duration in step {1}", variable, _sequenceStep.Name));
+            }
+
+            return compiler.Calculate();
         }
     }
 

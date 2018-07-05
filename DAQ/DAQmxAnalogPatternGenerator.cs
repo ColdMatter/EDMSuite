@@ -83,7 +83,7 @@ namespace DAQ.Analog
         }
         public void StartPattern()
         {
-            if (writer == null) throw new Exception("No pattern written to card");
+           if (writer == null) throw new Exception("No pattern written to card");
             //analogOutputTask.WaitUntilDone();
             //analogOutputTask.Stop();
             analogOutputTask.Start();

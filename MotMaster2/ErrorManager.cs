@@ -13,14 +13,14 @@ using UtilsNS;
 
 namespace ErrorManager
 {
-    public static class ErrorMgr
+    public static class ErrorMng
     {
-        private static Label status;
+        private static Label lbStatus;
         private static Button btnReset, btnYes, btnNo;
         private static Color dftForeground;
         private static string prevText;
        
-        private static RichTextBox log;
+        private static RichTextBox rtbLog;
 
         private static string ErrorPath;
         public static bool AutoSave = true;
@@ -30,25 +30,26 @@ namespace ErrorManager
 
         public static void Initialize(ref Label _status, ref RichTextBox _log, string _ErrorPath)
         {
-            status = _status;
-            if (status != null)
+            lbStatus = _status;
+            if (lbStatus != null)
             {
-                dftForeground = ((System.Windows.Media.SolidColorBrush)(status.Foreground)).Color;  
+                dftForeground = ((System.Windows.Media.SolidColorBrush)(lbStatus.Foreground)).Color;  
          
                 btnReset = new Button();
                 btnReset.Content = "X";
                 btnReset.Width = 25;
                 btnReset.Height = 25;
                 btnReset.Click += btnReset_Click;
-                (status.Parent as StackPanel).Children.Add(btnReset);
+                (lbStatus.Parent as StackPanel).Children.Add(btnReset);
                 btnReset.Visibility = Visibility.Hidden;
 
-                btnYes = new Button();
+          /*    No a good way to return the answer, maybe later  
+                btnYes = new Button(); 
                 btnYes.Content = "Yes";
                 btnYes.Width = 25;
                 btnYes.Height = 25;
                 btnYes.Click += btnReset_Click;
-                (status.Parent as StackPanel).Children.Add(btnYes);
+                (lbStatus.Parent as StackPanel).Children.Add(btnYes);
                 btnYes.Visibility = Visibility.Hidden;
 
                 btnNo = new Button();
@@ -56,10 +57,10 @@ namespace ErrorManager
                 btnNo.Width = 25;
                 btnNo.Height = 25;
                 btnNo.Click += btnReset_Click;
-                (status.Parent as StackPanel).Children.Add(btnNo);
-                btnNo.Visibility = Visibility.Hidden;
+                (lbStatus.Parent as StackPanel).Children.Add(btnNo);
+                btnNo.Visibility = Visibility.Hidden;*/
             }
-            log = _log;           
+            rtbLog = _log;           
             ErrorPath = _ErrorPath;
             if (!ErrorPath.EndsWith("\\")) ErrorPath += "\\";
             AutoSave = AutoSave && Directory.Exists(ErrorPath);
@@ -72,33 +73,31 @@ namespace ErrorManager
 
         private static void btnReset_Click(object sender, RoutedEventArgs e)
         {
+            Reset();
+        }
+
+        public static void Reset()
+        {
+            Status("Status:", dftForeground);
+            btnReset.Visibility = Visibility.Hidden;
+        }
+
+        public static void Status(string text, Color Foreground)
+        {
+            if ((lbStatus == null) || (Application.Current == null)) return;
+            lbStatus.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
             Application.Current.Dispatcher.BeginInvoke(
               DispatcherPriority.Background,
               new Action(() =>
               {
-                 status.Content = "Status:";
-                 status.Foreground = new System.Windows.Media.SolidColorBrush(dftForeground);
-                 btnReset.Visibility = Visibility.Hidden;
+                  prevText = lbStatus.Content.ToString();
+                  lbStatus.Content = text;
               }));
         }
 
-        public static void StatusLine(string text, Color Foreground)
+        public static void Log(string text, Color? clr = null)
         {
-            if ((status == null) || (Application.Current == null)) return;
-            status.Foreground = new System.Windows.Media.SolidColorBrush(Foreground);
-            Application.Current.Dispatcher.BeginInvoke(
-              DispatcherPriority.Background,
-              new Action(() =>
-              {
-                  btnReset.Visibility = Visibility.Visible; 
-                  prevText = status.Content.ToString();
-                  status.Content = text;
-              }));
-        }
-
-        public static void AppendLog(string text, Color? clr = null)
-        {
-            if ((log == null) || (Application.Current == null)) return;
+            if ((rtbLog == null) || (Application.Current == null)) return;
             string printOut = text;
             if ((Verbatim) || (text.Length < 81)) printOut = text;
             else printOut = text.Substring(0, 80) + "..."; 
@@ -107,7 +106,7 @@ namespace ErrorManager
               DispatcherPriority.Background,
               new Action(() =>
               {
-                  TextRange rangeOfText1 = new TextRange(log.Document.ContentStart, log.Document.ContentEnd);
+                  TextRange rangeOfText1 = new TextRange(rtbLog.Document.ContentStart, rtbLog.Document.ContentEnd);
                   string tx = rangeOfText1.Text;
                   int len = tx.Length; int maxLen = 10000; // the number of chars kept
                   if (len > (2 * maxLen)) // when it exceeds twice the maxLen
@@ -115,13 +114,13 @@ namespace ErrorManager
                       tx = tx.Substring(maxLen);
                       var paragraph = new Paragraph();
                       paragraph.Inlines.Add(new Run(tx));
-                      log.Document.Blocks.Clear();
-                      log.Document.Blocks.Add(paragraph);
+                      rtbLog.Document.Blocks.Clear();
+                      rtbLog.Document.Blocks.Add(paragraph);
                   }
-                  rangeOfText1 = new TextRange(log.Document.ContentEnd, log.Document.ContentEnd);
+                  rangeOfText1 = new TextRange(rtbLog.Document.ContentEnd, rtbLog.Document.ContentEnd);
                   rangeOfText1.Text = Utils.RemoveLineEndings(printOut) + "\r";
                   rangeOfText1.ApplyPropertyValue(TextElement.ForegroundProperty, new System.Windows.Media.SolidColorBrush(ForeColor));
-                  log.ScrollToEnd();
+                  rtbLog.ScrollToEnd();
               }));
         }
 
@@ -133,7 +132,7 @@ namespace ErrorManager
 
         private static bool IsForcePopup(bool forcePopup)
         {
-            return forcePopup || ((status == null) && (log == null));
+            return forcePopup || ((lbStatus == null) && (rtbLog == null));
         }
 
         public async static void errorMsg(string errorText, int errorID, bool forcePopup = false) 
@@ -144,10 +143,11 @@ namespace ErrorManager
             }
             else
             {
-                StatusLine("Error: "+errorText, Brushes.Red.Color);
+                btnReset.Visibility = Visibility.Visible; 
+                Status("Error: "+errorText, Brushes.Red.Color);
             }
             string outText = outText = "(err:" + errorID.ToString() + ") " + errorText;  
-            AppendLog(outText, Brushes.Red.Color);
+            Log(outText, Brushes.Red.Color);
             await WriteFileAsync(outText);
         }
 
@@ -160,11 +160,12 @@ namespace ErrorManager
             }
             else
             {
-                StatusLine("Warning: " + warningText, Brushes.DarkOrange.Color);
+                btnReset.Visibility = Visibility.Visible; 
+                Status("Warning: " + warningText, Brushes.DarkOrange.Color);
             }
             string outText = warningText;
             if (warningID != -1) outText = "(wrn:" + warningID.ToString() + ") " + warningText;
-            AppendLog(outText, Brushes.DarkOrange.Color);
+            Log(outText, Brushes.Coral.Color); //DarkOrange
             await WriteFileAsync(outText);
         }
 
@@ -176,10 +177,10 @@ namespace ErrorManager
             }
             else
             {
-                StatusLine("Status: " + simpleText + "\n", dftForeground);
+                Status("Status: " + simpleText + "\n", dftForeground);
                 btnReset.Visibility = Visibility.Hidden;
             }
-            AppendLog(simpleText, dftForeground);           
+            Log(simpleText, dftForeground);           
         }
     }
 

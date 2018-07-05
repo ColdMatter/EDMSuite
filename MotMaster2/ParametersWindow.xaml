@@ -1,7 +1,7 @@
-﻿<Window x:Class="MOTMaster2.ParametersWindow"
+﻿<Window x:Name="frmParameters" x:Class="MOTMaster2.ParametersWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Edit Sequence Parameters" Height="300" Width="500" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        Title="Edit Sequence Parameters" Height="814" Width="512.857" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewKeyDown="frmParameters_PreviewKeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="225*"/>
@@ -15,7 +15,7 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
-        <Button x:Name="btnOK" Content="OK" Height="20" Margin="0,0,24.286,10.429" Click="OK_Click" FontWeight="Bold" HorizontalAlignment="Right" Width="85" VerticalAlignment="Bottom" Grid.Row="1"/>
-        <Button x:Name="btnCancel" Content="Cancel" Height="20" Margin="0,0,124.286,10.429" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Grid.Row="1"/>
+        <Button x:Name="btnOK" Content="OK" Height="24" Margin="0,0,24.286,0" Click="OK_Click" FontWeight="Bold" HorizontalAlignment="Right" Width="85" VerticalAlignment="Center" Grid.Row="1" Background="#FFF2F1F1"/>
+        <Button x:Name="btnCancel" Content="Cancel" Height="24" Margin="0,0,124.286,0" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Width="80" Grid.Row="1" Background="#FFF2F1F1"/>
     </Grid>
 </Window>

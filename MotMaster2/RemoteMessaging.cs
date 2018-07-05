@@ -11,6 +11,7 @@ using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using ErrorManager;
 
 namespace MOTMaster2
 {
@@ -61,7 +62,7 @@ namespace MOTMaster2
             HwndSource hwndSource = HwndSource.FromHwnd(windowHandle);
             hwndSource.AddHook(new HwndSourceHook(WndProc));
 
-            Log = new memLog(); Log.Enabled = false; // for debug use 
+            Log = new memLog(); Log.Enabled = true; // for debug use 
             lastRcvMsg = ""; lastSndMsg = "";
 
             dTimer = new System.Windows.Threading.DispatcherTimer();
@@ -117,8 +118,7 @@ namespace MOTMaster2
                     if (msgID == 666)
                     {
                         lastRcvMsg = myStruct.Message;
-                        Log.log("R: " + lastRcvMsg);
-                        ResetTimer();
+                        Log.log("R: " + lastRcvMsg);                        
                         switch (lastRcvMsg)
                         {
                             case ("ping"):
@@ -129,7 +129,9 @@ namespace MOTMaster2
                             case ("pong"):
                                 handled = true;
                                 break;
-                            default: handled = OnRemote(lastRcvMsg); // the command systax is OK
+                            default:  
+                                ResetTimer();
+                                handled = OnRemote(lastRcvMsg); // the command systax is OK
                                 break;
                         }
                     }
@@ -220,16 +222,24 @@ namespace MOTMaster2
         private bool lastConnection = false;
         public bool CheckConnection(bool forced = false)
         {
-            bool back = sendCommand("ping");
-            if (back)
+            ErrorMng.Log("check <->; Enabled= "+Enabled.ToString());
+            if (!Enabled) return false;
+            lastRcvMsg = ""; bool backPong = false;
+            bool backPing = sendCommand("ping");           
+            if (backPing)
             {
+                ErrorMng.Log(">> ping");
                 for (int i = 0; i < 200; i++)
                 {
                     Thread.Sleep(10);
-                    if (lastRcvMsg.Equals("pong")) break;
+                    backPong = lastRcvMsg.Equals("pong");
+                    if (backPong)
+                    {
+                        ErrorMng.Log("<< pong"); break;
+                    }
                 }
             }
-            back = back && (lastRcvMsg.Equals("pong"));
+            bool back = backPing && backPong;
             if ((lastConnection != back) || forced) OnActiveComm(back, forced); // fire only if the state has been changed
             lastConnection = back; Connected = back;
             return back;
@@ -328,6 +338,14 @@ namespace MOTMaster2
             id = -1;
             prms.Clear();
         }
+        public void Assign(MMexec src)
+        {
+            mmexec = src.mmexec;
+            sender = src.sender;
+            cmd = src.cmd;
+            id = src.id;
+            prms = new Dictionary<string, object>(src.prms);
+        }
         public MMexec Clone()
         {
             MMexec mm = new MMexec();
@@ -349,21 +367,44 @@ namespace MOTMaster2
         }
     }
 
-    public class MMscan
+    public class baseMMscan
     {
-        public string groupID;
-        public string sParam;
-        public double sFrom;
-        public double sTo;
-        public double sBy;
-        public double Value;
+        public string sParam { get; set; }
+        public double sFrom { get; set; }
+        public double sTo { get; set; }
+        public double sBy { get; set; }
+        public double Value { get; set; }
 
+        public string getAsString()
+        {
+            return sParam + "  \t" + sFrom.ToString("G6") + " .. " + sTo.ToString("G6") + "; " + sBy.ToString("G6");
+        }
+    }
+
+    public class MMscan : baseMMscan
+    {
+        public string groupID { get; set; }
+
+        public MMscan(string _groupID = "", string _sParam = "",  double _sFrom = double.NaN, double _sTo = double.NaN, double _sBy = double.NaN, double _Value = double.NaN)
+        {
+            groupID = _groupID; sParam = _sParam; sFrom = _sFrom; sTo = _sTo; sBy = _sBy; Value = _Value;
+        }
         public bool Check()
         {
             if((sFrom == sTo) || (sBy == 0) || (Math.Abs(sBy) > Math.Abs(sTo - sFrom))) return false;
             if ((sBy > 0) && (sFrom > sTo)) return false;
             if ((sBy < 0) && (sFrom < sTo)) return false;
             return true;
+        }
+
+        public bool isFirstValue()
+        {
+            return Math.Abs(sFrom - Value) < (0.01 * sBy);
+        }
+
+        public bool isLastValue()
+        {
+            return (Math.Abs(sTo - Value)) < (0.99 * sBy);
         }
 
         public MMscan NextInChain = null;
@@ -389,7 +430,7 @@ namespace MOTMaster2
 
         public string AsString
         {
-            get { return sParam + "\t" + sFrom.ToString("G6") + " .. " + sTo.ToString("G6") + "; " + sBy.ToString("G6"); }
+            get { return getAsString(); }
             set 
             {
                 if (value == null) return;
@@ -397,13 +438,21 @@ namespace MOTMaster2
                 {
                     TestInit(); return;
                 }
-                string[] parts = value.Split('\t'); sParam = parts[0];
+                string[] parts = value.Split('\t'); sParam = parts[0].TrimEnd(' ');
                 string ss = parts[1]; int j = ss.IndexOf(".."); if(j == -1) return;
                 parts[0] = ss.Substring(0, j); parts[1] = ss.Substring(j+2);
                 sFrom = Convert.ToDouble(parts[0]);
                 parts = parts[1].Split(';'); sTo = Convert.ToDouble(parts[0]);
                 sBy = Convert.ToDouble(parts[1]);
             }
+        }
+        public MMscan Clone()
+        {
+            return new MMscan(groupID, sParam, sFrom, sTo, sBy, Value);
+        }
+        public void Assign(MMscan src)
+        {
+            groupID = src.groupID; sParam = src.sParam; sFrom = src.sFrom; sTo = src.sTo; sBy = src.sBy; Value = src.Value;
         }
 
         public void TestInit()

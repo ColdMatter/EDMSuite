@@ -38,7 +38,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="13*"/>
                         <RowDefinition Height="11*"/>
-                        <RowDefinition Height="85*"/>
+                        <RowDefinition Height="20*"/>
+                        <RowDefinition Height="50*"/>
                     </Grid.RowDefinitions>
 
                     <GroupBox Header="Save sequence on exit" Grid.Row="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="50" Width="212">
@@ -68,7 +69,7 @@
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Analog Input" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="480" Height="104">
-                        <Grid Margin="0,0,-33.143,-3.857">
+                        <Grid Margin="0,0,-33.429,-3.857">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="82.286"/>
                                 <ColumnDefinition Width="184"/>
@@ -78,21 +79,38 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="60"/>
                             </Grid.RowDefinitions>
-                            <Label Content="Enabled" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Margin="0" Width="53"/>
-                            <CheckBox x:Name="aiEnable" Grid.Row="0" HorizontalAlignment="Center" Height="15" Margin="55,7,5.286,7.714" VerticalAlignment="Center" Click="aiEnable_Click" Width="22"/>
+
+                            <CheckBox x:Name="aiEnable" Grid.Row="0" HorizontalAlignment="Center" Height="15" Margin="10,5,10.286,0" VerticalAlignment="Center" Click="aiEnable_Click" Width="62" RenderTransformOrigin="-1.104,0.752" Content="Enabled"/>
                             <Label Content="Sample Rate [Hz]"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,2,0,1.714" Width="100" Grid.Row="0" Grid.ColumnSpan="2" Height="26"/>
                             <TextBox x:Name="tbSampleRate" HorizontalAlignment="Left" Height="24" Margin="97,2,0,4" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="1" Grid.Row="0"/>
                             <Label Content="PreTrig Samples"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1.714,2,0,1.714" Width="94" Grid.Column="2" Height="26"/>
                             <TextBox x:Name="tbPreTrig" HorizontalAlignment="Left" Height="24" Margin="98.714,3,0,2.714" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" ToolTip="Initial number of samples per channel to exclude"/>
                             <Label Content="Rise Time [s]"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1.714,17.286,0,17.857" Width="61" Grid.Column="2" Grid.Row="1" ToolTip="" Height="26"/>
                             <TextBox x:Name="tbRiseTime" HorizontalAlignment="Left" Height="24" Margin="98.714,18.286,0,18.857" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Grid.Column="2" Grid.Row="1" ToolTip="Rise time for photodiode in seconds"/>
-                            <Label Content="Save Mode"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="78,17.286,0,17.857" Width="69" Grid.Row="1" Grid.ColumnSpan="2" Height="26"/>
-                            <RadioButton x:Name="aiRaw" GroupName="analog" Content="Raw" HorizontalAlignment="Left" Margin="75.714,5.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save segmented raw data"/>
-                            <RadioButton x:Name="aiAverage" GroupName="analog" Content="Avg." HorizontalAlignment="Left" Margin="75.714,20.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save averages/std. dev"/>
-                            <RadioButton x:Name="aiBoth" GroupName="analog" Content="Both" HorizontalAlignment="Left" Margin="75.714,35.286,0,0" VerticalAlignment="Top" Height="16" Width="55" Grid.Row="1" Grid.Column="1" ToolTip="Save both segmented raw data and averages/std. dev" />
+                            <GroupBox Header="Save Mode" HorizontalAlignment="Left" Margin="82,0.286,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="185" Height="51">
+                                <Grid>
+                                    <RadioButton x:Name="aiRaw" GroupName="analog" Content="Raw" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Height="16" Width="48" ToolTip="Save segmented raw data"/>
+                                    <RadioButton x:Name="aiAverage" GroupName="analog" Content="Average" HorizontalAlignment="Left" Margin="53,0,0,0" VerticalAlignment="Center" Height="16" Width="67" ToolTip="Save averages/std. dev" RenderTransformOrigin="0.221,-0.304"/>
+                                    <RadioButton x:Name="aiBoth" GroupName="analog" Content="Both" HorizontalAlignment="Left" Margin="123,0,0,0" VerticalAlignment="Center" Height="16" Width="49" ToolTip="Save both segmented raw data and averages/std. dev" />
+                                </Grid>
+                            </GroupBox>
                         </Grid>
                     </GroupBox>
+                    <GroupBox Header="WindFreak Config" Grid.Row="3" Margin="10,0,0,0">
+                        <Grid Margin="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="95"/>
+                                <ColumnDefinition Width="207"/>
+                                <ColumnDefinition Width="235.429"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="90"/>
+                            </Grid.RowDefinitions>
 
+                            <CheckBox x:Name="windFreakEnable" Grid.Row="0" HorizontalAlignment="Left" Height="14" Margin="5,0,0,0" VerticalAlignment="Center" Width="88" Content="Enabled"/>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tiFileSystem" Header="File System" Height="24" Margin="-0.286,-1,0,1" HorizontalAlignment="Left" Width="140">
@@ -138,7 +156,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button x:Name="btnOK" Content="OK" HorizontalAlignment="Right" Margin="0,10.429,17.143,10.286" VerticalAlignment="Center" Width="90" Click="OKButton_Click" Grid.Row="1" Height="25" FontWeight="Bold"/>
-        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,10.429,127.143,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25" RenderTransformOrigin="0.502,0.5" Click="btnCancel_Click"/>
+        <Button x:Name="btnOK" Content="OK" HorizontalAlignment="Right" Margin="0,10.429,17.143,10.286" VerticalAlignment="Center" Width="90" Click="OKButton_Click" Grid.Row="1" Height="25" FontWeight="Bold" Background="#FFEEEDED"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,10.429,127.143,10.286" VerticalAlignment="Center" Width="95" Grid.Row="1" Height="25" RenderTransformOrigin="0.502,0.5" Click="btnCancel_Click" Background="#FFEEEDED"/>
     </Grid>
 </Window>

@@ -7,7 +7,8 @@ namespace MOTMaster2
 {
     public static class Constants
     {
-        public readonly static string LogDataFormat = "G8";
+        public const string LogDataFormat = "G8";
+        public const string ScanDataFormat = "G7";
     }
 } 
 

@@ -125,7 +125,6 @@ namespace DAQ.HAL
                 counterTask.Control(TaskAction.Verify);
             }
         }
-
         
         void counterTask_Sample(object sender, SampleClockEventArgs e)
         {

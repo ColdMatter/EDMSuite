@@ -365,8 +365,6 @@ namespace DAQ.Pattern
 		{
 			return layout.ToString();
 		}
-
-
 	}
 
 	public class TimeOrderException : ApplicationException {}

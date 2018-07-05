@@ -22,7 +22,7 @@ namespace DAQ.HAL
 
 		public AnalogOutputChannel(String name, String physicalChannel)
 		{
-			this.name = name;
+			this.nameIt(name);
 			this.physicalChannel = physicalChannel;
             this.rangeLow = -10;
             this.rangeHigh = 10;
@@ -30,7 +30,7 @@ namespace DAQ.HAL
 
         public AnalogOutputChannel(String name, String physicalChannel, double rangeLow, double rangeHigh)
         {
-            this.name = name;
+            this.nameIt(name);
             this.physicalChannel = physicalChannel;
             this.rangeLow = rangeLow;
             this.rangeHigh = rangeHigh;

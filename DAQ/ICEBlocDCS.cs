@@ -33,24 +33,26 @@ namespace DAQ.HAL
             else Strobe1 += corr;
             Count += 1;
         }
-        private double strobe1;
+        private double _strobe1;
         public double Strobe1 // even count in case of double strobe
         {
-            get { return strobe1; }
+            get { return _strobe1; }
             set 
             { 
-                strobe1 = value;
+                _strobe1 = value;
                 ProcStrobe(DoubleStrobe, value, Count);
+                Count += 1;
             }
         }
-        private double strobe2;
+        private double _strobe2;
         public double Strobe2 // even count in case of double strobe
         {
-            get { return strobe2; }
+            get { return _strobe2; }
             set
             {
-                strobe2 = value;
+                _strobe2 = value;
                 ProcStrobe(DoubleStrobe, value, Count);
+                Count += 1;
             }
         }
     }
@@ -287,7 +289,7 @@ namespace DAQ.HAL
                 Dictionary<string, object> pulseDict = CreateSubParameterDict(AOMchannel, amplitude);
                 _timeBlockDict[pulseStep].Add(pulseDict.Keys.First(),pulseDict.Values.First());
             }
-            if (length != null && !_timeBlockDict[pulseStep].ContainsKey("length")) _timeBlockDict[pulseStep].Add("length",Convert.ToInt32(length));
+            if (length != null && !_timeBlockDict[pulseStep].ContainsKey("length")) _timeBlockDict[pulseStep].Add("length",Convert.ToDouble(length));
             if (multiplier != 1e-6 && !_timeBlockDict[pulseStep].ContainsKey("multiplier")) _timeBlockDict[pulseStep].Add("multiplier", (double)multiplier);
 
             //Sets the channel on/off as well
@@ -297,7 +299,8 @@ namespace DAQ.HAL
 
         public void ConfigureIntTime(int timeID, double time)
         {
-            Utils.EnsureRange(timeID, 1, 2);
+            Utils.EnsureRange(timeID, 1, 3);
+           
             string darkStep = _timeBlockNames["Dark " + timeID];
 
             if (!_timeBlockDict.ContainsKey(darkStep))
@@ -307,7 +310,7 @@ namespace DAQ.HAL
             }
             if (!_timeBlockDict[darkStep].ContainsKey("length"))
             {
-                _timeBlockDict[darkStep].Add("length", Convert.ToInt32(time));
+                _timeBlockDict[darkStep].Add("length", Convert.ToDouble(time));
                 //Assumes this time will always be in ms
                 _timeBlockDict[darkStep].Add("multiplier", 1e-3);
             }

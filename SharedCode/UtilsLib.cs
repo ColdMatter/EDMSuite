@@ -1,20 +1,49 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Threading;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace UtilsNS
 {
     public static class Utils
     {
+        /*public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame)f).Continue = false;
+
+            return null;
+        }
+        public static void DoEvents()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
+                                                  new Action(delegate { }));
+        }
+*/
+
         public static bool isNull(System.Object o)
         {
             return object.ReferenceEquals(null, o);
+        }
+        public static bool isNumeric(System.Object o)
+        {
+            double test;
+            return double.TryParse(Convert.ToString(o), out test);
         }
 
         public static double EnsureRange(double Value, double MinValue, double MaxValue)
@@ -47,6 +76,13 @@ namespace UtilsNS
             return Convert.ToDouble(d.ToString(format));
         }
 
+        public static double[] formatDouble(double[] d, string format)
+        {
+            double[] da = new double[d.Length];
+            for (int i = 0; i < d.Length; i++) da[i] = Convert.ToDouble(d[i].ToString(format));
+            return da;
+        }
+        
         public static string RemoveLineEndings(string value)
         {
             if (String.IsNullOrEmpty(value))
@@ -68,6 +104,7 @@ namespace UtilsNS
         }
 
         public static string basePath = Directory.GetParent(Directory.GetParent(Environment.GetCommandLineArgs()[0]).Parent.FullName).FullName;
+
         public static string configPath { get { return basePath + "\\Config\\"; } }
         public static string dataPath { get { return basePath + "\\Data\\"; } }
 
@@ -93,10 +130,10 @@ namespace UtilsNS
     {
         public string header = ""; // that will be put as a file first line with # in front of it
         List<string> buffer;
-        public int bufferLimit = 256;
-        private int bufferCharLimit = 256000;
+        public int bufferLimit = 256; // item number
+        private int bufferCharLimit = 256000; // the whole char size
         public int bufferSize { get { return buffer.Count; } }
-        public int bufferCharSize { get; set; }
+        public int bufferCharSize { get; private set; }
         public bool writing { get; private set; }
         public bool missingData { get; private set; }
         Stopwatch stw;
@@ -130,6 +167,10 @@ namespace UtilsNS
             buffer[buffer.Count - 1] = lastItem.Substring(0, lastItem.Length - 1);
         }
 
+        public int BufferCount()
+        {
+            return buffer.Count;
+        }
         private void ConsoleLine(string txt)
         {
 #if DEBUG
@@ -233,5 +274,32 @@ namespace UtilsNS
         }
     }
     #endregion
+
+    public class WaitCursor : IDisposable
+    {
+        private Cursor _previousCursor;
+
+        public WaitCursor()
+        {
+            _previousCursor = Mouse.OverrideCursor;
+
+            Mouse.OverrideCursor = Cursors.Wait;
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            Mouse.OverrideCursor = _previousCursor;
+        }
+
+        #endregion
+    }
+    /*
+    using(new WaitCursor())
+    {
+        // very long task to be marked
+    }
+     */
 
 }
