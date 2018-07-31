@@ -119,6 +119,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
             AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23");
             AddAnalogOutputChannel("rbCoolingFrequency", analogPatternBoardAddress + "/ao24");
+            AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
 
 
             // Source

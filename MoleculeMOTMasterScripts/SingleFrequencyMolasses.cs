@@ -65,17 +65,17 @@ public class Patterns : MOTMasterScript
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentRampStartValue"] = 0.65;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.55;
         Parameters["MOTCoilsCurrentRampStartTime"] = 4000;
-        Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
+        Parameters["MOTCoilsCurrentRampEndValue"] = 1.3;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
-        Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.06
+        Parameters["MOTCoilsCurrentMolassesValue"] = -0.01; //0.06
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 1.195; // 1.202;// 1.219;
         Parameters["yShimLoadCurrent"] = -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = 0.26;// -6.425; //-6.39
+        Parameters["zShimLoadCurrent"] = -6.425; //0.26
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -157,7 +157,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], -0.01);
 
         //// Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
