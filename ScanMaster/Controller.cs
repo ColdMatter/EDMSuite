@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
@@ -112,6 +113,12 @@ namespace ScanMaster
 			acquisitor = new Acquisitor();
 			acquisitor.Data += new DataEventHandler(DataHandler);
 			acquisitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
+
+            // ask the remoting system for access to the EDMHardwareController
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
+                "tcp://localhost:1172/controller.rem"
+                );
 
 			controllerWindow = new ControllerWindow(this);
 			controllerWindow.Show();

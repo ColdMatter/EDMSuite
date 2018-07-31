@@ -29,8 +29,11 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
+            scanOutputPlugins.Add("Rf AWG frequency output", typeof(NIRfsgFrequencyOutputPlugin));
+            scanOutputPlugins.Add("Rf AWG amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
+            scanOutputPlugins.Add("HardwareController scan", typeof(HardwareControllerOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
@@ -42,6 +45,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("No pattern", typeof(NullPGPlugin));
 			patternPlugins.Add("Pulsed rf scan", typeof(PulsedRFScanPatternPlugin));
             patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
+            patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
 
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));

@@ -34,7 +34,7 @@ namespace DAQ.HAL
 			{
 				// temporarily disabled for HP34401A compatibility
 				//session.Write("LCL");
-				session.Dispose();
+                session.Dispose();
 			}
 		}
 

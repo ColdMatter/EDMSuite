@@ -309,6 +309,13 @@ namespace EDMBlockHead
             scanMaster.OutputPattern();
         }
 
+        public void StartNoMoleculesPattern()
+        {
+            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            scanMaster.SelectProfile("Scan B without molecules");
+            scanMaster.OutputPattern();
+        }
+
         public void StopPattern()
         {
             ScanMaster.Controller scanMaster = new ScanMaster.Controller();

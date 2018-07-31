@@ -44,7 +44,7 @@ namespace Data.EDM
 			get { return config; }
 			set { config = value; }
 		}
-
+        
 		public double[] GetTOFIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];

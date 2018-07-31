@@ -23,8 +23,8 @@ namespace EDMHardwareControl
 		public System.Windows.Forms.CheckBox eOnCheck;
 		public System.Windows.Forms.CheckBox ePolarityCheck;
 		public System.Windows.Forms.CheckBox eBleedCheck;
-		public System.Windows.Forms.Button switchEButton;
-        private System.ComponentModel.Container components = null;
+        public System.Windows.Forms.Button switchEButton;
+        private IContainer components;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Label label1;
         public System.Windows.Forms.CheckBox greenOnCheck;
@@ -536,6 +536,65 @@ namespace EDMHardwareControl
         public TextBox pumpMWDwellOffTextBox;
         public TextBox pumpMWDwellOnTextBox;
         private Label label120;
+        private GroupBox pressureMonitorGroupBox;
+        public CheckBox logPressureDataCheckBox;
+        private Button clearPressureMonitorButton;
+        private Label label153;
+        public TextBox pressureMonitorSampleLengthTextBox;
+        private Label label157;
+        public Button stopPressureMonitorPollButton;
+        private Legend legend2;
+        private LegendItem pressurePlotLegend;
+        public WaveformPlot pressurePlot;
+        private XAxis xAxis2;
+        private YAxis yAxis2;
+        private Label label161;
+        public TextBox pressureMonitorPollPeriodTextBox;
+        public Button startPressureMonitorPollButton;
+        public WaveformGraph pressureGraph;
+        public TextBox pressureMonitorTextBox;
+        private Button updatePressureMonitorButton;
+        private Label label165;
+        private Label label121;
+        public TextBox pressureMonitorLogPeriodTextBox;
+        private TabPage rfAWGTab;
+        private GroupBox groupBox26;
+        public CheckBox rfAWGContinuousGenerationCheckBox;
+        private Label label151;
+        public TextBox rfAWGOnAmpTextBox;
+        private Label label158;
+        public TextBox rfAWGOnFreqTextBox;
+        private GroupBox groupBox27;
+        private GroupBox groupBox30;
+        private Label label171;
+        public TextBox rfAWGPhaseOffsetTextBox;
+        private GroupBox groupBox29;
+        private Label label159;
+        public TextBox rfAWGRf2CentreTimeTextBox;
+        private Label label164;
+        public TextBox rfAWGRf2PulseLengthTextBox;
+        private Label label166;
+        public TextBox rfAWGRf2AmpTextBox;
+        private Label label167;
+        public TextBox rfAWGRf2FreqTextBox;
+        private GroupBox groupBox28;
+        private Label label122;
+        public TextBox rfAWGRf1CentreTimeTextBox;
+        private Label label163;
+        public TextBox rfAWGRf1PulseLengthTextBox;
+        private Label label160;
+        public TextBox rfAWGRf1AmpTextBox;
+        private Label label162;
+        public TextBox rfAWGRf1FreqTextBox;
+        public CheckBox rfAWGPulsedGenerationCheckBox;
+        public Timer rfsgStatusTimer;
+        private Label label168;
+        public TextBox rfAWGWaveformLengthTextBox;
+        private GroupBox groupBox31;
+        private Label label173;
+        public TextBox rfAWGCarrierFreqTextBox;
+        private Button rfAWGTestButton;
+        public TextBox rfAWGTestTextBox;
 
  
 
@@ -568,6 +627,7 @@ namespace EDMHardwareControl
 		/// </summary>
 		private void InitializeComponent()
 		{
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label78 = new System.Windows.Forms.Label();
@@ -875,6 +935,7 @@ namespace EDMHardwareControl
             this.tabPage13 = new System.Windows.Forms.TabPage();
             this.label93 = new System.Windows.Forms.Label();
             this.anapicofreqcontrol = new System.Windows.Forms.GroupBox();
+            this.label120 = new System.Windows.Forms.Label();
             this.label118 = new System.Windows.Forms.Label();
             this.topProbeMWf1Indicator = new NationalInstruments.UI.WindowsForms.Led();
             this.label119 = new System.Windows.Forms.Label();
@@ -1046,6 +1107,27 @@ namespace EDMHardwareControl
             this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
             this.yagQEnableButton = new System.Windows.Forms.Button();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.pressureMonitorGroupBox = new System.Windows.Forms.GroupBox();
+            this.label121 = new System.Windows.Forms.Label();
+            this.pressureMonitorLogPeriodTextBox = new System.Windows.Forms.TextBox();
+            this.logPressureDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.clearPressureMonitorButton = new System.Windows.Forms.Button();
+            this.label153 = new System.Windows.Forms.Label();
+            this.pressureMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label157 = new System.Windows.Forms.Label();
+            this.stopPressureMonitorPollButton = new System.Windows.Forms.Button();
+            this.legend2 = new NationalInstruments.UI.WindowsForms.Legend();
+            this.pressurePlotLegend = new NationalInstruments.UI.LegendItem();
+            this.pressurePlot = new NationalInstruments.UI.WaveformPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.label161 = new System.Windows.Forms.Label();
+            this.pressureMonitorPollPeriodTextBox = new System.Windows.Forms.TextBox();
+            this.startPressureMonitorPollButton = new System.Windows.Forms.Button();
+            this.pressureGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
+            this.pressureMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.updatePressureMonitorButton = new System.Windows.Forms.Button();
+            this.label165 = new System.Windows.Forms.Label();
             this.switchScanTTLSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.label97 = new System.Windows.Forms.Label();
             this.tabPage7 = new System.Windows.Forms.TabPage();
@@ -1067,6 +1149,42 @@ namespace EDMHardwareControl
             this.stopI2ErrorSigPollButton = new System.Windows.Forms.Button();
             this.label80 = new System.Windows.Forms.Label();
             this.startI2ErrorSigPollButton = new System.Windows.Forms.Button();
+            this.rfAWGTab = new System.Windows.Forms.TabPage();
+            this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.rfAWGTestButton = new System.Windows.Forms.Button();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.label173 = new System.Windows.Forms.Label();
+            this.label168 = new System.Windows.Forms.Label();
+            this.rfAWGWaveformLengthTextBox = new System.Windows.Forms.TextBox();
+            this.rfAWGCarrierFreqTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.label171 = new System.Windows.Forms.Label();
+            this.rfAWGPhaseOffsetTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.label159 = new System.Windows.Forms.Label();
+            this.rfAWGRf2CentreTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label164 = new System.Windows.Forms.Label();
+            this.rfAWGRf2PulseLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label166 = new System.Windows.Forms.Label();
+            this.rfAWGRf2AmpTextBox = new System.Windows.Forms.TextBox();
+            this.label167 = new System.Windows.Forms.Label();
+            this.rfAWGRf2FreqTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.label122 = new System.Windows.Forms.Label();
+            this.rfAWGRf1CentreTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label163 = new System.Windows.Forms.Label();
+            this.rfAWGRf1PulseLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label160 = new System.Windows.Forms.Label();
+            this.rfAWGRf1AmpTextBox = new System.Windows.Forms.TextBox();
+            this.label162 = new System.Windows.Forms.Label();
+            this.rfAWGRf1FreqTextBox = new System.Windows.Forms.TextBox();
+            this.rfAWGPulsedGenerationCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox26 = new System.Windows.Forms.GroupBox();
+            this.rfAWGContinuousGenerationCheckBox = new System.Windows.Forms.CheckBox();
+            this.label151 = new System.Windows.Forms.Label();
+            this.rfAWGOnAmpTextBox = new System.Windows.Forms.TextBox();
+            this.label158 = new System.Windows.Forms.Label();
+            this.rfAWGOnFreqTextBox = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -1082,7 +1200,8 @@ namespace EDMHardwareControl
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.label120 = new System.Windows.Forms.Label();
+            this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
+            this.rfAWGTestTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1160,6 +1279,9 @@ namespace EDMHardwareControl
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.tabPage9.SuspendLayout();
+            this.pressureMonitorGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pressureGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).BeginInit();
             this.tabPage7.SuspendLayout();
             this.tabPage10.SuspendLayout();
@@ -1167,6 +1289,13 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.I2BiasVoltageTrackBar)).BeginInit();
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).BeginInit();
+            this.rfAWGTab.SuspendLayout();
+            this.groupBox27.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.groupBox30.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            this.groupBox28.SuspendLayout();
+            this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1601,6 +1730,7 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage9);
             this.tabControl.Controls.Add(this.tabPage7);
             this.tabControl.Controls.Add(this.tabPage10);
+            this.tabControl.Controls.Add(this.rfAWGTab);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -4255,6 +4385,14 @@ namespace EDMHardwareControl
             this.anapicofreqcontrol.TabStop = false;
             this.anapicofreqcontrol.Text = "Anapico Frequency Control";
             // 
+            // label120
+            // 
+            this.label120.Location = new System.Drawing.Point(31, 110);
+            this.label120.Name = "label120";
+            this.label120.Size = new System.Drawing.Size(320, 23);
+            this.label120.TabIndex = 73;
+            this.label120.Text = " (1 is checked, correponding to f0 in bottom probe, f1 in top probe)";
+            // 
             // label118
             // 
             this.label118.Location = new System.Drawing.Point(186, 205);
@@ -5900,6 +6038,7 @@ namespace EDMHardwareControl
             // tabPage9
             // 
             this.tabPage9.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage9.Controls.Add(this.pressureMonitorGroupBox);
             this.tabPage9.Controls.Add(this.switchScanTTLSwitch);
             this.tabPage9.Controls.Add(this.label97);
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
@@ -5908,6 +6047,213 @@ namespace EDMHardwareControl
             this.tabPage9.Size = new System.Drawing.Size(697, 575);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Misc";
+            // 
+            // pressureMonitorGroupBox
+            // 
+            this.pressureMonitorGroupBox.Controls.Add(this.label121);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorLogPeriodTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.logPressureDataCheckBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.clearPressureMonitorButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.label153);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorSampleLengthTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.label157);
+            this.pressureMonitorGroupBox.Controls.Add(this.stopPressureMonitorPollButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.legend2);
+            this.pressureMonitorGroupBox.Controls.Add(this.label161);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorPollPeriodTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.startPressureMonitorPollButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureGraph);
+            this.pressureMonitorGroupBox.Controls.Add(this.pressureMonitorTextBox);
+            this.pressureMonitorGroupBox.Controls.Add(this.updatePressureMonitorButton);
+            this.pressureMonitorGroupBox.Controls.Add(this.label165);
+            this.pressureMonitorGroupBox.Location = new System.Drawing.Point(18, 150);
+            this.pressureMonitorGroupBox.Name = "pressureMonitorGroupBox";
+            this.pressureMonitorGroupBox.Size = new System.Drawing.Size(660, 274);
+            this.pressureMonitorGroupBox.TabIndex = 45;
+            this.pressureMonitorGroupBox.TabStop = false;
+            this.pressureMonitorGroupBox.Text = "Pressure monitor";
+            // 
+            // label121
+            // 
+            this.label121.Location = new System.Drawing.Point(440, 21);
+            this.label121.Name = "label121";
+            this.label121.Size = new System.Drawing.Size(129, 23);
+            this.label121.TabIndex = 77;
+            this.label121.Text = "Log + display period (s)";
+            // 
+            // pressureMonitorLogPeriodTextBox
+            // 
+            this.pressureMonitorLogPeriodTextBox.Location = new System.Drawing.Point(575, 18);
+            this.pressureMonitorLogPeriodTextBox.Name = "pressureMonitorLogPeriodTextBox";
+            this.pressureMonitorLogPeriodTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pressureMonitorLogPeriodTextBox.TabIndex = 76;
+            this.pressureMonitorLogPeriodTextBox.Text = "1";
+            // 
+            // logPressureDataCheckBox
+            // 
+            this.logPressureDataCheckBox.AutoSize = true;
+            this.logPressureDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logPressureDataCheckBox.Name = "logPressureDataCheckBox";
+            this.logPressureDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.logPressureDataCheckBox.TabIndex = 75;
+            this.logPressureDataCheckBox.Text = "Log data";
+            this.logPressureDataCheckBox.UseVisualStyleBackColor = true;
+            this.logPressureDataCheckBox.CheckedChanged += new System.EventHandler(this.logPressureDataCheckBox_CheckedChanged);
+            // 
+            // clearPressureMonitorButton
+            // 
+            this.clearPressureMonitorButton.Location = new System.Drawing.Point(68, 66);
+            this.clearPressureMonitorButton.Name = "clearPressureMonitorButton";
+            this.clearPressureMonitorButton.Size = new System.Drawing.Size(39, 23);
+            this.clearPressureMonitorButton.TabIndex = 74;
+            this.clearPressureMonitorButton.Text = "Clear";
+            this.clearPressureMonitorButton.UseVisualStyleBackColor = true;
+            this.clearPressureMonitorButton.Click += new System.EventHandler(this.clearPressureMonitorButton_Click);
+            // 
+            // label153
+            // 
+            this.label153.Location = new System.Drawing.Point(211, 22);
+            this.label153.Name = "label153";
+            this.label153.Size = new System.Drawing.Size(47, 23);
+            this.label153.TabIndex = 69;
+            this.label153.Text = "samples";
+            // 
+            // pressureMonitorSampleLengthTextBox
+            // 
+            this.pressureMonitorSampleLengthTextBox.Location = new System.Drawing.Point(170, 19);
+            this.pressureMonitorSampleLengthTextBox.Name = "pressureMonitorSampleLengthTextBox";
+            this.pressureMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
+            this.pressureMonitorSampleLengthTextBox.TabIndex = 67;
+            this.pressureMonitorSampleLengthTextBox.Text = "20";
+            // 
+            // label157
+            // 
+            this.label157.Location = new System.Drawing.Point(122, 22);
+            this.label157.Name = "label157";
+            this.label157.Size = new System.Drawing.Size(47, 23);
+            this.label157.TabIndex = 68;
+            this.label157.Text = "Average";
+            // 
+            // stopPressureMonitorPollButton
+            // 
+            this.stopPressureMonitorPollButton.Enabled = false;
+            this.stopPressureMonitorPollButton.Location = new System.Drawing.Point(211, 76);
+            this.stopPressureMonitorPollButton.Name = "stopPressureMonitorPollButton";
+            this.stopPressureMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopPressureMonitorPollButton.TabIndex = 55;
+            this.stopPressureMonitorPollButton.Text = "Stop poll";
+            this.stopPressureMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopPressureMonitorPollButton.Click += new System.EventHandler(this.stopPressureMonitorPollButton_Click);
+            // 
+            // legend2
+            // 
+            this.legend2.Items.AddRange(new NationalInstruments.UI.LegendItem[] {
+            this.pressurePlotLegend});
+            this.legend2.ItemSize = new System.Drawing.Size(12, 12);
+            this.legend2.Location = new System.Drawing.Point(440, 83);
+            this.legend2.Name = "legend2";
+            this.legend2.Size = new System.Drawing.Size(144, 22);
+            this.legend2.TabIndex = 59;
+            // 
+            // pressurePlotLegend
+            // 
+            this.pressurePlotLegend.Source = this.pressurePlot;
+            this.pressurePlotLegend.Text = "Middle Penning gauge";
+            // 
+            // pressurePlot
+            // 
+            this.pressurePlot.AntiAliased = true;
+            this.pressurePlot.HistoryCapacity = 10000;
+            this.pressurePlot.LineColor = System.Drawing.Color.Crimson;
+            this.pressurePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.pressurePlot.LineWidth = 2F;
+            this.pressurePlot.XAxis = this.xAxis2;
+            this.pressurePlot.YAxis = this.yAxis2;
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 500D);
+            // 
+            // yAxis2
+            // 
+            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.OriginLineVisible = true;
+            this.yAxis2.Range = new NationalInstruments.UI.Range(5E-07D, 1E-05D);
+            // 
+            // label161
+            // 
+            this.label161.Location = new System.Drawing.Point(123, 50);
+            this.label161.Name = "label161";
+            this.label161.Size = new System.Drawing.Size(81, 23);
+            this.label161.TabIndex = 56;
+            this.label161.Text = "Poll period (ms)";
+            // 
+            // pressureMonitorPollPeriodTextBox
+            // 
+            this.pressureMonitorPollPeriodTextBox.Location = new System.Drawing.Point(210, 47);
+            this.pressureMonitorPollPeriodTextBox.Name = "pressureMonitorPollPeriodTextBox";
+            this.pressureMonitorPollPeriodTextBox.Size = new System.Drawing.Size(64, 20);
+            this.pressureMonitorPollPeriodTextBox.TabIndex = 0;
+            this.pressureMonitorPollPeriodTextBox.Text = "100";
+            // 
+            // startPressureMonitorPollButton
+            // 
+            this.startPressureMonitorPollButton.Location = new System.Drawing.Point(125, 76);
+            this.startPressureMonitorPollButton.Name = "startPressureMonitorPollButton";
+            this.startPressureMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startPressureMonitorPollButton.TabIndex = 53;
+            this.startPressureMonitorPollButton.Text = "Start poll";
+            this.startPressureMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startPressureMonitorPollButton.Click += new System.EventHandler(this.startPressureMonitorPollButton_Click);
+            // 
+            // pressureGraph
+            // 
+            this.pressureGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.pressureGraph.Location = new System.Drawing.Point(9, 114);
+            this.pressureGraph.Name = "pressureGraph";
+            this.pressureGraph.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
+            this.pressurePlot});
+            this.pressureGraph.Size = new System.Drawing.Size(645, 153);
+            this.pressureGraph.TabIndex = 45;
+            this.pressureGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.pressureGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // pressureMonitorTextBox
+            // 
+            this.pressureMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.pressureMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.pressureMonitorTextBox.Location = new System.Drawing.Point(10, 39);
+            this.pressureMonitorTextBox.Name = "pressureMonitorTextBox";
+            this.pressureMonitorTextBox.ReadOnly = true;
+            this.pressureMonitorTextBox.Size = new System.Drawing.Size(89, 20);
+            this.pressureMonitorTextBox.TabIndex = 42;
+            this.pressureMonitorTextBox.Text = "0";
+            // 
+            // updatePressureMonitorButton
+            // 
+            this.updatePressureMonitorButton.Location = new System.Drawing.Point(9, 66);
+            this.updatePressureMonitorButton.Name = "updatePressureMonitorButton";
+            this.updatePressureMonitorButton.Size = new System.Drawing.Size(53, 23);
+            this.updatePressureMonitorButton.TabIndex = 40;
+            this.updatePressureMonitorButton.Text = "Update";
+            this.updatePressureMonitorButton.Click += new System.EventHandler(this.updatePressureMonitorButton_Click);
+            // 
+            // label165
+            // 
+            this.label165.Location = new System.Drawing.Point(10, 21);
+            this.label165.Name = "label165";
+            this.label165.Size = new System.Drawing.Size(89, 23);
+            this.label165.TabIndex = 36;
+            this.label165.Text = "Pressure (mbar)";
             // 
             // switchScanTTLSwitch
             // 
@@ -6122,6 +6468,342 @@ namespace EDMHardwareControl
             this.startI2ErrorSigPollButton.UseVisualStyleBackColor = true;
             this.startI2ErrorSigPollButton.Click += new System.EventHandler(this.startI2ErrorSigPollButton_Click);
             // 
+            // rfAWGTab
+            // 
+            this.rfAWGTab.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.rfAWGTab.Controls.Add(this.groupBox27);
+            this.rfAWGTab.Controls.Add(this.groupBox26);
+            this.rfAWGTab.Location = new System.Drawing.Point(4, 22);
+            this.rfAWGTab.Name = "rfAWGTab";
+            this.rfAWGTab.Padding = new System.Windows.Forms.Padding(3);
+            this.rfAWGTab.Size = new System.Drawing.Size(697, 575);
+            this.rfAWGTab.TabIndex = 11;
+            this.rfAWGTab.Text = "Rf AWG";
+            // 
+            // groupBox27
+            // 
+            this.groupBox27.Controls.Add(this.rfAWGTestTextBox);
+            this.groupBox27.Controls.Add(this.rfAWGTestButton);
+            this.groupBox27.Controls.Add(this.groupBox31);
+            this.groupBox27.Controls.Add(this.groupBox30);
+            this.groupBox27.Controls.Add(this.groupBox29);
+            this.groupBox27.Controls.Add(this.groupBox28);
+            this.groupBox27.Controls.Add(this.rfAWGPulsedGenerationCheckBox);
+            this.groupBox27.Location = new System.Drawing.Point(20, 143);
+            this.groupBox27.Name = "groupBox27";
+            this.groupBox27.Size = new System.Drawing.Size(533, 306);
+            this.groupBox27.TabIndex = 23;
+            this.groupBox27.TabStop = false;
+            this.groupBox27.Text = "Pulsed rf control";
+            // 
+            // rfAWGTestButton
+            // 
+            this.rfAWGTestButton.Location = new System.Drawing.Point(437, 20);
+            this.rfAWGTestButton.Name = "rfAWGTestButton";
+            this.rfAWGTestButton.Size = new System.Drawing.Size(75, 23);
+            this.rfAWGTestButton.TabIndex = 24;
+            this.rfAWGTestButton.Text = "Test!";
+            this.rfAWGTestButton.UseVisualStyleBackColor = true;
+            this.rfAWGTestButton.Click += new System.EventHandler(this.rfAWGTestButton_Click);
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.Controls.Add(this.label173);
+            this.groupBox31.Controls.Add(this.label168);
+            this.groupBox31.Controls.Add(this.rfAWGWaveformLengthTextBox);
+            this.groupBox31.Controls.Add(this.rfAWGCarrierFreqTextBox);
+            this.groupBox31.Location = new System.Drawing.Point(9, 213);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(254, 86);
+            this.groupBox31.TabIndex = 24;
+            this.groupBox31.TabStop = false;
+            this.groupBox31.Text = "misc control";
+            // 
+            // label173
+            // 
+            this.label173.Location = new System.Drawing.Point(6, 24);
+            this.label173.Name = "label173";
+            this.label173.Size = new System.Drawing.Size(143, 23);
+            this.label173.TabIndex = 11;
+            this.label173.Text = "carrier frequency (MHz)";
+            // 
+            // label168
+            // 
+            this.label168.Location = new System.Drawing.Point(6, 56);
+            this.label168.Name = "label168";
+            this.label168.Size = new System.Drawing.Size(122, 23);
+            this.label168.TabIndex = 13;
+            this.label168.Text = "waveform length (us)";
+            // 
+            // rfAWGWaveformLengthTextBox
+            // 
+            this.rfAWGWaveformLengthTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGWaveformLengthTextBox.Name = "rfAWGWaveformLengthTextBox";
+            this.rfAWGWaveformLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGWaveformLengthTextBox.TabIndex = 12;
+            this.rfAWGWaveformLengthTextBox.Text = "2500";
+            // 
+            // rfAWGCarrierFreqTextBox
+            // 
+            this.rfAWGCarrierFreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGCarrierFreqTextBox.Name = "rfAWGCarrierFreqTextBox";
+            this.rfAWGCarrierFreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGCarrierFreqTextBox.TabIndex = 0;
+            this.rfAWGCarrierFreqTextBox.Text = "170.800";
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.label171);
+            this.groupBox30.Controls.Add(this.rfAWGPhaseOffsetTextBox);
+            this.groupBox30.Location = new System.Drawing.Point(269, 213);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(254, 86);
+            this.groupBox30.TabIndex = 25;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = "relative phase control";
+            // 
+            // label171
+            // 
+            this.label171.Location = new System.Drawing.Point(6, 24);
+            this.label171.Name = "label171";
+            this.label171.Size = new System.Drawing.Size(122, 23);
+            this.label171.TabIndex = 11;
+            this.label171.Text = "phase offset";
+            // 
+            // rfAWGPhaseOffsetTextBox
+            // 
+            this.rfAWGPhaseOffsetTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGPhaseOffsetTextBox.Name = "rfAWGPhaseOffsetTextBox";
+            this.rfAWGPhaseOffsetTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGPhaseOffsetTextBox.TabIndex = 0;
+            this.rfAWGPhaseOffsetTextBox.Text = "0";
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.Controls.Add(this.label159);
+            this.groupBox29.Controls.Add(this.rfAWGRf2CentreTimeTextBox);
+            this.groupBox29.Controls.Add(this.label164);
+            this.groupBox29.Controls.Add(this.rfAWGRf2PulseLengthTextBox);
+            this.groupBox29.Controls.Add(this.label166);
+            this.groupBox29.Controls.Add(this.rfAWGRf2AmpTextBox);
+            this.groupBox29.Controls.Add(this.label167);
+            this.groupBox29.Controls.Add(this.rfAWGRf2FreqTextBox);
+            this.groupBox29.Location = new System.Drawing.Point(269, 49);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(254, 158);
+            this.groupBox29.TabIndex = 24;
+            this.groupBox29.TabStop = false;
+            this.groupBox29.Text = "rf2 control";
+            // 
+            // label159
+            // 
+            this.label159.Location = new System.Drawing.Point(6, 125);
+            this.label159.Name = "label159";
+            this.label159.Size = new System.Drawing.Size(122, 23);
+            this.label159.TabIndex = 17;
+            this.label159.Text = "centre time (us)";
+            // 
+            // rfAWGRf2CentreTimeTextBox
+            // 
+            this.rfAWGRf2CentreTimeTextBox.Location = new System.Drawing.Point(168, 122);
+            this.rfAWGRf2CentreTimeTextBox.Name = "rfAWGRf2CentreTimeTextBox";
+            this.rfAWGRf2CentreTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2CentreTimeTextBox.TabIndex = 16;
+            this.rfAWGRf2CentreTimeTextBox.Text = "1700";
+            // 
+            // label164
+            // 
+            this.label164.Location = new System.Drawing.Point(6, 89);
+            this.label164.Name = "label164";
+            this.label164.Size = new System.Drawing.Size(122, 23);
+            this.label164.TabIndex = 15;
+            this.label164.Text = "pulse length (us)";
+            // 
+            // rfAWGRf2PulseLengthTextBox
+            // 
+            this.rfAWGRf2PulseLengthTextBox.Location = new System.Drawing.Point(168, 86);
+            this.rfAWGRf2PulseLengthTextBox.Name = "rfAWGRf2PulseLengthTextBox";
+            this.rfAWGRf2PulseLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2PulseLengthTextBox.TabIndex = 14;
+            this.rfAWGRf2PulseLengthTextBox.Text = "10";
+            // 
+            // label166
+            // 
+            this.label166.Location = new System.Drawing.Point(6, 56);
+            this.label166.Name = "label166";
+            this.label166.Size = new System.Drawing.Size(122, 23);
+            this.label166.TabIndex = 13;
+            this.label166.Text = "rms power (dBm)";
+            // 
+            // rfAWGRf2AmpTextBox
+            // 
+            this.rfAWGRf2AmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGRf2AmpTextBox.Name = "rfAWGRf2AmpTextBox";
+            this.rfAWGRf2AmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2AmpTextBox.TabIndex = 1;
+            this.rfAWGRf2AmpTextBox.Text = "-6";
+            // 
+            // label167
+            // 
+            this.label167.Location = new System.Drawing.Point(6, 24);
+            this.label167.Name = "label167";
+            this.label167.Size = new System.Drawing.Size(122, 23);
+            this.label167.TabIndex = 11;
+            this.label167.Text = "frequency (MHz)";
+            // 
+            // rfAWGRf2FreqTextBox
+            // 
+            this.rfAWGRf2FreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGRf2FreqTextBox.Name = "rfAWGRf2FreqTextBox";
+            this.rfAWGRf2FreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf2FreqTextBox.TabIndex = 0;
+            this.rfAWGRf2FreqTextBox.Text = "170.800";
+            // 
+            // groupBox28
+            // 
+            this.groupBox28.Controls.Add(this.label122);
+            this.groupBox28.Controls.Add(this.rfAWGRf1CentreTimeTextBox);
+            this.groupBox28.Controls.Add(this.label163);
+            this.groupBox28.Controls.Add(this.rfAWGRf1PulseLengthTextBox);
+            this.groupBox28.Controls.Add(this.label160);
+            this.groupBox28.Controls.Add(this.rfAWGRf1AmpTextBox);
+            this.groupBox28.Controls.Add(this.label162);
+            this.groupBox28.Controls.Add(this.rfAWGRf1FreqTextBox);
+            this.groupBox28.Location = new System.Drawing.Point(9, 49);
+            this.groupBox28.Name = "groupBox28";
+            this.groupBox28.Size = new System.Drawing.Size(254, 158);
+            this.groupBox28.TabIndex = 23;
+            this.groupBox28.TabStop = false;
+            this.groupBox28.Text = "rf1 control";
+            // 
+            // label122
+            // 
+            this.label122.Location = new System.Drawing.Point(6, 125);
+            this.label122.Name = "label122";
+            this.label122.Size = new System.Drawing.Size(122, 23);
+            this.label122.TabIndex = 17;
+            this.label122.Text = "centre time (us)";
+            // 
+            // rfAWGRf1CentreTimeTextBox
+            // 
+            this.rfAWGRf1CentreTimeTextBox.Location = new System.Drawing.Point(168, 122);
+            this.rfAWGRf1CentreTimeTextBox.Name = "rfAWGRf1CentreTimeTextBox";
+            this.rfAWGRf1CentreTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1CentreTimeTextBox.TabIndex = 16;
+            this.rfAWGRf1CentreTimeTextBox.Text = "900";
+            // 
+            // label163
+            // 
+            this.label163.Location = new System.Drawing.Point(6, 89);
+            this.label163.Name = "label163";
+            this.label163.Size = new System.Drawing.Size(122, 23);
+            this.label163.TabIndex = 15;
+            this.label163.Text = "pulse length (us)";
+            // 
+            // rfAWGRf1PulseLengthTextBox
+            // 
+            this.rfAWGRf1PulseLengthTextBox.Location = new System.Drawing.Point(168, 86);
+            this.rfAWGRf1PulseLengthTextBox.Name = "rfAWGRf1PulseLengthTextBox";
+            this.rfAWGRf1PulseLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1PulseLengthTextBox.TabIndex = 14;
+            this.rfAWGRf1PulseLengthTextBox.Text = "10";
+            // 
+            // label160
+            // 
+            this.label160.Location = new System.Drawing.Point(6, 56);
+            this.label160.Name = "label160";
+            this.label160.Size = new System.Drawing.Size(122, 23);
+            this.label160.TabIndex = 13;
+            this.label160.Text = "rms power (dBm)";
+            // 
+            // rfAWGRf1AmpTextBox
+            // 
+            this.rfAWGRf1AmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGRf1AmpTextBox.Name = "rfAWGRf1AmpTextBox";
+            this.rfAWGRf1AmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1AmpTextBox.TabIndex = 1;
+            this.rfAWGRf1AmpTextBox.Text = "-6";
+            // 
+            // label162
+            // 
+            this.label162.Location = new System.Drawing.Point(6, 24);
+            this.label162.Name = "label162";
+            this.label162.Size = new System.Drawing.Size(122, 23);
+            this.label162.TabIndex = 11;
+            this.label162.Text = "frequency (MHz)";
+            // 
+            // rfAWGRf1FreqTextBox
+            // 
+            this.rfAWGRf1FreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGRf1FreqTextBox.Name = "rfAWGRf1FreqTextBox";
+            this.rfAWGRf1FreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGRf1FreqTextBox.TabIndex = 0;
+            this.rfAWGRf1FreqTextBox.Text = "170.800";
+            // 
+            // rfAWGPulsedGenerationCheckBox
+            // 
+            this.rfAWGPulsedGenerationCheckBox.Location = new System.Drawing.Point(9, 19);
+            this.rfAWGPulsedGenerationCheckBox.Name = "rfAWGPulsedGenerationCheckBox";
+            this.rfAWGPulsedGenerationCheckBox.Size = new System.Drawing.Size(254, 24);
+            this.rfAWGPulsedGenerationCheckBox.TabIndex = 18;
+            this.rfAWGPulsedGenerationCheckBox.Text = "Pulsed generation (on trigger)";
+            this.rfAWGPulsedGenerationCheckBox.CheckedChanged += new System.EventHandler(this.rfAWGPulsedGenerationCheckBox_CheckedChanged);
+            // 
+            // groupBox26
+            // 
+            this.groupBox26.Controls.Add(this.rfAWGContinuousGenerationCheckBox);
+            this.groupBox26.Controls.Add(this.label151);
+            this.groupBox26.Controls.Add(this.rfAWGOnAmpTextBox);
+            this.groupBox26.Controls.Add(this.label158);
+            this.groupBox26.Controls.Add(this.rfAWGOnFreqTextBox);
+            this.groupBox26.Location = new System.Drawing.Point(20, 19);
+            this.groupBox26.Name = "groupBox26";
+            this.groupBox26.Size = new System.Drawing.Size(254, 118);
+            this.groupBox26.TabIndex = 22;
+            this.groupBox26.TabStop = false;
+            this.groupBox26.Text = "Continuous generation control";
+            // 
+            // rfAWGContinuousGenerationCheckBox
+            // 
+            this.rfAWGContinuousGenerationCheckBox.Location = new System.Drawing.Point(9, 82);
+            this.rfAWGContinuousGenerationCheckBox.Name = "rfAWGContinuousGenerationCheckBox";
+            this.rfAWGContinuousGenerationCheckBox.Size = new System.Drawing.Size(169, 24);
+            this.rfAWGContinuousGenerationCheckBox.TabIndex = 18;
+            this.rfAWGContinuousGenerationCheckBox.Text = "Continuous generation";
+            this.rfAWGContinuousGenerationCheckBox.CheckedChanged += new System.EventHandler(this.rfAWGContinuousGenerationCheckBox_CheckedChanged);
+            // 
+            // label151
+            // 
+            this.label151.Location = new System.Drawing.Point(6, 56);
+            this.label151.Name = "label151";
+            this.label151.Size = new System.Drawing.Size(122, 23);
+            this.label151.TabIndex = 13;
+            this.label151.Text = "rf rms power (dBm)";
+            // 
+            // rfAWGOnAmpTextBox
+            // 
+            this.rfAWGOnAmpTextBox.Location = new System.Drawing.Point(168, 53);
+            this.rfAWGOnAmpTextBox.Name = "rfAWGOnAmpTextBox";
+            this.rfAWGOnAmpTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGOnAmpTextBox.TabIndex = 1;
+            this.rfAWGOnAmpTextBox.Text = "-6";
+            // 
+            // label158
+            // 
+            this.label158.Location = new System.Drawing.Point(6, 24);
+            this.label158.Name = "label158";
+            this.label158.Size = new System.Drawing.Size(122, 23);
+            this.label158.TabIndex = 11;
+            this.label158.Text = "rf frequency (MHz)";
+            // 
+            // rfAWGOnFreqTextBox
+            // 
+            this.rfAWGOnFreqTextBox.Location = new System.Drawing.Point(168, 21);
+            this.rfAWGOnFreqTextBox.Name = "rfAWGOnFreqTextBox";
+            this.rfAWGOnFreqTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGOnFreqTextBox.TabIndex = 0;
+            this.rfAWGOnFreqTextBox.Text = "170.800";
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -6260,13 +6942,18 @@ namespace EDMHardwareControl
             this.radioButton6.Text = "-";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
-            // label120
+            // rfsgStatusTimer
             // 
-            this.label120.Location = new System.Drawing.Point(31, 110);
-            this.label120.Name = "label120";
-            this.label120.Size = new System.Drawing.Size(320, 23);
-            this.label120.TabIndex = 73;
-            this.label120.Text = " (1 is checked, correponding to f0 in bottom probe, f1 in top probe)";
+            this.rfsgStatusTimer.Interval = 1;
+            this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
+            // 
+            // rfAWGTestTextBox
+            // 
+            this.rfAWGTestTextBox.Location = new System.Drawing.Point(367, 19);
+            this.rfAWGTestTextBox.Name = "rfAWGTestTextBox";
+            this.rfAWGTestTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGTestTextBox.TabIndex = 12;
+            this.rfAWGTestTextBox.Text = "0";
             // 
             // ControlWindow
             // 
@@ -6393,6 +7080,10 @@ namespace EDMHardwareControl
             this.groupBox15.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
+            this.pressureMonitorGroupBox.ResumeLayout(false);
+            this.pressureMonitorGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.legend2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pressureGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchScanTTLSwitch)).EndInit();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
@@ -6403,6 +7094,19 @@ namespace EDMHardwareControl
             this.groupBox37.ResumeLayout(false);
             this.groupBox37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.I2ErrorSigGraph)).EndInit();
+            this.rfAWGTab.ResumeLayout(false);
+            this.groupBox27.ResumeLayout(false);
+            this.groupBox27.PerformLayout();
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox31.PerformLayout();
+            this.groupBox30.ResumeLayout(false);
+            this.groupBox30.PerformLayout();
+            this.groupBox29.ResumeLayout(false);
+            this.groupBox29.PerformLayout();
+            this.groupBox28.ResumeLayout(false);
+            this.groupBox28.PerformLayout();
+            this.groupBox26.ResumeLayout(false);
+            this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -7206,6 +7910,67 @@ namespace EDMHardwareControl
        private void getCurrentListButton_Click(object sender, EventArgs e)
        {
            controller.GetAnapicoCurrentList();
+       }
+
+       private void updatePressureMonitorButton_Click(object sender, EventArgs e)
+       {
+           controller.UpdatePressureMonitor();
+       }
+
+       private void clearPressureMonitorButton_Click(object sender, EventArgs e)
+       {
+           controller.ClearPressureMonitorAv();
+       }
+
+       private void startPressureMonitorPollButton_Click(object sender, EventArgs e)
+       {
+           controller.StartPressureMonitorPoll();
+       }
+
+       private void stopPressureMonitorPollButton_Click(object sender, EventArgs e)
+       {
+           controller.StopPressureMonitorPoll();
+       }
+
+       private void logPressureDataCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           if (logPressureDataCheckBox.Checked)
+           {
+               controller.StartLoggingPressure();
+           }
+           else
+           {
+               controller.StopLoggingPressure();
+           }
+       }
+
+       private void rfAWGContinuousGenerationCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           controller.EnableRfAWGContinuousGeneration(rfAWGContinuousGenerationCheckBox.Checked);
+       }
+
+       private void rfsgStatusTimer_Tick(object sender, EventArgs e)
+       {
+           controller.CheckRfAWGPulsedGeneration();
+       }
+
+       private void rfAWGPulsedGenerationCheckBox_CheckedChanged(object sender, EventArgs e)
+       {
+           if (rfAWGPulsedGenerationCheckBox.Checked)
+           {
+               controller.ConnectRfAWG();
+               controller.EnableRfAWGPulsedGeneration();
+           }
+           else
+           {
+               controller.DisableRfAWGPulsedGeneration();
+           }
+       }
+
+       private void rfAWGTestButton_Click(object sender, EventArgs e)
+       {
+           controller.ConnectRfAWG();
+           controller.EnableRfAWGPulsedGeneration();
        }
 
 
