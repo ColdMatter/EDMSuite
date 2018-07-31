@@ -55,12 +55,12 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentValue"] = 0.65; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 0.55; // 0.65;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0; //1.7
         Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = 0.32;// -6.47; //0.26;
+        Parameters["zShimLoadCurrent"] = -6.47; //0.32;
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -118,7 +118,7 @@ public class Patterns : MOTMasterScript
 
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], -0.01);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);

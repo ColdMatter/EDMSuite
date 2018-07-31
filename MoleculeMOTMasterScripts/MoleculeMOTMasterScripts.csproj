@@ -106,6 +106,8 @@
     <Compile Include="SingleFrequencyMolasses.cs" />
     <Compile Include="SingleFrequencyMolassesLevitate.cs" />
     <Compile Include="SingleFrequencyMolassesMWLevitate.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotation.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwice.cs" />
     <Compile Include="stateSpectroscopy.cs" />
   </ItemGroup>
   <ItemGroup>
