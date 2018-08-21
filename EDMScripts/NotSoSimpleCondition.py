@@ -28,6 +28,7 @@ def condition(switchTime, pollTime):
 		del nCurrentSamples[:]
 		del sCurrentSamples[:]
 	hc.EnableEField(False)
+	return
 
 	
 def run_script():

@@ -58,6 +58,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
+            patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

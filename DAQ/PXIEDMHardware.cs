@@ -192,9 +192,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("middlePenningGauge", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+            //temporarily disable quspins 19Jul2018
             AddAnalogInputChannel("quSpinB0_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinB0_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
 
