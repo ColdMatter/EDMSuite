@@ -1286,6 +1286,8 @@ namespace ConfocalControl
             freqOutTask.Start();
             bool isFirst = true;
 
+            int foo_counter = 0;
+
             while (backendState == SolsTisState.running &&  teraSegmentState == TeraScanSegmentState.running)
             {
                 // Read first counter
@@ -1363,7 +1365,13 @@ namespace ConfocalControl
                             }
                         }
 
-                        TeraScanOnData();
+                        foo_counter++;
+
+                        if (foo_counter == 100)
+                        {
+                            TeraScanOnData();
+                            foo_counter = 0;
+                        }
                     }
                 }
             }
@@ -1431,6 +1439,8 @@ namespace ConfocalControl
             while (teraLatestLambda < 0) { Thread.Sleep(1); }
             TeraScanSegmentAcquisitionStart();
             TeraScanSegmentAcquisitionEnd();
+            SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan.txt", true);
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
             if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }
         }
 
