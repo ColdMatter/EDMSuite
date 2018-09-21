@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
 
+using NationalInstruments;
 using NationalInstruments.DAQmx;
 using NationalInstruments.Analysis.Math;
 
@@ -17,7 +18,7 @@ using Data;
 namespace ConfocalControl
 {
     public delegate void SetTextBoxHandler(double value);
-    public delegate void SetWaveFormHandler(double[] values, Point[] hist);
+    public delegate void SetWaveFormHandler(double[] values, bool reset);
     public delegate void DaqExceptionEventHandler(DaqException e);
 
     public class TimeTracePlugin
@@ -42,6 +43,12 @@ namespace ConfocalControl
         private List<double>[] counterBuffer;
         private double[] latestAnalogs;
         private double[] latestCounters;
+
+        // Keep track of displayed data
+        public double displayValue;
+        public double[] displayWaveform;
+        private string current_channel_type = "Counters";
+        private int current_display_channel_index;
 
         // Keep track of latest settings
         private double historicSampleRate;
@@ -98,8 +105,6 @@ namespace ConfocalControl
         public TimeTracePlugin() 
         {
             InitialiseSettings();
-            setTextBox = null;
-            setWaveForm = null;
 
             freqOutTask = null;
             counterReaders = null;
@@ -166,7 +171,7 @@ namespace ConfocalControl
             historicSampleRate = (double)Settings["sampleRate"];
             historicCounterChannels = (List<string>)Settings["counterChannels"];
             historicAnalogueChannels = (List<string>)Settings["analogueChannels"];
-
+            
             // Reset buffers
             int numberOfAnalogs = ((List<string>)Settings["analogueChannels"]).Count;
             analogBuffer = new List<double>[numberOfAnalogs];
@@ -183,8 +188,12 @@ namespace ConfocalControl
             for (int i = 0; i < numberOfCounters; i++)
             {
                 counterBuffer[i] = new List<double>();
-                latestCounters[i] = 0;
+                latestCounters[i] = -1;
             }
+
+            // Turn on correct display
+            current_channel_type = (string)Settings["channel_type"];
+            current_display_channel_index = (int)Settings["display_channel_index"];
 
             // Set up clock task
             freqOutTask = new Task("sample clock task");
@@ -295,11 +304,18 @@ namespace ConfocalControl
 
         private void ArmAndWaitContinuous()
         {
+            // Delete first point
+            bool firstPoint = latestCounters[0] < 0;
+
+            // Test if data exceeds buffer length
+            bool bufferLengthExceeded = false;
+
             // Read counter data
             for (int i = 0; i < counterBuffer.Length; i++)
             {
                 if (counterBuffer[i].Count > (int)Settings["bufferSize"])
                 {
+                    bufferLengthExceeded = true;
                     counterBuffer[i].RemoveRange(0, counterBuffer[i].Count - (int)Settings["bufferSize"]);
                 }
 
@@ -321,10 +337,17 @@ namespace ConfocalControl
 
                     if (counterBuffer[i].Count > ((int)Settings["bufferSize"] - dataRead.Length))
                     {
+                        bufferLengthExceeded = true;
                         counterBuffer[i].RemoveRange(0, dataRead.Length);
                     }
 
                     counterBuffer[i].AddRange(dataRead);
+
+                    if (current_channel_type == "Counters" && current_display_channel_index == i)
+	                {
+                        displayValue = latestCounters[i] * (double)Settings["sampleRate"];
+                        displayWaveform = dataRead;
+	                }
                 }
             }
 
@@ -337,6 +360,7 @@ namespace ConfocalControl
                 {
                     if (analogBuffer[i].Count > (int)Settings["bufferSize"])
                     {
+                        bufferLengthExceeded = true;
                         analogBuffer[i].RemoveRange(0, analogBuffer[i].Count - (int)Settings["bufferSize"]);
                     }
 
@@ -346,16 +370,79 @@ namespace ConfocalControl
 
                         if (analogBuffer[i].Count > ((int)Settings["bufferSize"] - analogRead.GetLength(1)))
                         {
+                            bufferLengthExceeded = true;
                             analogBuffer[i].RemoveRange(0, analogRead.GetLength(1));
                         }
 
-                        for (int j = 0; j < analogRead.GetLength(1); j++)
-			            {
-			                analogBuffer[i].Add(analogRead[i, j]);
-			            }
+                        if (current_channel_type == "Analogues" && current_display_channel_index == i)
+                        {
+                            displayWaveform = new double[analogRead.GetLength(1)];
+                            for (int j = 0; j < analogRead.GetLength(1); j++)
+                            {
+                                analogBuffer[i].Add(analogRead[i, j]);
+                                displayWaveform[j] = analogRead[i, j];
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < analogRead.GetLength(1); j++)
+                            {
+                                analogBuffer[i].Add(analogRead[i, j]);
+                            }
+                        }
+
+                        if (current_channel_type == "Analogues" && current_display_channel_index == i)
+	                    {
+		                    displayValue = latestAnalogs[i];
+	                    }
                     }
                 }
             }
+
+            // Delete first point
+            bool firstPointUpdate = (latestCounters[0] >= 0);
+
+            if (firstPoint && firstPointUpdate)
+	        {
+		        for (int i = 0; i < counterBuffer.Length; i++)
+                {
+                    counterBuffer[i].RemoveRange(0, 1);
+                }
+
+                for (int i = 0; i < analogBuffer.Length; i++)
+			    {
+			        analogBuffer[i].RemoveRange(0, 1);
+			    }
+	        }
+
+            // Broadcast
+            if (displayWaveform != null)
+            {
+                if (current_channel_type != (string)Settings["channel_type"] || current_display_channel_index != (int)Settings["display_channel_index"])
+                {
+                    ChangeDisplay();
+                    setWaveForm(displayWaveform, true);
+                    setTextBox(displayValue);
+                    current_channel_type = (string)Settings["channel_type"];
+                    current_display_channel_index = (int)Settings["display_channel_index"];
+                }
+                else
+                {
+                    if (bufferLengthExceeded || (firstPoint && firstPointUpdate))
+                    {
+                        ChangeDisplay();
+                        setWaveForm(displayWaveform, true);
+                        setTextBox(displayValue);
+                    }
+                    else
+                    {
+                        setWaveForm(displayWaveform, false);
+                        setTextBox(displayValue);
+                    }
+                }
+            }
+
+            displayWaveform = null;
         }
 
         private void PostArm()
@@ -373,8 +460,7 @@ namespace ConfocalControl
                 while (counterState == CounterState.running)
                 {
                     ArmAndWaitContinuous();
-                    OnData();
-                    Thread.Sleep(10);
+                    Thread.Sleep(100);
                 }
                 PostArm();
                 AcquisitionFinished();
@@ -385,40 +471,27 @@ namespace ConfocalControl
             }
         }
 
-        private void OnData()
+        private void ChangeDisplay()
         {
             switch ((string)Settings["channel_type"])
             {
                 case "Counters":
-                    if (setTextBox != null && setWaveForm != null)
+                    if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicCounterChannels.Count)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicCounterChannels.Count)
-                        {
-                            double[] dataWaveform = counterBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
-                            if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1] * (double)Settings["sampleRate"]);
-                            setWaveForm(dataWaveform, HistogramFromBuffer(dataWaveform));
-                        }
-                        else setWaveForm(null, null);
+                        displayWaveform = counterBuffer[(int)Settings["display_channel_index"]].ToArray();
                     }
                     break;
 
                 case "Analogues":
-                    if (setTextBox != null && setWaveForm != null)
+                    if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicAnalogueChannels.Count)
                     {
-                        if ((int)Settings["display_channel_index"] >= 0 && (int)Settings["display_channel_index"] < historicAnalogueChannels.Count)
-                        {
-                            double[] dataWaveform = analogBuffer[(int)Settings["display_channel_index"]].Skip(1).ToArray();
-                            if (dataWaveform.Length > 0) setTextBox(dataWaveform[dataWaveform.Length - 1]);
-                            setWaveForm(dataWaveform, HistogramFromBuffer(dataWaveform));
-                        }
-                        else setWaveForm(null, null);
+                        displayWaveform = analogBuffer[(int)Settings["display_channel_index"]].ToArray();
                     }
                     break;
 
                 default:
                     throw new DaqException("Did not understand data type");
             }
-
         }
 
         public void StopContinuousAcquisition()
@@ -428,7 +501,12 @@ namespace ConfocalControl
 
         public void RequestHistoricData()
         {
-            if (analogBuffer != null && counterBuffer != null && !IsRunning()) OnData();
+            if (analogBuffer != null && counterBuffer != null && !IsRunning()) 
+            {
+                ChangeDisplay();
+                setWaveForm(displayWaveform, true);
+                setTextBox(displayValue);
+            };
         }
 
         public void DeleteHistoricData()

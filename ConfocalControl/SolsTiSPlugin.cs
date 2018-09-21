@@ -1287,6 +1287,7 @@ namespace ConfocalControl
             bool isFirst = true;
 
             int foo_counter = 0;
+            FIX
 
             while (backendState == SolsTisState.running &&  teraSegmentState == TeraScanSegmentState.running)
             {

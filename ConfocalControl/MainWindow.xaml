@@ -1,8 +1,10 @@
 ﻿<Window x:Name="main_window" x:Class="ConfocalControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:ConfocalControl"
         xmlns:ni="http://schemas.ni.com/controls/2009/xaml/presentation"
         Title="Confocal Rasterscan Acquisition Program" Height="610" Width="1100" Closing="main_window_Closing" Icon="confocal_app_icon.ico">
+
     <Grid>
         <DockPanel x:Name="dockPanel">
             <Menu DockPanel.Dock="Top">

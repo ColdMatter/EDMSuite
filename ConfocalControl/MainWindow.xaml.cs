@@ -407,14 +407,15 @@ namespace ConfocalControl
             ));
         }
 
-        public void singleCounter_setWaveForm(double[] values, Point[] histData)
+        public void singleCounter_setWaveForm(double[] values, bool reset)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                DispatcherPriority.Normal,
                 new Action(() =>
                 {
-                    this.APD_monitor.DataSource = values;
-                    this.APD_hist.DataSource = histData;
+                    if (reset) this.APD_monitor.DataSource = new AnalogWaveform<double>(0);
+
+                    ((AnalogWaveform<double>)this.APD_monitor.DataSource).Append(values);
                 }
             ));
         }
@@ -452,6 +453,8 @@ namespace ConfocalControl
                        DispatcherPriority.Background,
                        new Action(() =>
                        {
+                           this.APD_monitor.DataSource = new AnalogWaveform<double>(0);
+
                            this.oscilloscope_switch.Value = true;
                            this.exposure_set.IsEnabled = false;
                            this.rasterScan_switch.IsReadOnly = true;
@@ -476,8 +479,6 @@ namespace ConfocalControl
                 Thread thread = new Thread(new ThreadStart(TimeTracePlugin.GetController().ContinuousAcquisition));
                 thread.IsBackground = true;
                 thread.Start();
-                // output_type_box_TimeTrace_SelectionChanged(null, null);
-
             }
             else
             {
