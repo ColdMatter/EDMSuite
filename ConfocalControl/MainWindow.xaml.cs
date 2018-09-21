@@ -476,7 +476,7 @@ namespace ConfocalControl
                 Thread thread = new Thread(new ThreadStart(TimeTracePlugin.GetController().ContinuousAcquisition));
                 thread.IsBackground = true;
                 thread.Start();
-                output_type_box_TimeTrace_SelectionChanged(null, null);
+                // output_type_box_TimeTrace_SelectionChanged(null, null);
 
             }
             else
