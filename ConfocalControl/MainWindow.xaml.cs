@@ -14,9 +14,11 @@ using NationalInstruments.NetworkVariable.WindowsForms;
 using NationalInstruments.Tdms;
 using NationalInstruments.Controls;
 using NationalInstruments.Controls.Rendering;
+using NationalInstruments.Controls.Primitives;
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -114,6 +116,12 @@ namespace ConfocalControl
                 output_type_box_TimeTrace.Items.Add("Counters");
                 output_type_box_TimeTrace.Items.Add("Analogues");
                 output_type_box_TimeTrace.SelectedIndex = 0;
+
+                // raster graph color markers
+                Markers = rasterScan_display.ColorScale.Markers;
+
+                raster_plot_range_low.IsEnabled = false;
+                raster_plot_range_high.IsEnabled = false;
             }
         }
 
@@ -167,12 +175,21 @@ namespace ConfocalControl
                     GalvoPairPlugin.GetController().AcquisitionStarting();
                     GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
                     GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
-                    double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                    double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                    GalvoPairPlugin.GetController().AcquisitionFinished();
 
-                    galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                    galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                    if (!TimeTracePlugin.GetController().IsRunning())
+                    {
+                        double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                        double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                        galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                        galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                    }
+                    else
+                    {
+                        galvo_X_display.Text = "Update me";
+                        galvo_Y_display.Text = "Update me";
+                    }
+
+                    GalvoPairPlugin.GetController().AcquisitionFinished();
                 }
                 catch (FormatException e1)
                 {
@@ -207,12 +224,21 @@ namespace ConfocalControl
                             valueX = Convert.ToDouble(galvo_X_set.Text);
                             GalvoPairPlugin.GetController().AcquisitionStarting();
                             GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
-                            double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                            double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                            GalvoPairPlugin.GetController().AcquisitionFinished();
 
-                            galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                            galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            if (!TimeTracePlugin.GetController().IsRunning())
+                            {
+                                double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                                double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                                galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                                galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            }
+                            else
+                            {
+                                galvo_X_display.Text = "Update me";
+                                galvo_Y_display.Text = "Update me";
+                            }
+
+                            GalvoPairPlugin.GetController().AcquisitionFinished();
                         }
                         catch(FormatException e1)
                         {
@@ -234,12 +260,21 @@ namespace ConfocalControl
                             GalvoPairPlugin.GetController().AcquisitionStarting();
                             GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
                             GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
-                            double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                            double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                            GalvoPairPlugin.GetController().AcquisitionFinished();
 
-                            galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                            galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            if (!TimeTracePlugin.GetController().IsRunning())
+                            {
+                                double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                                double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                                galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                                galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            }
+                            else
+                            {
+                                galvo_X_display.Text = "Update me";
+                                galvo_Y_display.Text = "Update me";
+                            }
+
+                            GalvoPairPlugin.GetController().AcquisitionFinished();
                         }
                         catch(FormatException e1)
                         {
@@ -276,12 +311,21 @@ namespace ConfocalControl
                             valueY = Convert.ToDouble(galvo_Y_set.Text);
                             GalvoPairPlugin.GetController().AcquisitionStarting();
                             GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
-                            double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                            double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                            GalvoPairPlugin.GetController().AcquisitionFinished();
 
-                            galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                            galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            if (!TimeTracePlugin.GetController().IsRunning())
+                            {
+                                double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                                double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                                galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                                galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            }
+                            else
+                            {
+                                galvo_X_display.Text = "Update me";
+                                galvo_Y_display.Text = "Update me";
+                            }
+
+                            GalvoPairPlugin.GetController().AcquisitionFinished();
                         }
                         catch(FormatException e1)
                         {
@@ -303,24 +347,31 @@ namespace ConfocalControl
                             GalvoPairPlugin.GetController().AcquisitionStarting();
                             GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
                             GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
-                            double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                            double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                            GalvoPairPlugin.GetController().AcquisitionFinished();
 
-                            galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                            galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            if (!TimeTracePlugin.GetController().IsRunning())
+                            {
+                                double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                                double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                                galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                                galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                            }
+                            else
+                            {
+                                galvo_X_display.Text = "Update me";
+                                galvo_Y_display.Text = "Update me";
+                            }
+
+                            GalvoPairPlugin.GetController().AcquisitionFinished();
                         }
                         catch(FormatException e1)
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (TimeTracePlugin.GetController().IsRunning()) TimeTracePlugin.GetController().AcquisitionFinished();
                         }
                         catch (DaqException e1)
                         {
                             MessageBox.Show("Caught exception: " + e1.Message);
                             if (GalvoPairPlugin.GetController().IsRunning()) GalvoPairPlugin.GetController().AcquisitionFinished();
-                            if (TimeTracePlugin.GetController().IsRunning()) TimeTracePlugin.GetController().AcquisitionFinished();
                         }
                     }
                 }
@@ -345,6 +396,7 @@ namespace ConfocalControl
                         output_box_TimeTrace.Items.Add(input);
                     }
                     if (output_box_TimeTrace.Items.Count != 0) output_box_TimeTrace.SelectedIndex = 0;
+                    perSecondInfo_Label.Content = "Cnts/s";
                     break;
 
                 case 1:
@@ -354,6 +406,7 @@ namespace ConfocalControl
                         output_box_TimeTrace.Items.Add(input);
                     }
                     if (output_box_TimeTrace.Items.Count != 0) output_box_TimeTrace.SelectedIndex = 0;
+                    perSecondInfo_Label.Content = "V";
                     break;
 
                 default:
@@ -374,7 +427,6 @@ namespace ConfocalControl
                     else
                     {
                         this.APD_monitor.DataSource = null;
-                        this.APD_hist.DataSource = null;
                     }
                     break;
 
@@ -387,7 +439,6 @@ namespace ConfocalControl
                     else
                     {
                         this.APD_monitor.DataSource = null;
-                        this.APD_hist.DataSource = null;
                     }
                     break;
 
@@ -399,7 +450,7 @@ namespace ConfocalControl
         public void singleCounter_setTextBox(double value)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                 DispatcherPriority.Normal,
                 new Action(() =>
                     {
                         this.single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
@@ -426,7 +477,7 @@ namespace ConfocalControl
             if (TimeTracePlugin.GetController().IsRunning()) TimeTracePlugin.GetController().AcquisitionFinished();
 
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.oscilloscope_switch.Value = false;
@@ -450,7 +501,7 @@ namespace ConfocalControl
             if (! oscilloscope_switch.Value)
             {
                 Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.APD_monitor.DataSource = new AnalogWaveform<double>(0);
@@ -485,7 +536,7 @@ namespace ConfocalControl
                 TimeTracePlugin.GetController().StopContinuousAcquisition();
                 Thread.Sleep(1000);
                 Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.oscilloscope_switch.Value = false;
@@ -538,11 +589,10 @@ namespace ConfocalControl
                 if (!TimeTracePlugin.GetController().IsRunning())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
-                           DispatcherPriority.Background,
+                            DispatcherPriority.Normal,
                            new Action(() =>
                            {
                            this.APD_monitor.DataSource = null;
-                           this.APD_hist.DataSource = null;
                             }
                    ));
                 }
@@ -582,7 +632,7 @@ namespace ConfocalControl
         private void rasterScan_setLines(MultiChannelData data)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
                     switch (output_type_box.SelectedIndex)
@@ -618,10 +668,13 @@ namespace ConfocalControl
                             break;
                     }
 
-                    double range_low = rasterScan_display.ColorScale.Range.Minimum;
-                    this.raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
-                    double range_high = rasterScan_display.ColorScale.Range.Maximum;
-                    this.raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
+                    if ((string)(raster_plot_auto_range.Content) == "Auto")
+                    {
+                        double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                        this.raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                        double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                        this.raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
+                    }
                 }
             ));
         }
@@ -635,7 +688,7 @@ namespace ConfocalControl
             }
             
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.rasterScan_switch.Value = false;
@@ -668,7 +721,7 @@ namespace ConfocalControl
                 if (!FastMultiChannelRasterScan.GetController().AcceptableSettings())
                 {                
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.rasterScan_switch.Value = false;
@@ -677,7 +730,7 @@ namespace ConfocalControl
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.rasterScan_switch.Value = true;
@@ -738,7 +791,7 @@ namespace ConfocalControl
                 Thread.Sleep(1000);
 
                 Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.rasterScan_switch.Value = false;
@@ -769,7 +822,7 @@ namespace ConfocalControl
         {
             Thread.Sleep(1000);
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.rasterScan_switch.Value = false;
@@ -929,10 +982,18 @@ namespace ConfocalControl
                 GalvoPairPlugin.GetController().SetGalvoXSetpoint(valueX);
                 GalvoPairPlugin.GetController().SetGalvoYSetpoint(valueY);
 
-                double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
-                double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
-                galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
-                galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                if (!TimeTracePlugin.GetController().IsRunning())
+                {
+                    double xvalue = GalvoPairPlugin.GetController().GetGalvoXSetpoint();
+                    double yvalue = GalvoPairPlugin.GetController().GetGalvoYSetpoint();
+                    galvo_X_display.Text = string.Format("{0:0.00000}", xvalue);
+                    galvo_Y_display.Text = string.Format("{0:0.00000}", yvalue);
+                }
+                else
+                {
+                    galvo_X_display.Text = "Update me";
+                    galvo_Y_display.Text = "Update me";
+                }
 
                 GalvoPairPlugin.GetController().AcquisitionFinished();
             }
@@ -1020,6 +1081,79 @@ namespace ConfocalControl
             catch (FormatException e2) { MessageBox.Show("Caught exception: " + e2.Message); }
         }
 
+        public ColorScaleMarkerCollection Markers;
+
+        private void raster_plot_auto_range_Click(object sender, RoutedEventArgs e)
+        {
+            if ((string)(raster_plot_auto_range.Content) == "Auto")
+            {
+                raster_plot_auto_range.Content = "Manual";
+                raster_plot_range_low.IsEnabled = true;
+                raster_plot_range_high.IsEnabled = true;
+            }
+            else
+            {
+                raster_plot_auto_range.Content = "Auto";
+                raster_plot_range_low.IsEnabled = false;
+                raster_plot_range_high.IsEnabled = false;
+            }
+
+            rasterScan_display_update_range();
+        }
+
+        private void rasterScan_display_update_range()
+        {
+            if ((string)(raster_plot_auto_range.Content) == "Auto")
+            {
+                rasterScan_display.ColorScale.Adjuster = RangeAdjuster.FitLoosely;
+                Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+               new Action(() =>
+               {
+                   Point3D[] history = (Point3D[])rasterScan_display.DataSource;
+                   rasterScan_display.DataSource = null;
+                   rasterScan_display.DataSource = history;
+                   double range_low = rasterScan_display.ColorScale.Range.Minimum;
+                   raster_plot_range_low.Text = range_low.ToString("G6", CultureInfo.InvariantCulture);
+                   double range_high = rasterScan_display.ColorScale.Range.Maximum;
+                   raster_plot_range_high.Text = range_high.ToString("G6", CultureInfo.InvariantCulture);
+               }));
+            }
+            else
+            {
+                try
+                {
+                    rasterScan_display.ColorScale.Adjuster = RangeAdjuster.None;
+                    double MinValue = Convert.ToDouble(raster_plot_range_low.Text);
+                    double MaxValue = Convert.ToDouble(raster_plot_range_high.Text);
+                    Markers[0] = new ColorScaleMarker(MinValue + (MaxValue - MinValue) * 0.4, Markers[0].Color);
+                    Markers[1] = new ColorScaleMarker(MinValue + (MaxValue - MinValue) * 0.6, Markers[1].Color);
+                    Markers[2] = new ColorScaleMarker(MinValue + (MaxValue - MinValue) * 1, Markers[2].Color);
+                    Markers[3] = new ColorScaleMarker(MinValue + (MaxValue - MinValue) * 0, Markers[3].Color);
+                }
+                catch (FormatException e1)
+                {
+                    MessageBox.Show("Caught exception: " + e1.Message);
+                }
+            }
+        }
+
+        private void raster_plot_range_high_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && raster_plot_range_low.Text != "" && raster_plot_range_high.Text != "")
+            {
+                rasterScan_display_update_range();
+            }
+        }
+
+        private void raster_plot_range_low_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && raster_plot_range_low.Text != "" && raster_plot_range_high.Text != "")
+            {
+                rasterScan_display_update_range();
+            }
+        }
+
         #endregion
 
         #region Optimization events
@@ -1056,7 +1190,7 @@ namespace ConfocalControl
             int cursorIndex = cursorIndexFromGalvoPosition(xLast, yLast);
 
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
                     this.rasterScan_lineDisplay.DataSource = optHist;
@@ -1075,7 +1209,7 @@ namespace ConfocalControl
         private void opt_End()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
                     this.optimize_Button.Content = "Optimize";
@@ -1111,7 +1245,7 @@ namespace ConfocalControl
             if (CounterOptimizationPlugin.GetController().IsRunning()) CounterOptimizationPlugin.GetController().StopOptimizing();
 
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
                     MessageBox.Show(e.Message);
@@ -1147,7 +1281,7 @@ namespace ConfocalControl
             if (output_type_box.SelectedIndex == 0 && output_box.SelectedIndex >= 0 && scan_cursor.Value.Count > 2 && (string)optimize_Button.Content == "Optimize")
             {
                 Application.Current.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
+                     DispatcherPriority.Normal,
                     new Action(() =>
                     {
                         this.rasterScan_switch.Value = true;
@@ -1330,5 +1464,46 @@ namespace ConfocalControl
 
         #endregion 
 
+    }
+
+    public static class GraphExtensions
+    {
+
+        // Private property to hold on to synchronizer. 
+        private static readonly DependencyProperty MarkersSynchronizerProperty =
+            DependencyProperty.RegisterAttached(
+                "MarkersSynchronizer", typeof(CollectionViewSynchronizer), typeof(GraphExtensions));
+
+        // Public property to declare source of ColorScale.Markers collection. 
+        public static readonly DependencyProperty MarkersSourceProperty =
+            DependencyProperty.RegisterAttached(
+                "MarkersSource", typeof(ColorScaleMarkerCollection), typeof(GraphExtensions),
+                new PropertyMetadata(OnMarkersSourceChanged));
+
+        public static ColorScaleMarkerCollection GetMarkersSource(ColorScale g)
+        {
+            return (ColorScaleMarkerCollection)g.GetValue(MarkersSourceProperty);
+        }
+
+        public static void SetMarkersSource(ColorScale g, ColorScaleMarkerCollection value)
+        {
+            g.SetValue(MarkersSourceProperty, value);
+        }
+
+        private static void OnMarkersSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var colorScale = (ColorScale)d;
+
+            // Retrieve existing synchronizer, or create a new one for the target. 
+            var synchronizer = (CollectionViewSynchronizer)colorScale.GetValue(MarkersSynchronizerProperty);
+            if (synchronizer == null)
+            {
+                synchronizer = new CollectionViewSynchronizer { TargetCollection = colorScale.Markers };
+                colorScale.SetValue(MarkersSynchronizerProperty, synchronizer);
+            }
+
+            // Synchronize Markers with new source. 
+            synchronizer.SourceCollection = CollectionViewSource.GetDefaultView(e.NewValue);
+        }
     }
 }

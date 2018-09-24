@@ -20,7 +20,8 @@ namespace ConfocalControl
 {
     public delegate void SpectraScanDataEventHandler(Point[] data);
     public delegate void TeraSingleDataEventHandler(double[] data);
-    public delegate void TeraSpectraScanDataEventHandler(double[] dataTotal, double[] dataSegment);
+    public delegate void TeraScanFullDataEventHandler(double[] dataTotal, double[] dataSegment, bool reset);
+    public delegate void TeraScanSingleChannelDataEventHandler(double[] dataTotal, bool reset);
     public delegate void SpectraScanExceptionEventHandler(Exception e);
 
     public class SolsTiSPlugin
@@ -48,8 +49,10 @@ namespace ConfocalControl
         private FastScanState fastState = FastScanState.stopped;
         private enum TeraScanState { stopped, running, stopping };
         private TeraScanState teraState = TeraScanState.stopped;
-        private enum TeraScanSegmentState { stopped, running, stopping, unfinished};
+        private enum TeraScanSegmentState { stopped, running, stopping, unfinished };
         private TeraScanSegmentState teraSegmentState = TeraScanSegmentState.stopped;
+        private enum TeraLaserState { stopped, running, stopping };
+        private TeraLaserState teraLaser = TeraLaserState.stopped;
         private enum TripletScanState { stopped, running, stopping };
         private TripletScanState tripletState = TripletScanState.stopped;
 
@@ -69,9 +72,9 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler FastScanFinished;
         public event SpectraScanExceptionEventHandler FastScanProblem;
 
-        public event TeraSpectraScanDataEventHandler TeraData;
-        public event TeraSingleDataEventHandler TeraTotalOnlyData;
-        public event TeraSingleDataEventHandler TeraSegmentOnlyData;
+        public event TeraScanFullDataEventHandler TeraData;
+        public event TeraScanSingleChannelDataEventHandler TeraTotalOnlyData;
+        public event TeraScanSingleChannelDataEventHandler TeraSegmentOnlyData;
         public event MultiChannelScanFinishedEventHandler TeraSegmentScanFinished;
         public event MultiChannelScanFinishedEventHandler TeraScanFinished;
         public event SpectraScanExceptionEventHandler TeraScanProblem;
@@ -94,10 +97,18 @@ namespace ConfocalControl
         private List<Point>[] fastAnalogBuffer;
         private List<Point>[] fastCounterBuffer;
         private double[] fastLatestCounters;
+
+        // Keep track of data for teraScan
+        private double[] teraScanDisplayTotalWaveform;
+        private double[] teraScanDisplaySegmentWaveform;
+        private bool teraScan_display_is_current_segment;
+        private string teraScan_current_channel_type;
+        private int teraScan_current_display_channel_index;
         private TeraScanDataHolder teraScanBuffer;
         public TeraScanDataHolder teraScanBufferAccess { get { return teraScanBuffer; } }
         private double teraLatestLambda;
         public double latestLambda { get { return teraLatestLambda; } }
+
         // Keep track of data for triplet search
         private string tripletFolder;
         private double[,] tripletAnalogBuffer;
@@ -1029,10 +1040,10 @@ namespace ConfocalControl
         {
             //try
             //{
-            //    if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
-            //    {
-            //        throw new DaqException("Counter already running");
-            //    }
+                if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
+                {
+                    throw new DaqException("Counter already running");
+                }
 
                 teraState = TeraScanState.running;
                 backendState = SolsTisState.running;
@@ -1079,58 +1090,6 @@ namespace ConfocalControl
             //}
         }
 
-        public void ResumeTeraScan()
-        {
-            //try
-            //{
-            //    if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
-            //    {
-            //        throw new DaqException("Counter already running");
-            //    }
-
-            teraState = TeraScanState.running;
-            backendState = SolsTisState.running;
-
-            TeraScanInitialise();
-            TeraScanAcquisitionStarting();
-            while (true)
-            {
-                Dictionary<string, object> autoOutput = new Dictionary<string, object>();
-                while (backendState == SolsTisState.running && teraState == TeraScanState.running)
-                {
-                    autoOutput = Solstis.ReceiveCustomMessage("automatic_output", true);
-                    if (autoOutput.Count > 0)
-                    {
-                        object item;
-                        autoOutput.TryGetValue("report", out item);
-                        if (item != null)
-                        {
-                            teraState = TeraScanState.stopping;
-                            backendState = SolsTisState.stopping;
-                            break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    Thread.Sleep(10);
-                }
-                if (backendState == SolsTisState.running && teraState == TeraScanState.running)
-                {
-                    TeraScanSegmentStart();
-                }
-                else { break; }
-            }
-            TeraScanAcquisitionStopping();
-
-            //}
-            //catch (Exception e)
-            //{
-            //    if (TeraScanProblem != null) TeraScanProblem(e);
-            //}
-        }
-
         private void TeraScanInitialise()
         {
             Solstis.terascan_output("start", 0, 2, "on");
@@ -1145,6 +1104,11 @@ namespace ConfocalControl
 
         private void TeraScanAcquisitionStarting()
         {
+            // Turn on correct display
+            teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+            teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+            teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+
             int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "start", true, false);
             switch (reply)
             {
@@ -1157,18 +1121,20 @@ namespace ConfocalControl
 
         public void TeraScanAcquisitionStopping()
         {
-            int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
-            if (teraSegmentState == TeraScanSegmentState.unfinished)
+            if (teraLaser == TeraLaserState.stopped)
             {
-                Thread.Sleep(100);
-                Solstis.EmptyBuffer();
-                string msg = Solstis.Receive();
-                MessageBox.Show(msg);
+                int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, true);
             }
             else
             {
-                Solstis.Receive();
+                int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
+                MessageBox.Show("Turn Scan off on browser");
+                while (teraLaser != TeraLaserState.stopped)
+                {
+                    Thread.Sleep(100);
+                }
             }
+
             teraState = TeraScanState.stopped;
             backendState = SolsTisState.stopped;
             if (TeraScanFinished != null) TeraScanFinished();
@@ -1286,8 +1252,9 @@ namespace ConfocalControl
             freqOutTask.Start();
             bool isFirst = true;
 
-            int foo_counter = 0;
-            FIX
+            DateTime displayStartTime = DateTime.Now;
+            DateTime displayCurrentTime = DateTime.Now;
+            List<double> displayData = new List<double>();
 
             while (backendState == SolsTisState.running &&  teraSegmentState == TeraScanSegmentState.running)
             {
@@ -1311,6 +1278,9 @@ namespace ConfocalControl
                         {
                             double[,] analogRead = analoguesReader.ReadMultiSample(dataReadLength);
                         }
+
+                        TeraSegmentOnlyData(new double[] { }, true);
+
                         isFirst = false;
                     }
 
@@ -1318,9 +1288,18 @@ namespace ConfocalControl
                     {
                         double dataLambda = teraLatestLambda;
                         teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                        if (teraScan_current_channel_type == "Lambda")
+                        {
+                            displayData.Add(dataLambda);
+                        }
+
                         double dataRead = counterRead[0] - teraScanBuffer.latestCounters[0];
                         teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
                         teraScanBuffer.latestCounters[0] = counterRead[counterRead.Length - 1];
+                        if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == 0)
+                        {
+                            displayData.Add(dataRead);
+                        }
 
                         if (dataReadLength > 1)
                         {
@@ -1328,8 +1307,17 @@ namespace ConfocalControl
                             {
                                 dataLambda = teraLatestLambda;
                                 teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                                if (teraScan_current_channel_type == "Lambda")
+                                {
+                                    displayData.Add(dataLambda);
+                                }
+
                                 dataRead = counterRead[j] - counterRead[j - 1];
                                 teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
+                                if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == 0)
+                                {
+                                    displayData.Add(dataRead);
+                                }
                             }
                         }
 
@@ -1341,6 +1329,10 @@ namespace ConfocalControl
                             dataRead = counterRead[0] - teraScanBuffer.latestCounters[i];
                             teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
                             teraScanBuffer.latestCounters[i] = counterRead[counterRead.Length - 1];
+                            if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == i)
+                            {
+                                displayData.Add(dataRead);
+                            }
 
                             if (counterRead.Length > 1)
                             {
@@ -1348,6 +1340,10 @@ namespace ConfocalControl
                                 {
                                     dataRead = counterRead[j] - counterRead[j - 1];
                                     teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
+                                    if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == i)
+                                    {
+                                        displayData.Add(dataRead);
+                                    }
                                 }
                             }
                         }
@@ -1362,19 +1358,57 @@ namespace ConfocalControl
                                 for (int j = 0; j < analogRead.GetLength(1); j++)
                                 {
                                     teraScanBuffer.AddAnalogueDataToCurrentSegment(i, analogRead[i, j]);
+                                    if (teraScan_current_channel_type == "Analogues" && teraScan_current_display_channel_index == i)
+                                    {
+                                        displayData.Add(analogRead[i, j]);
+                                    }
                                 }
                             }
                         }
 
-                        foo_counter++;
-
-                        if (foo_counter == 100)
+                        // Broadcast
+                        displayCurrentTime = DateTime.Now;
+                        if ((displayCurrentTime - displayStartTime).TotalMilliseconds > 100  && displayData.Count > 0)
                         {
-                            TeraScanOnData();
-                            foo_counter = 0;
+                            if (teraScan_display_is_current_segment != (bool)Settings["tera_display_current_segment"] || teraScan_current_channel_type != (string)Settings["tera_channel_type"] || teraScan_current_display_channel_index != (int)Settings["tera_display_channel_index"])
+                            {
+                                teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+                                teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+                                teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+                                TeraScanChangeDisplay();
+                                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
+                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+                            }
+                            else
+                            {
+                                teraScanDisplayTotalWaveform = displayData.ToArray();
+                                teraScanDisplaySegmentWaveform = displayData.ToArray();
+                                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, false); }
+                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+                            }
+                            displayStartTime = DateTime.Now;
+                            displayData = new List<double>();
                         }
                     }
                 }
+            }
+
+            // Final Broadcast
+            if (teraScan_display_is_current_segment != (bool)Settings["tera_display_current_segment"] || teraScan_current_channel_type != (string)Settings["tera_channel_type"] || teraScan_current_display_channel_index != (int)Settings["tera_display_channel_index"])
+            {
+                teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+                teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+                teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+                TeraScanChangeDisplay();
+                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
+                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+            }
+            else
+            {
+                teraScanDisplayTotalWaveform = displayData.ToArray();
+                teraScanDisplaySegmentWaveform = displayData.ToArray();
+                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, false); }
+                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, false); }
             }
 
             freqOutTask.Stop();
@@ -1399,33 +1433,42 @@ namespace ConfocalControl
 
         private void TeraScanSegmentLaserStart()
         {
+            teraLaser = TeraLaserState.running;
             string status = "scan";
             Solstis.terascan_continue();
 
-            while (status == "scan" && backendState == SolsTisState.running && teraState == TeraScanState.running)
+            while (status == "scan")
             {
                 Dictionary<string, object> autoOutput = Solstis.ReceiveCustomMessage("automatic_output", true);
 
                 if (autoOutput.Count != 0)
                 {
-                    if (backendState == SolsTisState.running && teraState == TeraScanState.running)
+                    try
                     {
                         teraLatestLambda = Convert.ToDouble(autoOutput["wavelength"]);
                         status = (string)autoOutput["status"];
+                        if (backendState != SolsTisState.running || teraState != TeraScanState.running)
+                        {
+                            teraLaser = TeraLaserState.stopping;
+                        }
                     }
-                    else { break; }
+                    catch (KeyNotFoundException)
+                    {
+                        teraLaser = TeraLaserState.stopping;
+                    }
                 }
                 else
                 {
-                    Thread.Sleep(1);
+                    continue;
                 }
             }
 
             if (status != "end")
             {
                 teraSegmentState = TeraScanSegmentState.unfinished;
+                MessageBox.Show(status);
             }
-            else { teraSegmentState = TeraScanSegmentState.stopped; }
+            else { teraLaser = TeraLaserState.stopped; teraSegmentState = TeraScanSegmentState.stopped; }
         }
 
         private void TeraScanSegmentStart()
@@ -1440,61 +1483,39 @@ namespace ConfocalControl
             while (teraLatestLambda < 0) { Thread.Sleep(1); }
             TeraScanSegmentAcquisitionStart();
             TeraScanSegmentAcquisitionEnd();
-            SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan.txt", true);
-            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
+            // SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
             if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }
         }
 
-        private void TeraScanOnData()
+        private void TeraScanChangeDisplay()
         {
-            if (TeraData != null && TeraTotalOnlyData != null)
+            int index;
+            switch ((string)Settings["tera_channel_type"])
             {
-                int index;
-                switch ((string)Settings["tera_channel_type"])
-                {
-                    case "Counters":
-                        index = (int)Settings["tera_display_channel_index"];
-                        if (index >= 0 && index < ((List<string>)Settings["counterChannels"]).Count)
-                        {
-                            double[] totalDataCount = teraScanBuffer.GetCounterData(index).ToArray();
-                            double[] segDataCount = teraScanBuffer.GetCurrentSegment().GetCounterData(index).ToArray();
+                case "Counters":
+                    index = (int)Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)Settings["counterChannels"]).Count)
+                    {
+                        teraScanDisplayTotalWaveform = teraScanBuffer.GetCounterData(index).ToArray();
+                        teraScanDisplaySegmentWaveform  = teraScanBuffer.GetCurrentSegment().GetCounterData(index).ToArray();
+                    }
+                    break;
 
-                            if ((bool)Settings["tera_display_current_segment"])
-                            {
-                                TeraData(totalDataCount, segDataCount);
-                            }
-                            else { TeraTotalOnlyData(totalDataCount); }
-                        }
-                        else { TeraData(null, null); }
-                        break;
+                case "Analogues":
+                    index = (int)Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)Settings["analogueChannels"]).Count)
+                    {
+                        teraScanDisplayTotalWaveform = teraScanBuffer.GetAnalogueData(index).ToArray();
+                        teraScanDisplaySegmentWaveform = teraScanBuffer.GetCurrentSegment().GetAnalogueData(index).ToArray();
+                    }
+                    break;
 
-                    case "Analogues":
-                        index = (int)Settings["tera_display_channel_index"];
-                        if (index >= 0 && index < ((List<string>)Settings["analogueChannels"]).Count)
-                        {
-                            double[] totalDataAnalog = teraScanBuffer.GetAnalogueData(index).ToArray();
-                            double[] segDataAnalog = teraScanBuffer.GetCurrentSegment().GetAnalogueData(index).ToArray();
-                            if ((bool)Settings["tera_display_current_segment"])
-                            {
-                                TeraData(totalDataAnalog, segDataAnalog);
-                            }
-                            else { TeraTotalOnlyData(totalDataAnalog); }
-                        }
-                        else { TeraData(null, null); }
-                        break;
-
-                    case "Lambda":
-                        double[] totalDataLambda = teraScanBuffer.GetLambdaData().ToArray();
-                        double[] segDataLambda = teraScanBuffer.GetCurrentSegment().GetWavelengthData().ToArray();
-                        if ((bool)Settings["tera_display_current_segment"])
-                        {
-                            TeraData(totalDataLambda, segDataLambda);
-                        }
-                        else { TeraTotalOnlyData(totalDataLambda); }
-                        break;
-                    default:
-                        throw new Exception("Did not understand data type");
-                }
+                case "Lambda":
+                    teraScanDisplayTotalWaveform = teraScanBuffer.GetLambdaData().ToArray();
+                    teraScanDisplaySegmentWaveform = teraScanBuffer.GetCurrentSegment().GetWavelengthData().ToArray();
+                    break;
+                default:
+                    throw new Exception("Did not understand data type");
             }
         }
 
@@ -1508,22 +1529,22 @@ namespace ConfocalControl
                     index = (int)SolsTiSPlugin.GetController().Settings["tera_display_channel_index"];
                     if (index >= 0 && index < ((List<string>)SolsTiSPlugin.GetController().Settings["counterChannels"]).Count)
                     {
-                        TeraSegmentOnlyData(segment.GetCounterData(index).ToArray());
+                        TeraSegmentOnlyData(segment.GetCounterData(index).ToArray(), true);
                     }
-                    else { TeraSegmentOnlyData(null); }
+                    else { TeraSegmentOnlyData(new double[] { }, true); }
                     break;
 
                 case "Analogues":
                     index = (int)SolsTiSPlugin.GetController().Settings["tera_display_channel_index"];
                     if (index >= 0 && index < ((List<string>)SolsTiSPlugin.GetController().Settings["analogueChannels"]).Count)
                     {
-                        TeraSegmentOnlyData(segment.GetAnalogueData(index).ToArray());
+                        TeraSegmentOnlyData(segment.GetAnalogueData(index).ToArray(), true);
                     }
-                    else { TeraSegmentOnlyData(null); }
+                    else { TeraSegmentOnlyData(new double[] { }, true); }
                     break;
 
                 case "Lambda":
-                    TeraSegmentOnlyData(segment.GetWavelengthData().ToArray());
+                    TeraSegmentOnlyData(segment.GetWavelengthData().ToArray(), true);
                     break;
                 default:
                     throw new Exception("Did not understand data type");
@@ -1532,7 +1553,7 @@ namespace ConfocalControl
 
         public void RequestTeraHistoricData()
         {
-            if (teraScanBuffer.currentSegmentIndex >= 0) { TeraScanOnData(); }
+            if (teraScanBuffer.currentSegmentIndex >= 0) { TeraScanChangeDisplay(); TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
         }
 
         public void SaveTeraScanData(string fileName, bool automatic)

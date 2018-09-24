@@ -121,14 +121,6 @@ namespace DAQ.HAL
             }
         }
 
-        public void EmptyBuffer()
-        {
-            while (stream.DataAvailable)
-            {
-                Receive();
-            }
-        }
-
         public Dictionary<string, object> ReceiveCustomMessage(string command, bool checkIfDataAvailable)
         {
             string msgReport = "";

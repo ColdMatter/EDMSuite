@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+using NationalInstruments;
+
 namespace ConfocalControl
 {
     /// <summary>
@@ -112,7 +114,10 @@ namespace ConfocalControl
                 {
                     SolsTiSPlugin.GetController().Solstis.Connect();
                     string reply = SolsTiSPlugin.GetController().Solstis.StartLink(0);
-                    MessageBox.Show(reply);
+                    if (reply != "ok")
+                    {
+                        MessageBox.Show(reply);
+                    }
                     etalonCheck_Button_Click(null, null);
                     wavelengthRead_Button_Click(null, null);
 
@@ -362,7 +367,7 @@ namespace ConfocalControl
                 SolsTiSPlugin.GetController().WavemeterAcquisitionFinishing();
             }
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        EnableNoneScanCommands();
@@ -377,7 +382,7 @@ namespace ConfocalControl
         private void wavemeterScanFinished()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        EnableNoneScanCommands();
@@ -392,7 +397,7 @@ namespace ConfocalControl
         private void wavemeterScanData(Point[] data)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.wavemeterScan_Display.DataSource = data;
@@ -406,7 +411,7 @@ namespace ConfocalControl
                 if (!SolsTiSPlugin.GetController().WavemeterAcceptableSettings())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.wavemeterScan_Switch.Value = false;
@@ -418,7 +423,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("not connected");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.wavemeterScan_Switch.Value = false;
@@ -427,7 +432,7 @@ namespace ConfocalControl
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() => 
                    {
                        DissableNoneScanCommands();
@@ -618,7 +623,7 @@ namespace ConfocalControl
         private void fastScanFinished()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        EnableNoneScanCommands();
@@ -633,7 +638,7 @@ namespace ConfocalControl
         private void fastScanData(Point[] data)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.fastScan_Display.DataSource = data;
@@ -650,7 +655,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("Not ready yet.");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.fastScan_Switch.Value = false;
@@ -661,7 +666,7 @@ namespace ConfocalControl
                 if (!SolsTiSPlugin.GetController().FastScanAcceptableSettings())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.fastScan_Switch.Value = false;
@@ -673,7 +678,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("not connected");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.fastScan_Switch.Value = false;
@@ -682,7 +687,7 @@ namespace ConfocalControl
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() => 
                    {
                        DissableNoneScanCommands(); 
@@ -767,7 +772,7 @@ namespace ConfocalControl
         private void teraScanFinished()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        EnableNoneScanCommands();
@@ -777,68 +782,51 @@ namespace ConfocalControl
                        this.wavemeterScan_Switch.IsEnabled = true;
                        this.teraScan_configure_Button.IsEnabled = true;
                    }));
-
-            MessageBoxResult result = MessageBox.Show("Restart TeraScan from " + SolsTiSPlugin.GetController().latestLambda + "nm to " + SolsTiSPlugin.GetController().Settings["TeraScanStop"] + "nm?", "Repeat TeraScan", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
-                   new Action(() =>
-                   {
-                       this.teraScan_Switch.Value = true;
-
-                       DissableNoneScanCommands();
-                       this.fastScan_Switch.IsEnabled = false;
-                       this.wavemeterScan_Switch.IsEnabled = false;
-                       this.teraScan_configure_Button.IsEnabled = false;
-
-                       this.teraScan_segmentDisplay_ComboBox.Items.Clear();
-                       this.teraScan_segmentDisplay_ComboBox.Items.Add("Current");
-                       this.teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
-                   }));
-
-                SolsTiSPlugin.GetController().Settings["TeraScanStart"] = SolsTiSPlugin.GetController().latestLambda;
-                Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().ResumeTeraScan));
-                thread.IsBackground = true;
-                thread.Start();
-            }
         }
 
-        private void teraScanData(double[] data, double[] dataSeg)
+        private void teraScanData(double[] data, double[] dataSeg, bool reset)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
-                           this.teraScan_Display.DataSource = data;
-                           this.segmentScanDisplay.DataSource = dataSeg;
+                           if (reset)
+                           {
+                               this.teraScan_Display.DataSource = new AnalogWaveform<double>(0);
+                               this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0);
+                           }
+
+                           ((AnalogWaveform<double>)this.teraScan_Display.DataSource).Append(data);
+                           ((AnalogWaveform<double>)this.segmentScanDisplay.DataSource).Append(dataSeg);
                        }));
         }
 
-        private void teraScanTotalOnlyData(double[] data)
+        private void teraScanTotalOnlyData(double[] data, bool reset)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
-                           this.teraScan_Display.DataSource = data;
+                           if (reset) { this.teraScan_Display.DataSource = new AnalogWaveform<double>(0); }
+                           ((AnalogWaveform<double>)this.teraScan_Display.DataSource).Append(data);
                        }));
         }
 
-        private void teraScanSegmentOnlyData(double[] data)
+        private void teraScanSegmentOnlyData(double[] data, bool reset)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
-                           this.segmentScanDisplay.DataSource = data;
+                           if (reset) { this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0); }
+                           ((AnalogWaveform<double>)this.segmentScanDisplay.DataSource).Append(data);
                        }));
         }
 
         private void teraScanSegmentFinished()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.teraScan_segmentDisplay_ComboBox.Items.Add("Segment: " + Convert.ToString(SolsTiSPlugin.GetController().teraScanBufferAccess.currentSegmentIndex));
@@ -859,7 +847,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("TeraScan parameters unacceptable");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.teraScan_Switch.Value = false;
@@ -871,7 +859,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("not connected");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.teraScan_Switch.Value = false;
@@ -880,9 +868,12 @@ namespace ConfocalControl
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() => 
                    {
+                       this.teraScan_Display.DataSource = new AnalogWaveform<double>(0);
+                       this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0);
+
                        DissableNoneScanCommands(); 
                        this.fastScan_Switch.IsEnabled = false;
                        this.wavemeterScan_Switch.IsEnabled = false;
@@ -896,7 +887,6 @@ namespace ConfocalControl
                 Thread thread = new Thread(new ThreadStart(SolsTiSPlugin.GetController().StartTeraScan));
                 thread.IsBackground = true;
                 thread.Start();
-                teraScan_output_type_box_SelectionChanged(null, null);
             }
 
             else
@@ -966,7 +956,7 @@ namespace ConfocalControl
                 SolsTiSPlugin.GetController().TripletAcquisitionFinishing();
             }
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        this.tripletScan_Switch.Value = false;
@@ -976,7 +966,7 @@ namespace ConfocalControl
         private void tripletScanFinished()
         {
             Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        this.tripletScan_Switch.Value = false;
@@ -986,7 +976,7 @@ namespace ConfocalControl
         private void tripletScanData(double[] data)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.tripletScan_Display.DataSource = data;
@@ -996,7 +986,7 @@ namespace ConfocalControl
         private void tripletDFTData(double[] data)
         {
             Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.tripletScanDFT_Display.DataSource = data.Skip(1).ToArray();
@@ -1010,7 +1000,7 @@ namespace ConfocalControl
                 if (!SolsTiSPlugin.GetController().TripletAcceptableSettings())
                 {
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.tripletScan_Switch.Value = false;
@@ -1022,7 +1012,7 @@ namespace ConfocalControl
                 {
                     MessageBox.Show("not connected");
                     Application.Current.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Background,
+                       DispatcherPriority.Normal,
                        new Action(() =>
                        {
                            this.tripletScan_Switch.Value = false;
@@ -1031,7 +1021,7 @@ namespace ConfocalControl
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(
-                   DispatcherPriority.Background,
+                   DispatcherPriority.Normal,
                    new Action(() =>
                    {
                        this.tripletScan_Switch.Value = true;
