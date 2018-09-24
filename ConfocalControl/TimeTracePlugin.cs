@@ -345,7 +345,7 @@ namespace ConfocalControl
 
                     if (current_channel_type == "Counters" && current_display_channel_index == i)
 	                {
-                        displayValue = latestCounters[i] * (double)Settings["sampleRate"];
+                        displayValue = dataRead[dataRead.Length-1] * (double)Settings["sampleRate"];
                         displayWaveform = dataRead;
 	                }
                 }

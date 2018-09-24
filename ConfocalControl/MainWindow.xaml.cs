@@ -453,7 +453,7 @@ namespace ConfocalControl
                  DispatcherPriority.Normal,
                 new Action(() =>
                     {
-                        this.single_photon_counts.Text = value.ToString("G6", CultureInfo.InvariantCulture);
+                        this.single_photon_counts.Text = value.ToString("G3", CultureInfo.InvariantCulture);
                     }
             ));
         }
