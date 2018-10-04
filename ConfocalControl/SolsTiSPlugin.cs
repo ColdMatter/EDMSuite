@@ -41,13 +41,13 @@ namespace ConfocalControl
         }
 
         // Define states
-        private enum SolsTisState { stopped, running, stopping };
+        private enum SolsTisState { stopped, running, stopping, stepping };
         private SolsTisState backendState = SolsTisState.stopped;
         private enum WavemeterScanState { stopped, running, stopping };
         private WavemeterScanState wavemeterState = WavemeterScanState.stopped;
         private enum FastScanState { stopped, running, stopping };
         private FastScanState fastState = FastScanState.stopped;
-        private enum TeraScanState { stopped, running, stopping };
+        private enum TeraScanState { stopped, running, stopping, stepping };
         private TeraScanState teraState = TeraScanState.stopped;
         private enum TeraScanSegmentState { stopped, running, stopping, unfinished };
         private TeraScanSegmentState teraSegmentState = TeraScanSegmentState.stopped;
@@ -126,6 +126,8 @@ namespace ConfocalControl
         private Task voltageTask;
         private AnalogSingleChannelReader voltageReader;
 
+        double SPEEDOFLIGHT = 299792458;
+
         #endregion
 
         #region Initialization
@@ -140,7 +142,7 @@ namespace ConfocalControl
             solstis = new ICEBlocSolsTiS();
 
             LoadSettings();
-            if (Settings.Keys.Count != 32)
+            if (Settings.Keys.Count != 35)
             {
                 Settings["wavelength"] = 785.0;
 
@@ -165,11 +167,14 @@ namespace ConfocalControl
                 Settings["fastVoltageChannel"] = "AI2";
                 Settings["fastVoltageLowHigh"] = new double[] { 0, 5 };
 
+                Settings["TeraScanRepeatType"] = "single";
                 Settings["TeraScanType"] = "fine";
                 Settings["TeraScanStart"] = (double)743.0;
                 Settings["TeraScanStop"] = (double)743.5;
                 Settings["TeraScanRate"] = 500;
                 Settings["TeraScanUnits"] = "MHz/s";
+                Settings["TeraScanMultiLambda"] = new double[] { 750, 760, 770, 780, 790 };
+                Settings["TeraScanMultiRange"] = 10.0;
                 Settings["tera_channel_type"] = "Lambda";
                 Settings["tera_display_channel_index"] = 0;
                 Settings["tera_display_current_segment"] = true;
@@ -1038,6 +1043,105 @@ namespace ConfocalControl
 
         public void StartTeraScan()
         {
+            switch ((string)Settings["TeraScanRepeatType"])
+            {
+                case "single":
+                    StartSingleTeraScan();
+                    break;
+                case "multi":
+                    StartMultiTeraScan();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void StartMultiTeraScan()
+        {
+            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
+            {
+                throw new DaqException("Counter already running");
+            }
+
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
+
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"];
+
+            teraState = TeraScanState.running;
+            backendState = SolsTisState.running;
+
+            for (int i = 0; i < ((double[])Settings["TeraScanMultiLambda"]).Length; i++)
+            {
+                if (teraState == TeraScanState.stepping && backendState == SolsTisState.stepping)
+                {
+                    teraState = TeraScanState.running;
+                    backendState = SolsTisState.running;
+                }
+
+                if ((teraState == TeraScanState.running) == false)
+                {
+                    break;
+                }
+
+                Settings["TeraScanStart"] = SPEEDOFLIGHT / (SPEEDOFLIGHT / ((double[])Settings["TeraScanMultiLambda"])[i] + (double)Settings["TeraScanMultiRange"] / 2);
+                Settings["TeraScanStop"] = SPEEDOFLIGHT / (SPEEDOFLIGHT / ((double[])Settings["TeraScanMultiLambda"])[i] - (double)Settings["TeraScanMultiRange"] / 2);
+
+                TeraScanInitialise();
+                teraLatestLambda = (double)Settings["TeraScanStart"];
+                TeraScanAcquisitionStarting();
+                while (true)
+                {
+                    Dictionary<string, object> autoOutput = new Dictionary<string, object>();
+                    while (backendState == SolsTisState.running && teraState == TeraScanState.running)
+                    {
+                        autoOutput = Solstis.ReceiveCustomMessage("automatic_output", true);
+                        if (autoOutput.Count > 0)
+                        {
+                            object item;
+                            autoOutput.TryGetValue("report", out item);
+                            if (item != null)
+                            {
+                                teraState = TeraScanState.stepping;
+                                backendState = SolsTisState.stepping;
+                                break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        Thread.Sleep(10);
+                    }
+                    if (backendState == SolsTisState.running && teraState == TeraScanState.running)
+                    {
+                        TeraScanSegmentStart();
+                    }
+                    else { break; }
+                }
+
+                if (teraLaser == TeraLaserState.stopped)
+                {
+                    int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, true);
+                }
+                else
+                {
+                    int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
+                    while (teraLaser != TeraLaserState.stopped)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+
+            }
+
+            Settings["TeraScanStart"] = initStartLambda;
+            Settings["TeraScanStop"] = initStopLambda;
+            TeraScanAcquisitionStopping();
+        }
+
+        public void StartSingleTeraScan()
+        {
             //try
             //{
                 if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
@@ -1128,7 +1232,6 @@ namespace ConfocalControl
             else
             {
                 int reply = Solstis.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
-                MessageBox.Show("Turn Scan off on browser");
                 while (teraLaser != TeraLaserState.stopped)
                 {
                     Thread.Sleep(100);
