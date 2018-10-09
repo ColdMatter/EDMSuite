@@ -43,19 +43,19 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
+        Parameters["SlowingChirpStartTime"] = 360;// 340;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.3;
+        Parameters["SlowingChirpEndValue"] =  -1.3;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 8.0; //1.05;
-        Parameters["slowingCoilsOffTime"] = 1500;
+        Parameters["slowingCoilsOffTime"] =  1500;
         
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentValue"] = 0.55; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 0.6;// 0.65; // 0.65;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0; //1.7
@@ -111,6 +111,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
         p.AddChannel("v00EOMAmp");
+        p.AddChannel("v00Chirp");
 
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
@@ -136,6 +137,9 @@ public class Patterns : MOTMasterScript
         
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
+
+        //v0 chirp
+        p.AddAnalogValue("v00Chirp", 0, 0.0);
 
         return p;
    }
