@@ -114,6 +114,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ZeemanSisyphus\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
@@ -124,7 +135,9 @@
       <Name>SharedCode</Name>
     </ProjectReference>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=17.1.45.99, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.DAQmx, Version=16.1.45.70, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -180,14 +193,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="AxMG17LoggerLib">
-      <Guid>{2A38BE50-27E7-42F0-8663-CBCB1F25E13D}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>aximp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
     <COMReference Include="AxMG17MotorLib">
       <Guid>{2A833923-9AA7-4C45-90AC-DA4F19DC24D1}</Guid>
       <VersionMajor>1</VersionMajor>

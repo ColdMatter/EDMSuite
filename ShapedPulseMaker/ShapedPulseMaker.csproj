@@ -35,6 +35,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|AnyCPU'">
+    <OutputPath>bin\ZeemanSisyphus\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ivi.Driver, Version=1.1.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

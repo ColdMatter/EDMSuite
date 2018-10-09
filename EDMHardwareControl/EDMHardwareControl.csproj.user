@@ -43,4 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BufferClassic|AnyCPU'">
     <StartWithIE>true</StartWithIE>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|AnyCPU'">
+    <StartWithIE>true</StartWithIE>
+  </PropertyGroup>
 </Project>
