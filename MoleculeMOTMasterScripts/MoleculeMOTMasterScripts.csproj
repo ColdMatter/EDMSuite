@@ -117,7 +117,10 @@
     <Compile Include="SingleFrequencyMolassesMWLevitate.cs" />
     <Compile Include="SingleFrequencyMolassesPhaseSpaceRotation.cs" />
     <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwice.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwiceNumber.cs" />
+    <Compile Include="SingleFrequencyMolassesTest.cs" />
     <Compile Include="stateSpectroscopy.cs" />
+    <Compile Include="test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

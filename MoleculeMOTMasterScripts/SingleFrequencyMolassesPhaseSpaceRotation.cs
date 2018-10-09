@@ -31,6 +31,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesHoldTime"] = 600;
         Parameters["MolassesRampDuration"] = 200;
         Parameters["SingleFreqMolassesDuration"] =  500;//200;
+        Parameters["RotationOffRampDuration"] = 500;
         Parameters["WaitBeforeImage"] = 0;
 
         Parameters["v00ChirpDuration"] =  10;// 200;
@@ -76,9 +77,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 1.4;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -1.5;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -6.5; //0.26
+        Parameters["xShimLoadCurrent"] = 1.6;// 1.195; // 1.202;// 1.219;
+        Parameters["yShimLoadCurrent"] = -0.7;// -0.155; //2.4
+        Parameters["zShimLoadCurrent"] = -5.8; //0.26
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -88,7 +89,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityMolassesValue"] = 5.8;
         Parameters["v0IntensitySingleFreqMolassesValue"] = 5.8;// 5.8;
         Parameters["v0IntensitySingleFreqMolassesStepValue"] = 5.8;// 8.465;// 9.535;
-        Parameters["v0IntensityImageValue"] = 7.61;
+        Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -127,6 +128,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, v00ChirpTime, 2 * (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"] + (int)Parameters["SingleFreqMolassesDuration"] + 200, "v00LockBlock");
         //p.Pulse(patternStartBeforeQ, releaseTime - 1500, (int)Parameters["RotationTime"] + 1500 - 1250, "v00MOTShutter");
         p.Pulse(patternStartBeforeQ, molassesStartTime, (int)Parameters["CoilsSwitchOffTime"] - molassesStartTime, "bottomCoilDirection");
+        //p.Pulse(patternStartBeforeQ, molassesStartTime, harmonicTrapOffTime - molassesStartTime + 20, "bottomCoilDirection");
+        //p.Pulse(patternStartBeforeQ, harmonicTrapOffTime + 20, (int)Parameters["CoilsSwitchOffTime"] - (harmonicTrapOffTime + 20), "topCoilDirection");
         //p.Pulse(patternStartBeforeQ, singleFrequencyMolassesTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
@@ -167,6 +170,10 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOnTime, (double)Parameters["MOTCoilsCurrentLevitateValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime, -0.01);
+        //p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime + 50, (double)Parameters["MOTCoilsCurrentLevitateValue"]);
+        //p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime + 270, -0.01);
+
+        //p.AddLinearRamp("MOTCoilsCurrent", harmonicTrapOffTime, (int)Parameters["RotationOffRampDuration"], - 0.01);
 
         // Top coil shunt
         p.AddAnalogValue("topCoilShunt", 0, 0.0);
@@ -185,7 +192,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
         p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
         p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 8.09);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime, (double)Parameters["v0IntensitySingleFreqMolassesValue"]);
         p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 300, (double)Parameters["v0IntensitySingleFreqMolassesStepValue"]);
         //p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 200, 7.21);
