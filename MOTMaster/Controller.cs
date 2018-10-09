@@ -329,8 +329,6 @@ namespace MOTMaster
                             }
                         }
 
-                        if (!config.Debug) clearDigitalPattern(sequence);
-
 
                         watch.Stop();
                         //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
@@ -353,7 +351,7 @@ namespace MOTMaster
                                     report = GetExperimentReport();
                                 }
 
-                                save(script, scriptPath, imageData, report);
+                                save(sequence, script, scriptPath, imageData, report);
                             }
                             else
                             {
@@ -363,7 +361,7 @@ namespace MOTMaster
                                     report = GetExperimentReport();
                                 }
 
-                                save(script, scriptPath, report);
+                                save(sequence, script, scriptPath, report);
 
                             }
 
@@ -371,6 +369,8 @@ namespace MOTMaster
                         }
                         if (config.CameraUsed) finishCameraControl();
                         if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+
+                        if (!config.Debug) clearDigitalPattern(sequence);
                     }
                     catch (System.Net.Sockets.SocketException e)
                     {
@@ -389,25 +389,19 @@ namespace MOTMaster
 
         #region private stuff
 
-
-        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
-        {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
-                script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
-        }
-        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
+        // ONGOING: these save functions should probably take a sequence argument
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
+                sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
-        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
+                sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
-            
             initializeHardware(sequence);
             run(sequence);
             releaseHardware();

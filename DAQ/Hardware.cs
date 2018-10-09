@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NationalInstruments.DAQmx;
+using System.Runtime.Serialization;
 
 namespace DAQ.HAL
 {
@@ -13,6 +14,7 @@ namespace DAQ.HAL
 	/// generic hardware capabilities. This means as long as code is written to the hardware in this
 	/// interface, it should be trivial to port to new setups. That's the idea, anyway.
 	/// </summary>
+    [DataContract]
 	public class Hardware
 	{
 
@@ -21,7 +23,8 @@ namespace DAQ.HAL
 		{
 			get {return boards;}
 		}
-
+        
+        [DataMember]
 		private Hashtable digitalOutputChannels = new Hashtable();
 		public Hashtable DigitalOutputChannels
 		{

@@ -28,7 +28,7 @@ namespace DAQ.HAL
             Boards.Add(digitalPatternBoardName, digitalPatternBoardAddress);
 
             string analogPatternBoardName = "analogPattern";
-            string analogPatternBoardAddress = "/PXI1Slot7";
+            string analogPatternBoardAddress = "/PXI1Slot2"; //7
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
 
             string tclBoard1Name = "tclBoard1";
@@ -110,7 +110,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v00Intensity", analogPatternBoardAddress + "/ao9");
             AddAnalogOutputChannel("v00EOMAmp", analogPatternBoardAddress + "/ao11");
             AddAnalogOutputChannel("v00Frequency", analogPatternBoardAddress + "/ao12");
-            AddAnalogOutputChannel("MOTCoilsCurrent", analogPatternBoardAddress + "/ao13");
+            AddAnalogOutputChannel("MOTCoilsCurrent", analogPatternBoardAddress + "/ao13"); //13
             AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
@@ -211,7 +211,7 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI6");
+            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
