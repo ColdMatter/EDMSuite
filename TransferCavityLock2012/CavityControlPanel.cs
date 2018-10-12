@@ -26,7 +26,7 @@ namespace TransferCavityLock2012
         {
             CavityName = name;
             InitializeComponent();
-            this.MasterGainTextBox.Text = gain.ToString();
+            MasterGainTextBox.Text = gain.ToString();
         }
 
         public void AddSlaveLaserPanel(SlaveLaser sl)
@@ -104,17 +104,17 @@ namespace TransferCavityLock2012
             switch (state)
             {
                 case Laser.LaserState.FREE:
-                    MasterSetPointTextBox.Enabled = true;
-                    MasterGainTextBox.Enabled = true;
-                    SummedVoltageTextBox.Enabled = true;
-                    CavLockVoltageTrackBar.Enabled = true;
+                    UIHelper.EnableControl(MasterSetPointTextBox, true);
+                    UIHelper.EnableControl(MasterGainTextBox, true);
+                    UIHelper.EnableControl(SummedVoltageTextBox, true);
+                    UIHelper.EnableControl(CavLockVoltageTrackBar, true);
                     break;
 
                 case Laser.LaserState.LOCKING:
-                    MasterSetPointTextBox.Enabled = false;
-                    MasterGainTextBox.Enabled = false;
-                    SummedVoltageTextBox.Enabled = false;
-                    CavLockVoltageTrackBar.Enabled = false;
+                    UIHelper.EnableControl(MasterSetPointTextBox, false);
+                    UIHelper.EnableControl(MasterGainTextBox, false);
+                    UIHelper.EnableControl(SummedVoltageTextBox, false);
+                    UIHelper.EnableControl(CavLockVoltageTrackBar, false);
                     foreach (LockControlPanel slavePanel in SlaveLaserPanels.Values)
                     {
                         slavePanel.EnableLocking();
@@ -152,12 +152,12 @@ namespace TransferCavityLock2012
 
         public void DisplayMasterData(double[] rampData, double[] masterData)
         {
-            UIHelper.scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, rampData, masterData);
+            UIHelper.ScatterGraphPlot(MasterLaserIntensityScatterGraph, MasterDataPlot, rampData, masterData);
         }
 
         public void DisplayMasterFitData(double[] rampData, double[] masterData)
         {
-            UIHelper.scatterGraphPlot(MasterLaserIntensityScatterGraph, MasterFitPlot, rampData, masterData);
+            UIHelper.ScatterGraphPlot(MasterLaserIntensityScatterGraph, MasterFitPlot, rampData, masterData);
         }
     }
 }

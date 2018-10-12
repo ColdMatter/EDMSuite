@@ -142,12 +142,12 @@ namespace TransferCavityLock2012
 
         public void DisplayData(double[] cavityData, double[] slaveData)
         {
-            UIHelper.scatterGraphPlot(SlaveLaserIntensityScatterGraph,
+            UIHelper.ScatterGraphPlot(SlaveLaserIntensityScatterGraph,
                 SlaveDataPlot, cavityData, slaveData);
         }
         public void DisplayFit(double[] cavityData, double[] slaveData)
         {
-            UIHelper.scatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
+            UIHelper.ScatterGraphPlot(SlaveLaserIntensityScatterGraph, SlaveFitPlot, cavityData, slaveData);
         }
 
         public void AppendToErrorGraph(int lockCount, double error)
@@ -169,29 +169,29 @@ namespace TransferCavityLock2012
             switch (state)
             {
                 case SlaveLaser.LaserState.FREE:
-                    VoltageToLaserTextBox.Enabled = true;
-                    LaserSetPointTextBox.Enabled = false;
-                    GainTextbox.Enabled = true;
-                    lockedLED.Value = false;
-                    VoltageTrackBar.Enabled = true;
+                    UIHelper.EnableControl(VoltageToLaserTextBox, true);
+                    UIHelper.EnableControl(LaserSetPointTextBox, false);
+                    UIHelper.EnableControl(GainTextbox, true);
+                    UIHelper.SetLEDState(lockedLED, false);
+                    UIHelper.EnableControl(VoltageTrackBar, true);
                     break;
 
                 case SlaveLaser.LaserState.LOCKING:
-                    VoltageToLaserTextBox.Enabled = false;
-                    GainTextbox.Enabled = false;
-                    lockedLED.Value = false;
-                    VoltageTrackBar.Enabled = false;
+                    UIHelper.EnableControl(VoltageToLaserTextBox, false);
+                    UIHelper.EnableControl(GainTextbox, false);
+                    UIHelper.SetLEDState(lockedLED, false);
+                    UIHelper.EnableControl(VoltageTrackBar, false);
                     break;
 
                 case SlaveLaser.LaserState.LOCKED:
-                    lockedLED.Value = true;
+                    UIHelper.SetLEDState(lockedLED, true);
                     break;
             }
         }
 
         public void EnableLocking()
         {
-            lockEnableCheck.Enabled = true;
+            UIHelper.EnableControl(lockEnableCheck, true);
         }
 
         #endregion

@@ -9,6 +9,7 @@ namespace DAQ.TransferCavityLock2012
     {
         public double[,] AnalogData;
         public DigitalWaveform[] DigitalData;
+        public bool ReadSuccesful;
     }
 
     /// <summary>

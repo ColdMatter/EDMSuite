@@ -121,8 +121,16 @@ namespace DAQ.TransferCavityLock2012
 
             if (digitalInputs.Length > 0)
             {
-                readDIsTask.WaitUntilDone();
-                data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
+                try
+                {
+                    readDIsTask.WaitUntilDone(new TimeSpan(10));
+                    data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
+                    data.ReadSuccesful = true;
+                }
+                catch
+                {
+                    data.ReadSuccesful = false;
+                }
             }
 
             return data;
