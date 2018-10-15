@@ -517,10 +517,6 @@ namespace TransferCavityLock2012
             {
                 // Read data
                 TCLReadData rawData = acquireData(scanParameters);
-                if (!rawData.ReadSuccesful)
-                {
-                    continue;
-                }
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
 
                 // Fitting

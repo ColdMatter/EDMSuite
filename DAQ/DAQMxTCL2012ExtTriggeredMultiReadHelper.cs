@@ -19,8 +19,11 @@ namespace DAQ.TransferCavityLock2012
         private string[] digitalInputs;
         private string trigger;
 
+        private Task counterTask;
         private Task readAIsTask;
         private Task readDIsTask;
+
+        private string counterChannel;
 
         private AnalogMultiChannelReader analogReader;
         private DigitalMultiChannelReader digitalReader;
@@ -51,16 +54,27 @@ namespace DAQ.TransferCavityLock2012
 
         public void ConfigureHardware(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
         {
-            ConfigureReadAI(numberOfMeasurements, sampleRate, triggerSense, autostart);
+            // DI task must be started first
             if (digitalInputs.Length > 0)
             {
                 ConfigureReadDI(numberOfMeasurements, sampleRate, triggerSense);
             }
+            ConfigureReadAI(numberOfMeasurements, sampleRate, triggerSense, autostart);
         }
 
-        public void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart) //AND CAVITY VOLTAGE!!! 
+        private void ConfigureCounter(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
         {
-            readAIsTask = new Task();
+            counterTask = new Task("counterTask");
+            counterChannel = ((CounterChannel)Environs.Hardware.CounterChannels["tclTriggerChannel"]).PhysicalChannel;
+            counterTask.COChannels.CreatePulseChannelFrequency(
+                counterChannel, "tclTriggerChannel", COPulseFrequencyUnits.Hertz, COPulseIdleState.Low, 0, sampleRate, 0.5
+            );
+            counterTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, numberOfMeasurements);
+        }
+
+        private void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart) //AND CAVITY VOLTAGE!!! 
+        {
+            readAIsTask = new Task("readAIsTask");
 
             foreach (string inputName in analogInputs)
             {
@@ -73,17 +87,20 @@ namespace DAQ.TransferCavityLock2012
 
             if (!autostart)
             {
+                // Use internal clock
                 readAIsTask.Timing.ConfigureSampleClock("", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(trigger, triggerEdge);
             }
 
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
+
+            readAIsTask.Control(TaskAction.Commit);
         }
 
-        public void ConfigureReadDI(int numberOfMeasurements, double sampleRate, bool triggerSense)
+        private void ConfigureReadDI(int numberOfMeasurements, double sampleRate, bool triggerSense)
         {
-            readDIsTask = new Task();
+            readDIsTask = new Task("readDIsTask");
 
             foreach (string inputName in digitalInputs)
             {
@@ -94,6 +111,7 @@ namespace DAQ.TransferCavityLock2012
             SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
             DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
 
+            // Get the device that the analog inputs are on so we can use sample clock as well to sync timing
             string device = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[analogInputs[0]]).Device;
 
             readDIsTask.Timing.ConfigureSampleClock(device + "/ai/SampleClock", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
@@ -101,6 +119,8 @@ namespace DAQ.TransferCavityLock2012
 
             readDIsTask.Control(TaskAction.Verify);
             digitalReader = new DigitalMultiChannelReader(readDIsTask.Stream);
+
+            readDIsTask.Control(TaskAction.Commit);
         }
 
 
@@ -110,28 +130,26 @@ namespace DAQ.TransferCavityLock2012
 
         public TCLReadData Read(int numberOfMeasurements)
         {
+            // Devices need to be explicitly started and stopped each time though so that digital task is always started before analog one
+            if (digitalInputs.Length > 0)
+            {
+                readDIsTask.Start();
+            }
+            readAIsTask.Start();
+
             TCLReadData data = new TCLReadData();
 
             if (digitalInputs.Length > 0)
             {
-                digitalResult = digitalReader.BeginReadWaveform(numberOfMeasurements, null, readDIsTask);
+                data.DigitalData = digitalReader.ReadWaveform(numberOfMeasurements);
             }
-
             data.AnalogData = analogReader.ReadMultiSample(numberOfMeasurements);
 
             if (digitalInputs.Length > 0)
             {
-                try
-                {
-                    readDIsTask.WaitUntilDone(new TimeSpan(10));
-                    data.DigitalData = digitalReader.EndReadWaveform(digitalResult);
-                    data.ReadSuccesful = true;
-                }
-                catch
-                {
-                    data.ReadSuccesful = false;
-                }
+                readDIsTask.Stop();
             }
+            readAIsTask.Stop();
 
             return data;
         }
