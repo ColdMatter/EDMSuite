@@ -174,6 +174,7 @@ namespace EDMHardwareControl
             //CreateDigitalTask("I2IntSwitch");
             CreateDigitalTask("eSwitching");
             CreateDigitalTask("patternTTL");
+            CreateDigitalTask("mwSwitching");
 
             // digitial input tasks
 

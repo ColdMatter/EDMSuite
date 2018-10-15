@@ -151,7 +151,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# number of times to step the target looking for a good target spot
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000;
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 150.0;
+	bc.Settings["minimumSignalToRun"] = 300.0;
 	bc.Settings["targetStepperGateStartTime"] = 2340.0;
 	bc.Settings["targetStepperGateEndTime"] = 2540.0;
 	return bc
@@ -457,7 +457,9 @@ def EDMGo():
 		mini1EValue = mini1ChannelValues.GetValue(("E",))
 		mini2EValue = mini2ChannelValues.GetValue(("E",))
 		mini3EValue = mini3ChannelValues.GetValue(("E",))
-		
+
+		hc.EnableAnapicoListSweep( True )
+		print("ListSweep for microwaves enabled")
 
 		# some code to stop EDMLoop if the laser unlocks. 
 		# This averages the last 3 db values and stops the loop if the average is below 1

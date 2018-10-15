@@ -200,6 +200,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
     <Compile Include="SuperPumpingPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPatternPlugin.cs" />
