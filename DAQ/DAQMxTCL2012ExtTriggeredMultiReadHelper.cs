@@ -19,16 +19,11 @@ namespace DAQ.TransferCavityLock2012
         private string[] digitalInputs;
         private string trigger;
 
-        private Task counterTask;
         private Task readAIsTask;
         private Task readDIsTask;
 
-        private string counterChannel;
-
         private AnalogMultiChannelReader analogReader;
         private DigitalMultiChannelReader digitalReader;
-
-        private IAsyncResult digitalResult;
 
         public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] analogInputs, string trigger)
         {
@@ -54,22 +49,11 @@ namespace DAQ.TransferCavityLock2012
 
         public void ConfigureHardware(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
         {
-            // DI task must be started first
             if (digitalInputs.Length > 0)
             {
                 ConfigureReadDI(numberOfMeasurements, sampleRate, triggerSense);
             }
             ConfigureReadAI(numberOfMeasurements, sampleRate, triggerSense, autostart);
-        }
-
-        private void ConfigureCounter(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
-        {
-            counterTask = new Task("counterTask");
-            counterChannel = ((CounterChannel)Environs.Hardware.CounterChannels["tclTriggerChannel"]).PhysicalChannel;
-            counterTask.COChannels.CreatePulseChannelFrequency(
-                counterChannel, "tclTriggerChannel", COPulseFrequencyUnits.Hertz, COPulseIdleState.Low, 0, sampleRate, 0.5
-            );
-            counterTask.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, numberOfMeasurements);
         }
 
         private void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart) //AND CAVITY VOLTAGE!!! 
@@ -95,6 +79,8 @@ namespace DAQ.TransferCavityLock2012
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
 
+
+            // Commiting now apparently saves time when we actually run the task
             readAIsTask.Control(TaskAction.Commit);
         }
 
@@ -120,6 +106,7 @@ namespace DAQ.TransferCavityLock2012
             readDIsTask.Control(TaskAction.Verify);
             digitalReader = new DigitalMultiChannelReader(readDIsTask.Stream);
 
+            // Commiting now apparently saves time when we actually run the task
             readDIsTask.Control(TaskAction.Commit);
         }
 
