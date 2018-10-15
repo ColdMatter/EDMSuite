@@ -30,7 +30,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 10;
+        Parameters["MicrowavePulseDuration"] = 17;
         Parameters["MOTWaitBeforeImage"] = 500;
         Parameters["xShimZeemanSplitValue"] = 0.0;
 
@@ -72,9 +72,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 40000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 2.195;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.175; //2.4
-        Parameters["zShimLoadCurrent"] = 0.32;//-6.425;//0.26; //-6.39
+        Parameters["xShimLoadCurrent"] = 1.6;// 1.195; // 1.202;// 1.219;
+        Parameters["yShimLoadCurrent"] = -0.7; //2.4
+        Parameters["zShimLoadCurrent"] = -6.0;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -156,7 +156,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], -0.01);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
