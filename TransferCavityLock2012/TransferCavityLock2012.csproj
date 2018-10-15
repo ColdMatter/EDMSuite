@@ -90,6 +90,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon2.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
@@ -108,9 +111,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cavity.cs" />
     <Compile Include="CavityScanData.cs" />
     <Compile Include="CavityScanFitHelper.cs" />
+    <Compile Include="CavityControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CavityControlPanel.Designer.cs">
+      <DependentUpon>CavityControlPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="Laser.cs" />
+    <Compile Include="LorentzianFit.cs" />
+    <Compile Include="UIHelper.cs" />
+    <Compile Include="ScanData.cs" />
     <Compile Include="ScanParameters.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -128,6 +142,9 @@
     </Compile>
     <Compile Include="MasterLaser.cs" />
     <Compile Include="SlaveLaser.cs" />
+    <EmbeddedResource Include="CavityControlPanel.resx">
+      <DependentUpon>CavityControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LockControlPanel.resx">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -178,6 +195,9 @@
       <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon2.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

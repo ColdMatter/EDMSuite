@@ -6,10 +6,14 @@ using System.Text;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
+using System.Runtime.Serialization.Json;
 
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
+
+using DAQ;
+using DAQ.HAL;
 
 namespace MOTMaster
 {
@@ -26,43 +30,28 @@ namespace MOTMaster
         }
 
 
-
         public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[,] imageData, string externalFilesPath, string externalFilePattern)
-        {
-            string fileTag = getDataID(element, batchNumber);
-
-            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
-
-            string[] files = putCopiesOfFilesToZip(saveFolder, fileTag, externalFilesPath, externalFilePattern);
-
-            //deleteFiles(saveFolder, fileTag);
-            deleteFiles(files);
-        }
-        public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report,
+            MOTMasterSequence sequence, Dictionary<String, Object> dict, Dictionary<String, Object> report,
             string cameraAttributesPath, byte[][,] imageData, string externalFilesPath, string externalFilePattern)
         {
             string fileTag = getDataID(element, batchNumber);
 
-            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, cameraAttributesPath, imageData);
+            saveCameraData(fileTag, saveFolder, cameraAttributesPath, imageData);
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, sequence);
 
             string[] files = putCopiesOfFilesToZip(saveFolder, fileTag, externalFilesPath, externalFilePattern);
 
-            //deleteFiles(saveFolder, fileTag);
             deleteFiles(files);
         }
         public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report, string externalFilesPath, string externalFilePattern)
+            MOTMasterSequence sequence, Dictionary<String, Object> dict, Dictionary<String, Object> report, string externalFilesPath, string externalFilePattern)
         {
             string fileTag = getDataID(element, batchNumber);
 
-            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report);
+            saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, sequence);
 
             string[] files = putCopiesOfFilesToZip(saveFolder, fileTag, externalFilesPath, externalFilePattern);
 
-            //deleteFiles(saveFolder, fileTag);
             deleteFiles(files);
         }
         private void deleteFiles(string[] files)
@@ -80,7 +69,6 @@ namespace MOTMaster
             string[] datafiles = Directory.GetFiles(saveFolder, fileTag + "*");
             if(externalFilesPath != null && externalFilePattern != null)
             {
-                //Thread.Sleep(2000); // Wait long enough for the external files to arrive.
                 string[] externalFiles = Directory.GetFiles(externalFilesPath, externalFilePattern);
                 files = datafiles.Concat(externalFiles).ToArray();
             }
@@ -99,32 +87,18 @@ namespace MOTMaster
             fs.Close();
             return files;
         }
-        private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[,] imageData)
+
+        private void saveCameraData(string fileTag, string saveFolder, string cameraAttributesPath, byte[][,] imageData)
         {
-            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
-            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
             storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
             storeImage(saveFolder + fileTag, imageData);
-            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
-        }
-        private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report,
-            string cameraAttributesPath, byte[][,] imageData)
-        {
-            storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
-            File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
-            File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
-            storeCameraAttributes(saveFolder + fileTag + "_cameraParameters.txt", cameraAttributesPath);
-            storeImage(saveFolder + fileTag, imageData);
-            storeDictionary(saveFolder + fileTag + "_hardwareReport.txt", report);
         }
 
         private void saveToFiles(string fileTag, string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
-            Dictionary<String, Object> dict, Dictionary<String, Object> report)
+            Dictionary<String, Object> dict, Dictionary<String, Object> report, MOTMasterSequence sequence)
         {
+            storeDigitalPattern(saveFolder + fileTag + "_digitalPattern.json", sequence);
+            storeAnalogPattern(saveFolder + fileTag + "_analogPattern.json", sequence);
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
@@ -235,7 +209,65 @@ namespace MOTMaster
 
         }
 
-        
+        private void storeDigitalPattern(string dataStoreFilePath, MOTMasterSequence sequence)
+        {
+            Hashtable digitalChannelsHash = DAQ.Environment.Environs.Hardware.DigitalOutputChannels;
+            Dictionary<string, int> digitalChannels = new Dictionary<string,int>();
+            foreach (DictionaryEntry pair in digitalChannelsHash)
+            {
+                digitalChannels.Add((string)pair.Key, ((DigitalOutputChannel)pair.Value).BitNumber);
+            }
+
+            var settings = new DataContractJsonSerializerSettings();
+            settings.UseSimpleDictionaryFormat = true; // Make format of json file {key : value} instead of {"Key": key, "Value": value}
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<string, int>), settings);
+
+            string digitalPatternString = sequence.DigitalPattern.Layout.ToString();
+
+            TextWriter output = File.CreateText(dataStoreFilePath);
+            output.Write("{");
+
+            output.Write("\"channels\":");
+            using (MemoryStream ms = new MemoryStream())
+            {
+                serializer.WriteObject(ms, digitalChannels);
+                output.Write(Encoding.Default.GetString(ms.ToArray()));
+            }
+
+            output.Write(",");
+            output.Write("\"pattern\":");
+            output.Write("\"");
+            output.Write(System.Web.HttpUtility.JavaScriptStringEncode(digitalPatternString));
+            output.Write("\"");
+
+
+            output.Write("}");
+            output.Close();
+        }
+
+        private void storeAnalogPattern(string dataStoreFilePath, MOTMasterSequence sequence)
+        {
+            Dictionary<String, Dictionary<Int32, Double>> analogPatterns = sequence.AnalogPattern.AnalogPatterns;
+
+            var settings = new DataContractJsonSerializerSettings();
+            settings.UseSimpleDictionaryFormat = true; // Make format of json file {key : value} instead of {"Key": key, "Value": value}
+
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<String, Dictionary<Int32, Double>>), settings);
+            TextWriter output = File.CreateText(dataStoreFilePath);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                serializer.WriteObject(ms, analogPatterns);
+                output.Write(Encoding.Default.GetString(ms.ToArray()));
+                output.Close();
+            }
+        }
+
+        //private void storeAnalogPattern(string dataStoreFilePath, MOTMasterSequence sequence)
+        //{
+        //    TextWriter output = File.CreateText(dataStoreFilePath);
+        //    string analogPattern = sequence.AnalogPattern.AnalogPatterns;
+        //    output.Write(digitalPatternString);
+        //}
         
         private string getDataID(string element, int batchNumber)
         {

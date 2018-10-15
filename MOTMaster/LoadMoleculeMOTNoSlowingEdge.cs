@@ -24,34 +24,38 @@ namespace MOTMaster.SnippetLibrary
         public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
-            p.Pulse(0, 0, (int)parameters["TCLBlockDuration"], "tclBlock");
+            int slowingChirpStartTime = (int)parameters["SlowingChirpStartTime"];
+            int slowingNewDetuningTime = slowingChirpStartTime + (int)parameters["SlowingChirpDuration"];
+            int slowingChirpBackTime = slowingNewDetuningTime + (int)parameters["SlowingChirpHoldDuration"];
+            int slowingChirpFinishedTime = slowingChirpBackTime + (int)parameters["SlowingChirpDuration"];
+
+            p.Pulse(patternStartBeforeQ, slowingChirpStartTime, slowingChirpFinishedTime - slowingChirpStartTime, "bXLockBlock"); ; // Want it to be blocked for whole time that bX laser is moved
             p.Pulse(patternStartBeforeQ, -(int)parameters["FlashToQ"], (int)parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
             p.Pulse(patternStartBeforeQ, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch"); //trigger the Q switch
+            p.Pulse(patternStartBeforeQ, -(int)parameters["HeliumShutterToQ"], (int)parameters["HeliumShutterDuration"], "heliumShutter");
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingAOMOnStart"], (int)parameters["slowingAOMOffStart"] - (int)parameters["slowingAOMOnStart"], "bXSlowingAOM"); //first pulse to slowing AOM
-           // p.AddEdge("aom", patternStartBeforeQ + (int)parameters["slowingAOMOffStart"] + (int)parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
-           // p.Pulse(patternStartBeforeQ, (int)parameters["slowingAOMOffStart"] + (int)parameters["slowingAOMOffDuration"], (int)parameters["slowingAOMOnDuration"] - ((int)parameters["slowingAOMOffStart"] - (int)parameters["slowingAOMOnStart"]) - (int)parameters["slowingAOMOffDuration"], "aom"); //second pulse to slowing AOM
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingRepumpAOMOnStart"], (int)parameters["slowingRepumpAOMOffStart"] - (int)parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
-            p.AddEdge("v10SlowingAOM", patternStartBeforeQ + (int)parameters["slowingRepumpAOMOffStart"] + (int)parameters["slowingRepumpAOMOffDuration"], true); // send slowing repump aom high and hold it high
-            //    p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOffStart"] + (int)Parameters["slowingRepumpAOMOffDuration"], (int)Parameters["slowingRepumpAOMOnDuration"] - ((int)Parameters["slowingRepumpAOMOffStart"] - (int)Parameters["slowingRepumpAOMOnStart"]) - (int)Parameters["slowingRepumpAOMOffDuration"], "aom2"); //second pulse to slowing repump AOM
             
         }
 
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
+            int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
+            int slowingChirpStartTime = (int)parameters["SlowingChirpStartTime"];
+            int slowingNewDetuningTime = slowingChirpStartTime + (int)parameters["SlowingChirpDuration"];
+            int slowingChirpBackTime = slowingNewDetuningTime + (int)parameters["SlowingChirpHoldDuration"];
+            int slowingChirpFinishedTime = slowingChirpBackTime + (int)parameters["SlowingChirpDuration"];
+
             p.AddChannel("slowingChirp");
-            p.AddChannel("MOTCoilsCurrent");
             p.AddChannel("slowingCoilsCurrent");
+            p.AddChannel("MOTCoilsCurrent");
 
             // Slowing Chirp
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);
-            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
-            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"], 1000, (double)parameters["PokeDetuningValue"]);
-            p.AddAnalogValue("slowingChirp", 5000, (double)parameters["PokeDetuningValue"]);
-            p.AddLinearRamp("slowingChirp", 9000, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
-
-           
-        
+            p.AddLinearRamp("slowingChirp", slowingChirpStartTime, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
+            p.AddLinearRamp("slowingChirp", slowingNewDetuningTime, 200, (double)parameters["PokeDetuningValue"]);
+            p.AddLinearRamp("slowingChirp", slowingChirpBackTime, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
 
         }
     }

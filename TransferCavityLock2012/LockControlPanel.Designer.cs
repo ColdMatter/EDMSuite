@@ -111,7 +111,6 @@
             this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
             this.setPointIncrementBox.TabIndex = 32;
             this.setPointIncrementBox.Text = "0.01";
-            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
             // 
             // GainTextbox
             // 
@@ -163,6 +162,7 @@
             // lockEnableCheck
             // 
             this.lockEnableCheck.AutoSize = true;
+            this.lockEnableCheck.Enabled = false;
             this.lockEnableCheck.Location = new System.Drawing.Point(254, 17);
             this.lockEnableCheck.Name = "lockEnableCheck";
             this.lockEnableCheck.Size = new System.Drawing.Size(50, 17);

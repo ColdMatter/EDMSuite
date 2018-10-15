@@ -4,10 +4,9 @@ namespace TransferCavityLock2012
 {
     public class ScanParameters
     {
-      
         public int Steps;
-        public int NumberOfAIChannels;
-        public Dictionary<string, int> Channels = new Dictionary<string, int>();
-        
+        public double AnalogSampleRate;
+        public bool TriggerOnRisingEdge;
+        public Dictionary<string, int> Channels;
     }
 }

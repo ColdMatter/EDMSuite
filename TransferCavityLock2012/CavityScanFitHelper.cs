@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 using DAQ.Analyze;
 
@@ -8,9 +9,36 @@ namespace TransferCavityLock2012
 {
     class CavityScanFitHelper
     {
+        public static LorentzianFit FitLorentzianToData(double[] voltages, double[] signal, LorentzianFit bestGuess)
+        {
+            LorentzianFitter lorentzianFitter = new LorentzianFitter();
+            lorentzianFitter.Fit(voltages, signal, new double[] { bestGuess.Background, bestGuess.Amplitude, bestGuess.Centre, bestGuess.Width });
+            double[] coefficients = lorentzianFitter.Parameters;
+
+            LorentzianFit fit = new LorentzianFit(coefficients[0], coefficients[1], coefficients[2], coefficients[3]);
+
+            double minCentrePosition = voltages.Min();
+            double maxCentrePosition = voltages.Max();
+            fit = fitFailSafe(fit, minCentrePosition, maxCentrePosition);
+
+            return fit;
+        }
+
+        private static LorentzianFit fitFailSafe(LorentzianFit fit, double lowerLimit, double upperLimit)
+        {
+            if (fit.Centre < lowerLimit)
+            {
+                fit.Centre = lowerLimit;
+            }
+            else if (fit.Centre > upperLimit)
+            {
+                fit.Centre = upperLimit;
+            }
+            return fit;
+        }
 
 
-        public static double[] FitLorenzianToData(double[] voltages, double[] signal)
+        public static LorentzianFit FitLorentzianToData(double[] voltages, double[] signal)
         {
             double high = getMax(voltages).value;
             double low = getMin(voltages).value;
@@ -29,19 +57,19 @@ namespace TransferCavityLock2012
                 new double[] {min.value, max.value - min.value,
                     voltages[max.index], (high - low)/10,
                 });
-            
+
             double[] coefficients = lorentzianFitter.Parameters;
 
-            fitFailSafe(coefficients, low, high); 
+            fitFailSafe(coefficients, low, high);
 
-            return new double[] { coefficients[3], coefficients[2], coefficients[1], coefficients[0] }; //to be consistent with old convention.
+            return new LorentzianFit(coefficients[0], coefficients[1], coefficients[2], coefficients[3]);
         }
 
-        //This function speeds up the fitting process by passing the last fitted parameters as a guess, 
+        // This function speeds up the fitting process by passing the last fitted parameters as a guess, 
         // and by restricting the fit to only those points near to the peak
-        public static double[] FitLorenzianToData(double[] voltages, double[] signal, double[] parameters, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
+        public static LorentzianFit FitLorentzianToData(double[] voltages, double[] signal, double[] parameters, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
         {
-            
+
             double high = getMax(voltages).value;
             double low = getMin(voltages).value;
             double pointsToConsider = 0;
@@ -50,38 +78,38 @@ namespace TransferCavityLock2012
 
             double[][] allxypairs = new double[voltages.Length][];
 
-            int j=0;
+            int j = 0;
 
-            for (int i = 0; i<voltages.Length; i++)
-	            {
-                    allxypairs[i] = new double[2];
-                    allxypairs[i][0] = voltages[i];                 
-                    allxypairs[i][1] = signal[i];
-	            }
-
-            
-            if(pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0]<10)
+            for (int i = 0; i < voltages.Length; i++)
             {
-                pointsToConsider=10;
-            } 
+                allxypairs[i] = new double[2];
+                allxypairs[i][0] = voltages[i];
+                allxypairs[i][1] = signal[i];
+            }
+
+
+            if (pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0] < 10)
+            {
+                pointsToConsider = 10;
+            }
             else
             {
                 pointsToConsider = pointsToConsiderEitherSideOfPeakInFWHMs * parameters[0];
-            } 
+            }
 
-            for(int i = 0; i<voltages.Length; i++)
+            for (int i = 0; i < voltages.Length; i++)
             {
                 if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
                 {
                     j++;
                 }
-            } 
+            }
 
             double[] selectedvoltages = new double[j];
             double[] selectedsignal = new double[j];
 
 
-            for(int i = 0, k=0; i<voltages.Length; i++)
+            for (int i = 0, k = 0; i < voltages.Length; i++)
             {
                 if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
                 {
@@ -105,7 +133,7 @@ namespace TransferCavityLock2012
 
             fitFailSafe(coefficients, low, high);
 
-            return new double[] { coefficients[3], coefficients[2], coefficients[1], coefficients[0] }; //to be consistent with old convention.
+            return new LorentzianFit(coefficients[0], coefficients[1], coefficients[2], coefficients[3]);
         }
 
         private class dataPoint
@@ -127,7 +155,7 @@ namespace TransferCavityLock2012
             }
             return max;
         }
-        
+
         private static dataPoint getMin(double[] data)
         {
             dataPoint min = new dataPoint();
@@ -159,13 +187,13 @@ namespace TransferCavityLock2012
         /// <param name="cavityVoltages"></param>
         /// <param name="fitCoefficients"></param>
         /// <returns></returns>
-        public static double[] CreatePointsFromFit(double[] cavityVoltages, double[] fitCoefficients)
+        public static double[] CreatePointsFromFit(double[] cavityVoltages, LorentzianFit fit)
         {
             double[] fitPoints = new double[cavityVoltages.Length];
-            double n = fitCoefficients[3];
-            double q = fitCoefficients[2];
-            double c = fitCoefficients[1];
-            double w = fitCoefficients[0];
+            double n = fit.Background;
+            double q = fit.Amplitude;
+            double c = fit.Centre;
+            double w = fit.Width;
             for (int i = 0; i < cavityVoltages.Length; i++)
             {
                 if (w == 0) w = 0.001; // watch out for divide by zero
