@@ -63,16 +63,15 @@ namespace TransferCavityLock2012
             control.Enabled = enabled;
         }
 
-        private delegate void plotScatterGraphDelegate(ScatterPlot plot, double[] x, double[] y);
-        private static void plotScatterGraphHelper(ScatterPlot plot, double[] x, double[] y)
+        private delegate void ScatterGraphPlotDelegate(ScatterPlot plot, double[] x, double[] y);
+        private static void ScatterGraphPlotHelper(ScatterPlot plot, double[] x, double[] y)
         {
             plot.ClearData();
             plot.PlotXY(x, y);
         }
-
-        public static void scatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
+        public static void ScatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
         {
-            graph.Invoke(new UIHelper.plotScatterGraphDelegate(plotScatterGraphHelper), new object[] { plot, x, y });
+            graph.Invoke(new UIHelper.ScatterGraphPlotDelegate(ScatterGraphPlotHelper), new object[] { plot, x, y });
         }
 
 

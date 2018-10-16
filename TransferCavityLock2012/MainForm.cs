@@ -59,17 +59,17 @@ namespace TransferCavityLock2012
             switch (state)
             {
                 case Controller.ControllerState.STOPPED:
-                    rampStartButton.Enabled = true;
-                    rampStopButton.Enabled = false;
-                    NumberOfScanpointsTextBox.Enabled = true;
-                    rampLED.Value = false;
+                    UIHelper.EnableControl(rampStartButton, true);
+                    UIHelper.EnableControl(rampStopButton, false);
+                    UIHelper.EnableControl(NumberOfScanpointsTextBox, true);
+                    UIHelper.SetLEDState(rampLED, false);
                     break;
 
                 case Controller.ControllerState.RUNNING:
-                    rampStartButton.Enabled = false;
-                    rampStopButton.Enabled = true;
-                    NumberOfScanpointsTextBox.Enabled = false;
-                    rampLED.Value = true;
+                    UIHelper.EnableControl(rampStartButton, false);
+                    UIHelper.EnableControl(rampStopButton, true);
+                    UIHelper.EnableControl(NumberOfScanpointsTextBox, false);
+                    UIHelper.SetLEDState(rampLED, true);
                     break;
             }
         }
@@ -89,34 +89,6 @@ namespace TransferCavityLock2012
             CavityPanels[cavityName].AppendToErrorGraph(laserName, lockCount, error);
         }
 
-        #region ThreadSafe wrappers
-
-        
-
-        private void rampStartButton_Click(object sender, EventArgs e)
-        {
-            controller.StartTCL();
-        }
-
-        private void rampStopButton_Click(object sender, EventArgs e)
-        {
-            //lockEnableCheck.Checked = false;
-
-            lock (controller.rampStopLock)
-            {
-                controller.StopTCL();
-            }
-        }
-
-        private void stopAllLocking()
-        {
-
-        }
-
-
-
-        #endregion
-
         public void SetNumberOfPoints(int value)
         {
             UIHelper.SetTextBox(NumberOfScanpointsTextBox, Convert.ToString(value));
@@ -125,7 +97,7 @@ namespace TransferCavityLock2012
         #region Displaying Data
         public void DisplayRampData(double[] indeces, double[] cavityData)
         {
-            UIHelper.scatterGraphPlot(CavityVoltageReadScatterGraph, cavityDataPlot, indeces, cavityData);
+            UIHelper.ScatterGraphPlot(CavityVoltageReadScatterGraph, cavityDataPlot, indeces, cavityData);
         }
 
         public void DisplayMasterData(string cavityName, double[] rampData, double[] masterData, double[] masterFitData)
@@ -211,6 +183,9 @@ namespace TransferCavityLock2012
 
         #endregion
 
+        #region Event handlers
+
+        // I think these methods don't need UIHelper as they will only ever be called by UI thread
         private void logCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (logCheckBox.Checked)
@@ -244,11 +219,6 @@ namespace TransferCavityLock2012
             }
         }
 
-        //private void VToOffsetTextBox_TextChanged(object sender, EventArgs e)
-        //{
-        //CavLockVoltageTrackBar.Value = (int)(100 * GetVtoOffsetVoltage());
-        //}
-
         private void axisCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             bool canScale = !axisCheckBox.Checked;
@@ -273,12 +243,27 @@ namespace TransferCavityLock2012
             }
         }
 
-
-
         private void loadProfileSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.LoadParametersWithDialog();
         }
+
+        private void rampStartButton_Click(object sender, EventArgs e)
+        {
+            controller.StartTCL();
+        }
+
+        private void rampStopButton_Click(object sender, EventArgs e)
+        {
+            //lockEnableCheck.Checked = false;
+
+            lock (controller.rampStopLock)
+            {
+                controller.StopTCL();
+            }
+        }
+
+        #endregion
 
        
     }
