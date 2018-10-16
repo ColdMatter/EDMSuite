@@ -115,6 +115,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>CaF</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
@@ -203,10 +204,10 @@
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
-    <Compile Include="NIPXI5670.cs" />
+    <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' "/>
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="RfAWGConfig.cs" />
-    <Compile Include="NIRfsgInstrument.cs" />
+    <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' "/>
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
@@ -254,7 +255,7 @@
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
     <Compile Include="PixieFileSystem.cs" />
-    <Compile Include="PXIEDMHardware.cs" />
+    <Compile Include="PXIEDMHardware.cs" Condition=" '$(Configuration)' == 'EDM' "/>
     <Compile Include="RequiemFileSystem.cs" />
     <Compile Include="RFPower.cs" />
     <Compile Include="RS232Instrument.cs" />
