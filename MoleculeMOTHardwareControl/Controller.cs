@@ -22,8 +22,9 @@ namespace MoleculeMOTHardwareControl
 
         public Dictionary<string, GenericController> tabs = new Dictionary<string, GenericController>()
         {
-            { "Windfreak Synthesizer", new WindfreakTabController((WindfreakSynth)Environs.Hardware.Instruments["windfreak"]) },
-            { "Gigatronics Synthesizer", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics"]) },
+            //{ "Windfreak Synthesizer", new WindfreakTabController((WindfreakSynth)Environs.Hardware.Instruments["windfreak"]) },
+            { "Gigatronics Synthesizer 1", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 1"]) },
+            { "Gigatronics Synthesizer 2", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 2"]) },
             { "Source", new SourceTabController() }
         };
 

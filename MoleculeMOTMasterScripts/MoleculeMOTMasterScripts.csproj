@@ -53,7 +53,11 @@
   <ItemGroup>
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
+    <Compile Include="F2MF2Levitation.cs" />
+    <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
+    <Compile Include="DualSpeciesMagTrap.cs" />
+    <Compile Include="DualSpeciesMagTrapTemp.cs" />
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
@@ -83,6 +87,7 @@
     <Compile Include="MOTMagTrapLifetime.cs" />
     <Compile Include="MOTOscillation.cs" />
     <Compile Include="MOTOscillationExperimental.cs" />
+    <Compile Include="MOTOverlap.cs" />
     <Compile Include="MOTRampBField.cs" />
     <Compile Include="MOTRampIntensity.cs" />
     <Compile Include="MOTRampIntensityB.cs" />
@@ -91,6 +96,7 @@
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="OverlapMagTrap.cs" />
     <Compile Include="PMTtest.cs" />
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,9 +107,20 @@
     <Compile Include="RamseySpectroscopyTrap.cs" />
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
+    <Compile Include="RbMagTrap.cs" />
+    <Compile Include="RbMOTLoadingRate.cs" />
+    <Compile Include="RbMOTTemp.cs" />
     <Compile Include="ScatteringRate.cs" />
     <Compile Include="ShutterTest.cs" />
+    <Compile Include="SingleFrequencyMolasses.cs" />
+    <Compile Include="SingleFrequencyMolassesLevitate.cs" />
+    <Compile Include="SingleFrequencyMolassesMWLevitate.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotation.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwice.cs" />
+    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwiceNumber.cs" />
+    <Compile Include="SingleFrequencyMolassesTest.cs" />
     <Compile Include="stateSpectroscopy.cs" />
+    <Compile Include="test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

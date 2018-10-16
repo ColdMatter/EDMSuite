@@ -107,12 +107,14 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                #if CaF
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
+                #endif
 
 				case "CLAM":
 					Hardware = new SympatheticHardware();
@@ -129,12 +131,14 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
-                //case "PIXIE":
-                //    Hardware = new PXIEDMHardware();
-                //    FileSystem = new PixieFileSystem();
-                //    Debug = false;
-                //    //ExperimentType = "edm";
-                //    break;
+                #if EDM
+                case "PIXIE":
+                    Hardware = new PXIEDMHardware();
+                    FileSystem = new PixieFileSystem();
+                    Debug = false;
+                    //ExperimentType = "edm";
+                    break;
+                #endif
 
                 case "GREMLIN":
                     Hardware = new TCLEDMHardware();

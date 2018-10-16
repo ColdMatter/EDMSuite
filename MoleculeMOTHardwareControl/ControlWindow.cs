@@ -30,7 +30,7 @@ namespace MoleculeMOTHardwareControl
 
         private void ToggleMessageBox(object sender, EventArgs e)
         {
-
+            
         }
 
     }

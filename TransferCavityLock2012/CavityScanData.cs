@@ -31,12 +31,12 @@ namespace TransferCavityLock2012
         {
             AIData = new double[channels.Count, steps];
             parameters.Steps = steps;
-            parameters.NumberOfAIChannels = channels.Count;
             parameters.Channels = channels;
             slaveLookupTable = lookupTable;
             this.cavityMonitorName = cavityMonitorName;
             this.masterName = masterName;
-       }
+        }
+
         public double[] GetCavityData()
         {
             double[] temp = new double[AIData.GetLength(1)];
@@ -64,6 +64,7 @@ namespace TransferCavityLock2012
             }
             return temp;
         }
+
         public double[] GetSlaveData(string name)
         {
             double[] temp = new double[AIData.GetLength(1)];
@@ -73,9 +74,9 @@ namespace TransferCavityLock2012
                 temp[i] = AIData[channel, i];
             }
             return temp;
-        }    
+        }
 
- 
+
 
     }
 }

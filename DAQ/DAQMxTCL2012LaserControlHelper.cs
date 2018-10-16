@@ -52,10 +52,8 @@ namespace DAQ.TransferCavityLock2012
         public void SetLaserVoltage(double voltage)
         {
             outputLaserTask.Start();
-            //outputLaserTask.Stop();
             laserWriter.WriteSingleSample(true, voltage);
             outputLaserTask.Stop();
-            //outputLaserTask.Start();
         }
         public void DisposeLaserTask()
         {

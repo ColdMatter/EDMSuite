@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Collections;
 using DAQ.HAL;
@@ -14,9 +15,10 @@ namespace DAQ.Analog
     /// 
     /// </summary>
 
-    [Serializable]
+    [Serializable, DataContract]
     public class AnalogPatternBuilder
     {
+        [DataMember]
         public Dictionary<String, Dictionary<Int32, Double>> AnalogPatterns;
         public int PatternLength;
         public double[,] Pattern;
