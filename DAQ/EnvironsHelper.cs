@@ -107,7 +107,7 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-                #if CaF
+                #if CaF||ZS
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
