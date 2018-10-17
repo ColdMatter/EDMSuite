@@ -40,6 +40,13 @@ namespace MoleculeMOTHardwareControl.Controls
         public void UpdateCycleButton(bool state)
         {
             cycleButton.Text = state ? "Cycle Source" : "Stop Cycling";
+            holdButton.Enabled = state;
+        }
+
+        public void UpdateHoldButton(bool state)
+        {
+            holdButton.Text = state ? "Hold Source" : "Stop Holding";
+            cycleButton.Enabled = state;
         }
 
         public void EnableControls(bool state)
@@ -47,6 +54,7 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterSwitch.Enabled = state;
             cryoSwitch.Enabled = state;
             cycleButton.Enabled = state;
+            holdButton.Enabled = state;
         }
 
         public void SetCryoState(bool state)
@@ -82,6 +90,11 @@ namespace MoleculeMOTHardwareControl.Controls
         private void toggleCycling(object sender, EventArgs e)
         {
             castController.ToggleCycling();
+        }
+
+        private void toggleHolding(object sender, EventArgs e)
+        {
+            castController.ToggleHolding();
         }
 
         private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)

@@ -70,6 +70,13 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+                case "PH-NFITCH-2":
+					Hardware = new ZeemanSisyphusHardware();
+					FileSystem = new PHNFITCH2FileSystem();
+					Debug = false;
+                    //ExperimentType = "edm";
+					break;
+
                 case "PH-DK902":
                     Hardware = new EDMHardware();
                     FileSystem = new PhkaraFileSystem();
@@ -100,12 +107,14 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                #if CaF||ZS
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
+                #endif
 
 				case "CLAM":
 					Hardware = new SympatheticHardware();
@@ -122,12 +131,14 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
 					break;
 
+                #if EDM
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
                     //ExperimentType = "edm";
                     break;
+                #endif
 
                 case "GREMLIN":
                     Hardware = new TCLEDMHardware();

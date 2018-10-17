@@ -21,6 +21,9 @@ namespace MoleculeMOTHardwareControl.Controls
         private AnalogSingleChannelReader vRefReader;
         private bool isCycling = false;
         private bool finishedHeating = true;
+
+        private bool isHolding = false;
+        private bool maxTempReached = true;
         private System.Windows.Forms.Timer readTimer;
 
         private enum ControllerState
@@ -38,6 +41,12 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             get { return isCycling; }
             set { this.isCycling = value; }
+        }
+
+        public bool IsHolding
+        {
+            get { return isHolding; }
+            set { this.isHolding = value; }
         }
 
         public SourceTabController()
@@ -100,6 +109,24 @@ namespace MoleculeMOTHardwareControl.Controls
                     SetCryoState(true);
                 }
             }
+            if (IsHolding)
+            {
+                double cycleLimit = castView.GetCycleLimit();
+                if (temp < cycleLimit && !maxTempReached)
+                {
+                    SetHeaterState(true);
+                }
+                else if (temp > cycleLimit && !maxTempReached)
+                {
+                    SetHeaterState(false);
+                    maxTempReached = true;
+                }
+                else if (temp < cycleLimit - 3 && maxTempReached)
+                {
+                    SetHeaterState(true);
+                    maxTempReached = false;
+                }
+            }
         }
 
         public void SetCryoState(bool state) 
@@ -139,6 +166,28 @@ namespace MoleculeMOTHardwareControl.Controls
                 SetHeaterState(true);
                 SetCryoState(false);
                 finishedHeating = false;
+            }
+        }
+
+        public void ToggleHolding()
+        {
+            isHolding = !isHolding;
+            castView.UpdateHoldButton(!isHolding);
+            if (isHolding)
+            {
+                SetCryoState(false);
+                double temp = GetTemperature();
+                double cycleLimit = castView.GetCycleLimit();
+                if (temp < cycleLimit)
+                {
+                    SetHeaterState(true);
+                    maxTempReached = false;
+                }
+                else
+                {
+                    SetHeaterState(false);
+                    maxTempReached = true;
+                }
             }
         }
         

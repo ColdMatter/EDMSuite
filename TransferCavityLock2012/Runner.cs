@@ -14,14 +14,12 @@ namespace TransferCavityLock2012
         /// </summary>
         [STAThread]
 
-
-
         static void Main(string[] config)
         {
             string cg;
 
-            if(config.Length==0)
-            { 
+            if (config.Length == 0)
+            {
                 cg = "DefaultCavity";
             }
             else
@@ -36,7 +34,7 @@ namespace TransferCavityLock2012
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 
-       
+
             // hand over to the controller
             controller.Start();
 

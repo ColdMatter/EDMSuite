@@ -115,6 +115,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>CaF</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|AnyCPU'">
     <OutputPath>bin\EDMTestCrate\</OutputPath>
@@ -122,19 +123,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|AnyCPU'">
     <OutputPath>bin\EDM TCL\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ZeemanSisyphus\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ZS</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="Ivi.Driver, Version=1.1.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies (64-bit)\15.5.45.109\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=1.4.45.19, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.NIRfsg.Fx45, Version=14.5.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=17.5.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System">
@@ -149,6 +158,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
@@ -202,13 +212,15 @@
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
-    <Compile Include="NIPXI5670.cs" />
+    <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="PHBonesawFileSystem.cs" />
+    <Compile Include="PHNFITCH2FileSystem.cs" />
     <Compile Include="RfAWGConfig.cs" />
-    <Compile Include="NIRfsgInstrument.cs" />
+    <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
+    <Compile Include="TCLSingleCavityConfig.cs" />
     <Compile Include="USBInstrument.cs" />
     <Compile Include="HP5350BCounter.cs" />
     <Compile Include="AnapicoSynth.cs" />
@@ -252,7 +264,7 @@
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
     <Compile Include="PixieFileSystem.cs" />
-    <Compile Include="PXIEDMHardware.cs" />
+    <Compile Include="PXIEDMHardware.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="RequiemFileSystem.cs" />
     <Compile Include="RFPower.cs" />
     <Compile Include="RS232Instrument.cs" />
@@ -377,11 +389,11 @@
     <Compile Include="YBFFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ZeemanSisyphusHardware.cs" />
     <EmbeddedResource Include="ActiveXPatternGeneratorForm.resx">
       <DependentUpon>ActiveXPatternGeneratorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="licenses.licx" />
     <Content Include="bdc-comm-92.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

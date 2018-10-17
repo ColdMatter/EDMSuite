@@ -21,15 +21,18 @@ public class Patterns : MOTMasterScript
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
+        Parameters["HeliumShutterToQ"] = 100;
+        Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesDuration"] = 200;
-        Parameters["v0F0PumpDuration"] = 100;
+        Parameters["MolassesHoldTime"] = 600;
+        Parameters["MolassesRampDuration"] = 200;
+        Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 25;
-        Parameters["MOTWaitBeforeImage"] = 3000;
-        Parameters["zShimRampRate"] = 1.0; // volts per ms
+        Parameters["MicrowavePulseDuration"] = 300;
+        Parameters["MOTWaitBeforeImage"] = 500;
+        Parameters["xShimZeemanSplitValue"] = 0.0;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -55,12 +58,12 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpEndValue"] = -1.3;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 1.1;
+        Parameters["slowingCoilsValue"] = 8.0;
         Parameters["slowingCoilsOffTime"] = 1500;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentRampStartValue"] = 0.65;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.6;
         Parameters["MOTCoilsCurrentRampStartTime"] = 4000;
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
@@ -69,18 +72,19 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 40000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;// 3.0;
-        Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -6.82;
+        Parameters["xShimLoadCurrent"] = 1.195;// 1.195; // 1.202;// 1.219;
+        Parameters["yShimLoadCurrent"] = -0.175; //2.4
+        Parameters["zShimLoadCurrent"] = -6.425;//0.26; //-6.39
+        Parameters["xShimSweepRate"] = 0.005;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;
-        Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 7.95;
-        Parameters["v0IntensityMolassesValue"] = 5.0;
-        Parameters["v0IntensityF0PumpValue"] = 8.75;
-        Parameters["v0IntensityImageValue"] = 5.0;
+        Parameters["v0IntensityRampStartValue"] = 5.8;
+        Parameters["v0IntensityRampEndValue"] = 8.465;
+        Parameters["v0IntensityMolassesValue"] = 5.8;
+        Parameters["v0IntensityF0PumpValue"] = 9.33;
+        Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
         Parameters["v0FrequencyMOTValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -88,8 +92,8 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyF0PumpValue"] = 0.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         // v0 pumping EOM
-        Parameters["v0EOMMOTValue"] = 5.45;
-        Parameters["v0EOMPumpValue"] = 3.5; //3.5
+        Parameters["v0EOMMOTValue"] = 5.2;
+        Parameters["v0EOMPumpValue"] = 3.3; // 4.3; //3.5
 
         //v0aomCalibrationValues
         Parameters["lockAomFrequency"] = 114.1;
@@ -104,17 +108,19 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
+        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
+        int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.AddEdge("v00Shutter", 0, true);
-        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveIO");
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00AOM"); // pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "v00AOM"); // turn off the MOT light for microwave pulse
+        //p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveB");
+        //p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveB"); // both required for windfreak channel A
+
+        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
+        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "v00MOTAOM"); // turn off the MOT light for microwave pulse
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTPictureTriggerTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of initial MOT
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
@@ -128,8 +134,9 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
-        int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
-        int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
+        int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
+        int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
+        int microwavePulseTime = v0F0PumpStartTime + 100;
         int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -156,18 +163,15 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        //p.AddLinearRamp("zShimCoilCurrent", microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], (double)Parameters["zShimLoadCurrent"] + ((double)Parameters["zShimRampRate"] * (int)Parameters["MicrowavePulseDuration"] / 100));
-        //p.AddAnalogValue("zShimCoilCurrent", motRecaptureTime, (double)Parameters["zShimLoadCurrent"]);
-        p.AddAnalogValue("xShimCoilCurrent", v0F0PumpStartTime, 10.0);
-        p.AddAnalogValue("xShimCoilCurrent", motRecaptureTime, (double)Parameters["xShimLoadCurrent"]);
+        p.AddLinearRamp("xShimCoilCurrent", microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], (int)Parameters["MicrowavePulseDuration"] * (double)Parameters["xShimSweepRate"]);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 50, 6.76);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 100, 7.24);
-        p.AddAnalogValue("v00Intensity", molassesStartTime + 150, 7.54);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 7.83);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", v0F0PumpStartTime, (double)Parameters["v0IntensityF0PumpValue"]);
         p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityImageValue"]);
 
