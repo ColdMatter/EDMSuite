@@ -290,6 +290,18 @@ namespace EDMBlockHead
             }
         }
 
+        public void StartMagDataAcquisition()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartMagDataAcquisition(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting acquisition of magnetic field data ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
 
         public void StopAcquisition()
         {
@@ -334,6 +346,14 @@ namespace EDMBlockHead
         {
             Monitor.Enter(acquisitor.MonitorLockObject);
             StartIntelligentTargetStepper();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
+        public void StartMagDataAcquisitionAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartMagDataAcquisition();
             Monitor.Wait(acquisitor.MonitorLockObject);
             Monitor.Exit(acquisitor.MonitorLockObject);
         }
@@ -410,6 +430,20 @@ namespace EDMBlockHead
                 mainWindow.AppendToTextArea("Intelligent target stepper failed to find a good spot.");
             }
 
+            appState = AppState.stopped;
+            mainWindow.AppendToTextArea("Acquisition finished");
+            SetStatusReady();
+        }
+
+        public void MagDataAcquisitionFinished(Block b)
+        {
+            this.Block = b;
+            mainWindow.AppendToTextArea("Demodulating magnetic data block.");
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
+            DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
+            // liveViewer.AddDBlock(DBlock);
+
+            haveBlock = true;
             appState = AppState.stopped;
             mainWindow.AppendToTextArea("Acquisition finished");
             SetStatusReady();
