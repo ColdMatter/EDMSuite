@@ -188,7 +188,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("middlePenningGauge", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
@@ -199,7 +199,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("quSpinB0_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinB0_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
 
-            AddAnalogInputChannel("quSpinEV_Y", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEV_Y", analogIn + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEV_Z", analogIn2 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEW_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEW_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
