@@ -144,7 +144,11 @@ namespace DAQ.TransferCavityLock2012
         public void DisposeReadTask()
         {
             readAIsTask.Dispose();
-            readDIsTask.Dispose();
+
+            if (digitalInputs.Length > 0)
+            {
+                readDIsTask.Dispose();
+            }
         }
 
         #endregion
