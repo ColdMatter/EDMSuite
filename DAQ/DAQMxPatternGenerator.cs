@@ -117,7 +117,14 @@ namespace DAQ.HAL
                         clockFrequency,
                         0.5
                         );
+                    //Something weird is happening here, without the ConfigureImplicit method the SampleQuantityMode reverts to finite samples and
+                    //only generates a single clock pulse...
+                    counterTask.ExportSignals.ExportHardwareSignal(ExportSignal.CounterOutputEvent, "/PXI2SLOT4/Ctr0Out");
                     counterTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
+                    counterTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
+                    counterTask.Control(TaskAction.Commit);
+                    counterTask.Control(TaskAction.Verify);
+                    
                     counterTask.Start();
 
                     clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";

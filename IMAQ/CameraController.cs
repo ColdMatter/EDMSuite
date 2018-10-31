@@ -175,11 +175,12 @@ namespace IMAQ
             try
             {
 
-                watch.Start();
+                watch.Start();                
+                //imaqdxSession.Sequence(images, numberOfShots);
+                imaqdxSession.Acquisition.Configure(ImaqdxAcquisitionType.SingleShot, numberOfShots);
+                imaqdxSession.Acquisition.Start();
                 state = CameraState.READY_FOR_ACQUISITION;
 
-                
-                imaqdxSession.Sequence(images, numberOfShots);
                 watch.Stop();
                 if (windowShowing)
                 {
@@ -188,17 +189,21 @@ namespace IMAQ
                 }
 
                 List<byte[,]> byteList = new List<byte[,]>();
-                foreach (VisionImage i in images)
+                for (uint i = 0; i < images.Length; ++i)
                 {
-                    byteList.Add((i.ImageToArray()).U8);
-
-                   // if (windowShowing)
+                    //byteList.Add((i.ImageToArray()).U8);
+                    imaqdxSession.Acquisition.GetImageAt(images[i], i);
+                    // if (windowShowing)
                     //{
-                      //  imageWindow.AttachToViewer(i);
+                    //  imageWindow.AttachToViewer(i);
 
-                   // }
+                    // }
 
                 }
+
+                imaqdxSession.Acquisition.Stop();
+                imaqdxSession.Acquisition.Unconfigure();
+                imaqdxSession.Acquisition.Dispose();
                 state = CameraState.FREE;
 
                 return byteList.ToArray();

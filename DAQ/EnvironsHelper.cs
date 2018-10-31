@@ -253,6 +253,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-DPITMAN02":
+                    Hardware = new RbCaFHardware();
+                    FileSystem = new RbCaFFileSystem();
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
