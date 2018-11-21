@@ -54,7 +54,8 @@ namespace DAQ.HAL
             // map the analog channels
             AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse);
-
+            AddAnalogInputChannel("sourcePressure", analogPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
             
 
             // ScanMaster configuration

@@ -8,8 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ZeemanSisyphusHardwareControl.Properties
-{
+namespace ZeemanSisyphusHardwareControl.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -8,8 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ZeemanSisyphusHardwareControl.Properties
-{
+namespace ZeemanSisyphusHardwareControl.Properties {
     using System;
     
     
