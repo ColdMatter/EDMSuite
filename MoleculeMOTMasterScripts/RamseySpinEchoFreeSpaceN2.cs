@@ -34,6 +34,10 @@ public class Patterns : MOTMasterScript
         Parameters["SecondMicrowavePulseDuration"] = 9;
         Parameters["MagTrapDuration"] = 2500;
         Parameters["MOTWaitBeforeImage"] = 500;
+        Parameters["RamseyPulseDuration"] = 2;
+        Parameters["RamseyPiPulseDuration"] = 4;
+        Parameters["FirstRamseyWaitTime"] = 1470;// 400;
+        Parameters["SecondRamseyWaitTime"] = 360;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -74,14 +78,15 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.01; //0.21
-        Parameters["MOTCoilsCurrentMagTrapValue"] = 0.6;// 1.2;// 0.6;
+        Parameters["MOTCoilsOffsetFieldValue"] = -0.01;
+        Parameters["MOTCoilsCurrentMagTrapValue"] = 1.2;// 1.2;// 0.6;
 
         Parameters["CoilsSwitchOffTime"] = 40000;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 3.6;
         Parameters["yShimLoadCurrent"] = -0.7;
-        Parameters["zShimLoadCurrent"] = -5.8; 
+        Parameters["zShimLoadCurrent"] = -5.8;
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;
@@ -118,14 +123,21 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int ramseyPiPulseTime = firstRamseyPulseTime + (int)Parameters["FirstRamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
+        int secondRamseyPulseTime = ramseyPiPulseTime + (int)Parameters["SecondRamseyWaitTime"] + (int)Parameters["RamseyPiPulseDuration"];
+        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
 
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
-        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB"); 
+        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB");
+        p.Pulse(patternStartBeforeQ, firstRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
+        p.Pulse(patternStartBeforeQ, ramseyPiPulseTime, (int)Parameters["RamseyPiPulseDuration"], "microwaveC");
+        p.Pulse(patternStartBeforeQ, secondRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
+
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, microwavePulseTime, motRecaptureTime - microwavePulseTime, "v00MOTAOM"); // turn off the MOT light for microwave pulse
@@ -135,9 +147,10 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v10SlowingAOM", patternStartBeforeQ + (int)Parameters["slowingRepumpAOMOffStart"] + (int)Parameters["slowingRepumpAOMOffDuration"], true); // send slowing repump aom high and hold it high
 
         p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime - 1400, (int)Parameters["MagTrapDuration"] + 3000, "bXSlowingShutter"); //Takes 14ms to start closing
-        //p.Pulse(patternStartBeforeQ, microwavePulseTime - 1500, motRecaptureTime - microwavePulseTime + 1500 - 1100, "v00MOTShutter");
+        p.Pulse(patternStartBeforeQ, microwavePulseTime - 1500, motRecaptureTime - microwavePulseTime + 1500 - 1000, "v00MOTShutter");
 
-        p.Pulse(patternStartBeforeQ, molassesStartTime, secondMicrowavePulseTime - 100 - molassesStartTime, "bottomCoilDirection");
+        //p.Pulse(patternStartBeforeQ, offsetFieldTurnOnTime, offsetFieldTurnOffTime - offsetFieldTurnOnTime, "bottomCoilDirection");
+        // p.Pulse(patternStartBeforeQ, blowAwayTime, offsetFieldTurnOnTime - blowAwayTime, "bottomCoilDirection");
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTPictureTriggerTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of initial MOT
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
@@ -158,7 +171,10 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int ramseyPiPulseTime = firstRamseyPulseTime + (int)Parameters["FirstRamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
+        int secondRamseyPulseTime = ramseyPiPulseTime + (int)Parameters["SecondRamseyWaitTime"] + (int)Parameters["RamseyPiPulseDuration"];
+        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 

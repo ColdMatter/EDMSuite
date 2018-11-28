@@ -103,7 +103,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("rbCoolingShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rbOpticalPumpingShutter", digitalPatternBoardAddress, 2, 5);
-
+            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 2, 6);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
