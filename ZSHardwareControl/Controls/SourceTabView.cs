@@ -26,7 +26,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
         {
             currentTemperature.Text = temp;
         }
-
+        public void UpdateCurrentPressure(string pressure)
+        {
+            currentPressure.Text = pressure;
+        }
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
@@ -99,6 +102,16 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
 
         #endregion
+
+        private void tableLayoutPanel6_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void currentPressure_TextChanged(object sender, EventArgs e)
+        {
+
+        }
  
     }
 }

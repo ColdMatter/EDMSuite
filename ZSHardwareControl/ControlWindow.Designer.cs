@@ -118,7 +118,7 @@ namespace ZeemanSisyphusHardwareControl
             this.tableLayoutPanel9.ColumnCount = 3;
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.848485F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.15151F));
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 39F));
             this.tableLayoutPanel9.Controls.Add(this.messageBoxCollapseExpandButton, 2, 0);
             this.tableLayoutPanel9.Controls.Add(this.label8, 1, 0);
             this.tableLayoutPanel9.Controls.Add(this.messageNumberPanel, 0, 0);
@@ -134,7 +134,7 @@ namespace ZeemanSisyphusHardwareControl
             // 
             this.messageBoxCollapseExpandButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.messageBoxCollapseExpandButton.BackColor = System.Drawing.Color.Transparent;
-            this.messageBoxCollapseExpandButton.Location = new System.Drawing.Point(658, 5);
+            this.messageBoxCollapseExpandButton.Location = new System.Drawing.Point(657, 5);
             this.messageBoxCollapseExpandButton.Name = "messageBoxCollapseExpandButton";
             this.messageBoxCollapseExpandButton.Size = new System.Drawing.Size(23, 23);
             this.messageBoxCollapseExpandButton.TabIndex = 0;
@@ -193,7 +193,8 @@ namespace ZeemanSisyphusHardwareControl
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "ControlWindow";
-            this.Text = "Molecule MOT Hardware Controller";
+            this.Text = "Zeeman Sisyphus Hardware Controller";
+            this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.splitPanel.Panel1.ResumeLayout(false);
             this.splitPanel.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel)).EndInit();

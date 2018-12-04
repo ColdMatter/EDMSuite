@@ -15,10 +15,12 @@ namespace ZeemanSisyphusHardwareControl.Controls
 
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
         private ControllerState state = ControllerState.STOPPED;
-        private AnalogSingleChannelReader sourceTempReader;
+        private AnalogSingleChannelReader therm4KRTReader;
+        private AnalogSingleChannelReader therm4KReader;
+        private AnalogSingleChannelReader vRefReader;
+        private AnalogSingleChannelReader sourcePressureReader;
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
-        private AnalogSingleChannelReader vRefReader;
         private bool isCycling = false;
         private bool finishedHeating = true;
         private System.Windows.Forms.Timer readTimer;
@@ -44,9 +46,13 @@ namespace ZeemanSisyphusHardwareControl.Controls
         {
             InitReadTimer();
 
-            sourceTempReader = CreateAnalogInputReader("4Kthermistor");
+            therm4KRTReader = CreateAnalogInputReader("4KRTthermistor");
+            therm4KReader = CreateAnalogInputReader("4Kthermistor");
+            vRefReader = CreateAnalogInputReader("thermVref");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
+            sourcePressureReader = CreateAnalogInputReader("sourcePressure");
+
         }
 
         private void InitReadTimer()
@@ -54,6 +60,8 @@ namespace ZeemanSisyphusHardwareControl.Controls
             readTimer = new System.Windows.Forms.Timer();
             readTimer.Interval = 2000;
             readTimer.Tick += new EventHandler(UpdateTemperature);
+            readTimer.Tick += new EventHandler(UpdatePressure);
+
         }
 
         protected double ConvertVoltageToResistance(double voltage, double reference)
@@ -71,10 +79,20 @@ namespace ZeemanSisyphusHardwareControl.Controls
             return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;
         }
 
+        protected double ConvertLowTempResistanceToCelcius(double resistance)
+        {
+            // Constants for Steinhart & Hart equation
+            double A = 0.5266343594045398;
+            double B = -0.14940648796805392;
+            double C = 0.0018038940085863865;
+
+            return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;
+        }
+
         protected double GetTemperature()
         {
             double vRef = 5.0; //vRefReader.ReadSingleSample();
-            double sourceTempVoltage = sourceTempReader.ReadSingleSample();
+            double sourceTempVoltage = therm4KRTReader.ReadSingleSample();
             double sourceTempResistance = ConvertVoltageToResistance(sourceTempVoltage, vRef);
             return Convert10kResistanceToCelcius(sourceTempResistance);
         }
@@ -139,6 +157,28 @@ namespace ZeemanSisyphusHardwareControl.Controls
                 SetHeaterState(true);
                 SetCryoState(false);
                 finishedHeating = false;
+            }
+        }
+        protected double ConvertVoltageToPressure(double voltage)
+        {
+            return Math.Pow(10.0,(voltage - 10.875));//conversion for cold cathode ionization gauge series 903
+        }
+
+       
+
+        protected double GetPressure()
+        {
+            double sourcePressureVoltage = sourcePressureReader.ReadSingleSample();
+            return ConvertVoltageToPressure(sourcePressureVoltage);
+        }
+
+        protected void UpdatePressure(object anObject, EventArgs eventArgs)
+        {
+            double pressure = GetPressure();
+            
+            {
+                castView.UpdateCurrentPressure(pressure.ToString("e2"));
+        
             }
         }
         

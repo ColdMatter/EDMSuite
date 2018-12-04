@@ -52,8 +52,10 @@ namespace DAQ.HAL
       
 
             // map the analog channels
-            AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("4KRTthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("thermVref", analogPatternBoardAddress + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", analogPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
             

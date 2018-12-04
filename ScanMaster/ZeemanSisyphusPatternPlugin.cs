@@ -34,6 +34,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["flashlampPulseLength"] = 100;
             settings["flashlampPulseInterval"] = 500000;
             settings["sequenceLength"] = 2;
+            settings["flashToQ"] = 290;
         }
 
         protected override void DoAcquisitionStarting()

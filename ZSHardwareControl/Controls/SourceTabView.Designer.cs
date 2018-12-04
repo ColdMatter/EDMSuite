@@ -30,9 +30,6 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tempGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis1 = new NationalInstruments.UI.XAxis();
-            this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.cryoGroup = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -48,6 +45,8 @@
             this.cycleLimit = new System.Windows.Forms.NumericUpDown();
             this.readButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.currentPressure = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.currentTemperature = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
@@ -65,6 +64,7 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,29 +90,9 @@
             this.tempGraph.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tempGraph.Location = new System.Drawing.Point(3, 3);
             this.tempGraph.Name = "tempGraph";
-            this.tempGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1});
             this.tempGraph.Size = new System.Drawing.Size(521, 658);
             this.tempGraph.TabIndex = 0;
             this.tempGraph.UseColorGenerator = true;
-            this.tempGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis1});
-            this.tempGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis1});
-            // 
-            // scatterPlot1
-            // 
-            this.scatterPlot1.XAxis = this.xAxis1;
-            this.scatterPlot1.YAxis = this.yAxis1;
-            // 
-            // xAxis1
-            // 
-            this.xAxis1.Caption = "Time";
-            // 
-            // yAxis1
-            // 
-            this.yAxis1.Caption = "Temperature (°C) ";
-            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleVisibleLoose;
             // 
             // tableLayoutPanel2
             // 
@@ -167,14 +147,12 @@
             this.cryoSwitch.Location = new System.Drawing.Point(38, 58);
             this.cryoSwitch.Name = "cryoSwitch";
             this.cryoSwitch.Size = new System.Drawing.Size(59, 78);
-            this.cryoSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.cryoSwitch.TabIndex = 0;
             this.cryoSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleCryo);
             // 
             // cryoLED
             // 
             this.cryoLED.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cryoLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
             this.cryoLED.Location = new System.Drawing.Point(43, 3);
             this.cryoLED.Name = "cryoLED";
             this.cryoLED.Size = new System.Drawing.Size(49, 49);
@@ -213,14 +191,12 @@
             this.heaterSwitch.Location = new System.Drawing.Point(38, 58);
             this.heaterSwitch.Name = "heaterSwitch";
             this.heaterSwitch.Size = new System.Drawing.Size(59, 78);
-            this.heaterSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.heaterSwitch.TabIndex = 0;
             this.heaterSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeater);
             // 
             // heaterLED
             // 
             this.heaterLED.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.heaterLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
             this.heaterLED.Location = new System.Drawing.Point(43, 3);
             this.heaterLED.Name = "heaterLED";
             this.heaterLED.Size = new System.Drawing.Size(49, 49);
@@ -298,6 +274,7 @@
             this.tableLayoutPanel6.ColumnCount = 2;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.Controls.Add(this.groupBox3, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.groupBox2, 0, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 667);
@@ -306,6 +283,27 @@
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel6.Size = new System.Drawing.Size(521, 140);
             this.tableLayoutPanel6.TabIndex = 2;
+            this.tableLayoutPanel6.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel6_Paint);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.currentPressure);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(263, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(255, 134);
+            this.groupBox3.TabIndex = 5;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Source Pressure (mbar)";
+            // 
+            // currentPressure
+            // 
+            this.currentPressure.Location = new System.Drawing.Point(84, 56);
+            this.currentPressure.Name = "currentPressure";
+            this.currentPressure.ReadOnly = true;
+            this.currentPressure.Size = new System.Drawing.Size(100, 20);
+            this.currentPressure.TabIndex = 0;
+            this.currentPressure.TextChanged += new System.EventHandler(this.currentPressure_TextChanged);
             // 
             // groupBox2
             // 
@@ -347,6 +345,8 @@
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).EndInit();
             this.tableLayoutPanel6.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -377,6 +377,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox currentTemperature;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox currentPressure;
 
     }
 }
