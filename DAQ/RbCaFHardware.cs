@@ -40,7 +40,8 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); 
 
             //map the analog output channels
-            AddAnalogOutputChannel("AOTest1", daqBoard + "/ao0"); 
+            AddAnalogOutputChannel("AOTest1", daqBoard + "/ao0");
+            AddAnalogOutputChannel("AOTest2", daqBoard + "/ao1"); 
 
             // map the counter channels
             //AddCounterChannel("pmt", daqBoard + "/ctr0"); 

@@ -142,6 +142,7 @@ namespace RbCaFHardwareControl
             //      steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
 
             CreateAnalogOutputTask("AOTest1");
+            CreateAnalogOutputTask("AOTest2");
 
             // make the control controlWindow
             controlWindow = new ControlWindow();

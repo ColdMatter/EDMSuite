@@ -31,6 +31,7 @@ namespace RbCaFHardwareControl
         {
             InitializeComponent();
             AOTextBoxes["AOTest1"] = AOTest1TextBox;
+            AOTextBoxes["AOTest2"] = AOTest2TextBox;
             DOCheckBoxes["DOTest1"] = DOTest1CheckBox;
         }
 
@@ -72,6 +73,9 @@ namespace RbCaFHardwareControl
             this.updateHardwareButton = new System.Windows.Forms.Button();
             this.consoleRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tabCamera = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.DOTest1CheckBox = new System.Windows.Forms.CheckBox();
+            this.AOTest1TextBox = new System.Windows.Forms.TextBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.camtrigCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -81,9 +85,8 @@ namespace RbCaFHardwareControl
             this.stopStreamButton = new System.Windows.Forms.Button();
             this.streamButton = new System.Windows.Forms.Button();
             this.shcTabs = new System.Windows.Forms.TabControl();
-            this.AOTest1TextBox = new System.Windows.Forms.TextBox();
-            this.DOTest1CheckBox = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.AOTest2TextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.remoteControlLED)).BeginInit();
             this.tabCamera.SuspendLayout();
@@ -225,6 +228,8 @@ namespace RbCaFHardwareControl
             // 
             // tabCamera
             // 
+            this.tabCamera.Controls.Add(this.label3);
+            this.tabCamera.Controls.Add(this.AOTest2TextBox);
             this.tabCamera.Controls.Add(this.label2);
             this.tabCamera.Controls.Add(this.DOTest1CheckBox);
             this.tabCamera.Controls.Add(this.AOTest1TextBox);
@@ -238,6 +243,33 @@ namespace RbCaFHardwareControl
             this.tabCamera.TabIndex = 0;
             this.tabCamera.Text = "Camera Control";
             this.tabCamera.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(284, 106);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(49, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "AOTest1";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // DOTest1CheckBox
+            // 
+            this.DOTest1CheckBox.AutoSize = true;
+            this.DOTest1CheckBox.Location = new System.Drawing.Point(339, 164);
+            this.DOTest1CheckBox.Name = "DOTest1CheckBox";
+            this.DOTest1CheckBox.Size = new System.Drawing.Size(69, 17);
+            this.DOTest1CheckBox.TabIndex = 7;
+            this.DOTest1CheckBox.Text = "DOTest1";
+            this.DOTest1CheckBox.UseVisualStyleBackColor = true;
+            // 
+            // AOTest1TextBox
+            // 
+            this.AOTest1TextBox.Location = new System.Drawing.Point(339, 103);
+            this.AOTest1TextBox.Name = "AOTest1TextBox";
+            this.AOTest1TextBox.Size = new System.Drawing.Size(94, 20);
+            this.AOTest1TextBox.TabIndex = 6;
             // 
             // groupBox11
             // 
@@ -329,32 +361,21 @@ namespace RbCaFHardwareControl
             this.shcTabs.Size = new System.Drawing.Size(666, 293);
             this.shcTabs.TabIndex = 0;
             // 
-            // AOTest1TextBox
+            // AOTest2TextBox
             // 
-            this.AOTest1TextBox.Location = new System.Drawing.Point(339, 103);
-            this.AOTest1TextBox.Name = "AOTest1TextBox";
-            this.AOTest1TextBox.Size = new System.Drawing.Size(94, 20);
-            this.AOTest1TextBox.TabIndex = 6;
+            this.AOTest2TextBox.Location = new System.Drawing.Point(342, 132);
+            this.AOTest2TextBox.Name = "AOTest2TextBox";
+            this.AOTest2TextBox.Size = new System.Drawing.Size(90, 20);
+            this.AOTest2TextBox.TabIndex = 9;
             // 
-            // DOTest1CheckBox
+            // label3
             // 
-            this.DOTest1CheckBox.AutoSize = true;
-            this.DOTest1CheckBox.Location = new System.Drawing.Point(339, 138);
-            this.DOTest1CheckBox.Name = "DOTest1CheckBox";
-            this.DOTest1CheckBox.Size = new System.Drawing.Size(69, 17);
-            this.DOTest1CheckBox.TabIndex = 7;
-            this.DOTest1CheckBox.Text = "DOTest1";
-            this.DOTest1CheckBox.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(284, 106);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "AOTest1";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(278, 135);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 13);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "AO Test 2";
             // 
             // ControlWindow
             // 
@@ -601,6 +622,9 @@ namespace RbCaFHardwareControl
         {
 
         }
+
+        private Label label3;
+        private TextBox AOTest2TextBox;
 
 
     }
