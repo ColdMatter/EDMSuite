@@ -29,14 +29,17 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
-            scanOutputPlugins.Add("Rf AWG frequency output", typeof(NIRfsgFrequencyOutputPlugin));
-            scanOutputPlugins.Add("Rf AWG amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
-            scanOutputPlugins.Add("HardwareController scan", typeof(HardwareControllerOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
+#endif
+
+#if EDM
+            scanOutputPlugins.Add("NI Rfsg frequency output", typeof(NIRfsgFrequencyOutputPlugin));
+            scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
+            scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
 #endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
@@ -59,6 +62,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
+            patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

@@ -82,6 +82,9 @@ Global
 		Sympathetic|Any CPU = Sympathetic|Any CPU
 		Sympathetic|Mixed Platforms = Sympathetic|Mixed Platforms
 		Sympathetic|x86 = Sympathetic|x86
+		ZeemanSisyphus|Any CPU = ZeemanSisyphus|Any CPU
+		ZeemanSisyphus|Mixed Platforms = ZeemanSisyphus|Mixed Platforms
+		ZeemanSisyphus|x86 = ZeemanSisyphus|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
@@ -106,7 +109,6 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -143,6 +145,11 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ZeemanSisyphus|Mixed Platforms.Build.0 = ZeemanSisyphus|Any CPU
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.AnritsuVNA|Any CPU.Build.0 = Sympathetic|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
@@ -165,8 +172,8 @@ Global
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.CaF|x86.ActiveCfg = CaF|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.ActiveCfg = EDM TCL|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.Build.0 = EDM TCL|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -206,6 +213,11 @@ Global
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.ZeemanSisyphus|Mixed Platforms.Build.0 = ZeemanSisyphus|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.AnritsuVNA|Any CPU.Build.0 = Sympathetic|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
@@ -228,8 +240,8 @@ Global
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.CaF|x86.ActiveCfg = CaF|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
-		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.ActiveCfg = EDM TCL|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.Build.0 = EDM TCL|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -251,6 +263,7 @@ Global
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMAnalysis|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMAnalysis|Mixed Platforms.Build.0 = EDMAnalysis|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMAnalysis|x86.ActiveCfg = EDMAnalysis|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMAnalysis|x86.Build.0 = EDMAnalysis|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMTestCrate|Any CPU.ActiveCfg = EDMTestCrate|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMTestCrate|Any CPU.Build.0 = EDMTestCrate|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.EDMTestCrate|Mixed Platforms.ActiveCfg = EDMTestCrate|Any CPU
@@ -271,6 +284,11 @@ Global
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Mixed Platforms.Build.0 = ZeemanSisyphus|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -318,6 +336,10 @@ Global
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{DFE81EE7-F9AF-4551-B3D7-336F14101AB6}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -336,7 +358,6 @@ Global
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -372,6 +393,9 @@ Global
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -388,7 +412,6 @@ Global
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -420,6 +443,9 @@ Global
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{8A6D6B26-EE29-49AA-8C0D-8585FE8AB3CA}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -468,6 +494,10 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -518,6 +548,10 @@ Global
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.ZeemanSisyphus|Any CPU.Build.0 = ZeemanSisyphus|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{216E6D83-0304-4A0C-9BA7-F9DDF58F274A}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -566,6 +600,9 @@ Global
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{B223A45D-2F25-437F-B7DF-CE6C8DF97451}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -581,7 +618,6 @@ Global
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
@@ -615,6 +651,9 @@ Global
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{548E9AAE-FE20-42BE-B66F-84C41B510610}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{548E9AAE-FE20-42BE-B66F-84C41B510610}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{548E9AAE-FE20-42BE-B66F-84C41B510610}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{548E9AAE-FE20-42BE-B66F-84C41B510610}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -632,7 +671,6 @@ Global
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
@@ -666,6 +704,9 @@ Global
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{434CD947-D8DB-4DB6-B28D-1879CB0E0353}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -683,8 +724,8 @@ Global
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|x86.ActiveCfg = CaF|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
-		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
-		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Mixed Platforms.Build.0 = Decelerator|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Mixed Platforms.ActiveCfg = EDM TCL|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Mixed Platforms.Build.0 = EDM TCL|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Decelerator|Any CPU.Build.0 = Decelerator|Any CPU
@@ -699,6 +740,7 @@ Global
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDM|Any CPU.ActiveCfg = EDM|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDM|Any CPU.Build.0 = EDM|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDM|Mixed Platforms.ActiveCfg = EDM|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDM|Mixed Platforms.Build.0 = EDM|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDM|x86.ActiveCfg = EDM|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDMAnalysis|Any CPU.ActiveCfg = EDMAnalysis|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.EDMAnalysis|Mixed Platforms.ActiveCfg = EDMAnalysis|Any CPU
@@ -722,6 +764,11 @@ Global
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.ZeemanSisyphus|Any CPU.ActiveCfg = SrF|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.ZeemanSisyphus|Any CPU.Build.0 = SrF|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = SrF|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.ZeemanSisyphus|Mixed Platforms.Build.0 = SrF|Any CPU
+		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.ZeemanSisyphus|x86.ActiveCfg = SrF|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -741,8 +788,7 @@ Global
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.CaF|x86.ActiveCfg = CaF|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
-		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
+		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|Mixed Platforms.ActiveCfg = Buffer|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
@@ -775,6 +821,9 @@ Global
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{17AE4B60-4B86-4A09-BEED-4C6A6CCFA8AF}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -795,7 +844,6 @@ Global
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
@@ -829,6 +877,9 @@ Global
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{FCE9FC5D-8BC1-4517-B4F6-AA446831A930}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.AnritsuVNA|Mixed Platforms.Build.0 = Sympathetic|Any CPU
@@ -848,7 +899,6 @@ Global
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Debug|Any CPU.Build.0 = Decelerator|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Debug|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Debug|Mixed Platforms.Build.0 = CaF|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Debug|x86.ActiveCfg = Decelerator|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Decelerator|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Decelerator|Mixed Platforms.ActiveCfg = Decelerator|Any CPU
@@ -882,6 +932,9 @@ Global
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|Mixed Platforms.Build.0 = Sympathetic|Any CPU
 		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{693FBF90-F77E-4AC3-B91B-C8A8034D0B4D}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.AnritsuVNA|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.AnritsuVNA|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.AnritsuVNA|x86.ActiveCfg = Sympathetic|Any CPU
@@ -929,6 +982,9 @@ Global
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Sympathetic|Any CPU.ActiveCfg = Sympathetic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Sympathetic|Mixed Platforms.ActiveCfg = Sympathetic|Any CPU
 		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.Sympathetic|x86.ActiveCfg = Sympathetic|Any CPU
+		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F5FE3F55-C1E7-4C23-B2CF-C0F70C2F5830}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.AnritsuVNA|Any CPU.ActiveCfg = Release|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.AnritsuVNA|Any CPU.Build.0 = Release|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.AnritsuVNA|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -951,7 +1007,6 @@ Global
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Decelerator|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Decelerator|Any CPU.Build.0 = Debug|Any CPU
@@ -988,6 +1043,9 @@ Global
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Sympathetic|Any CPU.Build.0 = Release|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Sympathetic|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.Sympathetic|x86.ActiveCfg = Release|Any CPU
+		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F5547C23-4266-47BA-83C8-B3C96E5D6A07}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.AnritsuVNA|Any CPU.ActiveCfg = Release|Any CPU
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.AnritsuVNA|Any CPU.Build.0 = Release|Any CPU
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.AnritsuVNA|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -1047,6 +1105,9 @@ Global
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.Sympathetic|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.Sympathetic|Mixed Platforms.Build.0 = Release|Any CPU
 		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.Sympathetic|x86.ActiveCfg = Release|Any CPU
+		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.ZeemanSisyphus|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.ZeemanSisyphus|Mixed Platforms.ActiveCfg = ZeemanSisyphus|Any CPU
+		{F951E985-DFC3-48E7-8D3D-ED4F1CFA4D62}.ZeemanSisyphus|x86.ActiveCfg = ZeemanSisyphus|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

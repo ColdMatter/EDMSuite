@@ -115,10 +115,10 @@ namespace ScanMaster
 			acquisitor.ScanFinished += new ScanFinishedEventHandler(ScanFinishedHandler);
 
             // ask the remoting system for access to the EDMHardwareController
-            RemotingConfiguration.RegisterWellKnownClientType(
-                Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
-                "tcp://localhost:1172/controller.rem"
-                );
+            //RemotingConfiguration.RegisterWellKnownClientType(
+            //    Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
+            //    "tcp://localhost:1172/controller.rem"
+            //    );
 
 			controllerWindow = new ControllerWindow(this);
 			controllerWindow.Show();

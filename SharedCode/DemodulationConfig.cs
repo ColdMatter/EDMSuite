@@ -163,6 +163,73 @@ namespace Analysis.EDM
             };
             standardConfigs.Add("background", background);
 
+            // "magnetometer mode" gate - for analysing magnetic field data from QuSpins
+
+            DemodulationConfigBuilder magnetometers = delegate(Block b)
+            {
+                DemodulationConfig dc;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9, dg10;
+
+                dc = new DemodulationConfig();
+                dc.AnalysisTag = "magnetometers";
+                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
+                dg0.Name = "quSpinB0_Y";
+                dg0.BackgroundSubtract = false;
+                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
+                dg1.Name = "quSpinB0_Z";
+                dg1.BackgroundSubtract = false;
+                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
+                dg2.Name = "quSpinEV_Y";
+                dg2.BackgroundSubtract = false;
+                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
+                dg3.Name = "quSpinEV_Z";
+                dg3.BackgroundSubtract = false;
+                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
+                dg4.Name = "quSpinEW_Y";
+                dg4.BackgroundSubtract = false;
+                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
+                dg5.Name = "quSpinEW_Z";
+                dg5.BackgroundSubtract = false;
+                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
+                dg6.Name = "quSpinEX_Y";
+                dg6.BackgroundSubtract = false;
+                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
+                dg7.Name = "quSpinEX_Z";
+                dg7.BackgroundSubtract = false;
+                dg8 = GatedDetectorExtractSpec.MakeWideGate(8);
+                dg8.Name = "quSpinEU_Y";
+                dg8.BackgroundSubtract = false;
+                dg9 = GatedDetectorExtractSpec.MakeWideGate(9);
+                dg9.Name = "quSpinEU_Z";
+                dg9.BackgroundSubtract = false;
+                dg10 = GatedDetectorExtractSpec.MakeWideGate(10);
+                dg10.Name = "bartington";
+                dg10.BackgroundSubtract = false;
+
+                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
+                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
+                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
+                dc.GatedDetectorExtractSpecs.Add(dg8.Name, dg8);
+                dc.GatedDetectorExtractSpecs.Add(dg9.Name, dg9);
+                dc.GatedDetectorExtractSpecs.Add(dg10.Name, dg10);
+
+                dc.PointDetectorChannels.Add("MiniFlux1");
+                dc.PointDetectorChannels.Add("MiniFlux2");
+                dc.PointDetectorChannels.Add("MiniFlux3");
+                dc.PointDetectorChannels.Add("NorthCurrent");
+                dc.PointDetectorChannels.Add("SouthCurrent");
+                dc.PointDetectorChannels.Add("PumpPD");
+                dc.PointDetectorChannels.Add("ProbePD");
+
+                return dc;
+            };
+            standardConfigs.Add("magnetometers", magnetometers);
+
             // add some fixed gate slices - the first three are the 1.1 sigma centre portion and two
             // non-overlapping portions either side.
             AddFixedSliceConfig("cgate11Fixed", 2156, 90); // This is normally ("cgate11Fixed", 2156, 90)
