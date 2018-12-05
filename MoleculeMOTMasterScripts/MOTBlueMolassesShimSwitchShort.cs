@@ -26,14 +26,14 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 3000;
+        Parameters["ExpansionTime"] = 100;
         Parameters["MolassesDelay"] =  100;
-        Parameters["MolassesHoldTime"] = 1500;//600;
-        Parameters["MolassesRampDuration"] = 1;// 200;
+        Parameters["MolassesHoldTime"] = 600;
+        Parameters["MolassesRampDuration"] = 200;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["WaitBeforeImage"] = 1;
+        Parameters["WaitBeforeImage"] = 100;
 
         //PMT
         Parameters["PMTTrigger"] = 4000;
@@ -108,9 +108,9 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
-        p.Pulse(patternStartBeforeQ, releaseTime, cameraTriggerTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
+        p.Pulse(patternStartBeforeQ, releaseTime, imagingLightOnTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
      //   p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, molassesStartTime + 800, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
     }
@@ -155,16 +155,13 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-
-        //p.AddAnalogValue("v00Intensity", molassesStartTime + 200, (double)Parameters["v0IntensityMolassesValue2"]);
-
-        //p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
-        //p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
-        //p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.2);
+        p.AddAnalogValue("v00EOMAmp", 0, 5.3);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
