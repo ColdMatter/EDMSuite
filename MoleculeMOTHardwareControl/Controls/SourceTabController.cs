@@ -16,6 +16,7 @@ namespace MoleculeMOTHardwareControl.Controls
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
         private ControllerState state = ControllerState.STOPPED;
         private AnalogSingleChannelReader sourceTempReader;
+        private AnalogSingleChannelReader sf6TempReader;
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
         private AnalogSingleChannelReader vRefReader;
@@ -54,6 +55,7 @@ namespace MoleculeMOTHardwareControl.Controls
             InitReadTimer();
 
             sourceTempReader = CreateAnalogInputReader("sourceTemp");
+            sf6TempReader = CreateAnalogInputReader("sf6Temp");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
         }
@@ -80,7 +82,7 @@ namespace MoleculeMOTHardwareControl.Controls
             return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;
         }
 
-        protected double GetTemperature()
+        protected double GetSourceTemperature()
         {
             double vRef = 5.0; //vRefReader.ReadSingleSample();
             double sourceTempVoltage = sourceTempReader.ReadSingleSample();
@@ -88,21 +90,39 @@ namespace MoleculeMOTHardwareControl.Controls
             return Convert10kResistanceToCelcius(sourceTempResistance);
         }
 
+        protected double GetSF6Temperature()
+        {
+            double vRef = 5.0; //vRefReader.ReadSingleSample();
+            double sf6TempVoltage = sf6TempReader.ReadSingleSample();
+            double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
+            return Convert10kResistanceToCelcius(sf6TempResistance);
+        }
+
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
         {
-            double temp = GetTemperature();
-            if (temp < -34)
+            double sourceTemp = GetSourceTemperature();
+            if (sourceTemp < -34)
             {
-                castView.UpdateCurrentTemperature("<-34");
+                castView.UpdateCurrentSourceTemperature("<-34");
             }
             else
             {
-                castView.UpdateCurrentTemperature(temp.ToString("F2"));
+                castView.UpdateCurrentSourceTemperature(sourceTemp.ToString("F2"));
             }
+            double sf6Temp = GetSF6Temperature();
+            if (sf6Temp < -34)
+            {
+                castView.UpdateCurrentSF6Temperature("<-34");
+            }
+            else
+            {
+                castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
+            }
+
             if (IsCyling)
             {
                 double cycleLimit = castView.GetCycleLimit();
-                if (!finishedHeating && temp > cycleLimit)
+                if (!finishedHeating && sourceTemp > cycleLimit)
                 {
                     finishedHeating = true;
                     SetHeaterState(false);
@@ -112,16 +132,16 @@ namespace MoleculeMOTHardwareControl.Controls
             if (IsHolding)
             {
                 double cycleLimit = castView.GetCycleLimit();
-                if (temp < cycleLimit && !maxTempReached)
+                if (sourceTemp < cycleLimit && !maxTempReached)
                 {
                     SetHeaterState(true);
                 }
-                else if (temp > cycleLimit && !maxTempReached)
+                else if (sourceTemp > cycleLimit && !maxTempReached)
                 {
                     SetHeaterState(false);
                     maxTempReached = true;
                 }
-                else if (temp < cycleLimit - 3 && maxTempReached)
+                else if (sourceTemp < cycleLimit - 3 && maxTempReached)
                 {
                     SetHeaterState(true);
                     maxTempReached = false;
@@ -176,7 +196,7 @@ namespace MoleculeMOTHardwareControl.Controls
             if (isHolding)
             {
                 SetCryoState(false);
-                double temp = GetTemperature();
+                double temp = GetSourceTemperature();
                 double cycleLimit = castView.GetCycleLimit();
                 if (temp < cycleLimit)
                 {

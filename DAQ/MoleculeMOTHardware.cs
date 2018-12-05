@@ -126,6 +126,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);
             AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
             AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
 
 
             // TCL Config
