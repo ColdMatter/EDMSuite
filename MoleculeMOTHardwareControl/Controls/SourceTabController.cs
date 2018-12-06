@@ -14,23 +14,16 @@ namespace MoleculeMOTHardwareControl.Controls
         private double referenceResistance = 47120; // Reference resistor for reading in temperature from source thermistor
 
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
-        private ControllerState state = ControllerState.STOPPED;
         private AnalogSingleChannelReader sourceTempReader;
         private AnalogSingleChannelReader sf6TempReader;
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
-        private AnalogSingleChannelReader vRefReader;
         private bool isCycling = false;
         private bool finishedHeating = true;
 
         private bool isHolding = false;
         private bool maxTempReached = true;
         private System.Windows.Forms.Timer readTimer;
-
-        private enum ControllerState
-        {
-            RUNNING, STOPPED
-        };
 
         protected override GenericView CreateControl()
         {
