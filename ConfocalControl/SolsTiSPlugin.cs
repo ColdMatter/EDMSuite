@@ -1487,7 +1487,7 @@ namespace ConfocalControl
                                 teraScanDisplayTotalWaveform = displayData.ToArray();
                                 teraScanDisplaySegmentWaveform = displayData.ToArray();
                                 if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, false); }
-                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, false); }
                             }
                             displayStartTime = DateTime.Now;
                             displayData = new List<double>();

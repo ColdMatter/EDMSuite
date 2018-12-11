@@ -253,6 +253,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "PH-CCMQN2":
+                    Hardware = new ConfocalHardware("SASRb");
+                    FileSystem = new ConfocalFileSystem("SASRb");
+                    Debug = false;
+                    break;
+
 				default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

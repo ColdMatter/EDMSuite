@@ -184,7 +184,10 @@ namespace ConfocalControl
                     }
                     break;
                 case "multi":
-                    numberSeconds = Convert.ToInt32(multi_wavelength_ListBox.Items.Count * multiScanRange_Numeric.Value);
+                    if (teraScanRate_ComboBox.SelectedIndex >= 0)
+                    {
+                        numberSeconds = Convert.ToInt32(multi_wavelength_ListBox.Items.Count * multiScanRange_Numeric.Value / (int)teraScanRate_ComboBox.SelectedItem);
+                    }
                     break;
                 default:
                     break;
