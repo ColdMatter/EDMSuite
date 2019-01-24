@@ -26,14 +26,14 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 100;
+        Parameters["ExpansionTime"] = 1;
         Parameters["MolassesDelay"] =  100;
         Parameters["MolassesHoldTime"] = 600;
-        Parameters["MolassesRampDuration"] = 200;
+        Parameters["MolassesRampDuration"] = 600;// 200;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["WaitBeforeImage"] = 100;
+        Parameters["WaitBeforeImage"] = 0;
 
         //PMT
         Parameters["PMTTrigger"] = 4000;
@@ -155,9 +155,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
+        //p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
+        //p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
+        //p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // F=0

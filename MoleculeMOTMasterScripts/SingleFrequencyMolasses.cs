@@ -33,7 +33,7 @@ public class Patterns : MOTMasterScript
         Parameters["SingleFreqMolassesDuration"] = 500;//200;
         Parameters["RotationOffRampDuration"] = 500;
         Parameters["WaitBeforeImage"] = 0;
-        Parameters["ExpansionTime"] = 1900;
+        Parameters["ExpansionTime"] = 2400;
 
         Parameters["v00ChirpDuration"] = 10;// 200;
         Parameters["v00ChirpWait"] = 60;// 100;
@@ -78,9 +78,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 1.6;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.7;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -5.8; //0.26
+        Parameters["xShimLoadCurrent"] = 2.7;// 1.6;// 1.195; // 1.202;// 1.219;
+        Parameters["yShimLoadCurrent"] = -0.12;// -0.155; //2.4
+        Parameters["zShimLoadCurrent"] = -5.35; //0.26
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -116,7 +116,7 @@ public class Patterns : MOTMasterScript
         int v00ChirpTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int singleFrequencyMolassesTime = v00ChirpTime + (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"];
         int releaseTime = singleFrequencyMolassesTime + (int)Parameters["SingleFreqMolassesDuration"];
-        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"] + (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"];
+        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
@@ -126,11 +126,6 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, releaseTime, cameraTriggerTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to load into harmonic trap until imaging
         p.Pulse(patternStartBeforeQ, v00ChirpTime, (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"] + (int)Parameters["SingleFreqMolassesDuration"], "v00Sidebands");
         p.Pulse(patternStartBeforeQ, v00ChirpTime, 2 * (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"] + (int)Parameters["SingleFreqMolassesDuration"] + 200, "v00LockBlock");
-        //p.Pulse(patternStartBeforeQ, releaseTime - 1500, (int)Parameters["RotationTime"] + 1500 - 1250, "v00MOTShutter");
-        // p.Pulse(patternStartBeforeQ, molassesStartTime, (int)Parameters["CoilsSwitchOffTime"] - molassesStartTime, "bottomCoilDirection");
-        //p.Pulse(patternStartBeforeQ, molassesStartTime, harmonicTrapOffTime - molassesStartTime + 20, "bottomCoilDirection");
-        //p.Pulse(patternStartBeforeQ, harmonicTrapOffTime + 20, (int)Parameters["CoilsSwitchOffTime"] - (harmonicTrapOffTime + 20), "topCoilDirection");
-        //p.Pulse(patternStartBeforeQ, singleFrequencyMolassesTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
@@ -147,7 +142,7 @@ public class Patterns : MOTMasterScript
         int v00ChirpTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
         int singleFrequencyMolassesTime = v00ChirpTime + (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"];
         int releaseTime = singleFrequencyMolassesTime + (int)Parameters["SingleFreqMolassesDuration"];
-        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"] + (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"];
+        int cameraTriggerTime = releaseTime + (int)Parameters["ExpansionTime"];
 
         // Add Analog Channels
         p.AddChannel("v00Intensity");
@@ -167,17 +162,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOnTime, (double)Parameters["MOTCoilsCurrentLevitateValue"]);
-        // p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime, -0.01);
-        //p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime + 50, (double)Parameters["MOTCoilsCurrentLevitateValue"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", harmonicTrapOffTime + 270, -0.01);
-
-        //p.AddLinearRamp("MOTCoilsCurrent", harmonicTrapOffTime, (int)Parameters["RotationOffRampDuration"], - 0.01);
 
         // Top coil shunt
         p.AddAnalogValue("topCoilShunt", 0, 0.0);
-        // p.AddAnalogValue("topCoilShunt", harmonicTrapOnTime, (double)Parameters["TopCoilShuntLevitateValue"]);
-        // p.AddAnalogValue("topCoilShunt", (int)Parameters["CoilsSwitchOffTime"], 0.0);
 
         //// Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
@@ -193,16 +180,11 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
         p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime, (double)Parameters["v0IntensitySingleFreqMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 300, (double)Parameters["v0IntensitySingleFreqMolassesStepValue"]);
-        //p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 200, 7.21);
-        //p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 300, 7.61);
-        //p.AddAnalogValue("v00Intensity", singleFrequencyMolassesTime + 400, 8.09);
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityImageValue"]);
 
         // v0 Chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
         p.AddLinearRamp("v00Chirp", v00ChirpTime, (int)Parameters["v00ChirpDuration"], (double)Parameters["v00ChirpAmplitude"]);
-        //p.AddAnalogValue("v00Chirp", v00ChirpTime + 300, 0.4);
         p.AddLinearRamp("v00Chirp", releaseTime, (int)Parameters["v00ChirpDuration"], 0.0);
 
         // F=0
@@ -212,7 +194,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", molassesStartTime, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyNewValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);//jump to blue detuning
         p.AddAnalogValue("v00Frequency", releaseTime, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyImageValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
-        p.AddAnalogValue("v00Frequency", cameraTriggerTime + 3000, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
+        p.AddAnalogValue("v00Frequency", cameraTriggerTime + 5000, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
 
 
         return p;

@@ -30,8 +30,8 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 4;
-        Parameters["SecondMicrowavePulseDuration"] = 9;
+        Parameters["MicrowavePulseDuration"] = 5;
+        Parameters["SecondMicrowavePulseDuration"] = 10;
         Parameters["MagTrapDuration"] = 2500;
         Parameters["MOTWaitBeforeImage"] = 500;
 
@@ -79,9 +79,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 40000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 3.6;
-        Parameters["yShimLoadCurrent"] = -0.7;
-        Parameters["zShimLoadCurrent"] = -5.8; 
+        Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
+        Parameters["yShimLoadCurrent"] = -0.12;// -0.12;
+        Parameters["zShimLoadCurrent"] = -5.35;// -5.35; 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;

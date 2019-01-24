@@ -30,7 +30,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 4;// 15;
+        Parameters["MicrowavePulseDuration"] = 5;// 15;
         Parameters["WaitBeforeRecapture"] = 200;
         Parameters["MOTWaitBeforeImage"] = 500;
         Parameters["xShimZeemanSplitValue"] = 0.0;
@@ -70,12 +70,12 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.01; //0.21
 
-        Parameters["CoilsSwitchOffTime"] = 40000;
+        Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 3.6;// 1.6;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.7;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -5.8; //0.26
+        Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
+        Parameters["yShimLoadCurrent"] = -0.12;// -0.12;
+        Parameters["zShimLoadCurrent"] = -5.35;// -5.35; 
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -110,7 +110,7 @@ public class Patterns : MOTMasterScript
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
         int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
         int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
-        int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
+        int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"] + 70;
         int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -139,7 +139,7 @@ public class Patterns : MOTMasterScript
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
         int molassesRampTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
         int v0F0PumpStartTime = molassesRampTime + (int)Parameters["MolassesRampDuration"];
-        int microwavePulseTime = v0F0PumpStartTime + 100;
+        int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"] + 70;
         int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -172,7 +172,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
         p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 200, 7.83);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
         p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
         p.AddAnalogValue("v00Intensity", v0F0PumpStartTime, (double)Parameters["v0IntensityF0PumpValue"]);
         p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityImageValue"]);
