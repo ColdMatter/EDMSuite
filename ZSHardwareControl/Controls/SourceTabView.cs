@@ -22,9 +22,11 @@ namespace ZeemanSisyphusHardwareControl.Controls
 
         #region UI Update Handlers
 
-        public void UpdateCurrentTemperature(string temp)
+        public void UpdateCurrentTemperature(string temp, bool lowTemp)
         {
             currentTemperature.Text = temp;
+            rbThermRT.Checked = !(lowTemp);
+            rbThermLT.Checked = lowTemp;
         }
         public void UpdateCurrentPressure(string pressure)
         {
@@ -43,6 +45,13 @@ namespace ZeemanSisyphusHardwareControl.Controls
         public void UpdateCycleButton(bool state)
         {
             cycleButton.Text = state ? "Cycle Source" : "Stop Cycling";
+            holdButton.Enabled = state;
+        }
+
+        public void UpdateHoldButton(bool state)
+        {
+            holdButton.Text = state ? "Hold Source" : "Stop Holding";
+            cycleButton.Enabled = state;
         }
 
         public void EnableControls(bool state)
@@ -50,6 +59,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
             heaterSwitch.Enabled = state;
             cryoSwitch.Enabled = state;
             cycleButton.Enabled = state;
+            holdButton.Enabled = state;
         }
 
         public void SetCryoState(bool state)
@@ -73,6 +83,11 @@ namespace ZeemanSisyphusHardwareControl.Controls
             return (double)cycleLimit.Value;
         }
 
+        public double GetReferenceResistance()
+        {
+            return ((double)numRref.Value)*1000;
+        }
+
         #endregion
 
         #region UI Event Handlers
@@ -86,6 +101,12 @@ namespace ZeemanSisyphusHardwareControl.Controls
         {
             castController.ToggleCycling();
         }
+
+        private void toggleHolding(object sender, EventArgs e)
+        {
+            castController.ToggleHolding();
+        }
+
 
         private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
@@ -109,6 +130,31 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
 
         private void currentPressure_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cycleLimit_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numRref_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void holdButton_Click(object sender, EventArgs e)
         {
 
         }

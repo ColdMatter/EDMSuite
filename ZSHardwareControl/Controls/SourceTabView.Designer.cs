@@ -40,14 +40,20 @@
             this.heaterSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.heaterLED = new NationalInstruments.UI.WindowsForms.Led();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.cycleButton = new System.Windows.Forms.Button();
+            this.holdButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cycleLimit = new System.Windows.Forms.NumericUpDown();
+            this.cycleButton = new System.Windows.Forms.Button();
             this.readButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.currentPressure = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.rbThermLT = new System.Windows.Forms.RadioButton();
+            this.numRref = new System.Windows.Forms.NumericUpDown();
+            this.rbThermRT = new System.Windows.Forms.RadioButton();
             this.currentTemperature = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
@@ -66,6 +72,7 @@
             this.tableLayoutPanel6.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numRref)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -84,6 +91,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.02469F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(680, 810);
             this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // tempGraph
             // 
@@ -105,22 +113,23 @@
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(530, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 4;
+            this.tableLayoutPanel2.RowCount = 5;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.96227F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.03773F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(147, 658);
             this.tableLayoutPanel2.TabIndex = 1;
+            this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
             // cryoGroup
             // 
             this.cryoGroup.Controls.Add(this.tableLayoutPanel4);
             this.cryoGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cryoGroup.Location = new System.Drawing.Point(3, 167);
+            this.cryoGroup.Location = new System.Drawing.Point(3, 162);
             this.cryoGroup.Name = "cryoGroup";
-            this.cryoGroup.Size = new System.Drawing.Size(141, 158);
+            this.cryoGroup.Size = new System.Drawing.Size(141, 153);
             this.cryoGroup.TabIndex = 1;
             this.cryoGroup.TabStop = false;
             this.cryoGroup.Text = "Cryo-cooler";
@@ -137,16 +146,16 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(135, 139);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(135, 134);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
             // cryoSwitch
             // 
             this.cryoSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoSwitch.Enabled = false;
-            this.cryoSwitch.Location = new System.Drawing.Point(38, 58);
+            this.cryoSwitch.Location = new System.Drawing.Point(38, 56);
             this.cryoSwitch.Name = "cryoSwitch";
-            this.cryoSwitch.Size = new System.Drawing.Size(59, 78);
+            this.cryoSwitch.Size = new System.Drawing.Size(59, 75);
             this.cryoSwitch.TabIndex = 0;
             this.cryoSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleCryo);
             // 
@@ -155,7 +164,7 @@
             this.cryoLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoLED.Location = new System.Drawing.Point(43, 3);
             this.cryoLED.Name = "cryoLED";
-            this.cryoLED.Size = new System.Drawing.Size(49, 49);
+            this.cryoLED.Size = new System.Drawing.Size(49, 47);
             this.cryoLED.TabIndex = 1;
             // 
             // heaterGroup
@@ -164,7 +173,7 @@
             this.heaterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heaterGroup.Location = new System.Drawing.Point(3, 3);
             this.heaterGroup.Name = "heaterGroup";
-            this.heaterGroup.Size = new System.Drawing.Size(141, 158);
+            this.heaterGroup.Size = new System.Drawing.Size(141, 153);
             this.heaterGroup.TabIndex = 0;
             this.heaterGroup.TabStop = false;
             this.heaterGroup.Text = "Heater";
@@ -181,16 +190,16 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(135, 139);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(135, 134);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // heaterSwitch
             // 
             this.heaterSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterSwitch.Enabled = false;
-            this.heaterSwitch.Location = new System.Drawing.Point(38, 58);
+            this.heaterSwitch.Location = new System.Drawing.Point(38, 56);
             this.heaterSwitch.Name = "heaterSwitch";
-            this.heaterSwitch.Size = new System.Drawing.Size(59, 78);
+            this.heaterSwitch.Size = new System.Drawing.Size(59, 75);
             this.heaterSwitch.TabIndex = 0;
             this.heaterSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeater);
             // 
@@ -199,35 +208,37 @@
             this.heaterLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterLED.Location = new System.Drawing.Point(43, 3);
             this.heaterLED.Name = "heaterLED";
-            this.heaterLED.Size = new System.Drawing.Size(49, 49);
+            this.heaterLED.Size = new System.Drawing.Size(49, 47);
             this.heaterLED.TabIndex = 1;
             // 
             // tableLayoutPanel5
             // 
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Controls.Add(this.cycleButton, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.holdButton, 0, 2);
             this.tableLayoutPanel5.Controls.Add(this.groupBox1, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.cycleButton, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 331);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 321);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 2;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(141, 158);
+            this.tableLayoutPanel5.RowCount = 3;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 57.03125F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.96875F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 61F));
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(141, 210);
             this.tableLayoutPanel5.TabIndex = 2;
             // 
-            // cycleButton
+            // holdButton
             // 
-            this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleButton.Enabled = false;
-            this.cycleButton.Location = new System.Drawing.Point(33, 96);
-            this.cycleButton.Name = "cycleButton";
-            this.cycleButton.Size = new System.Drawing.Size(75, 44);
-            this.cycleButton.TabIndex = 2;
-            this.cycleButton.Text = "Cycle Source";
-            this.cycleButton.UseVisualStyleBackColor = true;
-            this.cycleButton.Click += new System.EventHandler(this.toggleCycling);
+            this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.holdButton.Enabled = false;
+            this.holdButton.Location = new System.Drawing.Point(33, 157);
+            this.holdButton.Name = "holdButton";
+            this.holdButton.Size = new System.Drawing.Size(75, 44);
+            this.holdButton.TabIndex = 4;
+            this.holdButton.Text = "Hold Source";
+            this.holdButton.UseVisualStyleBackColor = true;
+            this.holdButton.Click += new System.EventHandler(this.toggleHolding);
             // 
             // groupBox1
             // 
@@ -235,7 +246,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(135, 73);
+            this.groupBox1.Size = new System.Drawing.Size(135, 78);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cycle Max Temp (°C)";
@@ -243,7 +254,7 @@
             // cycleLimit
             // 
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleLimit.Location = new System.Drawing.Point(6, 19);
+            this.cycleLimit.Location = new System.Drawing.Point(6, 21);
             this.cycleLimit.Minimum = new decimal(new int[] {
             100,
             0,
@@ -257,11 +268,24 @@
             0,
             0,
             0});
+            this.cycleLimit.ValueChanged += new System.EventHandler(this.cycleLimit_ValueChanged);
+            // 
+            // cycleButton
+            // 
+            this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleButton.Enabled = false;
+            this.cycleButton.Location = new System.Drawing.Point(33, 94);
+            this.cycleButton.Name = "cycleButton";
+            this.cycleButton.Size = new System.Drawing.Size(75, 44);
+            this.cycleButton.TabIndex = 2;
+            this.cycleButton.Text = "Cycle Source";
+            this.cycleButton.UseVisualStyleBackColor = true;
+            this.cycleButton.Click += new System.EventHandler(this.toggleCycling);
             // 
             // readButton
             // 
             this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.readButton.Location = new System.Drawing.Point(36, 552);
+            this.readButton.Location = new System.Drawing.Point(36, 562);
             this.readButton.Name = "readButton";
             this.readButton.Size = new System.Drawing.Size(75, 46);
             this.readButton.TabIndex = 3;
@@ -307,6 +331,11 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.rbThermLT);
+            this.groupBox2.Controls.Add(this.numRref);
+            this.groupBox2.Controls.Add(this.rbThermRT);
             this.groupBox2.Controls.Add(this.currentTemperature);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
@@ -316,9 +345,73 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Current Temperature (°C)";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 95);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Thermistor in use:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(173, 94);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Rref (kΩ):";
+            // 
+            // rbThermLT
+            // 
+            this.rbThermLT.AutoSize = true;
+            this.rbThermLT.Enabled = false;
+            this.rbThermLT.Location = new System.Drawing.Point(95, 111);
+            this.rbThermLT.Name = "rbThermLT";
+            this.rbThermLT.Size = new System.Drawing.Size(75, 17);
+            this.rbThermLT.TabIndex = 3;
+            this.rbThermLT.Text = "Low Temp";
+            this.rbThermLT.UseVisualStyleBackColor = true;
+            // 
+            // numRref
+            // 
+            this.numRref.DecimalPlaces = 1;
+            this.numRref.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numRref.Location = new System.Drawing.Point(176, 110);
+            this.numRref.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numRref.Name = "numRref";
+            this.numRref.Size = new System.Drawing.Size(72, 20);
+            this.numRref.TabIndex = 3;
+            this.numRref.Value = new decimal(new int[] {
+            465,
+            0,
+            0,
+            65536});
+            this.numRref.ValueChanged += new System.EventHandler(this.numRref_ValueChanged);
+            // 
+            // rbThermRT
+            // 
+            this.rbThermRT.AutoSize = true;
+            this.rbThermRT.Enabled = false;
+            this.rbThermRT.Location = new System.Drawing.Point(6, 111);
+            this.rbThermRT.Name = "rbThermRT";
+            this.rbThermRT.Size = new System.Drawing.Size(83, 17);
+            this.rbThermRT.TabIndex = 2;
+            this.rbThermRT.Text = "Room Temp";
+            this.rbThermRT.UseVisualStyleBackColor = true;
+            // 
             // currentTemperature
             // 
-            this.currentTemperature.Location = new System.Drawing.Point(84, 56);
+            this.currentTemperature.Location = new System.Drawing.Point(75, 56);
             this.currentTemperature.Name = "currentTemperature";
             this.currentTemperature.ReadOnly = true;
             this.currentTemperature.Size = new System.Drawing.Size(100, 20);
@@ -349,6 +442,7 @@
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numRref)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -369,16 +463,22 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private NationalInstruments.UI.WindowsForms.Switch heaterSwitch;
         private NationalInstruments.UI.WindowsForms.Led heaterLED;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.Button cycleButton;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown cycleLimit;
         private System.Windows.Forms.Button readButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox currentTemperature;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox currentPressure;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RadioButton rbThermLT;
+        private System.Windows.Forms.RadioButton rbThermRT;
+        private System.Windows.Forms.NumericUpDown numRref;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown cycleLimit;
+        private System.Windows.Forms.Button cycleButton;
+        private System.Windows.Forms.Button holdButton;
 
     }
 }

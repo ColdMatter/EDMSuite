@@ -77,6 +77,7 @@ namespace ZeemanSisyphusHardwareControl
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(689, 836);
             this.tabControl.TabIndex = 0;
+          //  this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // splitPanel
             // 
@@ -118,7 +119,7 @@ namespace ZeemanSisyphusHardwareControl
             this.tableLayoutPanel9.ColumnCount = 3;
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.848485F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.15151F));
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel9.Controls.Add(this.messageBoxCollapseExpandButton, 2, 0);
             this.tableLayoutPanel9.Controls.Add(this.label8, 1, 0);
             this.tableLayoutPanel9.Controls.Add(this.messageNumberPanel, 0, 0);
