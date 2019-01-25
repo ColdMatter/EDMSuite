@@ -32,6 +32,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
         {
             currentPressure.Text = pressure;
         }
+        public void UpdateCurrentSF6Temperature(string temp)
+        {
+            currentSF6Temperature.Text = temp;
+        }
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
@@ -155,6 +159,11 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
 
         private void holdButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void currentSF6Temperature_TextChanged(object sender, EventArgs e)
         {
 
         }

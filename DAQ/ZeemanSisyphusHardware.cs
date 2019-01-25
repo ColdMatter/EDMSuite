@@ -57,6 +57,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("thermVref", analogPatternBoardAddress + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", analogPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("SF6thermistor", analogPatternBoardAddress + "/ai15", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
             
 

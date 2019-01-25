@@ -18,6 +18,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
         private ControllerState state = ControllerState.STOPPED;
         private AnalogSingleChannelReader therm4KRTReader;
         private AnalogSingleChannelReader therm4KReader;
+        private AnalogSingleChannelReader sf6TempReader;
         private AnalogSingleChannelReader vRefReader;
         private double lowTempThreshCelcius = -34.0;
         private AnalogSingleChannelReader sourcePressureReader;
@@ -59,6 +60,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
             therm4KRTReader = CreateAnalogInputReader("4KRTthermistor");
             therm4KReader = CreateAnalogInputReader("4Kthermistor");
             vRefReader = CreateAnalogInputReader("thermVref");
+            sf6TempReader = CreateAnalogInputReader("SF6thermistor");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
             sourcePressureReader = CreateAnalogInputReader("sourcePressure");
@@ -125,6 +127,14 @@ namespace ZeemanSisyphusHardwareControl.Controls
             return (Double.IsNaN(tempFromRTTherm[0]) || (tempFromRTTherm[0] < lowTempThreshCelcius)) ? tempFromLTTherm : tempFromRTTherm;
         }
 
+        protected double GetSF6Temperature()
+        {
+            double vRef = vRefReader.ReadSingleSample(); 
+            double sf6TempVoltage = sf6TempReader.ReadSingleSample();
+            double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
+            return  SteinhartHartEquation(sf6TempResistance, false);
+        }
+
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
         {
             double[] tempInfo = GetTemperature();
@@ -159,6 +169,15 @@ namespace ZeemanSisyphusHardwareControl.Controls
                     SetHeaterState(true);
                     maxTempReached = false;
                 }
+            }
+            double sf6Temp = GetSF6Temperature();
+            if (sf6Temp < -34)
+            {
+                castView.UpdateCurrentSF6Temperature("<-34");
+            }
+            else
+            {
+                castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
             }
         }
 
